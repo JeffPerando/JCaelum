@@ -4,3 +4,7 @@
 *.jar
 *.war
 *.ear
+
+/java/.metadata/.plugins/*
+/java/.metadata/.mylyn/*
+/java/HawksEngine/bin/*

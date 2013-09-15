@@ -1,0 +1,6 @@
+LWJGL: 2.9.1
+SoundSystem: Oct 23, 2010
+LWJGL SoundSystem plug-in: Aug 24, 2010
+JOrbis: 0.0.17
+Wav codec plug-in: Oct 23, 2010
+JOrbis codec plug-in: Aug 24, 2010
