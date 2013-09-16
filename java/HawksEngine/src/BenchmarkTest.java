@@ -26,6 +26,7 @@ public class BenchmarkTest
 		
 		buf.position(0);
 		buf.put(0);
+		buf.put(9);
 		
 		buf.rewind();
 		
