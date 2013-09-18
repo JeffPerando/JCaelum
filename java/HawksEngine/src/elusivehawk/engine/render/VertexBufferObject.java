@@ -15,6 +15,12 @@ public class VertexBufferObject
 {
 	public final int id, t;
 	
+	public VertexBufferObject()
+	{
+		this(GL.GL_ARRAY_BUFFER);
+		
+	}
+	
 	public VertexBufferObject(int target)
 	{
 		this(GL.glGenBuffers(), target);

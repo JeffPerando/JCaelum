@@ -12,13 +12,15 @@ import elusivehawk.engine.math.Vector2f;
 public class ImageData
 {
 	public boolean requiresUpdating = false;
-	public Vector2f pos = new Vector2f();
-	public int width = 0, height = 0;
+	public final Vector2f pos = new Vector2f();
+	public final int width, height;
 	public final ITexture tex;
 	
-	public ImageData(ITexture texture)
+	public ImageData(ITexture texture, int w, int h)
 	{
 		tex = texture;
+		width = w;
+		height = h;
 		
 	}
 	

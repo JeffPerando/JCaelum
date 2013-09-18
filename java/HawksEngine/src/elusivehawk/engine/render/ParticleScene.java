@@ -105,7 +105,7 @@ public class ParticleScene
 			
 		}
 		
-		if (this.particles.size() == 0)
+		if (this.getParticleCount() == 0)
 		{
 			return false;
 		}

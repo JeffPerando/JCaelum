@@ -91,6 +91,8 @@ public final class RenderEngine
 						{
 							GameLog.warn("Model group " + group.getName() + " model #" + c + " has invalid texture ID: " + tex + ", please rectify this.");
 							
+							GL.glActiveTexture(0);
+							
 						}
 						
 					}
@@ -101,15 +103,13 @@ public final class RenderEngine
 						
 					}
 					
-					p.unbind();
-					
 					RenderHelper.checkForGLError();
+					
+					p.unbind();
 					
 				}
 				
 			}
-			
-			GL.glActiveTexture(0);
 			
 		}
 		
@@ -123,7 +123,7 @@ public final class RenderEngine
 			
 			if (p.bind())
 			{
-				GL.glDrawArrays(GL.GL_POINT, 0, particles.particleCount);
+				GL.glDrawArrays(GL.GL_POINT, 0, particles.getParticleCount());
 				
 				RenderHelper.checkForGLError();
 				
@@ -134,7 +134,6 @@ public final class RenderEngine
 		}
 		
 		GL.glDisable(GL.GL_CULL_FACE);
-		
 		GL.glDisable(GL.GL_DEPTH_TEST);
 		
 	}

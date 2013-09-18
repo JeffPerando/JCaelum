@@ -17,31 +17,46 @@ import elusivehawk.engine.math.Vector2f;
  */
 public class ImageScreen implements Iterable<ImageData>
 {
+	public final GLProgram p;
+	public final VertexBufferObject vbo;
 	private final FloatBuffer buf;
 	private final List<ImageData> data = new ArrayList<ImageData>();
 	
-	public ImageScreen(int initialImgCount)
+	public ImageScreen(int maxImgs)
 	{
-		buf = BufferUtils.createFloatBuffer(initialImgCount * 24);
+		this(new GLProgram(), maxImgs);
+		
+	}
+	
+	public ImageScreen(GLProgram program, int maxImgs)
+	{
+		p = program;
+		buf = BufferUtils.createFloatBuffer(maxImgs * 24);
+		
+		vbo = new VertexBufferObject();
+		
+		p.attachVBOs(vbo);
 		
 	}
 	
 	public int addImage(ITexture tex, int x, int y, int w, int h)
 	{
+		if (this.buf.limit() - this.buf.capacity() == 0)
+		{
+			throw new ArrayIndexOutOfBoundsException("Image limit hit!");
+		}
+		
 		this.buf.put(this.generateImgBuffer(x, y, w, h));
 		
-		ImageData info = new ImageData(tex);
+		ImageData info = new ImageData(tex, w, h);
 		
 		info.pos.x = x;
 		info.pos.y = y;
-		info.width = w;
-		info.height = h;
 		
 		this.data.add(info);
 		
 		return this.data.size() - 1;
 	}
-	
 	
 	private FloatBuffer generateImgBuffer(int x, int y, int w, int h)
 	{
@@ -52,19 +67,13 @@ public class ImageScreen implements Iterable<ImageData>
 		float c = (x + w) / Display.getWidth();
 		float d = (y + h) / Display.getHeight();
 		
-		if (this.buf.remaining() == 0)
-		{
-			this.buf.limit(this.buf.limit() + 24);
-			
-		}
+		ret.put(a).put(b).put(0).put(1);
+		ret.put(c).put(b).put(0).put(1);
+		ret.put(a).put(d).put(0).put(1);
 		
-		this.buf.put(a).put(b).put(0).put(1);
-		this.buf.put(c).put(b).put(0).put(1);
-		this.buf.put(a).put(d).put(0).put(1);
-		
-		this.buf.put(c).put(d).put(0).put(1);
-		this.buf.put(c).put(b).put(0).put(1);
-		this.buf.put(a).put(d).put(0).put(1);
+		ret.put(c).put(d).put(0).put(1);
+		ret.put(c).put(b).put(0).put(1);
+		ret.put(a).put(d).put(0).put(1);
 		
 		ret.flip();
 		
@@ -77,7 +86,8 @@ public class ImageScreen implements Iterable<ImageData>
 		
 		if (info != null)
 		{
-			info.pos = pos;
+			info.pos.x = pos.x;
+			info.pos.y = pos.y;
 			info.requiresUpdating = true;
 			
 		}
