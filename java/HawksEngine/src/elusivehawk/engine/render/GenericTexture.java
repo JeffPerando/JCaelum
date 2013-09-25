@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import elusivehawk.engine.core.EnumRenderMode;
 
 /**
  * 
@@ -24,15 +25,15 @@ public class GenericTexture implements ITexture
 		
 	}
 	
-	public GenericTexture(File file, boolean is3D) throws IOException
+	public GenericTexture(File file, EnumRenderMode mode) throws IOException
 	{
-		this(ImageIO.read(file), is3D);
+		this(ImageIO.read(file), mode);
 		
 	}
 	
-	public GenericTexture(BufferedImage img, boolean is3D)
+	public GenericTexture(BufferedImage img, EnumRenderMode mode)
 	{
-		this(RenderHelper.processImage(img, is3D, true), img.getWidth(), img.getHeight());
+		this(RenderHelper.processImage(img, mode, true), img.getWidth(), img.getHeight());
 		
 	}
 	

@@ -64,6 +64,11 @@ public class Vector3f extends Vector2f
 		return this;
 	}
 	
+	public Vector3f cross(Vector3f vec)
+	{
+		return new Vector3f(this.y * vec.z - vec.y * this.z, this.z * vec.x - vec.z * this.x, this.x * vec.y - vec.x * this.y);
+	}
+	
 	public Vector3f div(Vector3f vec)
 	{
 		super.div(vec);
@@ -75,9 +80,20 @@ public class Vector3f extends Vector2f
 	
 	public Vector3f mul(Vector3f vec)
 	{
-		super.mul(vec);
+		return this.mul(vec.x, vec.y, vec.z);
+	}
+	
+	@Override
+	public Vector3f mul(float f)
+	{
+		return this.mul(f, f, f);
+	}
+	
+	public Vector3f mul(float x, float y, float z)
+	{
+		super.mul(x, y);
 		
-		this.z *= vec.z;
+		this.z *= z;
 		
 		return this;
 	}

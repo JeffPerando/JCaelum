@@ -6,6 +6,7 @@ import java.io.File;
 import java.nio.IntBuffer;
 import javax.imageio.ImageIO;
 import org.lwjgl.BufferUtils;
+import elusivehawk.engine.core.EnumRenderMode;
 import elusivehawk.engine.util.GameLog;
 
 /**
@@ -19,15 +20,15 @@ public class AnimatedTexture implements ITexture
 	private final IntBuffer tex;
 	private final int w, h;
 	
-	public AnimatedTexture(File gif, int width, int height, boolean is3D)
+	public AnimatedTexture(File gif, int width, int height, EnumRenderMode mode)
 	{
-		tex = RenderHelper.processGifFile(gif, is3D);
+		tex = RenderHelper.processGifFile(gif, mode);
 		w = width;
 		h = height;
 		
 	}
 	
-	public AnimatedTexture(File file, boolean is3D, int y)
+	public AnimatedTexture(File file, EnumRenderMode mode, int y)
 	{
 		if (file.getName().endsWith(".gif"))
 		{
@@ -69,7 +70,7 @@ public class AnimatedTexture implements ITexture
 			{
 				BufferedImage sub = img.getSubimage(0, c, img.getWidth(), y);
 				
-				tex.put(RenderHelper.processImage(sub, is3D, false));
+				tex.put(RenderHelper.processImage(sub, mode, false));
 				
 			}
 			

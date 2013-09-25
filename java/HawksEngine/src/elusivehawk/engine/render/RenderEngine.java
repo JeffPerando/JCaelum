@@ -3,6 +3,7 @@ package elusivehawk.engine.render;
 
 import java.util.List;
 import java.util.Map.Entry;
+import elusivehawk.engine.core.EnumRenderMode;
 import elusivehawk.engine.util.GameLog;
 import elusivehawk.engine.util.Tuple;
 
@@ -16,28 +17,30 @@ public final class RenderEngine
 {
 	private RenderEngine(){}//No constructor for you! Come back one year!
 	
-	public static void render(IScene scene)
+	public static boolean render(IScene scene, EnumRenderMode mode)
 	{
-		if (scene != null)
+		if (scene == null || mode == null)
 		{
-			GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-			
-			if (scene.render3D())
-			{
-				do3DRenderPass(scene);
-				RenderHelper.checkForGLError();
-				
-			}
-			
-			if (scene.render2D())
-			{
-				do2DRenderPass(scene);
-				RenderHelper.checkForGLError();
-				
-			}
+			return false;
+		}
+		
+		GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+		
+		if (mode.is3D())
+		{
+			do3DRenderPass(scene);
+			RenderHelper.checkForGLError();
 			
 		}
 		
+		if (mode.is2D())
+		{
+			do2DRenderPass(scene);
+			RenderHelper.checkForGLError();
+			
+		}
+		
+		return true;
 	}
 	
 	public static void do3DRenderPass(IScene scene)

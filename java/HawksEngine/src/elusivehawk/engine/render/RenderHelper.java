@@ -14,6 +14,7 @@ import javax.imageio.stream.ImageInputStream;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.glu.GLU;
+import elusivehawk.engine.core.EnumRenderMode;
 import elusivehawk.engine.util.GameLog;
 import elusivehawk.engine.util.TextParser;
 
@@ -30,8 +31,13 @@ public final class RenderHelper
 	
 	private RenderHelper(){}
 	
-	public static IntBuffer processGifFile(File gif, boolean is3D)
+	public static IntBuffer processGifFile(File gif, EnumRenderMode mode)
 	{
+		if (!mode.isValidImageMode())
+		{
+			return null;
+		}
+		
 		if (gif.getName().endsWith(".gif"))
 		{
 			try
@@ -48,7 +54,7 @@ public final class RenderHelper
 				{
 					BufferedImage img = reader.read(c);
 					
-					ret.put(processImage(img, is3D, false));
+					ret.put(processImage(img, mode, false));
 					
 				}
 				
@@ -66,24 +72,29 @@ public final class RenderHelper
 		
 	}
 	
-	public static int processImage(BufferedImage img, int x, int y, int w, int h, boolean is3D, boolean alpha)
+	public static int processImage(BufferedImage img, int x, int y, int w, int h, EnumRenderMode mode, boolean alpha)
 	{
-		return processImage(img.getSubimage(x, y, w, h), is3D, alpha);
+		return processImage(img.getSubimage(x, y, w, h), mode, alpha);
 	}
 	
-	public static int processImage(BufferedImage img, boolean is3D, boolean alpha)
+	public static int processImage(BufferedImage img, EnumRenderMode mode, boolean alpha)
 	{
-		return processImage(readImage(img, alpha), img.getWidth(), img.getHeight(), is3D, alpha);
+		return processImage(readImage(img, alpha), img.getWidth(), img.getHeight(), mode, alpha);
 	}
 	
-	public static int processImage(ByteBuffer buf, int w, int h, boolean is3D, boolean alpha)
+	public static int processImage(ByteBuffer buf, int w, int h, EnumRenderMode mode, boolean alpha)
 	{
+		if (!mode.isValidImageMode())
+		{
+			return 0;
+		}
+		
 		int glId = GL.glGenTextures();
 		
-		GL.glBindTexture(is3D ? GL.GL_TEXTURE_3D : GL.GL_TEXTURE_2D, glId);
+		GL.glBindTexture(mode.is3D() ? GL.GL_TEXTURE_3D : GL.GL_TEXTURE_2D, glId);
 		GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1);
 		
-		if (is3D)
+		if (mode.is3D())
 		{
 			GL.glTexParameteri(GL.GL_TEXTURE_3D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
 			GL.glTexParameteri(GL.GL_TEXTURE_3D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
@@ -100,7 +111,7 @@ public final class RenderHelper
 			
 		}
 		
-		GL.glBindTexture(is3D ? GL.GL_TEXTURE_3D : GL.GL_TEXTURE_2D, 0);
+		GL.glBindTexture(mode.is3D() ? GL.GL_TEXTURE_3D : GL.GL_TEXTURE_2D, 0);
 		
 		return glId;
 	}

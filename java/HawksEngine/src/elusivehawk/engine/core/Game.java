@@ -42,13 +42,16 @@ public abstract class Game
 	 */
 	protected abstract void update(long delta);
 	
+	/**
+	 * Called before the game is closed out.
+	 */
 	protected abstract void onGameClosed();
 	
 	/**
 	 * 
-	 * @return Whether or not the rendering thread should be activated.
+	 * @return The rendering mode for this game.
 	 */
-	public abstract boolean shouldRender();
+	public abstract EnumRenderMode getRenderMode();
 	
 	protected abstract GameSettings getSettings();
 	
@@ -159,10 +162,8 @@ public abstract class Game
 					
 					this.update(delta);
 					
-					if (this.shouldRender())
+					if (RenderEngine.render(this.getCurrentScene(), this.getRenderMode()))
 					{
-						RenderEngine.render(this.getCurrentScene());
-						
 						Display.sync(targetFPS);
 						Display.update();
 						

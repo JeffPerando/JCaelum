@@ -9,6 +9,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import javax.imageio.ImageIO;
 import org.lwjgl.BufferUtils;
+import elusivehawk.engine.core.EnumRenderMode;
 import elusivehawk.engine.util.GameLog;
 
 /**
@@ -80,11 +81,11 @@ public class PixelGrid implements ITexture
 		
 	}
 	
-	public int toTexture(boolean generate, boolean is3D)
+	public int toTexture(boolean generate, EnumRenderMode mode)
 	{
 		if (this.converted == 0 || generate)
 		{
-			this.converted = RenderHelper.processImage(this.toByteBuffer(), this.xSize, this.ySize, is3D, true);
+			this.converted = RenderHelper.processImage(this.toByteBuffer(), this.xSize, this.ySize, mode, true);
 			
 		}
 		
@@ -101,13 +102,13 @@ public class PixelGrid implements ITexture
 		int imgX = Math.min(x + w, this.xSize);
 		int imgY = Math.min(y + h, this.ySize);
 		
-		BufferedImage ret = new BufferedImage(imgX, imgY, BufferedImage.TYPE_4BYTE_ABGR);
+		BufferedImage ret = new BufferedImage(imgX, imgY, BufferedImage.TYPE_INT_ARGB);
 		
 		for (int xCoord = 0; xCoord < ret.getWidth(); xCoord++)
 		{
 			for (int yCoord = 0; yCoord < ret.getHeight(); yCoord++)
 			{
-				ret.setRGB(xCoord, yCoord, new ColorRGBA(new ColorRGBA(this.getColor(xCoord + x, yCoord + y))).color);
+				ret.setRGB(xCoord, yCoord, new ColorARGB(new ColorRGBA(this.getColor(xCoord + x, yCoord + y))).color);
 				
 			}
 			
@@ -228,6 +229,11 @@ public class PixelGrid implements ITexture
 			
 		}
 		
+	}
+	
+	public boolean writeToFile(File file)
+	{
+		return this.writeToFile(file, "png");
 	}
 	
 	public boolean writeToFile(File file, String format)

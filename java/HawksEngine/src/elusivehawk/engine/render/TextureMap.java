@@ -2,6 +2,7 @@
 package elusivehawk.engine.render;
 
 import java.awt.image.BufferedImage;
+import elusivehawk.engine.core.EnumRenderMode;
 import elusivehawk.engine.math.Vector2f;
 import elusivehawk.engine.math.Vector2i;
 import elusivehawk.engine.util.GameLog;
@@ -17,9 +18,9 @@ public class TextureMap extends GenericTexture
 	protected final Vector2i texSize = new Vector2i();
 	protected final Vector2i texPos = new Vector2i();
 	
-	public TextureMap(BufferedImage img, int w, int h, boolean is3D)
+	public TextureMap(BufferedImage img, int w, int h, EnumRenderMode mode)
 	{
-		super(img, is3D);
+		super(img, mode);
 		
 		if (img.getWidth() % w == 0 && img.getHeight() % h == 0)
 		{

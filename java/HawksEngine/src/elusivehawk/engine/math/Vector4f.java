@@ -75,9 +75,20 @@ public class Vector4f extends Vector3f
 	
 	public Vector4f mul(Vector4f vec)
 	{
-		super.mul(vec);
+		return this.mul(vec.x, vec.y, vec.z, vec.w);
+	}
+	
+	@Override
+	public Vector4f mul(float f)
+	{
+		return this.mul(f, f, f, f);
+	}
+	
+	public Vector4f mul(float x, float y, float z, float w)
+	{
+		super.mul(x, y, z);
 		
-		this.w *= vec.w;
+		this.w *= w;
 		
 		return this;
 	}

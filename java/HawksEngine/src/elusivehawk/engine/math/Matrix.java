@@ -39,6 +39,22 @@ public class Matrix implements IStoreable
 		
 	}
 	
+	public Matrix(float[] info, int x, int y)
+	{
+		this(x, y);
+		
+		for (int xPos = 0; xPos < x; xPos++)
+		{
+			for (int yPos = 0; yPos < y; yPos++)
+			{
+				data[xPos][yPos] = info[x + y * w];
+				
+			}
+			
+		}
+		
+	}
+	
 	public Matrix(FloatBuffer buf, int x, int y)
 	{
 		this(x, y);

@@ -60,8 +60,18 @@ public class Vector2f extends Vectorf
 	
 	public Vector2f mul(Vector2f vec)
 	{
-		this.x *= vec.x;
-		this.y *= vec.y;
+		return this.mul(vec.x, vec.y);
+	}
+	
+	public Vector2f mul(float f)
+	{
+		return this.mul(f, f);
+	}
+	
+	public Vector2f mul(float x, float y)
+	{
+		this.x *= x;
+		this.y *= y;
 		
 		return this;
 	}
