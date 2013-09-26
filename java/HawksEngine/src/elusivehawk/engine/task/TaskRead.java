@@ -33,8 +33,8 @@ public class TaskRead extends Task<List<String>>
 	@Override
 	protected List<String> tryTask()
 	{
-		List<String> ret = TextParser.read(txt);
-		this.read = ret != null;
+		List<String> ret = TextParser.read(this.txt);
+		this.read = !ret.isEmpty();
 		
 		return ret;
 	}

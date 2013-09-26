@@ -16,7 +16,7 @@ public abstract class ThreadTimed extends Thread
 		
 	}
 	
-	public abstract void updateThread();
+	public abstract void update();
 	
 	public abstract int getMinimumDelta();
 	

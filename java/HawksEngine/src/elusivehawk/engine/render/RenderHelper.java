@@ -278,6 +278,7 @@ public final class RenderHelper
 		IntBuffer ret = BufferUtils.createIntBuffer(count);
 		GL.glGenBuffers(ret);
 		ret.rewind(); //Just a safety precaution.
+		
 		return ret;
 	}
 	

@@ -3,6 +3,7 @@ package elusivehawk.engine.core;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
+import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.opengl.Display;
 import elusivehawk.engine.render.Color;
@@ -13,6 +14,7 @@ import elusivehawk.engine.render.RenderEngine;
 import elusivehawk.engine.render.RenderHelper;
 import elusivehawk.engine.util.GameLog;
 import elusivehawk.engine.util.TextParser;
+import elusivehawk.engine.util.Timer;
 
 /**
  * 
@@ -31,8 +33,10 @@ public abstract class Game
 	
 	/**
 	 * Use this to set up everything you need before the game loop begins.
+	 * 
+	 * @return False to stop the game.
 	 */
-	protected abstract void initiate();
+	protected abstract boolean initiate();
 	
 	/**
 	 * 
@@ -74,16 +78,18 @@ public abstract class Game
 		return false;
 	}
 	
-	public void handleError(Throwable e)
+	public void handleException(Throwable e)
 	{
 		GameLog.error(e);
 		
 	}
 	
+	//===============================END OPTIONAL GAME METHODS===============================
+	
 	/**
 	 * Call this when you're ready for the game loop to be handled automatically.
 	 */
-	protected void start()
+	protected final void start()
 	{
 		if (currentGame != null)
 		{
@@ -93,27 +99,33 @@ public abstract class Game
 		currentGame = this;
 		this.running = true;
 		
-		try
+		if (!this.initiate())
 		{
-			this.initiate();
+			currentGame = null;
+			this.running = false;
 			
-			GameSettings settings = this.getSettings();
-			
-			if (System.getProperty("org.lwjgl.librarypath") == null)
+			return;
+		}
+		
+		GameSettings settings = this.getSettings();
+		
+		if (System.getProperty("org.lwjgl.librarypath") == null)
+		{
+			if (settings.lwjglPath == null)
 			{
-				if (settings.lwjglPath == null)
-				{
-					GameLog.warn("LWJGL path is set to null! What are you thinking?!");
-					
-					settings.lwjglPath = determineLWJGLPath();
-					
-				}
+				GameLog.warn("LWJGL path is set to null! What are you thinking?!");
 				
-				System.setProperty("org.lwjgl.librarypath", settings.lwjglPath);
+				settings.lwjglPath = determineLWJGLPath();
 				
 			}
 			
-			if (!Display.isCreated())
+			System.setProperty("org.lwjgl.librarypath", settings.lwjglPath);
+			
+		}
+		
+		if (!Display.isCreated())
+		{
+			try
 			{
 				Display.setTitle(settings.title);
 				Display.setIcon(settings.icons);
@@ -132,40 +144,113 @@ public abstract class Game
 				GL.glClearColor(bg.getColorFloat(EnumColor.RED), bg.getColorFloat(EnumColor.GREEN), bg.getColorFloat(EnumColor.BLUE), bg.getColorFloat(EnumColor.ALPHA));
 				
 			}
-			
-			GameLog.info("Beginning game loop...");
-			
-			long lastTime = Sys.getTime(), delta = 0;
-			int targetFPS = settings.targetFPS;
-			
-			while (!Display.isCloseRequested() && this.isRunning())
+			catch (LWJGLException e)
 			{
-				delta = Sys.getTime() - lastTime;
+				this.handleException(e);
 				
-				if (delta >= this.getDelayBetweenUpdates())
+			}
+			
+		}
+		
+		GameLog.info("Beginning game loop...");
+		
+		long lastTime = Sys.getTime(), delta = 0, fallback = settings.fallbackDelay;
+		int targetFPS = settings.targetFPS, targetUpdates = settings.targetUpdates;
+		int updates = 0;
+		Timer timer = new Timer();
+		
+		if (targetUpdates <= 0)
+		{
+			throw new RuntimeException("Invalid target update count!");
+			
+		}
+		
+		while (!Display.isCloseRequested() && this.isRunning())
+		{
+			delta = Sys.getTime() - lastTime;
+			
+			if (delta >= this.getDelayBetweenUpdates())
+			{
+				lastTime += delta;
+				updates++;
+				
+				if (this.updateSettings())
 				{
-					lastTime += delta;
+					settings = this.getSettings();
 					
-					if (this.updateSettings())
+					try
 					{
-						settings = this.getSettings();
-						
-						Display.setTitle(settings.title != null ? settings.title : "Caelum Engine Game (Now with a streamlined Game class!)");
 						Display.setDisplayMode(settings.mode);
 						Display.setFullscreen(settings.fullscreen);
 						Display.setVSyncEnabled(settings.vsync);
 						Display.setDisplayConfiguration(settings.gamma, settings.brightness, settings.constrast);
 						
-						targetFPS = settings.targetFPS;
+					}
+					catch (LWJGLException e)
+					{
+						this.handleException(e);
 						
 					}
 					
+					targetFPS = settings.targetFPS;
+					targetUpdates = settings.targetUpdates;
+					
+					if (targetUpdates <= 0)
+					{
+						this.handleException(new RuntimeException("Invalid target update count!"));
+						
+					}
+					
+				}
+				
+				timer.start();
+				
+				try
+				{
 					this.update(delta);
 					
-					if (RenderEngine.render(this.getCurrentScene(), this.getRenderMode()))
+				}
+				catch (Throwable e)
+				{
+					this.handleException(e);
+					
+				}
+				
+				timer.stop();
+				
+				if (timer.report() >= fallback)
+				{
+					try
 					{
-						Display.sync(targetFPS);
-						Display.update();
+						Thread.sleep(1L);
+						
+					}
+					catch (InterruptedException e)
+					{
+						this.handleException(e);
+						
+					}
+					
+					continue;
+				}
+				
+				if (RenderEngine.render(this.getCurrentScene(), this.getRenderMode()))
+				{
+					Display.sync(targetFPS);
+					Display.update();
+					
+				}
+				
+				if (updates >= targetUpdates)
+				{
+					try
+					{
+						Thread.sleep(1L);
+						
+					}
+					catch (InterruptedException e)
+					{
+						this.handleException(e);
 						
 					}
 					
@@ -173,20 +258,15 @@ public abstract class Game
 				
 			}
 			
-			this.onGameClosed();
-			
-			RenderHelper.deletePrograms();
-			
-			Display.destroy();
-			
-			System.exit(0);
-			
 		}
-		catch (Exception e)
-		{
-			this.handleError(e);
-			
-		}
+		
+		this.onGameClosed();
+		
+		RenderHelper.deletePrograms();
+		
+		Display.destroy();
+		
+		System.exit(0);
 		
 	}
 	

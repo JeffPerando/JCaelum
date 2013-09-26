@@ -6,7 +6,7 @@ import elusivehawk.engine.math.Vector3f;
 
 /**
  * 
- * Implement this to all entities in your game's world.
+ * Implement this to all entities in your game world.
  * 
  * @author Elusivehawk
  */

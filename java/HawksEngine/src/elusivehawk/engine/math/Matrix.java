@@ -47,7 +47,7 @@ public class Matrix implements IStoreable
 		{
 			for (int yPos = 0; yPos < y; yPos++)
 			{
-				data[xPos][yPos] = info[x + y * w];
+				data[xPos][yPos] = info[xPos + yPos * w];
 				
 			}
 			

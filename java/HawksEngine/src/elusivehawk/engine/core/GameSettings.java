@@ -16,6 +16,8 @@ public class GameSettings
 {
 	public ByteBuffer[] icons = null;
 	public int targetFPS = 0;
+	public int targetUpdates = 60;
+	public long fallbackDelay = 1000L;
 	public String lwjglPath = Game.determineLWJGLPath();
 	
 	public String title = "Caelum Engine Game (Now with a streamlined Game class!)";

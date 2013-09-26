@@ -17,8 +17,4 @@ public interface IScene
 	
 	public ImageScreen getImages();
 	
-	public boolean render2D();
-	
-	public boolean render3D();
-	
 }

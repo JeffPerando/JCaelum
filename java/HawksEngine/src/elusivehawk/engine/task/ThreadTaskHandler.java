@@ -3,6 +3,7 @@ package elusivehawk.engine.task;
 
 import java.util.ArrayList;
 import java.util.List;
+import elusivehawk.engine.util.ThreadStoppable;
 
 /**
  * 
@@ -10,12 +11,12 @@ import java.util.List;
  * 
  * @author Elusivehawk
  */
-public final class ThreadTaskHandler extends Thread
+public final class ThreadTaskHandler extends ThreadStoppable
 {
 	private List<Task<?>> tasks = new ArrayList<Task<?>>();
 	
 	@Override
-	public void run()
+	public void update()
 	{
 		for (Task<?> t : this.tasks)
 		{

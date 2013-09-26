@@ -79,7 +79,7 @@ public class ParticleScene
 			
 			p.updateParticle();
 			
-			if (p.remove())
+			if (p.flaggedForRemoval())
 			{
 				this.particles.remove(c);
 				

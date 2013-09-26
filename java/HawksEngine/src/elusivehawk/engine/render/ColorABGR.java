@@ -43,7 +43,7 @@ public class ColorABGR extends Color
 	
 	public ColorABGR(byte b, byte g, byte r)
 	{
-		this(0, b, g, r);
+		this((byte)0, b, g, r);
 		
 	}
 	

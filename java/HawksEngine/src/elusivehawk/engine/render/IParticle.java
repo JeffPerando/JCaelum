@@ -19,6 +19,6 @@ public interface IParticle
 	
 	public Color getColor();
 	
-	public boolean remove();
+	public boolean flaggedForRemoval();
 	
 }
