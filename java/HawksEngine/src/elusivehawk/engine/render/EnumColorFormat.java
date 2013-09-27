@@ -21,11 +21,11 @@ public enum EnumColorFormat
 	{
 		colors = f;
 		
-		offsets = new int[4];
+		offsets = new int[f.length];
 		
 		boolean flag = false;
 		
-		for (int c = 0; c < 4; c++)
+		for (int c = 0; c < f.length; c++)
 		{
 			offsets[colors[c].ordinal()] = 24 - (c * 8);
 			
