@@ -108,7 +108,7 @@ public class PixelGrid implements ITexture
 		{
 			for (int yCoord = 0; yCoord < ret.getHeight(); yCoord++)
 			{
-				ret.setRGB(xCoord, yCoord, EnumColorFormat.ARGB.convert(new Color(this.getColor(xCoord + x, yCoord + y))).color);
+				ret.setRGB(xCoord, yCoord, EnumColorFormat.ARGB.convert(new Color(EnumColorFormat.RGBA, this.getColor(xCoord + x, yCoord + y))).color);
 				
 			}
 			

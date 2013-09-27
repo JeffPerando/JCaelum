@@ -7,7 +7,7 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.opengl.Display;
 import elusivehawk.engine.render.Color;
-import elusivehawk.engine.render.EnumColor;
+import elusivehawk.engine.render.EnumColorFilter;
 import elusivehawk.engine.render.GL;
 import elusivehawk.engine.render.GLProgram;
 import elusivehawk.engine.render.IScene;
@@ -134,7 +134,7 @@ public abstract class Game
 				Display.setTitle(settings.title);
 				Display.setIcon(settings.icons);
 				Color bg = settings.bg;
-				Display.setInitialBackground(bg.getColorFloat(EnumColor.RED), bg.getColorFloat(EnumColor.GREEN), bg.getColorFloat(EnumColor.BLUE));
+				Display.setInitialBackground(bg.getColorFloat(EnumColorFilter.RED), bg.getColorFloat(EnumColorFilter.GREEN), bg.getColorFloat(EnumColorFilter.BLUE));
 				Display.setDisplayMode(settings.mode);
 				Display.setFullscreen(settings.fullscreen);
 				Display.setVSyncEnabled(settings.vsync);
@@ -145,7 +145,7 @@ public abstract class Game
 				Display.setDisplayConfiguration(settings.gamma, settings.brightness, settings.constrast);
 				
 				GL.glViewport(0, 0, settings.mode.getWidth(), settings.mode.getHeight());
-				GL.glClearColor(bg.getColorFloat(EnumColor.RED), bg.getColorFloat(EnumColor.GREEN), bg.getColorFloat(EnumColor.BLUE), bg.getColorFloat(EnumColor.ALPHA));
+				GL.glClearColor(bg.getColorFloat(EnumColorFilter.RED), bg.getColorFloat(EnumColorFilter.GREEN), bg.getColorFloat(EnumColorFilter.BLUE), bg.getColorFloat(EnumColorFilter.ALPHA));
 				
 			}
 			catch (LWJGLException e)
@@ -229,11 +229,7 @@ public abstract class Game
 						Thread.sleep(1L);
 						
 					}
-					catch (InterruptedException e)
-					{
-						this.handleException(e);
-						
-					}
+					catch (InterruptedException e){}
 					
 					continue;
 				}
@@ -252,11 +248,7 @@ public abstract class Game
 						Thread.sleep(1L);
 						
 					}
-					catch (InterruptedException e)
-					{
-						this.handleException(e);
-						
-					}
+					catch (InterruptedException e){}
 					
 				}
 				

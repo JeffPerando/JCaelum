@@ -52,11 +52,11 @@ public class ImageScreen implements Iterable<ImageData>
 		
 		int position = this.data.size();
 		
-		info.pos.x = xPos;
-		info.pos.y = yPos;
+		info.pos.one = xPos;
+		info.pos.two = yPos;
 		
-		int x = info.pos.x;
-		int y = info.pos.y;
+		int x = info.pos.one;
+		int y = info.pos.two;
 		int w = info.width;
 		int h = info.height;
 		
@@ -86,14 +86,14 @@ public class ImageScreen implements Iterable<ImageData>
 		
 		IntBuffer ind = BufferUtils.createIntBuffer(6);
 		
-		int indiceOff = position * 6;
+		int indiceOff = position * 4;
 		
 		ind.put(indiceOff).put(indiceOff + 1).put(indiceOff + 2);
 		ind.put(indiceOff + 1).put(indiceOff + 2).put(indiceOff + 3);
 		
 		ind.flip();
 		
-		this.indiceBuf.position(indiceOff);
+		this.indiceBuf.position(position * 6);
 		this.indiceBuf.put(ind);
 		
 		this.data.add(info);
@@ -101,6 +101,7 @@ public class ImageScreen implements Iterable<ImageData>
 		return position;
 	}
 	
+	@Deprecated
 	public void removeImg(int index)
 	{
 		

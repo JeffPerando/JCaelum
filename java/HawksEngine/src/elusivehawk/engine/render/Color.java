@@ -18,23 +18,9 @@ public class Color implements IStoreable
 	public int color = 0;
 	protected final EnumColorFormat format;
 	
-	public Color()
-	{
-		this(EnumColorFormat.RGBA);
-		
-	}
-	
 	public Color(EnumColorFormat f)
 	{
 		format = f;
-		
-	}
-	
-	public Color(int col)
-	{
-		this();
-		
-		color = col;
 		
 	}
 	
@@ -48,7 +34,7 @@ public class Color implements IStoreable
 	
 	public Color(java.awt.Color col)
 	{
-		this(col.getRGB());
+		this(EnumColorFormat.RGBA, col.getRGB());
 		
 	}
 	
@@ -86,7 +72,7 @@ public class Color implements IStoreable
 	{
 		this(f);
 		
-		for (EnumColor col : f.colors)
+		for (EnumColorFilter col : f.colors)
 		{
 			color = (color << f.getColorOffset(col)) | buf.get();
 			
@@ -97,7 +83,7 @@ public class Color implements IStoreable
 	@Override
 	public boolean store(ByteBuffer buf)
 	{
-		for (EnumColor col : this.format.colors)
+		for (EnumColorFilter col : this.format.colors)
 		{
 			buf.put(this.getColor(col));
 			
@@ -109,7 +95,7 @@ public class Color implements IStoreable
 	@Override
 	public boolean store(FloatBuffer buf)
 	{
-		for (EnumColor col : this.format.colors)
+		for (EnumColorFilter col : this.format.colors)
 		{
 			buf.put(this.getColorFloat(col));
 			
@@ -149,12 +135,12 @@ public class Color implements IStoreable
 		return true;
 	}
 	
-	public byte getColor(EnumColor col)
+	public byte getColor(EnumColorFilter col)
 	{
 		return (byte)((this.getColor() >> this.format.getColorOffset(col)) & 0xFF);
 	}
 	
-	public float getColorFloat(EnumColor col)
+	public float getColorFloat(EnumColorFilter col)
 	{
 		return this.getColor(col) / (byte)255;
 	}

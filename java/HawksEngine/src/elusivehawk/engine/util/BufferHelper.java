@@ -11,9 +11,8 @@ import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.BufferUtils;
+import elusivehawk.engine.math.IVector;
 import elusivehawk.engine.math.Matrix;
-import elusivehawk.engine.math.Vectorf;
-import elusivehawk.engine.math.Vectori;
 import elusivehawk.engine.render.Color;
 
 /**
@@ -395,11 +394,11 @@ public final class BufferHelper
 		return ret;
 	}
 	
-	public static FloatBuffer makeFloatBufferFromVec(Vectorf... data)
+	public static FloatBuffer makeFloatBufferFromVec(IVector... data)
 	{
 		List<Float> list = new ArrayList<Float>();
 		
-		for (Vectorf vec : data)
+		for (IVector vec : data)
 		{
 			for (float f : vec.array())
 			{
@@ -412,11 +411,11 @@ public final class BufferHelper
 		return makeFloatBuffer(list);
 	}
 	
-	public static FloatBuffer makeFloatBufferFromVec(List<? extends Vectorf> data)
+	public static FloatBuffer makeFloatBufferFromVec(List<? extends IVector> data)
 	{
 		List<Float> list = new ArrayList<Float>();
 		
-		for (Vectorf vec : data)
+		for (IVector vec : data)
 		{
 			for (float f : vec.array())
 			{
@@ -427,40 +426,6 @@ public final class BufferHelper
 		}
 		
 		return makeFloatBuffer(list);
-	}
-	
-	public static IntBuffer makeIntBufferFromVec(Vectori... data)
-	{
-		List<Integer> list = new ArrayList<Integer>();
-		
-		for (Vectori vec : data)
-		{
-			for (int i : vec.array())
-			{
-				list.add(i);
-				
-			}
-			
-		}
-		
-		return makeIntBuffer(list);
-	}
-	
-	public static IntBuffer makeIntBufferFromVec(List<? extends Vectori> data)
-	{
-		List<Integer> list = new ArrayList<Integer>();
-		
-		for (Vectori vec : data)
-		{
-			for (int i : vec.array())
-			{
-				list.add(i);
-				
-			}
-			
-		}
-		
-		return makeIntBuffer(list);
 	}
 	
 }

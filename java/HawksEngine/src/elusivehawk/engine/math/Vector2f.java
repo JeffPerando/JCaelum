@@ -12,7 +12,7 @@ import org.lwjgl.BufferUtils;
  * 
  * @author Elusivehawk
  */
-public class Vector2f extends Vectorf
+public class Vector2f implements IVector
 {
 	public float x, y;
 	
@@ -125,6 +125,28 @@ public class Vector2f extends Vectorf
 	public float[] array()
 	{
 		return new float[]{this.x, this.y};
+	}
+	
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (!(obj instanceof IVector)) return false;
+		
+		IVector vec = (IVector)obj;
+		float[] first = this.array();
+		float[] sec = vec.array();
+		
+		if (first.length != sec.length) return false;
+		
+		for (int c = 0; c < sec.length; c++)
+		{
+			if (first[c] != sec[c])
+			{
+				return false;
+			}
+		}
+		
+		return true;
 	}
 	
 }

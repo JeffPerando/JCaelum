@@ -19,11 +19,7 @@ void main()
 	frag_texcoord = in_texcoord;
 	frag_color = in_color;
 	
-	mat4 scl = scale();
-	mat4 rot = rotate();
-	mat4 trans = trans();
-	
-	mat4 fin = trans * rot * scl * in_position;
+	mat4 fin = trans() * rotate() * scale() * in_position;
 	
 	gl_Position = proj * cam * fin;
 	
@@ -53,7 +49,6 @@ mat4 rotate()
 				bd * e + a * f, -bd * f + a * e, -b * c, 0,
 				-ad * e + b * f, ad * f + b * e, a * c, 0,
 				0, 0, 0, 1);
-	
 }
 
 mat4 trans()

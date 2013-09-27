@@ -13,11 +13,11 @@ import elusivehawk.engine.core.EnumRenderMode;
  * 
  * @author Elusivehawk
  */
-public class GenericTexture implements ITexture
+public class StaticTexture implements ITexture
 {
 	protected final int tex, w, h;
 	
-	public GenericTexture(int texture, int width, int height)
+	public StaticTexture(int texture, int width, int height)
 	{
 		tex = texture;
 		w = width;
@@ -25,13 +25,13 @@ public class GenericTexture implements ITexture
 		
 	}
 	
-	public GenericTexture(File file, EnumRenderMode mode) throws IOException
+	public StaticTexture(File file, EnumRenderMode mode) throws IOException
 	{
 		this(ImageIO.read(file), mode);
 		
 	}
 	
-	public GenericTexture(BufferedImage img, EnumRenderMode mode)
+	public StaticTexture(BufferedImage img, EnumRenderMode mode)
 	{
 		this(RenderHelper.processImage(img, mode), img.getWidth(), img.getHeight());
 		

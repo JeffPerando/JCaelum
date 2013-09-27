@@ -4,8 +4,8 @@ package elusivehawk.engine.render;
 import java.awt.image.BufferedImage;
 import elusivehawk.engine.core.EnumRenderMode;
 import elusivehawk.engine.math.Vector2f;
-import elusivehawk.engine.math.Vector2i;
 import elusivehawk.engine.util.GameLog;
+import elusivehawk.engine.util.Tuple;
 
 /**
  * 
@@ -13,10 +13,10 @@ import elusivehawk.engine.util.GameLog;
  * 
  * @author Elusivehawk
  */
-public class TextureMap extends GenericTexture
+public class TextureMap extends StaticTexture
 {
-	protected final Vector2i texSize = new Vector2i();
-	protected final Vector2i texPos = new Vector2i();
+	protected final Tuple<Integer, Integer> texSize = new Tuple<Integer, Integer>(0, 0);
+	protected final Tuple<Integer, Integer> texPos = new Tuple<Integer, Integer>(0, 0);
 	
 	public TextureMap(BufferedImage img, int w, int h, EnumRenderMode mode)
 	{
@@ -24,8 +24,8 @@ public class TextureMap extends GenericTexture
 		
 		if (img.getWidth() % w == 0 && img.getHeight() % h == 0)
 		{
-			texSize.x = img.getWidth() / w;
-			texSize.y = img.getHeight() / h;
+			texSize.one = img.getWidth() / w;
+			texSize.two = img.getHeight() / h;
 			
 		}
 		else
@@ -36,7 +36,7 @@ public class TextureMap extends GenericTexture
 		
 	}
 	
-	public Vector2i getTextureSize()
+	public Tuple<Integer, Integer> getTextureSize()
 	{
 		return this.texSize;
 	}
@@ -47,26 +47,26 @@ public class TextureMap extends GenericTexture
 		
 		if (xEnd)
 		{
-			this.texPos.x += (this.texSize.x - 1);
+			this.texPos.one += (this.texSize.one - 1);
 			
 		}
 		
 		if (yEnd)
 		{
-			this.texPos.y += (this.texSize.y - 1);
+			this.texPos.one += (this.texSize.one - 1);
 			
 		}
 		
-		ret.x = this.texPos.x / (this.w * this.texPos.x);
-		ret.y = this.texPos.y / (this.h * this.texPos.y);
+		ret.x = this.texPos.one / (this.w * this.texPos.one);
+		ret.y = this.texPos.two / (this.h * this.texPos.two);
 		
 		return ret;
 	}
 	
 	public void setCurrentTexture(int x, int y)
 	{
-		this.texPos.x = x;
-		this.texPos.y = y;
+		this.texPos.one = x;
+		this.texPos.two = y;
 		
 	}
 	

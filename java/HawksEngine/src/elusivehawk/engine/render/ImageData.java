@@ -1,7 +1,7 @@
 
 package elusivehawk.engine.render;
 
-import elusivehawk.engine.math.Vector2i;
+import elusivehawk.engine.util.Tuple;
 
 /**
  * 
@@ -11,7 +11,7 @@ import elusivehawk.engine.math.Vector2i;
  */
 public class ImageData
 {
-	public final Vector2i pos = new Vector2i();
+	public final Tuple<Integer, Integer> pos = new Tuple<Integer, Integer>(0, 0);
 	public final int width, height;
 	public final IExtraImageData mgr;
 	

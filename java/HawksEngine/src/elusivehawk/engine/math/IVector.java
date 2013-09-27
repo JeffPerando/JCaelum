@@ -16,4 +16,6 @@ public interface IVector extends IStoreable
 	
 	public Buffer asBuffer();
 	
+	public float[] array();
+	
 }

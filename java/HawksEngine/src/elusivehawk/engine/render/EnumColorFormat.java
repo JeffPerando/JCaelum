@@ -12,12 +12,12 @@ import org.lwjgl.BufferUtils;
  */
 public enum EnumColorFormat
 {
-	RGBA(EnumColor.RED, EnumColor.GREEN, EnumColor.BLUE, EnumColor.ALPHA),
-	ARGB(EnumColor.ALPHA, EnumColor.RED, EnumColor.GREEN, EnumColor.BLUE),
-	ABGR(EnumColor.ALPHA, EnumColor.BLUE, EnumColor.GREEN, EnumColor.RED),
-	BGRA(EnumColor.BLUE, EnumColor.GREEN, EnumColor.RED, EnumColor.ALPHA);
+	RGBA(EnumColorFilter.RED, EnumColorFilter.GREEN, EnumColorFilter.BLUE, EnumColorFilter.ALPHA),
+	ARGB(EnumColorFilter.ALPHA, EnumColorFilter.RED, EnumColorFilter.GREEN, EnumColorFilter.BLUE),
+	ABGR(EnumColorFilter.ALPHA, EnumColorFilter.BLUE, EnumColorFilter.GREEN, EnumColorFilter.RED),
+	BGRA(EnumColorFilter.BLUE, EnumColorFilter.GREEN, EnumColorFilter.RED, EnumColorFilter.ALPHA);
 	
-	EnumColorFormat(EnumColor... f)
+	EnumColorFormat(EnumColorFilter... f)
 	{
 		colors = f;
 		
@@ -29,7 +29,7 @@ public enum EnumColorFormat
 		{
 			offsets[colors[c].ordinal()] = 24 - (c * 8);
 			
-			if (colors[c] == EnumColor.ALPHA)
+			if (colors[c] == EnumColorFilter.ALPHA)
 			{
 				flag = true;
 				
@@ -41,11 +41,11 @@ public enum EnumColorFormat
 		
 	}
 	
-	public final EnumColor[] colors;
+	public final EnumColorFilter[] colors;
 	private int[] offsets;
 	private final boolean alpha;
 	
-	public int getColorOffset(EnumColor col)
+	public int getColorOffset(EnumColorFilter col)
 	{
 		return this.offsets[col.ordinal()];
 	}
@@ -59,7 +59,7 @@ public enum EnumColorFormat
 		
 		ByteBuffer buf = BufferUtils.createByteBuffer(this.colors.length);
 		
-		for (EnumColor col : this.colors)
+		for (EnumColorFilter col : this.colors)
 		{
 			buf.put(old.getColor(col));
 			

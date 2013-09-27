@@ -93,10 +93,10 @@ public abstract class Model
 				}
 				else
 				{
-					temp.add(col.getColorFloat(EnumColor.RED));
-					temp.add(col.getColorFloat(EnumColor.GREEN));
-					temp.add(col.getColorFloat(EnumColor.BLUE));
-					temp.add(col.getColorFloat(EnumColor.ALPHA));
+					temp.add(col.getColorFloat(EnumColorFilter.RED));
+					temp.add(col.getColorFloat(EnumColorFilter.GREEN));
+					temp.add(col.getColorFloat(EnumColorFilter.BLUE));
+					temp.add(col.getColorFloat(EnumColorFilter.ALPHA));
 					
 				}
 				
