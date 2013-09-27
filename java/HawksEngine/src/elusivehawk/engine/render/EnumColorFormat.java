@@ -52,6 +52,11 @@ public enum EnumColorFormat
 	
 	public Color convert(Color old)
 	{
+		if (old.getFormat().ordinal() == this.ordinal())
+		{
+			return old;
+		}
+		
 		ByteBuffer buf = BufferUtils.createByteBuffer(this.colors.length);
 		
 		for (EnumColor col : this.colors)
