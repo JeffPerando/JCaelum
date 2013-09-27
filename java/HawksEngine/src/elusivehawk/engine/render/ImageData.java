@@ -1,7 +1,7 @@
 
 package elusivehawk.engine.render;
 
-import elusivehawk.engine.math.Vector2f;
+import elusivehawk.engine.math.Vector2i;
 
 /**
  * 
@@ -11,16 +11,27 @@ import elusivehawk.engine.math.Vector2f;
  */
 public class ImageData
 {
-	public boolean requiresUpdating = false;
-	public final Vector2f pos = new Vector2f();
+	public final Vector2i pos = new Vector2i();
 	public final int width, height;
-	public final ITexture tex;
+	public final IExtraImageData mgr;
 	
 	public ImageData(ITexture texture, int w, int h)
 	{
-		tex = texture;
+		this(w, h, new BasicImageData(texture));
+		
+	}
+	
+	public ImageData(ITexture texture, Color color, int w, int h)
+	{
+		this(w, h, new BasicImageData(texture, color));
+		
+	}
+	
+	public ImageData(int w, int h, IExtraImageData manager)
+	{
 		width = w;
 		height = h;
+		mgr = manager;
 		
 	}
 	

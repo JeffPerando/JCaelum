@@ -29,7 +29,6 @@ public abstract class Model
 	
 	public final FloatBuffer fin;
 	public final IntBuffer indices;
-	public final GLProgram p;
 	
 	public final int polyCount;
 	public final VertexBufferObject finBuf, indiceBuf;
@@ -38,7 +37,7 @@ public abstract class Model
 	private List<Color> color = new ArrayList<Color>();
 	private List<Tuple<Float, Float>> texOffs = new ArrayList<Tuple<Float, Float>>();
 	private int glMode = Integer.MIN_VALUE;
-	private int vtxCount = 0, oldVtxCount = 0;
+	private int pointCount = 0, oldPointCount = 0;
 	private Color globalColor = null;
 	private HashMap<Integer, Tuple<Integer, Integer>> arrays = new HashMap<Integer, Tuple<Integer, Integer>>();
 	
@@ -130,24 +129,18 @@ public abstract class Model
 		indiceBuf = new VertexBufferObject(vbos, GL.GL_ELEMENT_ARRAY_BUFFER);
 		indiceBuf.loadData(indices, GL.GL_STATIC_DRAW);
 		
-		polys = null;
-		color = null;
-		texOffs = null;
-		
-		polyCount = vtxCount;
-		
-		p = new GLProgram();
-		
-		p.attachModel(this);
-		
-		p.finish();
-		
 		if (vb != 0)
 		{
 			GameLog.warn("Rebinding vertex array");
 			GL.glBindVertexArray(vb);
 			
 		}
+		
+		polys = null;
+		color = null;
+		texOffs = null;
+		
+		polyCount = pointCount;
 		
 	}
 	
@@ -174,7 +167,7 @@ public abstract class Model
 		}
 		
 		this.glMode = gl;
-		this.oldVtxCount = this.polys.size();
+		this.oldPointCount = this.polys.size();
 		
 	}
 	
@@ -187,7 +180,7 @@ public abstract class Model
 		}
 		
 		int points = RenderHelper.getPointCount(this.glMode);
-		int vectors = (this.polys.size() - this.oldVtxCount);
+		int vectors = (this.polys.size() - this.oldPointCount);
 		
 		if (vectors % points != 0)
 		{
@@ -195,7 +188,7 @@ public abstract class Model
 			
 		}
 		
-		this.vtxCount += vectors / points;
+		this.pointCount += vectors;
 		
 		while (this.color.size() < this.polys.size())
 		{
@@ -209,7 +202,7 @@ public abstract class Model
 			
 		}
 		
-		Tuple<Integer, Integer> t = new Tuple<Integer, Integer>(this.oldVtxCount, this.vtxCount);
+		Tuple<Integer, Integer> t = new Tuple<Integer, Integer>(this.oldPointCount, this.pointCount);
 		
 		this.arrays.put(this.glMode, t);
 		

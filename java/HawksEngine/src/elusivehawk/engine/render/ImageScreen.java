@@ -2,12 +2,12 @@
 package elusivehawk.engine.render;
 
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.Display;
-import elusivehawk.engine.math.Vector2f;
 
 /**
  * 
@@ -18,8 +18,9 @@ import elusivehawk.engine.math.Vector2f;
 public class ImageScreen implements Iterable<ImageData>
 {
 	public final GLProgram p;
-	public final VertexBufferObject vbo;
+	public final VertexBufferObject vbo, indices;
 	private final FloatBuffer buf;
+	private final IntBuffer indiceBuf;
 	private final List<ImageData> data = new ArrayList<ImageData>();
 	
 	public ImageScreen(int maxImgs)
@@ -31,67 +32,70 @@ public class ImageScreen implements Iterable<ImageData>
 	public ImageScreen(GLProgram program, int maxImgs)
 	{
 		p = program;
-		buf = BufferUtils.createFloatBuffer(maxImgs * 24);
+		
+		buf = BufferUtils.createFloatBuffer(maxImgs * 32);
+		indiceBuf = BufferUtils.createIntBuffer(maxImgs * 6);
 		
 		vbo = new VertexBufferObject();
+		indices = new VertexBufferObject(GL.GL_ELEMENT_ARRAY_BUFFER);
 		
-		p.attachVBOs(vbo);
+		p.attachVBOs(vbo, indices);
 		
 	}
 	
-	public int addImage(ITexture tex, int x, int y, int w, int h)
+	public int addImage(ImageData info)
 	{
 		if (this.buf.limit() - this.buf.capacity() == 0)
 		{
 			throw new ArrayIndexOutOfBoundsException("Image limit hit!");
 		}
 		
-		this.buf.put(this.generateImgBuffer(x, y, w, h));
+		int position = this.data.size();
 		
-		ImageData info = new ImageData(tex, w, h);
+		int x = info.pos.x;
+		int y = info.pos.y;
+		int w = info.width;
+		int h = info.height;
 		
-		info.pos.x = x;
-		info.pos.y = y;
-		
-		this.data.add(info);
-		
-		return this.data.size() - 1;
-	}
-	
-	private FloatBuffer generateImgBuffer(int x, int y, int w, int h)
-	{
-		FloatBuffer ret = BufferUtils.createFloatBuffer(24);
+		FloatBuffer img = BufferUtils.createFloatBuffer(32);
 		
 		float a = x / Display.getWidth();
 		float b = y / Display.getHeight();
 		float c = (x + w) / Display.getWidth();
 		float d = (y + h) / Display.getHeight();
 		
-		ret.put(a).put(b).put(0).put(1);
-		ret.put(c).put(b).put(0).put(1);
-		ret.put(a).put(d).put(0).put(1);
+		img.put(a).put(b).put(0).put(1f);
+		info.mgr.getColor(0).store(img);
 		
-		ret.put(c).put(d).put(0).put(1);
-		ret.put(c).put(b).put(0).put(1);
-		ret.put(a).put(d).put(0).put(1);
+		img.put(c).put(b).put(0).put(1f);
+		info.mgr.getColor(1).store(img);
 		
-		ret.flip();
+		img.put(a).put(d).put(0).put(1f);
+		info.mgr.getColor(2).store(img);
 		
-		return ret;
-	}
-	
-	public void moveImg(int index, Vector2f pos)
-	{
-		ImageData info = this.data.get(index);
+		img.put(c).put(d).put(0).put(1f);
+		info.mgr.getColor(3).store(img);
 		
-		if (info != null)
-		{
-			info.pos.x = pos.x;
-			info.pos.y = pos.y;
-			info.requiresUpdating = true;
-			
-		}
+		img.flip();
 		
+		this.buf.position(position * 32);
+		this.buf.put(img);
+		
+		IntBuffer ind = BufferUtils.createIntBuffer(6);
+		
+		int indiceOff = position * 6;
+		
+		ind.put(indiceOff).put(indiceOff + 1).put(indiceOff + 2);
+		ind.put(indiceOff + 1).put(indiceOff + 2).put(indiceOff + 3);
+		
+		ind.flip();
+		
+		this.indiceBuf.position(indiceOff);
+		this.indiceBuf.put(ind);
+		
+		this.data.add(info);
+		
+		return position;
 	}
 	
 	public void removeImg(int index)
@@ -99,18 +103,14 @@ public class ImageScreen implements Iterable<ImageData>
 		
 	}
 	
-	public int getTexture(int index)
-	{
-		return this.data.get(index).tex.getTexture();
-	}
-	
 	public void updateImages()
 	{
 		for (int c = 0; c < this.data.size(); c++)
 		{
 			ImageData info = this.data.get(c);
+			IExtraImageData mgr = info.mgr;
 			
-			if (info.requiresUpdating)
+			if (mgr != null && mgr.updateImagePosition(c, info))
 			{
 				
 				

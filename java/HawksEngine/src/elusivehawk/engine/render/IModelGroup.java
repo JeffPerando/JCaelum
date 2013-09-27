@@ -24,6 +24,8 @@ public interface IModelGroup
 	
 	public ITexture getTexture(int index);
 	
+	public GLProgram getProgram(int index);
+	
 	public boolean updateBeforeRendering(int index);
 	
 }

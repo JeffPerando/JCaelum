@@ -70,7 +70,7 @@ public final class RenderEngine
 					
 					int modelId = group.getModels().get(c);
 					Model m = RenderHelper.getModel(modelId);
-					GLProgram p = m.p;
+					GLProgram p = group.getProgram(c);
 					
 					if (!p.bind())
 					{
@@ -141,9 +141,41 @@ public final class RenderEngine
 		
 	}
 	
-	@Deprecated
-	public static void do2DRenderPass(IScene scene) //TODO Revisit
+	public static void do2DRenderPass(IScene scene)
 	{
+		ImageScreen imgs = scene.getImages();
+		
+		if (imgs == null)
+		{
+			return;
+		}
+		
+		imgs.updateImages();
+		
+		if (!imgs.p.bind())
+		{
+			return;
+		}
+		
+		int currTex = 0, index = 0;
+		
+		for (ImageData info : imgs)
+		{
+			int tex = info.mgr.getTexture().getTexture();
+			
+			if (tex != currTex)
+			{
+				GL.glActiveTexture(GL.glIsTexture(tex) ? tex : 0);
+				
+			}
+			
+			GL.glDrawElements(GL.GL_TRIANGLES, 6, GL.GL_UNSIGNED_INT, index);
+			
+			index += 6;
+			
+		}
+		
+		imgs.p.unbind();
 		
 	}
 	
