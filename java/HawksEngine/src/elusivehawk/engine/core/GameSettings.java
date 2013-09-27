@@ -4,7 +4,6 @@ package elusivehawk.engine.core;
 import java.nio.ByteBuffer;
 import org.lwjgl.opengl.DisplayMode;
 import elusivehawk.engine.render.Color;
-import elusivehawk.engine.render.ColorRGBA;
 
 /**
  * 
@@ -25,7 +24,7 @@ public class GameSettings
 	public boolean resize = false;
 	public boolean fullscreen = false;
 	public boolean vsync = false;
-	public Color bg = new ColorRGBA();
+	public Color bg = new Color();
 	public float gamma = 0;
 	public float brightness = 0;
 	public float constrast = 0;

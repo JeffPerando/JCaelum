@@ -28,266 +28,371 @@ public final class BufferHelper
 	
 	public static ByteBuffer makeByteBuffer(byte... data)
 	{
-		ByteBuffer buf = BufferUtils.createByteBuffer(data.length);
-		buf.put(data);
-		buf.flip();
+		ByteBuffer ret = BufferUtils.createByteBuffer(data.length);
+		ret.put(data);
+		ret.flip();
 		
-		return buf;
+		return ret;
 	}
 	
 	public static ByteBuffer makeByteBuffer(List<Byte> data)
 	{
-		ByteBuffer buf = BufferUtils.createByteBuffer(data.size());
+		ByteBuffer ret = BufferUtils.createByteBuffer(data.size());
 		
 		for (byte b : data)
 		{
-			buf.put(b);
+			ret.put(b);
 			
 		}
 		
-		buf.flip();
+		ret.flip();
 		
-		return buf;
+		return ret;
+	}
+	
+	public static ByteBuffer makeByteBuffer(ByteBuffer buf, int offset, int count)
+	{
+		ByteBuffer ret = BufferUtils.createByteBuffer(count);
+		
+		for (int c = count; c < (count + offset); c++)
+		{
+			ret.put(buf.get(c));
+			
+		}
+		
+		ret.flip();
+		
+		return ret;
 	}
 	
 	public static CharBuffer makeCharBuffer(char... data)
 	{
-		CharBuffer buf = BufferUtils.createCharBuffer(data.length);
-		buf.put(data);
-		buf.flip();
+		CharBuffer ret = BufferUtils.createCharBuffer(data.length);
+		ret.put(data);
+		ret.flip();
 		
-		return buf;
+		return ret;
 	}
 	
 	public static CharBuffer makeCharBuffer(List<Character> data)
 	{
-		CharBuffer buf = BufferUtils.createCharBuffer(data.size());
+		CharBuffer ret = BufferUtils.createCharBuffer(data.size());
 		
 		for (Character c : data)
 		{
-			buf.put(c);
+			ret.put(c);
 			
 		}
 		
-		buf.flip();
+		ret.flip();
 		
-		return buf;
+		return ret;
+	}
+	
+	public static CharBuffer makeCharBuffer(CharBuffer buf, int offset, int count)
+	{
+		CharBuffer ret = BufferUtils.createCharBuffer(count);
+		
+		for (int c = count; c < (count + offset); c++)
+		{
+			ret.put(buf.get(c));
+			
+		}
+		
+		ret.flip();
+		
+		return ret;
 	}
 	
 	public static ShortBuffer makeShortBuffer(short... data)
 	{
-		ShortBuffer buf = BufferUtils.createShortBuffer(data.length);
-		buf.put(data);
-		buf.flip();
+		ShortBuffer ret = BufferUtils.createShortBuffer(data.length);
+		ret.put(data);
+		ret.flip();
 		
-		return buf;
+		return ret;
 	}
 	
 	public static ShortBuffer makeShortBuffer(List<Short> data)
 	{
-		ShortBuffer buf = BufferUtils.createShortBuffer(data.size());
+		ShortBuffer ret = BufferUtils.createShortBuffer(data.size());
 		
 		for (short s : data)
 		{
-			buf.put(s);
+			ret.put(s);
 			
 		}
 		
-		buf.flip();
+		ret.flip();
 		
-		return buf;
+		return ret;
+	}
+	
+	public static ShortBuffer makeShortBuffer(ShortBuffer buf, int offset, int count)
+	{
+		ShortBuffer ret = BufferUtils.createShortBuffer(count);
+		
+		for (int c = count; c < (count + offset); c++)
+		{
+			ret.put(buf.get(c));
+			
+		}
+		
+		ret.flip();
+		
+		return ret;
 	}
 	
 	public static IntBuffer makeIntBuffer(int... data)
 	{
-		IntBuffer buf = BufferUtils.createIntBuffer(data.length);
-		buf.put(data);
-		buf.flip();
+		IntBuffer ret = BufferUtils.createIntBuffer(data.length);
+		ret.put(data);
+		ret.flip();
 		
-		return buf;
+		return ret;
 	}
 	
 	public static IntBuffer makeIntBuffer(List<Integer> data)
 	{
-		IntBuffer buf = BufferUtils.createIntBuffer(data.size());
+		IntBuffer ret = BufferUtils.createIntBuffer(data.size());
 		
 		for (int i : data)
 		{
-			buf.put(i);
+			ret.put(i);
 			
 		}
 		
-		buf.flip();
+		ret.flip();
 		
-		return buf;
+		return ret;
 	}
 	
-	public static FloatBuffer makeFloatBuffer(float... data)
+	public static IntBuffer makeIntBuffer(IntBuffer buf, int offset, int count)
 	{
-		FloatBuffer buf = BufferUtils.createFloatBuffer(data.length);
-		buf.put(data);
-		buf.flip();
+		IntBuffer ret = BufferUtils.createIntBuffer(count);
 		
-		return buf;
-	}
-	
-	public static FloatBuffer makeFloatBuffer(List<Float> data)
-	{
-		FloatBuffer buf = BufferUtils.createFloatBuffer(data.size());
-		
-		for (float f : data)
+		for (int c = count; c < (count + offset); c++)
 		{
-			buf.put(f);
+			ret.put(buf.get(c));
 			
 		}
 		
-		buf.flip();
+		ret.flip();
 		
-		return buf;
+		return ret;
 	}
 	
 	public static DoubleBuffer makeDoubleBuffer(double... data)
 	{
-		DoubleBuffer buf = BufferUtils.createDoubleBuffer(data.length);
-		buf.put(data);
-		buf.flip();
+		DoubleBuffer ret = BufferUtils.createDoubleBuffer(data.length);
+		ret.put(data);
+		ret.flip();
 		
-		return buf;
+		return ret;
 	}
 	
 	public static DoubleBuffer makeDoubleBuffer(List<Double> data)
 	{
-		DoubleBuffer buf = BufferUtils.createDoubleBuffer(data.size());
+		DoubleBuffer ret = BufferUtils.createDoubleBuffer(data.size());
 		
 		for (double d : data)
 		{
-			buf.put(d);
+			ret.put(d);
 			
 		}
 		
-		buf.flip();
+		ret.flip();
 		
-		return buf;
+		return ret;
+	}
+	
+	public static DoubleBuffer makeDoubleBuffer(DoubleBuffer buf, int offset, int count)
+	{
+		DoubleBuffer ret = BufferUtils.createDoubleBuffer(count);
+		
+		for (int c = count; c < (count + offset); c++)
+		{
+			ret.put(buf.get(c));
+			
+		}
+		
+		ret.flip();
+		
+		return ret;
+	}
+	
+	public static FloatBuffer makeFloatBuffer(float... data)
+	{
+		FloatBuffer ret = BufferUtils.createFloatBuffer(data.length);
+		ret.put(data);
+		ret.flip();
+		
+		return ret;
+	}
+	
+	public static FloatBuffer makeFloatBuffer(List<Float> data)
+	{
+		FloatBuffer ret = BufferUtils.createFloatBuffer(data.size());
+		
+		for (float f : data)
+		{
+			ret.put(f);
+			
+		}
+		
+		ret.flip();
+		
+		return ret;
+	}
+	
+	public static FloatBuffer makeFloatBuffer(FloatBuffer buf, int offset, int count)
+	{
+		FloatBuffer ret = BufferUtils.createFloatBuffer(count);
+		
+		for (int c = count; c < (count + offset); c++)
+		{
+			ret.put(buf.get(c));
+			
+		}
+		
+		ret.flip();
+		
+		return ret;
 	}
 	
 	public static LongBuffer makeLongBuffer(long... data)
 	{
-		LongBuffer buf = BufferUtils.createLongBuffer(data.length);
-		buf.put(data);
-		buf.flip();
+		LongBuffer ret = BufferUtils.createLongBuffer(data.length);
+		ret.put(data);
+		ret.flip();
 		
-		return buf;
+		return ret;
 	}
 	
 	public static LongBuffer makeLongBuffer(List<Long> data)
 	{
-		LongBuffer buf = BufferUtils.createLongBuffer(data.size());
+		LongBuffer ret = BufferUtils.createLongBuffer(data.size());
 		
 		for (long l : data)
 		{
-			buf.put(l);
+			ret.put(l);
 			
 		}
 		
-		buf.flip();
+		ret.flip();
 		
-		return buf;
+		return ret;
+	}
+	
+	public static LongBuffer makeLongBuffer(LongBuffer buf, int offset, int count)
+	{
+		LongBuffer ret = BufferUtils.createLongBuffer(count);
+		
+		for (int c = count; c < (count + offset); c++)
+		{
+			ret.put(buf.get(c));
+			
+		}
+		
+		ret.flip();
+		
+		return ret;
 	}
 	
 	//Custom functions for library-specific implementations.
 	
-	public static ByteBuffer makeByteBufferFromColor(boolean alpha, Color... data)
+	public static ByteBuffer makeByteBufferFromColor(Color... data)
 	{
-		ByteBuffer buf = BufferUtils.createByteBuffer(data.length * 4);
+		ByteBuffer ret = BufferUtils.createByteBuffer(data.length * 4);
 		
 		for (Color col : data)
 		{
-			col.loadIntoBuffer(buf, alpha);
+			col.store(ret);
 			
 		}
 		
-		buf.flip();
+		ret.flip();
 		
-		return buf;
+		return ret;
 	}
 	
-	public static ByteBuffer makeByteBufferFromColor(boolean alpha, List<Color> data)
+	public static ByteBuffer makeByteBufferFromColor(List<Color> data)
 	{
-		ByteBuffer buf = BufferUtils.createByteBuffer(data.size() * 4);
+		ByteBuffer ret = BufferUtils.createByteBuffer(data.size() * 4);
 		
 		for (Color col : data)
 		{
-			col.loadIntoBuffer(buf, alpha);
+			col.store(ret);
 			
 		}
 		
-		buf.flip();
+		ret.flip();
 		
-		return buf;
+		return ret;
 	}
 	
-	public static FloatBuffer makeFloatBufferFromColor(boolean alpha, Color... data)
+	public static FloatBuffer makeFloatBufferFromColor(Color... data)
 	{
-		FloatBuffer buf = BufferUtils.createFloatBuffer(data.length * 4);
+		FloatBuffer ret = BufferUtils.createFloatBuffer(data.length * 4);
 		
 		for (Color col : data)
 		{
-			col.loadIntoBuffer(buf, alpha);
+			col.store(ret);
 			
 		}
 		
-		buf.flip();
+		ret.flip();
 		
-		return buf;
+		return ret;
 	}
 	
-	public static FloatBuffer makeFloatBufferFromColor(boolean alpha, List<Color> data)
+	public static FloatBuffer makeFloatBufferFromColor(List<Color> data)
 	{
-		FloatBuffer buf = BufferUtils.createFloatBuffer(data.size() * 4);
+		FloatBuffer ret = BufferUtils.createFloatBuffer(data.size() * 4);
 		
 		for (Color col : data)
 		{
-			col.loadIntoBuffer(buf, alpha);
+			col.store(ret);
 			
 		}
 		
-		buf.flip();
+		ret.flip();
 		
-		return buf;
+		return ret;
 	}
 	
 	public static FloatBuffer makeBufferFromMatrix(List<Matrix> data)
 	{
-		FloatBuffer buf = BufferUtils.createFloatBuffer(1);
+		FloatBuffer ret = BufferUtils.createFloatBuffer(1);
 		
 		for (Matrix mat : data)
 		{
-			buf.limit(buf.limit() + (mat.w * mat.h));
+			ret.limit(ret.limit() + (mat.w * mat.h));
 			
-			mat.store(buf);
+			mat.store(ret);
 			
 		}
 		
-		buf.flip();
+		ret.flip();
 		
-		return buf;
+		return ret;
 	}
 	
 	public static FloatBuffer makeBufferFromMatrix(Matrix... data)
 	{
-		FloatBuffer buf = BufferUtils.createFloatBuffer(1);
+		FloatBuffer ret = BufferUtils.createFloatBuffer(1);
 		
 		for (Matrix mat : data)
 		{
-			buf.limit(buf.limit() + (mat.w * mat.h));
+			ret.limit(ret.limit() + (mat.w * mat.h));
 			
-			mat.store(buf);
+			mat.store(ret);
 			
 		}
 		
-		buf.flip();
+		ret.flip();
 		
-		return buf;
+		return ret;
 	}
 	
 	public static FloatBuffer makeFloatBufferFromVec(Vectorf... data)

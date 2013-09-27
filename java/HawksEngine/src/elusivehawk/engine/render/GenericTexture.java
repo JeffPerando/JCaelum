@@ -33,7 +33,7 @@ public class GenericTexture implements ITexture
 	
 	public GenericTexture(BufferedImage img, EnumRenderMode mode)
 	{
-		this(RenderHelper.processImage(img, mode, true), img.getWidth(), img.getHeight());
+		this(RenderHelper.processImage(img, mode), img.getWidth(), img.getHeight());
 		
 	}
 	

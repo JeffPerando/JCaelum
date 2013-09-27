@@ -63,7 +63,7 @@ public class ParticleScene
 		
 		this.buf.position(this.particles.size() * 8);
 		new Vector4f(p.getPosition(), 1f).store(this.buf);
-		new ColorRGBA(p.getColor()).store(this.buf);
+		EnumColorFormat.RGBA.convert(p.getColor()).store(this.buf);
 		
 		this.particles.add(p);
 		
@@ -92,7 +92,7 @@ public class ParticleScene
 			if (p.updatePositionOrColor())
 			{
 				Vector4f vec = new Vector4f(p.getPosition(), 1f);
-				Color col = new ColorRGBA(p.getColor());
+				Color col = EnumColorFormat.RGBA.convert(p.getColor());
 				
 				this.buf.position(c * 8);
 				
@@ -121,7 +121,7 @@ public class ParticleScene
 				p.getPosition().store(tmp);
 				tmp.put(1f);
 				
-				new ColorRGBA(p.getColor()).store(tmp);
+				EnumColorFormat.RGBA.convert(p.getColor()).store(tmp);
 				
 			}
 			

@@ -3,20 +3,105 @@ package elusivehawk.engine.render;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import elusivehawk.engine.util.BufferHelper;
 import elusivehawk.engine.util.IStoreable;
 
 /**
  * 
- * A simpler way to do color.
+ * 
  * 
  * @author Elusivehawk
  */
-public abstract class Color implements IStoreable
+public class Color implements IStoreable
 {
+	public int color = 0;
+	protected final EnumColorFormat format;
+	
+	public Color()
+	{
+		this(EnumColorFormat.RGBA);
+		
+	}
+	
+	public Color(EnumColorFormat f)
+	{
+		format = f;
+		
+	}
+	
+	public Color(int col)
+	{
+		this();
+		
+		color = col;
+		
+	}
+	
+	public Color(EnumColorFormat f, int col)
+	{
+		this(f);
+		
+		color = col;
+		
+	}
+	
+	public Color(java.awt.Color col)
+	{
+		this(col.getRGB());
+		
+	}
+	
+	public Color(int a, int b, int c, int d)
+	{
+		this(EnumColorFormat.RGBA, a, b, c, d);
+		
+	}
+	
+	public Color(EnumColorFormat f, int a, int b, int c, int d)
+	{
+		this(f, new byte[]{(byte)a, (byte)b, (byte)c, (byte)d});
+		
+	}
+	
+	public Color(byte... cols)
+	{
+		this(EnumColorFormat.RGBA, cols);
+		
+	}
+	
+	public Color(EnumColorFormat f, byte... cols)
+	{
+		this(f, BufferHelper.makeByteBuffer(cols));
+		
+	}
+	
+	public Color(ByteBuffer buf)
+	{
+		this(EnumColorFormat.RGBA, buf);
+		
+	}
+	
+	public Color(EnumColorFormat f, ByteBuffer buf)
+	{
+		this(f);
+		
+		for (EnumColor col : f.colors)
+		{
+			color = (color << f.getColorOffset(col)) | buf.get();
+			
+		}
+		
+	}
+	
 	@Override
 	public boolean store(ByteBuffer buf)
 	{
-		this.loadIntoBuffer(buf, true);
+		for (EnumColor col : this.format.colors)
+		{
+			buf.put(this.getColor(col));
+			
+		}
 		
 		return true;
 	}
@@ -24,7 +109,19 @@ public abstract class Color implements IStoreable
 	@Override
 	public boolean store(FloatBuffer buf)
 	{
-		this.loadIntoBuffer(buf, true);
+		for (EnumColor col : this.format.colors)
+		{
+			buf.put(this.getColorFloat(col));
+			
+		}
+		
+		return true;
+	}
+	
+	@Override
+	public boolean store(IntBuffer buf)
+	{
+		buf.put(this.getColor());
 		
 		return true;
 	}
@@ -35,16 +132,36 @@ public abstract class Color implements IStoreable
 		return this.getColor();
 	}
 	
-	public abstract int getColor();
+	public EnumColorFormat getFormat()
+	{
+		return this.format;
+	}
 	
-	public abstract byte getColor(EnumColor id);
+	public int getColor()
+	{
+		return this.color;
+	}
 	
-	public abstract float getColorFloat(EnumColor id);
+	public boolean setColor(int col)
+	{
+		this.color = col;
+		
+		return true;
+	}
 	
-	public abstract boolean supportsAlpha();
+	public byte getColor(EnumColor col)
+	{
+		return (byte)((this.getColor() >> this.format.getColorOffset(col)) & 0xFF);
+	}
 	
-	public abstract void loadIntoBuffer(ByteBuffer buf, boolean alpha);
+	public float getColorFloat(EnumColor col)
+	{
+		return this.getColor(col) / (byte)255;
+	}
 	
-	public abstract void loadIntoBuffer(FloatBuffer buf, boolean alpha);
+	public boolean supportsAlpha()
+	{
+		return this.format.supportsAlpha();
+	}
 	
 }

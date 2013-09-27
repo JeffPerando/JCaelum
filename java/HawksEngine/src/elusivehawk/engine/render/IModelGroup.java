@@ -14,7 +14,7 @@ public interface IModelGroup
 {
 	public String getName();
 	
-	public List<Integer> getModels();
+	public List<Model> getModels();
 	
 	public Vector3f getPosition(int index);
 	

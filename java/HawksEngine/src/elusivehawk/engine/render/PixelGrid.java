@@ -56,7 +56,7 @@ public class PixelGrid implements ITexture
 		{
 			for (int y = 0; y < img.getHeight(); y++)
 			{
-				pixels[x][y] = new ColorRGBA(new ColorARGB(img.getRGB(x, y))).color;
+				pixels[x][y] = EnumColorFormat.RGBA.convert(new Color(EnumColorFormat.ARGB, img.getRGB(x, y))).color;
 				
 			}
 			
@@ -85,7 +85,7 @@ public class PixelGrid implements ITexture
 	{
 		if (this.converted == 0 || generate)
 		{
-			this.converted = RenderHelper.processImage(this.toByteBuffer(), this.xSize, this.ySize, mode, true);
+			this.converted = RenderHelper.processImage(this.toByteBuffer(), this.xSize, this.ySize, mode);
 			
 		}
 		
@@ -108,7 +108,7 @@ public class PixelGrid implements ITexture
 		{
 			for (int yCoord = 0; yCoord < ret.getHeight(); yCoord++)
 			{
-				ret.setRGB(xCoord, yCoord, new ColorARGB(new ColorRGBA(this.getColor(xCoord + x, yCoord + y))).color);
+				ret.setRGB(xCoord, yCoord, EnumColorFormat.ARGB.convert(new Color(this.getColor(xCoord + x, yCoord + y))).color);
 				
 			}
 			
@@ -120,7 +120,7 @@ public class PixelGrid implements ITexture
 	public ByteBuffer toByteBuffer()
 	{
 		ByteBuffer ret = BufferUtils.createByteBuffer(this.xSize * this.ySize * 4);
-		ColorRGBA col = new ColorRGBA();
+		Color col = new Color();
 		
 		for (int x = 0; x < this.xSize; x++)
 		{
@@ -142,7 +142,7 @@ public class PixelGrid implements ITexture
 	public FloatBuffer toFloatBuffer()
 	{
 		FloatBuffer ret = BufferUtils.createFloatBuffer(this.xSize * this.ySize * 4);
-		ColorRGBA col = new ColorRGBA();
+		Color col = new Color();
 		
 		for (int x = 0; x < this.xSize; x++)
 		{
@@ -164,7 +164,7 @@ public class PixelGrid implements ITexture
 	public IntBuffer toIntBuffer()
 	{
 		IntBuffer ret = BufferUtils.createIntBuffer(this.xSize * this.ySize);
-		ColorRGBA col = new ColorRGBA();
+		Color col = new Color();
 		
 		for (int x = 0; x < this.xSize; x++)
 		{
@@ -199,7 +199,7 @@ public class PixelGrid implements ITexture
 					break;
 				}
 				
-				this.setColor(x + xPos, y + yPos, new ColorRGBA(new ColorARGB(img.getRGB(x, y))).color);
+				this.setColor(x + xPos, y + yPos, EnumColorFormat.RGBA.convert(new Color(EnumColorFormat.ARGB, img.getRGB(x, y))).color);
 				
 			}
 			

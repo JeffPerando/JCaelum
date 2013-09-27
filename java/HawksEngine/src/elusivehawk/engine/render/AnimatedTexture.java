@@ -70,7 +70,7 @@ public class AnimatedTexture implements ITexture
 			{
 				BufferedImage sub = img.getSubimage(0, c, img.getWidth(), y);
 				
-				tex.put(RenderHelper.processImage(sub, mode, false));
+				tex.put(RenderHelper.processImage(sub, mode));
 				
 			}
 			

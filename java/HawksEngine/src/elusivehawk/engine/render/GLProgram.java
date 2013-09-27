@@ -20,6 +20,8 @@ public class GLProgram
 {
 	public static final int M_TWO = 8, M_THREE = 9, M_FOUR = 10;
 	
+	private static final List<GLProgram> PROGRAMS = new ArrayList<GLProgram>();
+	
 	public final int id, vba;
 	public final int[] shaders;
 	private HashMap<Integer, VertexBufferObject> vbos = new HashMap<Integer, VertexBufferObject>();
@@ -45,7 +47,7 @@ public class GLProgram
 		
 		shaders = sh;
 		
-		RenderHelper.registerProgram(this);
+		PROGRAMS.add(this);
 		
 	}
 	
@@ -320,6 +322,21 @@ public class GLProgram
 	public Collection<Integer> getVertexAttribs()
 	{
 		return this.attribs.values();
+	}
+	
+	public static void deletePrograms()
+	{
+		if (!PROGRAMS.isEmpty())
+		{
+			return;
+		}
+		
+		for (GLProgram p : PROGRAMS)
+		{
+			p.delete();
+			
+		}
+		
 	}
 	
 }

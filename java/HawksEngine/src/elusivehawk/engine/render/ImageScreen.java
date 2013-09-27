@@ -43,7 +43,7 @@ public class ImageScreen implements Iterable<ImageData>
 		
 	}
 	
-	public int addImage(ImageData info)
+	public int addImage(ImageData info, int xPos, int yPos)
 	{
 		if (this.buf.limit() - this.buf.capacity() == 0)
 		{
@@ -51,6 +51,9 @@ public class ImageScreen implements Iterable<ImageData>
 		}
 		
 		int position = this.data.size();
+		
+		info.pos.x = xPos;
+		info.pos.y = yPos;
 		
 		int x = info.pos.x;
 		int y = info.pos.y;
@@ -110,7 +113,7 @@ public class ImageScreen implements Iterable<ImageData>
 			ImageData info = this.data.get(c);
 			IExtraImageData mgr = info.mgr;
 			
-			if (mgr != null && mgr.updateImagePosition(c, info))
+			if (mgr.updateImagePosition(c, info))
 			{
 				
 				

@@ -192,7 +192,7 @@ public abstract class Model
 		
 		while (this.color.size() < this.polys.size())
 		{
-			this.color.add(new ColorRGBA());
+			this.color.add(new Color());
 			
 		}
 		
@@ -224,7 +224,7 @@ public abstract class Model
 	
 	protected final void color(int r, int g, int b, int a)
 	{
-		this.color(new ColorRGBA(r, g, b, a));
+		this.color(new Color(r, g, b, a));
 		
 	}
 	
@@ -243,7 +243,7 @@ public abstract class Model
 	
 	protected final void globalColor(int r, int g, int b, int a)
 	{
-		this.globalColor(new ColorRGBA(r, g, b, a));
+		this.globalColor(new Color(r, g, b, a));
 		
 	}
 	

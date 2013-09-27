@@ -6,8 +6,6 @@ import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.List;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
@@ -26,9 +24,6 @@ import elusivehawk.engine.util.TextParser;
  */
 public final class RenderHelper
 {
-	private static final List<Model> MODELS = new ArrayList<Model>();
-	private static final List<GLProgram> PROGRAMS = new ArrayList<GLProgram>();
-	
 	private RenderHelper(){}
 	
 	public static IntBuffer processGifFile(File gif, EnumRenderMode mode)
@@ -54,7 +49,7 @@ public final class RenderHelper
 				{
 					BufferedImage img = reader.read(c);
 					
-					ret.put(processImage(img, mode, false));
+					ret.put(processImage(img, mode));
 					
 				}
 				
@@ -72,17 +67,17 @@ public final class RenderHelper
 		
 	}
 	
-	public static int processImage(BufferedImage img, int x, int y, int w, int h, EnumRenderMode mode, boolean alpha)
+	public static int processImage(BufferedImage img, int x, int y, int w, int h, EnumRenderMode mode)
 	{
-		return processImage(img.getSubimage(x, y, w, h), mode, alpha);
+		return processImage(img.getSubimage(x, y, w, h), mode);
 	}
 	
-	public static int processImage(BufferedImage img, EnumRenderMode mode, boolean alpha)
+	public static int processImage(BufferedImage img, EnumRenderMode mode)
 	{
-		return processImage(readImage(img, alpha), img.getWidth(), img.getHeight(), mode, alpha);
+		return processImage(readImage(img), img.getWidth(), img.getHeight(), mode);
 	}
 	
-	public static int processImage(ByteBuffer buf, int w, int h, EnumRenderMode mode, boolean alpha)
+	public static int processImage(ByteBuffer buf, int w, int h, EnumRenderMode mode)
 	{
 		if (!mode.isValidImageMode())
 		{
@@ -116,17 +111,17 @@ public final class RenderHelper
 		return glId;
 	}
 	
-	public static ByteBuffer readImage(BufferedImage img, boolean alpha)
+	public static ByteBuffer readImage(BufferedImage img)
 	{
-		ByteBuffer buf = BufferUtils.createByteBuffer(img.getHeight() * img.getWidth() * (alpha ? 4 : 3));
+		ByteBuffer buf = BufferUtils.createByteBuffer(img.getHeight() * img.getWidth() * 4);
 		
 		for (int x = 0; x < img.getWidth(); ++x)
 		{
 			for (int y = 0; y < img.getHeight(); ++y)
 			{
-				Color col = new ColorRGBA(new ColorARGB(img.getRGB(x, y)));
+				Color col = EnumColorFormat.RGBA.convert(new Color(EnumColorFormat.ARGB, img.getRGB(x, y)));
 				
-				col.loadIntoBuffer(buf, alpha);
+				col.store(buf);
 				
 			}
 			
@@ -177,7 +172,7 @@ public final class RenderHelper
 		{
 			for (int y = 0; y < ret.getHeight(); y++)
 			{
-				ret.setRGB(x, y, new ColorARGB(new ColorRGBA(buf)).color);
+				ret.setRGB(x, y, EnumColorFormat.ARGB.convert(new Color(buf)).color);
 				
 			}
 			
@@ -186,60 +181,14 @@ public final class RenderHelper
 		return ret;
 	}
 	
-	public static int registerModel(Model m)
-	{
-		if (!MODELS.isEmpty())
-		{
-			for (Model m0 : MODELS)
-			{
-				if (m == m0)
-				{
-					return -1;
-				}
-				
-			}
-			
-		}
-		
-		MODELS.add(m);
-		
-		return MODELS.size() - 1;
-	}
-	
-	public static Model getModel(int id)
-	{
-		return id >= 0 ? MODELS.get(id) : null;
-	}
-	
-	public static void registerProgram(GLProgram p)
-	{
-		PROGRAMS.add(p);
-		
-	}
-	
-	public static void deletePrograms()
-	{
-		if (!PROGRAMS.isEmpty())
-		{
-			return;
-		}
-		
-		for (GLProgram p : PROGRAMS)
-		{
-			p.delete();
-			
-		}
-		
-	}
-	
 	public static int getPointCount(int gl)
 	{
 		switch (gl)
 		{
-			case GL.GL_POINT: return 1;
-			case GL.GL_LINE: return 2;
+			case GL.GL_POINTS: return 1;
+			case GL.GL_LINES: return 2;
 			case GL.GL_TRIANGLES : return 3;
-			case GL.GL_QUADS: GameLog.warn("Someone is using outdated OpenGL techniques!"); return 4;
+			case GL.GL_QUADS: return 4;
 			case GL.GL_TRIANGLE_FAN: return 5;
 			default: return 0;
 		}

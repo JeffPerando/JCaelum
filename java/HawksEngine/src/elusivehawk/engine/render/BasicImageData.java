@@ -14,7 +14,7 @@ public class BasicImageData implements IExtraImageData
 	
 	public BasicImageData(ITexture texture)
 	{
-		this(texture, new ColorRGBA());
+		this(texture, new Color());
 		
 	}
 	

@@ -68,8 +68,7 @@ public final class RenderEngine
 						continue;
 					}
 					
-					int modelId = group.getModels().get(c);
-					Model m = RenderHelper.getModel(modelId);
+					Model m = group.getModels().get(c);
 					GLProgram p = group.getProgram(c);
 					
 					if (!p.bind())

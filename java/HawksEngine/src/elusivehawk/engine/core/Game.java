@@ -9,9 +9,9 @@ import org.lwjgl.opengl.Display;
 import elusivehawk.engine.render.Color;
 import elusivehawk.engine.render.EnumColor;
 import elusivehawk.engine.render.GL;
+import elusivehawk.engine.render.GLProgram;
 import elusivehawk.engine.render.IScene;
 import elusivehawk.engine.render.RenderEngine;
-import elusivehawk.engine.render.RenderHelper;
 import elusivehawk.engine.util.GameLog;
 import elusivehawk.engine.util.TextParser;
 import elusivehawk.engine.util.Timer;
@@ -30,13 +30,6 @@ public abstract class Game
 	protected boolean running = false;
 	
 	//Methods for the custom game.
-	
-	/**
-	 * Use this to set up everything you need before the game loop begins.
-	 * 
-	 * @return False to stop the game.
-	 */
-	protected abstract boolean initiate();
 	
 	/**
 	 * 
@@ -62,6 +55,18 @@ public abstract class Game
 	protected abstract IScene getCurrentScene();
 	
 	//===============================BEGIN OPTIONAL GAME METHODS===============================
+	
+	/**
+	 * Use this to set up everything you need before the game loop begins.
+	 * 
+	 * @return False to stop the game.
+	 */
+	protected boolean initiate()
+	{
+		this.running = true;
+		
+		return true;
+	}
 	
 	public int getDelayBetweenUpdates()
 	{
@@ -97,12 +102,11 @@ public abstract class Game
 		}
 		
 		currentGame = this;
-		this.running = true;
 		
 		if (!this.initiate())
 		{
 			currentGame = null;
-			this.running = false;
+			this.onGameClosed();
 			
 			return;
 		}
@@ -262,7 +266,7 @@ public abstract class Game
 		
 		this.onGameClosed();
 		
-		RenderHelper.deletePrograms();
+		GLProgram.deletePrograms();
 		
 		Display.destroy();
 		
