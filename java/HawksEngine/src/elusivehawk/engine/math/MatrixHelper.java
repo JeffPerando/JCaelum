@@ -1,6 +1,9 @@
 
 package elusivehawk.engine.math;
 
+import java.nio.FloatBuffer;
+import org.lwjgl.BufferUtils;
+
 /**
  * 
  * Just a small class I wrote to help with making matrices.
@@ -110,8 +113,6 @@ public final class MatrixHelper
 	
 	public static Matrix createRotationMatrix(int x, int y, int z)
 	{
-		Matrix ret = new Matrix(4, 4);
-		
 		//Hold on to your butts...
 		
 		float a = (float)Math.cos(x);
@@ -124,16 +125,20 @@ public final class MatrixHelper
 		float ad = a * d;
 		float bd = b * d;
 		
-		ret.data[0][0] = c * e; ret.data[0][1] = -c * f; ret.data[0][2] = d; ret.data[0][3] = 0;
+		FloatBuffer buf = BufferUtils.createFloatBuffer(16);
+		
+		buf.put(c * e).put(-c * f).put(d).put(0);
 		//-------------------------------------------------
-		ret.data[1][0] = bd * e + a * f; ret.data[1][1] = -bd * f + a * e; ret.data[1][2] = -b * c; ret.data[1][3] = 0;
+		buf.put(bd * e + a * f).put(-bd * f + a * e).put(-b * c).put(0);
 		//-------------------------------------------------
-		ret.data[2][0] = -ad * e + b * f; ret.data[2][1] = ad * f + b * e; ret.data[2][2] = a * c; ret.data[2][3] = 0;
+		buf.put(-ad * e + b * f).put(ad * f + b * e).put(a * c).put(0);
 		//-------------------------------------------------
-		ret.data[3][0] = 0; ret.data[3][1] = 0; ret.data[3][2] = 0; ret.data[3][3] = 1;
+		buf.put(0).put(0).put(0).put(1);
 		//-------------------------------------------------
 		
-		return ret;
+		buf.rewind();
+		
+		return new Matrix(buf, 4, 4);
 	}
 	
 }

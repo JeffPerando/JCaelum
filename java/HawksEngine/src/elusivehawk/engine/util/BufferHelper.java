@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.BufferUtils;
 import elusivehawk.engine.math.IVector;
-import elusivehawk.engine.math.Matrix;
 import elusivehawk.engine.render.Color;
 
 /**
@@ -352,40 +351,6 @@ public final class BufferHelper
 		for (Color col : data)
 		{
 			col.store(ret);
-			
-		}
-		
-		ret.flip();
-		
-		return ret;
-	}
-	
-	public static FloatBuffer makeBufferFromMatrix(List<Matrix> data)
-	{
-		FloatBuffer ret = BufferUtils.createFloatBuffer(1);
-		
-		for (Matrix mat : data)
-		{
-			ret.limit(ret.limit() + (mat.w * mat.h));
-			
-			mat.store(ret);
-			
-		}
-		
-		ret.flip();
-		
-		return ret;
-	}
-	
-	public static FloatBuffer makeBufferFromMatrix(Matrix... data)
-	{
-		FloatBuffer ret = BufferUtils.createFloatBuffer(1);
-		
-		for (Matrix mat : data)
-		{
-			ret.limit(ret.limit() + (mat.w * mat.h));
-			
-			mat.store(ret);
 			
 		}
 		

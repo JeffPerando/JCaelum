@@ -1,12 +1,16 @@
 
-import java.nio.IntBuffer;
-import elusivehawk.engine.util.BufferHelper;
+import java.io.File;
+import java.io.PrintStream;
+import java.lang.reflect.Field;
+import elusivehawk.engine.render.GL;
 import elusivehawk.engine.util.GameLog;
+import elusivehawk.engine.util.Timer;
 
 /**
  * 
  * Test log:
  * 
+ * Using PrintStream.
  * More buffer testing.
  * List iterating.
  * Buffer.put(int, int) testing.
@@ -22,25 +26,39 @@ public class BenchmarkTest
 	{
 		GameLog.info("Beginning bench testing...");
 		
-		IntBuffer buf = BufferHelper.makeIntBuffer(4, 8, 15, 16, 23, 42);
+		File file = new File(".", "/GLFields.txt");
 		
-		buf.position(0);
-		buf.put(0);
-		buf.put(9);
-		
-		buf.rewind();
-		
-		StringBuilder b = new StringBuilder();
-		
-		while (buf.remaining() > 0)
+		try
 		{
-			b.append(buf.get() + (buf.remaining() == 0 ? ";" : ", "));
+			if (!file.createNewFile())
+			{
+				return;
+			}
+			
+			PrintStream ps = new PrintStream(file);
+			
+			Timer timer = new Timer(false);
+			
+			timer.start();
+			
+			for (Field f : GL.class.getFields())
+			{
+				ps.println(f.getName());
+				
+			}
+			
+			timer.stop();
+			
+			ps.close();
+			
+			GameLog.info("Time: " + timer.report());
 			
 		}
-		
-		buf.rewind();
-		
-		GameLog.info(b.toString());
+		catch (Exception e)
+		{
+			GameLog.error(e);
+			
+		}
 		
 		GameLog.info("Th-th-th-th-That's all, folks!");
 		

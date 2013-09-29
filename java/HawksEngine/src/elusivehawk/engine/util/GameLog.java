@@ -1,6 +1,7 @@
 
 package elusivehawk.engine.util;
 
+import java.io.PrintStream;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
@@ -14,7 +15,7 @@ import elusivehawk.engine.core.Game;
  */
 public class GameLog
 {
-	public static volatile boolean verbose = true;
+	public static volatile boolean enableVerbosity = true;
 	public static final List<String> CRASH_DIALOG = TextParser.read(TextParser.createFile((Game.DEBUG ? "src" : ".") + "/elusivehawk/engine/core/CrashReportDialog.txt"));
 	
 	private static Random rand = new Random();
@@ -45,19 +46,24 @@ public class GameLog
 	
 	public static void error(Throwable e)
 	{
-		error(e.getMessage(), e);
+		error(null, e);
 		
 	}
 	
 	public static void error(String message, Throwable e)
 	{
-		error(message != null ? message : CRASH_DIALOG.get(rand.nextInt(CRASH_DIALOG.size())));
-		e.printStackTrace();
+		error(message == null ? CRASH_DIALOG.get(rand.nextInt(CRASH_DIALOG.size())) : message);
+		e.printStackTrace(LogType.ERROR.getOutput());
 		
 	}
 	
-	public static void log(String message, LogType type)
+	public static synchronized void log(String message, LogType type)
 	{
+		if (!enableVerbosity && type.isVerbose)
+		{
+			return;
+		}
+		
 		StringBuilder b = new StringBuilder();
 		Calendar cal = Calendar.getInstance();
 		
@@ -70,22 +76,37 @@ public class GameLog
 		b.append(cal.get(Calendar.HOUR) + ":" + (minute < 10 ? "0" : "") + minute + ":" + cal.get(Calendar.SECOND) + ":" + cal.get(Calendar.MILLISECOND) + " " + (amOrPm ? "PM" : "AM") + ": ");
 		b.append(message);
 		
-		if (type.ordinal() >= 2)
-		{
-			System.err.println(b.toString());
-			
-		}
-		else if (verbose)
-		{
-			System.out.println(b.toString());
-			
-		}
+		type.getOutput().println(b.toString());
 		
 	}
 	
 	public static enum LogType
 	{
-		INFO, DEBUG, WARN, ERROR;
+		INFO(System.out, true),
+		DEBUG(System.out, true),
+		WARN(System.err, false),
+		ERROR(System.err, false);
+		
+		private PrintStream out;
+		public final boolean isVerbose;
+		
+		LogType(PrintStream ps, boolean verbose)
+		{
+			out = ps;
+			isVerbose = verbose;
+			
+		}
+		
+		public synchronized void setOutput(PrintStream stream)
+		{
+			this.out = stream;
+			
+		}
+		
+		public PrintStream getOutput()
+		{
+			return this.out;
+		}
 		
 	}
 	

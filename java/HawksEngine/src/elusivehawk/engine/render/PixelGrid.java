@@ -56,7 +56,7 @@ public class PixelGrid implements ITexture
 		{
 			for (int y = 0; y < img.getHeight(); y++)
 			{
-				pixels[x][y] = EnumColorFormat.RGBA.convert(new Color(EnumColorFormat.ARGB, img.getRGB(x, y))).color;
+				pixels[x][y] = EnumColorFormat.RGBA.convert(new Color(EnumColorFormat.ARGB, img.getRGB(x, y))).getColor();
 				
 			}
 			
@@ -108,7 +108,7 @@ public class PixelGrid implements ITexture
 		{
 			for (int yCoord = 0; yCoord < ret.getHeight(); yCoord++)
 			{
-				ret.setRGB(xCoord, yCoord, EnumColorFormat.ARGB.convert(new Color(EnumColorFormat.RGBA, this.getColor(xCoord + x, yCoord + y))).color);
+				ret.setRGB(xCoord, yCoord, EnumColorFormat.ARGB.convert(new Color(EnumColorFormat.RGBA, this.getColor(xCoord + x, yCoord + y))).getColor());
 				
 			}
 			
@@ -126,7 +126,7 @@ public class PixelGrid implements ITexture
 		{
 			for (int y = 0; y < this.ySize; y++)
 			{
-				col.color = this.getColor(x, y);
+				col.setColor(this.getColor(x, y));
 				
 				col.store(ret);
 				
@@ -148,7 +148,7 @@ public class PixelGrid implements ITexture
 		{
 			for (int y = 0; y < this.ySize; y++)
 			{
-				col.color = this.getColor(x, y);
+				col.setColor(this.getColor(x, y));
 				
 				col.store(ret);
 				
@@ -170,7 +170,7 @@ public class PixelGrid implements ITexture
 		{
 			for (int y = 0; y < this.ySize; y++)
 			{
-				col.color = this.getColor(x, y);
+				col.setColor(this.getColor(x, y));
 				
 				col.store(ret);
 				
@@ -199,7 +199,7 @@ public class PixelGrid implements ITexture
 					break;
 				}
 				
-				this.setColor(x + xPos, y + yPos, EnumColorFormat.RGBA.convert(new Color(EnumColorFormat.ARGB, img.getRGB(x, y))).color);
+				this.setColor(x + xPos, y + yPos, EnumColorFormat.RGBA.convert(new Color(EnumColorFormat.ARGB, img.getRGB(x, y))).getColor());
 				
 			}
 			

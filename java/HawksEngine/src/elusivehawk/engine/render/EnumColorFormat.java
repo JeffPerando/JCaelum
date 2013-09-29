@@ -52,7 +52,7 @@ public enum EnumColorFormat
 	
 	public Color convert(Color old)
 	{
-		if (old.getFormat().ordinal() == this.ordinal())
+		if (old.format.ordinal() == this.ordinal())
 		{
 			return old;
 		}

@@ -15,8 +15,8 @@ import elusivehawk.engine.util.IStoreable;
  */
 public class Color implements IStoreable
 {
-	public int color = 0;
-	protected final EnumColorFormat format;
+	protected int color = 0;
+	public final EnumColorFormat format;
 	
 	public Color(EnumColorFormat f)
 	{
@@ -116,11 +116,6 @@ public class Color implements IStoreable
 	public int hashCode()
 	{
 		return this.getColor();
-	}
-	
-	public EnumColorFormat getFormat()
-	{
-		return this.format;
 	}
 	
 	public int getColor()

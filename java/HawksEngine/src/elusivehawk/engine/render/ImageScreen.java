@@ -4,7 +4,6 @@ package elusivehawk.engine.render;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.Display;
@@ -15,7 +14,7 @@ import org.lwjgl.opengl.Display;
  * 
  * @author Elusivehawk
  */
-public class ImageScreen implements Iterable<ImageData>
+public class ImageScreen
 {
 	public final GLProgram p;
 	public final VertexBufferObject vbo, indices;
@@ -101,6 +100,11 @@ public class ImageScreen implements Iterable<ImageData>
 		return position;
 	}
 	
+	public ImageData getImg(int index)
+	{
+		return this.data.get(index);
+	}
+	
 	@Deprecated
 	public void removeImg(int index)
 	{
@@ -124,10 +128,9 @@ public class ImageScreen implements Iterable<ImageData>
 		
 	}
 	
-	@Override
-	public Iterator<ImageData> iterator()
+	public int getImgCount()
 	{
-		return this.data.iterator();
+		return this.data.size();
 	}
 	
 }

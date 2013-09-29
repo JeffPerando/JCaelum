@@ -172,7 +172,7 @@ public final class RenderHelper
 		{
 			for (int y = 0; y < ret.getHeight(); y++)
 			{
-				ret.setRGB(x, y, EnumColorFormat.ARGB.convert(new Color(buf)).color);
+				ret.setRGB(x, y, EnumColorFormat.ARGB.convert(new Color(buf)).getColor());
 				
 			}
 			

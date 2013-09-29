@@ -58,7 +58,14 @@ public class Matrix implements IStoreable
 	public Matrix(FloatBuffer buf, int x, int y)
 	{
 		this(x, y);
+		
 		this.load(buf);
+		
+	}
+	
+	public Matrix(Matrix m)
+	{
+		this(m.data);
 		
 	}
 	
@@ -162,16 +169,12 @@ public class Matrix implements IStoreable
 	
 	public void mul(Vector4f vec)
 	{
-		FloatBuffer buf = vec.asBuffer();
-		
 		for (int x = 0; x < this.w; x++)
 		{
-			this.data[x][0] *= buf.get();
-			this.data[x][1] *= buf.get();
-			this.data[x][2] *= buf.get();
-			this.data[x][3] *= buf.get();
-			
-			buf.rewind();
+			this.data[x][0] *= vec.x;
+			this.data[x][1] *= vec.y;
+			this.data[x][2] *= vec.z;
+			this.data[x][3] *= vec.w;
 			
 		}
 		
