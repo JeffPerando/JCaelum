@@ -15,6 +15,7 @@ import org.lwjgl.BufferUtils;
 public class Vector2f implements IVector
 {
 	public float x, y;
+	protected boolean dirty = false;
 	
 	public Vector2f()
 	{
@@ -44,18 +45,22 @@ public class Vector2f implements IVector
 	
 	public Vector2f add(Vector2f vec)
 	{
-		this.x += vec.x;
-		this.y += vec.y;
-		
-		return this;
+		return this.add(vec.x, vec.y);
+	}
+	
+	public Vector2f add(float x, float y)
+	{
+		return this.set(this.x + x, this.y + y);
 	}
 	
 	public Vector2f div(Vector2f vec)
 	{
-		this.x /= vec.x;
-		this.y /= vec.y;
-		
-		return this;
+		return this.div(vec.x, vec.y);
+	}
+	
+	public Vector2f div(float x, float y)
+	{
+		return this.set(this.x / x, this.y / y);
 	}
 	
 	public Vector2f mul(Vector2f vec)
@@ -70,16 +75,37 @@ public class Vector2f implements IVector
 	
 	public Vector2f mul(float x, float y)
 	{
-		this.x *= x;
-		this.y *= y;
+		return this.set(this.x * x, this.y * y);
+	}
+	
+	public Vector2f set(Vector2f vec)
+	{
+		return this.set(vec.x, vec.y);
+	}
+	
+	public Vector2f set(float x, float y)
+	{
+		this.x = x;
+		this.y = y;
+		
+		this.setIsDirty(true);
 		
 		return this;
 	}
 	
 	public Vector2f sub(Vector2f vec)
 	{
-		this.x -= vec.x;
-		this.y -= vec.y;
+		return this.sub(vec.x, vec.y);
+	}
+	
+	public Vector2f sub(float x, float y)
+	{
+		return this.set(this.x - x, this.y - y);
+	}
+	
+	public Vector2f setIsDirty(boolean b)
+	{
+		this.dirty = b;
 		
 		return this;
 	}
@@ -130,13 +156,20 @@ public class Vector2f implements IVector
 	@Override
 	public boolean equals(Object obj)
 	{
-		if (!(obj instanceof IVector)) return false;
+		if (!(obj instanceof IVector))
+		{
+			return false;
+		}
 		
 		IVector vec = (IVector)obj;
+		
+		if (vec.getSize() != this.getSize())
+		{
+			return false;
+		}
+		
 		float[] first = this.array();
 		float[] sec = vec.array();
-		
-		if (first.length != sec.length) return false;
 		
 		for (int c = 0; c < sec.length; c++)
 		{
@@ -144,6 +177,7 @@ public class Vector2f implements IVector
 			{
 				return false;
 			}
+			
 		}
 		
 		return true;

@@ -1,6 +1,8 @@
 
 package elusivehawk.engine.render;
 
+import elusivehawk.engine.math.Vector2f;
+
 /**
  * 
  * 
@@ -11,6 +13,7 @@ public class BasicImageData implements IExtraImageData
 {
 	protected final ITexture tex;
 	protected final Color col;
+	protected final Vector2f[] texOffs = {new Vector2f(0f, 0f), new Vector2f(1f, 0f), new Vector2f(0f, 1f), new Vector2f(1f, 1f)};
 	
 	public BasicImageData(ITexture texture)
 	{
@@ -35,6 +38,12 @@ public class BasicImageData implements IExtraImageData
 	public Color getColor(int corner)
 	{
 		return this.col;
+	}
+	
+	@Override
+	public Vector2f getTextureOffset(int corner)
+	{
+		return this.texOffs[corner];
 	}
 	
 	@Override

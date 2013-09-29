@@ -81,15 +81,20 @@ public class GLProgram
 	
 	public void attachModel(Model m)
 	{
-		this.attachVBOs(new VertexBufferObject[]{m.finBuf, m.indiceBuf});
+		this.attachVBOs(m.finBuf, m.indiceBuf);
+		this.createAttribPointers(m.fin);
 		
+	}
+	
+	public void createAttribPointers(FloatBuffer buf)
+	{
 		this.bind();
 		
 		this.attachVertex(new String[]{"in_position", "in_color", "in_texcoord"}, new int[]{0, 1, 2}, false);
 		
-		GL.glVertexAttribPointer(0, 4, false, Model.VERTEX_OFFSET, m.fin);
-		GL.glVertexAttribPointer(1, 4, false, Model.COLOR_OFFSET, m.fin);
-		GL.glVertexAttribPointer(2, 2, false, Model.TEXCOORD_OFFSET, m.fin);
+		GL.glVertexAttribPointer(0, 4, false, Model.VERTEX_OFFSET, buf);
+		GL.glVertexAttribPointer(1, 4, false, Model.COLOR_OFFSET, buf);
+		GL.glVertexAttribPointer(2, 2, false, Model.TEXCOORD_OFFSET, buf);
 		
 		this.unbind();
 		

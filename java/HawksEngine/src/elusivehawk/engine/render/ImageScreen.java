@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.Display;
+import elusivehawk.engine.util.BufferHelper;
 
 /**
  * 
@@ -32,19 +33,20 @@ public class ImageScreen
 	{
 		p = program;
 		
-		buf = BufferUtils.createFloatBuffer(maxImgs * 32);
+		buf = BufferUtils.createFloatBuffer(maxImgs * 40);
 		indiceBuf = BufferUtils.createIntBuffer(maxImgs * 6);
 		
-		vbo = new VertexBufferObject();
+		vbo = new VertexBufferObject(GL.GL_ARRAY_BUFFER);
 		indices = new VertexBufferObject(GL.GL_ELEMENT_ARRAY_BUFFER);
 		
 		p.attachVBOs(vbo, indices);
+		p.createAttribPointers(buf);
 		
 	}
 	
 	public int addImage(ImageData info, int xPos, int yPos)
 	{
-		if (this.buf.limit() - this.buf.capacity() == 0)
+		if (this.getImgCount() == this.buf.limit() / 40)
 		{
 			throw new ArrayIndexOutOfBoundsException("Image limit hit!");
 		}
@@ -54,33 +56,9 @@ public class ImageScreen
 		info.pos.one = xPos;
 		info.pos.two = yPos;
 		
-		int x = info.pos.one;
-		int y = info.pos.two;
-		int w = info.width;
-		int h = info.height;
+		FloatBuffer img = this.generateImgBuffer(info);
 		
-		FloatBuffer img = BufferUtils.createFloatBuffer(32);
-		
-		float a = x / Display.getWidth();
-		float b = y / Display.getHeight();
-		float c = (x + w) / Display.getWidth();
-		float d = (y + h) / Display.getHeight();
-		
-		img.put(a).put(b).put(0).put(1f);
-		info.mgr.getColor(0).store(img);
-		
-		img.put(c).put(b).put(0).put(1f);
-		info.mgr.getColor(1).store(img);
-		
-		img.put(a).put(d).put(0).put(1f);
-		info.mgr.getColor(2).store(img);
-		
-		img.put(c).put(d).put(0).put(1f);
-		info.mgr.getColor(3).store(img);
-		
-		img.flip();
-		
-		this.buf.position(position * 32);
+		this.buf.position(position * 40);
 		this.buf.put(img);
 		
 		IntBuffer ind = BufferUtils.createIntBuffer(6);
@@ -105,22 +83,42 @@ public class ImageScreen
 		return this.data.get(index);
 	}
 	
-	@Deprecated
 	public void removeImg(int index)
 	{
+		int offset = index * 40;
+		
+		FloatBuffer remains = BufferHelper.makeFloatBuffer(this.buf, offset + 40, (this.getImgCount() - index) * 40);
+		
+		this.vbo.updateVBO(remains, offset);
+		
+		this.buf.position(offset);
+		this.buf.put(remains);
+		
+		for (int c = 0; c < 40; c++)
+		{
+			this.buf.put(0f);
+			
+		}
+		
+		this.data.remove(index);
 		
 	}
 	
 	public void updateImages()
 	{
-		for (int c = 0; c < this.data.size(); c++)
+		for (int c = 0; c < this.getImgCount(); c++)
 		{
-			ImageData info = this.data.get(c);
+			ImageData info = this.getImg(c);
 			IExtraImageData mgr = info.mgr;
 			
 			if (mgr.updateImagePosition(c, info))
 			{
+				FloatBuffer img = this.generateImgBuffer(info);
 				
+				this.buf.position(c * 40);
+				this.buf.put(img);
+				
+				this.vbo.updateVBO(img, c * 40);
 				
 			}
 			
@@ -131,6 +129,39 @@ public class ImageScreen
 	public int getImgCount()
 	{
 		return this.data.size();
+	}
+	
+	public FloatBuffer generateImgBuffer(ImageData info)
+	{
+		FloatBuffer ret = BufferUtils.createFloatBuffer(40);
+		
+		int x = info.pos.one;
+		int y = info.pos.two;
+		
+		float a = x / Display.getWidth();
+		float b = y / Display.getHeight();
+		float c = (x + info.width) / Display.getWidth();
+		float d = (y + info.height) / Display.getHeight();
+		
+		ret.put(a).put(b).put(0).put(1f);
+		info.mgr.getColor(0).store(ret);
+		info.mgr.getTextureOffset(0).store(ret);
+		
+		ret.put(c).put(b).put(0).put(1f);
+		info.mgr.getColor(1).store(ret);
+		info.mgr.getTextureOffset(1).store(ret);
+		
+		ret.put(a).put(d).put(0).put(1f);
+		info.mgr.getColor(2).store(ret);
+		info.mgr.getTextureOffset(2).store(ret);
+		
+		ret.put(c).put(d).put(0).put(1f);
+		info.mgr.getColor(3).store(ret);
+		info.mgr.getTextureOffset(3).store(ret);
+		
+		ret.flip();
+		
+		return ret;
 	}
 	
 }

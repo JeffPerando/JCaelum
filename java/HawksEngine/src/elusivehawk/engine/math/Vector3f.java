@@ -57,11 +57,12 @@ public class Vector3f extends Vector2f
 	
 	public Vector3f add(Vector3f vec)
 	{
-		super.add(vec);
-		
-		this.z += vec.z;
-		
-		return this;
+		return this.add(vec.x, vec.y, vec.z);
+	}
+	
+	public Vector3f add(float x, float y, float z)
+	{
+		return this.set(this.x + x, this.y + y, this.z + z);
 	}
 	
 	public Vector3f cross(Vector3f vec)
@@ -71,11 +72,12 @@ public class Vector3f extends Vector2f
 	
 	public Vector3f div(Vector3f vec)
 	{
-		super.div(vec);
-		
-		this.z /= vec.z;
-		
-		return this;
+		return this.div(vec.x, vec.y, vec.z);
+	}
+	
+	public Vector3f div(float x, float y, float z)
+	{
+		return this.set(this.x / x, this.y / y, this.z / z);
 	}
 	
 	public Vector3f mul(Vector3f vec)
@@ -91,20 +93,31 @@ public class Vector3f extends Vector2f
 	
 	public Vector3f mul(float x, float y, float z)
 	{
-		super.mul(x, y);
+		return this.set(this.x * x, this.y * y, this.z * z);
+	}
+	
+	public Vector3f set(Vector3f vec)
+	{
+		return this.set(vec.x, vec.y, vec.z);
+	}
+	
+	public Vector3f set(float x, float y, float z)
+	{
+		super.set(x, y);
 		
-		this.z *= z;
+		this.z = z;
 		
 		return this;
 	}
 	
 	public Vector3f sub(Vector3f vec)
 	{
-		super.sub(vec);
-		
-		this.z -= vec.z;
-		
-		return this;
+		return this.sub(vec.x, vec.y, vec.z);
+	}
+	
+	public Vector3f sub(float x, float y, float z)
+	{
+		return this.set(this.x - x, this.y - y, this.z - z);
 	}
 	
 	@Override

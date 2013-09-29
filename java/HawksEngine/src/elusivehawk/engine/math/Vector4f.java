@@ -54,23 +54,25 @@ public class Vector4f extends Vector3f
 		this(vec.x, vec.y, vec.z, d);
 		
 	}
-	
+
 	public Vector4f add(Vector4f vec)
 	{
-		super.add(vec);
-		
-		this.w += vec.w;
-		
-		return this;
+		return this.add(vec.x, vec.y, vec.z, vec.w);
+	}
+	
+	public Vector4f add(float x, float y, float z, float w)
+	{
+		return this.set(this.x + x, this.y + y, this.z + z, this.w + w);
 	}
 	
 	public Vector4f div(Vector4f vec)
 	{
-		super.div(vec);
-		
-		this.w /= vec.w;
-		
-		return this;
+		return this.div(vec.x, vec.y, vec.z, vec.w);
+	}
+	
+	public Vector4f div(float x, float y, float z, float w)
+	{
+		return this.set(this.x / x, this.y / y, this.z / z, this.w / w);
 	}
 	
 	public Vector4f mul(Vector4f vec)
@@ -86,20 +88,31 @@ public class Vector4f extends Vector3f
 	
 	public Vector4f mul(float x, float y, float z, float w)
 	{
-		super.mul(x, y, z);
+		return this.set(this.x * x, this.y * y, this.z * z, this.w / w);
+	}
+	
+	public Vector4f set(Vector4f vec)
+	{
+		return this.set(vec.x, vec.y, vec.z, vec.w);
+	}
+	
+	public Vector4f set(float x, float y, float z, float w)
+	{
+		super.set(x, y, z);
 		
-		this.w *= w;
+		this.w = w;
 		
 		return this;
 	}
 	
 	public Vector4f sub(Vector4f vec)
 	{
-		super.sub(vec);
-		
-		this.w -= vec.w;
-		
-		return this;
+		return this.sub(vec.x, vec.y, vec.z, vec.w);
+	}
+	
+	public Vector4f sub(float x, float y, float z, float w)
+	{
+		return this.set(this.x - x, this.y - y, this.z - z, this.w - w);
 	}
 	
 	@Override

@@ -15,12 +15,6 @@ public class VertexBufferObject
 {
 	public final int id, t;
 	
-	public VertexBufferObject()
-	{
-		this(GL.GL_ARRAY_BUFFER);
-		
-	}
-	
 	public VertexBufferObject(int target)
 	{
 		this(GL.glGenBuffers(), target);
@@ -132,6 +126,22 @@ public class VertexBufferObject
 	{
 		GL.glBindBuffer(this);
 		GL.glBufferSubData(this.t, 0, buf);
+		GL.glBindBuffer(this.t, 0);
+		
+	}
+	
+	public void updateVBO(FloatBuffer buf, int offset)
+	{
+		GL.glBindBuffer(this);
+		GL.glBufferSubData(this.t, offset * 4, buf);
+		GL.glBindBuffer(this.t, 0);
+		
+	}
+	
+	public void updateVBO(IntBuffer buf, int offset)
+	{
+		GL.glBindBuffer(this);
+		GL.glBufferSubData(this.t, offset * 4, buf);
 		GL.glBindBuffer(this.t, 0);
 		
 	}

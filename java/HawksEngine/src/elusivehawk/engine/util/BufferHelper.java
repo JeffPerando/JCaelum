@@ -52,9 +52,9 @@ public final class BufferHelper
 	{
 		ByteBuffer ret = BufferUtils.createByteBuffer(count);
 		
-		for (int c = count; c < (count + offset); c++)
+		for (int c = 0; c < count; c++)
 		{
-			ret.put(buf.get(c));
+			ret.put(buf.get(c + offset));
 			
 		}
 		
@@ -91,9 +91,9 @@ public final class BufferHelper
 	{
 		CharBuffer ret = BufferUtils.createCharBuffer(count);
 		
-		for (int c = count; c < (count + offset); c++)
+		for (int c = 0; c < count; c++)
 		{
-			ret.put(buf.get(c));
+			ret.put(buf.get(c + offset));
 			
 		}
 		
@@ -130,9 +130,9 @@ public final class BufferHelper
 	{
 		ShortBuffer ret = BufferUtils.createShortBuffer(count);
 		
-		for (int c = count; c < (count + offset); c++)
+		for (int c = 0; c < count; c++)
 		{
-			ret.put(buf.get(c));
+			ret.put(buf.get(c + offset));
 			
 		}
 		
@@ -169,9 +169,9 @@ public final class BufferHelper
 	{
 		IntBuffer ret = BufferUtils.createIntBuffer(count);
 		
-		for (int c = count; c < (count + offset); c++)
+		for (int c = 0; c < count; c++)
 		{
-			ret.put(buf.get(c));
+			ret.put(buf.get(c + offset));
 			
 		}
 		
@@ -208,9 +208,9 @@ public final class BufferHelper
 	{
 		DoubleBuffer ret = BufferUtils.createDoubleBuffer(count);
 		
-		for (int c = count; c < (count + offset); c++)
+		for (int c = 0; c < count; c++)
 		{
-			ret.put(buf.get(c));
+			ret.put(buf.get(c + offset));
 			
 		}
 		
@@ -247,9 +247,9 @@ public final class BufferHelper
 	{
 		FloatBuffer ret = BufferUtils.createFloatBuffer(count);
 		
-		for (int c = count; c < (count + offset); c++)
+		for (int c = 0; c < count; c++)
 		{
-			ret.put(buf.get(c));
+			ret.put(buf.get(c + offset));
 			
 		}
 		
@@ -286,9 +286,9 @@ public final class BufferHelper
 	{
 		LongBuffer ret = BufferUtils.createLongBuffer(count);
 		
-		for (int c = count; c < (count + offset); c++)
+		for (int c = 0; c < count; c++)
 		{
-			ret.put(buf.get(c));
+			ret.put(buf.get(c + offset));
 			
 		}
 		
