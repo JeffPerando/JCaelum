@@ -40,6 +40,12 @@ public final class GL
 {
 	private GL(){}
 	
+	//Helper constants for OpenGL operations.
+	
+	public static final int VERTEX_OFFSET = 0;
+	public static final int COLOR_OFFSET = 3;
+	public static final int TEXCOORD_OFFSET = 7;
+	
 	//XXX #
 	
 	public static final int GL_2_BYTES = GL11.GL_2_BYTES;

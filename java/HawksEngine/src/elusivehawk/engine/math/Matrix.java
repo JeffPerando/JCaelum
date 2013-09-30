@@ -97,7 +97,7 @@ public class Matrix implements IStoreable
 		return false;
 	}
 	
-	public void load(FloatBuffer buf)
+	public Matrix load(FloatBuffer buf)
 	{
 		if (buf.limit() < (this.w * this.h))
 		{
@@ -114,9 +114,10 @@ public class Matrix implements IStoreable
 			
 		}
 		
+		return this;
 	}
 	
-	public void add(Matrix m)
+	public Matrix add(Matrix m)
 	{
 		int xSize = Math.min(m.w, this.w);
 		int ySize = Math.min(m.h, this.h);
@@ -131,9 +132,10 @@ public class Matrix implements IStoreable
 			
 		}
 		
+		return this;
 	}
 	
-	public void sub(Matrix m)
+	public Matrix sub(Matrix m)
 	{
 		int xSize = Math.min(m.w, this.w);
 		int ySize = Math.min(m.h, this.h);
@@ -148,9 +150,10 @@ public class Matrix implements IStoreable
 			
 		}
 		
+		return this;
 	}
 	
-	public void mul(Matrix m)
+	public Matrix mul(Matrix m)
 	{
 		int xSize = Math.min(m.w, this.w);
 		int ySize = Math.min(m.h, this.h);
@@ -165,10 +168,16 @@ public class Matrix implements IStoreable
 			
 		}
 		
+		return this;
 	}
 	
-	public void mul(Vector4f vec)
+	public Matrix mul(Vector4f vec)
 	{
+		if (this.h < 4)
+		{
+			throw new ArrayIndexOutOfBoundsException("Matrix is too small!");
+		}
+		
 		for (int x = 0; x < this.w; x++)
 		{
 			this.data[x][0] *= vec.x;
@@ -178,6 +187,7 @@ public class Matrix implements IStoreable
 			
 		}
 		
+		return this;
 	}
 	
 }

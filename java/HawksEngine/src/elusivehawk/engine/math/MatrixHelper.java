@@ -108,11 +108,6 @@ public final class MatrixHelper
 	
 	public static Matrix createRotationMatrix(float x, float y, float z)
 	{
-		return createRotationMatrix((int)(360 * x) % 360, (int)(360 * y) % 360, (int)(360 * z) % 360);
-	}
-	
-	public static Matrix createRotationMatrix(int x, int y, int z)
-	{
 		//Hold on to your butts...
 		
 		float a = (float)Math.cos(x);
@@ -139,6 +134,15 @@ public final class MatrixHelper
 		buf.rewind();
 		
 		return new Matrix(buf, 4, 4);
+	}
+	
+	public Matrix generateHomogenousMatrix(Vector3f rot, Vector3f scl, Vector3f trans)
+	{
+		Matrix rotate = createRotationMatrix(rot);
+		Matrix scale = createScalingMatrix(scl);
+		Matrix translate = createTranslationMatrix(trans);
+		
+		return rotate.mul(scale).mul(translate);
 	}
 	
 }

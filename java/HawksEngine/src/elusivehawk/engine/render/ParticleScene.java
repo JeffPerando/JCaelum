@@ -47,7 +47,7 @@ public class ParticleScene
 		
 		p.attachVBOs(vbo);
 		
-		p.attachVertex(new String[]{"in_pos", "in_col"}, new int[]{0, 1}, false);
+		p.attachVertexAttribs(new String[]{"in_pos", "in_col"}, new int[]{0, 1}, false);
 		
 		GL.glVertexAttribPointer(0, 4, false, 0, buf);
 		GL.glVertexAttribPointer(1, 4, false, 4, buf);

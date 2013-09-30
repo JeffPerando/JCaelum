@@ -17,6 +17,8 @@ import elusivehawk.engine.util.BufferHelper;
  */
 public class ImageScreen
 {
+	public static final int IMG_FLOAT_COUNT = 36;
+	
 	public final GLProgram p;
 	public final VertexBufferObject vbo, indices;
 	private final FloatBuffer buf;
@@ -33,7 +35,7 @@ public class ImageScreen
 	{
 		p = program;
 		
-		buf = BufferUtils.createFloatBuffer(maxImgs * 40);
+		buf = BufferUtils.createFloatBuffer(maxImgs * IMG_FLOAT_COUNT);
 		indiceBuf = BufferUtils.createIntBuffer(maxImgs * 6);
 		
 		vbo = new VertexBufferObject(GL.GL_ARRAY_BUFFER);
@@ -46,7 +48,7 @@ public class ImageScreen
 	
 	public int addImage(ImageData info, int xPos, int yPos)
 	{
-		if (this.getImgCount() == this.buf.limit() / 40)
+		if (this.getImgCount() == this.buf.limit() / IMG_FLOAT_COUNT)
 		{
 			throw new ArrayIndexOutOfBoundsException("Image limit hit!");
 		}
@@ -58,7 +60,7 @@ public class ImageScreen
 		
 		FloatBuffer img = this.generateImgBuffer(info);
 		
-		this.buf.position(position * 40);
+		this.buf.position(position * IMG_FLOAT_COUNT);
 		this.buf.put(img);
 		
 		IntBuffer ind = BufferUtils.createIntBuffer(6);
@@ -85,16 +87,16 @@ public class ImageScreen
 	
 	public void removeImg(int index)
 	{
-		int offset = index * 40;
+		int offset = index * IMG_FLOAT_COUNT;
 		
-		FloatBuffer remains = BufferHelper.makeFloatBuffer(this.buf, offset + 40, (this.getImgCount() - index) * 40);
+		FloatBuffer remains = BufferHelper.makeFloatBuffer(this.buf, offset + IMG_FLOAT_COUNT, (this.getImgCount() - index) * IMG_FLOAT_COUNT);
 		
 		this.vbo.updateVBO(remains, offset);
 		
 		this.buf.position(offset);
 		this.buf.put(remains);
 		
-		for (int c = 0; c < 40; c++)
+		for (int c = 0; c < IMG_FLOAT_COUNT; c++)
 		{
 			this.buf.put(0f);
 			
@@ -115,10 +117,10 @@ public class ImageScreen
 			{
 				FloatBuffer img = this.generateImgBuffer(info);
 				
-				this.buf.position(c * 40);
+				this.buf.position(c * IMG_FLOAT_COUNT);
 				this.buf.put(img);
 				
-				this.vbo.updateVBO(img, c * 40);
+				this.vbo.updateVBO(img, c * IMG_FLOAT_COUNT);
 				
 			}
 			
@@ -133,7 +135,7 @@ public class ImageScreen
 	
 	public FloatBuffer generateImgBuffer(ImageData info)
 	{
-		FloatBuffer ret = BufferUtils.createFloatBuffer(40);
+		FloatBuffer ret = BufferUtils.createFloatBuffer(IMG_FLOAT_COUNT);
 		
 		int x = info.pos.one;
 		int y = info.pos.two;
@@ -143,19 +145,19 @@ public class ImageScreen
 		float c = (x + info.width) / Display.getWidth();
 		float d = (y + info.height) / Display.getHeight();
 		
-		ret.put(a).put(b).put(0).put(1f);
+		ret.put(a).put(b).put(0);
 		info.mgr.getColor(0).store(ret);
 		info.mgr.getTextureOffset(0).store(ret);
 		
-		ret.put(c).put(b).put(0).put(1f);
+		ret.put(c).put(b).put(0);
 		info.mgr.getColor(1).store(ret);
 		info.mgr.getTextureOffset(1).store(ret);
 		
-		ret.put(a).put(d).put(0).put(1f);
+		ret.put(a).put(d).put(0);
 		info.mgr.getColor(2).store(ret);
 		info.mgr.getTextureOffset(2).store(ret);
 		
-		ret.put(c).put(d).put(0).put(1f);
+		ret.put(c).put(d).put(0);
 		info.mgr.getColor(3).store(ret);
 		info.mgr.getTextureOffset(3).store(ret);
 		

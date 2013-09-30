@@ -120,7 +120,7 @@ public class PixelGrid implements ITexture
 	public ByteBuffer toByteBuffer()
 	{
 		ByteBuffer ret = BufferUtils.createByteBuffer(this.xSize * this.ySize * 4);
-		Color col = new Color();
+		Color col = new Color(EnumColorFormat.RGBA);
 		
 		for (int x = 0; x < this.xSize; x++)
 		{
@@ -142,7 +142,7 @@ public class PixelGrid implements ITexture
 	public FloatBuffer toFloatBuffer()
 	{
 		FloatBuffer ret = BufferUtils.createFloatBuffer(this.xSize * this.ySize * 4);
-		Color col = new Color();
+		Color col = new Color(EnumColorFormat.RGBA);
 		
 		for (int x = 0; x < this.xSize; x++)
 		{
@@ -164,7 +164,7 @@ public class PixelGrid implements ITexture
 	public IntBuffer toIntBuffer()
 	{
 		IntBuffer ret = BufferUtils.createIntBuffer(this.xSize * this.ySize);
-		Color col = new Color();
+		Color col = new Color(EnumColorFormat.RGBA);
 		
 		for (int x = 0; x < this.xSize; x++)
 		{

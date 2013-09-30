@@ -38,33 +38,15 @@ public class Color implements IStoreable
 		
 	}
 	
-	public Color(int a, int b, int c, int d)
-	{
-		this(EnumColorFormat.RGBA, a, b, c, d);
-		
-	}
-	
 	public Color(EnumColorFormat f, int a, int b, int c, int d)
 	{
 		this(f, new byte[]{(byte)a, (byte)b, (byte)c, (byte)d});
 		
 	}
 	
-	public Color(byte... cols)
-	{
-		this(EnumColorFormat.RGBA, cols);
-		
-	}
-	
 	public Color(EnumColorFormat f, byte... cols)
 	{
 		this(f, BufferHelper.makeByteBuffer(cols));
-		
-	}
-	
-	public Color(ByteBuffer buf)
-	{
-		this(EnumColorFormat.RGBA, buf);
 		
 	}
 	

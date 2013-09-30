@@ -103,6 +103,11 @@ public class Vector2f implements IVector
 		return this.set(this.x - x, this.y - y);
 	}
 	
+	public boolean isDirty()
+	{
+		return this.dirty;
+	}
+	
 	public Vector2f setIsDirty(boolean b)
 	{
 		this.dirty = b;

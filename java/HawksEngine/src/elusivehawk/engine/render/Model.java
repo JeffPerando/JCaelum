@@ -6,7 +6,7 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import elusivehawk.engine.math.Vector4f;
+import elusivehawk.engine.math.Vector3f;
 import elusivehawk.engine.util.BufferHelper;
 import elusivehawk.engine.util.GameLog;
 import elusivehawk.engine.util.Tuple;
@@ -19,21 +19,13 @@ import elusivehawk.engine.util.Tuple;
  */
 public abstract class Model
 {
-	public static final int VERTEX_OFFSET = 0;
-	public static final int COLOR_OFFSET = 4;
-	public static final int TEXCOORD_OFFSET = 8;
-	
-	public static final int SCALE_OFFSET = 0;
-	public static final int ROT_OFFSET = 4;
-	public static final int TRANS_OFFSET = 8;
-	
 	public final FloatBuffer fin;
 	public final IntBuffer indices;
 	
 	public final int polyCount;
 	public final VertexBufferObject finBuf, indiceBuf;
 	
-	private List<Vector4f> polys = new ArrayList<Vector4f>();
+	private List<Vector3f> polys = new ArrayList<Vector3f>();
 	private List<Color> color = new ArrayList<Color>();
 	private List<Tuple<Float, Float>> texOffs = new ArrayList<Tuple<Float, Float>>();
 	private int glMode = Integer.MIN_VALUE;
@@ -57,13 +49,13 @@ public abstract class Model
 			
 		}
 		
-		List<Vector4f> vecs = new ArrayList<Vector4f>();
+		List<Vector3f> vecs = new ArrayList<Vector3f>();
 		List<Integer> indiceList = new ArrayList<Integer>();
 		List<Float> temp = new ArrayList<Float>();
 		
 		for (int c = 0; c < polys.size(); c++)
 		{
-			Vector4f vec = polys.get(c);
+			Vector3f vec = polys.get(c);
 			
 			int index = vecs.indexOf(vec);
 			
@@ -78,7 +70,6 @@ public abstract class Model
 				temp.add(vec.x);
 				temp.add(vec.y);
 				temp.add(vec.z);
-				temp.add(vec.w);
 				
 				if (globalColor != null)
 				{
@@ -192,7 +183,7 @@ public abstract class Model
 		
 		while (this.color.size() < this.polys.size())
 		{
-			this.color.add(new Color());
+			this.color.add(new Color(EnumColorFormat.RGBA));
 			
 		}
 		
@@ -212,19 +203,13 @@ public abstract class Model
 	
 	protected final void vertex(float x, float y, float z)
 	{
-		this.vertex(x, y, z, 1);
-		
-	}
-	
-	protected final void vertex(float x, float y, float z, float w)
-	{
-		this.polys.add(new Vector4f(x, y, z, w));
+		this.polys.add(new Vector3f(x, y, z));
 		
 	}
 	
 	protected final void color(int r, int g, int b, int a)
 	{
-		this.color(new Color(r, g, b, a));
+		this.color(new Color(EnumColorFormat.RGBA, r, g, b, a));
 		
 	}
 	
@@ -243,7 +228,7 @@ public abstract class Model
 	
 	protected final void globalColor(int r, int g, int b, int a)
 	{
-		this.globalColor(new Color(r, g, b, a));
+		this.globalColor(new Color(EnumColorFormat.RGBA, r, g, b, a));
 		
 	}
 	

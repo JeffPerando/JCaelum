@@ -90,11 +90,11 @@ public class GLProgram
 	{
 		this.bind();
 		
-		this.attachVertex(new String[]{"in_position", "in_color", "in_texcoord"}, new int[]{0, 1, 2}, false);
+		this.attachVertexAttribs(new String[]{"in_position", "in_color", "in_texcoord"}, new int[]{0, 1, 2}, false);
 		
-		GL.glVertexAttribPointer(0, 4, false, Model.VERTEX_OFFSET, buf);
-		GL.glVertexAttribPointer(1, 4, false, Model.COLOR_OFFSET, buf);
-		GL.glVertexAttribPointer(2, 2, false, Model.TEXCOORD_OFFSET, buf);
+		GL.glVertexAttribPointer(0, 3, false, GL.VERTEX_OFFSET, buf);
+		GL.glVertexAttribPointer(1, 4, false, GL.COLOR_OFFSET, buf);
+		GL.glVertexAttribPointer(2, 2, false, GL.TEXCOORD_OFFSET, buf);
 		
 		this.unbind();
 		
@@ -145,7 +145,7 @@ public class GLProgram
 		
 	}
 	
-	public IntBuffer attachVertex(String[] attribs, int[] loc, boolean retLocs)
+	public IntBuffer attachVertexAttribs(String[] attribs, int[] loc, boolean retLocs)
 	{
 		if (attribs.length != loc.length)
 		{
