@@ -68,7 +68,7 @@ public final class TextParser
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace(); //Done because GameLog uses this function too, thereby preventing a nasty deadlock situation.
+			GameLog.error("Error caught while reading text file: ", e);
 			
 		}
 		

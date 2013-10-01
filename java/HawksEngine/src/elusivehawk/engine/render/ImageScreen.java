@@ -87,22 +87,33 @@ public class ImageScreen
 	
 	public void removeImg(int index)
 	{
-		int offset = index * IMG_FLOAT_COUNT;
+		if (index >= this.getImgCount())
+		{
+			return;
+		}
 		
-		FloatBuffer remains = BufferHelper.makeFloatBuffer(this.buf, offset + IMG_FLOAT_COUNT, (this.getImgCount() - index) * IMG_FLOAT_COUNT);
+		if (index + 1 != this.getImgCount())
+		{
+			FloatBuffer remains = BufferHelper.makeFloatBuffer(this.buf, (index + 1) * IMG_FLOAT_COUNT, (index - this.getImgCount()) * IMG_FLOAT_COUNT);
+			
+			this.buf.position(index * IMG_FLOAT_COUNT);
+			this.buf.put(remains);
+			
+		}
 		
-		this.vbo.updateVBO(remains, offset);
-		
-		this.buf.position(offset);
-		this.buf.put(remains);
+		this.buf.position((this.getImgCount() - 1) * IMG_FLOAT_COUNT);
 		
 		for (int c = 0; c < IMG_FLOAT_COUNT; c++)
 		{
-			this.buf.put(0f);
+			this.buf.put(0);
 			
 		}
 		
 		this.data.remove(index);
+		
+		FloatBuffer upd = BufferHelper.makeFloatBuffer(this.buf, index * IMG_FLOAT_COUNT, (this.getImgCount() + 1) * IMG_FLOAT_COUNT);
+		
+		this.vbo.updateVBO(upd, index * IMG_FLOAT_COUNT);
 		
 	}
 	

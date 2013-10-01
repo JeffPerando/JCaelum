@@ -56,7 +56,7 @@ public class ParticleScene
 	
 	public void spawnParticle(IParticle p)
 	{
-		if (this.particles.size() == this.particleCount)
+		if (this.particles.size() >= this.particleCount)
 		{
 			return;
 		}
@@ -71,8 +71,6 @@ public class ParticleScene
 	
 	public boolean updateBeforeRendering()
 	{
-		boolean update = false, upload = false;
-		
 		for (int c = 0; c < this.particles.size(); c++)
 		{
 			IParticle p = this.particles.get(c);
@@ -83,8 +81,7 @@ public class ParticleScene
 			{
 				this.particles.remove(c);
 				
-				update = true;
-				upload = true;
+				//TODO Fix
 				
 				continue;
 			}
@@ -99,8 +96,6 @@ public class ParticleScene
 				vec.store(this.buf);
 				col.store(this.buf);
 				
-				upload = true;
-				
 			}
 			
 		}
@@ -111,31 +106,6 @@ public class ParticleScene
 		}
 		
 		this.buf.position(0);
-		
-		if (update)
-		{
-			FloatBuffer tmp = BufferUtils.createFloatBuffer(this.particles.size() * 8);
-			
-			for (IParticle p : this.particles)
-			{
-				p.getPosition().store(tmp);
-				tmp.put(1f);
-				
-				EnumColorFormat.RGBA.convert(p.getColor()).store(tmp);
-				
-			}
-			
-			tmp.rewind();
-			
-			this.buf = tmp;
-			
-		}
-		
-		if (upload)
-		{
-			this.vbo.updateEntireVBO(buf);
-			
-		}
 		
 		return true;
 	}

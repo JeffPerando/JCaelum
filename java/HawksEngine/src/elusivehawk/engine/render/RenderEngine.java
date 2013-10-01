@@ -156,42 +156,7 @@ public final class RenderEngine
 			return;
 		}
 		
-		int lastTex = 0, imgCount = 0;
 		
-		for (int c = 0; c < imgs.getImgCount(); c++)
-		{
-			ImageData data = imgs.getImg(c);
-			
-			int tex = data.mgr.getTexture().getTexture();
-			
-			if (c == 0)
-			{
-				lastTex = tex;
-				
-			}
-			
-			if (lastTex == tex)
-			{
-				imgCount++;
-				
-			}
-			else
-			{
-				GL.glActiveTexture(lastTex);
-				
-				GL.glDrawElements(GL.GL_TRIANGLES, imgCount * 2, GL.GL_UNSIGNED_INT, (c - imgCount) * 6);
-				
-				lastTex = tex;
-				
-			}
-			
-			if (c == imgs.getImgCount() - 1)
-			{
-				
-				
-			}
-			
-		}
 		
 		imgs.p.unbind();
 		
