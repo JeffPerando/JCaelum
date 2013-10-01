@@ -1,5 +1,5 @@
 //Line down, then package.
-import elusivehawk.engine.util.GameLog;
+import com.elusivehawk.engine.util.GameLog;
 
 /**
  * 

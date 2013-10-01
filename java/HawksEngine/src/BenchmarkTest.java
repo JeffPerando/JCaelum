@@ -2,9 +2,9 @@
 import java.io.File;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
-import elusivehawk.engine.render.GL;
-import elusivehawk.engine.util.GameLog;
-import elusivehawk.engine.util.Timer;
+import com.elusivehawk.engine.render.GL;
+import com.elusivehawk.engine.util.GameLog;
+import com.elusivehawk.engine.util.Timer;
 
 /**
  * 

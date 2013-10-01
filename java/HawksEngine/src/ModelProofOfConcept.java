@@ -1,6 +1,6 @@
 
-import elusivehawk.engine.render.GL;
-import elusivehawk.engine.render.Model;
+import com.elusivehawk.engine.render.GL;
+import com.elusivehawk.engine.render.Model;
 
 /**
  * 
