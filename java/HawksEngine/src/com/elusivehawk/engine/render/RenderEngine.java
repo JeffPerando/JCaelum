@@ -99,7 +99,7 @@ public final class RenderEngine
 						
 					}
 					
-					for (Entry<Integer, Tuple<Integer, Integer>> entry : m.getArrays().entrySet())
+					for (Entry<Integer, Tuple<Integer, Integer>> entry : m.getOffsets().entrySet())
 					{
 						GL.glDrawElements(entry.getKey(), entry.getValue().one, GL.GL_UNSIGNED_INT, entry.getValue().two);
 						

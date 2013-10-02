@@ -71,7 +71,7 @@ public class Quaternion
 	
 	public float length()
 	{
-		return (float)Math.sqrt(x * x + y * y + z * z + w * w);
+		return (float)Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w);
 	}
 	
 	public Quaternion normalize()
@@ -111,7 +111,8 @@ public class Quaternion
 		return sub(q.x, q.y, q.z, q.w);
 	}
 	
-	public Quaternion sub(float x, float y, float z, float w) {
+	public Quaternion sub(float x, float y, float z, float w)
+	{
 		this.x -= x;
 		this.y -= y;
 		this.z -= z;
@@ -185,4 +186,5 @@ public class Quaternion
 		
 		return new Matrix(m, 4, 4);
 	}
+	
 }

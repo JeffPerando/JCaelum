@@ -15,12 +15,12 @@ import com.elusivehawk.engine.util.GameLog;
  * 
  * @author Elusivehawk
  */
-public class AnimatedTexture implements ITexture
+public class TextureAnimated implements ITexture
 {
 	private final IntBuffer tex;
 	private final int w, h;
 	
-	public AnimatedTexture(File gif, int width, int height, EnumRenderMode mode)
+	public TextureAnimated(File gif, int width, int height, EnumRenderMode mode)
 	{
 		tex = RenderHelper.processGifFile(gif, mode);
 		w = width;
@@ -28,7 +28,7 @@ public class AnimatedTexture implements ITexture
 		
 	}
 	
-	public AnimatedTexture(File file, EnumRenderMode mode, int y)
+	public TextureAnimated(File file, EnumRenderMode mode, int y)
 	{
 		if (file.getName().endsWith(".gif"))
 		{

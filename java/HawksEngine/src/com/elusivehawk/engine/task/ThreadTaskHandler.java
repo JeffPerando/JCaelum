@@ -16,15 +16,19 @@ public final class ThreadTaskHandler extends ThreadStoppable
 	private List<Task<?>> tasks = new ArrayList<Task<?>>();
 	
 	@Override
-	public void update()
+	public void run()
 	{
-		for (Task<?> t : this.tasks)
+		while (this.running)
 		{
-			t.doTask();
-			
-			if (t.isTaskFinished())
+			for (Task<?> t : this.tasks)
 			{
-				this.tasks.remove(t);
+				t.doTask();
+				
+				if (t.isTaskFinished())
+				{
+					this.tasks.remove(t);
+					
+				}
 				
 			}
 			

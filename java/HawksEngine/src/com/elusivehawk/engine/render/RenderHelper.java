@@ -53,6 +53,8 @@ public final class RenderHelper
 					
 				}
 				
+				in.close();
+				
 				return ret;
 			}
 			catch (Exception e)

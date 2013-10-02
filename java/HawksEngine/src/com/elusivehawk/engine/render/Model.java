@@ -33,24 +33,25 @@ public abstract class Model
 	private Color globalColor = null;
 	private HashMap<Integer, Tuple<Integer, Integer>> arrays = new HashMap<Integer, Tuple<Integer, Integer>>();
 	
-	public Model()
+	public Model(Object... objs)
 	{
-		loadData();
+		loadData(objs);
 		
 		if (polys.size() == 0)
 		{
-			throw new RuntimeException("You forgot to load polygons!");
+			throw new RenderException("You forgot to load polygons!");
 			
 		}
 		
 		if (glMode != Integer.MIN_VALUE)
 		{
-			throw new RuntimeException("You forgot to call end()!");
+			throw new RenderException("You forgot to call end()!");
 			
 		}
 		
 		List<Vector3f> vecs = new ArrayList<Vector3f>();
 		List<Integer> indiceList = new ArrayList<Integer>();
+		
 		List<Float> temp = new ArrayList<Float>();
 		
 		for (int c = 0; c < polys.size(); c++)
@@ -64,14 +65,22 @@ public abstract class Model
 				Color col = color.get(c);
 				Tuple<Float, Float> tex = texOffs.get(c);
 				
+				index = vecs.size();
 				vecs.add(vec);
-				index = vecs.size() - 1;
 				
 				temp.add(vec.x);
 				temp.add(vec.y);
 				temp.add(vec.z);
 				
-				if (globalColor != null)
+				if (globalColor == null)
+				{
+					temp.add(col.getColorFloat(EnumColorFilter.RED));
+					temp.add(col.getColorFloat(EnumColorFilter.GREEN));
+					temp.add(col.getColorFloat(EnumColorFilter.BLUE));
+					temp.add(col.getColorFloat(EnumColorFilter.ALPHA));
+					
+				}
+				else
 				{
 					FloatBuffer mixed = RenderHelper.mixColors(col, globalColor);
 					
@@ -80,14 +89,6 @@ public abstract class Model
 						temp.add(mixed.get());
 						
 					}
-					
-				}
-				else
-				{
-					temp.add(col.getColorFloat(EnumColorFilter.RED));
-					temp.add(col.getColorFloat(EnumColorFilter.GREEN));
-					temp.add(col.getColorFloat(EnumColorFilter.BLUE));
-					temp.add(col.getColorFloat(EnumColorFilter.ALPHA));
 					
 				}
 				
@@ -135,7 +136,7 @@ public abstract class Model
 		
 	}
 	
-	public abstract void loadData();
+	public abstract void loadData(Object... objs);
 	
 	protected final void begin(int gl)
 	{
@@ -203,7 +204,13 @@ public abstract class Model
 	
 	protected final void vertex(float x, float y, float z)
 	{
-		this.polys.add(new Vector3f(x, y, z));
+		this.vertex(new Vector3f(x, y, z));
+		
+	}
+	
+	protected final void vertex(Vector3f vec)
+	{
+		this.polys.add(vec);
 		
 	}
 	
@@ -215,13 +222,6 @@ public abstract class Model
 	
 	protected final void color(Color col)
 	{
-		if (this.globalColor != null)
-		{
-			GameLog.warn("Global color has already been set. Silly programmer...");
-			
-			return;
-		}
-		
 		this.color.add(col);
 		
 	}
@@ -244,7 +244,7 @@ public abstract class Model
 		
 	}
 	
-	public HashMap<Integer, Tuple<Integer, Integer>> getArrays()
+	public HashMap<Integer, Tuple<Integer, Integer>> getOffsets()
 	{
 		return this.arrays;
 	}

@@ -13,7 +13,7 @@ import com.elusivehawk.engine.util.Tuple;
  * 
  * @author Elusivehawk
  */
-public class TextureMap extends StaticTexture
+public class TextureMap extends TextureStatic
 {
 	protected final Tuple<Integer, Integer> texSize = new Tuple<Integer, Integer>(0, 0);
 	protected final Tuple<Integer, Integer> texPos = new Tuple<Integer, Integer>(0, 0);
