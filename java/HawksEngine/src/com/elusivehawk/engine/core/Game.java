@@ -40,11 +40,6 @@ public abstract class Game
 	protected abstract void update(long delta);
 	
 	/**
-	 * Called before the game is closed out.
-	 */
-	protected abstract void onGameClosed();
-	
-	/**
 	 * 
 	 * @return The rendering mode for this game.
 	 */
@@ -66,6 +61,15 @@ public abstract class Game
 		this.running = true;
 		
 		return true;
+	}
+	
+	/**
+	 * Called before the game is closed out.
+	 */
+	protected void onGameClosed()
+	{
+		this.running = false;
+		
 	}
 	
 	public int getDelayBetweenUpdates()
@@ -159,8 +163,7 @@ public abstract class Game
 		GameLog.info("Beginning game loop...");
 		
 		long lastTime = Sys.getTime(), delta = 0, fallback = settings.fallbackDelay;
-		int targetFPS = settings.targetFPS, targetUpdates = settings.targetUpdates;
-		int updates = 0;
+		int targetFPS = settings.targetFPS, targetUpdates = settings.targetUpdates, updates = 0;
 		Timer timer = new Timer();
 		
 		if (targetUpdates <= 0)
@@ -241,7 +244,7 @@ public abstract class Game
 					
 				}
 				
-				if (updates >= targetUpdates)
+				if (updates == targetUpdates)
 				{
 					try
 					{

@@ -15,7 +15,7 @@ Yet another stupid crash...
 Have you tried C++? I hear it's much faster.
 Why are you using Java anyways?
 Brought to you by rogue code!
-The Caelum Library: Now with crashing!
+The Caelum Engine: Now with crashing!
 You have crashed. You are likely to be eaten by a grue. (Or Gloom)
 Hey hey hey!
 Push the "Debug" button, Kronk!
