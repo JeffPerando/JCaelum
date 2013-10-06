@@ -6,10 +6,11 @@ import com.elusivehawk.engine.math.Vector3f;
 
 /**
  * 
- * 
+ * To be replaced with an interface and default implementation.
  * 
  * @author Elusivehawk
  */
+@Deprecated
 public class Camera
 {
 	private static Vector3f angle = new Vector3f();

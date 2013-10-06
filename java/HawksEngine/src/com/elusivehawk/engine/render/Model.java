@@ -39,13 +39,13 @@ public abstract class Model
 		
 		if (polys.size() == 0)
 		{
-			throw new RenderException("You forgot to load polygons!");
+			throw new RuntimeException("You forgot to load polygons!");
 			
 		}
 		
 		if (glMode != Integer.MIN_VALUE)
 		{
-			throw new RenderException("You forgot to call end()!");
+			throw new RuntimeException("You forgot to call end()!");
 			
 		}
 		

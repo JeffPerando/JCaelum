@@ -9,6 +9,7 @@ import java.util.List;
  * 
  * @author Elusivehawk
  */
+@Deprecated
 public interface IScene
 {
 	public List<IModelGroup> getModels();

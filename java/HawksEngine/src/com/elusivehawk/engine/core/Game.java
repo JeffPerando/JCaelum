@@ -9,7 +9,6 @@ import org.lwjgl.opengl.Display;
 import com.elusivehawk.engine.render.Color;
 import com.elusivehawk.engine.render.EnumColorFilter;
 import com.elusivehawk.engine.render.GL;
-import com.elusivehawk.engine.render.GLProgram;
 import com.elusivehawk.engine.render.IScene;
 import com.elusivehawk.engine.render.RenderEngine;
 import com.elusivehawk.engine.util.GameLog;
@@ -43,10 +42,12 @@ public abstract class Game
 	 * 
 	 * @return The rendering mode for this game.
 	 */
+	@Deprecated
 	public abstract EnumRenderMode getRenderMode();
 	
 	protected abstract GameSettings getSettings();
 	
+	@Deprecated
 	protected abstract IScene getCurrentScene();
 	
 	//===============================BEGIN OPTIONAL GAME METHODS===============================
@@ -261,7 +262,7 @@ public abstract class Game
 		
 		this.onGameClosed();
 		
-		GLProgram.deletePrograms();
+		GL.cleanup();
 		
 		Display.destroy();
 		

@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.util;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
@@ -16,7 +17,7 @@ import com.elusivehawk.engine.core.Game;
 public class GameLog
 {
 	public static volatile boolean enableVerbosity = true;
-	public static final List<String> CRASH_DIALOG = TextParser.read(TextParser.createFile((Game.DEBUG ? "src" : ".") + "/elusivehawk/engine/core/CrashReportDialog.txt"));
+	public static final List<String> CRASH_DIALOG = TextParser.read(TextParser.createFile((Game.DEBUG ? "src" : ".") + "/com/elusivehawk/engine/core/CrashReportDialog.txt"));
 	
 	private static Random rand = new Random();
 	
@@ -53,7 +54,7 @@ public class GameLog
 	public static void error(String message, Throwable e)
 	{
 		error(message == null ? CRASH_DIALOG.get(rand.nextInt(CRASH_DIALOG.size())) : message);
-		e.printStackTrace(LogType.ERROR.getOutput());
+		e.printStackTrace(LogType.ERROR.getMainOutput());
 		
 	}
 	
@@ -76,7 +77,7 @@ public class GameLog
 		b.append(cal.get(Calendar.HOUR) + ":" + (minute < 10 ? "0" : "") + minute + ":" + cal.get(Calendar.SECOND) + ":" + cal.get(Calendar.MILLISECOND) + " " + (amOrPm ? "PM" : "AM") + ": ");
 		b.append(message);
 		
-		type.getOutput().println(b.toString());
+		type.println(b.toString());
 		
 	}
 	
@@ -87,25 +88,37 @@ public class GameLog
 		WARN(System.err, false),
 		ERROR(System.err, false);
 		
-		private PrintStream out;
+		private List<PrintStream> out = new ArrayList<PrintStream>();
+		private final PrintStream initialOut;
 		public final boolean isVerbose;
 		
 		LogType(PrintStream ps, boolean verbose)
 		{
-			out = ps;
+			out.add(ps);
+			initialOut = ps;
 			isVerbose = verbose;
 			
 		}
 		
-		public synchronized void setOutput(PrintStream stream)
+		public synchronized void addOutput(PrintStream stream)
 		{
-			this.out = stream;
+			this.out.add(stream);
 			
 		}
 		
-		public PrintStream getOutput()
+		public void println(String str)
 		{
-			return this.out;
+			for (PrintStream ps : this.out)
+			{
+				ps.println(str);
+				
+			}
+			
+		}
+		
+		public PrintStream getMainOutput()
+		{
+			return this.initialOut;
 		}
 		
 	}

@@ -16,12 +16,8 @@ import com.elusivehawk.engine.util.GameLog;
  * 
  * @author Elusivehawk
  */
-public class GLProgram
+public class GLProgram implements IGLCleanable
 {
-	public static final int M_TWO = 8, M_THREE = 9, M_FOUR = 10;
-	
-	private static final List<GLProgram> PROGRAMS = new ArrayList<GLProgram>();
-	
 	public final int id, vba;
 	public final int[] shaders;
 	private HashMap<Integer, VertexBufferObject> vbos = new HashMap<Integer, VertexBufferObject>();
@@ -47,7 +43,7 @@ public class GLProgram
 		
 		shaders = sh;
 		
-		PROGRAMS.add(this);
+		GL.register(this);
 		
 	}
 	
@@ -100,7 +96,7 @@ public class GLProgram
 		
 	}
 	
-	public void attachUniform(String name, FloatBuffer info, int mode)
+	public void attachUniform(String name, FloatBuffer info, EnumUniformType type)
 	{
 		int loc = GL.glGetUniformLocation(this.id, name);
 		
@@ -110,21 +106,11 @@ public class GLProgram
 			return;
 		}
 		
-		switch (mode)
-		{
-			case 1: GL.glUniform1(loc, info);
-			case 2: GL.glUniform2(loc, info);
-			case 3: GL.glUniform3(loc, info);
-			case 4: GL.glUniform4(loc, info);
-			case M_TWO: GL.glUniformMatrix2(loc, false, info);
-			case M_THREE: GL.glUniformMatrix3(loc, false, info);
-			case M_FOUR: GL.glUniformMatrix4(loc, false, info);
-			default: throw new RuntimeException("Invalid mode: " + mode);
-		}
+		type.loadUniform(loc, info);
 		
 	}
 	
-	public void attachUniform(String name, IntBuffer info, int mode)
+	public void attachUniform(String name, IntBuffer info, EnumUniformType type)
 	{
 		int loc = GL.glGetUniformLocation(this.id, name);
 		
@@ -134,14 +120,7 @@ public class GLProgram
 			return;
 		}
 		
-		switch (mode)
-		{
-			case 1: GL.glUniform1(loc, info);
-			case 2: GL.glUniform2(loc, info);
-			case 3: GL.glUniform3(loc, info);
-			case 4: GL.glUniform4(loc, info);
-			default: throw new RuntimeException("Invalid id: " + mode);
-		}
+		type.loadUniform(loc, info);
 		
 	}
 	
@@ -298,19 +277,10 @@ public class GLProgram
 		
 	}
 	
-	public void delete()
+	@Override
+	public void glDelete()
 	{
 		this.unbind();
-		
-		if (!this.vbos.isEmpty())
-		{
-			for (VertexBufferObject vbo : this.vbos.values())
-			{
-				GL.glDeleteBuffers(vbo);
-				
-			}
-			
-		}
 		
 		GL.glDeleteVertexArrays(this.vba);
 		
@@ -329,18 +299,120 @@ public class GLProgram
 		return this.attribs.values();
 	}
 	
-	public static void deletePrograms()
+	private static interface IUniformType
 	{
-		if (!PROGRAMS.isEmpty())
-		{
-			return;
-		}
+		public void loadUniform(int loc, FloatBuffer buf);
 		
-		for (GLProgram p : PROGRAMS)
+		public void loadUniform(int loc, IntBuffer buf);
+		
+	}
+	
+	public static enum EnumUniformType implements IUniformType
+	{
+		ONE
 		{
-			p.delete();
+			@Override
+			public void loadUniform(int loc, FloatBuffer buf)
+			{
+				GL.glUniform1(loc, buf);
+				
+			}
+
+			@Override
+			public void loadUniform(int loc, IntBuffer buf)
+			{
+				GL.glUniform1(loc, buf);
+				
+			}
 			
-		}
+		},
+		TWO
+		{
+			@Override
+			public void loadUniform(int loc, FloatBuffer buf)
+			{
+				GL.glUniform2(loc, buf);
+				
+			}
+
+			@Override
+			public void loadUniform(int loc, IntBuffer buf)
+			{
+				GL.glUniform2(loc, buf);
+				
+			}
+			
+		},
+		THREE
+		{
+			@Override
+			public void loadUniform(int loc, FloatBuffer buf)
+			{
+				GL.glUniform3(loc, buf);
+				
+			}
+
+			@Override
+			public void loadUniform(int loc, IntBuffer buf)
+			{
+				GL.glUniform3(loc, buf);
+				
+			}
+			
+		},
+		FOUR
+		{
+			@Override
+			public void loadUniform(int loc, FloatBuffer buf)
+			{
+				GL.glUniform4(loc, buf);
+				
+			}
+
+			@Override
+			public void loadUniform(int loc, IntBuffer buf)
+			{
+				GL.glUniform4(loc, buf);
+				
+			}
+			
+		},
+		M_TWO
+		{
+			@Override
+			public void loadUniform(int loc, FloatBuffer buf)
+			{
+				GL.glUniformMatrix2(loc, false, buf);
+			}
+
+			@Override
+			public void loadUniform(int loc, IntBuffer buf){}
+			
+		},
+		M_THREE
+		{
+			@Override
+			public void loadUniform(int loc, FloatBuffer buf)
+			{
+				GL.glUniformMatrix3(loc, false, buf);
+			}
+
+			@Override
+			public void loadUniform(int loc, IntBuffer buf){}
+			
+		},
+		M_FOUR
+		{
+			@Override
+			public void loadUniform(int loc, FloatBuffer buf)
+			{
+				GL.glUniformMatrix4(loc, false, buf);
+			}
+
+			@Override
+			public void loadUniform(int loc, IntBuffer buf){}
+			
+		};
 		
 	}
 	

@@ -1,15 +1,11 @@
 
-import java.io.File;
-import java.io.PrintStream;
-import java.lang.reflect.Field;
-import com.elusivehawk.engine.render.GL;
 import com.elusivehawk.engine.util.GameLog;
-import com.elusivehawk.engine.util.Timer;
 
 /**
  * 
  * Test log:
  * 
+ * Testing "++".
  * Using PrintStream.
  * More buffer testing.
  * List iterating.
@@ -26,39 +22,12 @@ public class BenchmarkTest
 	{
 		GameLog.info("Beginning bench testing...");
 		
-		File file = new File(".", "/GLFields.txt");
+		int test = 0;
 		
-		try
-		{
-			if (!file.createNewFile())
-			{
-				return;
-			}
-			
-			PrintStream ps = new PrintStream(file);
-			
-			Timer timer = new Timer(false);
-			
-			timer.start();
-			
-			for (Field f : GL.class.getFields())
-			{
-				ps.println(f.getName());
-				
-			}
-			
-			timer.stop();
-			
-			ps.close();
-			
-			GameLog.info("Time: " + timer.report());
-			
-		}
-		catch (Exception e)
-		{
-			GameLog.error(e);
-			
-		}
+		GameLog.info("" + test++);
+		GameLog.info("" + test);
+		GameLog.info("" + ++test);
+		GameLog.info("" + test);
 		
 		GameLog.info("Th-th-th-th-That's all, folks!");
 		

@@ -12,6 +12,10 @@ import com.elusivehawk.engine.util.IStoreable;
  */
 public interface IVector extends IStoreable
 {
+	public boolean isDirty();
+	
+	public boolean isReadOnly();
+	
 	public int getSize();
 	
 	public Buffer asBuffer();

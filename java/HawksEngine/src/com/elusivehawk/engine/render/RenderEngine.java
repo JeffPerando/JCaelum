@@ -13,6 +13,7 @@ import com.elusivehawk.engine.util.Tuple;
  * 
  * @author Elusivehawk
  */
+@Deprecated
 public final class RenderEngine
 {
 	private RenderEngine(){}//No constructor for you! Come back one year!
@@ -57,19 +58,20 @@ public final class RenderEngine
 		
 		if (models != null && models.size() > 0)
 		{
-			int currTex;
+			int currTex, tex;
 			
 			for (IModelGroup group : models)
 			{
-				for (int c = 0; c < group.getModels().size(); c++)
+				List<RenderTicket> tickets = group.getTickets();
+				
+				for (int c = 0; c < tickets.size(); c++)
 				{
-					if (!group.updateBeforeRendering(c))
-					{
-						continue;
-					}
+					RenderTicket ticket = tickets.get(c);
 					
-					Model m = group.getModels().get(c);
-					GLProgram p = group.getProgram(c);
+					ticket.updateBeforeUse();
+					
+					Model m = ticket.getModel();
+					GLProgram p = ticket.getProgram();
 					
 					if (!p.bind())
 					{
@@ -77,14 +79,11 @@ public final class RenderEngine
 					}
 					
 					currTex = GL.glGetInteger(GL.GL_ACTIVE_TEXTURE);
-					
-					int tex = group.getTexture(c).getTexture();
+					tex = group.getTexture(c).getTexture();
 					
 					if (currTex != tex)
 					{
-						boolean isTex = GL.glIsTexture(tex);
-						
-						if (isTex)
+						if (GL.glIsTexture(tex))
 						{
 							GL.glActiveTexture(tex);
 							

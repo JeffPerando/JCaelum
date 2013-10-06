@@ -15,7 +15,7 @@ import org.lwjgl.BufferUtils;
 public class Vector2f implements IVector
 {
 	public float x, y;
-	protected boolean dirty = false;
+	protected boolean dirty = false, readOnly = false;
 	
 	public Vector2f()
 	{
@@ -85,10 +85,14 @@ public class Vector2f implements IVector
 	
 	public Vector2f set(float x, float y)
 	{
-		this.x = x;
-		this.y = y;
-		
-		this.setIsDirty(true);
+		if (!this.isReadOnly())
+		{
+			this.x = x;
+			this.y = y;
+			
+			this.setIsDirty(true);
+			
+		}
 		
 		return this;
 	}
@@ -103,9 +107,27 @@ public class Vector2f implements IVector
 		return this.set(this.x - x, this.y - y);
 	}
 	
+	@Override
 	public boolean isDirty()
 	{
 		return this.dirty;
+	}
+	
+	@Override
+	public boolean isReadOnly()
+	{
+		return this.readOnly;
+	}
+	
+	public Vector2f markReadOnly()
+	{
+		if (!this.isDirty())
+		{
+			this.readOnly = true;
+			
+		}
+		
+		return this;
 	}
 	
 	public Vector2f setIsDirty(boolean b)
@@ -186,6 +208,12 @@ public class Vector2f implements IVector
 		}
 		
 		return true;
+	}
+	
+	@Override
+	public Vector2f clone()
+	{
+		return new Vector2f(this);
 	}
 	
 }

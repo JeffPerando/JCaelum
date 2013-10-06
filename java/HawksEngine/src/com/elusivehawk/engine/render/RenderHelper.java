@@ -24,6 +24,9 @@ import com.elusivehawk.engine.util.TextParser;
  */
 public final class RenderHelper
 {
+	public static final int VERTEX_SHADER_3D = loadShader(null, GL.GL_VERTEX_SHADER);
+	public static final int FRAGMENT_SHADER_3D = loadShader(null, GL.GL_FRAGMENT_SHADER);
+	
 	private RenderHelper(){}
 	
 	public static IntBuffer processGifFile(File gif, EnumRenderMode mode)
@@ -153,7 +156,7 @@ public final class RenderHelper
 			
 			return id;
 		}
-		catch (RenderException e)
+		catch (Exception e)
 		{
 			GameLog.error(e);
 			
@@ -203,7 +206,7 @@ public final class RenderHelper
 		
 		if (err != GL.GL_NO_ERROR)
 		{
-			throw new RenderException("Caught OpenGL error: " + GLU.gluErrorString(err));
+			throw new RuntimeException("Caught OpenGL error: " + GLU.gluErrorString(err));
 			
 		}
 		

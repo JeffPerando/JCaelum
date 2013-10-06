@@ -136,7 +136,7 @@ public final class MatrixHelper
 		return new Matrix(buf, 4, 4);
 	}
 	
-	public Matrix generateHomogenousMatrix(Vector3f rot, Vector3f scl, Vector3f trans)
+	public static Matrix createHomogenousMatrix(Vector3f rot, Vector3f scl, Vector3f trans)
 	{
 		Matrix rotate = createRotationMatrix(rot);
 		Matrix scale = createScalingMatrix(scl);

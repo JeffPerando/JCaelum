@@ -100,7 +100,11 @@ public class Vector4f extends Vector3f
 	{
 		super.set(x, y, z);
 		
-		this.w = w;
+		if (!this.isReadOnly())
+		{
+			this.w = w;
+			
+		}
 		
 		return this;
 	}
@@ -145,6 +149,12 @@ public class Vector4f extends Vector3f
 	public float[] array()
 	{
 		return new float[]{this.x, this.y, this.z, this.w};
+	}
+	
+	@Override
+	public Vector4f clone()
+	{
+		return new Vector4f(this);
 	}
 	
 }

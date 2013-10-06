@@ -11,7 +11,7 @@ import com.elusivehawk.engine.util.GameLog;
  * 
  * @author Elusivehawk
  */
-public class VertexBufferObject
+public class VertexBufferObject implements IGLCleanable
 {
 	public final int id, t;
 	
@@ -39,6 +39,8 @@ public class VertexBufferObject
 		
 		t = target;
 		id = vbo;
+		
+		GL.register(this);
 		
 	}
 	
@@ -143,6 +145,13 @@ public class VertexBufferObject
 		GL.glBindBuffer(this);
 		GL.glBufferSubData(this.t, offset * 4, buf);
 		GL.glBindBuffer(this.t, 0);
+		
+	}
+	
+	@Override
+	public void glDelete()
+	{
+		GL.glDeleteBuffers(this);
 		
 	}
 	

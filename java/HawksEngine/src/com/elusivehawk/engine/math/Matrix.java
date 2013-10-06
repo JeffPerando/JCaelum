@@ -4,6 +4,7 @@ package com.elusivehawk.engine.math;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import org.lwjgl.BufferUtils;
 import com.elusivehawk.engine.util.IStoreable;
 
 /**
@@ -188,6 +189,15 @@ public class Matrix implements IStoreable
 		}
 		
 		return this;
+	}
+	
+	public FloatBuffer asBuffer()
+	{
+		FloatBuffer ret = BufferUtils.createFloatBuffer(this.w * this.h);
+		
+		this.store(ret);
+		
+		return ret;
 	}
 	
 }
