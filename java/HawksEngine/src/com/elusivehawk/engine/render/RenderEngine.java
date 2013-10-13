@@ -141,23 +141,31 @@ public final class RenderEngine
 	
 	public static void do2DRenderPass(IScene scene)
 	{
-		ImageScreen imgs = scene.getImages();
+		List<ImageScreen> imgs = scene.getImages();
 		
-		if (imgs == null)
+		if (imgs == null || imgs.isEmpty())
 		{
 			return;
 		}
 		
-		imgs.updateImages();
-		
-		if (!imgs.p.bind())
+		for (ImageScreen imgScene : imgs)
 		{
-			return;
+			imgScene.updateImages();
+			
+			GLProgram p = imgScene.getProgram();
+			
+			if (!p.bind())
+			{
+				continue;
+			}
+			
+			GL.glActiveTexture(imgScene.getTexture());
+			GL.glDrawElements(GL.GL_TRIANGLES, imgScene.getImgCount() * 6, GL.GL_UNSIGNED_INT, 0);
+			GL.glActiveTexture(null);
+			
+			p.unbind();
+			
 		}
-		
-		
-		
-		imgs.p.unbind();
 		
 	}
 	

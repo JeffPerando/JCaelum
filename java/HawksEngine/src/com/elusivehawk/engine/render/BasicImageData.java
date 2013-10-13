@@ -11,27 +11,20 @@ import com.elusivehawk.engine.math.Vector2f;
  */
 public class BasicImageData implements IExtraImageData
 {
-	protected final ITexture tex;
 	protected final Color col;
 	protected final Vector2f[] texOffs = {new Vector2f(0f, 0f), new Vector2f(1f, 0f), new Vector2f(0f, 1f), new Vector2f(1f, 1f)};
+	protected boolean delete = false;
 	
-	public BasicImageData(ITexture texture)
+	public BasicImageData()
 	{
-		this(texture, new Color(EnumColorFormat.RGBA));
+		this(new Color(EnumColorFormat.RGBA));
 		
 	}
 	
-	public BasicImageData(ITexture texture, Color color)
+	public BasicImageData(Color color)
 	{
-		tex = texture;
 		col = color;
 		
-	}
-	
-	@Override
-	public ITexture getTexture()
-	{
-		return this.tex;
 	}
 	
 	@Override
@@ -50,6 +43,18 @@ public class BasicImageData implements IExtraImageData
 	public boolean updateImagePosition(int index, ImageData info)
 	{
 		return false;
+	}
+	
+	@Override
+	public boolean flaggedForDeletion()
+	{
+		return this.delete;
+	}
+	
+	public void flagForDeletion()
+	{
+		this.delete = true;
+		
 	}
 	
 }

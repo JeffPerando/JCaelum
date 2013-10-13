@@ -15,15 +15,15 @@ public class ImageData
 	public final int width, height;
 	public final IExtraImageData mgr;
 	
-	public ImageData(ITexture texture, int w, int h)
+	public ImageData(int w, int h)
 	{
-		this(w, h, new BasicImageData(texture));
+		this(w, h, new BasicImageData());
 		
 	}
 	
-	public ImageData(ITexture texture, Color color, int w, int h)
+	public ImageData(Color color, int w, int h)
 	{
-		this(w, h, new BasicImageData(texture, color));
+		this(w, h, new BasicImageData(color));
 		
 	}
 	

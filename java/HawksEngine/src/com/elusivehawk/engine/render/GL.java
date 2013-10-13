@@ -1918,7 +1918,7 @@ public final class GL
 	
 	public static void glActiveTexture(ITexture texture)
 	{
-		glActiveTexture(texture.getTexture());
+		glActiveTexture(texture == null ? 0 : texture.getTexture());
 		
 	}
 	

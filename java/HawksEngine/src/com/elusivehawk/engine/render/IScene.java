@@ -9,13 +9,12 @@ import java.util.List;
  * 
  * @author Elusivehawk
  */
-@Deprecated
 public interface IScene
 {
 	public List<IModelGroup> getModels();
 	
 	public ParticleScene getParticles();
 	
-	public ImageScreen getImages();
+	public List<ImageScreen> getImages();
 	
 }

@@ -19,21 +19,23 @@ public class ImageScreen
 {
 	public static final int IMG_FLOAT_COUNT = 36;
 	
-	public final GLProgram p;
-	public final VertexBufferObject vbo, indices;
-	private final FloatBuffer buf;
-	private final IntBuffer indiceBuf;
-	private final List<ImageData> data = new ArrayList<ImageData>();
+	protected ITexture tex = null;
+	protected final GLProgram p;
+	protected final VertexBufferObject vbo, indices;
+	protected final FloatBuffer buf;
+	protected final IntBuffer indiceBuf;
+	protected final List<ImageData> data = new ArrayList<ImageData>();
 	
-	public ImageScreen(int maxImgs)
+	public ImageScreen(int maxImgs, ITexture texture)
 	{
-		this(new GLProgram(), maxImgs);
+		this(new GLProgram(), texture, maxImgs);
 		
 	}
 	
-	public ImageScreen(GLProgram program, int maxImgs)
+	public ImageScreen(GLProgram program, ITexture texture, int maxImgs)
 	{
 		p = program;
+		tex = texture;
 		
 		buf = BufferUtils.createFloatBuffer(maxImgs * IMG_FLOAT_COUNT);
 		indiceBuf = BufferUtils.createIntBuffer(maxImgs * 6);
@@ -80,11 +82,6 @@ public class ImageScreen
 		return position;
 	}
 	
-	public ImageData getImg(int index)
-	{
-		return this.data.get(index);
-	}
-	
 	public void removeImg(int index)
 	{
 		if (index >= this.getImgCount())
@@ -124,7 +121,13 @@ public class ImageScreen
 			ImageData info = this.getImg(c);
 			IExtraImageData mgr = info.mgr;
 			
-			if (mgr.updateImagePosition(c, info))
+			if (mgr.flaggedForDeletion())
+			{
+				this.removeImg(c);
+				
+				continue;
+			}
+			else if (mgr.updateImagePosition(c, info))
 			{
 				FloatBuffer img = this.generateImgBuffer(info);
 				
@@ -137,11 +140,6 @@ public class ImageScreen
 			
 		}
 		
-	}
-	
-	public int getImgCount()
-	{
-		return this.data.size();
 	}
 	
 	public FloatBuffer generateImgBuffer(ImageData info)
@@ -175,6 +173,26 @@ public class ImageScreen
 		ret.flip();
 		
 		return ret;
+	}
+	
+	public ImageData getImg(int index)
+	{
+		return this.data.get(index);
+	}
+	
+	public int getImgCount()
+	{
+		return this.data.size();
+	}
+
+	public GLProgram getProgram()
+	{
+		return this.p;
+	}
+	
+	public ITexture getTexture()
+	{
+		return this.tex;
 	}
 	
 }
