@@ -21,7 +21,7 @@ public class RenderTicket
 	protected final VertexBufferObject vbo = new VertexBufferObject(GL.GL_VERTEX_ARRAY);
 	
 	protected boolean dirty = false;
-	public int frame = 0;
+	protected int frame = 0;
 	protected IModelAnimation anim = null, lastAnim = null;
 	
 	public RenderTicket(Model model)

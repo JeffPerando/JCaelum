@@ -20,14 +20,13 @@ public class GameSettings
 	public long fallbackDelay = 1000L;
 	public String lwjglPath = Game.determineLWJGLPath();
 	
-	public String title = "Caelum Engine Game (Now with a streamlined Game class!)";
+	public String title = "Caelum Engine Game (Now with multithreaded rendering!)";
 	public DisplayMode mode = new DisplayMode(800, 600);
 	public boolean resize = false;
 	public boolean fullscreen = false;
 	public boolean vsync = false;
 	public Color bg = new Color(EnumColorFormat.RGBA);
-	public float gamma = 0;
-	public float brightness = 0;
-	public float constrast = 0;
+	@Deprecated
+	public float gamma = 0, brightness = 0, constrast = 0;
 	
 }

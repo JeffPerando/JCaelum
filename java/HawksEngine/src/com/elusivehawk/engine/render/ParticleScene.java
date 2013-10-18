@@ -84,14 +84,9 @@ public class ParticleScene
 			
 		}
 		
-		if (this.getParticleCount() == 0)
-		{
-			return false;
-		}
-		
 		this.buf.position(0);
 		
-		return true;
+		return this.getParticleCount() != 0;
 	}
 	
 	public int getParticleCount()

@@ -9,6 +9,6 @@ package com.elusivehawk.engine.render;
  */
 public interface IRenderEngine
 {
-	public boolean render(IRenderHUB hub);
+	public void render(IRenderHUB hub);
 	
 }

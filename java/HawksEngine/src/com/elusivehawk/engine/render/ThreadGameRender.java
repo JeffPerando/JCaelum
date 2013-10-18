@@ -2,8 +2,6 @@
 package com.elusivehawk.engine.render;
 
 import java.util.List;
-import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.Display;
 import com.elusivehawk.engine.util.GameLog;
 import com.elusivehawk.engine.util.ThreadTimed;
 
@@ -31,20 +29,7 @@ public class ThreadGameRender extends ThreadTimed
 	@Override
 	public void update()
 	{
-		try
-		{
-			if (!Display.isCurrent())
-			{
-				Display.makeCurrent();
-				
-			}
-			
-		}
-		catch (LWJGLException e)
-		{
-			GameLog.error(e);
-			
-		}
+		RenderHelper.makeContextCurrent();
 		
 		this.hub.getCamera().updateCamera();
 		
@@ -59,15 +44,11 @@ public class ThreadGameRender extends ThreadTimed
 		
 		GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 		
-		for (int c = 0; c < engines.size(); c++)
+		for (IRenderEngine engine : engines)
 		{
 			GL.glActiveTexture(0);
 			
-			if (!engines.get(c).render(this.hub))
-			{
-				GameLog.warn("Rendering engine #" + (c + 1) + " failed to render.");
-				
-			}
+			engine.render(this.hub);
 			
 			try
 			{

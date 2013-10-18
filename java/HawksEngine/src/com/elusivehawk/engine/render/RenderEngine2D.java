@@ -12,20 +12,20 @@ import java.util.List;
 public class RenderEngine2D implements IRenderEngine
 {
 	@Override
-	public boolean render(IRenderHUB hub)
+	public void render(IRenderHUB hub)
 	{
 		IScene scene = hub.getScene();
 		
 		if (scene == null || !hub.getRenderMode().is2D())
 		{
-			return false;
+			return;
 		}
 		
 		List<ImageScreen> imgs = scene.getImages();
 		
 		if (imgs == null || imgs.isEmpty())
 		{
-			return false;
+			return;
 		}
 		
 		for (ImageScreen imgScene : imgs)
@@ -49,7 +49,6 @@ public class RenderEngine2D implements IRenderEngine
 			
 		}
 		
-		return true;
 	}
 	
 }

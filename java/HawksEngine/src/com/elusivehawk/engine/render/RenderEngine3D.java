@@ -15,20 +15,20 @@ import com.elusivehawk.engine.util.Tuple;
 public class RenderEngine3D implements IRenderEngine
 {
 	@Override
-	public boolean render(IRenderHUB hub)
+	public void render(IRenderHUB hub)
 	{
 		IScene scene = hub.getScene();
 		
 		if (scene == null || !hub.getRenderMode().is3D())
 		{
-			return false;
+			return;
 		}
 		
 		List<IModelGroup> models = scene.getModels();
 		
 		if (models == null || models.size() == 0)
 		{
-			return false;
+			return;
 		}
 		
 		GL.glEnable(GL.GL_DEPTH_TEST);
@@ -94,7 +94,6 @@ public class RenderEngine3D implements IRenderEngine
 		GL.glDisable(GL.GL_CULL_FACE);
 		GL.glDisable(GL.GL_DEPTH_TEST);
 		
-		return true;
 	}
 	
 }

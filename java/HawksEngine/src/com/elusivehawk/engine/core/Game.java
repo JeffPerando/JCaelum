@@ -10,6 +10,7 @@ import com.elusivehawk.engine.render.Color;
 import com.elusivehawk.engine.render.EnumColorFilter;
 import com.elusivehawk.engine.render.GL;
 import com.elusivehawk.engine.render.IRenderHUB;
+import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.ThreadGameRender;
 import com.elusivehawk.engine.util.GameLog;
 import com.elusivehawk.engine.util.TextParser;
@@ -110,6 +111,12 @@ public abstract class Game
 		
 		GameSettings settings = this.getSettings();
 		
+		if (settings == null)
+		{
+			settings = new GameSettings();
+			
+		}
+		
 		if (System.getProperty("org.lwjgl.librarypath") == null)
 		{
 			if (settings.lwjglPath == null)
@@ -139,7 +146,7 @@ public abstract class Game
 				
 				Display.create();
 				
-				Display.setDisplayConfiguration(settings.gamma, settings.brightness, settings.constrast);
+				//TODO Display.setDisplayConfiguration(settings.gamma, settings.brightness, settings.constrast);
 				
 				GL.glViewport(0, 0, settings.mode.getWidth(), settings.mode.getHeight());
 				GL.glClearColor(bg.getColorFloat(EnumColorFilter.RED), bg.getColorFloat(EnumColorFilter.GREEN), bg.getColorFloat(EnumColorFilter.BLUE), bg.getColorFloat(EnumColorFilter.ALPHA));
@@ -186,94 +193,79 @@ public abstract class Game
 		{
 			delta = Sys.getTime() - lastTime;
 			
-			if (delta >= this.getDelayBetweenUpdates())
+			if (delta < this.getDelayBetweenUpdates())
 			{
-				lastTime += delta;
-				updates++;
+				continue;
+			}
+			
+			lastTime += delta;
+			updates++;
+			
+			if (this.updateSettings())
+			{
+				settings = this.getSettings();
 				
-				if (this.updateSettings())
+				if (rendering)
 				{
-					settings = this.getSettings();
-					
-					if (rendering)
-					{
-						renderer.setPaused(true);
-						
-					}
-					
-					try
-					{
-						if (!Display.isCurrent())
-						{
-							Display.makeCurrent();
-							
-						}
-						
-						Display.setDisplayMode(settings.mode);
-						Display.setFullscreen(settings.fullscreen);
-						Display.setVSyncEnabled(settings.vsync);
-						Display.setDisplayConfiguration(settings.gamma, settings.brightness, settings.constrast);
-						
-					}
-					catch (LWJGLException e)
-					{
-						this.handleException(e);
-						
-					}
-					
-					if (rendering)
-					{
-						renderer.setTargetFPS(settings.targetFPS);
-						
-						renderer.setPaused(false);
-						
-					}
-					
-					if (settings.targetUpdates > 0)
-					{
-						targetUpdates = settings.targetUpdates;
-						
-					}
+					renderer.setPaused(true);
 					
 				}
 				
-				timer.start();
+				RenderHelper.makeContextCurrent();
 				
 				try
 				{
-					this.update(delta);
+					Display.setDisplayMode(settings.mode);
+					Display.setFullscreen(settings.fullscreen);
+					Display.setVSyncEnabled(settings.vsync);
+					//TODO Display.setDisplayConfiguration(settings.gamma, settings.brightness, settings.constrast);
 					
 				}
-				catch (Throwable e)
+				catch (LWJGLException e)
 				{
 					this.handleException(e);
 					
 				}
 				
-				timer.stop();
-				
-				if (timer.report() >= fallback)
+				if (rendering)
 				{
-					try
-					{
-						Thread.sleep(1L);
-						
-					}
-					catch (InterruptedException e){}
+					renderer.setTargetFPS(settings.targetFPS);
 					
-					continue;
-				}
-				
-				if (updates == targetUpdates)
-				{
-					try
-					{
-						Thread.sleep(1L);
-						
-					}
-					catch (InterruptedException e){}
+					renderer.setPaused(false);
 					
 				}
+				
+				if (settings.targetUpdates > 0)
+				{
+					targetUpdates = settings.targetUpdates;
+					
+				}
+				
+			}
+			
+			timer.start();
+			
+			try
+			{
+				this.update(delta);
+				
+			}
+			catch (Throwable e)
+			{
+				this.handleException(e);
+				
+			}
+			
+			timer.stop();
+			
+			if (timer.report() >= fallback || updates == targetUpdates)
+			{
+				try
+				{
+					Thread.sleep(1L);
+					
+				}
+				catch (InterruptedException e){}
 				
 			}
 			
@@ -306,7 +298,7 @@ public abstract class Game
 	{
 		//TODO: this only works on Debian... but we'll try it for now.
 		
-		return (EnumOS.OS == EnumOS.LINUX && new File("/usr/lib/jni/liblwjgl.so").exists()) ? "/usr/lib/jni" : TextParser.createFile("/lwjgl/native").getAbsolutePath();
+		return (EnumOS.OS == EnumOS.LINUX && new File("/usr/lib/jni/liblwjgl.so").exists()) ? "/usr/lib/jni" : TextParser.createFile("/lwjgl/native/" + EnumOS.OS.toString()).getAbsolutePath();
 	}
 	
 }

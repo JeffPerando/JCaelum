@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.glu.GLU;
 import com.elusivehawk.engine.core.EnumRenderMode;
@@ -234,6 +235,25 @@ public final class RenderHelper
 		ret.rewind(); //Just a safety precaution.
 		
 		return ret;
+	}
+	
+	public static void makeContextCurrent()
+	{
+		try
+		{
+			if (!Display.isCurrent())
+			{
+				Display.makeCurrent();
+				
+			}
+			
+		}
+		catch (LWJGLException e)
+		{
+			GameLog.error(e);
+			
+		}
+		
 	}
 	
 }
