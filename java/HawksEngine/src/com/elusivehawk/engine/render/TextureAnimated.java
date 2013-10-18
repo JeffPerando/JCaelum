@@ -26,6 +26,8 @@ public class TextureAnimated implements ITexture
 		w = width;
 		h = height;
 		
+		GL.register(this);
+		
 	}
 	
 	public TextureAnimated(File file, EnumRenderMode mode, int y)
@@ -75,6 +77,17 @@ public class TextureAnimated implements ITexture
 			}
 			
 		}
+		
+		GL.register(this);
+		
+	}
+	
+	@Override
+	public void glDelete()
+	{
+		this.tex.rewind();
+		
+		GL.glDeleteTextures(this.tex);
 		
 	}
 	

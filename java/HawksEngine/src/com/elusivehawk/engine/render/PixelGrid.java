@@ -38,6 +38,8 @@ public class PixelGrid implements ITexture
 		ySize = h;
 		base = null;
 		
+		GL.register(this);
+		
 	}
 	
 	public PixelGrid(BufferedImage img, int x, int y, int w, int h)
@@ -62,6 +64,8 @@ public class PixelGrid implements ITexture
 			
 		}
 		
+		GL.register(this);
+		
 	}
 	
 	public int getColor(int x, int y)
@@ -85,6 +89,12 @@ public class PixelGrid implements ITexture
 	{
 		if (this.converted == 0 || generate)
 		{
+			if (this.converted != 0)
+			{
+				GL.glDeleteTextures(this.converted);
+				
+			}
+			
 			this.converted = RenderHelper.processImage(this.toByteBuffer(), this.xSize, this.ySize, mode);
 			
 		}
@@ -335,6 +345,13 @@ public class PixelGrid implements ITexture
 	}
 	
 	@Override
+	public void glDelete()
+	{
+		GL.glDeleteTextures(this.getTexture());
+		
+	}
+	
+	@Override
 	public int getTexture()
 	{
 		return this.converted;
@@ -343,7 +360,7 @@ public class PixelGrid implements ITexture
 	@Override
 	public boolean isStatic()
 	{
-		return true;
+		return false;
 	}
 	
 	@Override

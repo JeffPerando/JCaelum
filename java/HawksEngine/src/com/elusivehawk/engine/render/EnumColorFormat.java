@@ -27,7 +27,7 @@ public enum EnumColorFormat
 		
 		for (int c = 0; c < f.length; c++)
 		{
-			offsets[colors[c].ordinal()] = 24 - (c * 8);
+			offsets[c] = 24 - (colors[c].ordinal() * 8);
 			
 			if (colors[c] == EnumColorFilter.ALPHA)
 			{
@@ -42,12 +42,21 @@ public enum EnumColorFormat
 	}
 	
 	public final EnumColorFilter[] colors;
-	private int[] offsets;
+	private final int[] offsets;
 	private final boolean alpha;
 	
 	public int getColorOffset(EnumColorFilter col)
 	{
-		return this.offsets[col.ordinal()];
+		for (int c = 0; c < this.offsets.length; c++)
+		{
+			if (this.colors[c] == col)
+			{
+				return this.offsets[c];
+			}
+			
+		}
+		
+		return 0;
 	}
 	
 	public Color convert(Color old)

@@ -23,6 +23,8 @@ public class TextureStatic implements ITexture
 		w = width;
 		h = height;
 		
+		GL.register(this);
+		
 	}
 	
 	public TextureStatic(String path) throws IOException
@@ -46,6 +48,13 @@ public class TextureStatic implements ITexture
 	public TextureStatic(BufferedImage img, EnumRenderMode mode)
 	{
 		this(RenderHelper.processImage(img, mode), img.getWidth(), img.getHeight());
+		
+	}
+	
+	@Override
+	public void glDelete()
+	{
+		GL.glDeleteTextures(this.getTexture());
 		
 	}
 	

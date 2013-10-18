@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
+import com.elusivehawk.engine.core.EnumRenderMode;
 import com.elusivehawk.engine.math.Vector3f;
 
 /**
@@ -12,6 +13,8 @@ import com.elusivehawk.engine.math.Vector3f;
 public interface ICamera
 {
 	public void updateCamera();
+	
+	public EnumRenderMode getRenderMode();
 	
 	public Vector3f getCamRot();
 	
