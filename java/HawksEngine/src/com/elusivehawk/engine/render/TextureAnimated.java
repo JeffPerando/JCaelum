@@ -91,6 +91,12 @@ public class TextureAnimated implements ITexture
 	}
 	
 	@Override
+	public boolean isStatic()
+	{
+		return false;
+	}
+	
+	@Override
 	public int getHeight()
 	{
 		return this.h;

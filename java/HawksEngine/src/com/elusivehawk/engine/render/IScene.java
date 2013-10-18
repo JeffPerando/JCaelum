@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * 
- * Provides models for rendering in the {@link RenderEngine}.
+ * Provides models for rendering.
  * 
  * @author Elusivehawk
  */

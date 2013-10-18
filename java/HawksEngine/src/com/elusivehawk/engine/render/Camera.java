@@ -6,35 +6,48 @@ import com.elusivehawk.engine.math.Vector3f;
 
 /**
  * 
- * To be replaced with an interface and default implementation.
+ * 
  * 
  * @author Elusivehawk
  */
-@Deprecated
-public class Camera
+public class Camera implements ICamera
 {
-	private static Vector3f angle = new Vector3f();
-	private static Vector3f pos = new Vector3f();
+	private Vector3f angle = new Vector3f();
+	private Vector3f pos = new Vector3f();
 	
-	private Camera(){}
-	
-	public static void update()
+	@Override
+	public void updateCamera()
 	{
 		if (Mouse.isCreated() && Mouse.isInsideWindow())
 		{
+			
 			
 		}
 		
 	}
 	
-	public static Vector3f getCameraRotation()
+	@Override
+	public Vector3f getCamRot()
 	{
 		return angle;
 	}
 	
-	public static Vector3f getCameraPosition()
+	@Override
+	public Vector3f getCamPos()
 	{
 		return pos;
+	}
+	
+	@Override
+	public float getZFar()
+	{
+		return 0;
+	}
+	
+	@Override
+	public float getZNear()
+	{
+		return 0;
 	}
 	
 }

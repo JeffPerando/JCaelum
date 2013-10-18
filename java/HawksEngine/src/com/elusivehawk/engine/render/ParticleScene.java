@@ -15,7 +15,7 @@ import com.elusivehawk.engine.math.Vector4f;
  */
 public class ParticleScene
 {
-	protected FloatBuffer buf;
+	protected final FloatBuffer buf;
 	protected final List<IParticle> particles = new ArrayList<IParticle>();
 	protected final VertexBufferObject vbo;
 	public final int particleCount;
@@ -23,24 +23,8 @@ public class ParticleScene
 	
 	public ParticleScene(int maxParticles)
 	{
-		this(maxParticles, null);
-		
-	}
-	
-	public ParticleScene(int maxParticles, List<IParticle> initParticles)
-	{
 		buf = BufferUtils.createFloatBuffer(maxParticles * 8);
 		particleCount = maxParticles;
-		
-		if (initParticles != null)
-		{
-			for (IParticle p : initParticles)
-			{
-				this.spawnParticle(p);
-				
-			}
-			
-		}
 		
 		p = new GLProgram(); //TODO Create default particle shaders.
 		vbo = new VertexBufferObject(GL.GL_ARRAY_BUFFER, buf, GL.GL_STREAM_DRAW);

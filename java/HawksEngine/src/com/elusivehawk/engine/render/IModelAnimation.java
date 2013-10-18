@@ -9,10 +9,8 @@ package com.elusivehawk.engine.render;
  */
 public interface IModelAnimation
 {
-	public void update(VertexBufferObject vbo, int frame, boolean usedBefore);
+	public void update(RenderTicket tkt, boolean usedBefore, boolean finished);
 	
-	public int getFrames();
-	
-	public void onCompletion(RenderTicket ticket);
+	public int getFrameCount();
 	
 }

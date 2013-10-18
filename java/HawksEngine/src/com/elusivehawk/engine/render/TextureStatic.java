@@ -25,6 +25,18 @@ public class TextureStatic implements ITexture
 		
 	}
 	
+	public TextureStatic(String path) throws IOException
+	{
+		this(path, EnumRenderMode.MODE_2D);
+		
+	}
+	
+	public TextureStatic(String path, EnumRenderMode mode) throws IOException
+	{
+		this(new File(path), mode);
+		
+	}
+	
 	public TextureStatic(File file, EnumRenderMode mode) throws IOException
 	{
 		this(ImageIO.read(file), mode);
@@ -41,6 +53,12 @@ public class TextureStatic implements ITexture
 	public int getTexture()
 	{
 		return this.tex;
+	}
+	
+	@Override
+	public boolean isStatic()
+	{
+		return true;
 	}
 	
 	@Override

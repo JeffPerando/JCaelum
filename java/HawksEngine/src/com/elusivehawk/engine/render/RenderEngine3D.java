@@ -1,0 +1,100 @@
+
+package com.elusivehawk.engine.render;
+
+import java.util.List;
+import java.util.Map.Entry;
+import com.elusivehawk.engine.util.GameLog;
+import com.elusivehawk.engine.util.Tuple;
+
+/**
+ * 
+ * 
+ * 
+ * @author Elusivehawk
+ */
+public class RenderEngine3D implements IRenderEngine
+{
+	@Override
+	public boolean render(IRenderHUB hub)
+	{
+		IScene scene = hub.getScene();
+		
+		if (scene == null || !hub.getRenderMode().is3D())
+		{
+			return false;
+		}
+		
+		List<IModelGroup> models = scene.getModels();
+		
+		if (models == null || models.size() == 0)
+		{
+			return false;
+		}
+		
+		GL.glEnable(GL.GL_DEPTH_TEST);
+		GL.glDepthFunc(GL.GL_LESS);
+		
+		GL.glEnable(GL.GL_CULL_FACE);
+		GL.glCullFace(GL.GL_BACK);
+		
+		int currTex, tex;
+		
+		for (IModelGroup group : models)
+		{
+			List<RenderTicket> tickets = group.getTickets();
+			
+			for (int c = 0; c < tickets.size(); c++)
+			{
+				RenderTicket ticket = tickets.get(c);
+				
+				ticket.updateBeforeUse();
+				
+				Model m = ticket.getModel();
+				GLProgram p = ticket.getProgram();
+				
+				if (!p.bind())
+				{
+					continue;
+				}
+				
+				currTex = GL.glGetInteger(GL.GL_ACTIVE_TEXTURE);
+				tex = group.getTexture(c).getTexture();
+				
+				if (currTex != tex)
+				{
+					if (GL.glIsTexture(tex))
+					{
+						GL.glActiveTexture(tex);
+						
+					}
+					else
+					{
+						GameLog.warn("Model group " + group.getName() + " model #" + c + " has invalid texture ID: " + tex + ", please rectify this.");
+						
+						GL.glActiveTexture(0);
+						
+					}
+					
+				}
+				
+				for (Entry<Integer, Tuple<Integer, Integer>> entry : m.getOffsets().entrySet())
+				{
+					GL.glDrawElements(entry.getKey(), entry.getValue().one, GL.GL_UNSIGNED_INT, entry.getValue().two);
+					
+				}
+				
+				RenderHelper.checkForGLError();
+				
+				p.unbind();
+				
+			}
+			
+		}
+		
+		GL.glDisable(GL.GL_CULL_FACE);
+		GL.glDisable(GL.GL_DEPTH_TEST);
+		
+		return true;
+	}
+	
+}

@@ -341,6 +341,12 @@ public class PixelGrid implements ITexture
 	}
 	
 	@Override
+	public boolean isStatic()
+	{
+		return true;
+	}
+	
+	@Override
 	public int getHeight()
 	{
 		return this.ySize;

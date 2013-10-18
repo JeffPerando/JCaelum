@@ -24,8 +24,8 @@ import com.elusivehawk.engine.util.TextParser;
  */
 public final class RenderHelper
 {
-	public static final int VERTEX_SHADER_3D = loadShader(null, GL.GL_VERTEX_SHADER);
-	public static final int FRAGMENT_SHADER_3D = loadShader(null, GL.GL_FRAGMENT_SHADER);
+	public static final int VERTEX_SHADER_3D = loadShader(TextParser.createFile("/vertex.glsl"), GL.GL_VERTEX_SHADER);
+	public static final int FRAGMENT_SHADER_3D = loadShader(TextParser.createFile("/fragment.glsl"), GL.GL_FRAGMENT_SHADER);
 	
 	private RenderHelper(){}
 	

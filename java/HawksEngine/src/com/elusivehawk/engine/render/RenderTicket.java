@@ -97,15 +97,11 @@ public class RenderTicket
 			
 		}
 		
-		this.anim.update(this.getExtraVBO(), this.frame++, usedBefore);
+		boolean finished = (this.frame == this.anim.getFrameCount());
 		
-		if (this.frame == this.anim.getFrames())
-		{
-			this.frame = 0;
-			
-			this.anim.onCompletion(this);
-			
-		}
+		this.anim.update(this, usedBefore, finished);
+		
+		this.frame = (finished ? 0 : this.frame + 1);
 		
 		if (this.dirty)
 		{

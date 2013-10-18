@@ -1,8 +1,6 @@
 
 package com.elusivehawk.engine.render;
 
-import com.elusivehawk.engine.core.EnumRenderMode;
-
 /**
  * 
  * 
@@ -11,8 +9,6 @@ import com.elusivehawk.engine.core.EnumRenderMode;
  */
 public interface IRenderEngine
 {
-	public boolean render();
-	
-	public EnumRenderMode getRenderMode();
+	public boolean render(IRenderHUB hub);
 	
 }

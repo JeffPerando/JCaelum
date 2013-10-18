@@ -17,6 +17,11 @@ public abstract class ThreadTimed extends ThreadStoppable
 		
 		while (this.running)
 		{
+			if (this.paused)
+			{
+				continue;
+			}
+			
 			delta = (System.currentTimeMillis() - this.getDelta());
 			
 			if (delta >= lastTime)

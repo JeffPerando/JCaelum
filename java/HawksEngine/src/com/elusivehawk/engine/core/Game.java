@@ -9,8 +9,8 @@ import org.lwjgl.opengl.Display;
 import com.elusivehawk.engine.render.Color;
 import com.elusivehawk.engine.render.EnumColorFilter;
 import com.elusivehawk.engine.render.GL;
-import com.elusivehawk.engine.render.IScene;
-import com.elusivehawk.engine.render.RenderEngine;
+import com.elusivehawk.engine.render.IRenderHUB;
+import com.elusivehawk.engine.render.ThreadGameRender;
 import com.elusivehawk.engine.util.GameLog;
 import com.elusivehawk.engine.util.TextParser;
 import com.elusivehawk.engine.util.Timer;
@@ -38,17 +38,9 @@ public abstract class Game
 	 */
 	protected abstract void update(long delta);
 	
-	/**
-	 * 
-	 * @return The rendering mode for this game.
-	 */
-	@Deprecated
-	public abstract EnumRenderMode getRenderMode();
-	
 	protected abstract GameSettings getSettings();
 	
-	@Deprecated
-	protected abstract IScene getCurrentScene();
+	protected abstract IRenderHUB getRenderHUB();
 	
 	//===============================BEGIN OPTIONAL GAME METHODS===============================
 	
@@ -161,15 +153,32 @@ public abstract class Game
 			
 		}
 		
+		ThreadGameRender renderer = null;
+		
+		IRenderHUB hub = this.getRenderHUB();
+		
+		if (hub != null)
+		{
+			renderer = new ThreadGameRender(hub, settings.targetFPS);
+			
+		}
+		
 		GameLog.info("Beginning game loop...");
 		
 		long lastTime = Sys.getTime(), delta = 0, fallback = settings.fallbackDelay;
-		int targetFPS = settings.targetFPS, targetUpdates = settings.targetUpdates, updates = 0;
+		int targetUpdates = settings.targetUpdates, updates = 0;
 		Timer timer = new Timer();
+		boolean rendering = (renderer != null);
 		
 		if (targetUpdates <= 0)
 		{
 			throw new RuntimeException("Invalid target update count!");
+			
+		}
+		
+		if (renderer != null)
+		{
+			renderer.start();
 			
 		}
 		
@@ -186,8 +195,20 @@ public abstract class Game
 				{
 					settings = this.getSettings();
 					
+					if (rendering)
+					{
+						renderer.setPaused(true);
+						
+					}
+					
 					try
 					{
+						if (!Display.isCurrent())
+						{
+							Display.makeCurrent();
+							
+						}
+						
 						Display.setDisplayMode(settings.mode);
 						Display.setFullscreen(settings.fullscreen);
 						Display.setVSyncEnabled(settings.vsync);
@@ -200,12 +221,17 @@ public abstract class Game
 						
 					}
 					
-					targetFPS = settings.targetFPS;
-					targetUpdates = settings.targetUpdates;
-					
-					if (targetUpdates <= 0)
+					if (rendering)
 					{
-						this.handleException(new RuntimeException("Invalid target update count!"));
+						renderer.setTargetFPS(settings.targetFPS);
+						
+						renderer.setPaused(false);
+						
+					}
+					
+					if (settings.targetUpdates > 0)
+					{
+						targetUpdates = settings.targetUpdates;
 						
 					}
 					
@@ -238,13 +264,6 @@ public abstract class Game
 					continue;
 				}
 				
-				if (RenderEngine.render(this.getCurrentScene(), this.getRenderMode()))
-				{
-					Display.sync(targetFPS);
-					Display.update();
-					
-				}
-				
 				if (updates == targetUpdates)
 				{
 					try
@@ -261,6 +280,12 @@ public abstract class Game
 		}
 		
 		this.onGameClosed();
+		
+		if (rendering)
+		{
+			renderer.stopThread();
+			
+		}
 		
 		GL.cleanup();
 		
