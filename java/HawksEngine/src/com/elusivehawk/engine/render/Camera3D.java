@@ -2,7 +2,6 @@
 package com.elusivehawk.engine.render;
 
 import org.lwjgl.input.Mouse;
-import com.elusivehawk.engine.core.EnumRenderMode;
 import com.elusivehawk.engine.math.Vector3f;
 
 /**
@@ -17,7 +16,7 @@ public class Camera3D implements ICamera
 	private Vector3f pos = new Vector3f();
 	
 	@Override
-	public void updateCamera()
+	public void updateCamera(IRenderHUB hub)
 	{
 		if (Mouse.isCreated() && Mouse.isInsideWindow())
 		{
@@ -35,12 +34,6 @@ public class Camera3D implements ICamera
 	
 	@Override
 	public void setIsDirty(boolean dirty){}
-	
-	@Override
-	public EnumRenderMode getRenderMode()
-	{
-		return EnumRenderMode.MODE_3D;
-	}
 	
 	@Override
 	public Vector3f getCamRot()

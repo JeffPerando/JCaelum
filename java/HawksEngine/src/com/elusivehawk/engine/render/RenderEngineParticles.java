@@ -19,12 +19,12 @@ public class RenderEngineParticles implements IRenderEngine
 		
 		ParticleScene particles = hub.getScene().getParticles();
 		
-		if (particles == null || !particles.updateBeforeRendering())
+		if (particles == null || !particles.updateBeforeUse(hub))
 		{
 			return;
 		}
 		
-		GLProgram p = particles.p;
+		GLProgram p = particles.getProgram();
 		
 		if (p.bind())
 		{

@@ -31,9 +31,7 @@ public class ThreadGameRender extends ThreadTimed
 	{
 		RenderHelper.makeContextCurrent();
 		
-		this.hub.getCamera().updateCamera();
-		
-		//TODO Update program uniforms.
+		this.hub.getCamera().updateCamera(this.hub);
 		
 		List<IRenderEngine> engines = this.hub.getRenderEngines();
 		
@@ -46,7 +44,7 @@ public class ThreadGameRender extends ThreadTimed
 		
 		for (IRenderEngine engine : engines)
 		{
-			GL.glActiveTexture(0);
+			//TODO Unbind all textures.
 			
 			engine.render(this.hub);
 			

@@ -16,7 +16,7 @@ import com.elusivehawk.engine.math.Vector4f;
  * 
  * @author Elusivehawk
  */
-public class RenderTicket implements IDirty
+public class RenderTicket implements IDirty, ILogicalRender
 {
 	protected final HashMap<EnumVectorType, Vector3f> vecs = new HashMap<EnumVectorType, Vector3f>();
 	protected final Model m;
@@ -96,6 +96,7 @@ public class RenderTicket implements IDirty
 		return this.m;
 	}
 	
+	@Override
 	public GLProgram getProgram()
 	{
 		return this.p;
@@ -111,7 +112,8 @@ public class RenderTicket implements IDirty
 		return this.frame;
 	}
 	
-	public void updateBeforeUse(IRenderHUB hub)
+	@Override
+	public boolean updateBeforeUse(IRenderHUB hub)
 	{
 		boolean usedBefore = this.anim == this.lastAnim;
 		
@@ -139,11 +141,13 @@ public class RenderTicket implements IDirty
 			
 			ICamera cam = hub.getCamera();
 			
-			if (cam.getRenderMode().is3D() && cam.isDirty())
+			if (hub.getRenderMode().is3D() && cam.isDirty())
 			{
 				Matrix camM = MatrixHelper.createHomogenousMatrix(cam.getCamRot(), new Vector3f(1.0f, 1.0f, 1.0f), null);
 				
 				this.p.attachUniform("cam", camM.asBuffer(), GLProgram.EnumUniformType.M_FOUR);
+				
+				//TODO Replace with struct-compliant system.
 				
 			}
 			
@@ -151,6 +155,7 @@ public class RenderTicket implements IDirty
 			
 		}
 		
+		return true;
 	}
 	
 	@Override

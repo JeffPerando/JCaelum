@@ -15,7 +15,7 @@ import com.elusivehawk.engine.core.BufferHelper;
  * 
  * @author Elusivehawk
  */
-public class ImageScreen
+public class ImageScreen implements ILogicalRender
 {
 	public static final int IMG_FLOAT_COUNT = 36;
 	
@@ -115,7 +115,8 @@ public class ImageScreen
 		
 	}
 	
-	public void updateImages()
+	@Override
+	public boolean updateBeforeUse(IRenderHUB hub)
 	{
 		for (int c = 0; c < this.getImgCount(); c++)
 		{
@@ -141,6 +142,7 @@ public class ImageScreen
 			
 		}
 		
+		return !this.data.isEmpty();
 	}
 	
 	public FloatBuffer generateImgBuffer(ImageData info)
@@ -185,7 +187,8 @@ public class ImageScreen
 	{
 		return this.data.size();
 	}
-
+	
+	@Override
 	public GLProgram getProgram()
 	{
 		return this.p;

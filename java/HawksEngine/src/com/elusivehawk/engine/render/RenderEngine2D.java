@@ -30,7 +30,7 @@ public class RenderEngine2D implements IRenderEngine
 		
 		for (ImageScreen imgScene : imgs)
 		{
-			imgScene.updateImages();
+			imgScene.updateBeforeUse(hub);
 			
 			GLProgram p = imgScene.getProgram();
 			
