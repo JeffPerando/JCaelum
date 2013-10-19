@@ -12,9 +12,6 @@ import com.elusivehawk.engine.render.GL;
 import com.elusivehawk.engine.render.IRenderHUB;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.ThreadGameRender;
-import com.elusivehawk.engine.util.GameLog;
-import com.elusivehawk.engine.util.TextParser;
-import com.elusivehawk.engine.util.Timer;
 
 /**
  * 

@@ -2,8 +2,8 @@
 package com.elusivehawk.engine.render;
 
 import java.util.List;
-import com.elusivehawk.engine.util.GameLog;
-import com.elusivehawk.engine.util.ThreadTimed;
+import com.elusivehawk.engine.core.GameLog;
+import com.elusivehawk.engine.core.ThreadTimed;
 
 /**
  * 

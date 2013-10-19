@@ -3,7 +3,7 @@ package com.elusivehawk.engine.render;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import com.elusivehawk.engine.util.GameLog;
+import com.elusivehawk.engine.core.GameLog;
 
 /**
  * 

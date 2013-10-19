@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.Display;
-import com.elusivehawk.engine.util.BufferHelper;
+import com.elusivehawk.engine.core.BufferHelper;
 
 /**
  * 

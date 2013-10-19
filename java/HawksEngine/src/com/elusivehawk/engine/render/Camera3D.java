@@ -28,6 +28,15 @@ public class Camera3D implements ICamera
 	}
 	
 	@Override
+	public boolean isDirty()
+	{
+		return this.angle.isDirty() || this.pos.isDirty();
+	}
+	
+	@Override
+	public void setIsDirty(boolean dirty){}
+	
+	@Override
 	public EnumRenderMode getRenderMode()
 	{
 		return EnumRenderMode.MODE_3D;

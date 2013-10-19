@@ -2,7 +2,8 @@
 package com.elusivehawk.engine.math;
 
 import java.nio.Buffer;
-import com.elusivehawk.engine.util.IStoreable;
+import com.elusivehawk.engine.core.IDirty;
+import com.elusivehawk.engine.core.IStoreable;
 
 /**
  * 
@@ -10,10 +11,8 @@ import com.elusivehawk.engine.util.IStoreable;
  * 
  * @author Elusivehawk
  */
-public interface IVector extends IStoreable
+public interface IVector extends IStoreable, IDirty
 {
-	public boolean isDirty();
-	
 	public boolean isReadOnly();
 	
 	public int getSize();

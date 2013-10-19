@@ -1,5 +1,5 @@
 
-package com.elusivehawk.engine.util;
+package com.elusivehawk.engine.core;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;

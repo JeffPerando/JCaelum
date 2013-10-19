@@ -1,5 +1,14 @@
 #version 110
 
+struct Camera
+{
+	vec3 pos;
+	vec3 rot;
+	float zFar;
+	float zNear;
+	
+}
+
 uniform mat4 cam;
 uniform mat4 proj;
 uniform mat4 model;

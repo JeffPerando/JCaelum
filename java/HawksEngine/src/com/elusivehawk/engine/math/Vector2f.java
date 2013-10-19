@@ -130,11 +130,11 @@ public class Vector2f implements IVector
 		return this;
 	}
 	
-	public Vector2f setIsDirty(boolean b)
+	@Override
+	public void setIsDirty(boolean dirty)
 	{
-		this.dirty = b;
+		this.dirty = dirty;
 		
-		return this;
 	}
 	
 	@Override

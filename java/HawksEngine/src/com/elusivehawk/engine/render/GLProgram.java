@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import org.lwjgl.BufferUtils;
-import com.elusivehawk.engine.util.GameLog;
+import com.elusivehawk.engine.core.GameLog;
 
 /**
  * 
@@ -25,6 +25,12 @@ public class GLProgram implements IGLCleanable
 	private HashMap<VertexBufferObject, List<Integer>> vbos = new HashMap<VertexBufferObject, List<Integer>>();
 	private HashMap<String, Integer> attribs = new HashMap<String, Integer>();
 	private boolean linkedRecently = false;
+	
+	public GLProgram()
+	{
+		this(RenderHelper.VERTEX_SHADER_3D, RenderHelper.FRAGMENT_SHADER_3D);
+		
+	}
 	
 	public GLProgram(int... sh)
 	{

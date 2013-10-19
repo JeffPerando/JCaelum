@@ -3,8 +3,8 @@ package com.elusivehawk.engine.render;
 
 import java.util.List;
 import java.util.Map.Entry;
-import com.elusivehawk.engine.util.GameLog;
-import com.elusivehawk.engine.util.Tuple;
+import com.elusivehawk.engine.core.GameLog;
+import com.elusivehawk.engine.core.Tuple;
 
 /**
  * 
@@ -47,7 +47,7 @@ public class RenderEngine3D implements IRenderEngine
 			{
 				RenderTicket ticket = tickets.get(c);
 				
-				ticket.updateBeforeUse();
+				ticket.updateBeforeUse(hub);
 				
 				Model m = ticket.getModel();
 				GLProgram p = ticket.getProgram();

@@ -6,10 +6,10 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import com.elusivehawk.engine.core.BufferHelper;
+import com.elusivehawk.engine.core.GameLog;
+import com.elusivehawk.engine.core.Tuple;
 import com.elusivehawk.engine.math.Vector3f;
-import com.elusivehawk.engine.util.BufferHelper;
-import com.elusivehawk.engine.util.GameLog;
-import com.elusivehawk.engine.util.Tuple;
 
 /**
  * 

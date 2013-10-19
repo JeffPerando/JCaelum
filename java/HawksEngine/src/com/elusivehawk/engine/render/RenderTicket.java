@@ -4,6 +4,7 @@ package com.elusivehawk.engine.render;
 import java.nio.FloatBuffer;
 import java.util.HashMap;
 import org.lwjgl.BufferUtils;
+import com.elusivehawk.engine.core.IDirty;
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.MatrixHelper;
 import com.elusivehawk.engine.math.Vector3f;
@@ -15,7 +16,7 @@ import com.elusivehawk.engine.math.Vector4f;
  * 
  * @author Elusivehawk
  */
-public class RenderTicket
+public class RenderTicket implements IDirty
 {
 	protected final HashMap<EnumVectorType, Vector3f> vecs = new HashMap<EnumVectorType, Vector3f>();
 	protected final Model m;
@@ -75,13 +76,13 @@ public class RenderTicket
 	
 	public synchronized void setIndice(int pos, Vector3f rot, Vector3f trans, Vector3f scale)
 	{
-		this.dirty = true;
-		
 		this.buf.position(pos * 9);
 		
 		rot.store(this.getBuffer());
 		trans.store(this.getBuffer());
 		scale.store(this.getBuffer());
+		
+		this.dirty = true;
 		
 	}
 	
@@ -110,7 +111,7 @@ public class RenderTicket
 		return this.frame;
 	}
 	
-	public void updateBeforeUse()
+	public void updateBeforeUse(IRenderHUB hub)
 	{
 		boolean usedBefore = this.anim == this.lastAnim;
 		
@@ -136,11 +137,30 @@ public class RenderTicket
 			
 			this.p.attachUniform("model", m.asBuffer(), GLProgram.EnumUniformType.M_FOUR);
 			
+			ICamera cam = hub.getCamera();
+			
+			if (cam.getRenderMode().is3D() && cam.isDirty())
+			{
+				Matrix camM = MatrixHelper.createHomogenousMatrix(cam.getCamRot(), new Vector3f(1.0f, 1.0f, 1.0f), null);
+				
+				this.p.attachUniform("cam", camM.asBuffer(), GLProgram.EnumUniformType.M_FOUR);
+				
+			}
+			
 			this.dirty = false;
 			
 		}
 		
 	}
+	
+	@Override
+	public boolean isDirty()
+	{
+		return this.dirty;
+	}
+	
+	@Override
+	public void setIsDirty(boolean dirty){}
 	
 	public static enum EnumVectorType
 	{

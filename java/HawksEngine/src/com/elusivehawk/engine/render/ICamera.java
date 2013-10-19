@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.render;
 
 import com.elusivehawk.engine.core.EnumRenderMode;
+import com.elusivehawk.engine.core.IDirty;
 import com.elusivehawk.engine.math.Vector3f;
 
 /**
@@ -10,7 +11,7 @@ import com.elusivehawk.engine.math.Vector3f;
  * 
  * @author Elusivehawk
  */
-public interface ICamera
+public interface ICamera extends IDirty
 {
 	public void updateCamera();
 	

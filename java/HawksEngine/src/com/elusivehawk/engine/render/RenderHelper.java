@@ -14,8 +14,8 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.glu.GLU;
 import com.elusivehawk.engine.core.EnumRenderMode;
-import com.elusivehawk.engine.util.GameLog;
-import com.elusivehawk.engine.util.TextParser;
+import com.elusivehawk.engine.core.GameLog;
+import com.elusivehawk.engine.core.TextParser;
 
 /**
  * 

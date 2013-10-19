@@ -1,12 +1,11 @@
 
-package com.elusivehawk.engine.util;
+package com.elusivehawk.engine.core;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
-import com.elusivehawk.engine.core.Game;
 
 /**
  * 

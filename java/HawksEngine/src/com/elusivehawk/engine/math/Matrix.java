@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import org.lwjgl.BufferUtils;
-import com.elusivehawk.engine.util.IStoreable;
+import com.elusivehawk.engine.core.IStoreable;
 
 /**
  * 
