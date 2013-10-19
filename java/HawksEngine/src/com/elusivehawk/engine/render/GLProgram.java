@@ -4,9 +4,11 @@ package com.elusivehawk.engine.render;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import org.lwjgl.BufferUtils;
 import com.elusivehawk.engine.util.GameLog;
 
@@ -20,7 +22,7 @@ public class GLProgram implements IGLCleanable
 {
 	public final int id, vba;
 	public final int[] shaders;
-	private HashMap<Integer, VertexBufferObject> vbos = new HashMap<Integer, VertexBufferObject>();
+	private HashMap<VertexBufferObject, List<Integer>> vbos = new HashMap<VertexBufferObject, List<Integer>>();
 	private HashMap<String, Integer> attribs = new HashMap<String, Integer>();
 	private boolean linkedRecently = false;
 	
@@ -47,42 +49,52 @@ public class GLProgram implements IGLCleanable
 		
 	}
 	
-	public int attachVBOs(VertexBufferObject... vbos)
+	public void attachVBO(VertexBufferObject vbo, List<Integer> attribs)
 	{
-		List<VertexBufferObject> valid = new ArrayList<VertexBufferObject>();
-		
-		for (VertexBufferObject vbo : vbos)
+		if (attribs == null || attribs.size() == 0)
 		{
-			if (!this.vbos.containsKey(vbo.t))
+			this.vbos.put(vbo, null);
+			
+			return;
+		}
+		
+		List<Integer> valid = new ArrayList<Integer>();
+		
+		for (int a : attribs)
+		{
+			if (!this.attribs.containsValue(a))
 			{
-				valid.add(vbo);
+				valid.add(a);
 				
 			}
 			
 		}
 		
-		if (valid.size() == 0)
-		{
-			return 0;
-		}
+		this.vbos.put(vbo, valid.isEmpty() ? attribs : valid);
 		
-		for (VertexBufferObject obj : valid)
-		{
-			this.vbos.put(obj.t, obj);
-			
-		}
-		
-		return valid.size();
 	}
 	
 	public void attachModel(Model m)
 	{
-		this.attachVBOs(m.finBuf, m.indiceBuf);
-		this.createAttribPointers(m.fin);
+		this.attachVBO(m.finBuf, Arrays.asList(0, 1, 2));
+		this.attachVBO(m.indiceBuf, null);
+		this.createModelAttribPointers(m.fin);
 		
 	}
 	
-	public void createAttribPointers(FloatBuffer buf)
+	public void attachRenderTicket(RenderTicket tkt)
+	{
+		this.attachModel(tkt.getModel());
+		this.attachVertexAttribs(new String[]{"in_rot", "in_trans", "in_scale"}, new int[]{3, 4, 5}, false);
+		this.attachVBO(tkt.getExtraVBO(), Arrays.asList(3, 4, 5));
+		
+		GL.glVertexAttribPointer(3, 3, false, 0, tkt.getBuffer());
+		GL.glVertexAttribPointer(4, 3, false, 3, tkt.getBuffer());
+		GL.glVertexAttribPointer(5, 3, false, 6, tkt.getBuffer());
+		
+	}
+	
+	public void createModelAttribPointers(FloatBuffer buf)
 	{
 		this.bind();
 		
@@ -248,9 +260,19 @@ public class GLProgram implements IGLCleanable
 		
 		if (!this.vbos.isEmpty())
 		{
-			for (VertexBufferObject vbo : this.vbos.values())
+			for (Entry<VertexBufferObject, List<Integer>> entry : this.vbos.entrySet())
 			{
-				GL.glBindBuffer(vbo);
+				GL.glBindBuffer(entry.getKey());
+				
+				if (entry.getValue() != null)
+				{
+					for (int attrib : entry.getValue())
+					{
+						GL.glEnableVertexAttribArray(attrib);
+						
+					}
+					
+				}
 				
 			}
 			
@@ -263,9 +285,19 @@ public class GLProgram implements IGLCleanable
 	{
 		if (!this.vbos.isEmpty())
 		{
-			for (Integer target : this.vbos.keySet())
+			for (Entry<VertexBufferObject, List<Integer>> entry : this.vbos.entrySet())
 			{
-				GL.glBindBuffer(target, 0);
+				if (entry.getValue() != null)
+				{
+					for (int a : entry.getValue())
+					{
+						GL.glDisableVertexAttribArray(a);
+						
+					}
+					
+				}
+				
+				GL.glBindBuffer(entry.getKey().t, 0);
 				
 			}
 			

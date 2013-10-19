@@ -193,7 +193,7 @@ public final class RenderHelper
 		{
 			case GL.GL_POINTS: return 1;
 			case GL.GL_LINES: return 2;
-			case GL.GL_TRIANGLES : return 3;
+			case GL.GL_TRIANGLES: return 3;
 			case GL.GL_QUADS: return 4;
 			case GL.GL_TRIANGLE_FAN: return 5;
 			default: return 0;

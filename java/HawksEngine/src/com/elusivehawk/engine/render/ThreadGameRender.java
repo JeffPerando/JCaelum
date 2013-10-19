@@ -22,7 +22,7 @@ public class ThreadGameRender extends ThreadTimed
 		hub = renderHub;
 		fps = framerate;
 		
-		delta = (100000000.0f / fps);
+		delta = (1000000000.0f / fps);
 		
 	}
 	

@@ -3,6 +3,7 @@ package com.elusivehawk.engine.render;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.lwjgl.BufferUtils;
 import com.elusivehawk.engine.math.Vector4f;
@@ -29,9 +30,9 @@ public class ParticleScene
 		p = new GLProgram(); //TODO Create default particle shaders.
 		vbo = new VertexBufferObject(GL.GL_ARRAY_BUFFER, buf, GL.GL_STREAM_DRAW);
 		
-		p.attachVBOs(vbo);
-		
 		p.attachVertexAttribs(new String[]{"in_pos", "in_col"}, new int[]{0, 1}, false);
+		
+		p.attachVBO(vbo, Arrays.asList(0, 1));
 		
 		GL.glVertexAttribPointer(0, 4, false, 0, buf);
 		GL.glVertexAttribPointer(1, 4, false, 4, buf);

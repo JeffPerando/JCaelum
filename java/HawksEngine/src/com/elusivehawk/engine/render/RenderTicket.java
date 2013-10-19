@@ -1,7 +1,9 @@
 
 package com.elusivehawk.engine.render;
 
+import java.nio.FloatBuffer;
 import java.util.HashMap;
+import org.lwjgl.BufferUtils;
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.MatrixHelper;
 import com.elusivehawk.engine.math.Vector3f;
@@ -19,21 +21,25 @@ public class RenderTicket
 	protected final Model m;
 	protected final GLProgram p;
 	protected final VertexBufferObject vbo = new VertexBufferObject(GL.GL_VERTEX_ARRAY);
+	protected final FloatBuffer buf;
 	
 	protected boolean dirty = false;
 	protected int frame = 0;
 	protected IModelAnimation anim = null, lastAnim = null;
 	
-	public RenderTicket(Model model)
+	public RenderTicket(Model model, int indiceCount)
 	{
-		this(new GLProgram(), model);
+		this(new GLProgram(), model, indiceCount);
 		
 	}
 	
-	public RenderTicket(GLProgram program, Model model)
+	public RenderTicket(GLProgram program, Model model, int indiceCount)
 	{
 		p = program;
 		m = model;
+		buf = BufferUtils.createFloatBuffer(indiceCount * 9);
+		
+		vbo.loadData(buf, GL.GL_STREAM_DRAW);
 		
 		p.attachModel(m);
 		
@@ -67,14 +73,31 @@ public class RenderTicket
 		
 	}
 	
-	public GLProgram getProgram()
+	public synchronized void setIndice(int pos, Vector3f rot, Vector3f trans, Vector3f scale)
 	{
-		return this.p;
+		this.dirty = true;
+		
+		this.buf.position(pos * 9);
+		
+		rot.store(this.getBuffer());
+		trans.store(this.getBuffer());
+		scale.store(this.getBuffer());
+		
+	}
+	
+	public FloatBuffer getBuffer()
+	{
+		return this.buf;
 	}
 	
 	public Model getModel()
 	{
 		return this.m;
+	}
+	
+	public GLProgram getProgram()
+	{
+		return this.p;
 	}
 	
 	public VertexBufferObject getExtraVBO()
@@ -105,6 +128,10 @@ public class RenderTicket
 		
 		if (this.dirty)
 		{
+			this.buf.rewind();
+			
+			this.vbo.updateEntireVBO(this.buf);
+			
 			Matrix m = MatrixHelper.createHomogenousMatrix(this.vecs.get(EnumVectorType.ROTATION), this.vecs.get(EnumVectorType.SCALING), this.vecs.get(EnumVectorType.TRANSLATION));
 			
 			this.p.attachUniform("model", m.asBuffer(), GLProgram.EnumUniformType.M_FOUR);

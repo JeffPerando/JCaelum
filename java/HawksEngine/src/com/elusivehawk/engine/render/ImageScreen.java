@@ -43,8 +43,9 @@ public class ImageScreen
 		vbo = new VertexBufferObject(GL.GL_ARRAY_BUFFER);
 		indices = new VertexBufferObject(GL.GL_ELEMENT_ARRAY_BUFFER);
 		
-		p.attachVBOs(vbo, indices);
-		p.createAttribPointers(buf);
+		p.attachVBO(vbo, null);
+		p.attachVBO(indices, null);
+		//p.createModelAttribPointers(buf);
 		
 	}
 	
