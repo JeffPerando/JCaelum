@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
-import java.util.List;
+import java.util.Collection;
 import com.elusivehawk.engine.core.GameLog;
 import com.elusivehawk.engine.core.ThreadTimed;
 
@@ -33,9 +33,9 @@ public class ThreadGameRender extends ThreadTimed
 		
 		this.hub.getCamera().updateCamera(this.hub);
 		
-		List<IRenderEngine> engines = this.hub.getRenderEngines();
+		Collection<IRenderEngine> engines = this.hub.getRenderEngines();
 		
-		if (engines == null || engines.size() == 0)
+		if (engines == null || engines.isEmpty())
 		{
 			return;
 		}

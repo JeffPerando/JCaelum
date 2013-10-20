@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 import com.elusivehawk.engine.core.GameLog;
@@ -24,7 +25,7 @@ public class RenderEngine3D implements IRenderEngine
 			return;
 		}
 		
-		List<IModelGroup> models = scene.getModels();
+		Collection<IModelGroup> models = scene.getModels();
 		
 		if (models == null || models.size() == 0)
 		{

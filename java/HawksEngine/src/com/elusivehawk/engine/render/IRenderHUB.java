@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * 
@@ -15,7 +15,7 @@ public interface IRenderHUB
 	
 	public IScene getScene();
 	
-	public List<IRenderEngine> getRenderEngines();
+	public Collection<IRenderEngine> getRenderEngines();
 	
 	public EnumRenderMode getRenderMode();
 	

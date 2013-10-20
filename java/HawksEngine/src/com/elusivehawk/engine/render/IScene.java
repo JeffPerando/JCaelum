@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * 
@@ -11,10 +11,10 @@ import java.util.List;
  */
 public interface IScene
 {
-	public List<IModelGroup> getModels();
+	public Collection<IModelGroup> getModels();
 	
 	public ParticleScene getParticles();
 	
-	public List<ImageScreen> getImages();
+	public Collection<ImageScreen> getImages();
 	
 }

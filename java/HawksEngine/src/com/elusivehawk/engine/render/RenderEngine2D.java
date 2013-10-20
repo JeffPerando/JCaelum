@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * 
@@ -21,7 +21,7 @@ public class RenderEngine2D implements IRenderEngine
 			return;
 		}
 		
-		List<ImageScreen> imgs = scene.getImages();
+		Collection<ImageScreen> imgs = scene.getImages();
 		
 		if (imgs == null || imgs.isEmpty())
 		{
