@@ -6,7 +6,6 @@ import java.io.File;
 import java.nio.IntBuffer;
 import javax.imageio.ImageIO;
 import org.lwjgl.BufferUtils;
-import com.elusivehawk.engine.core.EnumRenderMode;
 import com.elusivehawk.engine.core.GameLog;
 
 /**

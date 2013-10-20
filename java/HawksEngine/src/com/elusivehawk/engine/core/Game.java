@@ -84,8 +84,6 @@ public abstract class Game
 		
 	}
 	
-	//===============================END OPTIONAL GAME METHODS===============================
-	
 	/**
 	 * Call this when you're ready for the game loop to be handled automatically.
 	 */
@@ -283,6 +281,8 @@ public abstract class Game
 		System.exit(0);
 		
 	}
+	
+	//===============================END OPTIONAL GAME METHODS===============================
 	
 	//Static methods.
 	

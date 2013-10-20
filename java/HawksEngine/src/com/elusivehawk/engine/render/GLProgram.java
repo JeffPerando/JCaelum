@@ -231,6 +231,11 @@ public class GLProgram implements IGLCleanable
 	
 	public boolean bind()
 	{
+		if (!this.linkedRecently)
+		{
+			return false;
+		}
+		
 		if (!this.bind0())
 		{
 			this.unbind();
@@ -243,11 +248,6 @@ public class GLProgram implements IGLCleanable
 	
 	private boolean bind0()
 	{
-		if (!this.linkedRecently)
-		{
-			return false;
-		}
-		
 		int p = GL.glGetInteger(GL.GL_CURRENT_PROGRAM);
 		
 		if (p == this.id)

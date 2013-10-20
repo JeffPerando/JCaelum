@@ -112,6 +112,7 @@ public final class TextParser
 		{
 			GameLog.warn("File with path " + file.getPath() + " cannot be written to! This is a bug!");
 			
+			return false;
 		}
 		
 		try
@@ -239,7 +240,7 @@ public final class TextParser
 	
 	public static File createFile(String src, String path)
 	{
-		return new File(src, path.replace("/", FILE_SEP));
+		return new File(src.replace("/", FILE_SEP), path.replace("/", FILE_SEP));
 	}
 	
 }

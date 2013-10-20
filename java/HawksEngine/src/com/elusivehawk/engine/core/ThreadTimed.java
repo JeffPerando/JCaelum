@@ -26,9 +26,18 @@ public abstract class ThreadTimed extends ThreadStoppable
 			
 			if (delta >= lastTime)
 			{
-				this.update();
-				
 				updates++;
+				
+				try
+				{
+					this.update();
+					
+				}
+				catch (Throwable e)
+				{
+					GameLog.error(e);
+					
+				}
 				
 				if (updates == this.getTargetUpdateCount())
 				{

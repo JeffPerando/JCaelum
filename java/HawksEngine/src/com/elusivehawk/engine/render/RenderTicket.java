@@ -8,7 +8,6 @@ import com.elusivehawk.engine.core.IDirty;
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.MatrixHelper;
 import com.elusivehawk.engine.math.Vector3f;
-import com.elusivehawk.engine.math.Vector4f;
 
 /**
  * 
@@ -46,13 +45,13 @@ public class RenderTicket implements IDirty, ILogicalRender
 		
 		for (EnumVectorType type : EnumVectorType.values())
 		{
-			vecs.put(type, new Vector3f());
+			vecs.put(type, type.getDefault());
 			
 		}
 		
 	}
 	
-	public synchronized void setVector(EnumVectorType type, Vector4f vec)
+	public synchronized void setVector(EnumVectorType type, Vector3f vec)
 	{
 		this.vecs.get(type).set(vec);
 		
@@ -169,7 +168,22 @@ public class RenderTicket implements IDirty, ILogicalRender
 	
 	public static enum EnumVectorType
 	{
-		ROTATION, TRANSLATION, SCALING;
+		ROTATION(new Vector3f()),
+		TRANSLATION(new Vector3f()),
+		SCALING(new Vector3f(1.0f, 1.0f, 1.0f));
+		
+		private final Vector3f vec;
+		
+		EnumVectorType(Vector3f d)
+		{
+			vec = d;
+			
+		}
+		
+		public Vector3f getDefault()
+		{
+			return this.vec.clone();
+		}
 		
 	}
 	

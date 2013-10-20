@@ -9,7 +9,6 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import javax.imageio.ImageIO;
 import org.lwjgl.BufferUtils;
-import com.elusivehawk.engine.core.EnumRenderMode;
 import com.elusivehawk.engine.core.GameLog;
 
 /**
@@ -29,7 +28,7 @@ public class PixelGrid implements ITexture
 	protected final BufferedImage base;
 	protected int converted = 0;
 	
-	public final int xSize, ySize;
+	protected final int xSize, ySize;
 	
 	public PixelGrid(int w, int h)
 	{

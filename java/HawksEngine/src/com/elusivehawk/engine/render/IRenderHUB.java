@@ -2,7 +2,6 @@
 package com.elusivehawk.engine.render;
 
 import java.util.List;
-import com.elusivehawk.engine.core.EnumRenderMode;
 
 /**
  * 

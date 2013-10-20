@@ -2,7 +2,6 @@
 package com.elusivehawk.engine.render;
 
 import java.awt.image.BufferedImage;
-import com.elusivehawk.engine.core.EnumRenderMode;
 import com.elusivehawk.engine.core.GameLog;
 import com.elusivehawk.engine.core.Tuple;
 import com.elusivehawk.engine.math.Vector2f;

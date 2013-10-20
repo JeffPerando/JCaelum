@@ -4,6 +4,7 @@ package com.elusivehawk.engine.render;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.Display;
@@ -17,7 +18,7 @@ import com.elusivehawk.engine.core.BufferHelper;
  */
 public class ImageScreen implements ILogicalRender
 {
-	public static final int IMG_FLOAT_COUNT = 36;
+	public static final int IMG_FLOAT_COUNT = 32;
 	
 	protected ITexture tex = null;
 	protected final GLProgram p;
@@ -43,9 +44,28 @@ public class ImageScreen implements ILogicalRender
 		vbo = new VertexBufferObject(GL.GL_ARRAY_BUFFER);
 		indices = new VertexBufferObject(GL.GL_ELEMENT_ARRAY_BUFFER);
 		
-		p.attachVBO(vbo, null);
-		p.attachVBO(indices, null);
-		//p.createModelAttribPointers(buf);
+		vbo.loadData(buf, GL.GL_STREAM_DRAW);
+		indices.loadData(indiceBuf, GL.GL_STATIC_DRAW);
+		
+		if (p.bind())
+		{
+			p.attachVertexAttribs(new String[]{"in_position", "in_color", "in_texcoord"}, new int[]{0, 1, 2}, false);
+			
+			GL.glVertexAttribPointer(0, 2, false, 0, buf);
+			GL.glVertexAttribPointer(1, 4, false, 2, buf);
+			GL.glVertexAttribPointer(2, 2, false, 6, buf);
+			
+			p.attachVBO(vbo, Arrays.asList(0, 1, 2));
+			p.attachVBO(indices, null);
+			
+			p.unbind();
+			
+		}
+		else
+		{
+			throw new RuntimeException("Failed to set up image screen: OpenGL program binding failed.");
+			
+		}
 		
 	}
 	
@@ -157,19 +177,19 @@ public class ImageScreen implements ILogicalRender
 		float c = (x + info.width) / Display.getWidth();
 		float d = (y + info.height) / Display.getHeight();
 		
-		ret.put(a).put(b).put(0);
+		ret.put(a).put(b);
 		info.mgr.getColor(0).store(ret);
 		info.mgr.getTextureOffset(0).store(ret);
 		
-		ret.put(c).put(b).put(0);
+		ret.put(c).put(b);
 		info.mgr.getColor(1).store(ret);
 		info.mgr.getTextureOffset(1).store(ret);
 		
-		ret.put(a).put(d).put(0);
+		ret.put(a).put(d);
 		info.mgr.getColor(2).store(ret);
 		info.mgr.getTextureOffset(2).store(ret);
 		
-		ret.put(c).put(d).put(0);
+		ret.put(c).put(d);
 		info.mgr.getColor(3).store(ret);
 		info.mgr.getTextureOffset(3).store(ret);
 		

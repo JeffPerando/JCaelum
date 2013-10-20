@@ -13,7 +13,6 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.glu.GLU;
-import com.elusivehawk.engine.core.EnumRenderMode;
 import com.elusivehawk.engine.core.GameLog;
 import com.elusivehawk.engine.core.TextParser;
 
@@ -92,7 +91,7 @@ public final class RenderHelper
 		
 		int glId = GL.glGenTextures();
 		
-		GL.glBindTexture(mode.is3D() ? GL.GL_TEXTURE_3D : GL.GL_TEXTURE_2D, glId);
+		GL.glBindTexture(mode.getOpenGLMode(), glId);
 		GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1);
 		
 		if (mode.is3D())
