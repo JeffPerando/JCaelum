@@ -41,7 +41,7 @@ public class RenderTicket implements IDirty, ILogicalRender
 		
 		vbo.loadData(buf, GL.GL_STREAM_DRAW);
 		
-		p.attachModel(m);
+		p.attachRenderTicket(this);
 		
 		for (EnumVectorType type : EnumVectorType.values())
 		{

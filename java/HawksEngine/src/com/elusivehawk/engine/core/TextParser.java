@@ -75,22 +75,22 @@ public final class TextParser
 		return text;
 	}
 	
-	public static boolean write(String path, String encoding, boolean append, boolean makeFileIfNotFound, String... text)
+	public static boolean write(String path, boolean append, boolean makeFileIfNotFound, String... text)
 	{
-		return write(createFile(path), encoding, append, makeFileIfNotFound, text);
+		return write(createFile(path), append, makeFileIfNotFound, text);
 	}
 	
-	public static boolean write(String path, List<String> text, String encoding, boolean append, boolean makeFileIfNotFound)
+	public static boolean write(String path, List<String> text, boolean append, boolean makeFileIfNotFound)
 	{
-		return write(createFile(path), text, encoding, append, makeFileIfNotFound);
+		return write(createFile(path), text, append, makeFileIfNotFound);
 	}
 	
-	public static boolean write(File file, String encoding, boolean append, boolean makeFileIfNotFound, String... text)
+	public static boolean write(File file, boolean append, boolean makeFileIfNotFound, String... text)
 	{
-		return write(file, Arrays.asList(text), encoding, append, makeFileIfNotFound);
+		return write(file, Arrays.asList(text), append, makeFileIfNotFound);
 	}
 	
-	public static boolean write(File file, List<String> text, String encoding, boolean append, boolean makeFileIfNotFound)
+	public static boolean write(File file, List<String> text, boolean append, boolean makeFileIfNotFound)
 	{
 		if (!file.exists() && makeFileIfNotFound)
 		{
