@@ -1,5 +1,5 @@
 
-package com.elusivehawk.engine.render.gl;
+package com.elusivehawk.engine.render;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;

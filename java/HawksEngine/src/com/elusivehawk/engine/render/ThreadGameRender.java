@@ -4,7 +4,6 @@ package com.elusivehawk.engine.render;
 import java.util.Collection;
 import com.elusivehawk.engine.core.GameLog;
 import com.elusivehawk.engine.core.ThreadTimed;
-import com.elusivehawk.engine.render.gl.GL;
 
 /**
  * 

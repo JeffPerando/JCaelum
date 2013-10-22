@@ -8,10 +8,10 @@ import org.lwjgl.Sys;
 import org.lwjgl.opengl.Display;
 import com.elusivehawk.engine.render.Color;
 import com.elusivehawk.engine.render.EnumColorFilter;
+import com.elusivehawk.engine.render.GL;
 import com.elusivehawk.engine.render.IRenderHUB;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.ThreadGameRender;
-import com.elusivehawk.engine.render.gl.GL;
 
 /**
  * 

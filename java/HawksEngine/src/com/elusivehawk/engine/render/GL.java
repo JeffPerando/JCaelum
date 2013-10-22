@@ -1,5 +1,5 @@
 
-package com.elusivehawk.engine.render.gl;
+package com.elusivehawk.engine.render;
 
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
@@ -29,7 +29,6 @@ import org.lwjgl.opengl.GL43;
 import org.lwjgl.opengl.GL44;
 import org.lwjgl.opengl.GLSync;
 import org.lwjgl.opengl.KHRDebugCallback;
-import com.elusivehawk.engine.render.ITexture;
 
 /**
  * 

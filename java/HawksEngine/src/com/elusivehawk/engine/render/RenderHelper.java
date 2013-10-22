@@ -15,7 +15,6 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.util.glu.GLU;
 import com.elusivehawk.engine.core.GameLog;
 import com.elusivehawk.engine.core.TextParser;
-import com.elusivehawk.engine.render.gl.GL;
 
 /**
  * 
