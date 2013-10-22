@@ -28,6 +28,8 @@ public class RenderEngine2D implements IRenderEngine
 			return;
 		}
 		
+		int currTex = 0, tex = 0;
+		
 		for (ImageScreen imgScene : imgs)
 		{
 			imgScene.updateBeforeUse(hub);
@@ -39,9 +41,27 @@ public class RenderEngine2D implements IRenderEngine
 				continue;
 			}
 			
-			GL.glActiveTexture(imgScene.getTexture());
+			tex = imgScene.getTexture().getTexture();
+			
+			if (currTex != tex)
+			{
+				if (GL.glIsTexture(tex))
+				{
+					GL.glBindTexture(GL.GL_TEXTURE0, tex);
+					currTex = tex;
+					
+				}
+				else
+				{
+					GL.glBindTexture(GL.GL_TEXTURE0, 0);
+					
+				}
+				
+			}
+			
 			GL.glDrawElements(GL.GL_TRIANGLES, imgScene.getImgCount() * 6, GL.GL_UNSIGNED_INT, 0);
-			GL.glActiveTexture(null);
+			
+			GL.glBindTexture(GL.GL_TEXTURE0, 0);
 			
 			p.unbind();
 			

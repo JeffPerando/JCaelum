@@ -91,27 +91,24 @@ public final class RenderHelper
 		
 		int glId = GL.glGenTextures();
 		
-		GL.glBindTexture(mode.getOpenGLMode(), glId);
+		GL.glActiveTexture(glId);
 		GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1);
+		
+		GL.glTexParameteri(mode.getOpenGLMode(), GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
+		GL.glTexParameteri(mode.getOpenGLMode(), GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
 		
 		if (mode.is3D())
 		{
-			GL.glTexParameteri(GL.GL_TEXTURE_3D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
-			GL.glTexParameteri(GL.GL_TEXTURE_3D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
-			
 			GL.glTexImage3D(GL.GL_TEXTURE_3D, 0, GL.GL_RGBA8, w, h, 0, 0, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, buf);
 			
 		}
 		else
 		{
-			GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
-			GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
-			
 			GL.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA8, w, h, 0, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, buf);
 			
 		}
 		
-		GL.glBindTexture(mode.is3D() ? GL.GL_TEXTURE_3D : GL.GL_TEXTURE_2D, 0);
+		GL.glActiveTexture(0);
 		
 		return glId;
 	}

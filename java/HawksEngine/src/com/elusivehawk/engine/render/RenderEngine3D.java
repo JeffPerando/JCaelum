@@ -38,7 +38,7 @@ public class RenderEngine3D implements IRenderEngine
 		GL.glEnable(GL.GL_CULL_FACE);
 		GL.glCullFace(GL.GL_BACK);
 		
-		int currTex, tex;
+		int currTex = 0, tex = 0;
 		
 		for (IModelGroup group : models)
 		{
@@ -58,21 +58,21 @@ public class RenderEngine3D implements IRenderEngine
 					continue;
 				}
 				
-				currTex = GL.glGetInteger(GL.GL_ACTIVE_TEXTURE);
 				tex = group.getTexture(c).getTexture();
 				
 				if (currTex != tex)
 				{
 					if (GL.glIsTexture(tex))
 					{
-						GL.glActiveTexture(tex);
+						GL.glBindTexture(GL.GL_TEXTURE0, tex);
+						currTex = tex;
 						
 					}
 					else
 					{
 						GameLog.warn("Model group " + group.getName() + " model #" + c + " has invalid texture ID: " + tex + ", please rectify this.");
 						
-						GL.glActiveTexture(0);
+						GL.glBindTexture(GL.GL_TEXTURE0, 0);
 						
 					}
 					

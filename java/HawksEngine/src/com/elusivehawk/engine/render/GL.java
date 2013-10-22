@@ -2074,6 +2074,12 @@ public final class GL
 		
 	}
 	
+	public static void glBindTexture(int target, ITexture texture)
+	{
+		GL11.glBindTexture(target, texture == null ? 0 : texture.getTexture());
+		
+	}
+	
 	public static void glBindTextures(int first, int count, IntBuffer textures)
 	{
 		GL44.glBindTextures(first, count, textures);
