@@ -143,6 +143,11 @@ public class ImageScreen implements ILogicalRender
 			ImageData info = this.getImg(c);
 			IExtraImageData mgr = info.mgr;
 			
+			if (mgr == null)
+			{
+				continue;
+			}
+			
 			if (mgr.flaggedForDeletion())
 			{
 				this.removeImg(c);
@@ -178,20 +183,20 @@ public class ImageScreen implements ILogicalRender
 		float d = (y + info.height) / Display.getHeight();
 		
 		ret.put(a).put(b);
-		info.mgr.getColor(0).store(ret);
-		info.mgr.getTextureOffset(0).store(ret);
+		info.colors[0].store(ret);
+		info.texOffs[0].store(ret);
 		
 		ret.put(c).put(b);
-		info.mgr.getColor(1).store(ret);
-		info.mgr.getTextureOffset(1).store(ret);
+		info.colors[1].store(ret);
+		info.texOffs[1].store(ret);
 		
 		ret.put(a).put(d);
-		info.mgr.getColor(2).store(ret);
-		info.mgr.getTextureOffset(2).store(ret);
+		info.colors[2].store(ret);
+		info.texOffs[2].store(ret);
 		
 		ret.put(c).put(d);
-		info.mgr.getColor(3).store(ret);
-		info.mgr.getTextureOffset(3).store(ret);
+		info.colors[3].store(ret);
+		info.texOffs[3].store(ret);
 		
 		ret.flip();
 		

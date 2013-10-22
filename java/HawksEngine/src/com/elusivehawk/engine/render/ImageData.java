@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.render;
 
 import com.elusivehawk.engine.core.Tuple;
+import com.elusivehawk.engine.math.Vector2f;
 
 /**
  * 
@@ -14,16 +15,12 @@ public class ImageData
 	public final Tuple<Integer, Integer> pos = new Tuple<Integer, Integer>(0, 0);
 	public final int width, height;
 	public final IExtraImageData mgr;
+	public final Vector2f[] texOffs = {new Vector2f(0, 0), new Vector2f(1, 0), new Vector2f(0, 1), new Vector2f(1, 1)};
+	public final Color[] colors = {new Color(EnumColorFormat.RGBA), new Color(EnumColorFormat.RGBA), new Color(EnumColorFormat.RGBA), new Color(EnumColorFormat.RGBA)};
 	
 	public ImageData(int w, int h)
 	{
-		this(w, h, new BasicImageData());
-		
-	}
-	
-	public ImageData(Color color, int w, int h)
-	{
-		this(w, h, new BasicImageData(color));
+		this(w, h, null);
 		
 	}
 	
