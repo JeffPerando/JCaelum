@@ -2,6 +2,8 @@
 package com.elusivehawk.engine.render;
 
 import java.util.Collection;
+import com.elusivehawk.engine.render.gl.GL;
+import com.elusivehawk.engine.render.gl.GLProgram;
 
 /**
  * 

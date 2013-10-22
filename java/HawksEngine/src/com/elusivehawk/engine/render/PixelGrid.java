@@ -10,6 +10,7 @@ import java.nio.IntBuffer;
 import javax.imageio.ImageIO;
 import org.lwjgl.BufferUtils;
 import com.elusivehawk.engine.core.GameLog;
+import com.elusivehawk.engine.render.gl.GL;
 
 /**
  * 

@@ -7,6 +7,9 @@ import java.util.Arrays;
 import java.util.List;
 import org.lwjgl.BufferUtils;
 import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.render.gl.GL;
+import com.elusivehawk.engine.render.gl.GLProgram;
+import com.elusivehawk.engine.render.gl.VertexBufferObject;
 
 /**
  * 

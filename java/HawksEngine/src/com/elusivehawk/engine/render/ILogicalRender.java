@@ -1,6 +1,8 @@
 
 package com.elusivehawk.engine.render;
 
+import com.elusivehawk.engine.render.gl.GLProgram;
+
 /**
  * 
  * 

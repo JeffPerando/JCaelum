@@ -9,6 +9,9 @@ import java.util.List;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.Display;
 import com.elusivehawk.engine.core.BufferHelper;
+import com.elusivehawk.engine.render.gl.GL;
+import com.elusivehawk.engine.render.gl.GLProgram;
+import com.elusivehawk.engine.render.gl.VertexBufferObject;
 
 /**
  * 

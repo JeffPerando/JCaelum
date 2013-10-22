@@ -10,6 +10,8 @@ import com.elusivehawk.engine.core.BufferHelper;
 import com.elusivehawk.engine.core.GameLog;
 import com.elusivehawk.engine.core.Tuple;
 import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.render.gl.GL;
+import com.elusivehawk.engine.render.gl.VertexBufferObject;
 
 /**
  * 

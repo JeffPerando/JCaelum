@@ -8,6 +8,9 @@ import com.elusivehawk.engine.core.IDirty;
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.MatrixHelper;
 import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.render.gl.GL;
+import com.elusivehawk.engine.render.gl.GLProgram;
+import com.elusivehawk.engine.render.gl.VertexBufferObject;
 
 /**
  * 

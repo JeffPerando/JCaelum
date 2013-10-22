@@ -1,5 +1,5 @@
 
-package com.elusivehawk.engine.render;
+package com.elusivehawk.engine.render.gl;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Map.Entry;
 import org.lwjgl.BufferUtils;
 import com.elusivehawk.engine.core.GameLog;
+import com.elusivehawk.engine.render.Model;
+import com.elusivehawk.engine.render.RenderHelper;
+import com.elusivehawk.engine.render.RenderTicket;
 
 /**
  * 
