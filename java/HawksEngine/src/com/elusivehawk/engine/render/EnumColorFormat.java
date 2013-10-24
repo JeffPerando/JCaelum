@@ -17,22 +17,20 @@ public enum EnumColorFormat
 	ABGR(EnumColorFilter.ALPHA, EnumColorFilter.BLUE, EnumColorFilter.GREEN, EnumColorFilter.RED),
 	BGRA(EnumColorFilter.BLUE, EnumColorFilter.GREEN, EnumColorFilter.RED, EnumColorFilter.ALPHA);
 	
+	public final EnumColorFilter[] colors;
+	public final boolean alpha;
+	
 	EnumColorFormat(EnumColorFilter... f)
 	{
 		colors = f;
 		
-		offsets = new int[f.length];
-		
 		boolean flag = false;
 		
-		for (int c = 0; c < f.length; c++)
+		for (EnumColorFilter color : colors)
 		{
-			offsets[c] = 24 - (colors[c].ordinal() * 8);
-			
-			if (colors[c] == EnumColorFilter.ALPHA)
+			if (color == EnumColorFilter.ALPHA)
 			{
 				flag = true;
-				
 			}
 			
 		}
@@ -41,17 +39,13 @@ public enum EnumColorFormat
 		
 	}
 	
-	public final EnumColorFilter[] colors;
-	private final int[] offsets;
-	private final boolean alpha;
-	
 	public int getColorOffset(EnumColorFilter col)
 	{
-		for (int c = 0; c < this.offsets.length; c++)
+		for (int c = 0; c < this.colors.length; c++)
 		{
 			if (this.colors[c] == col)
 			{
-				return this.offsets[c];
+				return 24 - (c * 8);
 			}
 			
 		}
@@ -75,11 +69,6 @@ public enum EnumColorFormat
 		}
 		
 		return new Color(this, buf);
-	}
-	
-	public boolean supportsAlpha()
-	{
-		return this.alpha;
 	}
 	
 }

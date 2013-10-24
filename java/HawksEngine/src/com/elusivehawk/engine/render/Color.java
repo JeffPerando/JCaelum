@@ -124,7 +124,7 @@ public class Color implements IStoreable
 	
 	public boolean supportsAlpha()
 	{
-		return this.format.supportsAlpha();
+		return this.format.alpha;
 	}
 	
 }
