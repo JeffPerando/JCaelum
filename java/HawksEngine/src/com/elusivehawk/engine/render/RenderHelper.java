@@ -164,6 +164,8 @@ public final class RenderHelper
 	
 	public static synchronized BufferedImage captureScreen()
 	{
+		makeContextCurrent();
+		
 		ByteBuffer buf = BufferUtils.createByteBuffer(Display.getHeight() * Display.getWidth() * 4);
 		
 		GL.glReadPixels(0, 0, Display.getWidth(), Display.getHeight(), GL.GL_RGBA, GL.GL_BYTE, buf);
