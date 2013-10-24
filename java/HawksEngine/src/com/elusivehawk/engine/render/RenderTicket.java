@@ -27,6 +27,7 @@ public class RenderTicket implements IDirty, ILogicalRender
 	protected boolean dirty = false;
 	protected int frame = 0;
 	protected IModelAnimation anim = null, lastAnim = null;
+	protected ITexture tex;
 	
 	public RenderTicket(Model model)
 	{
@@ -98,6 +99,12 @@ public class RenderTicket implements IDirty, ILogicalRender
 		
 	}
 	
+	public synchronized void setTexture(ITexture texture)
+	{
+		this.tex = texture;
+		
+	}
+	
 	public FloatBuffer getBuffer()
 	{
 		return this.buf;
@@ -117,7 +124,12 @@ public class RenderTicket implements IDirty, ILogicalRender
 	{
 		return this.frame;
 	}
-
+	
+	public ITexture getTexture()
+	{
+		return this.tex;
+	}
+	
 	@Override
 	public GLProgram getProgram()
 	{

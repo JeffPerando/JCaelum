@@ -2,9 +2,7 @@
 package com.elusivehawk.engine.render;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map.Entry;
-import com.elusivehawk.engine.core.GameLog;
 import com.elusivehawk.engine.core.Tuple;
 
 /**
@@ -27,7 +25,7 @@ public class RenderEngine3D implements IRenderEngine
 		
 		Collection<IModelGroup> models = scene.getModels();
 		
-		if (models == null || models.size() == 0)
+		if (models == null || models.isEmpty())
 		{
 			return;
 		}
@@ -42,23 +40,26 @@ public class RenderEngine3D implements IRenderEngine
 		
 		for (IModelGroup group : models)
 		{
-			List<RenderTicket> tickets = group.getTickets();
+			Collection<RenderTicket> tickets = group.getTickets();
 			
-			for (int c = 0; c < tickets.size(); c++)
+			if (tickets == null || tickets.isEmpty())
 			{
-				RenderTicket ticket = tickets.get(c);
+				continue;
+			}
+			
+			for (RenderTicket tkt : tickets)
+			{
+				tkt.updateBeforeUse(hub);
 				
-				ticket.updateBeforeUse(hub);
-				
-				Model m = ticket.getModel();
-				GLProgram p = ticket.getProgram();
+				Model m = tkt.getModel();
+				GLProgram p = tkt.getProgram();
 				
 				if (!p.bind())
 				{
 					continue;
 				}
 				
-				tex = group.getTexture(c).getTexture();
+				tex = tkt.getTexture().getTexture();
 				
 				if (currTex != tex)
 				{
@@ -70,8 +71,6 @@ public class RenderEngine3D implements IRenderEngine
 					}
 					else
 					{
-						GameLog.warn("Model group " + group.getName() + " model #" + c + " has invalid texture ID: " + tex + ", please rectify this.");
-						
 						GL.glBindTexture(GL.GL_TEXTURE0, 0);
 						
 					}
