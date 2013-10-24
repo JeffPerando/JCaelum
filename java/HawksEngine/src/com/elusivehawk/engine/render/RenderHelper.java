@@ -31,7 +31,7 @@ public final class RenderHelper
 	
 	public static IntBuffer processGifFile(File gif, EnumRenderMode mode)
 	{
-		if (!mode.isValidImageMode())
+		if (!isContextCurrent() || !mode.isValidImageMode())
 		{
 			return null;
 		}
@@ -84,7 +84,7 @@ public final class RenderHelper
 	
 	public static int processImage(ByteBuffer buf, int w, int h, EnumRenderMode mode)
 	{
-		if (!mode.isValidImageMode())
+		if (!isContextCurrent() || !mode.isValidImageMode())
 		{
 			return 0;
 		}
@@ -136,7 +136,7 @@ public final class RenderHelper
 	
 	public static int loadShader(File shader, int type)
 	{
-		if (!shader.exists() || !shader.getName().endsWith(".glsl"))
+		if (!isContextCurrent() || !shader.exists() || !shader.getName().endsWith(".glsl"))
 		{
 			return 0;
 		}
@@ -162,10 +162,9 @@ public final class RenderHelper
 		return 0;
 	}
 	
+	@Deprecated
 	public static synchronized BufferedImage captureScreen()
 	{
-		makeContextCurrent();
-		
 		ByteBuffer buf = BufferUtils.createByteBuffer(Display.getHeight() * Display.getWidth() * 4);
 		
 		GL.glReadPixels(0, 0, Display.getWidth(), Display.getHeight(), GL.GL_RGBA, GL.GL_BYTE, buf);
@@ -201,6 +200,11 @@ public final class RenderHelper
 	
 	public static void checkForGLError()
 	{
+		if (!isContextCurrent())
+		{
+			return;
+		}
+		
 		int err = GL.glGetError();
 		
 		if (err != GL.GL_NO_ERROR)
@@ -228,6 +232,11 @@ public final class RenderHelper
 	
 	public static IntBuffer createVBOs(int count)
 	{
+		if (!isContextCurrent())
+		{
+			return BufferUtils.createIntBuffer(1);
+		}
+		
 		IntBuffer ret = BufferUtils.createIntBuffer(count);
 		GL.glGenBuffers(ret);
 		ret.rewind(); //Just a safety precaution.
@@ -235,15 +244,34 @@ public final class RenderHelper
 		return ret;
 	}
 	
-	public static void makeContextCurrent()
+	public static boolean isContextCurrent()
 	{
+		boolean ret = false;
+		
 		try
 		{
-			if (!Display.isCurrent())
-			{
-				Display.makeCurrent();
-				
-			}
+			ret = Display.isCurrent();
+			
+		}
+		catch (Exception e)
+		{
+			GameLog.error(e);
+			
+		}
+		
+		return ret;
+	}
+	
+	public static void makeContextCurrent()
+	{
+		if (isContextCurrent())
+		{
+			return;
+		}
+		
+		try
+		{
+			Display.makeCurrent();
 			
 		}
 		catch (LWJGLException e)
