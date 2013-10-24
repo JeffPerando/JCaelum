@@ -69,7 +69,6 @@ public final class RenderHelper
 		}
 		
 		return null;
-		
 	}
 	
 	public static int processImage(BufferedImage img, int x, int y, int w, int h, EnumRenderMode mode)
