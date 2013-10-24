@@ -2,14 +2,13 @@
 
 struct Camera
 {
-	vec3 pos;
-	vec3 rot;
+	mat4 m;
 	float zFar;
 	float zNear;
 	
 }
 
-uniform mat4 cam;
+uniform Camera cam;
 uniform mat4 proj;
 uniform mat4 model;
 
@@ -31,7 +30,7 @@ void main()
 	
 	mat4 fin = trans(in_trans) * rotate(in_rot) * scale(in_scale) * vec4(in_position, 1.0);
 	
-	gl_Position = proj * cam * fin;
+	gl_Position = proj * cam.m * fin;
 	
 }
 

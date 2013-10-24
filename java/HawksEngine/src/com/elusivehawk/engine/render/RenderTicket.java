@@ -4,6 +4,7 @@ package com.elusivehawk.engine.render;
 import java.nio.FloatBuffer;
 import java.util.HashMap;
 import org.lwjgl.BufferUtils;
+import com.elusivehawk.engine.core.BufferHelper;
 import com.elusivehawk.engine.core.IDirty;
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.MatrixHelper;
@@ -176,11 +177,13 @@ public class RenderTicket implements IDirty, ILogicalRender
 			
 			if (hub.getRenderMode().is3D() && cam.isDirty())
 			{
-				Matrix camM = MatrixHelper.createHomogenousMatrix(cam.getCamRot(), new Vector3f(1.0f, 1.0f, 1.0f), null);
+				Matrix camM = MatrixHelper.createHomogenousMatrix(cam.getCamRot(), new Vector3f(1.0f, 1.0f, 1.0f), null); //TODO Calculate translation
 				
-				this.p.attachUniform("cam", camM.asBuffer(), GLProgram.EnumUniformType.M_FOUR);
+				this.p.attachUniform("cam.m", camM.asBuffer(), GLProgram.EnumUniformType.M_FOUR);
+				this.p.attachUniform("cam.zFar", BufferHelper.makeFloatBuffer(cam.getZFar()), GLProgram.EnumUniformType.ONE);
+				this.p.attachUniform("cam.zNear", BufferHelper.makeFloatBuffer(cam.getZNear()), GLProgram.EnumUniformType.ONE);
 				
-				//TODO Replace with struct-compliant system.
+				//TODO Expand
 				
 			}
 			
