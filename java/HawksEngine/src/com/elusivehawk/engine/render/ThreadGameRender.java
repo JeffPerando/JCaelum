@@ -78,6 +78,7 @@ public class ThreadGameRender extends ThreadTimed
 	public synchronized void setTargetFPS(int framerate)
 	{
 		this.fps = framerate;
+		this.delta = (1000000000.0f / this.fps);
 		
 	}
 	
