@@ -115,11 +115,8 @@ public abstract class Model
 		
 		IntBuffer vbos = RenderHelper.createVBOs(2);
 		
-		finBuf = new VertexBufferObject(vbos, GL.GL_ARRAY_BUFFER);
-		finBuf.loadData(fin, GL.GL_STATIC_DRAW);
-		
-		indiceBuf = new VertexBufferObject(vbos, GL.GL_ELEMENT_ARRAY_BUFFER);
-		indiceBuf.loadData(indices, GL.GL_STATIC_DRAW);
+		finBuf = new VertexBufferObject(vbos.get(), GL.GL_ARRAY_BUFFER, fin, GL.GL_STATIC_DRAW);
+		indiceBuf = new VertexBufferObject(vbos.get(), GL.GL_ELEMENT_ARRAY_BUFFER, indices, GL.GL_STATIC_DRAW);
 		
 		if (vb != 0)
 		{

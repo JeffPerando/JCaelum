@@ -13,21 +13,9 @@ import com.elusivehawk.engine.core.GameLog;
  */
 public class VertexBufferObject implements IGLCleanable
 {
-	public final int id, t;
+	public final int id, t, loadMode;
 	
-	public VertexBufferObject(int target)
-	{
-		this(GL.glGenBuffers(), target);
-		
-	}
-	
-	public VertexBufferObject(IntBuffer buf, int target)
-	{
-		this(buf.get(), target);
-		
-	}
-	
-	public VertexBufferObject(int vbo, int target)
+	private VertexBufferObject(int vbo, int target, int mode)
 	{
 		if (!GL.glIsBuffer(vbo))
 		{
@@ -39,6 +27,7 @@ public class VertexBufferObject implements IGLCleanable
 		
 		t = target;
 		id = vbo;
+		loadMode = mode;
 		
 		GL.register(this);
 		
@@ -46,33 +35,31 @@ public class VertexBufferObject implements IGLCleanable
 	
 	public VertexBufferObject(int target, FloatBuffer buf, int mode)
 	{
-		this(target);
-		loadData(buf, mode);
+		this(GL.glGenBuffers(), target, buf, mode);
 		
 	}
 	
 	public VertexBufferObject(int target, IntBuffer buf, int mode)
 	{
-		this(target);
-		loadData(buf, mode);
+		this(GL.glGenBuffers(), target, buf, mode);
 		
 	}
 	
 	public VertexBufferObject(int vbo, int target, FloatBuffer buf, int mode)
 	{
-		this(vbo, target);
-		loadData(buf, mode);
+		this(vbo, target, mode);
+		loadData(buf);
 		
 	}
 	
 	public VertexBufferObject(int vbo, int target, IntBuffer buf, int mode)
 	{
-		this(vbo, target);
-		loadData(buf, mode);
+		this(vbo, target, mode);
+		loadData(buf);
 		
 	}
 	
-	public void loadData(FloatBuffer buf, int mode)
+	protected void loadData(FloatBuffer buf)
 	{
 		int vba = GL.glGetInteger(GL.GL_VERTEX_ARRAY_BINDING);
 		
@@ -83,7 +70,7 @@ public class VertexBufferObject implements IGLCleanable
 		}
 		
 		GL.glBindBuffer(this);
-		GL.glBufferData(this.id, buf, mode);
+		GL.glBufferData(this.id, buf, this.loadMode);
 		GL.glBindBuffer(this.t, 0);
 		
 		if (vba != 0)
@@ -94,7 +81,7 @@ public class VertexBufferObject implements IGLCleanable
 		
 	}
 	
-	public void loadData(IntBuffer buf, int mode)
+	protected void loadData(IntBuffer buf)
 	{
 		int vba = GL.glGetInteger(GL.GL_VERTEX_ARRAY_BINDING);
 		
@@ -105,7 +92,7 @@ public class VertexBufferObject implements IGLCleanable
 		}
 		
 		GL.glBindBuffer(this);
-		GL.glBufferData(this.t, buf, mode);
+		GL.glBufferData(this.t, buf, this.loadMode);
 		GL.glBindBuffer(this.t, 0);
 		
 		if (vba != 0)

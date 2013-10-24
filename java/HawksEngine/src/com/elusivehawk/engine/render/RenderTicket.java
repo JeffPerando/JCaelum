@@ -20,26 +20,39 @@ public class RenderTicket implements IDirty, ILogicalRender
 	protected final HashMap<EnumVectorType, Vector3f> vecs = new HashMap<EnumVectorType, Vector3f>();
 	protected final Model m;
 	protected final GLProgram p;
-	protected final VertexBufferObject vbo = new VertexBufferObject(GL.GL_VERTEX_ARRAY);
+	protected final VertexBufferObject vbo;
 	protected final FloatBuffer buf;
+	protected final IRenderTicketListener lis;
 	
 	protected boolean dirty = false;
 	protected int frame = 0;
 	protected IModelAnimation anim = null, lastAnim = null;
 	
-	public RenderTicket(Model model, int indiceCount)
+	public RenderTicket(Model model)
 	{
-		this(new GLProgram(), model, indiceCount);
+		this(new GLProgram(), model);
 		
 	}
 	
-	public RenderTicket(GLProgram program, Model model, int indiceCount)
+	public RenderTicket(GLProgram program, Model model)
+	{
+		this(program, model, null);
+		
+	}
+	
+	public RenderTicket(Model model, IRenderTicketListener listener)
+	{
+		this(new GLProgram(), model, listener);
+		
+	}
+	
+	public RenderTicket(GLProgram program, Model model, IRenderTicketListener listener)
 	{
 		p = program;
 		m = model;
-		buf = BufferUtils.createFloatBuffer(indiceCount * 9);
-		
-		vbo.loadData(buf, GL.GL_STREAM_DRAW);
+		lis = listener;
+		buf = BufferUtils.createFloatBuffer(m.polyCount * 3);
+		vbo = new VertexBufferObject(GL.GL_VERTEX_ARRAY, this.buf, GL.GL_STREAM_DRAW);
 		
 		p.attachRenderTicket(this);
 		
@@ -95,12 +108,6 @@ public class RenderTicket implements IDirty, ILogicalRender
 		return this.m;
 	}
 	
-	@Override
-	public GLProgram getProgram()
-	{
-		return this.p;
-	}
-	
 	public VertexBufferObject getExtraVBO()
 	{
 		return this.vbo;
@@ -110,10 +117,25 @@ public class RenderTicket implements IDirty, ILogicalRender
 	{
 		return this.frame;
 	}
+
+	@Override
+	public GLProgram getProgram()
+	{
+		return this.p;
+	}
 	
 	@Override
 	public boolean updateBeforeUse(IRenderHUB hub)
 	{
+		if (this.lis != null)
+		{
+			if (!this.lis.update(this))
+			{
+				return false;
+			}
+			
+		}
+		
 		boolean usedBefore = this.anim == this.lastAnim;
 		
 		if (!usedBefore)
@@ -184,6 +206,12 @@ public class RenderTicket implements IDirty, ILogicalRender
 		{
 			return this.vec.clone();
 		}
+		
+	}
+	
+	public static interface IRenderTicketListener
+	{
+		public boolean update(RenderTicket tkt);
 		
 	}
 	
