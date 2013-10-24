@@ -31,6 +31,7 @@ public enum EnumColorFormat
 			if (color == EnumColorFilter.ALPHA)
 			{
 				flag = true;
+				
 			}
 			
 		}

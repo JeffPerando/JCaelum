@@ -75,6 +75,11 @@ public class ParticleScene implements ILogicalRender
 	@Override
 	public boolean updateBeforeUse(IRenderHUB hub)
 	{
+		if (this.getParticleCount() == 0)
+		{
+			return false;
+		}
+		
 		for (int c = 0; c < this.particles.size(); c++)
 		{
 			IParticle p = this.particles.get(c);
