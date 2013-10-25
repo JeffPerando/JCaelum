@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.render;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map.Entry;
 import com.elusivehawk.engine.core.Tuple;
 
@@ -16,9 +17,14 @@ public class RenderEngine3D implements IRenderEngine
 	@Override
 	public void render(IRenderHUB hub)
 	{
+		if (!hub.getRenderMode().is3D())
+		{
+			return;
+		}
+		
 		IScene scene = hub.getScene();
 		
-		if (scene == null || !hub.getRenderMode().is3D())
+		if (scene == null)
 		{
 			return;
 		}
@@ -40,15 +46,22 @@ public class RenderEngine3D implements IRenderEngine
 		
 		for (IModelGroup group : models)
 		{
-			Collection<RenderTicket> tickets = group.getTickets();
+			List<RenderTicket> tickets = group.getTickets();
 			
 			if (tickets == null || tickets.isEmpty())
 			{
 				continue;
 			}
 			
-			for (RenderTicket tkt : tickets)
+			for (int c = 0; c < tickets.size(); c++)
 			{
+				if (!group.doRenderTicket(c))
+				{
+					continue;
+				}
+				
+				RenderTicket tkt = tickets.get(c);
+				
 				tkt.updateBeforeUse(hub);
 				
 				Model m = tkt.getModel();

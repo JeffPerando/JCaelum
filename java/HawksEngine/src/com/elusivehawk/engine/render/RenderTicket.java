@@ -23,7 +23,6 @@ public class RenderTicket implements IDirty, ILogicalRender
 	protected final GLProgram p;
 	protected final VertexBufferObject vbo;
 	protected final FloatBuffer buf;
-	protected final IRenderTicketListener lis;
 	
 	protected boolean dirty = false;
 	protected int frame = 0;
@@ -38,22 +37,9 @@ public class RenderTicket implements IDirty, ILogicalRender
 	
 	public RenderTicket(GLProgram program, Model model)
 	{
-		this(program, model, null);
-		
-	}
-	
-	public RenderTicket(Model model, IRenderTicketListener listener)
-	{
-		this(new GLProgram(), model, listener);
-		
-	}
-	
-	public RenderTicket(GLProgram program, Model model, IRenderTicketListener listener)
-	{
 		p = program;
 		m = model;
-		lis = listener;
-		buf = BufferUtils.createFloatBuffer(m.polyCount * 3);
+		buf = BufferUtils.createFloatBuffer(m.indiceCount * 3);
 		vbo = new VertexBufferObject(GL.GL_VERTEX_ARRAY, this.buf, GL.GL_STREAM_DRAW);
 		
 		p.attachRenderTicket(this);
@@ -88,21 +74,28 @@ public class RenderTicket implements IDirty, ILogicalRender
 		
 	}
 	
-	public synchronized void setIndice(int pos, Vector3f rot, Vector3f trans, Vector3f scale)
+	public synchronized void setTexture(ITexture texture)
+	{
+		this.tex = texture;
+		
+	}
+	
+	/**
+	 * 
+	 * NOTICE: Do *NOT* call this outside of the designated model animation, since it's not synchronized.
+	 * 
+	 * @param pos
+	 * @param rot
+	 * @param trans
+	 * @param scale
+	 */
+	public void setIndice(int pos, Vector3f rot, Vector3f trans, Vector3f scale)
 	{
 		this.buf.position(pos * 9);
 		
 		rot.store(this.getBuffer());
 		trans.store(this.getBuffer());
 		scale.store(this.getBuffer());
-		
-		this.dirty = true;
-		
-	}
-	
-	public synchronized void setTexture(ITexture texture)
-	{
-		this.tex = texture;
 		
 	}
 	
@@ -140,35 +133,32 @@ public class RenderTicket implements IDirty, ILogicalRender
 	@Override
 	public boolean updateBeforeUse(IRenderHUB hub)
 	{
-		if (this.lis != null)
+		if (this.anim != null)
 		{
-			if (!this.lis.update(this))
+			boolean usedBefore = this.anim == this.lastAnim;
+			
+			if (!usedBefore)
 			{
-				return false;
+				this.frame = 0;
+				
 			}
 			
-		}
-		
-		boolean usedBefore = this.anim == this.lastAnim;
-		
-		if (!usedBefore)
-		{
-			this.frame = 0;
+			boolean finished = (this.frame == this.anim.getFrameCount());
+			
+			if (this.anim.update(this, usedBefore, finished))
+			{
+				this.buf.rewind();
+				
+				this.vbo.updateEntireVBO(this.buf);
+				
+			}
+			
+			this.frame = (finished ? 0 : this.frame + 1);
 			
 		}
-		
-		boolean finished = (this.frame == this.anim.getFrameCount());
-		
-		this.anim.update(this, usedBefore, finished);
-		
-		this.frame = (finished ? 0 : this.frame + 1);
 		
 		if (this.dirty)
 		{
-			this.buf.rewind();
-			
-			this.vbo.updateEntireVBO(this.buf);
-			
 			Matrix m = MatrixHelper.createHomogenousMatrix(this.vecs.get(EnumVectorType.ROTATION), this.vecs.get(EnumVectorType.SCALING), this.vecs.get(EnumVectorType.TRANSLATION));
 			
 			this.p.attachUniform("model", m.asBuffer(), GLProgram.EnumUniformType.M_FOUR);
@@ -177,7 +167,7 @@ public class RenderTicket implements IDirty, ILogicalRender
 			
 			if (hub.getRenderMode().is3D() && cam.isDirty())
 			{
-				Matrix camM = MatrixHelper.createHomogenousMatrix(cam.getCamRot(), new Vector3f(1.0f, 1.0f, 1.0f), null); //TODO Calculate translation
+				Matrix camM = MatrixHelper.createHomogenousMatrix((Vector3f)cam.getCamRot(), new Vector3f(1.0f, 1.0f, 1.0f), null); //TODO Calculate translation
 				
 				this.p.attachUniform("cam.m", camM.asBuffer(), GLProgram.EnumUniformType.M_FOUR);
 				this.p.attachUniform("cam.zFar", BufferHelper.makeFloatBuffer(cam.getZFar()), GLProgram.EnumUniformType.ONE);
@@ -217,16 +207,10 @@ public class RenderTicket implements IDirty, ILogicalRender
 			
 		}
 		
-		public Vector3f getDefault()
+		protected Vector3f getDefault()
 		{
 			return this.vec.clone();
 		}
-		
-	}
-	
-	public static interface IRenderTicketListener
-	{
-		public boolean update(RenderTicket tkt);
 		
 	}
 	

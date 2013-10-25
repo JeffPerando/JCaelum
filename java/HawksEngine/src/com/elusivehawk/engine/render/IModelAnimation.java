@@ -9,7 +9,7 @@ package com.elusivehawk.engine.render;
  */
 public interface IModelAnimation
 {
-	public void update(RenderTicket tkt, boolean usedBefore, boolean finished);
+	public boolean update(RenderTicket tkt, boolean usedBefore, boolean finished);
 	
 	public int getFrameCount();
 	

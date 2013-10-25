@@ -13,11 +13,11 @@ public interface IParticle
 {
 	public void updateParticle();
 	
-	public boolean updatePositionOrColor();
-	
 	public Vector3f getPosition();
 	
 	public Color getColor();
+	
+	public boolean updatePositionOrColor();
 	
 	public boolean flaggedForRemoval();
 	

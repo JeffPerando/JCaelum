@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * 
@@ -13,6 +13,8 @@ public interface IModelGroup
 {
 	public String getName();
 	
-	public Collection<RenderTicket> getTickets();
+	public List<RenderTicket> getTickets();
+	
+	public boolean doRenderTicket(int index);
 	
 }

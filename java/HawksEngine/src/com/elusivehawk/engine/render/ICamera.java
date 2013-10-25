@@ -2,7 +2,7 @@
 package com.elusivehawk.engine.render;
 
 import com.elusivehawk.engine.core.IDirty;
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.IVector;
 
 /**
  * 
@@ -14,9 +14,9 @@ public interface ICamera extends IDirty
 {
 	public void updateCamera(IRenderHUB hub);
 	
-	public Vector3f getCamRot();
+	public IVector getCamRot();
 	
-	public Vector3f getCamPos();
+	public IVector getCamPos();
 	
 	public float getZFar();
 	

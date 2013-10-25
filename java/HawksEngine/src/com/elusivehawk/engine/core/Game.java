@@ -178,7 +178,7 @@ public abstract class Game
 			
 		}
 		
-		if (renderer != null)
+		if (rendering)
 		{
 			renderer.start();
 			

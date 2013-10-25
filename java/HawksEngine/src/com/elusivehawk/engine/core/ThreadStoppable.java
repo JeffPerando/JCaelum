@@ -11,6 +11,24 @@ public abstract class ThreadStoppable extends Thread
 {
 	protected boolean running = false, paused = false;
 	
+	public ThreadStoppable()
+	{
+		super();
+		
+	}
+	
+	public ThreadStoppable(String name)
+	{
+		super(name);
+		
+	}
+	
+	public ThreadStoppable(Runnable r)
+	{
+		super(r);
+		
+	}
+	
 	public synchronized final void stopThread()
 	{
 		this.running = false;

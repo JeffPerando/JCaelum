@@ -22,7 +22,7 @@ public abstract class Model
 	public final FloatBuffer fin;
 	public final IntBuffer indices;
 	
-	public final int polyCount;
+	public final int indiceCount;
 	public final VertexBufferObject finBuf, indiceBuf;
 	
 	private List<Vector3f> polys = new ArrayList<Vector3f>();
@@ -129,7 +129,7 @@ public abstract class Model
 		color = null;
 		texOffs = null;
 		
-		polyCount = pointCount;
+		indiceCount = pointCount;
 		
 	}
 	
