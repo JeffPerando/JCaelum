@@ -29,7 +29,7 @@ public final class RenderHelper
 	
 	private RenderHelper(){}
 	
-	public static IntBuffer processGifFile(File gif, EnumRenderMode mode)
+	public static IntBuffer processGifFile(File gif, EnumRenderMode mode, EnumColorFormat format)
 	{
 		if (!isContextCurrent() || !mode.isValidImageMode())
 		{
@@ -50,9 +50,9 @@ public final class RenderHelper
 				
 				for (int c = 0; c < max; c++)
 				{
-					BufferedImage img = reader.read(c);
+					LegibleBufferedImage img = new LegibleBufferedImage(reader.read(c));
 					
-					ret.put(processImage(img, mode));
+					ret.put(processImage(img, mode, format));
 					
 				}
 				
@@ -71,14 +71,9 @@ public final class RenderHelper
 		return null;
 	}
 	
-	public static int processImage(BufferedImage img, int x, int y, int w, int h, EnumRenderMode mode)
+	public static int processImage(ILegibleImage img, EnumRenderMode mode, EnumColorFormat format)
 	{
-		return processImage(img.getSubimage(x, y, w, h), mode);
-	}
-	
-	public static int processImage(BufferedImage img, EnumRenderMode mode)
-	{
-		return processImage(readImage(img), img.getWidth(), img.getHeight(), mode);
+		return processImage(readImage(img, format), img.getWidth(), img.getHeight(), mode);
 	}
 	
 	public static int processImage(ByteBuffer buf, int w, int h, EnumRenderMode mode)
@@ -112,7 +107,7 @@ public final class RenderHelper
 		return glId;
 	}
 	
-	public static ByteBuffer readImage(BufferedImage img)
+	public static ByteBuffer readImage(ILegibleImage img, EnumColorFormat format)
 	{
 		ByteBuffer buf = BufferUtils.createByteBuffer(img.getHeight() * img.getWidth() * 4);
 		
@@ -120,7 +115,7 @@ public final class RenderHelper
 		{
 			for (int y = 0; y < img.getHeight(); ++y)
 			{
-				Color col = EnumColorFormat.RGBA.convert(new Color(EnumColorFormat.ARGB, img.getRGB(x, y)));
+				Color col = format.convert(new Color(img.getFormat(), img.getPixel(x, y)));
 				
 				col.store(buf);
 				

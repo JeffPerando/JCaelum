@@ -1,7 +1,6 @@
 
 package com.elusivehawk.engine.render;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
@@ -14,13 +13,11 @@ import javax.imageio.ImageIO;
  */
 public class TextureStatic implements ITexture
 {
-	protected final int tex, w, h;
+	protected final int tex;
 	
-	public TextureStatic(int texture, int width, int height)
+	public TextureStatic(int texture)
 	{
 		tex = texture;
-		w = width;
-		h = height;
 		
 		GL.register(this);
 		
@@ -28,25 +25,25 @@ public class TextureStatic implements ITexture
 	
 	public TextureStatic(String path) throws IOException
 	{
-		this(path, EnumRenderMode.MODE_2D);
+		this(path, EnumRenderMode.MODE_2D, EnumColorFormat.RGBA);
 		
 	}
 	
-	public TextureStatic(String path, EnumRenderMode mode) throws IOException
+	public TextureStatic(String path, EnumRenderMode mode, EnumColorFormat format) throws IOException
 	{
-		this(new File(path), mode);
+		this(new File(ClassLoader.getSystemResource(path).getFile()), mode, format);
 		
 	}
 	
-	public TextureStatic(File file, EnumRenderMode mode) throws IOException
+	public TextureStatic(File file, EnumRenderMode mode, EnumColorFormat format) throws IOException
 	{
-		this(ImageIO.read(file), mode);
+		this(new LegibleBufferedImage(ImageIO.read(file)), mode, format);
 		
 	}
 	
-	public TextureStatic(BufferedImage img, EnumRenderMode mode)
+	public TextureStatic(ILegibleImage img, EnumRenderMode mode, EnumColorFormat format)
 	{
-		this(RenderHelper.processImage(img, mode), img.getWidth(), img.getHeight());
+		this(RenderHelper.processImage(img, mode, format));
 		
 	}
 	
@@ -67,18 +64,6 @@ public class TextureStatic implements ITexture
 	public boolean isStatic()
 	{
 		return true;
-	}
-	
-	@Override
-	public int getHeight()
-	{
-		return this.h;
-	}
-	
-	@Override
-	public int getWidth()
-	{
-		return this.w;
 	}
 	
 }

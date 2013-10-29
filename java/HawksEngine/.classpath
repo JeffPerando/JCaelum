@@ -10,7 +10,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/CodecWav/CodecWav.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/LibraryLWJGLOpenAL/LibraryLWJGLOpenAL.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/SoundSystem/SoundSystem.jar" sourcepath="lib/SoundSystem/src"/>
-	<classpathentry exported="true" kind="lib" path="lib/jorbis"/>
 	<classpathentry exported="true" kind="lib" path="lib/guava/guava-14.0.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

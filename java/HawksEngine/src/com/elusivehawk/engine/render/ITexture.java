@@ -14,8 +14,4 @@ public interface ITexture extends IGLCleanable
 	
 	public boolean isStatic();
 	
-	public int getHeight();
-	
-	public int getWidth();
-	
 }

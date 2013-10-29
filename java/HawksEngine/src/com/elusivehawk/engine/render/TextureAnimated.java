@@ -17,19 +17,16 @@ import com.elusivehawk.engine.core.GameLog;
 public class TextureAnimated implements ITexture
 {
 	private final IntBuffer tex;
-	private final int w, h;
 	
-	public TextureAnimated(File gif, int width, int height, EnumRenderMode mode)
+	public TextureAnimated(File gif, EnumRenderMode mode, EnumColorFormat format)
 	{
-		tex = RenderHelper.processGifFile(gif, mode);
-		w = width;
-		h = height;
+		tex = RenderHelper.processGifFile(gif, mode, format);
 		
 		GL.register(this);
 		
 	}
 	
-	public TextureAnimated(File file, EnumRenderMode mode, int y)
+	public TextureAnimated(File file, EnumRenderMode mode, EnumColorFormat format, int y)
 	{
 		if (file.getName().endsWith(".gif"))
 		{
@@ -52,8 +49,6 @@ public class TextureAnimated implements ITexture
 		if (img == null)
 		{
 			tex = BufferUtils.createIntBuffer(1);
-			w = 0;
-			h = 0;
 			
 		}
 		else
@@ -64,14 +59,12 @@ public class TextureAnimated implements ITexture
 			}
 			
 			tex = BufferUtils.createIntBuffer(img.getHeight() / y);
-			w = img.getWidth();
-			h = img.getHeight();
 			
 			for (int c = 0; c < img.getHeight(); c += y)
 			{
 				BufferedImage sub = img.getSubimage(0, c, img.getWidth(), y);
 				
-				tex.put(RenderHelper.processImage(sub, mode));
+				tex.put(RenderHelper.processImage(new LegibleBufferedImage(sub), mode, format));
 				
 			}
 			
@@ -106,18 +99,6 @@ public class TextureAnimated implements ITexture
 	public boolean isStatic()
 	{
 		return false;
-	}
-	
-	@Override
-	public int getHeight()
-	{
-		return this.h;
-	}
-	
-	@Override
-	public int getWidth()
-	{
-		return this.w;
 	}
 	
 }
