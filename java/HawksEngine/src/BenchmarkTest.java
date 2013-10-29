@@ -1,10 +1,16 @@
 
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import com.elusivehawk.engine.core.GameLog;
+import com.elusivehawk.engine.core.TextParser;
 
 /**
  * 
  * Test log:
  * 
+ * Testing file byte reading.
  * Testing "++".
  * Using PrintStream.
  * More buffer testing.
@@ -22,12 +28,32 @@ public class BenchmarkTest
 	{
 		GameLog.info("Beginning bench testing...");
 		
-		int test = 0;
+		File file = TextParser.createFile(".", "Test_file.txt");
 		
-		GameLog.info("" + test++);
-		GameLog.info("" + test);
-		GameLog.info("" + ++test);
-		GameLog.info("" + test);
+		if (file.exists())
+		{
+			try
+			{
+				DataInputStream s = new DataInputStream(new BufferedInputStream(new FileInputStream(file)));
+				
+				while (s.available() > 0)
+				{
+					byte b = s.readByte();
+					
+					GameLog.info("Byte found: " + b + ", char equivalent: " + (char)b);
+					
+				}
+				
+				s.close();
+				
+			}
+			catch (Exception e)
+			{
+				GameLog.error(e);
+				
+			}
+			
+		}
 		
 		GameLog.info("Th-th-th-th-That's all, folks!");
 		

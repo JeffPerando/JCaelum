@@ -31,7 +31,7 @@ public final class RenderHelper
 	
 	public static IntBuffer processGifFile(File gif, EnumRenderMode mode, EnumColorFormat format)
 	{
-		if (!isContextCurrent() || !mode.isValidImageMode())
+		if (!mode.isValidImageMode() || !isContextCurrent())
 		{
 			return null;
 		}

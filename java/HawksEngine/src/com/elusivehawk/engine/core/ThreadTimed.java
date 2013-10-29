@@ -30,7 +30,7 @@ public abstract class ThreadTimed extends ThreadStoppable
 				
 				try
 				{
-					this.update();
+					this.update(delta);
 					
 				}
 				catch (Throwable e)
@@ -56,7 +56,7 @@ public abstract class ThreadTimed extends ThreadStoppable
 		
 	}
 	
-	public abstract void update();
+	public abstract void update(long delta);
 	
 	public abstract int getDelta();
 	
