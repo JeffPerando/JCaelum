@@ -3,6 +3,9 @@ import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintStream;
 import com.elusivehawk.engine.core.GameLog;
 import com.elusivehawk.engine.core.TextParser;
 
@@ -28,9 +31,35 @@ public class BenchmarkTest
 	{
 		GameLog.info("Beginning bench testing...");
 		
-		File file = TextParser.createFile(".", "Test_file.txt");
+		File file = TextParser.createFile(".", "Test_sound.ogg");
+		File out = TextParser.createFile(".", "Log.txt");
 		
-		if (file.exists())
+		try
+		{
+			if (!out.exists() && !out.createNewFile())
+			{
+				return;
+			}
+			
+		}
+		catch (IOException e)
+		{
+			GameLog.error(e);
+			
+		}
+		
+		try
+		{
+			GameLog.LogType.INFO.addOutput(new PrintStream(out));
+			
+		}
+		catch (FileNotFoundException e)
+		{
+			GameLog.error(e);
+			
+		}
+		
+		if (file.exists() && file.canRead())
 		{
 			try
 			{
