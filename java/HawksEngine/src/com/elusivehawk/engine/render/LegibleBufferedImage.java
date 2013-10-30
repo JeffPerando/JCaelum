@@ -45,7 +45,7 @@ public class LegibleBufferedImage implements ILegibleImage
 	@Override
 	public EnumColorFormat getFormat()
 	{
-		return null;
+		return this.format;
 	}
 	
 	@Override
