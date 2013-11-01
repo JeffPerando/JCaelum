@@ -45,6 +45,11 @@ public final class MathHelper
 		return (long)(a0 + (float)((b0 - a0) / 2));
 	}
 	
+	public static boolean isOdd(int i)
+	{
+		return i == 0 ? false : (i >> 1) >= i;
+	}
+	
 	public static int percent(int i, int max)
 	{
 		return (int)(((float) i / max) * 100);
