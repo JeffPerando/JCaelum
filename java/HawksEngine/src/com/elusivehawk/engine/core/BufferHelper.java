@@ -26,11 +26,7 @@ public final class BufferHelper
 	
 	public static ByteBuffer makeByteBuffer(byte... data)
 	{
-		ByteBuffer ret = BufferUtils.createByteBuffer(data.length);
-		ret.put(data);
-		ret.flip();
-		
-		return ret;
+		return (ByteBuffer)BufferUtils.createByteBuffer(data.length).put(data).flip();
 	}
 	
 	public static ByteBuffer makeByteBuffer(List<Byte> data)
@@ -65,11 +61,7 @@ public final class BufferHelper
 	
 	public static CharBuffer makeCharBuffer(char... data)
 	{
-		CharBuffer ret = BufferUtils.createCharBuffer(data.length);
-		ret.put(data);
-		ret.flip();
-		
-		return ret;
+		return (CharBuffer)BufferUtils.createCharBuffer(data.length).put(data).flip();
 	}
 	
 	public static CharBuffer makeCharBuffer(List<Character> data)
@@ -104,11 +96,7 @@ public final class BufferHelper
 	
 	public static ShortBuffer makeShortBuffer(short... data)
 	{
-		ShortBuffer ret = BufferUtils.createShortBuffer(data.length);
-		ret.put(data);
-		ret.flip();
-		
-		return ret;
+		return (ShortBuffer)BufferUtils.createShortBuffer(data.length).put(data).flip();
 	}
 	
 	public static ShortBuffer makeShortBuffer(List<Short> data)
@@ -143,11 +131,7 @@ public final class BufferHelper
 	
 	public static IntBuffer makeIntBuffer(int... data)
 	{
-		IntBuffer ret = BufferUtils.createIntBuffer(data.length);
-		ret.put(data);
-		ret.flip();
-		
-		return ret;
+		return (IntBuffer)BufferUtils.createIntBuffer(data.length).put(data).flip();
 	}
 	
 	public static IntBuffer makeIntBuffer(List<Integer> data)
@@ -182,11 +166,7 @@ public final class BufferHelper
 	
 	public static DoubleBuffer makeDoubleBuffer(double... data)
 	{
-		DoubleBuffer ret = BufferUtils.createDoubleBuffer(data.length);
-		ret.put(data);
-		ret.flip();
-		
-		return ret;
+		return (DoubleBuffer)BufferUtils.createDoubleBuffer(data.length).put(data).flip();
 	}
 	
 	public static DoubleBuffer makeDoubleBuffer(List<Double> data)
@@ -221,11 +201,7 @@ public final class BufferHelper
 	
 	public static FloatBuffer makeFloatBuffer(float... data)
 	{
-		FloatBuffer ret = BufferUtils.createFloatBuffer(data.length);
-		ret.put(data);
-		ret.flip();
-		
-		return ret;
+		return (FloatBuffer)BufferUtils.createFloatBuffer(data.length).put(data).flip();
 	}
 	
 	public static FloatBuffer makeFloatBuffer(List<Float> data)
@@ -260,11 +236,7 @@ public final class BufferHelper
 	
 	public static LongBuffer makeLongBuffer(long... data)
 	{
-		LongBuffer ret = BufferUtils.createLongBuffer(data.length);
-		ret.put(data);
-		ret.flip();
-		
-		return ret;
+		return (LongBuffer)BufferUtils.createLongBuffer(data.length).put(data).flip();
 	}
 	
 	public static LongBuffer makeLongBuffer(List<Long> data)

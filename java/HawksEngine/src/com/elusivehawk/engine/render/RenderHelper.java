@@ -192,7 +192,7 @@ public final class RenderHelper
 		
 	}
 	
-	public static void checkForGLError()
+	public static void checkForGLError() throws RuntimeException
 	{
 		if (!isContextCurrent())
 		{
@@ -201,11 +201,12 @@ public final class RenderHelper
 		
 		int err = GL.glGetError();
 		
-		if (err != GL.GL_NO_ERROR)
+		if (err == GL.GL_NO_ERROR)
 		{
-			throw new RuntimeException("Caught OpenGL error: " + GLU.gluErrorString(err));
-			
+			return;
 		}
+		
+		throw new RuntimeException("Caught OpenGL error: " + GLU.gluErrorString(err));
 		
 	}
 	
