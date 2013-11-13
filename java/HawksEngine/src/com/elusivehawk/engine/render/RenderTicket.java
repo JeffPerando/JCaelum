@@ -24,7 +24,7 @@ public class RenderTicket implements IDirty, ILogicalRender
 	protected final VertexBufferObject vbo;
 	protected final FloatBuffer buf;
 	
-	protected boolean dirty = false;
+	protected boolean dirty = false, animPause = false;
 	protected int frame = 0;
 	protected IModelAnimation anim = null, lastAnim = null;
 	protected ITexture tex;
@@ -77,6 +77,12 @@ public class RenderTicket implements IDirty, ILogicalRender
 	public synchronized void setTexture(ITexture texture)
 	{
 		this.tex = texture;
+		
+	}
+	
+	public synchronized void setAnimationPaused(boolean b)
+	{
+		this.animPause = b;
 		
 	}
 	
@@ -133,7 +139,7 @@ public class RenderTicket implements IDirty, ILogicalRender
 	@Override
 	public boolean updateBeforeUse(IRenderHUB hub)
 	{
-		if (this.anim != null)
+		if (!this.animPause && this.anim != null)
 		{
 			boolean usedBefore = this.anim == this.lastAnim;
 			
