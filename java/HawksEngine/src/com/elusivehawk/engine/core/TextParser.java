@@ -4,7 +4,6 @@ package com.elusivehawk.engine.core;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.lang.reflect.Method;
@@ -20,13 +19,11 @@ import java.util.List;
  */
 public final class TextParser
 {
-	public static final String FILE_SEP = System.getProperty("file.separator");
-	
 	private TextParser(){}
 	
 	public static List<String> read(String path)
 	{
-		return read(createFile(path));
+		return read(FileHelper.createFile(path));
 	}
 	
 	public static List<String> read(File file)
@@ -78,12 +75,12 @@ public final class TextParser
 	
 	public static boolean write(String path, boolean append, boolean makeFileIfNotFound, String... text)
 	{
-		return write(createFile(path), append, makeFileIfNotFound, text);
+		return write(FileHelper.createFile(path), append, makeFileIfNotFound, text);
 	}
 	
 	public static boolean write(String path, List<String> text, boolean append, boolean makeFileIfNotFound)
 	{
-		return write(createFile(path), text, append, makeFileIfNotFound);
+		return write(FileHelper.createFile(path), text, append, makeFileIfNotFound);
 	}
 	
 	public static boolean write(File file, boolean append, boolean makeFileIfNotFound, String... text)
@@ -232,44 +229,6 @@ public final class TextParser
 		}
 		
 		return ret.toString();
-	}
-	
-	public static File createFile(String path)
-	{
-		return new File(path.replace("/", FILE_SEP));
-	}
-	
-	public static File createFile(String src, String path)
-	{
-		return new File(src.replace("/", FILE_SEP), path.replace("/", FILE_SEP));
-	}
-	
-	public static FileInputStream createStream(File file)
-	{
-		if (!file.exists())
-		{
-			return null;
-		}
-		
-		if (file.isDirectory())
-		{
-			return null;
-		}
-		
-		if (!file.canRead())
-		{
-			return null;
-		}
-		
-		FileInputStream ret = null;
-		
-		try
-		{
-			ret = new FileInputStream(file);
-		}
-		catch (Exception e){}
-		
-		return ret;
 	}
 	
 }

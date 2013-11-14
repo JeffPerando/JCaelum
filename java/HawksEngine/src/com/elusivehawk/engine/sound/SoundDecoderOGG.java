@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import org.lwjgl.BufferUtils;
 import com.elusivehawk.engine.core.BufferHelper;
+import com.elusivehawk.engine.core.FileHelper;
 import com.elusivehawk.engine.core.GameLog;
-import com.elusivehawk.engine.core.TextParser;
 
 /**
  * 
@@ -22,7 +22,7 @@ public class SoundDecoderOGG implements ISoundDecoder
 	@Override
 	public ISound decodeSound(File file)
 	{
-		FileInputStream fis = TextParser.createStream(file);
+		FileInputStream fis = FileHelper.createStream(file);
 		
 		if (fis == null)
 		{

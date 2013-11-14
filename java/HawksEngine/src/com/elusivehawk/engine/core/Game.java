@@ -295,7 +295,7 @@ public abstract class Game
 	{
 		//TODO: this only works on Debian... but we'll try it for now.
 		
-		return (EnumOS.OS == EnumOS.LINUX && new File("/usr/lib/jni/liblwjgl.so").exists()) ? "/usr/lib/jni" : TextParser.createFile("/lwjgl/native/" + EnumOS.OS.toString()).getAbsolutePath();
+		return (EnumOS.OS == EnumOS.LINUX && new File("/usr/lib/jni/liblwjgl.so").exists()) ? "/usr/lib/jni" : FileHelper.createFile("/lwjgl/native/" + EnumOS.OS.toString()).getAbsolutePath();
 	}
 	
 }

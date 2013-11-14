@@ -13,6 +13,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.glu.GLU;
+import com.elusivehawk.engine.core.FileHelper;
 import com.elusivehawk.engine.core.GameLog;
 import com.elusivehawk.engine.core.TextParser;
 
@@ -24,8 +25,8 @@ import com.elusivehawk.engine.core.TextParser;
  */
 public final class RenderHelper
 {
-	public static final int VERTEX_SHADER_3D = loadShader(TextParser.createFile("/vertex.glsl"), GL.GL_VERTEX_SHADER);
-	public static final int FRAGMENT_SHADER_3D = loadShader(TextParser.createFile("/fragment.glsl"), GL.GL_FRAGMENT_SHADER);
+	public static final int VERTEX_SHADER_3D = loadShader(FileHelper.createFile("/vertex.glsl"), GL.GL_VERTEX_SHADER);
+	public static final int FRAGMENT_SHADER_3D = loadShader(FileHelper.createFile("/fragment.glsl"), GL.GL_FRAGMENT_SHADER);
 	
 	private RenderHelper(){}
 	

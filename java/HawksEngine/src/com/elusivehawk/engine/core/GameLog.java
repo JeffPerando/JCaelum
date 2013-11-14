@@ -16,7 +16,7 @@ import java.util.Random;
 public class GameLog
 {
 	public static volatile boolean enableVerbosity = true;
-	public static final List<String> CRASH_DIALOG = TextParser.read(TextParser.createFile((Game.DEBUG ? "src" : ".") + "/com/elusivehawk/engine/core/CrashReportDialog.txt"));
+	public static final List<String> CRASH_DIALOG = TextParser.read(FileHelper.createFile((Game.DEBUG ? "src" : ".") + "/com/elusivehawk/engine/core/CrashReportDialog.txt"));
 	
 	private static Random rand = new Random();
 	

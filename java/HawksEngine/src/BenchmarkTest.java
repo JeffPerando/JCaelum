@@ -6,8 +6,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
+import com.elusivehawk.engine.core.FileHelper;
 import com.elusivehawk.engine.core.GameLog;
-import com.elusivehawk.engine.core.TextParser;
 
 /**
  * 
@@ -31,8 +31,8 @@ public class BenchmarkTest
 	{
 		GameLog.info("Beginning bench testing...");
 		
-		File file = TextParser.createFile(".", "Test_sound.ogg");
-		File out = TextParser.createFile(".", "Log.txt");
+		File file = FileHelper.createFile(".", "Test_sound.ogg");
+		File out = FileHelper.createFile(".", "Log.txt");
 		
 		try
 		{
