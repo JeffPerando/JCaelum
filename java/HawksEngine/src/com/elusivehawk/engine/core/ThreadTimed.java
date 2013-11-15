@@ -9,46 +9,39 @@ package com.elusivehawk.engine.core;
  */
 public abstract class ThreadTimed extends ThreadStoppable
 {
+	protected int updates = 0;
+	protected long delta, lastTime = System.currentTimeMillis();
+	
 	@Override
-	public void run()
+	public final void update()
 	{
-		int updates = 0;
-		long delta, lastTime = System.currentTimeMillis();
+		this.delta = (System.currentTimeMillis() - this.getDelta());
 		
-		while (this.running)
+		if (this.delta >= this.lastTime)
 		{
-			if (this.paused)
+			this.updates++;
+			
+			try
 			{
-				continue;
+				this.timedUpdate(this.delta);
+				
+			}
+			catch (Throwable e)
+			{
+				GameLog.error(e);
+				
 			}
 			
-			delta = (System.currentTimeMillis() - this.getDelta());
-			
-			if (delta >= lastTime)
+			if (this.updates == this.getTargetUpdateCount())
 			{
-				updates++;
+				this.updates = 0;
 				
 				try
 				{
-					this.update(delta);
+					Thread.sleep(1L);
 					
 				}
-				catch (Throwable e)
-				{
-					GameLog.error(e);
-					
-				}
-				
-				if (updates == this.getTargetUpdateCount())
-				{
-					try
-					{
-						Thread.sleep(1L);
-						
-					}
-					catch (InterruptedException e){}
-					
-				}
+				catch (InterruptedException e){}
 				
 			}
 			
@@ -56,7 +49,7 @@ public abstract class ThreadTimed extends ThreadStoppable
 		
 	}
 	
-	public abstract void update(long delta);
+	public abstract void timedUpdate(long delta);
 	
 	public abstract int getDelta();
 	

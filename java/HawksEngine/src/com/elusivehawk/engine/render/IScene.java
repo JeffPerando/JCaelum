@@ -5,7 +5,7 @@ import java.util.Collection;
 
 /**
  * 
- * Provides models for rendering.
+ * Provides models, images, and particles for rendering.
  * 
  * @author Elusivehawk
  */

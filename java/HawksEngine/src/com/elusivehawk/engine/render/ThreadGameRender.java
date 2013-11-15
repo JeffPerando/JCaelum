@@ -27,7 +27,7 @@ public class ThreadGameRender extends ThreadTimed
 	}
 	
 	@Override
-	public void update(long delta)
+	public void timedUpdate(long delta)
 	{
 		RenderHelper.makeContextCurrent();
 		

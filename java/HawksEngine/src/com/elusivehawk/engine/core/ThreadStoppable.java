@@ -29,6 +29,23 @@ public abstract class ThreadStoppable extends Thread
 		
 	}
 	
+	@Override
+	public void run()
+	{
+		while (this.running)
+		{
+			if (!this.paused)
+			{
+				this.update();
+				
+			}
+			
+		}
+		
+	}
+	
+	public abstract void update();
+	
 	public synchronized final void stopThread()
 	{
 		this.running = false;

@@ -19,22 +19,14 @@ public class ThreadSoundPlayer extends ThreadStoppable
 	protected final List<ISound> sounds = new ArrayList<ISound>();
 	
 	@Override
-	public void run()
+	public void update()
 	{
-		while (this.running)
+		for (ISound s : this.sounds)
 		{
-			if (!this.paused)
+			if (AL10.alGetSourcei(s.getId(), AL10.AL_SOURCE_STATE) == AL10.AL_STOPPED)
 			{
-				for (ISound s : this.sounds)
+				if (s.isMusic())
 				{
-					if (AL10.alGetSourcei(s.getId(), AL10.AL_SOURCE_STATE) == AL10.AL_STOPPED)
-					{
-						if (s.isMusic())
-						{
-							
-						}
-						
-					}
 					
 				}
 				
