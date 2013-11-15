@@ -26,7 +26,12 @@ public final class BufferHelper
 	
 	public static ByteBuffer makeByteBuffer(byte... data)
 	{
-		return (ByteBuffer)BufferUtils.createByteBuffer(data.length).put(data).flip();
+		return makeByteBuffer(data.length, data);
+	}
+	
+	public static ByteBuffer makeByteBuffer(int l, byte... data)
+	{
+		return (ByteBuffer)BufferUtils.createByteBuffer(l).put(data).flip();
 	}
 	
 	public static ByteBuffer makeByteBuffer(List<Byte> data)
@@ -61,7 +66,12 @@ public final class BufferHelper
 	
 	public static CharBuffer makeCharBuffer(char... data)
 	{
-		return (CharBuffer)BufferUtils.createCharBuffer(data.length).put(data).flip();
+		return makeCharBuffer(data.length, data);
+	}
+	
+	public static CharBuffer makeCharBuffer(int l, char... data)
+	{
+		return (CharBuffer)BufferUtils.createCharBuffer(l).put(data).flip();
 	}
 	
 	public static CharBuffer makeCharBuffer(List<Character> data)
@@ -96,7 +106,12 @@ public final class BufferHelper
 	
 	public static ShortBuffer makeShortBuffer(short... data)
 	{
-		return (ShortBuffer)BufferUtils.createShortBuffer(data.length).put(data).flip();
+		return makeShortBuffer(data.length, data);
+	}
+	
+	public static ShortBuffer makeShortBuffer(int l, short... data)
+	{
+		return (ShortBuffer)BufferUtils.createShortBuffer(l).put(data).flip();
 	}
 	
 	public static ShortBuffer makeShortBuffer(List<Short> data)
@@ -131,7 +146,12 @@ public final class BufferHelper
 	
 	public static IntBuffer makeIntBuffer(int... data)
 	{
-		return (IntBuffer)BufferUtils.createIntBuffer(data.length).put(data).flip();
+		return makeIntBuffer(data.length, data);
+	}
+	
+	public static IntBuffer makeIntBuffer(int l, int... data)
+	{
+		return (IntBuffer)BufferUtils.createIntBuffer(l).put(data).flip();
 	}
 	
 	public static IntBuffer makeIntBuffer(List<Integer> data)
@@ -166,7 +186,12 @@ public final class BufferHelper
 	
 	public static DoubleBuffer makeDoubleBuffer(double... data)
 	{
-		return (DoubleBuffer)BufferUtils.createDoubleBuffer(data.length).put(data).flip();
+		return makeDoubleBuffer(data.length, data);
+	}
+	
+	public static DoubleBuffer makeDoubleBuffer(int l, double... data)
+	{
+		return (DoubleBuffer)BufferUtils.createDoubleBuffer(l).put(data).flip();
 	}
 	
 	public static DoubleBuffer makeDoubleBuffer(List<Double> data)
@@ -201,7 +226,12 @@ public final class BufferHelper
 	
 	public static FloatBuffer makeFloatBuffer(float... data)
 	{
-		return (FloatBuffer)BufferUtils.createFloatBuffer(data.length).put(data).flip();
+		return makeFloatBuffer(data.length, data);
+	}
+	
+	public static FloatBuffer makeFloatBuffer(int l, float... data)
+	{
+		return (FloatBuffer)BufferUtils.createFloatBuffer(l).put(data).flip();
 	}
 	
 	public static FloatBuffer makeFloatBuffer(List<Float> data)
@@ -236,7 +266,12 @@ public final class BufferHelper
 	
 	public static LongBuffer makeLongBuffer(long... data)
 	{
-		return (LongBuffer)BufferUtils.createLongBuffer(data.length).put(data).flip();
+		return makeLongBuffer(data.length, data);
+	}
+	
+	public static LongBuffer makeLongBuffer(int l, long... data)
+	{
+		return (LongBuffer)BufferUtils.createLongBuffer(l).put(data).flip();
 	}
 	
 	public static LongBuffer makeLongBuffer(List<Long> data)

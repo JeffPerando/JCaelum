@@ -4,7 +4,6 @@ package com.elusivehawk.engine.sound;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import org.lwjgl.BufferUtils;
 import com.elusivehawk.engine.core.BufferHelper;
@@ -35,13 +34,9 @@ public class SoundDecoderOGG implements ISoundDecoder
 		
 		try
 		{
-			int r = is.available();
+			byte[] data = new byte[is.available()];
 			
-			byte[] data = new byte[r];
-			
-			is.read(data);
-			
-			buf = BufferHelper.makeByteBuffer(data);
+			buf = BufferHelper.makeByteBuffer(is.read(data), data);
 			
 		}
 		catch (Exception e)
@@ -147,7 +142,7 @@ public class SoundDecoderOGG implements ISoundDecoder
 			is.close();
 			
 		}
-		catch (IOException e){}
+		catch (Exception e){}
 		
 		return s;
 	}
