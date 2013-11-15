@@ -22,25 +22,25 @@ public class GameLog
 	
 	public static void info(String message)
 	{
-		log(message, LogType.INFO);
+		log(message, EnumLogType.INFO);
 		
 	}
 	
 	public static void debug(String message)
 	{
-		log(message, LogType.DEBUG);
+		log(message, EnumLogType.DEBUG);
 		
 	}
 	
 	public static void warn(String message)
 	{
-		log(message, LogType.WARN);
+		log(message, EnumLogType.WARN);
 		
 	}
 	
 	public static void error(String message)
 	{
-		log(message, LogType.ERROR);
+		log(message, EnumLogType.ERROR);
 		
 	}
 	
@@ -53,13 +53,13 @@ public class GameLog
 	public static void error(String message, Throwable e)
 	{
 		error(message == null ? CRASH_DIALOG.get(rand.nextInt(CRASH_DIALOG.size())) : message);
-		e.printStackTrace(LogType.ERROR.getMainOutput());
+		e.printStackTrace(EnumLogType.ERROR.getMainOutput());
 		
 	}
 	
-	public static synchronized void log(String message, LogType type)
+	public static synchronized void log(String message, EnumLogType type)
 	{
-		if (!enableVerbosity && type.isVerbose)
+		if (!enableVerbosity && type.verbose)
 		{
 			return;
 		}
@@ -80,7 +80,7 @@ public class GameLog
 		
 	}
 	
-	public static enum LogType
+	public static enum EnumLogType
 	{
 		INFO(System.out, true),
 		DEBUG(System.out, true),
@@ -89,13 +89,23 @@ public class GameLog
 		
 		private List<PrintStream> out = new ArrayList<PrintStream>();
 		private final PrintStream initialOut;
-		public final boolean isVerbose;
+		public final boolean verbose;
 		
-		LogType(PrintStream ps, boolean verbose)
+		EnumLogType(PrintStream ps, boolean isVerbose)
 		{
 			out.add(ps);
 			initialOut = ps;
-			isVerbose = verbose;
+			verbose = isVerbose;
+			
+		}
+		
+		public static void addOutputToEnums(PrintStream stream)
+		{
+			for (EnumLogType type : values())
+			{
+				type.addOutput(stream);
+				
+			}
 			
 		}
 		

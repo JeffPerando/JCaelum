@@ -128,7 +128,11 @@ public class SoundDecoderOGG implements ISoundDecoder
 					//TODO Continue
 					
 				}
-				catch (Exception e){}
+				catch (Exception e)
+				{
+					GameLog.error(e);
+					
+				}
 				
 			}
 			

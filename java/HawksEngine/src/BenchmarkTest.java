@@ -50,7 +50,7 @@ public class BenchmarkTest
 		
 		try
 		{
-			GameLog.LogType.INFO.addOutput(new PrintStream(out));
+			GameLog.EnumLogType.INFO.addOutput(new PrintStream(out));
 			
 		}
 		catch (FileNotFoundException e)

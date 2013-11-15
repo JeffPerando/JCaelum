@@ -62,7 +62,10 @@ public class RenderEngine3D implements IRenderEngine
 				
 				RenderTicket tkt = tickets.get(c);
 				
-				tkt.updateBeforeUse(hub);
+				if (!tkt.updateBeforeUse(hub))
+				{
+					continue;
+				}
 				
 				Model m = tkt.getModel();
 				GLProgram p = tkt.getProgram();

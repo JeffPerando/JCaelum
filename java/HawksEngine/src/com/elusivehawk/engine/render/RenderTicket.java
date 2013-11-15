@@ -4,7 +4,6 @@ package com.elusivehawk.engine.render;
 import java.nio.FloatBuffer;
 import java.util.HashMap;
 import org.lwjgl.BufferUtils;
-import com.elusivehawk.engine.core.BufferHelper;
 import com.elusivehawk.engine.core.IDirty;
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.MatrixHelper;
@@ -130,6 +129,11 @@ public class RenderTicket implements IDirty, ILogicalRender
 		return this.tex;
 	}
 	
+	public boolean isAnimationPaused()
+	{
+		return this.animPause;
+	}
+	
 	@Override
 	public GLProgram getProgram()
 	{
@@ -139,7 +143,12 @@ public class RenderTicket implements IDirty, ILogicalRender
 	@Override
 	public boolean updateBeforeUse(IRenderHUB hub)
 	{
-		if (!this.animPause && this.anim != null)
+		if (!hub.getRenderMode().is3D())
+		{
+			return false;
+		}
+		
+		if (!this.isAnimationPaused() && this.anim != null)
 		{
 			boolean usedBefore = this.anim == this.lastAnim;
 			
@@ -149,9 +158,9 @@ public class RenderTicket implements IDirty, ILogicalRender
 				
 			}
 			
-			boolean finished = (this.frame == this.anim.getFrameCount());
+			boolean fin = (this.frame == this.anim.getFrameCount());
 			
-			if (this.anim.update(this, usedBefore, finished))
+			if (this.anim.update(this, usedBefore, fin))
 			{
 				this.buf.rewind();
 				
@@ -159,31 +168,19 @@ public class RenderTicket implements IDirty, ILogicalRender
 				
 			}
 			
-			this.frame = (finished ? 0 : this.frame + 1);
+			this.frame = (fin ? 0 : this.frame + 1);
 			
 		}
 		
-		if (this.dirty)
+		if (this.isDirty())
 		{
 			Matrix m = MatrixHelper.createHomogenousMatrix(this.vecs.get(EnumVectorType.ROTATION), this.vecs.get(EnumVectorType.SCALING), this.vecs.get(EnumVectorType.TRANSLATION));
 			
 			this.p.attachUniform("model", m.asBuffer(), GLProgram.EnumUniformType.M_FOUR);
 			
-			ICamera cam = hub.getCamera();
+			hub.getCamera().updateUniform(this.getProgram());
 			
-			if (hub.getRenderMode().is3D() && cam.isDirty())
-			{
-				Matrix camM = MatrixHelper.createHomogenousMatrix((Vector3f)cam.getCamRot(), new Vector3f(1.0f, 1.0f, 1.0f), null); //TODO Calculate translation
-				
-				this.p.attachUniform("cam.m", camM.asBuffer(), GLProgram.EnumUniformType.M_FOUR);
-				this.p.attachUniform("cam.zFar", BufferHelper.makeFloatBuffer(cam.getZFar()), GLProgram.EnumUniformType.ONE);
-				this.p.attachUniform("cam.zNear", BufferHelper.makeFloatBuffer(cam.getZNear()), GLProgram.EnumUniformType.ONE);
-				
-				//TODO Expand
-				
-			}
-			
-			this.dirty = false;
+			this.setIsDirty(false);
 			
 		}
 		
@@ -197,7 +194,11 @@ public class RenderTicket implements IDirty, ILogicalRender
 	}
 	
 	@Override
-	public void setIsDirty(boolean dirty){}
+	public void setIsDirty(boolean b)
+	{
+		this.dirty = b;
+		
+	}
 	
 	public static enum EnumVectorType
 	{

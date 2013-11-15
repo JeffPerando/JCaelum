@@ -14,6 +14,8 @@ public interface ICamera extends IDirty
 {
 	public void updateCamera(IRenderHUB hub);
 	
+	public void updateUniform(GLProgram p);
+	
 	public IVector getCamRot();
 	
 	public IVector getCamPos();
