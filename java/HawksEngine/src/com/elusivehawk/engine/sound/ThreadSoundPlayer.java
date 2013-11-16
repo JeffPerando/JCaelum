@@ -37,7 +37,7 @@ public class ThreadSoundPlayer extends ThreadStoppable
 	}
 	
 	@Override
-	public synchronized void start()
+	public boolean initiate()
 	{
 		boolean run = true;
 		
@@ -56,12 +56,7 @@ public class ThreadSoundPlayer extends ThreadStoppable
 			
 		}
 		
-		if (run)
-		{
-			super.start();
-			
-		}
-		
+		return run;
 	}
 	
 	public synchronized void playSound(ISound s)

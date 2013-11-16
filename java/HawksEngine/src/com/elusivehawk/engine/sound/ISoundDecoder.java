@@ -1,8 +1,6 @@
 
 package com.elusivehawk.engine.sound;
 
-import java.io.File;
-
 /**
  * 
  * 
@@ -11,6 +9,6 @@ import java.io.File;
  */
 public interface ISoundDecoder
 {
-	public ISound decodeSound(File file);
+	public int decodeSound(String path);
 	
 }

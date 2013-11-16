@@ -3,14 +3,9 @@ package com.elusivehawk.engine.core;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
-import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.opengl.Display;
-import com.elusivehawk.engine.render.Color;
-import com.elusivehawk.engine.render.EnumColorFilter;
-import com.elusivehawk.engine.render.GL;
 import com.elusivehawk.engine.render.IRenderHUB;
-import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.ThreadGameRender;
 
 /**
@@ -25,6 +20,7 @@ public abstract class Game
 	public static final boolean DEBUG = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().contains("-agentlib:jdwp");
 	
 	protected boolean running = false;
+	protected String lwjglPath = determineLWJGLPath();
 	
 	//Methods for the custom game.
 	
@@ -36,8 +32,6 @@ public abstract class Game
 	 */
 	protected abstract void update(long delta);
 	
-	protected abstract GameSettings getSettings();
-	
 	protected abstract IRenderHUB getRenderHUB();
 	
 	//===============================BEGIN OPTIONAL GAME METHODS===============================
@@ -45,7 +39,7 @@ public abstract class Game
 	/**
 	 * Use this to set up everything you need before the game loop begins.
 	 * 
-	 * @return False to stop the game.
+	 * @return True to continue game loading, false otherwise.
 	 */
 	protected boolean initiate()
 	{
@@ -63,19 +57,14 @@ public abstract class Game
 		
 	}
 	
-	public int getDelayBetweenUpdates()
+	public int getTargetUpdates()
 	{
-		return 10;
+		return 30;
 	}
 	
 	public boolean isRunning()
 	{
 		return this.running;
-	}
-	
-	public boolean updateSettings()
-	{
-		return false;
 	}
 	
 	public void handleException(Throwable e)
@@ -104,54 +93,17 @@ public abstract class Game
 			return;
 		}
 		
-		GameSettings settings = this.getSettings();
-		
-		if (settings == null)
-		{
-			settings = new GameSettings();
-			
-		}
-		
 		if (System.getProperty("org.lwjgl.librarypath") == null)
 		{
-			if (settings.lwjglPath == null)
+			if (this.lwjglPath == null)
 			{
 				GameLog.warn("LWJGL path is set to null! What are you thinking?!");
 				
-				settings.lwjglPath = determineLWJGLPath();
+				this.lwjglPath = determineLWJGLPath();
 				
 			}
 			
-			System.setProperty("org.lwjgl.librarypath", settings.lwjglPath);
-			
-		}
-		
-		if (!Display.isCreated())
-		{
-			try
-			{
-				Display.setTitle(settings.title);
-				Display.setIcon(settings.icons);
-				Color bg = settings.bg;
-				Display.setInitialBackground(bg.getColorFloat(EnumColorFilter.RED), bg.getColorFloat(EnumColorFilter.GREEN), bg.getColorFloat(EnumColorFilter.BLUE));
-				Display.setDisplayMode(settings.mode);
-				Display.setFullscreen(settings.fullscreen);
-				Display.setVSyncEnabled(settings.vsync);
-				Display.setResizable(settings.resize);
-				
-				Display.create();
-				
-				//TODO Display.setDisplayConfiguration(settings.gamma, settings.brightness, settings.constrast);
-				
-				GL.glViewport(0, 0, settings.mode.getWidth(), settings.mode.getHeight());
-				GL.glClearColor(bg.getColorFloat(EnumColorFilter.RED), bg.getColorFloat(EnumColorFilter.GREEN), bg.getColorFloat(EnumColorFilter.BLUE), bg.getColorFloat(EnumColorFilter.ALPHA));
-				
-			}
-			catch (LWJGLException e)
-			{
-				this.handleException(e);
-				
-			}
+			System.setProperty("org.lwjgl.librarypath", this.lwjglPath);
 			
 		}
 		
@@ -161,14 +113,14 @@ public abstract class Game
 		
 		if (hub != null)
 		{
-			renderer = new ThreadGameRender(hub, settings.targetFPS);
+			renderer = new ThreadGameRender(hub);
 			
 		}
 		
 		GameLog.info("Beginning game loop...");
 		
-		long lastTime = Sys.getTime(), delta = 0, fallback = settings.fallbackDelay;
-		int targetUpdates = settings.targetUpdates, updates = 0;
+		int targetUpdates = this.getTargetUpdates(), updates = 0;
+		long lastTime = Sys.getTime(), delta = 0, fallback = targetUpdates + 1000L;
 		Timer timer = new Timer();
 		boolean rendering = (renderer != null);
 		
@@ -188,55 +140,14 @@ public abstract class Game
 		{
 			delta = Sys.getTime() - lastTime;
 			
-			if (delta < this.getDelayBetweenUpdates())
+			//TODO Fix
+			/*if (delta < this.getDelayBetweenUpdates())
 			{
 				continue;
-			}
+			}*/
 			
 			lastTime += delta;
 			updates++;
-			
-			if (this.updateSettings())
-			{
-				settings = this.getSettings();
-				
-				if (rendering)
-				{
-					renderer.setPaused(true);
-					
-				}
-				
-				RenderHelper.makeContextCurrent();
-				
-				try
-				{
-					Display.setDisplayMode(settings.mode);
-					Display.setFullscreen(settings.fullscreen);
-					Display.setVSyncEnabled(settings.vsync);
-					//TODO Display.setDisplayConfiguration(settings.gamma, settings.brightness, settings.constrast);
-					
-				}
-				catch (LWJGLException e)
-				{
-					this.handleException(e);
-					
-				}
-				
-				if (rendering)
-				{
-					renderer.setTargetFPS(settings.targetFPS);
-					
-					renderer.setPaused(false);
-					
-				}
-				
-				if (settings.targetUpdates > 0)
-				{
-					targetUpdates = settings.targetUpdates;
-					
-				}
-				
-			}
 			
 			timer.start();
 			
@@ -273,10 +184,6 @@ public abstract class Game
 			renderer.stopThread();
 			
 		}
-		
-		GL.cleanup();
-		
-		Display.destroy();
 		
 		System.exit(0);
 		

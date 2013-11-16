@@ -2,6 +2,8 @@
 package com.elusivehawk.engine.render;
 
 import java.util.Collection;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.Display;
 import com.elusivehawk.engine.core.GameLog;
 import com.elusivehawk.engine.core.ThreadTimed;
 
@@ -17,19 +19,78 @@ public class ThreadGameRender extends ThreadTimed
 	protected int fps;
 	protected float delta;
 	
-	public ThreadGameRender(IRenderHUB renderHub, int framerate)
+	public ThreadGameRender(IRenderHUB renderHub)
 	{
 		hub = renderHub;
-		fps = framerate;
 		
-		delta = (1000000000.0f / fps);
+	}
+	
+	@Override
+	public boolean initiate()
+	{
+		DisplaySettings settings = this.hub.getSettings();
 		
+		this.setTargetFPS(settings.targetFPS);
+		
+		if (!Display.isCreated())
+		{
+			try
+			{
+				Display.setTitle(settings.title);
+				Display.setResizable(settings.resize);
+				Display.setVSyncEnabled(settings.vsync);
+				Display.setFullscreen(settings.fullscreen);
+				if (settings.icons != null) Display.setIcon(settings.icons);
+				if (settings.mode != null) Display.setDisplayMode(settings.mode);
+				
+				Color bg = settings.bg;
+				Display.setInitialBackground(bg.getColorFloat(EnumColorFilter.RED), bg.getColorFloat(EnumColorFilter.GREEN), bg.getColorFloat(EnumColorFilter.BLUE));
+				
+				Display.create();
+				
+				//TODO Display.setDisplayConfiguration(settings.gamma, settings.brightness, settings.constrast);
+				
+				GL.glViewport(0, 0, settings.mode.getWidth(), settings.mode.getHeight());
+				GL.glClearColor(bg.getColorFloat(EnumColorFilter.RED), bg.getColorFloat(EnumColorFilter.GREEN), bg.getColorFloat(EnumColorFilter.BLUE), bg.getColorFloat(EnumColorFilter.ALPHA));
+				
+			}
+			catch (LWJGLException e)
+			{
+				GameLog.error(e);
+				
+				return false;
+			}
+			
+		}
+		
+		return true;
 	}
 	
 	@Override
 	public void timedUpdate(long delta)
 	{
-		RenderHelper.makeContextCurrent();
+		if (this.hub.updateDisplay())
+		{
+			try
+			{
+				DisplaySettings settings = this.hub.getSettings();
+				
+				Display.setDisplayMode(settings.mode);
+				Display.setFullscreen(settings.fullscreen);
+				Display.setVSyncEnabled(settings.vsync);
+				
+				this.setTargetFPS(settings.targetFPS);
+				
+				//TODO Display.setDisplayConfiguration(settings.gamma, settings.brightness, settings.constrast);
+				
+			}
+			catch (LWJGLException e)
+			{
+				GameLog.error(e);
+				
+			}
+			
+		}
 		
 		this.hub.getCamera().updateCamera(this.hub);
 		
@@ -64,6 +125,15 @@ public class ThreadGameRender extends ThreadTimed
 	}
 	
 	@Override
+	public void onThreadStopped()
+	{
+		GL.cleanup();
+		
+		Display.destroy();
+		
+	}
+	
+	@Override
 	public int getDelta() //TODO Convert to float
 	{
 		return 0;
@@ -75,7 +145,7 @@ public class ThreadGameRender extends ThreadTimed
 		return this.fps;
 	}
 	
-	public synchronized void setTargetFPS(int framerate)
+	protected void setTargetFPS(int framerate)
 	{
 		this.fps = framerate;
 		this.delta = (1000000000.0f / this.fps);

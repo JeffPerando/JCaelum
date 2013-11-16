@@ -2,12 +2,10 @@
 package com.elusivehawk.engine.sound;
 
 import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import org.lwjgl.BufferUtils;
 import com.elusivehawk.engine.core.BufferHelper;
-import com.elusivehawk.engine.core.FileHelper;
 import com.elusivehawk.engine.core.GameLog;
 
 /**
@@ -19,13 +17,13 @@ import com.elusivehawk.engine.core.GameLog;
 public class SoundDecoderOGG implements ISoundDecoder
 {
 	@Override
-	public ISound decodeSound(File file)
+	public int decodeSound(String path)
 	{
-		FileInputStream fis = FileHelper.createStream(file);
+		InputStream fis = ClassLoader.getSystemResourceAsStream(path);
 		
 		if (fis == null)
 		{
-			return null;
+			return 0;
 		}
 		
 		BufferedInputStream is = new BufferedInputStream(fis);
@@ -45,7 +43,7 @@ public class SoundDecoderOGG implements ISoundDecoder
 			
 		}
 		
-		ISound s = null;
+		int id = 0;
 		
 		if (buf != null)
 		{
@@ -136,7 +134,7 @@ public class SoundDecoderOGG implements ISoundDecoder
 				
 			}
 			
-			//TODO Set the s field.
+			//TODO Set the id field.
 			
 		}
 		
@@ -148,7 +146,7 @@ public class SoundDecoderOGG implements ISoundDecoder
 		}
 		catch (Exception e){}
 		
-		return s;
+		return id;
 	}
 	
 	public static enum EnumOGGHeaderType

@@ -30,8 +30,13 @@ public abstract class ThreadStoppable extends Thread
 	}
 	
 	@Override
-	public void run()
+	public final void run()
 	{
+		if (!this.initiate())
+		{
+			return;
+		}
+		
 		while (this.running)
 		{
 			if (!this.paused)
@@ -42,9 +47,18 @@ public abstract class ThreadStoppable extends Thread
 			
 		}
 		
+		this.onThreadStopped();
+		
+	}
+	
+	public boolean initiate()
+	{
+		return true;
 	}
 	
 	public abstract void update();
+	
+	public void onThreadStopped(){}
 	
 	public synchronized final void stopThread()
 	{

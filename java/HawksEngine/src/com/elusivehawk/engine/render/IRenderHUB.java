@@ -19,4 +19,8 @@ public interface IRenderHUB
 	
 	public EnumRenderMode getRenderMode();
 	
+	public boolean updateDisplay();
+	
+	public DisplaySettings getSettings();
+	
 }

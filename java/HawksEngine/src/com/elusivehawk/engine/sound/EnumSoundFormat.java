@@ -10,7 +10,7 @@ package com.elusivehawk.engine.sound;
 public enum EnumSoundFormat
 {
 	OGG(new SoundDecoderOGG()),
-	IDK(null);
+	WAV(new SoundDecoderWav());
 	
 	public final ISoundDecoder decoder;
 	
