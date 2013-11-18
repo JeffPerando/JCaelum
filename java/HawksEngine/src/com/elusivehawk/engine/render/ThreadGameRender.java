@@ -17,7 +17,7 @@ public class ThreadGameRender extends ThreadTimed
 {
 	protected final IRenderHUB hub;
 	protected int fps;
-	protected float delta;
+	protected double delta;
 	
 	public ThreadGameRender(IRenderHUB renderHub)
 	{
@@ -67,7 +67,7 @@ public class ThreadGameRender extends ThreadTimed
 	}
 	
 	@Override
-	public void timedUpdate(long delta)
+	public void timedUpdate(double delta)
 	{
 		if (this.hub.updateDisplay())
 		{
@@ -134,9 +134,9 @@ public class ThreadGameRender extends ThreadTimed
 	}
 	
 	@Override
-	public int getDelta() //TODO Convert to float
+	public double getDelta()
 	{
-		return 0;
+		return this.delta;
 	}
 	
 	@Override
@@ -145,10 +145,16 @@ public class ThreadGameRender extends ThreadTimed
 		return this.fps;
 	}
 	
+	@Override
+	public double getMaxDelta()
+	{
+		return 0.5;
+	}
+	
 	protected void setTargetFPS(int framerate)
 	{
 		this.fps = framerate;
-		this.delta = (1000000000.0f / this.fps);
+		this.delta = (1000000000.0 / this.fps);
 		
 	}
 	

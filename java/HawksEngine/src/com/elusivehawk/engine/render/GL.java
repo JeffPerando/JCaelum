@@ -2671,7 +2671,7 @@ public final class GL
 	
 	public static void glDeleteProgram(GLProgram program)
 	{
-		glDeleteProgram(program.id);
+		glDeleteProgram(program.getId());
 		
 	}
 	
@@ -4490,7 +4490,7 @@ public final class GL
 	
 	public static void glLinkProgram(GLProgram program)
 	{
-		glLinkProgram(program.id);
+		glLinkProgram(program.getId());
 		
 	}
 	
@@ -5896,7 +5896,7 @@ public final class GL
 	
 	public static void glUseProgram(GLProgram program)
 	{
-		glUseProgram(program.id);
+		glUseProgram(program.getId());
 		
 	}
 	
@@ -5916,7 +5916,7 @@ public final class GL
 	
 	public static void glValidateProgram(GLProgram program)
 	{
-		glValidateProgram(program.id);
+		glValidateProgram(program.getId());
 		
 	}
 	

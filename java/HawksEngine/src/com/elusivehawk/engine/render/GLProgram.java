@@ -20,8 +20,8 @@ import com.elusivehawk.engine.core.GameLog;
  */
 public class GLProgram implements IGLCleanable
 {
-	public final int id, vba;
-	public final int[] shaders;
+	private final int id, vba;
+	private final int[] shaders;
 	private HashMap<VertexBufferObject, List<Integer>> vbos = new HashMap<VertexBufferObject, List<Integer>>();
 	private HashMap<String, Integer> attribs = new HashMap<String, Integer>();
 	private boolean linkedRecently = false;
@@ -209,6 +209,16 @@ public class GLProgram implements IGLCleanable
 		return 0;
 	}
 	
+	public int getId()
+	{
+		return this.id;
+	}
+	
+	public int[] getShaders()
+	{
+		return this.shaders;
+	}
+	
 	public void finish()
 	{
 		GL.glLinkProgram(this);
@@ -343,6 +353,12 @@ public class GLProgram implements IGLCleanable
 		
 		public void loadUniform(int loc, IntBuffer buf);
 		
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		return this.getId();
 	}
 	
 	public static enum EnumUniformType implements IUniformType
