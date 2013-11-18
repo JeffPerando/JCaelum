@@ -69,6 +69,13 @@ public class ThreadGameRender extends ThreadTimed
 	@Override
 	public void timedUpdate(double delta)
 	{
+		if (Display.isCloseRequested())
+		{
+			this.running = false;
+			
+			return;
+		}
+		
 		if (this.hub.updateDisplay())
 		{
 			try
