@@ -1,18 +1,17 @@
 
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.nio.ByteBuffer;
 import com.elusivehawk.engine.core.FileHelper;
 import com.elusivehawk.engine.core.GameLog;
+import com.elusivehawk.engine.sound.EnumSoundFormat;
+import com.elusivehawk.engine.sound.SoundDecoderOGG;
+import com.elusivehawk.engine.sound.SoundDecoderOGG.OggPage;
 
 /**
  * 
  * Test log:
  * 
+ * Testing sound decoding.
  * Testing file byte reading.
  * Testing "++".
  * Using PrintStream.
@@ -32,55 +31,39 @@ public class BenchmarkTest
 		GameLog.info("Beginning bench testing...");
 		
 		File file = FileHelper.createFile(".", "Test_sound.ogg");
-		File out = FileHelper.createFile(".", "Log.txt");
 		
 		try
 		{
-			if (!out.exists() && !out.createNewFile())
+			OggPage[] pages = ((SoundDecoderOGG)EnumSoundFormat.OGG.decoder).decode(file);
+			
+			if (pages != null)
 			{
-				return;
-			}
-			
-		}
-		catch (IOException e)
-		{
-			GameLog.error(e);
-			
-		}
-		
-		try
-		{
-			GameLog.EnumLogType.INFO.addOutput(new PrintStream(out));
-			
-		}
-		catch (FileNotFoundException e)
-		{
-			GameLog.error(e);
-			
-		}
-		
-		if (file.exists() && file.canRead())
-		{
-			try
-			{
-				DataInputStream s = new DataInputStream(new BufferedInputStream(new FileInputStream(file)));
+				GameLog.info("Page count: " + pages.length);
 				
-				while (s.available() > 0)
+				for (OggPage p : pages)
 				{
-					byte b = s.readByte();
+					GameLog.info("OGG page found; Header type: " + p.type.name());
 					
-					GameLog.info("Byte found: " + b + ", char equivalent: " + (char)b);
+					ByteBuffer buf = p.data;
+					
+					GameLog.info("Byte count: " + buf.capacity());
+					
+					while (buf.remaining() != 0)
+					{
+						GameLog.info("Byte found: " + buf.get());
+						
+					}
+					
+					buf.rewind();
 					
 				}
 				
-				s.close();
-				
 			}
-			catch (Exception e)
-			{
-				GameLog.error(e);
-				
-			}
+			
+		}
+		catch (Exception e)
+		{
+			GameLog.error(e);
 			
 		}
 		

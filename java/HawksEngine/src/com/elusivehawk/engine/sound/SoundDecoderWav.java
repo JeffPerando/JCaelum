@@ -1,7 +1,10 @@
 
 package com.elusivehawk.engine.sound;
 
+import java.io.File;
+import org.lwjgl.openal.AL10;
 import org.lwjgl.util.WaveData;
+import com.elusivehawk.engine.core.GameLog;
 
 /**
  * 
@@ -12,16 +15,34 @@ import org.lwjgl.util.WaveData;
 public class SoundDecoderWav implements ISoundDecoder
 {
 	@Override
-	public int decodeSound(String path)
+	public int decodeSound(File file)
 	{
-		WaveData wd = WaveData.create(path);
+		WaveData wd = null;
 		
-		if (wd == null)
+		try
 		{
-			return 0;
+			wd = WaveData.create(file.toURI().toURL());
+			
+		}
+		catch (Exception e)
+		{
+			GameLog.error(e);
+			
 		}
 		
-		return 0;
+		int ret = 0;
+		
+		if (wd != null)
+		{
+			ret = AL10.alGenBuffers();
+			
+			AL10.alBufferData(ret, wd.format, wd.data, wd.samplerate);
+			
+			wd.dispose();
+			
+		}
+		
+		return ret;
 	}
 	
 }

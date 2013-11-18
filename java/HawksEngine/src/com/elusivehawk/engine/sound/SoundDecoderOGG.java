@@ -2,8 +2,12 @@
 package com.elusivehawk.engine.sound;
 
 import java.io.BufferedInputStream;
-import java.io.InputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 import org.lwjgl.BufferUtils;
 import com.elusivehawk.engine.core.BufferHelper;
 import com.elusivehawk.engine.core.GameLog;
@@ -17,13 +21,25 @@ import com.elusivehawk.engine.core.GameLog;
 public class SoundDecoderOGG implements ISoundDecoder
 {
 	@Override
-	public int decodeSound(String path)
+	public int decodeSound(File file)
 	{
-		InputStream fis = ClassLoader.getSystemResourceAsStream(path);
+		return 0;
+	}
+	
+	public OggPage[] decode(File file)
+	{
+		FileInputStream fis = null;
 		
-		if (fis == null)
+		try
 		{
-			return 0;
+			fis = new FileInputStream(file);
+			
+		}
+		catch (FileNotFoundException e)
+		{
+			GameLog.error(e);
+			
+			return null;
 		}
 		
 		BufferedInputStream is = new BufferedInputStream(fis);
@@ -43,10 +59,15 @@ public class SoundDecoderOGG implements ISoundDecoder
 			
 		}
 		
-		int id = 0;
+		//int id = 0;
+		OggPage[] ret = null;
 		
 		if (buf != null)
 		{
+			GameLog.debug("Byte count: " + buf.capacity());
+			
+			List<OggPage> unsortedPages = new ArrayList<OggPage>();
+			
 			while (buf.remaining() != 0)
 			{
 				try
@@ -59,36 +80,40 @@ public class SoundDecoderOGG implements ISoundDecoder
 						
 					}
 					
-					if (capture != "OggS") //OggS is what the capture pattern needs to be.
+					if (!capture.equals("OggS")) //OggS is what the capture pattern needs to be.
 					{
+						GameLog.warn("Sound file corrupted: " + file.getAbsolutePath() + ", capture pattern is not OggS. Instead, it's " + capture + ".");
+						
 						break;
 					}
 					
 					if (buf.get() != 0) //The next byte is for the version.
 					{
+						GameLog.warn("Sound file corrupted: " + file.getAbsolutePath() + ", version is not 0.");
+						
 						break;
 					}
 					
 					byte h = buf.get(); //The following byte is the header type.
-					boolean cont = false;
+					EnumOGGHeaderType t = null;
 					
 					for (EnumOGGHeaderType type : EnumOGGHeaderType.values()) //Checks if the header type is invalid.
 					{
 						if (type.ordinal() == h)
 						{
-							cont = true;
+							t = type;
 							
 							break;
 						}
 						
 					}
 					
-					if (!cont) //If the above failed...
+					if (t == null) //If the above failed...
 					{
+						GameLog.warn("Sound file corrupted: " + file.getAbsolutePath() + ", invalid header type.");
+						
 						break; //...Stop EVERYTHING!
 					}
-					
-					cont = false;
 					
 					long granule = 0L;
 					int serial = 0, sequence = 0, checksum = 0;
@@ -99,11 +124,15 @@ public class SoundDecoderOGG implements ISoundDecoder
 						
 					}
 					
+					GameLog.debug("Granule found: " + granule);
+					
 					for (byte c = 0; c < 4; c++)
 					{
 						serial = ((serial << 8) | buf.get());
 						
 					}
+					
+					GameLog.debug("Serial number found: " + serial);
 					
 					for (byte c = 0; c < 4; c++)
 					{
@@ -111,19 +140,42 @@ public class SoundDecoderOGG implements ISoundDecoder
 						
 					}
 					
+					GameLog.debug("Sequence number found: " + sequence);
+					
 					for (byte c = 0; c < 4; c++)
 					{
 						checksum = ((checksum << 8) | buf.get());
 						
 					}
 					
+					GameLog.debug("Checksum: " + checksum);
+					
 					//TODO Handle checksum.
 					
-					ByteBuffer segments = BufferUtils.createByteBuffer(buf.get());
+					byte segCount = buf.get();
 					
-					segments.put(buf);
+					GameLog.debug("Segment count: " + segCount + ", remaining byte count: " + buf.remaining());
 					
-					//TODO Continue
+					ByteBuffer segments = BufferUtils.createByteBuffer(segCount);
+					
+					for (int c = 0; c < segCount; c++)
+					{
+						GameLog.debug("Count: " + c + ", segment count: " + segCount);
+						segments.put(buf.get());
+						
+					}
+					
+					segments.flip();
+					
+					while (segments.remaining() != 0)
+					{
+						GameLog.debug("Segment byte: " + segments.get());
+						
+					}
+					
+					segments.rewind();
+					
+					unsortedPages.add(new OggPage(segments, t));
 					
 				}
 				catch (Exception e)
@@ -131,6 +183,36 @@ public class SoundDecoderOGG implements ISoundDecoder
 					GameLog.error(e);
 					
 				}
+				
+				OggPage[] pages = new OggPage[unsortedPages.size()];
+				
+				for (OggPage p : unsortedPages)
+				{
+					switch (p.type)
+					{
+						case BEGIN: assert (pages[0] == null) : "Corrupted OGG file! This is a bug!"; pages[0] = p;
+						case END: assert (pages[pages.length - 1] == null) : "Corrupted OGG file! This is a bug!"; pages[pages.length - 1] = p;
+						default:
+						{
+							for (int c = 1; c < pages.length - 2; c++)
+							{
+								if (pages[c] == null)
+								{
+									pages[c] = p;
+									
+								}
+								
+							}
+							
+						}
+						
+					}
+					
+				}
+				
+				ret = pages;
+				
+				//TODO Continue
 				
 			}
 			
@@ -146,12 +228,26 @@ public class SoundDecoderOGG implements ISoundDecoder
 		}
 		catch (Exception e){}
 		
-		return id;
+		return ret;
 	}
 	
 	public static enum EnumOGGHeaderType
 	{
 		CONTINUE, BEGIN, END;
+		
+	}
+	
+	public static class OggPage
+	{
+		public final ByteBuffer data;
+		public final EnumOGGHeaderType type;
+		
+		OggPage(ByteBuffer info, EnumOGGHeaderType t)
+		{
+			data = info;
+			type = t;
+			
+		}
 		
 	}
 	
