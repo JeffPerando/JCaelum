@@ -23,7 +23,6 @@ public class ThreadGameRender extends ThreadTimed
 {
 	protected final IRenderHUB hub;
 	protected int fps;
-	protected double delta;
 	
 	public ThreadGameRender(IRenderHUB renderHub)
 	{
@@ -42,7 +41,7 @@ public class ThreadGameRender extends ThreadTimed
 			
 		}
 		
-		this.setTargetFPS(settings.targetFPS);
+		this.fps = settings.targetFPS;
 		
 		if (!Display.isCreated())
 		{
@@ -93,7 +92,7 @@ public class ThreadGameRender extends ThreadTimed
 				Display.setFullscreen(settings.fullscreen);
 				Display.setVSyncEnabled(settings.vsync);
 				
-				this.setTargetFPS(settings.targetFPS);
+				this.fps = settings.targetFPS;
 				
 				//TODO Display.setDisplayConfiguration(settings.gamma, settings.brightness, settings.constrast);
 				
@@ -163,12 +162,6 @@ public class ThreadGameRender extends ThreadTimed
 	}
 	
 	@Override
-	public double getDelta()
-	{
-		return this.delta;
-	}
-	
-	@Override
 	public int getTargetUpdateCount()
 	{
 		return this.fps;
@@ -186,11 +179,5 @@ public class ThreadGameRender extends ThreadTimed
 		return !Display.isCloseRequested();
 	}
 	
-	protected void setTargetFPS(int framerate)
-	{
-		this.fps = framerate;
-		this.delta = (1000000000.0 / this.fps);
-		
-	}
 	
 }

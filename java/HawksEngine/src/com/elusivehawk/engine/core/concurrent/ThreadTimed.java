@@ -9,14 +9,16 @@ package com.elusivehawk.engine.core.concurrent;
  */
 public abstract class ThreadTimed extends ThreadStoppable
 {
-	private int updates = 0;
+	private int updates = 0, updateCount;
 	private long sleepTime = 0L;
-	private double time, nextTime;
+	private double time, nextTime, delta;
 	
 	@Override
 	public boolean initiate()
 	{
-		this.nextTime = (System.nanoTime() / 1000000000.0) + this.getDelta();
+		this.updateCount = this.getTargetUpdateCount();
+		this.delta = (1000000000.0 / this.updateCount);
+		this.nextTime = (System.nanoTime() / 1000000000.0) + this.delta;
 		
 		return true;
 	}
@@ -24,18 +26,29 @@ public abstract class ThreadTimed extends ThreadStoppable
 	@Override
 	public final void update()
 	{
+		if (this.getTargetUpdateCount() != this.updateCount)
+		{
+			this.nextTime -= this.delta;
+			
+			this.updateCount = this.getTargetUpdateCount();
+			this.delta = (1000000000.0 / this.updateCount);
+			
+			this.nextTime += this.delta;
+			
+		}
+		
 		this.time = System.nanoTime() / 1000000000.0;
 		
 		if ((this.nextTime - this.time) > this.getMaxDelta()) this.nextTime = this.time;
 		
-		if ((this.time + this.getDelta()) >= this.nextTime)
+		if ((this.time + this.delta) >= this.nextTime)
 		{
-			this.nextTime += this.getDelta();
+			this.nextTime += this.delta;
 			this.updates++;
 			
 			this.timedUpdate(this.time - this.nextTime);
 			
-			if (this.updates == this.getTargetUpdateCount())
+			if (this.updates >= this.updateCount)
 			{
 				this.sleepTime = 1L;
 				
@@ -60,8 +73,6 @@ public abstract class ThreadTimed extends ThreadStoppable
 	}
 	
 	public abstract void timedUpdate(double delta);
-	
-	public abstract double getDelta();
 	
 	public abstract int getTargetUpdateCount();
 	

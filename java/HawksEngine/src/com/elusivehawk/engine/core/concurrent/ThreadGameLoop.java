@@ -12,7 +12,6 @@ import com.elusivehawk.engine.core.IGame;
 public class ThreadGameLoop extends ThreadTimed
 {
 	private final IGame g;
-	private double delta;
 	
 	public ThreadGameLoop(IGame game)
 	{
@@ -24,8 +23,6 @@ public class ThreadGameLoop extends ThreadTimed
 	public boolean initiate()
 	{
 		super.initiate();
-		
-		this.delta = (1000000000.0 / this.g.getTargetUpdateCount());
 		
 		return this.g.initiate();
 	}
@@ -49,12 +46,6 @@ public class ThreadGameLoop extends ThreadTimed
 	{
 		this.g.handleException(e);
 		
-	}
-	
-	@Override
-	public double getDelta()
-	{
-		return this.delta;
 	}
 	
 	@Override
