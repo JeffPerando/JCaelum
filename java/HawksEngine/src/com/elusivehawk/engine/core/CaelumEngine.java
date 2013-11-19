@@ -3,9 +3,10 @@ package com.elusivehawk.engine.core;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
+import com.elusivehawk.engine.core.concurrent.ThreadGameLoop;
+import com.elusivehawk.engine.core.concurrent.ThreadGameRender;
+import com.elusivehawk.engine.core.concurrent.ThreadSoundPlayer;
 import com.elusivehawk.engine.render.IRenderHUB;
-import com.elusivehawk.engine.render.ThreadGameRender;
-import com.elusivehawk.engine.sound.ThreadSoundPlayer;
 
 /**
  * 
@@ -52,6 +53,8 @@ public final class CaelumEngine
 			System.setProperty("org.lwjgl.librarypath", lwjgl);
 			
 		}
+		
+		System.setProperty("org.lwjgl.opengl.Display.noinput", "true");
 		
 		this.threadCore = new ThreadGameLoop(game);
 		

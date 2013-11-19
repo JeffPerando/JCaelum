@@ -1,11 +1,17 @@
 
-package com.elusivehawk.engine.render;
+package com.elusivehawk.engine.core.concurrent;
 
 import java.util.Collection;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import com.elusivehawk.engine.core.GameLog;
-import com.elusivehawk.engine.core.ThreadTimed;
+import com.elusivehawk.engine.render.Color;
+import com.elusivehawk.engine.render.DisplaySettings;
+import com.elusivehawk.engine.render.EnumColorFilter;
+import com.elusivehawk.engine.render.GL;
+import com.elusivehawk.engine.render.IRenderEngine;
+import com.elusivehawk.engine.render.IRenderHUB;
+import com.elusivehawk.engine.render.RenderHelper;
 
 /**
  * 
@@ -29,6 +35,12 @@ public class ThreadGameRender extends ThreadTimed
 	public boolean initiate()
 	{
 		DisplaySettings settings = this.hub.getSettings();
+		
+		if (settings == null)
+		{
+			settings = new DisplaySettings();
+			
+		}
 		
 		this.setTargetFPS(settings.targetFPS);
 		
@@ -69,12 +81,7 @@ public class ThreadGameRender extends ThreadTimed
 	@Override
 	public void timedUpdate(double delta)
 	{
-		if (Display.isCloseRequested())
-		{
-			this.running = false;
-			
-			return;
-		}
+		this.hub.update(delta);
 		
 		if (this.hub.updateDisplay())
 		{
@@ -112,9 +119,21 @@ public class ThreadGameRender extends ThreadTimed
 		
 		for (IRenderEngine engine : engines)
 		{
-			//TODO Unbind all textures.
-			
 			engine.render(this.hub);
+			
+			int tex = 0, texUnits = GL.glGetInteger(GL.GL_MAX_TEXTURE_UNITS);
+			
+			for (int c = 0; c < texUnits; c++)
+			{
+				tex = GL.glGetInteger(GL.GL_TEXTURE0 + c);
+				
+				if (tex != 0)
+				{
+					GL.glBindTexture(GL.GL_TEXTURE0 + c, 0);
+					
+				}
+				
+			}
 			
 			try
 			{
@@ -128,6 +147,9 @@ public class ThreadGameRender extends ThreadTimed
 			}
 			
 		}
+		
+		Display.sync(this.fps);
+		Display.update(false);
 		
 	}
 	
@@ -156,6 +178,12 @@ public class ThreadGameRender extends ThreadTimed
 	public double getMaxDelta()
 	{
 		return 0.5;
+	}
+	
+	@Override
+	public boolean isRunning()
+	{
+		return !Display.isCloseRequested();
 	}
 	
 	protected void setTargetFPS(int framerate)

@@ -1,5 +1,7 @@
 
-package com.elusivehawk.engine.core;
+package com.elusivehawk.engine.core.concurrent;
+
+import com.elusivehawk.engine.core.GameLog;
 
 /**
  * 
@@ -34,6 +36,8 @@ public abstract class ThreadStoppable extends Thread
 	{
 		if (!this.initiate())
 		{
+			this.onThreadStopped();
+			
 			return;
 		}
 		
@@ -41,7 +45,16 @@ public abstract class ThreadStoppable extends Thread
 		{
 			if (!this.paused)
 			{
-				this.update();
+				try
+				{
+					this.update();
+					
+				}
+				catch (Throwable e)
+				{
+					this.handleException(e);
+					
+				}
 				
 			}
 			
@@ -64,6 +77,12 @@ public abstract class ThreadStoppable extends Thread
 	public abstract void update();
 	
 	public void onThreadStopped(){}
+	
+	public void handleException(Throwable e)
+	{
+		GameLog.error(e);
+		
+	}
 	
 	public synchronized final void stopThread()
 	{

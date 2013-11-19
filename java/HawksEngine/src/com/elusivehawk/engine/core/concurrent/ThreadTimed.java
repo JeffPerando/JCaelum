@@ -1,5 +1,5 @@
 
-package com.elusivehawk.engine.core;
+package com.elusivehawk.engine.core.concurrent;
 
 /**
  * 
@@ -16,7 +16,7 @@ public abstract class ThreadTimed extends ThreadStoppable
 	@Override
 	public boolean initiate()
 	{
-		this.nextTime = System.nanoTime() / 1000000000.0;
+		this.nextTime = (System.nanoTime() / 1000000000.0) + this.getDelta();
 		
 		return true;
 	}
@@ -26,7 +26,7 @@ public abstract class ThreadTimed extends ThreadStoppable
 	{
 		this.time = System.nanoTime() / 1000000000.0;
 		
-		if ((this.nextTime - this.time) > this.getMaxDelta()){}
+		if ((this.nextTime - this.time) > this.getMaxDelta()) this.nextTime = this.time;
 		
 		if ((this.time + this.getDelta()) >= this.nextTime)
 		{

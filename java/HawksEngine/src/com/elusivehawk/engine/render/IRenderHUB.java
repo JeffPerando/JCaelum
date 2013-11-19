@@ -11,7 +11,9 @@ import java.util.Collection;
  */
 public interface IRenderHUB
 {
-	public ICamera getCamera();
+	public void update(double delta);
+	
+	public ICamera<?, ?> getCamera();
 	
 	public IScene getScene();
 	

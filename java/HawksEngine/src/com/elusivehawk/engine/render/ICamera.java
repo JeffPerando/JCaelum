@@ -10,15 +10,15 @@ import com.elusivehawk.engine.math.IVector;
  * 
  * @author Elusivehawk
  */
-public interface ICamera extends IDirty
+public interface ICamera<P extends IVector, R extends IVector> extends IDirty
 {
 	public void updateCamera(IRenderHUB hub);
 	
 	public void updateUniform(GLProgram p);
 	
-	public IVector getCamRot();
+	public P getCamPos();
 	
-	public IVector getCamPos();
+	public R getCamRot();
 	
 	public float getZFar();
 	

@@ -53,7 +53,12 @@ public class GameLog
 	public static void error(String message, Throwable e)
 	{
 		error(message == null ? CRASH_DIALOG.get(rand.nextInt(CRASH_DIALOG.size())) : message);
-		e.printStackTrace(EnumLogType.ERROR.getMainOutput());
+		
+		for (PrintStream ps : EnumLogType.ERROR.out)
+		{
+			e.printStackTrace(ps);
+			
+		}
 		
 	}
 	
@@ -87,14 +92,12 @@ public class GameLog
 		WARN(System.err, false),
 		ERROR(System.err, false);
 		
-		private List<PrintStream> out = new ArrayList<PrintStream>();
-		private final PrintStream initialOut;
-		public final boolean verbose;
+		List<PrintStream> out = new ArrayList<PrintStream>();
+		final boolean verbose;
 		
 		EnumLogType(PrintStream ps, boolean isVerbose)
 		{
 			out.add(ps);
-			initialOut = ps;
 			verbose = isVerbose;
 			
 		}
@@ -123,11 +126,6 @@ public class GameLog
 				
 			}
 			
-		}
-		
-		public PrintStream getMainOutput()
-		{
-			return this.initialOut;
 		}
 		
 	}

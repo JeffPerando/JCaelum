@@ -1,5 +1,7 @@
 
-package com.elusivehawk.engine.core;
+package com.elusivehawk.engine.core.concurrent;
+
+import com.elusivehawk.engine.core.IGame;
 
 /**
  * 
@@ -39,6 +41,13 @@ public class ThreadGameLoop extends ThreadTimed
 	public void onThreadStopped()
 	{
 		this.g.onGameClosed();
+		
+	}
+	
+	@Override
+	public void handleException(Throwable e)
+	{
+		this.g.handleException(e);
 		
 	}
 	

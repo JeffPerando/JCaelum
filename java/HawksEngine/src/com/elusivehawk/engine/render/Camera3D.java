@@ -3,6 +3,7 @@ package com.elusivehawk.engine.render;
 
 import org.lwjgl.input.Mouse;
 import com.elusivehawk.engine.core.BufferHelper;
+import com.elusivehawk.engine.core.DirtableStorage;
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.MatrixHelper;
 import com.elusivehawk.engine.math.Vector3f;
@@ -13,24 +14,42 @@ import com.elusivehawk.engine.math.Vector3f;
  * 
  * @author Elusivehawk
  */
-public class Camera3D implements ICamera
+public class Camera3D implements ICamera<Vector3f, Vector3f>
 {
 	private Vector3f angle = new Vector3f();
 	private Vector3f pos = new Vector3f();
+	private DirtableStorage<Boolean> grabMouse = new DirtableStorage<Boolean>(true);
 	
 	public Camera3D()
 	{
 		angle.setIsDirty(true);
 		pos.setIsDirty(true);
+		grabMouse.setIsDirty(true);
 		
 	}
 	
 	@Override
 	public void updateCamera(IRenderHUB hub)
 	{
+		if (!hub.getRenderMode().is3D())
+		{
+			return;
+		}
+		
 		if (Mouse.isCreated() && Mouse.isInsideWindow())
 		{
+			if (this.grabMouse.isDirty())
+			{
+				Mouse.setGrabbed(this.grabMouse.get());
+				
+			}
 			
+			if (this.grabMouse.get())
+			{
+				int x = Mouse.getX();
+				int y = Mouse.getY();
+				
+			}
 			
 		}
 		
@@ -83,6 +102,17 @@ public class Camera3D implements ICamera
 	public float getZNear()
 	{
 		return 0;
+	}
+	
+	public boolean isMouseGrabbed()
+	{
+		return this.grabMouse.get();
+	}
+	
+	public void setMouseGrabbed(boolean b)
+	{
+		this.grabMouse.set(b);
+		
 	}
 	
 }
