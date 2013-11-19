@@ -28,6 +28,8 @@ public class ThreadGameRender extends ThreadTimed
 	{
 		hub = renderHub;
 		
+		System.setProperty("org.lwjgl.opengl.Display.noinput", "true");
+		
 	}
 	
 	@Override
@@ -178,6 +180,5 @@ public class ThreadGameRender extends ThreadTimed
 	{
 		return !Display.isCloseRequested();
 	}
-	
 	
 }

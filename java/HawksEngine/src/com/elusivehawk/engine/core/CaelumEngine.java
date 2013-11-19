@@ -54,8 +54,6 @@ public final class CaelumEngine
 			
 		}
 		
-		System.setProperty("org.lwjgl.opengl.Display.noinput", "true");
-		
 		this.threadCore = new ThreadGameLoop(game);
 		
 		IRenderHUB hub = game.getRenderHUB();
@@ -68,9 +66,9 @@ public final class CaelumEngine
 		
 		this.threadSound = new ThreadSoundPlayer();
 		
-		this.threadCore.run();
-		this.threadRender.run();
-		this.threadSound.run();
+		this.threadCore.start();
+		this.threadRender.start();
+		this.threadSound.start();
 		
 	}
 	
