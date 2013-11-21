@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.net;
 
-import com.elusivehawk.engine.core.concurrent.ThreadStoppable;
+import com.elusivehawk.engine.core.ThreadStoppable;
 
 /**
  * 

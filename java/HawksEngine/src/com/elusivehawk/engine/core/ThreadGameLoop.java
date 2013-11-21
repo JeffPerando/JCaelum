@@ -1,7 +1,6 @@
 
-package com.elusivehawk.engine.core.concurrent;
+package com.elusivehawk.engine.core;
 
-import com.elusivehawk.engine.core.IGame;
 
 /**
  * 

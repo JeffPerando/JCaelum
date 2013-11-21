@@ -1,13 +1,12 @@
 
-package com.elusivehawk.engine.core.concurrent;
+package com.elusivehawk.engine.sound;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL10;
 import com.elusivehawk.engine.core.GameLog;
-import com.elusivehawk.engine.sound.ISound;
-import com.elusivehawk.engine.sound.SoundUtil;
+import com.elusivehawk.engine.core.ThreadStoppable;
 
 /**
  * 

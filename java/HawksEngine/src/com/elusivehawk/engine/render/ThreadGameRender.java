@@ -1,17 +1,11 @@
 
-package com.elusivehawk.engine.core.concurrent;
+package com.elusivehawk.engine.render;
 
 import java.util.Collection;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import com.elusivehawk.engine.core.GameLog;
-import com.elusivehawk.engine.render.Color;
-import com.elusivehawk.engine.render.DisplaySettings;
-import com.elusivehawk.engine.render.EnumColorFilter;
-import com.elusivehawk.engine.render.GL;
-import com.elusivehawk.engine.render.IRenderEngine;
-import com.elusivehawk.engine.render.IRenderHUB;
-import com.elusivehawk.engine.render.RenderHelper;
+import com.elusivehawk.engine.core.ThreadTimed;
 
 /**
  * 
