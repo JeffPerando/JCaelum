@@ -1,13 +1,15 @@
 
 package com.elusivehawk.engine.core.concurrent;
 
+import com.elusivehawk.engine.core.IUpdatable;
+
 /**
  * 
  * Helper class for timed threading.
  * 
  * @author Elusivehawk
  */
-public abstract class ThreadTimed extends ThreadStoppable
+public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 {
 	private int updates = 0, updateCount;
 	private long sleepTime = 0L;
@@ -24,7 +26,7 @@ public abstract class ThreadTimed extends ThreadStoppable
 	}
 	
 	@Override
-	public final void update()
+	public final void rawUpdate()
 	{
 		if (this.getTargetUpdateCount() != this.updateCount)
 		{
@@ -46,7 +48,7 @@ public abstract class ThreadTimed extends ThreadStoppable
 			this.nextTime += this.delta;
 			this.updates++;
 			
-			this.timedUpdate(this.time - this.nextTime);
+			this.update(this.time - this.nextTime);
 			
 			if (this.updates >= this.updateCount)
 			{
@@ -71,8 +73,6 @@ public abstract class ThreadTimed extends ThreadStoppable
 		}
 		
 	}
-	
-	public abstract void timedUpdate(double delta);
 	
 	public abstract int getTargetUpdateCount();
 	

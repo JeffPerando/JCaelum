@@ -18,6 +18,7 @@ public final class CaelumEngine
 {
 	private static final CaelumEngine INSTANCE = new CaelumEngine();
 	public static final boolean DEBUG = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().contains("-agentlib:jdwp");
+	public static final String VERSION = "1.0.0";
 	
 	public final Object shutdownHook = new Object();
 	private ThreadGameLoop threadCore;
@@ -67,33 +68,36 @@ public final class CaelumEngine
 		this.threadSound = new ThreadSoundPlayer();
 		
 		this.threadCore.start();
-		this.threadRender.start();
+		if (this.threadRender != null) this.threadRender.start();
 		this.threadSound.start();
+		
+		try
+		{
+			this.shutdownHook.wait();
+			
+		}
+		catch (InterruptedException e)
+		{
+			GameLog.error(e);
+			
+		}
+		
+		this.threadCore.stopThread();
+		if (this.threadRender != null) this.threadRender.stopThread();
+		this.threadSound.stopThread();
 		
 	}
 	
 	public void shutDownGame(int error)
 	{
-		if (this.threadCore != null)
+		try
 		{
-			this.threadCore.stopThread();
-			if (this.threadRender != null) this.threadRender.stopThread();
-			this.threadSound.stopThread();
-			
-			this.threadCore = null;
-			this.threadRender = null;
-			this.threadSound = null;
-			
-			try
-			{
-				this.shutdownHook.notifyAll();
-				
-			}
-			catch (Exception e){}
-			
-			System.exit(error);
+			this.shutdownHook.notifyAll();
 			
 		}
+		catch (Exception e){}
+		
+		System.exit(error);
 		
 	}
 	

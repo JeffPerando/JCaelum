@@ -43,11 +43,11 @@ public abstract class ThreadStoppable extends Thread
 		
 		while (this.isRunning())
 		{
-			if (!this.paused)
+			if (!this.isPaused())
 			{
 				try
 				{
-					this.update();
+					this.rawUpdate();
 					
 				}
 				catch (Throwable e)
@@ -74,7 +74,12 @@ public abstract class ThreadStoppable extends Thread
 		return this.running;
 	}
 	
-	public abstract void update();
+	public boolean isPaused()
+	{
+		return this.paused;
+	}
+	
+	public abstract void rawUpdate();
 	
 	public void onThreadStopped(){}
 	
@@ -84,13 +89,13 @@ public abstract class ThreadStoppable extends Thread
 		
 	}
 	
-	public synchronized final void stopThread()
+	public synchronized void stopThread()
 	{
 		this.running = false;
 		
 	}
 	
-	public synchronized final void setPaused(boolean pause)
+	public synchronized void setPaused(boolean pause)
 	{
 		this.paused = pause;
 		

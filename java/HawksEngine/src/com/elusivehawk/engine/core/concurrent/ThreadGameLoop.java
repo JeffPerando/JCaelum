@@ -28,7 +28,7 @@ public class ThreadGameLoop extends ThreadTimed
 	}
 	
 	@Override
-	public void timedUpdate(double delta)
+	public void update(double delta)
 	{
 		this.g.update(delta);
 		

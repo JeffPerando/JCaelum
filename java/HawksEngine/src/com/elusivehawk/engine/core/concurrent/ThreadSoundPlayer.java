@@ -20,7 +20,7 @@ public class ThreadSoundPlayer extends ThreadStoppable
 	protected final List<ISound> sounds = new ArrayList<ISound>();
 	
 	@Override
-	public void update()
+	public void rawUpdate()
 	{
 		for (ISound s : this.sounds)
 		{

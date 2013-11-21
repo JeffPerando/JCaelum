@@ -80,7 +80,7 @@ public class ThreadGameRender extends ThreadTimed
 	}
 	
 	@Override
-	public void timedUpdate(double delta)
+	public void update(double delta)
 	{
 		this.hub.update(delta);
 		
