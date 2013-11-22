@@ -22,6 +22,7 @@ Push the "Debug" button, Kronk!
 Crashing is a bad idea!
 Made with LWJGL, crashed by you!
 But wait, there's more!
+But I'm not stoppin' there!
 Know your place, crash report!
 This crash report needs to be about 20% cooler.
 Your code needs to be about 20% less crash-riddled.

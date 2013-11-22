@@ -81,7 +81,13 @@ public class GameLog
 		b.append(cal.get(Calendar.HOUR) + ":" + (minute < 10 ? "0" : "") + minute + ":" + cal.get(Calendar.SECOND) + ":" + cal.get(Calendar.MILLISECOND) + " " + (amOrPm ? "PM" : "AM") + ": ");
 		b.append(message);
 		
-		type.println(b.toString());
+		String fin = b.toString();
+		
+		for (PrintStream ps : type.out)
+		{
+			ps.println(fin);
+			
+		}
 		
 	}
 	
@@ -115,16 +121,6 @@ public class GameLog
 		public synchronized void addOutput(PrintStream stream)
 		{
 			this.out.add(stream);
-			
-		}
-		
-		public void println(String str)
-		{
-			for (PrintStream ps : this.out)
-			{
-				ps.println(str);
-				
-			}
 			
 		}
 		

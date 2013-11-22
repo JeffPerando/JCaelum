@@ -42,9 +42,11 @@ public class Camera3D implements ICamera<Vector3f, Vector3f>
 			{
 				Mouse.setGrabbed(this.grabMouse.get());
 				
+				this.grabMouse.setIsDirty(false);
+				
 			}
 			
-			if (this.grabMouse.get())
+			if (Mouse.isGrabbed())
 			{
 				int x = Mouse.getX();
 				int y = Mouse.getY();
@@ -102,11 +104,6 @@ public class Camera3D implements ICamera<Vector3f, Vector3f>
 	public float getZNear()
 	{
 		return 0;
-	}
-	
-	public boolean isMouseGrabbed()
-	{
-		return this.grabMouse.get();
 	}
 	
 	public void setMouseGrabbed(boolean b)

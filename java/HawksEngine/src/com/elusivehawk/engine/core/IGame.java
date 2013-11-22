@@ -9,11 +9,9 @@ import com.elusivehawk.engine.render.IRenderHUB;
  * 
  * @author Elusivehawk
  */
-public interface IGame
+public interface IGame extends IUpdatable
 {
 	public boolean initiate();
-	
-	public void update(double delta);
 	
 	public void onGameClosed();
 	

@@ -12,7 +12,7 @@ import org.lwjgl.opengl.DisplayMode;
  */
 public class DisplaySettings
 {
-	public String title = "Caelum Engine Game (Now with theoretical sound!)";
+	public String title = "Caelum Engine Game (Now with less gimmicks!)";
 	public DisplayMode mode = new DisplayMode(800, 600);
 	public ByteBuffer[] icons = null;
 	public int targetFPS = 30;

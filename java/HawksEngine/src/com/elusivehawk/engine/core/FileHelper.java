@@ -46,6 +46,7 @@ public class FileHelper
 		try
 		{
 			ret = new FileInputStream(file);
+			
 		}
 		catch (Exception e){}
 		

@@ -84,6 +84,12 @@ public class SoundDecoderOGG implements ISoundDecoder
 					{
 						GameLog.warn("Sound file corrupted: " + file.getAbsolutePath() + ", capture pattern is not OggS. Instead, it's " + capture + ".");
 						
+						for (char c : capture.toCharArray())
+						{
+							GameLog.warn("Corrupted byte: " + (byte)c);
+							
+						}
+						
 						break;
 					}
 					
@@ -94,19 +100,14 @@ public class SoundDecoderOGG implements ISoundDecoder
 						break;
 					}
 					
-					byte h = buf.get(); //The following byte is the header type.
 					EnumOGGHeaderType t = null;
 					
-					for (EnumOGGHeaderType type : EnumOGGHeaderType.values()) //Checks if the header type is invalid.
+					try
 					{
-						if (type.ordinal() == h)
-						{
-							t = type;
-							
-							break;
-						}
+						t = EnumOGGHeaderType.values()[buf.get()];
 						
 					}
+					catch (ArrayIndexOutOfBoundsException e){}
 					
 					if (t == null) //If the above failed...
 					{
@@ -160,20 +161,15 @@ public class SoundDecoderOGG implements ISoundDecoder
 					
 					for (int c = 0; c < segCount; c++)
 					{
-						GameLog.debug("Count: " + c + ", segment count: " + segCount);
-						segments.put(buf.get());
+						byte b = buf.get();
+						
+						GameLog.info("Byte found: " + b + ", char equivalent: " + (char)b);
+						
+						segments.put(b);
 						
 					}
 					
 					segments.flip();
-					
-					while (segments.remaining() != 0)
-					{
-						GameLog.debug("Segment byte: " + segments.get());
-						
-					}
-					
-					segments.rewind();
 					
 					unsortedPages.add(new OggPage(segments, t));
 					

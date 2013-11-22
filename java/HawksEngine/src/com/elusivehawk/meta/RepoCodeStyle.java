@@ -1,20 +1,22 @@
 //Line down, then package.
-import com.elusivehawk.engine.core.GameLog;
+package com.elusivehawk.meta;
+//Then another line down before the imports.
+import com.elusivehawk.engine.core.GameLog;//Note: No "organizing" imports, or more specifically, "grouping" them using line downs.
 
 /**
  * 
  * Contains code style examples for this engine's repo. It's recommended you follow this, but it's not mandatory, just extremely recommended.
  * 
- * On another note, don't use line downs to "organize" imports; They're IMPORTS, you're almost never going to see them!
+ * Note: A good deal of this is what most coding styles already use (i.e. naming conventions, 
  * 
  * @author Elusivehawk
  */
 public final class RepoCodeStyle
 {
-	private RepoCodeStyle(){}
+	private RepoCodeStyle(){}//See these brackets? They denote that this isn't being used, or is simply here to change the visibility of the constructor or method.
 	
 	public final int finNonStaticField = 0; //Name every non-static or non-final field like so.
-	public static final int FIN_FIELD = 0; //"Constants" like this (Static, final) should be named like this, however.
+	public static final int CONST_FIELD = 0; //"Constants" like this (Static, final) should be named like this, however.
 	
 	/**
 	 * Void example
@@ -37,7 +39,7 @@ public final class RepoCodeStyle
 			 */
 			
 		}
-		
+		//Leave one extra line after an exit bracket, too.
 	}
 	
 	/**
@@ -54,7 +56,7 @@ public final class RepoCodeStyle
 	public void throwingExample() throws Exception //Defining what you throw specifically is optional, but recommended; Makes for cheap instanceof checks.
 	{
 		throw new RuntimeException("Nice job...");
-		//Once again, this bit is completely optional.
+		//Once again, this line down is completely optional.
 		
 	}
 	
@@ -68,14 +70,9 @@ public final class RepoCodeStyle
 			this.throwingExample();
 			
 		}
-		catch (Exception e) //Only catch Exception/Throwable, to pack code more compact. However, you can catch different exceptions to make for a cheap instanceof check.
+		catch (Exception e) //Only catch Exception/Throwable, that way there are less imports to fuss with. However, you can catch different exceptions to make for a cheap instanceof check.
 		{
-			GameLog.error(e); //Use GameLog unless you have a good reason.
-			
-		}
-		finally //Don't do this unless you must.
-		{
-			
+			GameLog.error(e); //Use GameLog unless you have a good reason not to.
 			
 		}
 		
@@ -83,10 +80,13 @@ public final class RepoCodeStyle
 	
 	public void countingExample()
 	{
-		for (int c = 0; c < intExample(); c++) //For counters, using the C field is recommended, but it's not mandatory.
-		{//Line downs before the first bracket still apply.
+		/* 
+		 * For counters, using the C field is recommended, but it's not mandatory.
+		 * 
+		 */
+		for (int c = 0; c < intExample(); c++)
+		{
 			this.voidExample();
-			//So do the ones here.
 			
 		}
 		

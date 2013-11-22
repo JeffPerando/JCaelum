@@ -10,7 +10,7 @@ package com.elusivehawk.engine.core;
 public class DirtableStorage<T> implements IDirty
 {
 	protected T obj;
-	protected boolean dirty = true;
+	protected boolean dirty = false;
 	
 	public DirtableStorage(T object)
 	{

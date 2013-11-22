@@ -16,9 +16,12 @@ public final class ReflectionHelper
 	
 	public static Object getField(Class<?> c, String field, Object target)
 	{
+		Object ret = null;
+		
 		try
 		{
-			return c.getDeclaredField(field).get(target);
+			ret = c.getDeclaredField(field).get(target);
+			
 		}
 		catch (Exception e)
 		{
@@ -26,7 +29,7 @@ public final class ReflectionHelper
 			
 		}
 		
-		return null;
+		return ret;
 	}
 	
 	public static Object invokeMethod(Class<?> c, String method, Object target, Object... args)
