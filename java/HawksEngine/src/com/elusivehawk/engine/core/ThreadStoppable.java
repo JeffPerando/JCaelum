@@ -1,7 +1,6 @@
 
 package com.elusivehawk.engine.core;
 
-
 /**
  * 
  * 
@@ -24,12 +23,6 @@ public abstract class ThreadStoppable extends Thread
 		
 	}
 	
-	public ThreadStoppable(Runnable r)
-	{
-		super(r);
-		
-	}
-	
 	@Override
 	public final void run()
 	{
@@ -42,18 +35,14 @@ public abstract class ThreadStoppable extends Thread
 		
 		while (this.isRunning())
 		{
-			if (!this.isPaused())
+			try
 			{
-				try
-				{
-					this.rawUpdate();
-					
-				}
-				catch (Throwable e)
-				{
-					this.handleException(e);
-					
-				}
+				this.rawUpdate(this.isPaused());
+				
+			}
+			catch (Throwable e)
+			{
+				this.handleException(e);
 				
 			}
 			
@@ -78,7 +67,7 @@ public abstract class ThreadStoppable extends Thread
 		return this.paused;
 	}
 	
-	public abstract void rawUpdate();
+	public abstract void rawUpdate(boolean paused);
 	
 	public void onThreadStopped(){}
 	

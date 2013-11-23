@@ -1,62 +1,33 @@
 
 package com.elusivehawk.engine.core;
 
-
 /**
  * 
  * 
  * 
  * @author Elusivehawk
  */
-public class ThreadGameLoop extends ThreadTimed
+public class ThreadGameLoop extends ThreadTimedWrapper
 {
-	private final IGame g;
-	
-	public ThreadGameLoop(IGame game)
+	public ThreadGameLoop(IGame g)
 	{
-		g = game;
+		super(g);
 		
 	}
 	
 	@Override
 	public boolean initiate()
 	{
-		super.initiate();
+		boolean ret = super.initiate();
 		
-		return this.g.initiate();
-	}
-	
-	@Override
-	public void update(double delta)
-	{
-		this.g.update(delta);
+		try
+		{
+			CaelumEngine.instance().startupHook.wait();
+			
+		}
+		catch (Exception e){}
 		
-	}
-	
-	@Override
-	public void onThreadStopped()
-	{
-		this.g.onGameClosed();
-		
-	}
-	
-	@Override
-	public void handleException(Throwable e)
-	{
-		this.g.handleException(e);
-		
-	}
-	
-	@Override
-	public int getTargetUpdateCount()
-	{
-		return this.g.getTargetUpdateCount();
-	}
-	
-	@Override
-	public double getMaxDelta()
-	{
-		return 0.5;
+		return ret;
 	}
 	
 }

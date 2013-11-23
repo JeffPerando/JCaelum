@@ -9,16 +9,8 @@ import com.elusivehawk.engine.render.IRenderHUB;
  * 
  * @author Elusivehawk
  */
-public interface IGame extends IUpdatable
+public interface IGame extends IThreadable
 {
-	public boolean initiate();
-	
-	public void onGameClosed();
-	
-	public void handleException(Throwable e);
-	
-	public int getTargetUpdateCount();
-	
 	public String getLWJGLPath();
 	
 	public IRenderHUB getRenderHUB();

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL10;
+import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.GameLog;
 import com.elusivehawk.engine.core.ThreadStoppable;
 
@@ -19,8 +20,13 @@ public class ThreadSoundPlayer extends ThreadStoppable
 	protected final List<ISound> sounds = new ArrayList<ISound>();
 	
 	@Override
-	public void rawUpdate()
+	public void rawUpdate(boolean paused)
 	{
+		if (paused)
+		{
+			return;
+		}
+		
 		for (ISound s : this.sounds)
 		{
 			if (AL10.alGetSourcei(s.getId(), AL10.AL_SOURCE_STATE) == AL10.AL_STOPPED)
@@ -55,6 +61,13 @@ public class ThreadSoundPlayer extends ThreadStoppable
 			run = false;
 			
 		}
+		
+		try
+		{
+			CaelumEngine.instance().startupHook.wait();
+			
+		}
+		catch (Exception e){}
 		
 		return run;
 	}

@@ -4,6 +4,7 @@ package com.elusivehawk.engine.render;
 import java.util.Collection;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
+import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.GameLog;
 import com.elusivehawk.engine.core.ThreadTimed;
 
@@ -70,11 +71,18 @@ public class ThreadGameRender extends ThreadTimed
 			
 		}
 		
+		try
+		{
+			CaelumEngine.instance().startupHook.wait();
+			
+		}
+		catch (Exception e){}
+		
 		return true;
 	}
 	
 	@Override
-	public void update(double delta)
+	public void update(double delta, boolean paused)
 	{
 		this.hub.update(delta);
 		
