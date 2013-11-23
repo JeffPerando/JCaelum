@@ -59,6 +59,8 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 			{
 				this.sleepTime = 1L;
 				
+				this.updates = 0;
+				
 			}
 			
 		}
