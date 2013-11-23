@@ -50,10 +50,11 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 		
 		if ((this.time + this.delta) >= this.nextTime)
 		{
-			this.nextTime += this.delta;
 			this.updates++;
 			
 			this.update(this.time - this.nextTime, paused);
+			
+			this.nextTime += this.delta;
 			
 			if (this.updates >= this.updateCount)
 			{
