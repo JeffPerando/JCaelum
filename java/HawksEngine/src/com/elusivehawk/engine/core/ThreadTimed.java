@@ -28,6 +28,11 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 	@Override
 	public final void rawUpdate(boolean paused)
 	{
+		if (!this.initiated)
+		{
+			return;
+		}
+		
 		if (this.getTargetUpdateCount() != this.updateCount)
 		{
 			this.nextTime -= this.delta;
@@ -72,12 +77,6 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 			
 		}
 		
-	}
-	
-	@Override
-	public boolean isRunning()
-	{
-		return this.initiated && super.isRunning();
 	}
 	
 	public abstract int getTargetUpdateCount();

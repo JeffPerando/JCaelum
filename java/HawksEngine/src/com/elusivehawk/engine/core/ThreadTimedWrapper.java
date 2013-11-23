@@ -13,11 +13,6 @@ public class ThreadTimedWrapper extends ThreadTimed
 	
 	public ThreadTimedWrapper(IThreadable thr)
 	{
-		if (thr instanceof IGame && !(this instanceof ThreadGameLoop))
-		{
-			throw new RuntimeException("Use ThreadGameLoop instead!");
-		}
-		
 		t = thr;
 		
 	}
