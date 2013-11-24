@@ -82,7 +82,7 @@ public class ThreadGameRender extends ThreadTimed
 	}
 	
 	@Override
-	public void update(double delta, boolean paused)
+	public void update(double delta)
 	{
 		this.hub.update(delta);
 		
@@ -120,36 +120,58 @@ public class ThreadGameRender extends ThreadTimed
 		
 		GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 		
-		for (IRenderEngine engine : engines)
+		int priorityCount = Math.max(this.hub.getHighestPriority(), 1);
+		int renderersUsed = 0;
+		boolean flag = true;
+		
+		for (int p = 0; p < priorityCount && flag; p++)
 		{
-			engine.render(this.hub);
-			
-			int tex = 0, texUnits = GL.glGetInteger(GL.GL_MAX_TEXTURE_UNITS);
-			
-			for (int c = 0; c < texUnits; c++)
+			for (IRenderEngine engine : engines)
 			{
-				tex = GL.glGetInteger(GL.GL_TEXTURE0 + c);
-				
-				if (tex != 0)
+				if (renderersUsed == engines.size())
 				{
-					GL.glBindTexture(GL.GL_TEXTURE0 + c, 0);
+					flag = false;
+					break;
+				}
+				
+				if (engine.getPriority() != p)
+				{
+					continue;
+				}
+				
+				engine.render(this.hub);
+				renderersUsed++;
+				
+				int tex = 0, texUnits = GL.glGetInteger(GL.GL_MAX_TEXTURE_UNITS);
+				
+				for (int c = 0; c < texUnits; c++)
+				{
+					tex = GL.glGetInteger(GL.GL_TEXTURE0 + c);
+					
+					if (tex != 0)
+					{
+						GL.glBindTexture(GL.GL_TEXTURE0 + c, 0);
+						
+					}
+					
+				}
+				
+				try
+				{
+					RenderHelper.checkForGLError();
+					
+				}
+				catch (Exception e)
+				{
+					GameLog.error(e);
 					
 				}
 				
 			}
 			
-			try
-			{
-				RenderHelper.checkForGLError();
-				
-			}
-			catch (Exception e)
-			{
-				GameLog.error(e);
-				
-			}
-			
 		}
+		
+		this.hub.getCamera().postRender(this.hub);
 		
 		Display.sync(this.fps);
 		Display.update(false);

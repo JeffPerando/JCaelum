@@ -26,6 +26,11 @@ public class FileHelper
 	
 	public static FileInputStream createStream(File file)
 	{
+		if (file == null)
+		{
+			return null;
+		}
+		
 		if (!file.exists())
 		{
 			return null;

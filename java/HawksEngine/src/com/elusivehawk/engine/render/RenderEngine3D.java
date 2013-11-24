@@ -112,4 +112,10 @@ public class RenderEngine3D implements IRenderEngine
 		
 	}
 	
+	@Override
+	public int getPriority()
+	{
+		return 0;
+	}
+	
 }

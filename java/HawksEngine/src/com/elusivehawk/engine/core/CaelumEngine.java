@@ -21,6 +21,7 @@ public final class CaelumEngine
 	
 	public final Object startupHook = new Object();
 	public final Object shutdownHook = new Object();
+	private IGame game;
 	private ThreadGameLoop threadCore;
 	private ThreadGameRender threadRender;
 	private ThreadSoundPlayer threadSound;
@@ -32,12 +33,14 @@ public final class CaelumEngine
 		return INSTANCE;
 	}
 	
-	public void start(IGame game)
+	public void start(IGame g)
 	{
-		if (this.threadCore != null)
+		if (this.game != null)
 		{
 			return;
 		}
+		
+		this.game = g;
 		
 		if (System.getProperty("org.lwjgl.librarypath") == null)
 		{
@@ -55,9 +58,9 @@ public final class CaelumEngine
 			
 		}
 		
-		this.threadCore = new ThreadGameLoop(game);
+		this.threadCore = new ThreadGameLoop(this.game);
 		
-		IRenderHUB hub = game.getRenderHUB();
+		IRenderHUB hub = this.game.getRenderHUB();
 		
 		if (hub != null)
 		{
@@ -108,6 +111,11 @@ public final class CaelumEngine
 		//TODO: this only works on Debian... but we'll try it for now.
 		
 		return (EnumOS.OS == EnumOS.LINUX && new File("/usr/lib/jni/liblwjgl.so").exists()) ? "/usr/lib/jni" : FileHelper.createFile("/lwjgl/native/" + EnumOS.OS.toString()).getAbsolutePath();
+	}
+	
+	public IGame getCurrentGame()
+	{
+		return this.game;
 	}
 	
 }

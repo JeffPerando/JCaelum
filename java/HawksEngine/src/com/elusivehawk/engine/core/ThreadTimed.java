@@ -26,7 +26,7 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 	}
 	
 	@Override
-	public final void rawUpdate(boolean paused)
+	public final void rawUpdate()
 	{
 		if (!this.initiated)
 		{
@@ -52,7 +52,7 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 		{
 			this.updates++;
 			
-			this.update(this.time - this.nextTime, paused);
+			this.update(this.time - this.nextTime);
 			
 			this.nextTime += this.delta;
 			

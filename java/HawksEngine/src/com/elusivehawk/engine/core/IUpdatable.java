@@ -9,6 +9,6 @@ package com.elusivehawk.engine.core;
  */
 public interface IUpdatable
 {
-	public void update(double delta, boolean paused);
+	public void update(double delta);
 	
 }

@@ -71,4 +71,10 @@ public class RenderEngine2D implements IRenderEngine
 		
 	}
 	
+	@Override
+	public int getPriority()
+	{
+		return 1;
+	}
+	
 }

@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.render;
 
 import java.util.Collection;
+import com.elusivehawk.engine.core.IUpdatable;
 
 /**
  * 
@@ -9,9 +10,13 @@ import java.util.Collection;
  * 
  * @author Elusivehawk
  */
-public interface IRenderHUB
+public interface IRenderHUB extends IUpdatable
 {
-	public void update(double delta);
+	public EnumRenderMode getRenderMode();
+	
+	public boolean updateDisplay();
+	
+	public DisplaySettings getSettings();
 	
 	public ICamera<?, ?> getCamera();
 	
@@ -19,10 +24,6 @@ public interface IRenderHUB
 	
 	public Collection<IRenderEngine> getRenderEngines();
 	
-	public EnumRenderMode getRenderMode();
-	
-	public boolean updateDisplay();
-	
-	public DisplaySettings getSettings();
+	public int getHighestPriority();
 	
 }

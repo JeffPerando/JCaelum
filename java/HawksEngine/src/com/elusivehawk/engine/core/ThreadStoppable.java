@@ -7,7 +7,7 @@ package com.elusivehawk.engine.core;
  * 
  * @author Elusivehawk
  */
-public abstract class ThreadStoppable extends Thread
+public abstract class ThreadStoppable extends Thread implements IPausable
 {
 	protected boolean running = true, paused = false;
 	
@@ -37,7 +37,7 @@ public abstract class ThreadStoppable extends Thread
 		{
 			try
 			{
-				this.rawUpdate(this.isPaused());
+				this.rawUpdate();
 				
 			}
 			catch (Throwable e)
@@ -62,12 +62,13 @@ public abstract class ThreadStoppable extends Thread
 		return this.running;
 	}
 	
+	@Override
 	public boolean isPaused()
 	{
 		return this.paused;
 	}
 	
-	public abstract void rawUpdate(boolean paused);
+	public abstract void rawUpdate();
 	
 	public void onThreadStopped(){}
 	
@@ -83,6 +84,7 @@ public abstract class ThreadStoppable extends Thread
 		
 	}
 	
+	@Override
 	public synchronized void setPaused(boolean pause)
 	{
 		this.paused = pause;

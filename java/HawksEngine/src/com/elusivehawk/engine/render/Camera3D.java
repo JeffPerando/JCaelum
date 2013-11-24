@@ -58,6 +58,13 @@ public class Camera3D implements ICamera<Vector3f, Vector3f>
 	}
 	
 	@Override
+	public void postRender(IRenderHUB hub)
+	{
+		this.setIsDirty(false);
+		
+	}
+	
+	@Override
 	public void updateUniform(GLProgram p)
 	{
 		if (!this.isDirty())
@@ -80,7 +87,12 @@ public class Camera3D implements ICamera<Vector3f, Vector3f>
 	}
 	
 	@Override
-	public void setIsDirty(boolean dirty){}
+	public void setIsDirty(boolean dirty)
+	{
+		this.angle.setIsDirty(false);
+		this.pos.setIsDirty(false);
+		
+	}
 	
 	@Override
 	public Vector3f getCamRot()

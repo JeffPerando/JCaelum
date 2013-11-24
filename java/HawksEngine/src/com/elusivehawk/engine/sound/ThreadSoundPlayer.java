@@ -20,9 +20,9 @@ public class ThreadSoundPlayer extends ThreadStoppable
 	protected final List<ISound> sounds = new ArrayList<ISound>();
 	
 	@Override
-	public void rawUpdate(boolean paused)
+	public void rawUpdate()
 	{
-		if (paused)
+		if (this.isPaused())
 		{
 			return;
 		}

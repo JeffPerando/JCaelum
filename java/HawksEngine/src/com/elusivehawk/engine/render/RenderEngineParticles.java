@@ -46,4 +46,10 @@ public class RenderEngineParticles implements IRenderEngine
 		
 	}
 	
+	@Override
+	public int getPriority()
+	{
+		return 0;
+	}
+	
 }

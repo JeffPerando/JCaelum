@@ -7,13 +7,9 @@ package com.elusivehawk.engine.core;
  * 
  * @author Elusivehawk
  */
-public interface IThreadable extends IUpdatable
+public interface IThreadable extends IUpdatable, IPausable
 {
 	public boolean initiate();
-	
-	public boolean isPaused();
-	
-	public void setPaused(boolean p);
 	
 	public void onThreadStopped();
 	

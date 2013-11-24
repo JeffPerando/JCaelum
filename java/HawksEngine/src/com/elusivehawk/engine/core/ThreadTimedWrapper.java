@@ -26,9 +26,9 @@ public class ThreadTimedWrapper extends ThreadTimed
 	}
 	
 	@Override
-	public void update(double delta, boolean paused)
+	public void update(double delta)
 	{
-		this.t.update(delta, paused);
+		this.t.update(delta);
 		
 	}
 	

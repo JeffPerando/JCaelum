@@ -11,4 +11,6 @@ public interface IRenderEngine
 {
 	public void render(IRenderHUB hub);
 	
+	public int getPriority();
+	
 }
