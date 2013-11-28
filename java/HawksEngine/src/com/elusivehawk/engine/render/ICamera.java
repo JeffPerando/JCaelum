@@ -2,7 +2,6 @@
 package com.elusivehawk.engine.render;
 
 import com.elusivehawk.engine.core.IDirty;
-import com.elusivehawk.engine.math.IVector;
 
 /**
  * 
@@ -10,7 +9,7 @@ import com.elusivehawk.engine.math.IVector;
  * 
  * @author Elusivehawk
  */
-public interface ICamera<P extends IVector, R extends IVector> extends IDirty
+public interface ICamera extends IDirty
 {
 	public void updateCamera(IRenderHUB hub);
 	
@@ -18,12 +17,8 @@ public interface ICamera<P extends IVector, R extends IVector> extends IDirty
 	
 	public void updateUniform(GLProgram p);
 	
-	public P getCamPos();
+	public float getFloat(EnumCameraPollType pollType);
 	
-	public R getCamRot();
-	
-	public float getZFar();
-	
-	public float getZNear();
+	public boolean setFloat(EnumCameraPollType pollType, float f);
 	
 }

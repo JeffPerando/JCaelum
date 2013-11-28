@@ -68,7 +68,7 @@ public abstract class ThreadStoppable extends Thread implements IPausable
 		return this.paused;
 	}
 	
-	public abstract void rawUpdate();
+	public abstract void rawUpdate() throws Throwable;
 	
 	public void onThreadStopped(){}
 	

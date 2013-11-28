@@ -18,7 +18,7 @@ public interface IRenderHUB extends IUpdatable
 	
 	public DisplaySettings getSettings();
 	
-	public ICamera<?, ?> getCamera();
+	public ICamera getCamera();
 	
 	public IScene getScene();
 	

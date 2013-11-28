@@ -231,4 +231,37 @@ public final class TextParser
 		return ret.toString();
 	}
 	
+	public static String[] splitOnce(String str, char ch)
+	{
+		if (str == null)
+		{
+			return null;
+		}
+		
+		if (!str.contains("" + ch))
+		{
+			return null;
+		}
+		
+		String in = "";
+		char tmp;
+		
+		for (int c = 0; c < str.length() && (tmp = str.charAt(c)) != ch; c++)
+		{
+			in += tmp;
+			
+		}
+		
+		String out = "";
+		
+		for (int c = in.length() + 1; c < str.length(); c++)
+		{
+			out += str.charAt(c);
+			
+		}
+		
+		return new String[]{in, out};
+		
+	}
+	
 }

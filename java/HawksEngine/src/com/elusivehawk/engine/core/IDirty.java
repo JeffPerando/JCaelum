@@ -11,6 +11,6 @@ public interface IDirty
 {
 	public boolean isDirty();
 	
-	public void setIsDirty(boolean dirty);
+	public void setIsDirty(boolean b);
 	
 }

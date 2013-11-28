@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
+import java.util.HashMap;
 import org.lwjgl.input.Mouse;
 import com.elusivehawk.engine.core.BufferHelper;
 import com.elusivehawk.engine.core.DirtableStorage;
@@ -14,16 +15,14 @@ import com.elusivehawk.engine.math.Vector3f;
  * 
  * @author Elusivehawk
  */
-public class Camera3D implements ICamera<Vector3f, Vector3f>
+public class Camera3D implements ICamera
 {
-	private Vector3f angle = new Vector3f();
-	private Vector3f pos = new Vector3f();
+	private HashMap<Integer, Float> stats = new HashMap<Integer, Float>();
 	private DirtableStorage<Boolean> grabMouse = new DirtableStorage<Boolean>(true);
+	private boolean dirty = true;
 	
 	public Camera3D()
 	{
-		angle.setIsDirty(true);
-		pos.setIsDirty(true);
 		grabMouse.setIsDirty(true);
 		
 	}
@@ -51,6 +50,12 @@ public class Camera3D implements ICamera<Vector3f, Vector3f>
 				int x = Mouse.getX();
 				int y = Mouse.getY();
 				
+				if (x > 0 || y > 0)
+				{
+					//TODO Calculate stuff
+					
+				}
+				
 			}
 			
 		}
@@ -72,50 +77,43 @@ public class Camera3D implements ICamera<Vector3f, Vector3f>
 			return;
 		}
 		
-		Matrix camM = MatrixHelper.createHomogenousMatrix(this.angle, new Vector3f(1.0f, 1.0f, 1.0f), null); //TODO Calculate translation
+		Vector3f angle = new Vector3f(this.getFloat(EnumCameraPollType.ROT_X), this.getFloat(EnumCameraPollType.ROT_Y), this.getFloat(EnumCameraPollType.ROT_Y));
+		Vector3f pos = new Vector3f(this.getFloat(EnumCameraPollType.POS_X), this.getFloat(EnumCameraPollType.POS_Y), this.getFloat(EnumCameraPollType.POS_Y));
+		
+		Matrix camM = MatrixHelper.createHomogenousMatrix(angle, new Vector3f(1.0f, 1.0f, 1.0f), pos); //TODO Calculate translation
 		
 		p.attachUniform("cam.m", camM.asBuffer(), GLProgram.EnumUniformType.M_FOUR);
-		p.attachUniform("cam.zFar", BufferHelper.makeFloatBuffer(this.getZFar()), GLProgram.EnumUniformType.ONE);
-		p.attachUniform("cam.zNear", BufferHelper.makeFloatBuffer(this.getZNear()), GLProgram.EnumUniformType.ONE);
+		p.attachUniform("cam.zFar", BufferHelper.makeFloatBuffer(this.getFloat(EnumCameraPollType.Z_FAR)), GLProgram.EnumUniformType.ONE);
+		p.attachUniform("cam.zNear", BufferHelper.makeFloatBuffer(this.getFloat(EnumCameraPollType.Z_FAR)), GLProgram.EnumUniformType.ONE);
 		
 	}
 	
 	@Override
 	public boolean isDirty()
 	{
-		return this.angle.isDirty() || this.pos.isDirty();
+		return this.dirty;
 	}
 	
 	@Override
-	public void setIsDirty(boolean dirty)
+	public void setIsDirty(boolean b)
 	{
-		this.angle.setIsDirty(false);
-		this.pos.setIsDirty(false);
+		this.dirty = b;
+	}
+	
+	@Override
+	public float getFloat(EnumCameraPollType pollType)
+	{
+		return this.stats.get(pollType.ordinal());
+	}
+	
+	@Override
+	public boolean setFloat(EnumCameraPollType pollType, float f)
+	{
+		this.stats.put(pollType.ordinal(), f);
 		
-	}
-	
-	@Override
-	public Vector3f getCamRot()
-	{
-		return angle;
-	}
-	
-	@Override
-	public Vector3f getCamPos()
-	{
-		return pos;
-	}
-	
-	@Override
-	public float getZFar()
-	{
-		return 0;
-	}
-	
-	@Override
-	public float getZNear()
-	{
-		return 0;
+		this.setIsDirty(true);
+		
+		return true;
 	}
 	
 	public void setMouseGrabbed(boolean b)
