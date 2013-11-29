@@ -1,13 +1,6 @@
 
 package com.elusivehawk.meta;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.PrintStream;
-import java.nio.ByteBuffer;
-import org.lwjgl.BufferUtils;
-import com.elusivehawk.engine.core.FileHelper;
 import com.elusivehawk.engine.core.GameLog;
 
 /**
@@ -32,7 +25,7 @@ public class BenchmarkTest
 	public static void main(String[] args)
 	{
 		GameLog.info("Beginning bench testing...");
-		
+		/*
 		File file = FileHelper.createFile(".", "Test_sound3.ogg");
 		File log = FileHelper.createFile(".", "Log.txt");
 		
@@ -98,8 +91,7 @@ public class BenchmarkTest
 			}
 			
 		}
-		
-		
+		*/
 		GameLog.info("Th-th-th-th-That's all, folks!");
 		
 	}
