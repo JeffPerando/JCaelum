@@ -52,7 +52,7 @@ public class GameLog
 	
 	public static void error(String message, Throwable e)
 	{
-		error(message == null ? CRASH_DIALOG.get(rand.nextInt(CRASH_DIALOG.size())) : message);
+		error(message == null ? (CRASH_DIALOG.isEmpty() ? "Error found:" : CRASH_DIALOG.get(rand.nextInt(CRASH_DIALOG.size()))) : message);
 		
 		for (PrintStream ps : EnumLogType.ERROR.out)
 		{
