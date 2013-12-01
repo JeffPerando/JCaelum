@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.core;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -15,6 +16,12 @@ import java.util.ListIterator;
 public class SyncList<T> implements List<T>
 {
 	protected final List<T> l;
+	
+	public SyncList()
+	{
+		this(new ArrayList<T>());
+		
+	}
 	
 	public SyncList(List<T> list)
 	{
