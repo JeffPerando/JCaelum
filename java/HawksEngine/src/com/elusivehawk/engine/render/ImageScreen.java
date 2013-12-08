@@ -29,7 +29,7 @@ public class ImageScreen implements ILogicalRender
 	
 	public ImageScreen(int maxImgs, ITexture texture)
 	{
-		this(new GLProgram(), texture, maxImgs);
+		this(GLProgram.create(null), texture, maxImgs);
 		
 	}
 	
@@ -46,8 +46,6 @@ public class ImageScreen implements ILogicalRender
 		
 		if (p.bind())
 		{
-			p.attachVertexAttribs(new String[]{"in_position", "in_color", "in_texcoord"}, new int[]{0, 1, 2}, false);
-			
 			GL.glVertexAttribPointer(0, 2, false, 0, buf);
 			GL.glVertexAttribPointer(1, 4, false, 2, buf);
 			GL.glVertexAttribPointer(2, 2, false, 6, buf);

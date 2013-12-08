@@ -29,17 +29,12 @@ public class ParticleScene implements ILogicalRender
 		buf = BufferUtils.createFloatBuffer(maxParticles * PARTICLE_FLOAT_COUNT);
 		particleCount = maxParticles;
 		
-		p = new GLProgram(); //TODO Create default particle shaders.
+		p = GLProgram.create(null); //TODO Create default particle shaders.
 		vbo = new VertexBufferObject(GL.GL_ARRAY_BUFFER, buf, GL.GL_STREAM_DRAW);
 		
 		if (p.bind())
 		{
-			p.attachVertexAttribs(new String[]{"in_pos", "in_col"}, new int[]{0, 1}, false);
-			
 			p.attachVBO(vbo, Arrays.asList(0, 1));
-			
-			GL.glVertexAttribPointer(0, 3, false, 0, buf);
-			GL.glVertexAttribPointer(1, 4, false, 3, buf);
 			
 			p.unbind();
 			

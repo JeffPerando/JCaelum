@@ -30,7 +30,7 @@ public class RenderTicket implements IDirty, ILogicalRender
 	
 	public RenderTicket(Model model)
 	{
-		this(new GLProgram(), model);
+		this(GLProgram.create(null), model);
 		
 	}
 	
@@ -38,7 +38,7 @@ public class RenderTicket implements IDirty, ILogicalRender
 	{
 		p = program;
 		m = model;
-		buf = BufferUtils.createFloatBuffer(m.indiceCount * 3);
+		buf = BufferUtils.createFloatBuffer(m.indiceCount.get() * 3);
 		vbo = new VertexBufferObject(GL.GL_VERTEX_ARRAY, this.buf, GL.GL_STREAM_DRAW);
 		
 		p.attachRenderTicket(this);

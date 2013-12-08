@@ -5,11 +5,9 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-import org.lwjgl.BufferUtils;
 import com.elusivehawk.engine.core.GameLog;
 
 /**
@@ -23,16 +21,14 @@ public class GLProgram implements IGLCleanable
 	private final int id, vba;
 	private final int[] shaders;
 	private HashMap<VertexBufferObject, List<Integer>> vbos = new HashMap<VertexBufferObject, List<Integer>>();
-	private HashMap<String, Integer> attribs = new HashMap<String, Integer>();
-	private boolean linkedRecently = false;
 	
-	public GLProgram()
+	private GLProgram()
 	{
 		this(RenderHelper.VERTEX_SHADER_3D, RenderHelper.FRAGMENT_SHADER_3D);
 		
 	}
 	
-	public GLProgram(int... sh)
+	private GLProgram(int... sh)
 	{
 		id = GL.glCreateProgram();
 		
@@ -49,10 +45,29 @@ public class GLProgram implements IGLCleanable
 			
 		}
 		
+		GL.glLinkProgram(this);
+		GL.glValidateProgram(this);
+		
+		try
+		{
+			RenderHelper.checkForGLError();
+			
+		}
+		catch (Exception e)
+		{
+			GameLog.error(e);
+			
+		}
+		
 		shaders = sh;
 		
 		GL.register(this);
 		
+	}
+	
+	public static GLProgram create(int... sh)
+	{
+		return (sh == null || sh.length == 0) ? new GLProgram() : new GLProgram(sh);
 	}
 	
 	public void attachVBO(VertexBufferObject vbo, List<Integer> attribs)
@@ -64,53 +79,46 @@ public class GLProgram implements IGLCleanable
 			return;
 		}
 		
-		List<Integer> valid = new ArrayList<Integer>();
+		List<Integer> valid = new ArrayList<Integer>(attribs);
 		
-		for (int a : attribs)
+		for (Entry<VertexBufferObject, List<Integer>> entry : this.vbos.entrySet())
 		{
-			if (!this.attribs.containsValue(a))
+			for (int a : attribs)
 			{
-				valid.add(a);
+				if (entry.getValue().contains(a))
+				{
+					valid.remove((Integer)a);
+					
+				}
 				
 			}
 			
 		}
 		
-		this.vbos.put(vbo, valid.isEmpty() ? attribs : valid);
+		if (valid.isEmpty())
+		{
+			return;
+		}
+		
+		this.vbos.put(vbo, valid);
 		
 	}
 	
 	public void attachModel(Model m)
 	{
-		this.attachVBO(m.finBuf, Arrays.asList(0, 1, 2));
-		this.attachVBO(m.indiceBuf, null);
-		this.createModelAttribPointers(m.fin);
+		this.attachVBO(m.finBuf.get(), Arrays.asList(0, 1, 2));
+		this.attachVBO(m.indiceBuf.get(), null);
 		
 	}
 	
 	public void attachRenderTicket(RenderTicket tkt)
 	{
 		this.attachModel(tkt.getModel());
-		this.attachVertexAttribs(new String[]{"in_rot", "in_trans", "in_scale"}, new int[]{3, 4, 5}, false);
 		this.attachVBO(tkt.getExtraVBO(), Arrays.asList(3, 4, 5));
 		
 		GL.glVertexAttribPointer(3, 3, false, 0, tkt.getBuffer());
 		GL.glVertexAttribPointer(4, 3, false, 3, tkt.getBuffer());
 		GL.glVertexAttribPointer(5, 3, false, 6, tkt.getBuffer());
-		
-	}
-	
-	public void createModelAttribPointers(FloatBuffer buf)
-	{
-		this.bind();
-		
-		this.attachVertexAttribs(new String[]{"in_position", "in_color", "in_texcoord"}, new int[]{0, 1, 2}, false);
-		
-		GL.glVertexAttribPointer(0, 3, false, GL.VERTEX_OFFSET, buf);
-		GL.glVertexAttribPointer(1, 4, false, GL.COLOR_OFFSET, buf);
-		GL.glVertexAttribPointer(2, 2, false, GL.TEXCOORD_OFFSET, buf);
-		
-		this.unbind();
 		
 	}
 	
@@ -142,73 +150,6 @@ public class GLProgram implements IGLCleanable
 		
 	}
 	
-	public IntBuffer attachVertexAttribs(String[] attribs, int[] loc, boolean retLocs)
-	{
-		if (attribs.length != loc.length)
-		{
-			throw new ArrayIndexOutOfBoundsException("Uneven attribute/location array!");
-		}
-		
-		if (this.linkedRecently)
-		{
-			this.linkedRecently = false;
-			
-		}
-		
-		IntBuffer ret = retLocs ? BufferUtils.createIntBuffer(loc.length) : null;
-		
-		for (int c = 0; c < loc.length; c++)
-		{
-			String attrib = attribs[c];
-			int location = loc[c];
-			
-			if (this.attribs.containsValue(location))
-			{
-				GameLog.warn("Location " + location + " already exists in program " + this.id);
-				continue;
-			}
-			
-			if (this.attribs.containsKey(attrib))
-			{
-				GameLog.warn("Attribute " + attrib + " already exists in program " + this.id);
-				continue;
-			}
-			
-			GL.glBindAttribLocation(this.id, loc[c], attribs[c]);
-			
-			this.attribs.put(attrib, location);
-			
-			if (ret != null)
-			{
-				ret.put(location);
-				
-			}
-			
-		}
-		
-		if (ret != null)
-		{
-			ret.flip();
-			
-		}
-		
-		return ret;
-	}
-	
-	public int getAttrib(String attrib)
-	{
-		for (String a : this.attribs.keySet())
-		{
-			if (a.contains(attrib))
-			{
-				return this.attribs.get(a);
-			}
-			
-		}
-		
-		return 0;
-	}
-	
 	public int getId()
 	{
 		return this.id;
@@ -219,33 +160,8 @@ public class GLProgram implements IGLCleanable
 		return this.shaders;
 	}
 	
-	public void finish()
-	{
-		GL.glLinkProgram(this);
-		GL.glValidateProgram(this);
-		
-		try
-		{
-			RenderHelper.checkForGLError();
-			
-			this.linkedRecently = true;
-			
-		}
-		catch (Exception e)
-		{
-			GameLog.error(e);
-			
-		}
-		
-	}
-	
 	public boolean bind()
 	{
-		if (!this.linkedRecently)
-		{
-			return false;
-		}
-		
 		if (!this.bind0())
 		{
 			this.unbind();
@@ -340,11 +256,6 @@ public class GLProgram implements IGLCleanable
 		
 		GL.glDeleteProgram(this);
 		
-	}
-	
-	public Collection<Integer> getVertexAttribs()
-	{
-		return this.attribs.values();
 	}
 	
 	private static interface IUniformType

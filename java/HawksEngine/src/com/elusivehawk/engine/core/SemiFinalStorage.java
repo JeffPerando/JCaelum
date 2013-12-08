@@ -12,6 +12,7 @@ public class SemiFinalStorage<T>
 	protected T obj;
 	protected final int maxChanges;
 	protected int count = 0;
+	protected final IStorageListener<T> lis;
 	
 	public SemiFinalStorage(T object)
 	{
@@ -20,14 +21,32 @@ public class SemiFinalStorage<T>
 	
 	public SemiFinalStorage(T object, int changeCount)
 	{
+		this(object, changeCount, null);
+		
+	}
+	
+	public SemiFinalStorage(T object, IStorageListener<T> listener)
+	{
+		this(object, 1, listener);
+		
+	}
+	
+	public SemiFinalStorage(T object, int changeCount, IStorageListener<T> listener)
+	{
 		obj = object;
 		maxChanges = Math.max(changeCount, 1);
+		lis = listener;
 		
 	}
 	
 	public boolean modify(T object)
 	{
 		if (this.locked())
+		{
+			return false;
+		}
+		
+		if (this.lis != null && !this.lis.canChange(this))
 		{
 			return false;
 		}
@@ -50,6 +69,12 @@ public class SemiFinalStorage<T>
 	public int getChangeCount()
 	{
 		return this.count;
+	}
+	
+	public static interface IStorageListener<T>
+	{
+		public boolean canChange(SemiFinalStorage<T> stor);
+		
 	}
 	
 }

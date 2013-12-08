@@ -1,7 +1,7 @@
-#version 110
+#version 330
 
-in vec3 in_position;
-in vec4 in_color;
+(location = 0) in vec3 in_position;
+(location = 1) in vec4 in_color;
 
 out vec4 frag_color;
 

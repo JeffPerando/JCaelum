@@ -9,7 +9,13 @@ import java.util.ListIterator;
 
 /**
  * 
- * 
+ * A list created specifically for multithreaded programming.
+ * <p>
+ * Take note that:
+ * <br>This only synchronizes the {@link List} it's been given; It does *NOT* act as a double bufferer.
+ * <br>You can iterate through this list at any point in time; The iterator is specifically built for it.
+ * <br>If you don't have a {@link List}, it will use a new {@link ArrayList}.
+ * <br>Unlike {@link Vector}, only the methods that modify the backed {@link List} are synchronized. This includes iterating.
  * 
  * @author Elusivehawk
  */
@@ -211,25 +217,25 @@ public class SyncList<T> implements List<T>
 		@Override
 		public T next()
 		{
-			return this.l.get(this.nextIndex());
+			return this.l.get(this.i++);
 		}
 		
 		@Override
 		public int nextIndex()
 		{
-			return this.i++;
+			return this.i + 1;
 		}
 		
 		@Override
 		public T previous()
 		{
-			return this.l.get(this.previousIndex());
+			return this.l.get(--this.i);
 		}
 		
 		@Override
 		public int previousIndex()
 		{
-			return --this.i;
+			return this.i - 1;
 		}
 		
 		@Override
