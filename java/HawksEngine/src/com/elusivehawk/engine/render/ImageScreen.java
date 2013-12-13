@@ -33,6 +33,7 @@ public class ImageScreen implements ILogicalRender
 		
 	}
 	
+	@SuppressWarnings("unqualified-field-access")
 	public ImageScreen(GLProgram program, ITexture texture, int maxImgs)
 	{
 		p = program;
@@ -76,7 +77,7 @@ public class ImageScreen implements ILogicalRender
 		info.pos.one = xPos;
 		info.pos.two = yPos;
 		
-		FloatBuffer img = this.generateImgBuffer(info);
+		FloatBuffer img = generateImgBuffer(info);
 		
 		this.buf.position(position * IMG_FLOAT_COUNT);
 		this.buf.put(img);
@@ -151,7 +152,7 @@ public class ImageScreen implements ILogicalRender
 			}
 			else if (mgr.updateImagePosition(c, info))
 			{
-				FloatBuffer img = this.generateImgBuffer(info);
+				FloatBuffer img = generateImgBuffer(info);
 				
 				this.buf.position(c * IMG_FLOAT_COUNT);
 				this.buf.put(img);
@@ -165,7 +166,28 @@ public class ImageScreen implements ILogicalRender
 		return !this.data.isEmpty();
 	}
 	
-	public FloatBuffer generateImgBuffer(ImageData info)
+	public ImageData getImg(int index)
+	{
+		return this.data.get(index);
+	}
+	
+	public int getImgCount()
+	{
+		return this.data.size();
+	}
+	
+	@Override
+	public GLProgram getProgram()
+	{
+		return this.p;
+	}
+	
+	public ITexture getTexture()
+	{
+		return this.tex;
+	}
+	
+	public static FloatBuffer generateImgBuffer(ImageData info)
 	{
 		FloatBuffer ret = BufferUtils.createFloatBuffer(IMG_FLOAT_COUNT);
 		
@@ -196,27 +218,6 @@ public class ImageScreen implements ILogicalRender
 		ret.flip();
 		
 		return ret;
-	}
-	
-	public ImageData getImg(int index)
-	{
-		return this.data.get(index);
-	}
-	
-	public int getImgCount()
-	{
-		return this.data.size();
-	}
-	
-	@Override
-	public GLProgram getProgram()
-	{
-		return this.p;
-	}
-	
-	public ITexture getTexture()
-	{
-		return this.tex;
 	}
 	
 }

@@ -4,8 +4,6 @@ package com.elusivehawk.engine.render;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
@@ -13,6 +11,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.glu.GLU;
+import com.elusivehawk.engine.core.Buffer;
 import com.elusivehawk.engine.core.FileHelper;
 import com.elusivehawk.engine.core.GameLog;
 import com.elusivehawk.engine.core.TextParser;
@@ -30,7 +29,7 @@ public final class RenderHelper
 	
 	private RenderHelper(){}
 	
-	public static IntBuffer processGifFile(File gif, EnumRenderMode mode, EnumColorFormat format)
+	public static Buffer<Integer> processGifFile(File gif, EnumRenderMode mode, EnumColorFormat format)
 	{
 		if (!mode.isValidImageMode() || !isContextCurrent())
 		{
@@ -47,7 +46,7 @@ public final class RenderHelper
 				
 				int max = reader.getNumImages(true);
 				
-				IntBuffer ret = BufferUtils.createIntBuffer(max);
+				Buffer<Integer> ret = new Buffer<Integer>();
 				
 				for (int c = 0; c < max; c++)
 				{
@@ -211,9 +210,9 @@ public final class RenderHelper
 		
 	}
 	
-	public static FloatBuffer mixColors(Color a, Color b)
+	public static Buffer<Float> mixColors(Color a, Color b)
 	{
-		FloatBuffer ret = BufferUtils.createFloatBuffer(4);
+		Buffer<Float> ret = new Buffer<Float>();
 		
 		for (EnumColorFilter col : EnumColorFilter.values())
 		{
@@ -221,21 +220,25 @@ public final class RenderHelper
 			
 		}
 		
-		ret.flip();
+		ret.rewind();
 		
 		return ret;
 	}
 	
-	public static IntBuffer createVBOs(int count)
+	public static int[] createVBOs(int count)
 	{
 		if (!isContextCurrent())
 		{
-			return BufferUtils.createIntBuffer(1);
+			return null;
 		}
 		
-		IntBuffer ret = BufferUtils.createIntBuffer(count);
-		GL.glGenBuffers(ret);
-		ret.rewind(); //Just a safety precaution.
+		int[] ret = new int[count];
+		
+		for (int c = 0; c < count; c++)
+		{
+			ret[c] = GL.glGenBuffers();
+			
+		}
 		
 		return ret;
 	}

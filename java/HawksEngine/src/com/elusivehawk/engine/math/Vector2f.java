@@ -23,6 +23,7 @@ public class Vector2f implements IVector
 		
 	}
 	
+	@SuppressWarnings("unqualified-field-access")
 	public Vector2f(float a, float b)
 	{
 		x = a;
@@ -36,6 +37,7 @@ public class Vector2f implements IVector
 		
 	}
 	
+	@SuppressWarnings("unqualified-field-access")
 	public Vector2f(FloatBuffer buf)
 	{
 		x = buf.get();

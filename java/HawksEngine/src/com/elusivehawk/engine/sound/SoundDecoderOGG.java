@@ -26,6 +26,7 @@ public class SoundDecoderOGG implements ISoundDecoder
 		return 0;
 	}
 	
+	@SuppressWarnings("static-method")
 	public OggPage[] decode(File file)
 	{
 		FileInputStream fis = null;
@@ -238,6 +239,7 @@ public class SoundDecoderOGG implements ISoundDecoder
 		public final ByteBuffer data;
 		public final EnumOGGHeaderType type;
 		
+		@SuppressWarnings("unqualified-field-access")
 		OggPage(ByteBuffer info, EnumOGGHeaderType t)
 		{
 			data = info;

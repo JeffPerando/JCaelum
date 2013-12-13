@@ -24,6 +24,7 @@ public class ParticleScene implements ILogicalRender
 	protected final int particleCount;
 	protected final GLProgram p;
 	
+	@SuppressWarnings("unqualified-field-access")
 	public ParticleScene(int maxParticles)
 	{
 		buf = BufferUtils.createFloatBuffer(maxParticles * PARTICLE_FLOAT_COUNT);

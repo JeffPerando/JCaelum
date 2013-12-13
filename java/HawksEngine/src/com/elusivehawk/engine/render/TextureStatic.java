@@ -15,6 +15,7 @@ public class TextureStatic implements ITexture
 {
 	protected final int tex;
 	
+	@SuppressWarnings("unqualified-field-access")
 	public TextureStatic(int texture)
 	{
 		tex = texture;
@@ -50,12 +51,12 @@ public class TextureStatic implements ITexture
 	@Override
 	public void glDelete()
 	{
-		GL.glDeleteTextures(this.getTexture());
+		GL.glDeleteTextures(this.getTexture(true));
 		
 	}
 	
 	@Override
-	public int getTexture()
+	public int getTexture(boolean next)
 	{
 		return this.tex;
 	}

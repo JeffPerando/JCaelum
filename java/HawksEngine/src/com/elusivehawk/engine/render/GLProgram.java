@@ -28,6 +28,7 @@ public class GLProgram implements IGLCleanable
 		
 	}
 	
+	@SuppressWarnings("unqualified-field-access")
 	private GLProgram(int... sh)
 	{
 		id = GL.glCreateProgram();

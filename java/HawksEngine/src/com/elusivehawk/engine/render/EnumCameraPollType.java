@@ -9,15 +9,24 @@ package com.elusivehawk.engine.render;
  */
 public enum EnumCameraPollType
 {
-	POS_X,
-	POS_Y,
-	POS_Z,
-	ROT_X,
-	ROT_Y,
-	ROT_Z,
-	FOV,
-	ASPECT_RATIO,
-	Z_FAR,
-	Z_NEAR;
+	POS_X(false),
+	POS_Y(false),
+	POS_Z(true),
+	ROT_X(true),
+	ROT_Y(true),
+	ROT_Z(true),
+	FOV(false),
+	ASPECT_RATIO(true),
+	Z_FAR(true),
+	Z_NEAR(true);
+	
+	public final boolean is3DOnly;
+	
+	@SuppressWarnings("unqualified-field-access")
+	EnumCameraPollType(boolean is3d)
+	{
+		is3DOnly = is3d;
+		
+	}
 	
 }

@@ -3,6 +3,7 @@ package com.elusivehawk.engine.core;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 
 /**
  * 
@@ -24,19 +25,19 @@ public class FileHelper
 		return new File(src.replace("/", FILE_SEP), path.replace("/", FILE_SEP));
 	}
 	
-	public static FileInputStream createStream(File file)
+	public static FileInputStream createInStream(File file)
 	{
 		if (file == null)
 		{
 			return null;
 		}
 		
-		if (!file.exists())
+		if (file.isDirectory())
 		{
 			return null;
 		}
 		
-		if (file.isDirectory())
+		if (!file.exists())
 		{
 			return null;
 		}
@@ -51,6 +52,52 @@ public class FileHelper
 		try
 		{
 			ret = new FileInputStream(file);
+			
+		}
+		catch (Exception e){}
+		
+		return ret;
+	}
+	
+	public static FileOutputStream createOutStream(File file, boolean create)
+	{
+		if (file == null)
+		{
+			return null;
+		}
+		
+		if (file.isDirectory())
+		{
+			return null;
+		}
+		
+		if (!file.exists() && create)
+		{
+			try
+			{
+				if (!file.createNewFile())
+				{
+					return null;
+				}
+				
+			}
+			catch (Exception e)
+			{
+				return null;
+			}
+			
+		}
+		
+		if (!file.canWrite())
+		{
+			return null;
+		}
+		
+		FileOutputStream ret = null;
+		
+		try
+		{
+			ret = new FileOutputStream(file);
 			
 		}
 		catch (Exception e){}

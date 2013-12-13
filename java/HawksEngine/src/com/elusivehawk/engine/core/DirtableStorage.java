@@ -12,6 +12,7 @@ public class DirtableStorage<T> implements IDirty
 	protected T obj;
 	protected boolean dirty = false;
 	
+	@SuppressWarnings("unqualified-field-access")
 	public DirtableStorage(T object)
 	{
 		obj = object;

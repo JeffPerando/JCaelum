@@ -41,7 +41,7 @@ public class RenderEngine2D implements IRenderEngine
 				continue;
 			}
 			
-			tex = imgScene.getTexture().getTexture();
+			tex = imgScene.getTexture().getTexture(true);
 			
 			if (currTex != tex)
 			{
@@ -72,9 +72,9 @@ public class RenderEngine2D implements IRenderEngine
 	}
 	
 	@Override
-	public int getPriority()
+	public int getPriority(IRenderHUB hub)
 	{
-		return 1;
+		return hub.getRenderMode().is3D() ? 1 : 0;
 	}
 	
 }

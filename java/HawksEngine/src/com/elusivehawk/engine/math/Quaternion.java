@@ -23,6 +23,7 @@ public class Quaternion
 		
 	}
 	
+	@SuppressWarnings("unqualified-field-access")
 	public Quaternion(float angle, Vector3f vec)
 	{
 		float s = (float)Math.sin(angle / 2);
@@ -148,10 +149,10 @@ public class Quaternion
 	
 	public Quaternion mul(Quaternion q)
 	{
-		float xx = w * q.x + x * q.w + y * q.z - z * q.y;
-		float yy = w * q.y + y * q.w + z * q.x - x * q.z;
-		float zz = w * q.z + z * q.w + x * q.y - y * q.x;
-		float ww = w * q.w - x * q.x - y * q.y - z * q.z;
+		float xx = this.w * q.x + this.x * q.w + this.y * q.z - this.z * q.y;
+		float yy = this.w * q.y + this.y * q.w + this.z * q.x - this.x * q.z;
+		float zz = this.w * q.z + this.z * q.w + this.x * q.y - this.y * q.x;
+		float ww = this.w * q.w - this.x * q.x - this.y * q.y - this.z * q.z;
 		
 		this.x = xx;
 		this.y = yy;
@@ -178,9 +179,9 @@ public class Quaternion
 	public Matrix toMatrix()
 	{
 		float[] m = {
-				1 - 2 * y * y - 2 * z * z, 2 * x * y + 2 * w * z, 2 * x * z - 2 * w * y, 0,
-				2 * x * y - 2 * w * z, 1 - 2 * x * x - 2 * z * z, 2 * y * z + 2 * w * x, 0,
-				2 * x * z + 2 * w * y, 2 * y * z - 2 * w * x, 1 - 2 * x * x - 2 * y * y, 0,
+				1 - 2 * this.y * this.y - 2 * this.z * this.z, 2 * this.x * this.y + 2 * this.w * this.z, 2 * this.x * this.z - 2 * this.w * this.y, 0,
+				2 * this.x * this.y - 2 * this.w * this.z, 1 - 2 * this.x * this.x - 2 * this.z * this.z, 2 * this.y * this.z + 2 * this.w * this.x, 0,
+				2 * this.x * this.z + 2 * this.w * this.y, 2 * this.y * this.z - 2 * this.w * this.x, 1 - 2 * this.x * this.x - 2 * this.y * this.y, 0,
 				0, 0, 0, 1,
 		};
 		

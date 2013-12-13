@@ -4,7 +4,7 @@ package com.elusivehawk.engine.render;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import com.elusivehawk.engine.core.BufferHelper;
+import com.elusivehawk.engine.core.Buffer;
 import com.elusivehawk.engine.core.IStoreable;
 
 /**
@@ -18,12 +18,14 @@ public class Color implements IStoreable
 	protected int color = 0;
 	public final EnumColorFormat format;
 	
+	@SuppressWarnings("unqualified-field-access")
 	public Color(EnumColorFormat f)
 	{
 		format = f;
 		
 	}
 	
+	@SuppressWarnings("unqualified-field-access")
 	public Color(EnumColorFormat f, int col)
 	{
 		this(f);
@@ -40,16 +42,17 @@ public class Color implements IStoreable
 	
 	public Color(EnumColorFormat f, int a, int b, int c, int d)
 	{
-		this(f, new byte[]{(byte)a, (byte)b, (byte)c, (byte)d});
+		this(f, new Byte[]{(byte)a, (byte)b, (byte)c, (byte)d});
 		
 	}
 	
-	public Color(EnumColorFormat f, byte... cols)
+	public Color(EnumColorFormat f, Byte... cols)
 	{
-		this(f, BufferHelper.makeByteBuffer(cols));
+		this(f, new Buffer<Byte>(cols));
 		
 	}
 	
+	@SuppressWarnings("unqualified-field-access")
 	public Color(EnumColorFormat f, ByteBuffer buf)
 	{
 		this(f);
@@ -57,6 +60,19 @@ public class Color implements IStoreable
 		for (EnumColorFilter col : f.colors)
 		{
 			color = (color << f.getColorOffset(col)) | buf.get();
+			
+		}
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public Color(EnumColorFormat f, Buffer<Byte> buf)
+	{
+		this(f);
+		
+		for (EnumColorFilter col : f.colors)
+		{
+			color = (color << f.getColorOffset(col)) | buf.next();
 			
 		}
 		

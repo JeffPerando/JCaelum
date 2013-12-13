@@ -14,6 +14,7 @@ public class LegibleBufferedImage implements ILegibleImage
 	protected final BufferedImage img;
 	protected final EnumColorFormat format;
 	
+	@SuppressWarnings("unqualified-field-access")
 	public LegibleBufferedImage(BufferedImage image)
 	{
 		img = image;

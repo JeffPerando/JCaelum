@@ -11,6 +11,7 @@ import com.elusivehawk.engine.core.GameLog;//Note: No "organizing" imports, or m
  * 
  * @author Elusivehawk
  */
+@SuppressWarnings("static-method")
 public final class RepoCodeStyle
 {
 	private RepoCodeStyle(){}//See these brackets? They denote that this isn't being used, or is simply here to change the visibility of the constructor or method.

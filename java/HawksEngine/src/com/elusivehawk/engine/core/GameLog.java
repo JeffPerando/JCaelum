@@ -101,6 +101,7 @@ public class GameLog
 		List<PrintStream> out = new ArrayList<PrintStream>();
 		final boolean verbose;
 		
+		@SuppressWarnings("unqualified-field-access")
 		EnumLogType(PrintStream ps, boolean isVerbose)
 		{
 			out.add(ps);

@@ -16,6 +16,7 @@ public enum EnumRenderMode
 	
 	private int glMode;
 	
+	@SuppressWarnings("unqualified-field-access")
 	EnumRenderMode(int gl)
 	{
 		glMode = gl;

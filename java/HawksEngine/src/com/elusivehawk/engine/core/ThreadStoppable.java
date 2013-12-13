@@ -7,6 +7,7 @@ package com.elusivehawk.engine.core;
  * 
  * @author Elusivehawk
  */
+@SuppressWarnings("static-method")
 public abstract class ThreadStoppable extends Thread implements IPausable
 {
 	protected boolean running = true, paused = false;

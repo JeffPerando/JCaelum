@@ -47,7 +47,7 @@ public class RenderEngineParticles implements IRenderEngine
 	}
 	
 	@Override
-	public int getPriority()
+	public int getPriority(IRenderHUB hub)
 	{
 		return 0;
 	}

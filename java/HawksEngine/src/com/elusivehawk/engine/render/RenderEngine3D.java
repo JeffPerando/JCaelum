@@ -75,7 +75,7 @@ public class RenderEngine3D implements IRenderEngine
 					continue;
 				}
 				
-				tex = tkt.getTexture().getTexture();
+				tex = tkt.getTexture().getTexture(true);
 				
 				if (currTex != tex)
 				{
@@ -113,7 +113,7 @@ public class RenderEngine3D implements IRenderEngine
 	}
 	
 	@Override
-	public int getPriority()
+	public int getPriority(IRenderHUB hub)
 	{
 		return 0;
 	}

@@ -3,7 +3,6 @@ package com.elusivehawk.engine.render;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import com.elusivehawk.engine.core.GameLog;
 
 /**
  * 
@@ -15,18 +14,11 @@ public class VertexBufferObject implements IGLCleanable
 {
 	public final int id, t, loadMode;
 	
+	@SuppressWarnings("unqualified-field-access")
 	private VertexBufferObject(int vbo, int target, int mode)
 	{
-		if (!GL.glIsBuffer(vbo))
-		{
-			GameLog.warn("VBO ID isn't valid: " + vbo + ", rectifying...");
-			
-			vbo = GL.glGenBuffers();
-			
-		}
-		
 		t = target;
-		id = vbo;
+		id = GL.glIsBuffer(vbo) ? vbo : GL.glGenBuffers();
 		loadMode = mode;
 		
 		GL.register(this);

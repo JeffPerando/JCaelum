@@ -3,9 +3,8 @@ package com.elusivehawk.engine.render;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.nio.IntBuffer;
 import javax.imageio.ImageIO;
-import org.lwjgl.BufferUtils;
+import com.elusivehawk.engine.core.Buffer;
 import com.elusivehawk.engine.core.GameLog;
 
 /**
@@ -16,8 +15,9 @@ import com.elusivehawk.engine.core.GameLog;
  */
 public class TextureAnimated implements ITexture
 {
-	private final IntBuffer tex;
+	private final Buffer<Integer> tex;
 	
+	@SuppressWarnings("unqualified-field-access")
 	public TextureAnimated(File gif, EnumRenderMode mode, EnumColorFormat format)
 	{
 		tex = RenderHelper.processGifFile(gif, mode, format);
@@ -26,6 +26,7 @@ public class TextureAnimated implements ITexture
 		
 	}
 	
+	@SuppressWarnings("unqualified-field-access")
 	public TextureAnimated(File file, EnumRenderMode mode, EnumColorFormat format, int y)
 	{
 		if (file.getName().endsWith(".gif"))
@@ -48,7 +49,7 @@ public class TextureAnimated implements ITexture
 		
 		if (img == null)
 		{
-			tex = BufferUtils.createIntBuffer(1);
+			tex = new Buffer<Integer>();
 			
 		}
 		else
@@ -58,7 +59,7 @@ public class TextureAnimated implements ITexture
 				throw new RuntimeException("Image is not fit for animating!");
 			}
 			
-			tex = BufferUtils.createIntBuffer(img.getHeight() / y);
+			tex = new Buffer<Integer>();
 			
 			for (int c = 0; c < img.getHeight(); c += y)
 			{
@@ -79,12 +80,16 @@ public class TextureAnimated implements ITexture
 	{
 		this.tex.rewind();
 		
-		GL.glDeleteTextures(this.tex);
+		for (int i : this.tex)
+		{
+			GL.glDeleteTextures(i);
+			
+		}
 		
 	}
 	
 	@Override
-	public int getTexture()
+	public int getTexture(boolean next)
 	{
 		if (this.tex.remaining() == 0)
 		{
@@ -92,7 +97,7 @@ public class TextureAnimated implements ITexture
 			
 		}
 		
-		return this.tex.get();
+		return this.tex.next(next);
 	}
 	
 	@Override

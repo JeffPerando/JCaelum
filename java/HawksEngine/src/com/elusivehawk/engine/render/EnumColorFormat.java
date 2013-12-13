@@ -1,8 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
-import java.nio.ByteBuffer;
-import org.lwjgl.BufferUtils;
+import com.elusivehawk.engine.core.Buffer;
 
 /**
  * 
@@ -20,6 +19,7 @@ public enum EnumColorFormat
 	public final EnumColorFilter[] colors;
 	public final boolean alpha;
 	
+	@SuppressWarnings("unqualified-field-access")
 	EnumColorFormat(EnumColorFilter... f)
 	{
 		colors = f;
@@ -61,7 +61,7 @@ public enum EnumColorFormat
 			return old;
 		}
 		
-		ByteBuffer buf = BufferUtils.createByteBuffer(this.colors.length);
+		Buffer<Byte> buf = new Buffer<Byte>();
 		
 		for (EnumColorFilter col : this.colors)
 		{

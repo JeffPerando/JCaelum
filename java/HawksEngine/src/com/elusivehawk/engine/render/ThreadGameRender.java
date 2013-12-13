@@ -19,9 +19,10 @@ public class ThreadGameRender extends ThreadTimed
 	protected final IRenderHUB hub;
 	protected int fps;
 	
-	public ThreadGameRender(IRenderHUB renderHub)
+	@SuppressWarnings("unqualified-field-access")
+	public ThreadGameRender(IRenderHUB rhub)
 	{
-		hub = renderHub;
+		hub = rhub;
 		
 		System.setProperty("org.lwjgl.opengl.Display.noinput", "true");
 		
@@ -134,7 +135,7 @@ public class ThreadGameRender extends ThreadTimed
 					break;
 				}
 				
-				if (engine.getPriority() != p)
+				if (engine.getPriority(this.hub) != p)
 				{
 					continue;
 				}

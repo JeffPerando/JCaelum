@@ -24,6 +24,7 @@ public class ImageData
 		
 	}
 	
+	@SuppressWarnings("unqualified-field-access")
 	public ImageData(int w, int h, IExtraImageData manager)
 	{
 		width = w;

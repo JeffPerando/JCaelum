@@ -1,7 +1,6 @@
 
 package com.elusivehawk.engine.render;
 
-import java.util.HashMap;
 import org.lwjgl.input.Mouse;
 import com.elusivehawk.engine.core.BufferHelper;
 import com.elusivehawk.engine.core.DirtableStorage;
@@ -17,10 +16,11 @@ import com.elusivehawk.engine.math.Vector3f;
  */
 public class Camera3D implements ICamera
 {
-	private HashMap<Integer, Float> stats = new HashMap<Integer, Float>();
+	private float[] stats = new float[EnumCameraPollType.values().length];
 	private DirtableStorage<Boolean> grabMouse = new DirtableStorage<Boolean>(true);
 	private boolean dirty = true;
 	
+	@SuppressWarnings("unqualified-field-access")
 	public Camera3D()
 	{
 		grabMouse.setIsDirty(true);
@@ -103,13 +103,13 @@ public class Camera3D implements ICamera
 	@Override
 	public float getFloat(EnumCameraPollType pollType)
 	{
-		return this.stats.get(pollType.ordinal());
+		return this.stats[pollType.ordinal()];
 	}
 	
 	@Override
 	public boolean setFloat(EnumCameraPollType pollType, float f)
 	{
-		this.stats.put(pollType.ordinal(), f);
+		this.stats[pollType.ordinal()] = f;
 		
 		this.setIsDirty(true);
 		

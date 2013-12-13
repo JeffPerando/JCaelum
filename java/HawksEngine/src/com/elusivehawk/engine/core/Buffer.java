@@ -12,7 +12,7 @@ import java.util.List;
  * 
  * @author Elusivehawk
  */
-public class Buffer<T> implements IDirty, Iterator<T>
+public class Buffer<T> implements IDirty, Iterable<T>, Iterator<T>
 {
 	protected final List<T> l;
 	protected final List<Boolean> dirt = new ArrayList<Boolean>();
@@ -31,6 +31,7 @@ public class Buffer<T> implements IDirty, Iterator<T>
 		
 	}
 	
+	@SuppressWarnings("unqualified-field-access")
 	public Buffer(List<T> list)
 	{
 		l = list;
@@ -40,13 +41,18 @@ public class Buffer<T> implements IDirty, Iterator<T>
 	@Override
 	public boolean hasNext()
 	{
-		return this.pos < this.l.size();
+		return this.remaining() > 0;
 	}
 	
 	@Override
 	public T next()
 	{
-		return this.hasNext() ? this.l.get(this.pos++) : null;
+		return this.next(true);
+	}
+	
+	public T next(boolean next)
+	{
+		return this.hasNext() ? (this.l.get(next ? this.pos++ : this.pos + 1)) : null;
 	}
 	
 	@Override
@@ -57,15 +63,21 @@ public class Buffer<T> implements IDirty, Iterator<T>
 		
 	}
 	
-	public T previewNext()
+	public void put(T obj)
 	{
-		return this.hasNext() ? this.l.get(this.pos + 1) : null;
+		this.dirt.set(this.pos, true);
+		this.l.set(this.pos++, obj);
+		
 	}
 	
-	public void add(T obj)
+	@SuppressWarnings("unchecked")
+	public void put(T... objs)
 	{
-		this.dirt.add(this.pos, true);
-		this.l.add(this.pos++, obj);
+		for (T obj : objs)
+		{
+			this.put(obj);
+			
+		}
 		
 	}
 	
@@ -92,10 +104,20 @@ public class Buffer<T> implements IDirty, Iterator<T>
 		
 	}
 	
+	public int remaining()
+	{
+		return this.l.size() - this.pos;
+	}
+	
 	public void rewind()
 	{
 		this.pos = this.mark;
 		
+	}
+	
+	public int size()
+	{
+		return this.l.size();
 	}
 	
 	public boolean isDirty(int i)
@@ -114,6 +136,12 @@ public class Buffer<T> implements IDirty, Iterator<T>
 	{
 		this.dirt.add(this.pos, b);
 		
+	}
+	
+	@Override
+	public Iterator<T> iterator()
+	{
+		return this;
 	}
 	
 }

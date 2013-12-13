@@ -6,6 +6,7 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import com.elusivehawk.engine.core.Buffer;
 import com.elusivehawk.engine.core.BufferHelper;
 import com.elusivehawk.engine.core.GameLog;
 import com.elusivehawk.engine.core.SemiFinalStorage;
@@ -73,8 +74,8 @@ public class Model implements IStorageListener
 			
 			if (index == -1)
 			{
-				Color col = color.get(c);
-				Vector2f tex = texOffs.get(c);
+				Color col = this.color.get(c);
+				Vector2f tex = this.texOffs.get(c);
 				
 				index = vecs.size();
 				vecs.add(vec);
@@ -93,11 +94,11 @@ public class Model implements IStorageListener
 				}
 				else
 				{
-					FloatBuffer mixed = RenderHelper.mixColors(col, this.globalColor);
+					Buffer<Float> mixed = RenderHelper.mixColors(col, this.globalColor);
 					
-					while (mixed.remaining() != 0)
+					for (float f : mixed)
 					{
-						temp.add(mixed.get());
+						temp.add(f);
 						
 					}
 					
@@ -124,10 +125,10 @@ public class Model implements IStorageListener
 			
 		}
 		
-		IntBuffer vbos = RenderHelper.createVBOs(2);
+		int[] vbos = RenderHelper.createVBOs(2);
 		
-		this.finBuf.modify(new VertexBufferObject(vbos.get(), GL.GL_ARRAY_BUFFER, fin, GL.GL_STATIC_DRAW));
-		this.indiceBuf.modify(new VertexBufferObject(vbos.get(), GL.GL_ELEMENT_ARRAY_BUFFER, indices, GL.GL_STATIC_DRAW));
+		this.finBuf.modify(new VertexBufferObject(vbos[0], GL.GL_ARRAY_BUFFER, fin, GL.GL_STATIC_DRAW));
+		this.indiceBuf.modify(new VertexBufferObject(vbos[1], GL.GL_ELEMENT_ARRAY_BUFFER, indices, GL.GL_STATIC_DRAW));
 		
 		if (vb != 0)
 		{
@@ -300,10 +301,15 @@ public class Model implements IStorageListener
 		return this.arrays;
 	}
 	
+	public boolean isFinished()
+	{
+		return this.finished;
+	}
+	
 	@Override
 	public boolean canChange(SemiFinalStorage stor)
 	{
-		return this.finished;
+		return this.isFinished();
 	}
 	
 }

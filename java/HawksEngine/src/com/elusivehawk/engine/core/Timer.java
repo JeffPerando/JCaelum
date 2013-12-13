@@ -19,6 +19,7 @@ public class Timer
 		
 	}
 	
+	@SuppressWarnings("unqualified-field-access")
 	public Timer(boolean nano)
 	{
 		nanoTime = nano;

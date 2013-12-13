@@ -29,6 +29,7 @@ public class SyncList<T> implements List<T>
 		
 	}
 	
+	@SuppressWarnings("unqualified-field-access")
 	public SyncList(List<T> list)
 	{
 		l = list;
@@ -182,12 +183,14 @@ public class SyncList<T> implements List<T>
 		protected final SyncList<T> l;
 		protected int i = 0;
 		
+		@SuppressWarnings("unqualified-field-access")
 		public SyncListItr(SyncList<T> list)
 		{
 			l = list;
 			
 		}
 		
+		@SuppressWarnings("unqualified-field-access")
 		public SyncListItr(SyncList<T> list, int b)
 		{
 			l = list;

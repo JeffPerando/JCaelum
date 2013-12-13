@@ -24,6 +24,7 @@ public class Matrix implements IStoreable
 		
 	}
 	
+	@SuppressWarnings("unqualified-field-access")
 	public Matrix(int x, int y)
 	{
 		data = new float[x][y];
@@ -32,6 +33,7 @@ public class Matrix implements IStoreable
 		
 	}
 	
+	@SuppressWarnings("unqualified-field-access")
 	public Matrix(float[][] info)
 	{
 		data = info;
@@ -40,6 +42,7 @@ public class Matrix implements IStoreable
 		
 	}
 	
+	@SuppressWarnings("unqualified-field-access")
 	public Matrix(float[] info, int x, int y)
 	{
 		this(x, y);

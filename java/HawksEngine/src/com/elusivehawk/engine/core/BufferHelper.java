@@ -9,7 +9,7 @@ import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import org.lwjgl.BufferUtils;
 import com.elusivehawk.engine.math.IVector;
 import com.elusivehawk.engine.render.Color;
@@ -36,7 +36,7 @@ public final class BufferHelper
 		return (ByteBuffer)BufferUtils.createByteBuffer(l).put(data).flip();
 	}
 	
-	public static ByteBuffer makeByteBuffer(List<Byte> data)
+	public static ByteBuffer makeByteBuffer(Collection<Byte> data)
 	{
 		ByteBuffer ret = BufferUtils.createByteBuffer(data.size());
 		
@@ -76,7 +76,7 @@ public final class BufferHelper
 		return (CharBuffer)BufferUtils.createCharBuffer(l).put(data).flip();
 	}
 	
-	public static CharBuffer makeCharBuffer(List<Character> data)
+	public static CharBuffer makeCharBuffer(Collection<Character> data)
 	{
 		CharBuffer ret = BufferUtils.createCharBuffer(data.size());
 		
@@ -116,7 +116,7 @@ public final class BufferHelper
 		return (ShortBuffer)BufferUtils.createShortBuffer(l).put(data).flip();
 	}
 	
-	public static ShortBuffer makeShortBuffer(List<Short> data)
+	public static ShortBuffer makeShortBuffer(Collection<Short> data)
 	{
 		ShortBuffer ret = BufferUtils.createShortBuffer(data.size());
 		
@@ -156,7 +156,7 @@ public final class BufferHelper
 		return (IntBuffer)BufferUtils.createIntBuffer(l).put(data).flip();
 	}
 	
-	public static IntBuffer makeIntBuffer(List<Integer> data)
+	public static IntBuffer makeIntBuffer(Collection<Integer> data)
 	{
 		IntBuffer ret = BufferUtils.createIntBuffer(data.size());
 		
@@ -196,7 +196,7 @@ public final class BufferHelper
 		return (DoubleBuffer)BufferUtils.createDoubleBuffer(l).put(data).flip();
 	}
 	
-	public static DoubleBuffer makeDoubleBuffer(List<Double> data)
+	public static DoubleBuffer makeDoubleBuffer(Collection<Double> data)
 	{
 		DoubleBuffer ret = BufferUtils.createDoubleBuffer(data.size());
 		
@@ -236,7 +236,7 @@ public final class BufferHelper
 		return (FloatBuffer)BufferUtils.createFloatBuffer(l).put(data).flip();
 	}
 	
-	public static FloatBuffer makeFloatBuffer(List<Float> data)
+	public static FloatBuffer makeFloatBuffer(Collection<Float> data)
 	{
 		FloatBuffer ret = BufferUtils.createFloatBuffer(data.size());
 		
@@ -276,7 +276,7 @@ public final class BufferHelper
 		return (LongBuffer)BufferUtils.createLongBuffer(l).put(data).flip();
 	}
 	
-	public static LongBuffer makeLongBuffer(List<Long> data)
+	public static LongBuffer makeLongBuffer(Collection<Long> data)
 	{
 		LongBuffer ret = BufferUtils.createLongBuffer(data.size());
 		
@@ -323,7 +323,7 @@ public final class BufferHelper
 		return ret;
 	}
 	
-	public static ByteBuffer makeByteBufferFromColor(List<Color> data)
+	public static ByteBuffer makeByteBufferFromColor(Collection<Color> data)
 	{
 		ByteBuffer ret = BufferUtils.createByteBuffer(data.size() * 4);
 		
@@ -353,7 +353,7 @@ public final class BufferHelper
 		return ret;
 	}
 	
-	public static FloatBuffer makeFloatBufferFromColor(List<Color> data)
+	public static FloatBuffer makeFloatBufferFromColor(Collection<Color> data)
 	{
 		FloatBuffer ret = BufferUtils.createFloatBuffer(data.size() * 4);
 		
@@ -370,7 +370,7 @@ public final class BufferHelper
 	
 	public static FloatBuffer makeFloatBufferFromVec(IVector... data)
 	{
-		List<Float> list = new ArrayList<Float>();
+		Collection<Float> list = new ArrayList<Float>();
 		
 		for (IVector vec : data)
 		{
@@ -385,9 +385,9 @@ public final class BufferHelper
 		return makeFloatBuffer(list);
 	}
 	
-	public static FloatBuffer makeFloatBufferFromVec(List<? extends IVector> data)
+	public static FloatBuffer makeFloatBufferFromVec(Collection<? extends IVector> data)
 	{
-		List<Float> list = new ArrayList<Float>();
+		Collection<Float> list = new ArrayList<Float>();
 		
 		for (IVector vec : data)
 		{

@@ -44,13 +44,13 @@ public final class CaelumEngine
 		
 		if (System.getProperty("org.lwjgl.librarypath") == null)
 		{
-			String lwjgl = game.getLWJGLPath();
+			String lwjgl = this.game.getLWJGLPath();
 			
 			if (lwjgl == null)
 			{
 				GameLog.warn("LWJGL path is set to null! What are you thinking?!");
 				
-				lwjgl = CaelumEngine.instance().determineLWJGLPath();
+				lwjgl = CaelumEngine.determineLWJGLPath();
 				
 			}
 			
@@ -106,7 +106,7 @@ public final class CaelumEngine
 		
 	}
 	
-	public String determineLWJGLPath()
+	public static String determineLWJGLPath()
 	{
 		//TODO: this only works on Debian... but we'll try it for now.
 		

@@ -31,6 +31,7 @@ public class SemiFinalStorage<T>
 		
 	}
 	
+	@SuppressWarnings("unqualified-field-access")
 	public SemiFinalStorage(T object, int changeCount, IStorageListener<T> listener)
 	{
 		obj = object;

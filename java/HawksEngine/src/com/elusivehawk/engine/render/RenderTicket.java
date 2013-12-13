@@ -30,10 +30,11 @@ public class RenderTicket implements IDirty, ILogicalRender
 	
 	public RenderTicket(Model model)
 	{
-		this(GLProgram.create(null), model);
+		this(GLProgram.create(RenderHelper.VERTEX_SHADER_3D, RenderHelper.FRAGMENT_SHADER_3D), model);
 		
 	}
 	
+	@SuppressWarnings("unqualified-field-access")
 	public RenderTicket(GLProgram program, Model model)
 	{
 		p = program;
@@ -143,12 +144,12 @@ public class RenderTicket implements IDirty, ILogicalRender
 	@Override
 	public boolean updateBeforeUse(IRenderHUB hub)
 	{
-		if (!hub.getRenderMode().is3D())
+		if (!this.m.isFinished())
 		{
 			return false;
 		}
 		
-		if (!this.isAnimationPaused() && this.anim != null)
+		if (this.anim != null && !this.isAnimationPaused())
 		{
 			boolean usedBefore = this.anim == this.lastAnim;
 			
@@ -208,6 +209,7 @@ public class RenderTicket implements IDirty, ILogicalRender
 		
 		private final Vector3f vec;
 		
+		@SuppressWarnings("unqualified-field-access")
 		EnumVectorType(Vector3f d)
 		{
 			vec = d;

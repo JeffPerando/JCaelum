@@ -11,6 +11,7 @@ public class ThreadTimedWrapper extends ThreadTimed
 {
 	protected final IThreadable t;
 	
+	@SuppressWarnings("unqualified-field-access")
 	public ThreadTimedWrapper(IThreadable thr)
 	{
 		t = thr;

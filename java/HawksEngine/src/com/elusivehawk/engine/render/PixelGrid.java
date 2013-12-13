@@ -24,6 +24,7 @@ public class PixelGrid implements ILegibleImage
 	protected final int xSize, ySize;
 	protected final EnumColorFormat f;
 	
+	@SuppressWarnings("unqualified-field-access")
 	public PixelGrid(int w, int h, EnumColorFormat format)
 	{
 		pixels = new int[w][h];
@@ -34,6 +35,7 @@ public class PixelGrid implements ILegibleImage
 		
 	}
 	
+	@SuppressWarnings("unqualified-field-access")
 	public PixelGrid(ILegibleImage img)
 	{
 		pixels = new int[img.getWidth()][img.getHeight()];

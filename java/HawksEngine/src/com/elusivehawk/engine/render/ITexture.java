@@ -10,7 +10,7 @@ package com.elusivehawk.engine.render;
  */
 public interface ITexture extends IGLCleanable
 {
-	public int getTexture();
+	public int getTexture(boolean next);
 	
 	public boolean isStatic();
 	

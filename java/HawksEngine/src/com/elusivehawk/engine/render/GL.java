@@ -1918,7 +1918,7 @@ public final class GL
 	
 	public static void glActiveTexture(ITexture texture)
 	{
-		glActiveTexture(texture == null ? 0 : texture.getTexture());
+		glActiveTexture(texture == null ? 0 : texture.getTexture(true));
 		
 	}
 	
@@ -2076,7 +2076,7 @@ public final class GL
 	
 	public static void glBindTexture(int target, ITexture texture)
 	{
-		GL11.glBindTexture(target, texture == null ? 0 : texture.getTexture());
+		GL11.glBindTexture(target, texture == null ? 0 : texture.getTexture(true));
 		
 	}
 	

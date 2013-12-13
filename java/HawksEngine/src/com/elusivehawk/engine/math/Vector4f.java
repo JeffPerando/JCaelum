@@ -25,6 +25,7 @@ public class Vector4f extends Vector3f
 		
 	}
 	
+	@SuppressWarnings("unqualified-field-access")
 	public Vector4f(float a, float b, float c, float d)
 	{
 		super(a, b, c);
@@ -33,6 +34,7 @@ public class Vector4f extends Vector3f
 		
 	}
 	
+	@SuppressWarnings("unqualified-field-access")
 	public Vector4f(Vector4f vec)
 	{
 		super(vec);
@@ -41,6 +43,7 @@ public class Vector4f extends Vector3f
 		
 	}
 	
+	@SuppressWarnings("unqualified-field-access")
 	public Vector4f(FloatBuffer buf)
 	{
 		super(buf);
