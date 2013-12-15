@@ -18,7 +18,7 @@ import com.elusivehawk.engine.core.TextParser;
 
 /**
  * 
- * 
+ * Helps with rendering stuff.
  * 
  * @author Elusivehawk
  */

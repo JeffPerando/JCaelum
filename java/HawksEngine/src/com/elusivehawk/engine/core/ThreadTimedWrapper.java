@@ -3,7 +3,7 @@ package com.elusivehawk.engine.core;
 
 /**
  * 
- * 
+ * Wrapper class for {@link IThreadable}.
  * 
  * @author Elusivehawk
  */

@@ -16,7 +16,7 @@ import com.elusivehawk.engine.render.Color;
 
 /**
  * 
- * Helper class for Java NIO buffers.
+ * Helper class for creating NIO buffers.
  * <p>
  * If you just need something that emulates a buffer without the finite size, consider {@link Buffer} instead.
  * 

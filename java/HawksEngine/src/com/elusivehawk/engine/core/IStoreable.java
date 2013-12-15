@@ -7,16 +7,25 @@ import java.nio.IntBuffer;
 
 /**
  * 
- * 
+ * Interface for objects storable in NIO buffers.
  * 
  * @author Elusivehawk
  */
 public interface IStoreable
 {
+	/**
+	 * @return True if things were stored in the provided buffer.
+	 */
 	public boolean store(ByteBuffer buf);
 	
+	/**
+	 * @return True if things were stored in the provided buffer.
+	 */
 	public boolean store(FloatBuffer buf);
 	
+	/**
+	 * @return True if things were stored in the provided buffer.
+	 */
 	public boolean store(IntBuffer buf);
 	
 }

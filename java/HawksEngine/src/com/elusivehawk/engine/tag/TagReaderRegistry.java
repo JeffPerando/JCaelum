@@ -13,14 +13,14 @@ import com.elusivehawk.engine.math.BitHelper;
  */
 public final class TagReaderRegistry
 {
-	public static final byte BYTE_ID = 0;
-	public static final byte SHORT_ID = 1;
-	public static final byte INT_ID = 2;
-	public static final byte LONG_ID = 3;
-	public static final byte FLOAT_ID = 4;
-	public static final byte DOUBLE_ID = 5;
-	public static final byte STRING_ID = 6;
-	public static final byte LIST_ID = 7;
+	public static final byte BYTE_ID = 0x00;
+	public static final byte SHORT_ID = 0x01;
+	public static final byte INT_ID = 0x02;
+	public static final byte LONG_ID = 0x03;
+	public static final byte FLOAT_ID = 0x04;
+	public static final byte DOUBLE_ID = 0x05;
+	public static final byte STRING_ID = 0x06;
+	public static final byte LIST_ID = 0x07;
 	
 	private static final TagReaderRegistry INSTANCE = new TagReaderRegistry();
 	
@@ -46,13 +46,19 @@ public final class TagReaderRegistry
 	
 	public void register(byte id, ITagReader<?> reader)
 	{
-		this.readers[Math.abs(id)] = reader;
+		if (this.get(id) != null)
+		{
+			GameLog.warn("Overriding tag reader ID #" + id);
+			
+		}
+		
+		this.readers[id] = reader;
 		
 	}
 	
 	public ITagReader<?> get(byte id)
 	{
-		return this.readers[Math.abs(id)];
+		return this.readers[id];
 	}
 	
 	public ITag<?> readTag(Buffer<Byte> buf)

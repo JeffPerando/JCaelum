@@ -7,9 +7,8 @@ package com.elusivehawk.engine.core;
  * 
  * @author Elusivehawk
  */
-public class SemiFinalStorage<T>
+public class SemiFinalStorage<T> extends DirtableStorage<T>
 {
-	protected T obj;
 	protected final int maxChanges;
 	protected int count = 0;
 	protected final IStorageListener<T> lis;
@@ -34,13 +33,15 @@ public class SemiFinalStorage<T>
 	@SuppressWarnings("unqualified-field-access")
 	public SemiFinalStorage(T object, int changeCount, IStorageListener<T> listener)
 	{
-		obj = object;
+		super(object);
+		
 		maxChanges = Math.max(changeCount, 1);
 		lis = listener;
 		
 	}
 	
-	public boolean modify(T object)
+	@Override
+	public boolean set(T object)
 	{
 		if (this.locked())
 		{
@@ -52,14 +53,11 @@ public class SemiFinalStorage<T>
 			return false;
 		}
 		
+		super.set(object);
+		
 		this.count++;
-		this.obj = object;
+		
 		return true;
-	}
-	
-	public T get()
-	{
-		return this.obj;
 	}
 	
 	public boolean locked()

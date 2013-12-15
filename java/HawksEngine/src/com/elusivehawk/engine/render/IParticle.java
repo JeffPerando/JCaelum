@@ -5,10 +5,11 @@ import com.elusivehawk.engine.math.Vector3f;
 
 /**
  * 
- * 
+ * @deprecated To be replaced with a less memory-hogging particle system.
  * 
  * @author Elusivehawk
  */
+@Deprecated
 public interface IParticle
 {
 	public void updateParticle();

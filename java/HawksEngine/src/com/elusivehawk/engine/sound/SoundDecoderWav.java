@@ -2,8 +2,10 @@
 package com.elusivehawk.engine.sound;
 
 import java.io.File;
+import java.io.FileInputStream;
 import org.lwjgl.openal.AL10;
 import org.lwjgl.util.WaveData;
+import com.elusivehawk.engine.core.FileHelper;
 import com.elusivehawk.engine.core.GameLog;
 
 /**
@@ -21,7 +23,13 @@ public class SoundDecoderWav implements ISoundDecoder
 		
 		try
 		{
-			wd = WaveData.create(file.toURI().toURL());
+			FileInputStream fis = FileHelper.createInStream(file);
+			
+			if (fis != null)
+			{
+				wd = WaveData.create(fis);
+				
+			}
 			
 		}
 		catch (Exception e)

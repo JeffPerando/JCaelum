@@ -7,10 +7,11 @@ import com.elusivehawk.engine.core.IStoreable;
 
 /**
  * 
- * 
+ * @deprecated To be replaced with something more generic.
  * 
  * @author Elusivehawk
  */
+@Deprecated
 public interface IVector extends IStoreable, IDirty
 {
 	public boolean isReadOnly();

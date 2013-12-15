@@ -3,7 +3,7 @@ package com.elusivehawk.engine.render;
 
 /**
  * 
- * 
+ * Abstraction layer for the different kinds of images there are out there.
  * 
  * @author Elusivehawk
  */

@@ -59,13 +59,13 @@ public class SaveFile implements ITagList
 		{
 			byte[] bytes = new byte[in.available()];
 			
-			in.read(bytes);
+			int count = in.read(bytes);
 			
 			buf = new Buffer<Byte>();
 			
-			for (byte b : bytes)
+			for (int c = 0; c < count; c++)
 			{
-				buf.put(b);
+				buf.put(bytes[c]);
 				
 			}
 			
@@ -133,16 +133,19 @@ public class SaveFile implements ITagList
 		buf.norm();
 		
 		byte[] array = new byte[buf.size()];
+		int c = 0;
 		
-		for (int c = 0; c < array.length; c++)
+		for (Byte b : buf)
 		{
-			array[c] = buf.next();
+			array[c++] = b;
 			
 		}
 		
 		try
 		{
 			out.write(array);
+			out.flush();
+			out.close();
 			
 		}
 		catch (IOException e)
@@ -153,28 +156,33 @@ public class SaveFile implements ITagList
 		
 	}
 	
-	public boolean add(ITag<?> tag)
+	@Override
+	public void addTag(ITag<?> tag)
 	{
-		boolean ret = false;
+		int i = -1;
 		
-		if (!this.tags.isEmpty())
+		for (int c = 0; c < this.tags.size(); c++)
 		{
-			for (ITag<?> t : this.tags)
+			if (this.tags.get(c).getName() == tag.getName())
 			{
-				if (t.getName() == tag.getName())
-				{
-					ret = true;
-					
-					break;
-				}
+				i = c;
 				
+				break;
 			}
 			
 		}
 		
-		this.tags.add(tag);
+		if (i == -1)
+		{
+			this.tags.add(tag);
+			
+		}
+		else
+		{
+			this.tags.set(i, tag);
+			
+		}
 		
-		return ret;
 	}
 	
 	@Override

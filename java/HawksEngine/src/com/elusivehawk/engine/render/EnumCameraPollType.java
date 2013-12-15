@@ -3,7 +3,7 @@ package com.elusivehawk.engine.render;
 
 /**
  * 
- * 
+ * Used to ask the {@linkplain ICamera camera} for certain things.
  * 
  * @author Elusivehawk
  */

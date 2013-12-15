@@ -17,7 +17,7 @@ import com.elusivehawk.engine.math.Vector3f;
 
 /**
  * 
- * 
+ * The modelling system used by This Very Engine!
  * 
  * @author Elusivehawk
  */
@@ -127,8 +127,8 @@ public class Model implements IStorageListener
 		
 		int[] vbos = RenderHelper.createVBOs(2);
 		
-		this.finBuf.modify(new VertexBufferObject(vbos[0], GL.GL_ARRAY_BUFFER, fin, GL.GL_STATIC_DRAW));
-		this.indiceBuf.modify(new VertexBufferObject(vbos[1], GL.GL_ELEMENT_ARRAY_BUFFER, indices, GL.GL_STATIC_DRAW));
+		this.finBuf.set(new VertexBufferObject(vbos[0], GL.GL_ARRAY_BUFFER, fin, GL.GL_STATIC_DRAW));
+		this.indiceBuf.set(new VertexBufferObject(vbos[1], GL.GL_ELEMENT_ARRAY_BUFFER, indices, GL.GL_STATIC_DRAW));
 		
 		if (vb != 0)
 		{
@@ -141,7 +141,7 @@ public class Model implements IStorageListener
 		this.color = null;
 		this.texOffs = null;
 		
-		this.indiceCount.modify(this.pointCount);
+		this.indiceCount.set(this.pointCount);
 		
 	}
 	

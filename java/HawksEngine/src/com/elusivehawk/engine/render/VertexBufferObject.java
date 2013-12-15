@@ -6,7 +6,7 @@ import java.nio.IntBuffer;
 
 /**
  * 
- * 
+ * Similar in concept to {@link GLProgram}, but with VBOs.
  * 
  * @author Elusivehawk
  */

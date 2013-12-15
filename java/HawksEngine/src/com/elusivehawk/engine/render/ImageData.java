@@ -6,10 +6,11 @@ import com.elusivehawk.engine.math.Vector2f;
 
 /**
  * 
- * 
+ * @deprecated To be replaced with a simpler imaging system.
  * 
  * @author Elusivehawk
  */
+@Deprecated
 public class ImageData
 {
 	public final Tuple<Integer, Integer> pos = new Tuple<Integer, Integer>(0, 0);

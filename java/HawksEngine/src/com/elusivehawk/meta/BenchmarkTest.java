@@ -2,11 +2,14 @@
 package com.elusivehawk.meta;
 
 import com.elusivehawk.engine.core.GameLog;
+import com.elusivehawk.engine.math.Matrix;
+import com.elusivehawk.engine.math.MatrixHelper;
 
 /**
  * 
  * Test log:
  * 
+ * Testing matrix stuff.
  * Testing sound decoding.
  * Testing file byte reading.
  * Testing "++".
@@ -25,73 +28,13 @@ public class BenchmarkTest
 	public static void main(String[] args)
 	{
 		GameLog.info("Beginning bench testing...");
-		/*
-		File file = FileHelper.createFile(".", "Test_sound3.ogg");
-		File log = FileHelper.createFile(".", "Log.txt");
 		
-		try
-		{
-			if (!log.exists() && !log.createNewFile())
-			{
-				return;
-			}
-			
-		}
-		catch (Exception e)
-		{
-			GameLog.error(e);
-			
-			return;
-		}
+		Matrix trs = MatrixHelper.createRotationMatrix(90, 90, 90).mul(MatrixHelper.createScalingMatrix(90, 90, 90));
 		
-		try
-		{
-			PrintStream ps = new PrintStream(log);
-			
-			GameLog.EnumLogType.DEBUG.addOutput(ps);
-			
-		}
-		catch (Exception e)
-		{
-			GameLog.error(e);
-			
-		}
+		GameLog.info(trs.toString());
 		
-		FileInputStream fis = FileHelper.createStream(file);
+		GameLog.info(MatrixHelper.createRotationMatrix(180, 180, 180).toString());
 		
-		if (fis != null)
-		{
-			BufferedInputStream is = new BufferedInputStream(fis);
-			
-			try
-			{
-				ByteBuffer buf = BufferUtils.createByteBuffer(is.available());
-				
-				while (buf.remaining() != 0)
-				{
-					buf.put((byte)is.read());
-					
-				}
-				
-				buf.flip();
-				
-				while (buf.remaining() != 0)
-				{
-					byte b = buf.get();
-					
-					GameLog.debug("Position: " + buf.position() + ", byte: " + b + ", char: " + (char)b);
-					
-				}
-				
-			}
-			catch (Exception e)
-			{
-				GameLog.error(e);
-				
-			}
-			
-		}
-		*/
 		GameLog.info("Th-th-th-th-That's all, folks!");
 		
 	}

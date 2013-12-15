@@ -5,7 +5,7 @@ import java.util.Collection;
 
 /**
  * 
- * 
+ * Renders 2D images onto the screen.
  * 
  * @author Elusivehawk
  */

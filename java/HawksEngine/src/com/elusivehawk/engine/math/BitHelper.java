@@ -5,7 +5,7 @@ import com.elusivehawk.engine.core.Buffer;
 
 /**
  * 
- * 
+ * Helper class for integer conversion (i.e. long -> byte[], and vice versa).
  * 
  * @author Elusivehawk
  */

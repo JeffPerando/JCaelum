@@ -6,19 +6,27 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Logger;
 
 /**
  * 
+ * Static class for sending things to the console.
+ * <p>
+ * Note: Unlike {@link System}.out.println(), this is thread safe.<br>
  * 
+ * @deprecated To be replaced with a {@link Logger} compliant version.
  * 
  * @author Elusivehawk
  */
-public class GameLog
+@Deprecated
+public final class GameLog
 {
 	public static volatile boolean enableVerbosity = true;
 	public static final List<String> CRASH_DIALOG = TextParser.read(FileHelper.createFile((CaelumEngine.DEBUG ? "src" : ".") + "/com/elusivehawk/engine/core/CrashReportDialog.txt"));
 	
-	private static Random rand = new Random();
+	private static Random rng = new Random();
+	
+	private GameLog(){}
 	
 	public static void info(String message)
 	{
@@ -52,7 +60,7 @@ public class GameLog
 	
 	public static void error(String message, Throwable e)
 	{
-		error(message == null ? (CRASH_DIALOG.isEmpty() ? "Error found:" : CRASH_DIALOG.get(rand.nextInt(CRASH_DIALOG.size()))) : message);
+		error(message == null ? (CRASH_DIALOG.isEmpty() ? "Error found:" : CRASH_DIALOG.get(rng.nextInt(CRASH_DIALOG.size()))) : message);
 		
 		for (PrintStream ps : EnumLogType.ERROR.out)
 		{

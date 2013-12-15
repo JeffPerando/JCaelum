@@ -12,10 +12,11 @@ import com.elusivehawk.engine.core.BufferHelper;
 
 /**
  * 
- * The new system for 2D rendering.
+ * @deprecated To be replaced with a simpler imaging system.
  * 
  * @author Elusivehawk
  */
+@Deprecated
 public class ImageScreen implements ILogicalRender
 {
 	public static final int IMG_FLOAT_COUNT = 32;

@@ -10,10 +10,11 @@ import com.elusivehawk.engine.math.Vector3f;
 
 /**
  * 
- * 
+ * @deprecated To be replaced with a less memory-hogging particle system.
  * 
  * @author Elusivehawk
  */
+@Deprecated
 public class ParticleScene implements ILogicalRender
 {
 	public static final int PARTICLE_FLOAT_COUNT = 7;

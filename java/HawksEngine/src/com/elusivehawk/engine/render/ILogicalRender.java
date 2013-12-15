@@ -1,7 +1,6 @@
 
 package com.elusivehawk.engine.render;
 
-
 /**
  * 
  * 

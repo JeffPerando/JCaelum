@@ -3,7 +3,7 @@ package com.elusivehawk.engine.core;
 
 /**
  * 
- * 
+ * Convnience enum for determining the current system OS.
  * 
  * @author Elusivehawk
  */

@@ -8,10 +8,11 @@ import org.lwjgl.BufferUtils;
 
 /**
  * 
- * 
+ * @deprecated Same as {@link IVector}.
  * 
  * @author Elusivehawk
  */
+@Deprecated
 public class Vector2f implements IVector
 {
 	public float x, y;

@@ -6,7 +6,7 @@ import org.lwjgl.opengl.DisplayMode;
 
 /**
  * 
- * 
+ * Pretty much every setter in {@link Display} in one class.
  * 
  * @author Elusivehawk
  */

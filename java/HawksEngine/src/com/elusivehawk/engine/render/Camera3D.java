@@ -10,7 +10,7 @@ import com.elusivehawk.engine.math.Vector3f;
 
 /**
  * 
- * 
+ * The default 3D camera.
  * 
  * @author Elusivehawk
  */

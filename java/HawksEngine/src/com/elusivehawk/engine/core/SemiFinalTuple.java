@@ -3,7 +3,7 @@ package com.elusivehawk.engine.core;
 
 /**
  * 
- * 
+ * Created to help size down extremely large constructors when using {@link SemiFinalStorage} and {@link Tuple}.
  * 
  * @author Elusivehawk
  */

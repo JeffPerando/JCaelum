@@ -3,7 +3,7 @@ package com.elusivehawk.engine.core;
 
 /**
  * 
- * 
+ * Helper class (Yes, another one) for timing.
  * 
  * @author Elusivehawk
  */

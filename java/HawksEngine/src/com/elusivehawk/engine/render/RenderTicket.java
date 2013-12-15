@@ -11,7 +11,7 @@ import com.elusivehawk.engine.math.Vector3f;
 
 /**
  * 
- * 
+ * Used to render static {@link Model}s with non-static information (i.e. rotation, {@link IModelAnimation})
  * 
  * @author Elusivehawk
  */

@@ -13,7 +13,14 @@ import java.util.List;
 
 /**
  * 
- * 
+ * Helper class for simplifying the usage of {@link String}s.
+ * <p>
+ * In particular:<br>
+ * Reading/writing text files<br>
+ * Concatenation (With arguments for how the text is spliced together)<br>
+ * Parsing the arguments of a given method (Helpful for method sorting)<br>
+ * Removing the last instance of a given String<br>
+ * Splitting a string once
  * 
  * @author Elusivehawk
  */

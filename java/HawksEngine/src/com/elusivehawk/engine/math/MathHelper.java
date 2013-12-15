@@ -3,7 +3,7 @@ package com.elusivehawk.engine.math;
 
 /**
  * 
- * 
+ * Convenience (aka helper) class for math functions.
  * 
  * @author Elusivehawk
  */

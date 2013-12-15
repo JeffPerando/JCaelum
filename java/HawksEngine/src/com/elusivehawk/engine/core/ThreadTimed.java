@@ -3,7 +3,7 @@ package com.elusivehawk.engine.core;
 
 /**
  * 
- * Helper class for timed threading.
+ * Abstract class for timed threading.
  * 
  * @author Elusivehawk
  */

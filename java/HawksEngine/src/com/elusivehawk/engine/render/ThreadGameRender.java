@@ -10,7 +10,7 @@ import com.elusivehawk.engine.core.ThreadTimed;
 
 /**
  * 
- * 
+ * The primary thread for rendering the game's window.
  * 
  * @author Elusivehawk
  */
@@ -123,6 +123,7 @@ public class ThreadGameRender extends ThreadTimed
 		
 		int priorityCount = Math.max(this.hub.getHighestPriority(), 1);
 		int renderersUsed = 0;
+		int priority = 0;
 		boolean flag = true;
 		
 		for (int p = 0; p < priorityCount && flag; p++)
@@ -135,7 +136,9 @@ public class ThreadGameRender extends ThreadTimed
 					break;
 				}
 				
-				if (engine.getPriority(this.hub) != p)
+				priority = Math.min(engine.getPriority(this.hub), priorityCount - 1);
+				
+				if (priority != p)
 				{
 					continue;
 				}

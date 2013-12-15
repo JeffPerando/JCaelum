@@ -3,19 +3,22 @@ package com.elusivehawk.engine.core;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Vector;
 
 /**
  * 
  * A list created specifically for multithreaded programming.
  * <p>
  * Take note that:
- * <br>This only synchronizes the {@link List} it's been given; It does *NOT* act as a double bufferer.
+ * <br>This only synchronizes the {@link List} it's been given; It does *NOT* act as a second buffer.
  * <br>You can iterate through this list at any point in time; The iterator is specifically built for it.
+ * <br>In fact, iterating through this is safer, since it prevents {@link ConcurrentModificationException}s from cropping up, thanks to synchronization.
  * <br>If you don't have a {@link List}, it will use a new {@link ArrayList}.
- * <br>Unlike {@link Vector}, only the methods that modify the backed {@link List} are synchronized. This includes iterating.
+ * <br>Unlike {@link Vector}, only the methods that modify the backed {@link List} are synchronized.
  * 
  * @author Elusivehawk
  */

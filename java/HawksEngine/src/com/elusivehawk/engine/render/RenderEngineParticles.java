@@ -3,7 +3,7 @@ package com.elusivehawk.engine.render;
 
 /**
  * 
- * 
+ * Renders particles.
  * 
  * @author Elusivehawk
  */

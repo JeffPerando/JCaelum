@@ -8,7 +8,9 @@ import java.util.List;
 
 /**
  * 
- * 
+ * Buffers are basically {@link List}s with a position and marker.
+ * <p>
+ * Note that they're designed to emulate {@linkplain java.nio.Buffer NIO buffers}, and that they can be iterated through.
  * 
  * @author Elusivehawk
  */

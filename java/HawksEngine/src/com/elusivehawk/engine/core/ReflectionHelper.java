@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
 
 /**
  * 
- * 
+ * Class for simplifying reflection usage.
  * 
  * @author Elusivehawk
  */

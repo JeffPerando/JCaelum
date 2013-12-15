@@ -3,7 +3,7 @@ package com.elusivehawk.engine.core;
 
 /**
  * 
- * 
+ * Contains two objects, and that's IT.
  * 
  * @author Elusivehawk
  */

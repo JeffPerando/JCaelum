@@ -203,4 +203,36 @@ public class Matrix implements IStoreable
 		return ret;
 	}
 	
+	@Override
+	public String toString()
+	{
+		StringBuilder b = new StringBuilder("\n");
+		
+		for (int y = 0; y < this.h; y++)
+		{
+			b.append("[");
+			
+			for (int x = 0; x < this.w; x++)
+			{
+				b.append(this.data[x][y]);
+				
+				if (x != (this.w - 1))
+				{
+					b.append(", ");
+					
+				}
+				
+			}
+			
+			if (y != (this.h - 1))
+			{
+				b.append("]\n");
+				
+			}
+			
+		}
+		
+		return b.toString();
+	}
+	
 }

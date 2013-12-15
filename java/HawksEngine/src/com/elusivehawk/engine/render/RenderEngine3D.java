@@ -8,7 +8,7 @@ import com.elusivehawk.engine.core.Tuple;
 
 /**
  * 
- * 
+ * Renders entities in the game world.
  * 
  * @author Elusivehawk
  */

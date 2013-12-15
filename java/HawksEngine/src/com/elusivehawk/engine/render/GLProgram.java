@@ -12,7 +12,7 @@ import com.elusivehawk.engine.core.GameLog;
 
 /**
  * 
- * 
+ * A class to help work with OpenGL's program system.
  * 
  * @author Elusivehawk
  */

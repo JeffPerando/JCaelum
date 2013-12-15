@@ -3,7 +3,7 @@ package com.elusivehawk.engine.core;
 
 /**
  * 
- * 
+ * Stores an object, which if modified will set off the {@link #isDirty()} flag.
  * 
  * @author Elusivehawk
  */
@@ -24,12 +24,13 @@ public class DirtableStorage<T> implements IDirty
 		return this.obj;
 	}
 	
-	public void set(T object)
+	public boolean set(T object)
 	{
 		this.obj = object;
 		
 		this.setIsDirty(true);
 		
+		return true;
 	}
 	
 	@Override

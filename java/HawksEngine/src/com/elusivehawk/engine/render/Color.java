@@ -9,7 +9,7 @@ import com.elusivehawk.engine.core.IStoreable;
 
 /**
  * 
- * 
+ * The much more flexible cousin to {@link java.awt.Color}.
  * 
  * @author Elusivehawk
  */

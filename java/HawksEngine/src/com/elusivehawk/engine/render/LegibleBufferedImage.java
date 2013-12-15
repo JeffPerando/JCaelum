@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 
 /**
  * 
- * 
+ * Wrapper class for ILegibleImage and {@link BufferedImage}.
  * 
  * @author Elusivehawk
  */

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import com.elusivehawk.engine.core.Buffer;
+import com.elusivehawk.engine.math.BitHelper;
 
 /**
  * 
@@ -45,7 +46,7 @@ public class TagList implements ITag<Collection<ITag<?>>>, ITagList
 	@Override
 	public void save(Buffer<Byte> buf)
 	{
-		buf.put((byte)this.tags.size());
+		buf.put(BitHelper.createBytes((short)this.tags.size()));
 		
 		if (this.tags.isEmpty())
 		{
@@ -88,7 +89,7 @@ public class TagList implements ITag<Collection<ITag<?>>>, ITagList
 		{
 			TagList ret = new TagList(name);
 			
-			byte size = buf.next();
+			short size = BitHelper.createShort(buf);
 			ITag<?>[] tags = new ITag<?>[size];
 			
 			for (int c = 0; c < size; c++)

@@ -3,7 +3,7 @@ package com.elusivehawk.engine.core;
 
 /**
  * 
- * 
+ * Core thread used for the logic portion of a {@linkplain IGame game}.
  * 
  * @author Elusivehawk
  */

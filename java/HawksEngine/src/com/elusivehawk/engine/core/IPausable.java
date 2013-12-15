@@ -3,7 +3,7 @@ package com.elusivehawk.engine.core;
 
 /**
  * 
- * 
+ * "Standardisation" interface for pausing things; Suspiciously similar to {@link IDirty}.
  * 
  * @author Elusivehawk
  */

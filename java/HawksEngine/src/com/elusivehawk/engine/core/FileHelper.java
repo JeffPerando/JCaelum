@@ -7,7 +7,7 @@ import java.io.FileOutputStream;
 
 /**
  * 
- * 
+ * Helper class for handling {@link File}s.
  * 
  * @author Elusivehawk
  */

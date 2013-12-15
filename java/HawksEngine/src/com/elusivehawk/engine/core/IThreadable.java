@@ -3,7 +3,7 @@ package com.elusivehawk.engine.core;
 
 /**
  * 
- * 
+ * If you want to make a new thread, implement this and create a new {@link ThreadTimedWrapper}.
  * 
  * @author Elusivehawk
  */

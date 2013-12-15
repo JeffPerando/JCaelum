@@ -3,7 +3,9 @@ package com.elusivehawk.engine.core;
 
 /**
  * 
- * 
+ * Abstract class for quick 'n dirty threading.
+ * <p>
+ * If you want a timed version, use {@link ThreadTimed}.
  * 
  * @author Elusivehawk
  */

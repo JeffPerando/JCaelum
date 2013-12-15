@@ -5,10 +5,11 @@ import java.nio.FloatBuffer;
 
 /**
  * 
- * 
+ * @deprecated Same as its {@linkplain Vector2f superclass}.
  * 
  * @author Elusivehawk
  */
+@Deprecated
 public class Vector3f extends Vector2f
 {
 	public float z;

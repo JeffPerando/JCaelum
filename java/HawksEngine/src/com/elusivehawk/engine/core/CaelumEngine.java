@@ -9,13 +9,14 @@ import com.elusivehawk.engine.sound.ThreadSoundPlayer;
 
 /**
  * 
- * 
+ * The core class for the Caelum Engine.
  * 
  * @author Elusivehawk
  */
 public final class CaelumEngine
 {
 	private static final CaelumEngine INSTANCE = new CaelumEngine();
+	
 	public static final boolean DEBUG = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().contains("-agentlib:jdwp");
 	public static final String VERSION = "1.0.0";
 	
@@ -76,25 +77,24 @@ public final class CaelumEngine
 		
 		this.startupHook.notifyAll();
 		
-		try
+	}
+	
+	public void shutDownGame(int error)
+	{
+		if (this.game == null)
 		{
-			this.shutdownHook.wait();
-			
+			return;
 		}
-		catch (InterruptedException e)
+		
+		if (!this.game.enableShutdown())
 		{
-			GameLog.error(e);
-			
+			return;
 		}
 		
 		this.threadCore.stopThread();
 		if (this.threadRender != null) this.threadRender.stopThread();
 		this.threadSound.stopThread();
 		
-	}
-	
-	public void shutDownGame(int error)
-	{
 		try
 		{
 			this.shutdownHook.notifyAll();
