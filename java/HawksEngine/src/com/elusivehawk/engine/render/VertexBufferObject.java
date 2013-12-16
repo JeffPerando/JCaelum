@@ -3,6 +3,8 @@ package com.elusivehawk.engine.render;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import org.lwjgl.BufferUtils;
+import com.elusivehawk.engine.core.Buffer;
 
 /**
  * 
@@ -108,6 +110,34 @@ public class VertexBufferObject implements IGLCleanable
 		GL.glBindBuffer(this);
 		GL.glBufferSubData(this.t, 0, buf);
 		GL.glBindBuffer(this.t, 0);
+		
+	}
+	
+	public void updateVBOf(Buffer<Float> buf, int offset)
+	{
+		FloatBuffer nio = BufferUtils.createFloatBuffer(buf.remaining());
+		
+		for (float f : buf)
+		{
+			nio.put(f);
+			
+		}
+		
+		this.updateVBO(nio, offset);
+		
+	}
+	
+	public void updateVBOi(Buffer<Integer> buf, int offset)
+	{
+		IntBuffer nio = BufferUtils.createIntBuffer(buf.remaining());
+		
+		for (int i : buf)
+		{
+			nio.put(i);
+			
+		}
+		
+		this.updateVBO(nio, offset);
 		
 	}
 	

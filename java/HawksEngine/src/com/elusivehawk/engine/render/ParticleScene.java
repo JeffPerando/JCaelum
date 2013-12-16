@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.lwjgl.BufferUtils;
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
+import com.elusivehawk.engine.math.VectorF;
 
 /**
  * 
@@ -57,7 +58,14 @@ public class ParticleScene implements ILogicalRender
 		}
 		
 		this.buf.position(this.particles.size() * PARTICLE_FLOAT_COUNT);
-		new Vector3f(p.getPosition()).store(this.buf);
+		Vector<Float> pos = new VectorF(3, p.getPosition());
+		
+		for (int c = 0; c < 3; c++)
+		{
+			this.buf.put(pos.get(c));
+			
+		}
+		
 		EnumColorFormat.RGBA.convert(p.getColor()).store(this.buf);
 		
 		this.particles.add(p);
@@ -94,12 +102,17 @@ public class ParticleScene implements ILogicalRender
 			
 			if (p.updatePositionOrColor())
 			{
-				Vector3f vec = new Vector3f(p.getPosition());
+				Vector<Float> vec = new VectorF(3, p.getPosition());
 				Color col = EnumColorFormat.RGBA.convert(p.getColor());
 				
 				this.buf.position(c * PARTICLE_FLOAT_COUNT);
 				
-				vec.store(this.buf);
+				for (int count = 0; count < 3; count++)
+				{
+					this.buf.put(vec.get(count));
+					
+				}
+				
 				col.store(this.buf);
 				
 			}

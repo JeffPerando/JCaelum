@@ -1,11 +1,9 @@
 
 package com.elusivehawk.engine.math;
 
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import org.lwjgl.BufferUtils;
-import com.elusivehawk.engine.core.IStoreable;
+import com.elusivehawk.engine.core.Buffer;
 
 /**
  * 
@@ -13,9 +11,9 @@ import com.elusivehawk.engine.core.IStoreable;
  * 
  * @author Elusivehawk
  */
-public class Matrix implements IStoreable
+public class Matrix implements IMathObject<Float>
 {
-	public final float[][] data;
+	protected final Float[] data;
 	public final int w, h;
 	
 	public Matrix(int size)
@@ -27,33 +25,20 @@ public class Matrix implements IStoreable
 	@SuppressWarnings("unqualified-field-access")
 	public Matrix(int x, int y)
 	{
-		data = new float[x][y];
+		data = new Float[x * y];
 		w = x;
 		h = y;
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Matrix(float[][] info)
+	public Matrix(Float[] info)
 	{
-		data = info;
-		w = info.length;
-		h = info[0].length;
+		this(info.length);
 		
-	}
-	
-	@SuppressWarnings("unqualified-field-access")
-	public Matrix(float[] info, int x, int y)
-	{
-		this(x, y);
-		
-		for (int xPos = 0; xPos < x; xPos++)
+		for (int c = 0; c < info.length; c++)
 		{
-			for (int yPos = 0; yPos < y; yPos++)
-			{
-				data[xPos][yPos] = info[xPos + yPos * w];
-				
-			}
+			data[c] = info[c];
 			
 		}
 		
@@ -63,7 +48,7 @@ public class Matrix implements IStoreable
 	{
 		this(x, y);
 		
-		this.load(buf);
+		load(buf);
 		
 	}
 	
@@ -73,121 +58,13 @@ public class Matrix implements IStoreable
 		
 	}
 	
-	@Override
-	public boolean store(ByteBuffer buf)
-	{
-		return false;
-	}
-	
-	@Override
-	public boolean store(FloatBuffer buf)
-	{
-		for (int x = 0; x < this.w; x++)
-		{
-			for (int y = 0; y < this.h; y++)
-			{
-				buf.put(this.data[x][y]);
-				
-			}
-			
-		}
-		
-		return true;
-	}
-	
-	@Override
-	public boolean store(IntBuffer buf)
-	{
-		return false;
-	}
-	
 	public Matrix load(FloatBuffer buf)
 	{
-		if (buf.limit() < (this.w * this.h))
+		int l = Math.min(this.getSize(), buf.remaining());
+		
+		for (int c = 0; c < l; c++)
 		{
-			throw new RuntimeException("Buffer is too small to hold me!");
-		}
-		
-		for (int x = 0; x < this.w; x++)
-		{
-			for (int y = 0; y < this.h; y++)
-			{
-				this.data[x][y] = buf.get();
-				
-			}
-			
-		}
-		
-		return this;
-	}
-	
-	public Matrix add(Matrix m)
-	{
-		int xSize = Math.min(m.w, this.w);
-		int ySize = Math.min(m.h, this.h);
-		
-		for (int x = 0; x < xSize; x++)
-		{
-			for (int y = 0; y < ySize; y++)
-			{
-				this.data[x][y] += m.data[x][y];
-				
-			}
-			
-		}
-		
-		return this;
-	}
-	
-	public Matrix sub(Matrix m)
-	{
-		int xSize = Math.min(m.w, this.w);
-		int ySize = Math.min(m.h, this.h);
-		
-		for (int x = 0; x < xSize; x++)
-		{
-			for (int y = 0; y < ySize; y++)
-			{
-				this.data[x][y] -= m.data[x][y];
-				
-			}
-			
-		}
-		
-		return this;
-	}
-	
-	public Matrix mul(Matrix m)
-	{
-		int xSize = Math.min(m.w, this.w);
-		int ySize = Math.min(m.h, this.h);
-		
-		for (int x = 0; x < xSize; x++)
-		{
-			for (int y = 0; y < ySize; y++)
-			{
-				this.data[x][y] *= m.data[x][y];
-				
-			}
-			
-		}
-		
-		return this;
-	}
-	
-	public Matrix mul(Vector4f vec)
-	{
-		if (this.h < 4)
-		{
-			throw new ArrayIndexOutOfBoundsException("Matrix is too small!");
-		}
-		
-		for (int x = 0; x < this.w; x++)
-		{
-			this.data[x][0] *= vec.x;
-			this.data[x][1] *= vec.y;
-			this.data[x][2] *= vec.z;
-			this.data[x][3] *= vec.w;
+			this.data[c] = buf.get();
 			
 		}
 		
@@ -198,7 +75,11 @@ public class Matrix implements IStoreable
 	{
 		FloatBuffer ret = BufferUtils.createFloatBuffer(this.w * this.h);
 		
-		this.store(ret);
+		for (int c = 0; c < this.getSize(); c++)
+		{
+			ret.put(this.get(c));
+			
+		}
 		
 		return ret;
 	}
@@ -214,7 +95,7 @@ public class Matrix implements IStoreable
 			
 			for (int x = 0; x < this.w; x++)
 			{
-				b.append(this.data[x][y]);
+				b.append(this.data[x + (y * this.h)]);
 				
 				if (x != (this.w - 1))
 				{
@@ -224,15 +105,153 @@ public class Matrix implements IStoreable
 				
 			}
 			
+			b.append("]");
+			
 			if (y != (this.h - 1))
 			{
-				b.append("]\n");
+				b.append("\n");
 				
 			}
 			
 		}
 		
 		return b.toString();
+	}
+	
+	@Override
+	public void store(Buffer<Float> buf)
+	{
+		for (int c = 0; c < this.getSize(); c++)
+		{
+			buf.put(this.get(c));
+			
+		}
+		
+	}
+	
+	@Override
+	public int getSize()
+	{
+		return this.w * this.h;
+	}
+	
+	@Override
+	public Float get(int pos)
+	{
+		return this.data[pos];
+	}
+	
+	@Override
+	public void set(Float num, int pos)
+	{
+		this.data[pos] = num;
+		
+	}
+	
+	@Override
+	public Float[] array()
+	{
+		return this.data;
+	}
+	
+	@Override
+	public Matrix add(IMathObject<Float> obj)
+	{
+		Buffer<Float> buf = new Buffer<Float>(obj);
+		
+		for (int c = 0; c < this.getSize(); c++)
+		{
+			this.set(this.get(c) + buf.next(), c);
+			
+			if (!buf.hasNext())
+			{
+				buf.rewind();
+				
+			}
+			
+		}
+		
+		return this;
+	}
+	
+	@Override
+	public Matrix div(IMathObject<Float> obj)
+	{
+		Buffer<Float> buf = new Buffer<Float>(obj);
+		
+		for (int c = 0; c < this.getSize(); c++)
+		{
+			this.set(this.get(c) / buf.next(), c);
+			
+			if (!buf.hasNext())
+			{
+				buf.rewind();
+				
+			}
+			
+		}
+		
+		return this;
+	}
+	
+	@Override
+	public Matrix set(IMathObject<Float> obj)
+	{
+		Buffer<Float> buf = new Buffer<Float>(obj);
+		
+		for (int c = 0; c < this.getSize(); c++)
+		{
+			this.set(buf.next(), c);
+			
+			if (!buf.hasNext())
+			{
+				buf.rewind();
+				
+			}
+			
+		}
+		
+		return this;
+	}
+	
+	@Override
+	public Matrix sub(IMathObject<Float> obj)
+	{
+		Buffer<Float> buf = new Buffer<Float>(obj);
+		
+		for (int c = 0; c < this.getSize(); c++)
+		{
+			this.set(this.get(c) - buf.next(), c);
+			
+			if (!buf.hasNext())
+			{
+				buf.rewind();
+				
+			}
+			
+		}
+		
+		return this;
+	}
+	
+	@Override
+	public Matrix mul(IMathObject<Float> obj)
+	{
+		Buffer<Float> buf = new Buffer<Float>(obj);
+		
+		for (int c = 0; c < this.getSize(); c++)
+		{
+			this.set(this.get(c) * buf.next(), c);
+			
+			if (!buf.hasNext())
+			{
+				buf.rewind();
+				
+			}
+			
+		}
+		
+		return this;
 	}
 	
 }

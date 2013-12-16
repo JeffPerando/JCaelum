@@ -7,11 +7,11 @@ import java.nio.IntBuffer;
 
 /**
  * 
- * Interface for objects storable in NIO buffers.
+ * Interface for objects that can be stored in NIO buffers.
  * 
  * @author Elusivehawk
  */
-public interface IStoreable
+public interface INIOStoreable
 {
 	/**
 	 * @return True if things were stored in the provided buffer.

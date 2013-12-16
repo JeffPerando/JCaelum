@@ -12,8 +12,8 @@ import com.elusivehawk.engine.core.GameLog;
 import com.elusivehawk.engine.core.SemiFinalStorage;
 import com.elusivehawk.engine.core.SemiFinalStorage.IStorageListener;
 import com.elusivehawk.engine.core.Tuple;
-import com.elusivehawk.engine.math.Vector2f;
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
+import com.elusivehawk.engine.math.VectorF;
 
 /**
  * 
@@ -32,9 +32,9 @@ public class Model implements IStorageListener
 	public final SemiFinalStorage<VertexBufferObject> indiceBuf = new SemiFinalStorage<VertexBufferObject>(null, this);
 	
 	private boolean finished = false;
-	private List<Vector3f> polys = new ArrayList<Vector3f>();
+	private List<VectorF> polys = new ArrayList<VectorF>();
 	private List<Color> color = new ArrayList<Color>();
-	private List<Vector2f> texOffs = new ArrayList<Vector2f>();
+	private List<VectorF> texOffs = new ArrayList<VectorF>();
 	private int glMode = Integer.MIN_VALUE;
 	private int pointCount = 0, oldPointCount = 0;
 	private Color globalColor = null;
@@ -61,28 +61,28 @@ public class Model implements IStorageListener
 		
 		this.finished = true;
 		
-		List<Vector3f> vecs = new ArrayList<Vector3f>();
+		List<VectorF> vecs = new ArrayList<VectorF>();
 		List<Integer> indiceList = new ArrayList<Integer>();
 		
 		List<Float> temp = new ArrayList<Float>();
 		
 		for (int c = 0; c < this.polys.size(); c++)
 		{
-			Vector3f vec = this.polys.get(c);
+			VectorF vec = this.polys.get(c);
 			
 			int index = vecs.indexOf(vec);
 			
 			if (index == -1)
 			{
 				Color col = this.color.get(c);
-				Vector2f tex = this.texOffs.get(c);
+				VectorF tex = this.texOffs.get(c);
 				
 				index = vecs.size();
 				vecs.add(vec);
 				
-				temp.add(vec.x);
-				temp.add(vec.y);
-				temp.add(vec.z);
+				temp.add(vec.get(Vector.X));
+				temp.add(vec.get(Vector.Y));
+				temp.add(vec.get(Vector.Z));
 				
 				if (this.globalColor == null)
 				{
@@ -104,8 +104,8 @@ public class Model implements IStorageListener
 					
 				}
 				
-				temp.add(tex.x);
-				temp.add(tex.y);
+				temp.add(tex.get(Vector.X));
+				temp.add(tex.get(Vector.Y));
 				
 			}
 			
@@ -207,7 +207,7 @@ public class Model implements IStorageListener
 		
 		while (this.texOffs.size() < this.polys.size())
 		{
-			this.texOffs.add(new Vector2f(0f, 0f));
+			this.texOffs.add(new VectorF(2, 0f, 0f));
 			
 		}
 		
@@ -226,13 +226,18 @@ public class Model implements IStorageListener
 			return;
 		}
 		
-		this.vertex(new Vector3f(x, y, z));
+		this.vertex(new VectorF(3, x, y, z));
 		
 	}
 	
-	public final void vertex(Vector3f vec)
+	public final void vertex(VectorF vec)
 	{
 		if (this.finished)
+		{
+			return;
+		}
+		
+		if (vec.getSize() < 3)
 		{
 			return;
 		}
@@ -292,7 +297,7 @@ public class Model implements IStorageListener
 			return;
 		}
 		
-		this.texOffs.add(new Vector2f(x, y));
+		this.texOffs.add(new VectorF(2, x, y));
 		
 	}
 	

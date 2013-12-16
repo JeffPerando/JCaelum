@@ -1,8 +1,7 @@
 
 package com.elusivehawk.engine.math;
 
-import java.nio.FloatBuffer;
-import org.lwjgl.BufferUtils;
+import com.elusivehawk.engine.core.Buffer;
 
 /**
  * 
@@ -14,9 +13,9 @@ public final class MatrixHelper
 {
 	private MatrixHelper(){}
 	
-	public static Matrix createTranslationMatrix(Vector3f vec)
+	public static Matrix createTranslationMatrix(Vector<Float> vec)
 	{
-		return createTranslationMatrix(vec.x, vec.y, vec.z);
+		return createTranslationMatrix(vec.get(Vector.X), vec.get(Vector.Y), vec.get(Vector.Z));
 	}
 	
 	public static Matrix createTranslationMatrix(float x, float y, float z)
@@ -41,7 +40,7 @@ public final class MatrixHelper
 					
 				}
 				
-				ret.data[xPos][yPos] = info;
+				ret.set(info, xPos + (yPos * ret.h));
 				
 			}
 			
@@ -61,9 +60,9 @@ public final class MatrixHelper
 		return ret;
 	}
 	
-	public static Matrix createScalingMatrix(Vector3f vec)
+	public static Matrix createScalingMatrix(Vector<Float> vec)
 	{
-		return createScalingMatrix(vec.x, vec.y, vec.z);
+		return createScalingMatrix(vec.get(Vector.X), vec.get(Vector.Y), vec.get(Vector.Z));
 	}
 	
 	public static Matrix createScalingMatrix(float x, float y, float z)
@@ -83,7 +82,7 @@ public final class MatrixHelper
 					
 				}
 				
-				ret.data[xPos][yPos] = info;
+				ret.set(info, xPos + (yPos * ret.h));
 				
 			}
 			
@@ -101,9 +100,9 @@ public final class MatrixHelper
 		return ret;
 	}
 	
-	public static Matrix createRotationMatrix(Vector3f vec)
+	public static Matrix createRotationMatrix(Vector<Float> vec)
 	{
-		return createRotationMatrix(vec.x, vec.y, vec.z);
+		return createRotationMatrix(vec.get(Vector.X), vec.get(Vector.Y), vec.get(Vector.Z));
 	}
 	
 	public static Matrix createRotationMatrix(float x, float y, float z)
@@ -120,23 +119,26 @@ public final class MatrixHelper
 		float ad = a * d;
 		float bd = b * d;
 		
-		FloatBuffer buf = BufferUtils.createFloatBuffer(16);
+		Buffer<Float> buf = new Buffer<Float>();
 		
-		buf.put(c * e).put(-c * f).put(d).put(0);
+		buf.put(c * e).put(-c * f).put(d).put(0f);
 		//-------------------------------------------------
-		buf.put(bd * e + a * f).put(-bd * f + a * e).put(-b * c).put(0);
+		buf.put(bd * e + a * f).put(-bd * f + a * e).put(-b * c).put(0f);
 		//-------------------------------------------------
-		buf.put(-ad * e + b * f).put(ad * f + b * e).put(a * c).put(0);
+		buf.put(-ad * e + b * f).put(ad * f + b * e).put(a * c).put(0f);
 		//-------------------------------------------------
-		buf.put(0).put(0).put(0).put(1);
+		buf.put(0f).put(0f).put(0f).put(1f);
 		//-------------------------------------------------
 		
 		buf.rewind();
 		
-		return new Matrix(buf, 4, 4);
+		Matrix ret = new Matrix(16);
+		ret.store(buf);
+		
+		return ret;
 	}
 	
-	public static Matrix createHomogenousMatrix(Vector3f rot, Vector3f scl, Vector3f trans)
+	public static Matrix createHomogenousMatrix(Vector<Float> rot, Vector<Float> scl, Vector<Float> trans)
 	{
 		Matrix rotate = createRotationMatrix(rot);
 		Matrix scale = createScalingMatrix(scl);

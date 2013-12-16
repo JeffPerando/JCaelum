@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 
 /**
  * 
@@ -14,7 +14,7 @@ public interface IParticle
 {
 	public void updateParticle();
 	
-	public Vector3f getPosition();
+	public Vector<Float> getPosition();
 	
 	public Color getColor();
 	

@@ -9,6 +9,6 @@ package com.elusivehawk.engine.render;
  */
 public enum EnumColorFilter
 {
-	RED, GREEN, BLUE, ALPHA;
+	ALPHA, BLUE, GREEN, RED;
 	
 }

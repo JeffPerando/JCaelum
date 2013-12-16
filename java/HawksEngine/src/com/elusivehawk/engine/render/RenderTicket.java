@@ -7,7 +7,8 @@ import org.lwjgl.BufferUtils;
 import com.elusivehawk.engine.core.IDirty;
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.MatrixHelper;
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
+import com.elusivehawk.engine.math.VectorF;
 
 /**
  * 
@@ -17,7 +18,7 @@ import com.elusivehawk.engine.math.Vector3f;
  */
 public class RenderTicket implements IDirty, ILogicalRender
 {
-	protected final HashMap<EnumVectorType, Vector3f> vecs = new HashMap<EnumVectorType, Vector3f>();
+	protected final HashMap<EnumVectorType, Vector<Float>> vecs = new HashMap<EnumVectorType, Vector<Float>>();
 	protected final Model m;
 	protected final GLProgram p;
 	protected final VertexBufferObject vbo;
@@ -52,7 +53,7 @@ public class RenderTicket implements IDirty, ILogicalRender
 		
 	}
 	
-	public synchronized void setVector(EnumVectorType type, Vector3f vec)
+	public synchronized void setVector(EnumVectorType type, Vector<Float> vec)
 	{
 		this.vecs.get(type).set(vec);
 		
@@ -95,13 +96,27 @@ public class RenderTicket implements IDirty, ILogicalRender
 	 * @param trans
 	 * @param scale
 	 */
-	public void setIndice(int pos, Vector3f rot, Vector3f trans, Vector3f scale)
+	public void setIndice(int pos, Vector<Float> rot, Vector<Float> trans, Vector<Float> scale)
 	{
 		this.buf.position(pos * 9);
 		
-		rot.store(this.getBuffer());
-		trans.store(this.getBuffer());
-		scale.store(this.getBuffer());
+		for (float f : rot.array())
+		{
+			this.buf.put(f);
+			
+		}
+		
+		for (float f : trans.array())
+		{
+			this.buf.put(f);
+			
+		}
+		
+		for (float f : scale.array())
+		{
+			this.buf.put(f);
+			
+		}
 		
 	}
 	
@@ -203,22 +218,22 @@ public class RenderTicket implements IDirty, ILogicalRender
 	
 	public static enum EnumVectorType
 	{
-		ROTATION(new Vector3f()),
-		TRANSLATION(new Vector3f()),
-		SCALING(new Vector3f(1.0f, 1.0f, 1.0f));
+		ROTATION(new VectorF(3)),
+		TRANSLATION(new VectorF(3)),
+		SCALING(new VectorF(3, 1.0f, 1.0f, 1.0f));
 		
-		private final Vector3f vec;
+		private final VectorF vec;
 		
 		@SuppressWarnings("unqualified-field-access")
-		EnumVectorType(Vector3f d)
+		EnumVectorType(VectorF d)
 		{
 			vec = d;
 			
 		}
 		
-		protected Vector3f getDefault()
+		protected VectorF getDefault()
 		{
-			return this.vec.clone();
+			return new VectorF(this.vec);
 		}
 		
 	}

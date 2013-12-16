@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import com.elusivehawk.engine.core.Buffer;
-import com.elusivehawk.engine.core.IStoreable;
+import com.elusivehawk.engine.core.INIOStoreable;
 
 /**
  * 
@@ -13,7 +13,7 @@ import com.elusivehawk.engine.core.IStoreable;
  * 
  * @author Elusivehawk
  */
-public class Color implements IStoreable
+public class Color implements INIOStoreable
 {
 	protected int color = 0;
 	public final EnumColorFormat format;

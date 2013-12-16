@@ -8,10 +8,8 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.nio.ShortBuffer;
-import java.util.ArrayList;
 import java.util.Collection;
 import org.lwjgl.BufferUtils;
-import com.elusivehawk.engine.math.IVector;
 import com.elusivehawk.engine.render.Color;
 
 /**
@@ -366,40 +364,6 @@ public final class BufferHelper
 		ret.flip();
 		
 		return ret;
-	}
-	
-	public static FloatBuffer makeFloatBufferFromVec(IVector... data)
-	{
-		Collection<Float> list = new ArrayList<Float>();
-		
-		for (IVector vec : data)
-		{
-			for (float f : vec.array())
-			{
-				list.add(f);
-				
-			}
-			
-		}
-		
-		return makeFloatBuffer(list);
-	}
-	
-	public static FloatBuffer makeFloatBufferFromVec(Collection<? extends IVector> data)
-	{
-		Collection<Float> list = new ArrayList<Float>();
-		
-		for (IVector vec : data)
-		{
-			for (float f : vec.array())
-			{
-				list.add(f);
-				
-			}
-			
-		}
-		
-		return makeFloatBuffer(list);
 	}
 	
 }

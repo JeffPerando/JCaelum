@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.sound;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 
 /**
  * 
@@ -13,9 +13,9 @@ public interface ISound
 {
 	public int getId();
 	
-	public Vector3f getPosition();
+	public Vector<Float> getPosition();
 	
-	public Vector3f getVelocity();
+	public Vector<Float> getVelocity();
 	
 	public float getPitch();
 	

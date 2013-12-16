@@ -40,6 +40,14 @@ public class Buffer<T> implements IDirty, Iterable<T>, Iterator<T>
 		
 	}
 	
+	public Buffer(IStorable<T> stor)
+	{
+		this();
+		
+		stor.store(this);
+		
+	}
+	
 	@Override
 	public boolean hasNext()
 	{
@@ -57,6 +65,11 @@ public class Buffer<T> implements IDirty, Iterable<T>, Iterator<T>
 		return this.hasNext() ? (this.l.get(next ? this.pos++ : this.pos + 1)) : null;
 	}
 	
+	public T get(int pos)
+	{
+		return this.l.size() > pos && pos >= 0 ? this.l.get(pos) : null;
+	}
+	
 	@Override
 	public void remove()
 	{
@@ -65,15 +78,16 @@ public class Buffer<T> implements IDirty, Iterable<T>, Iterator<T>
 		
 	}
 	
-	public void put(T obj)
+	public Buffer<T> put(T obj)
 	{
 		this.dirt.set(this.pos, true);
 		this.l.set(this.pos++, obj);
 		
+		return this;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void put(T... objs)
+	public Buffer<T> put(T... objs)
 	{
 		for (T obj : objs)
 		{
@@ -81,6 +95,7 @@ public class Buffer<T> implements IDirty, Iterable<T>, Iterator<T>
 			
 		}
 		
+		return this;
 	}
 	
 	public int position()
