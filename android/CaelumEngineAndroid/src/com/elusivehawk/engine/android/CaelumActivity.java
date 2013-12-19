@@ -19,4 +19,39 @@ public class CaelumActivity extends Activity
 		
 	}
 	
+	@Override
+	public void onStart()
+	{
+		super.onStart();
+		
+	}
+	
+	@Override
+	public void onResume()
+	{
+		
+		
+	}
+	
+	@Override
+	public void onPause()
+	{
+		
+		
+	}
+	
+	@Override
+	public void onStop()
+	{
+		
+		
+	}
+	
+	@Override
+	public void onDestroy()
+	{
+		
+		
+	}
+	
 }

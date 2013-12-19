@@ -3,6 +3,8 @@ package com.elusivehawk.engine.core;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
+import java.util.HashMap;
+import java.util.Map;
 import com.elusivehawk.engine.render.IRenderHUB;
 import com.elusivehawk.engine.render.ThreadGameRender;
 import com.elusivehawk.engine.sound.ThreadSoundPlayer;
@@ -23,9 +25,7 @@ public final class CaelumEngine
 	public final Object startupHook = new Object();
 	public final Object shutdownHook = new Object();
 	private IGame game;
-	private ThreadGameLoop threadCore;
-	private ThreadGameRender threadRender;
-	private ThreadSoundPlayer threadSound;
+	private Map<EnumEngineFeature, ThreadStoppable> threads = new HashMap<EnumEngineFeature, ThreadStoppable>();
 	
 	private CaelumEngine(){}
 	
@@ -59,21 +59,31 @@ public final class CaelumEngine
 			
 		}
 		
-		this.threadCore = new ThreadGameLoop(this.game);
+		this.threads.put(EnumEngineFeature.LOGIC, new ThreadGameLoop(this.game));
 		
 		IRenderHUB hub = this.game.getRenderHUB();
 		
 		if (hub != null)
 		{
-			this.threadRender = new ThreadGameRender(hub);
+			this.threads.put(EnumEngineFeature.RENDER, new ThreadGameRender(hub));
 			
 		}
 		
-		this.threadSound = new ThreadSoundPlayer();
+		this.threads.put(EnumEngineFeature.SOUND, new ThreadSoundPlayer());
 		
-		this.threadCore.start();
-		if (this.threadRender != null) this.threadRender.start();
-		this.threadSound.start();
+		//TODO Moar threadz!!!
+		
+		for (EnumEngineFeature fe : EnumEngineFeature.values())
+		{
+			ThreadStoppable t = this.threads.get(fe);
+			
+			if (t != null)
+			{
+				t.start();
+				
+			}
+			
+		}
 		
 		this.startupHook.notifyAll();
 		
@@ -90,10 +100,18 @@ public final class CaelumEngine
 		{
 			return;
 		}
-		
-		this.threadCore.stopThread();
-		if (this.threadRender != null) this.threadRender.stopThread();
-		this.threadSound.stopThread();
+
+		for (EnumEngineFeature fe : EnumEngineFeature.values())
+		{
+			ThreadStoppable t = this.threads.get(fe);
+			
+			if (t != null)
+			{
+				t.stopThread();
+				
+			}
+			
+		}
 		
 		try
 		{
@@ -116,6 +134,28 @@ public final class CaelumEngine
 	public IGame getCurrentGame()
 	{
 		return this.game;
+	}
+	
+	public void pauseGame(boolean pause)
+	{
+		this.pauseGame(pause, EnumEngineFeature.values());
+		
+	}
+	
+	public void pauseGame(boolean pause, EnumEngineFeature... features)
+	{
+		for (EnumEngineFeature fe : features)
+		{
+			ThreadStoppable t = this.threads.get(fe);
+			
+			if (t != null)
+			{
+				t.setPaused(pause);
+				
+			}
+			
+		}
+		
 	}
 	
 }
