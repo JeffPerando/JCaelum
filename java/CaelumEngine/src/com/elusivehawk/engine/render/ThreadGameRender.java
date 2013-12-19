@@ -85,6 +85,11 @@ public class ThreadGameRender extends ThreadTimed
 	@Override
 	public void update(double delta)
 	{
+		if (this.isPaused())
+		{
+			return;
+		}
+		
 		this.hub.update(delta);
 		
 		if (this.hub.updateDisplay())
