@@ -6,7 +6,7 @@ import java.util.List;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL10;
 import com.elusivehawk.engine.core.CaelumEngine;
-import com.elusivehawk.engine.core.GameLog;
+import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.core.ThreadStoppable;
 
 /**
@@ -56,7 +56,7 @@ public class ThreadSoundPlayer extends ThreadStoppable
 		}
 		catch (Exception e)
 		{
-			GameLog.error(e);
+			CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
 			
 			run = false;
 			

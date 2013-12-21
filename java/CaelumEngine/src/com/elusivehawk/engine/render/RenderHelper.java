@@ -12,8 +12,9 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.glu.GLU;
 import com.elusivehawk.engine.core.Buffer;
+import com.elusivehawk.engine.core.CaelumEngine;
+import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.core.FileHelper;
-import com.elusivehawk.engine.core.GameLog;
 import com.elusivehawk.engine.core.TextParser;
 
 /**
@@ -62,7 +63,7 @@ public final class RenderHelper
 			}
 			catch (Exception e)
 			{
-				GameLog.error(e);
+				CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
 				
 			}
 			
@@ -149,7 +150,7 @@ public final class RenderHelper
 		}
 		catch (Exception e)
 		{
-			GameLog.error(e);
+			CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
 			
 		}
 		
@@ -254,7 +255,7 @@ public final class RenderHelper
 		}
 		catch (Exception e)
 		{
-			GameLog.error(e);
+			CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
 			
 		}
 		
@@ -275,7 +276,7 @@ public final class RenderHelper
 		}
 		catch (LWJGLException e)
 		{
-			GameLog.error(e);
+			CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
 			
 		}
 		

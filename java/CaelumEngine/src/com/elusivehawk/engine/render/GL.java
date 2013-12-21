@@ -75,7 +75,7 @@ public final class GL
 	
 	//End Caelum engine exclusive functionality.
 	
-	//XXX #
+	//GL #
 	
 	public static final int GL_2_BYTES = GL11.GL_2_BYTES;
 	public static final int GL_2D = GL11.GL_2D;
@@ -86,7 +86,7 @@ public final class GL
 	public static final int GL_4_BYTES = GL11.GL_4_BYTES;
 	public static final int GL_4D_COLOR_TEXTURE = GL11.GL_4D_COLOR_TEXTURE;
 	
-	//XXX A
+	//GL A
 	
 	public static final int GL_ACCUM = GL11.GL_ACCUM;
 	public static final int GL_ACCUM_ALPHA_BITS = GL11.GL_ACCUM_ALPHA_BITS;
@@ -177,7 +177,7 @@ public final class GL
 	public static final int GL_AUX2 = GL11.GL_AUX2;
 	public static final int GL_AUX3 = GL11.GL_AUX3;
 	
-	//XXX B
+	//GL B
 	
 	public static final int GL_BACK = GL11.GL_BACK;
 	public static final int GL_BACK_LEFT = GL11.GL_BACK_LEFT;
@@ -226,7 +226,7 @@ public final class GL
 	public static final int GL_BUFFER_VARIABLE = GL43.GL_BUFFER_VARIABLE;
 	public static final int GL_BYTE = GL11.GL_BYTE;
 	
-	//XXX C
+	//GL C
 	
 	public static final int GL_C3F_V3F = GL11.GL_C3F_V3F;
 	public static final int GL_C4F_N3F_V3F = GL11.GL_C4F_N3F_V3F;
@@ -389,7 +389,7 @@ public final class GL
 	public static final int GL_CURRENT_VERTEX_ATTRIB = GL20.GL_CURRENT_VERTEX_ATTRIB;
 	public static final int GL_CW = GL11.GL_CW;
 	
-	//XXX D
+	//GL D
 	
 	public static final int GL_DEBUG_CALLBACK_FUNCTION = GL43.GL_DEBUG_CALLBACK_FUNCTION;
 	public static final int GL_DEBUG_CALLBACK_USER_PARAM = GL43.GL_DEBUG_CALLBACK_USER_PARAM;
@@ -499,7 +499,7 @@ public final class GL
 	public static final int GL_DYNAMIC_READ = GL15.GL_DYNAMIC_READ;
 	public static final int GL_DYNAMIC_STORAGE_BIT = GL44.GL_DYNAMIC_STORAGE_BIT;
 	
-	//XXX E
+	//GL E
 	
 	public static final int GL_EDGE_FLAG = GL11.GL_EDGE_FLAG;
 	public static final int GL_EDGE_FLAG_ARRAY = GL11.GL_EDGE_FLAG_ARRAY;
@@ -520,7 +520,7 @@ public final class GL
 	public static final int GL_EYE_LINEAR = GL11.GL_EYE_LINEAR;
 	public static final int GL_EYE_PLANE = GL11.GL_EYE_PLANE;
 	
-	//XXX F
+	//GL F
 	
 	public static final int GL_FALSE = GL11.GL_FALSE;
 	public static final int GL_FASTEST = GL11.GL_FASTEST;
@@ -628,7 +628,7 @@ public final class GL
 	public static final int GL_FUNC_REVERSE_SUBTRACT = GL14.GL_FUNC_REVERSE_SUBTRACT;
 	public static final int GL_FUNC_SUBTRACT = GL14.GL_FUNC_SUBTRACT;
 	
-	//XXX G
+	//GL G
 	
 	public static final int GL_GENERATE_MIPMAP = GL14.GL_GENERATE_MIPMAP;
 	public static final int GL_GENERATE_MIPMAP_HINT = GL14.GL_GENERATE_MIPMAP_HINT;
@@ -651,14 +651,14 @@ public final class GL
 	public static final int GL_GREEN_INTEGER = GL30.GL_GREEN_INTEGER;
 	public static final int GL_GREEN_SCALE = GL11.GL_GREEN_SCALE;
 	
-	//XXX H
+	//GL H
 	
 	public static final int GL_HALF_FLOAT = GL30.GL_HALF_FLOAT;
 	public static final int GL_HIGH_FLOAT = GL41.GL_HIGH_FLOAT;
 	public static final int GL_HIGH_INT = GL41.GL_HIGH_INT;
 	public static final int GL_HINT_BIT = GL11.GL_HINT_BIT;
 	
-	//XXX I
+	//GL I
 	
 	public static final int GL_IMAGE_1D = GL42.GL_IMAGE_1D;
 	public static final int GL_IMAGE_1D_ARRAY = GL42.GL_IMAGE_1D_ARRAY;
@@ -771,11 +771,11 @@ public final class GL
 	public static final int GL_IS_ROW_MAJOR = GL43.GL_IS_ROW_MAJOR;
 	public static final int GL_ISOLINES = GL40.GL_ISOLINES;
 	
-	//XXX K
+	//GL K
 	
 	public static final int GL_KEEP = GL11.GL_KEEP;
 	
-	//XXX L
+	//GL L
 	
 	public static final int GL_LAST_VERTEX_CONVENTION = GL41.GL_LAST_VERTEX_CONVENTION;
 	public static final int GL_LAYER_PROVOKING_VERTEX = GL41.GL_LAYER_PROVOKING_VERTEX;
@@ -844,7 +844,7 @@ public final class GL
 	public static final int GL_LUMINANCE8 = GL11.GL_LUMINANCE8;
 	public static final int GL_LUMINANCE8_ALPHA8 = GL11.GL_LUMINANCE8_ALPHA8;
 	
-	//XXX M
+	//GL M
 	
 	public static final int GL_MAJOR_VERSION = GL30.GL_MAJOR_VERSION;
 	public static final int GL_MANUAL_GENERATE_MIPMAP = GL43.GL_MANUAL_GENERATE_MIPMAP;
@@ -1059,7 +1059,7 @@ public final class GL
 	public static final int GL_MULTISAMPLE = GL13.GL_MULTISAMPLE;
 	public static final int GL_MULTISAMPLE_BIT = GL13.GL_MULTISAMPLE_BIT;
 	
-	//XXX N
+	//GL N
 	
 	public static final int GL_N3F_V3F = GL11.GL_N3F_V3F;
 	public static final int GL_NAME_LENGTH = GL43.GL_NAME_LENGTH;
@@ -1091,7 +1091,7 @@ public final class GL
 	public static final int GL_NUM_SHADER_BINARY_FORMATS = GL41.GL_NUM_SHADER_BINARY_FORMATS;
 	public static final int GL_NUM_SHADING_LANGUAGE_VERSIONS = GL43.GL_NUM_SHADING_LANGUAGE_VERSIONS;
 	
-	//XXX O
+	//GL O
 	
 	public static final int GL_OBJECT_LINEAR = GL11.GL_OBJECT_LINEAR;
 	public static final int GL_OBJECT_PLANE = GL11.GL_OBJECT_PLANE;
@@ -1118,7 +1118,7 @@ public final class GL
 	public static final int GL_ORDER = GL11.GL_ORDER;
 	public static final int GL_OUT_OF_MEMORY = GL11.GL_OUT_OF_MEMORY;
 	
-	//XXX P
+	//GL P
 	
 	public static final int GL_PACK_ALIGNMENT = GL11.GL_PACK_ALIGNMENT;
 	public static final int GL_PACK_COMPRESSED_BLOCK_DEPTH = GL42.GL_PACK_COMPRESSED_BLOCK_DEPTH;
@@ -1224,7 +1224,7 @@ public final class GL
 	public static final int GL_PROXY_TEXTURE_CUBE_MAP_ARRAY = GL40.GL_PROXY_TEXTURE_CUBE_MAP_ARRAY;
 	public static final int GL_PROXY_TEXTURE_RECTANGLE = GL31.GL_PROXY_TEXTURE_RECTANGLE;
 	
-	//XXX Q
+	//GL Q
 	
 	public static final int GL_Q = GL11.GL_Q;
 	public static final int GL_QUAD_STRIP = GL11.GL_QUAD_STRIP;
@@ -1243,7 +1243,7 @@ public final class GL
 	public static final int GL_QUERY_RESULT_AVAILABLE = GL15.GL_QUERY_RESULT_AVAILABLE;
 	public static final int GL_QUERY_RESULT_NO_WAIT = GL44.GL_QUERY_RESULT_NO_WAIT;
 	public static final int GL_QUERY_WAIT = GL30.GL_QUERY_WAIT;
-	//XXX R
+	//GL R
 	public static final int GL_R = GL11.GL_R;
 	public static final int GL_R11F_G11F_B10F = GL30.GL_R11F_G11F_B10F;
 	public static final int GL_R16 = GL30.GL_R16;
@@ -1362,7 +1362,7 @@ public final class GL
 	public static final int GL_RGBA8UI = GL30.GL_RGBA8UI;
 	public static final int GL_RIGHT = GL11.GL_RIGHT;
 	
-	//XXX S
+	//GL S
 	
 	public static final int GL_S = GL11.GL_S;
 	public static final int GL_SAMPLE_ALPHA_TO_COVERAGE = GL13.GL_SAMPLE_ALPHA_TO_COVERAGE;
@@ -1522,7 +1522,7 @@ public final class GL
 	public static final int GL_SYNC_GPU_COMMANDS_COMPLETE = GL32.GL_SYNC_GPU_COMMANDS_COMPLETE;
 	public static final int GL_SYNC_STATUS = GL32.GL_SYNC_STATUS;
 	
-	//XXX T
+	//GL T
 	
 	public static final int GL_T = GL11.GL_T;
 	public static final int GL_T2F_C3F_V3F = GL11.GL_T2F_C3F_V3F;
@@ -1732,7 +1732,7 @@ public final class GL
 	public static final int GL_TRUE = GL11.GL_TRUE;
 	public static final int GL_TYPE = GL43.GL_TYPE;
 	
-	//XXX U
+	//GL U
 	
 	public static final int GL_UNDEFINED_VERTEX = GL41.GL_UNDEFINED_VERTEX;
 	public static final int GL_UNIFORM = GL43.GL_UNIFORM;
@@ -1823,7 +1823,7 @@ public final class GL
 	public static final int GL_UNSIGNED_SHORT_5_6_5_REV = GL12.GL_UNSIGNED_SHORT_5_6_5_REV;
 	public static final int GL_UPPER_LEFT = GL20.GL_UPPER_LEFT;
 	
-	//XXX V
+	//GL V
 	
 	public static final int GL_V2F = GL11.GL_V2F;
 	public static final int GL_V3F = GL11.GL_V3F;
@@ -1883,17 +1883,17 @@ public final class GL
 	public static final int GL_VIEWPORT_INDEX_PROVOKING_VERTEX = GL41.GL_VIEWPORT_INDEX_PROVOKING_VERTEX;
 	public static final int GL_VIEWPORT_SUBPIXEL_BITS = GL41.GL_VIEWPORT_SUBPIXEL_BITS;
 	
-	//XXX W
+	//GL W
 	
 	public static final int GL_WAIT_FAILED = GL32.GL_WAIT_FAILED;
 	public static final int GL_WEIGHT_ARRAY_BUFFER_BINDING = GL15.GL_WEIGHT_ARRAY_BUFFER_BINDING;
 	public static final int GL_WRITE_ONLY = GL15.GL_WRITE_ONLY;
 	
-	//XXX X
+	//GL X
 	
 	public static final int GL_XOR = GL11.GL_XOR;
 	
-	//XXX Z
+	//GL Z
 	
 	public static final int GL_ZERO = GL11.GL_ZERO;
 	public static final int GL_ZOOM_X = GL11.GL_ZOOM_X;
@@ -1902,7 +1902,7 @@ public final class GL
 	public static final int IMAGE_FORMAT_COMPATIBILITY_BY_CLASS = GL42.IMAGE_FORMAT_COMPATIBILITY_BY_CLASS;
 	public static final int GL_IMAGE_FORMAT_COMPATIBILITY_BY_CLASS = GL42.IMAGE_FORMAT_COMPATIBILITY_BY_CLASS;
 	
-	//XXX A
+	//GL A
 	
 	public static void glActiveShaderProgram(int pipeline, int program)
 	{
@@ -1928,7 +1928,7 @@ public final class GL
 		
 	}
 	
-	//XXX B
+	//GL B
 	
 	public static void glBeginConditionalRender(int id, int mode)
 	{
@@ -2278,7 +2278,7 @@ public final class GL
 		
 	}
 	
-	//XXX C
+	//GL C
 	
 	public static int glCheckFramebufferStatus(int target)
 	{
@@ -2607,7 +2607,7 @@ public final class GL
 		
 	}
 	
-	//XXX D
+	//GL D
 	
 	public static void glDebugMessageCallback(KHRDebugCallback callback)
 	{
@@ -3137,7 +3137,7 @@ public final class GL
 		
 	}
 	
-	//XXX E
+	//GL E
 	
 	public static void glEnable(int cap)
 	{
@@ -3181,7 +3181,7 @@ public final class GL
 		
 	}
 	
-	//XXX F
+	//GL F
 	
 	public static GLSync glFenceSync(int condition, int flags)
 	{
@@ -3254,7 +3254,7 @@ public final class GL
 		
 	}
 	
-	//XXX G
+	//GL G
 	
 	public static int glGenBuffers()
 	{
@@ -4358,7 +4358,7 @@ public final class GL
 		return GL20.glGetVertexAttribPointer(index, pname, result_size);
 	}
 	
-	//XXX H
+	//GL H
 	
 	public static void glHint(int target, int mode)
 	{
@@ -4366,7 +4366,7 @@ public final class GL
 		
 	}
 	
-	//XXX I
+	//GL I
 	
 	public static void glInvalidateBufferData(int buffer)
 	{
@@ -4474,7 +4474,7 @@ public final class GL
 		return GL30.glIsVertexArray(array);
 	}
 	
-	//XXX L
+	//GL L
 	
 	public static void glLineWidth(float width)
 	{
@@ -4500,7 +4500,7 @@ public final class GL
 		
 	}
 	
-	//XXX M
+	//GL M
 	
 	public static ByteBuffer glMapBuffer(int target, int access, ByteBuffer old_buffer)
 	{
@@ -4571,9 +4571,9 @@ public final class GL
 		
 	}
 	
-	//XXX N
+	//GL N
 	
-	//XXX O
+	//GL O
 	
 	public static void glObjectLabel(int identifier, int name, ByteBuffer label)
 	{
@@ -4599,7 +4599,7 @@ public final class GL
 		
 	}
 	
-	//XXX P
+	//GL P
 	
 	public static void glPatchParameter(int pname, FloatBuffer values)
 	{
@@ -5015,7 +5015,7 @@ public final class GL
 		
 	}
 	
-	//XXX Q
+	//GL Q
 	
 	public static void glQueryCounter(int id, int target)
 	{
@@ -5023,7 +5023,7 @@ public final class GL
 		
 	}
 	
-	//XXX R
+	//GL R
 	
 	public static void glReadBuffer(int mode)
 	{
@@ -5091,7 +5091,7 @@ public final class GL
 		
 	}
 	
-	//XXX S
+	//GL S
 	
 	public static void glSampleCoverage(float value, boolean invert)
 	{
@@ -5231,7 +5231,7 @@ public final class GL
 		
 	}
 	
-	//XXX T
+	//GL T
 	
 	public static void glTexBuffer(int target, int internalformat, int buffer)
 	{
@@ -5569,7 +5569,7 @@ public final class GL
 		
 	}
 	
-	//XXX U
+	//GL U
 	
 	public static void glUniform1(int location, DoubleBuffer value)
 	{
@@ -5906,7 +5906,7 @@ public final class GL
 		
 	}
 	
-	//XXX V
+	//GL V
 	
 	public static void glValidateProgram(int program)
 	{
@@ -6430,7 +6430,7 @@ public final class GL
 		
 	}
 	
-	//XXX W
+	//GL W
 	
 	public static void glWaitSync(GLSync sync, int flags, long timeout)
 	{

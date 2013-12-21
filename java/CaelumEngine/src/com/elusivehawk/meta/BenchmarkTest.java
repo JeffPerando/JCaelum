@@ -1,7 +1,6 @@
 
 package com.elusivehawk.meta;
 
-import com.elusivehawk.engine.core.GameLog;
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.MatrixHelper;
 
@@ -27,15 +26,15 @@ public class BenchmarkTest
 	
 	public static void main(String[] args)
 	{
-		GameLog.info("Beginning bench testing...");
+		System.out.println("Beginning bench testing...");
 		
-		Matrix trs = MatrixHelper.createRotationMatrix(90, 90, 90).mul(MatrixHelper.createScalingMatrix(90, 90, 90));
+		Matrix trs = MatrixHelper.createRotationMatrix(90, 90, 90).mul(MatrixHelper.createRotationMatrix(90, 90, 90));
 		
-		GameLog.info(trs.toString());
+		System.out.println(trs.toString());
 		
-		GameLog.info(MatrixHelper.createRotationMatrix(180, 180, 180).toString());
+		System.out.println(MatrixHelper.createRotationMatrix(180, 180, 180).toString());
 		
-		GameLog.info("Th-th-th-th-That's all, folks!");
+		System.out.println("Th-th-th-th-That's all, folks!");
 		
 	}
 	

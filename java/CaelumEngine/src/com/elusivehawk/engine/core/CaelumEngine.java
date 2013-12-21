@@ -24,14 +24,103 @@ public final class CaelumEngine
 	
 	public final Object startupHook = new Object();
 	public final Object shutdownHook = new Object();
-	private IGame game;
 	private Map<EnumEngineFeature, ThreadStoppable> threads = new HashMap<EnumEngineFeature, ThreadStoppable>();
+	private IGame game;
+	private IGameEnvironment environment;
+	private ILog log = new GameLog();
 	
 	private CaelumEngine(){}
 	
 	public static CaelumEngine instance()
 	{
 		return INSTANCE;
+	}
+	
+	public static void main(String... args)
+	{
+		System.out.println("Starting Caelum Engine v" + VERSION);
+		
+		if (args.length == 0)
+		{
+			System.err.println("The starting arguments require the path to the file that the launch settings are in.");
+			return;
+		}
+		
+		Buffer<String> buf = new Buffer<String>(args);
+		
+		String cur = buf.next();
+		
+		if (cur.startsWith("file:"))
+		{
+			File file = FileHelper.createFile(".", TextParser.splitOnce(cur, "file:")[1]);
+			
+			if (!file.exists())
+			{
+				return;
+			}
+			
+			if (!file.isFile())
+			{
+				return;
+			}
+			
+			if (!file.canRead())
+			{
+				return;
+			}
+			
+			//TODO Parse JSON file
+			
+			cur = buf.next();
+			
+		}
+		
+		IGameEnvironment env = null;
+		
+		if (cur.startsWith("class:"))
+		{
+			env = (IGameEnvironment)ReflectionHelper.newInstance(TextParser.splitOnce(cur, "class:")[1], new Class<?>[]{IGameEnvironment.class}, null);
+			
+		}
+		
+		if (env == null)
+		{
+			System.err.println("Could not load game environment.");
+			System.exit("NO-ENVIRONMENT-FOUND".hashCode());
+			
+		}
+		
+		env.initiate();
+		
+		instance().environment = env;
+		
+		cur = buf.next();
+		
+		IGame g = null;
+		
+		if (cur.startsWith("game:"))
+		{
+			g = (IGame)ReflectionHelper.newInstance(TextParser.splitOnce(cur, "game:")[1], new Class<?>[]{IGame.class}, null);
+			
+		}
+		
+		if (g == null)
+		{
+			System.err.println("Could not load game.");
+			System.exit("NO-GAME-FOUND".hashCode());
+			
+		}
+		
+		ILog log = env.getLog();
+		
+		if (log != null)
+		{
+			instance().log = log;
+			
+		}
+		
+		instance().start(g);
+		
 	}
 	
 	public void start(IGame g)
@@ -49,7 +138,7 @@ public final class CaelumEngine
 			
 			if (lwjgl == null)
 			{
-				GameLog.warn("LWJGL path is set to null! What are you thinking?!");
+				//GameLog.warn("LWJGL path is set to null! What are you thinking?!");
 				
 				lwjgl = CaelumEngine.determineLWJGLPath();
 				
@@ -86,6 +175,12 @@ public final class CaelumEngine
 		}
 		
 		this.startupHook.notifyAll();
+		
+	}
+	
+	public void shutDownGame(String err)
+	{
+		this.shutDownGame(err == null ? 0 : err.hashCode());
 		
 	}
 	
@@ -134,6 +229,11 @@ public final class CaelumEngine
 	public IGame getCurrentGame()
 	{
 		return this.game;
+	}
+	
+	public ILog getLog()
+	{
+		return this.log;
 	}
 	
 	public void pauseGame(boolean pause)

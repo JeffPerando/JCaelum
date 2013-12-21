@@ -1,12 +1,9 @@
 
 package com.elusivehawk.engine.core;
 
-import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Logger;
 
 /**
  * 
@@ -14,65 +11,19 @@ import java.util.logging.Logger;
  * <p>
  * Note: Unlike {@link System}.out.println(), this is thread safe.<br>
  * 
- * @deprecated To be replaced with a {@link Logger} compliant version.
- * 
  * @author Elusivehawk
  */
-@Deprecated
-public final class GameLog
+public final class GameLog implements ILog
 {
-	public static volatile boolean enableVerbosity = true;
-	public static final List<String> CRASH_DIALOG = TextParser.read(FileHelper.createFile((CaelumEngine.DEBUG ? "src" : ".") + "/com/elusivehawk/engine/core/CrashReportDialog.txt"));
+	private final List<String> crashDialog = TextParser.read(FileHelper.createFile((CaelumEngine.DEBUG ? "src" : ".") + "/com/elusivehawk/engine/core/CrashReportDialog.txt"));
+	private final Random rng = new Random();
 	
-	private static Random rng = new Random();
+	public boolean enableVerbosity = true;
 	
-	private GameLog(){}
-	
-	public static void info(String message)
+	@Override
+	public void log(EnumLogType type, String msg)
 	{
-		log(message, EnumLogType.INFO);
-		
-	}
-	
-	public static void debug(String message)
-	{
-		log(message, EnumLogType.DEBUG);
-		
-	}
-	
-	public static void warn(String message)
-	{
-		log(message, EnumLogType.WARN);
-		
-	}
-	
-	public static void error(String message)
-	{
-		log(message, EnumLogType.ERROR);
-		
-	}
-	
-	public static void error(Throwable e)
-	{
-		error(null, e);
-		
-	}
-	
-	public static void error(String message, Throwable e)
-	{
-		error(message == null ? (CRASH_DIALOG.isEmpty() ? "Error found:" : CRASH_DIALOG.get(rng.nextInt(CRASH_DIALOG.size()))) : message);
-		
-		for (PrintStream ps : EnumLogType.ERROR.out)
-		{
-			e.printStackTrace(ps);
-			
-		}
-		
-	}
-	
-	public static synchronized void log(String message, EnumLogType type)
-	{
-		if (!enableVerbosity && type.verbose)
+		if (!this.enableVerbosity && type == EnumLogType.VERBOSE)
 		{
 			return;
 		}
@@ -87,51 +38,28 @@ public final class GameLog
 		int minute = cal.get(Calendar.MINUTE);
 		boolean amOrPm = cal.get(Calendar.AM_PM) == Calendar.PM;
 		b.append(cal.get(Calendar.HOUR) + ":" + (minute < 10 ? "0" : "") + minute + ":" + cal.get(Calendar.SECOND) + ":" + cal.get(Calendar.MILLISECOND) + " " + (amOrPm ? "PM" : "AM") + ": ");
-		b.append(message);
+		b.append(type.err && msg == null ? this.crashDialog.get(this.rng.nextInt(this.crashDialog.size())) : msg);
 		
 		String fin = b.toString();
 		
-		for (PrintStream ps : type.out)
+		if (type.err)
 		{
-			ps.println(fin);
+			System.err.println(fin);
+			
+		}
+		else
+		{
+			System.out.println(fin);
 			
 		}
 		
 	}
 	
-	public static enum EnumLogType
+	@Override
+	public void log(EnumLogType type, String msg, Throwable e)
 	{
-		INFO(System.out, true),
-		DEBUG(System.out, true),
-		WARN(System.err, false),
-		ERROR(System.err, false);
-		
-		List<PrintStream> out = new ArrayList<PrintStream>();
-		final boolean verbose;
-		
-		@SuppressWarnings("unqualified-field-access")
-		EnumLogType(PrintStream ps, boolean isVerbose)
-		{
-			out.add(ps);
-			verbose = isVerbose;
-			
-		}
-		
-		public static void addOutputToEnums(PrintStream stream)
-		{
-			for (EnumLogType type : values())
-			{
-				type.addOutput(stream);
-				
-			}
-			
-		}
-		
-		public synchronized void addOutput(PrintStream stream)
-		{
-			this.out.add(stream);
-			
-		}
+		this.log(type, msg);
+		e.printStackTrace();
 		
 	}
 	

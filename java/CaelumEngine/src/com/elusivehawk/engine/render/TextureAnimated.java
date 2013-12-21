@@ -5,7 +5,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
 import com.elusivehawk.engine.core.Buffer;
-import com.elusivehawk.engine.core.GameLog;
+import com.elusivehawk.engine.core.CaelumEngine;
+import com.elusivehawk.engine.core.EnumLogType;
 
 /**
  * 
@@ -43,7 +44,7 @@ public class TextureAnimated implements ITexture
 		}
 		catch (Exception e)
 		{
-			GameLog.error(e);
+			CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
 			
 		}
 		

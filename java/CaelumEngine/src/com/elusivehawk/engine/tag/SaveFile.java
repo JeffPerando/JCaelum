@@ -10,8 +10,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import com.elusivehawk.engine.core.Buffer;
+import com.elusivehawk.engine.core.CaelumEngine;
+import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.core.FileHelper;
-import com.elusivehawk.engine.core.GameLog;
 
 /**
  * 
@@ -72,7 +73,7 @@ public class SaveFile implements ITagList
 		}
 		catch (IOException e)
 		{
-			GameLog.error(e);
+			CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
 			
 		}
 		
@@ -100,7 +101,7 @@ public class SaveFile implements ITagList
 		}
 		catch (Exception e)
 		{
-			GameLog.error(e);
+			CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
 			
 		}
 		
@@ -150,7 +151,7 @@ public class SaveFile implements ITagList
 		}
 		catch (IOException e)
 		{
-			GameLog.error(e);
+			CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
 			
 		}
 		

@@ -39,21 +39,21 @@ public final class TextParser
 		
 		if (!file.exists())
 		{
-			GameLog.warn("File with path " + file.getAbsolutePath() + " does not exist. It may have been tampered with.");
+			System.err.println("File with path " + file.getAbsolutePath() + " does not exist. It may have been tampered with.");
 			
 			return text;
 		}
 		
 		if (!file.isFile())
 		{
-			GameLog.warn("File with path " + file.getAbsolutePath() + " is in fact a directory. It may have been tampered with.");
+			System.err.println("File with path " + file.getAbsolutePath() + " is in fact a directory. It may have been tampered with.");
 			
 			return text;
 		}
 		
 		if (!file.canRead())
 		{
-			GameLog.warn("File with path " + file.getAbsolutePath() + " cannot be read. It may have been tampered with.");
+			System.err.println("File with path " + file.getAbsolutePath() + " cannot be read. It may have been tampered with.");
 			
 			return text;
 		}
@@ -73,7 +73,7 @@ public final class TextParser
 		}
 		catch (Exception e)
 		{
-			GameLog.error("Error caught while reading text file: ", e);
+			e.printStackTrace();
 			
 		}
 		
@@ -106,7 +106,7 @@ public final class TextParser
 			}
 			catch (Exception e)
 			{
-				GameLog.error(e);
+				e.printStackTrace();
 				
 				return false;
 			}
@@ -115,7 +115,7 @@ public final class TextParser
 		
 		if (!file.canWrite())
 		{
-			GameLog.warn("File with path " + file.getPath() + " cannot be written to! This is a bug!");
+			System.err.println("File with path " + file.getPath() + " cannot be written to! This is a bug!");
 			
 			return false;
 		}
@@ -137,26 +137,28 @@ public final class TextParser
 		}
 		catch (Exception e)
 		{
-			GameLog.error(e);
+			e.printStackTrace();
 			
 		}
 		
 		return false;
 	}
 	
-	public static String removeLast(String str, String textToRemove, boolean trim)
+	public static String replaceLast(String str, String textToRemove, String replace)
 	{
-		if (!str.contains(textToRemove))
+		int lastIn = str.lastIndexOf(textToRemove);
+		
+		if (lastIn == -1)
 		{
-			GameLog.warn("Failed to remove last instance of " + textToRemove + " from " + str + "; Trimming is set to " + trim + ".");
+			System.err.println("Failed to remove last instance of " + textToRemove + " from " + str + ".");
 			
 			return str;
 		}
 		
 		StringBuilder b = new StringBuilder(str);
-		b.replace(str.lastIndexOf(textToRemove), str.lastIndexOf(textToRemove) + textToRemove.length(), "");
+		b.replace(lastIn, lastIn + textToRemove.length(), replace);
 		
-		return trim ? b.toString().trim() : b.toString();
+		return b.toString();
 	}
 	
 	public static String concat(String separator, String endWith, String d, String... strs)
@@ -231,44 +233,46 @@ public final class TextParser
 		}
 		catch (Exception e)
 		{
-			GameLog.error(e);
+			e.printStackTrace();
 			
 		}
 		
 		return ret.toString();
 	}
 	
-	public static String[] splitOnce(String str, char ch)
+	public static String[] splitOnce(String str, String out)
 	{
 		if (str == null)
 		{
 			return null;
 		}
 		
-		if (!str.contains("" + ch))
+		int ind = str.indexOf(out);
+		
+		if (ind == -1)
 		{
-			return null;
+			return new String[]{null, str};
 		}
 		
-		String in = "";
-		char tmp;
+		String[] ret = new String[2];
 		
-		for (int c = 0; c < str.length() && (tmp = str.charAt(c)) != ch; c++)
+		ret[1] = str.substring(ind + out.length());
+		
+		String sec = "";
+		
+		for (int c = 0; c < ind; c++)
 		{
-			in += tmp;
+			sec += str.charAt(c);
 			
 		}
 		
-		String out = "";
-		
-		for (int c = in.length() + 1; c < str.length(); c++)
+		if (sec != "")
 		{
-			out += str.charAt(c);
+			ret[0] = sec;
 			
 		}
 		
-		return new String[]{in, out};
-		
+		return null;
 	}
 	
 }

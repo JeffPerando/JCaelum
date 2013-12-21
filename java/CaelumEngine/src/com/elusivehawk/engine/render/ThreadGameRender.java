@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import com.elusivehawk.engine.core.CaelumEngine;
-import com.elusivehawk.engine.core.GameLog;
+import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.core.ThreadTimed;
 
 /**
@@ -65,7 +65,7 @@ public class ThreadGameRender extends ThreadTimed
 			}
 			catch (LWJGLException e)
 			{
-				GameLog.error(e);
+				CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
 				
 				return false;
 			}
@@ -109,7 +109,7 @@ public class ThreadGameRender extends ThreadTimed
 			}
 			catch (LWJGLException e)
 			{
-				GameLog.error(e);
+				CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
 				
 			}
 			
@@ -172,7 +172,7 @@ public class ThreadGameRender extends ThreadTimed
 				}
 				catch (Exception e)
 				{
-					GameLog.error(e);
+					CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
 					
 				}
 				

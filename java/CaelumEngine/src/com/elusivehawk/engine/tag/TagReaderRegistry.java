@@ -2,7 +2,8 @@
 package com.elusivehawk.engine.tag;
 
 import com.elusivehawk.engine.core.Buffer;
-import com.elusivehawk.engine.core.GameLog;
+import com.elusivehawk.engine.core.CaelumEngine;
+import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.math.BitHelper;
 
 /**
@@ -48,7 +49,7 @@ public final class TagReaderRegistry
 	{
 		if (this.get(id) != null)
 		{
-			GameLog.warn("Overriding tag reader ID #" + id);
+			CaelumEngine.instance().getLog().log(EnumLogType.WARN, "Overriding tag reader ID #" + id);
 			
 		}
 		
@@ -77,7 +78,7 @@ public final class TagReaderRegistry
 		
 		if (r == null)
 		{
-			GameLog.error("Could not continue reading tag, invalid tag ID: " + id);
+			CaelumEngine.instance().getLog().log(EnumLogType.ERROR, "Could not continue reading tag, invalid tag ID: " + id);
 			
 			return null;
 		}
@@ -100,7 +101,7 @@ public final class TagReaderRegistry
 		
 		if (this.get(type) == null)
 		{
-			GameLog.warn("Tag " + name + "has invalid type ID " + type + ", please rectify.");
+			CaelumEngine.instance().getLog().log(EnumLogType.WARN, "Tag " + name + "has invalid type ID " + type + ", please rectify.");
 			
 		}
 		

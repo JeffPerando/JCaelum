@@ -8,7 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import com.elusivehawk.engine.core.Buffer;
 import com.elusivehawk.engine.core.BufferHelper;
-import com.elusivehawk.engine.core.GameLog;
+import com.elusivehawk.engine.core.CaelumEngine;
+import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.core.SemiFinalStorage;
 import com.elusivehawk.engine.core.SemiFinalStorage.IStorageListener;
 import com.elusivehawk.engine.core.Tuple;
@@ -120,7 +121,7 @@ public class Model implements IStorageListener
 		
 		if (vb != 0)
 		{
-			GameLog.warn("Temporarily unbinding vertex array!");
+			CaelumEngine.instance().getLog().log(EnumLogType.WARN, "Temporarily unbinding vertex array!");
 			GL.glBindVertexArray(0);
 			
 		}
@@ -132,7 +133,7 @@ public class Model implements IStorageListener
 		
 		if (vb != 0)
 		{
-			GameLog.warn("Rebinding vertex array");
+			CaelumEngine.instance().getLog().log(EnumLogType.WARN, "Rebinding vertex array");
 			GL.glBindVertexArray(vb);
 			
 		}

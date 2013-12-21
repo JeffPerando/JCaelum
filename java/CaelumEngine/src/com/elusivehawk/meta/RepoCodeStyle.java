@@ -1,7 +1,7 @@
 //Line down, then package.
 package com.elusivehawk.meta;
 //Then another line down before the imports.
-import com.elusivehawk.engine.core.GameLog;//Note: No "organizing" imports, or more specifically, "grouping" them using line downs.
+//Note: No "organizing" imports, or more specifically, "grouping" them using line downs.
 
 /**
  * 
@@ -73,7 +73,7 @@ public final class RepoCodeStyle
 		}
 		catch (Exception e) //Only catch Exception/Throwable, that way there are less imports to fuss with. However, you can catch different exceptions to make for a cheap instanceof check.
 		{
-			GameLog.error(e); //Use GameLog unless you have a good reason not to.
+			e.printStackTrace();
 			
 		}
 		

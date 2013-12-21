@@ -8,7 +8,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-import com.elusivehawk.engine.core.GameLog;
+import com.elusivehawk.engine.core.CaelumEngine;
+import com.elusivehawk.engine.core.EnumLogType;
 
 /**
  * 
@@ -56,7 +57,7 @@ public class GLProgram implements IGLCleanable
 		}
 		catch (Exception e)
 		{
-			GameLog.error(e);
+			CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
 			
 		}
 		
@@ -129,7 +130,7 @@ public class GLProgram implements IGLCleanable
 		
 		if (loc == 0)
 		{
-			GameLog.warn("You can't use the non-existent uniform: " + name);
+			CaelumEngine.instance().getLog().log(EnumLogType.WARN, "You can't use the non-existent uniform: " + name);
 			return;
 		}
 		
@@ -143,7 +144,7 @@ public class GLProgram implements IGLCleanable
 		
 		if (loc == 0)
 		{
-			GameLog.warn("You can't use the non-existent uniform: " + name);
+			CaelumEngine.instance().getLog().log(EnumLogType.WARN, "You can't use the non-existent uniform: " + name);
 			return;
 		}
 		

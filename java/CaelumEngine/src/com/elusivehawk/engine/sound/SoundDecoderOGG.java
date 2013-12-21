@@ -10,7 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.BufferUtils;
 import com.elusivehawk.engine.core.BufferHelper;
-import com.elusivehawk.engine.core.GameLog;
+import com.elusivehawk.engine.core.CaelumEngine;
+import com.elusivehawk.engine.core.EnumLogType;
 
 /**
  * 
@@ -38,7 +39,7 @@ public class SoundDecoderOGG implements ISoundDecoder
 		}
 		catch (FileNotFoundException e)
 		{
-			GameLog.error(e);
+			CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
 			
 			return null;
 		}
@@ -56,7 +57,7 @@ public class SoundDecoderOGG implements ISoundDecoder
 		}
 		catch (Exception e)
 		{
-			GameLog.error(e);
+			CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
 			
 		}
 		
@@ -65,7 +66,7 @@ public class SoundDecoderOGG implements ISoundDecoder
 		
 		if (buf != null)
 		{
-			GameLog.debug("Byte count: " + buf.capacity());
+			CaelumEngine.instance().getLog().log(EnumLogType.DEBUG, "Byte count: " + buf.capacity());
 			
 			List<OggPage> unsortedPages = new ArrayList<OggPage>();
 			
@@ -83,11 +84,11 @@ public class SoundDecoderOGG implements ISoundDecoder
 					
 					if (!capture.equals("OggS")) //OggS is what the capture pattern needs to be.
 					{
-						GameLog.warn("Sound file corrupted: " + file.getAbsolutePath() + ", capture pattern is not OggS. Instead, it's " + capture + ".");
+						CaelumEngine.instance().getLog().log(EnumLogType.WARN, "Sound file corrupted: " + file.getAbsolutePath() + ", capture pattern is not OggS. Instead, it's " + capture + ".");
 						
 						for (char c : capture.toCharArray())
 						{
-							GameLog.warn("Corrupted byte: " + (byte)c);
+							CaelumEngine.instance().getLog().log(EnumLogType.WARN, "Corrupted byte: " + (byte)c);
 							
 						}
 						
@@ -96,7 +97,7 @@ public class SoundDecoderOGG implements ISoundDecoder
 					
 					if (buf.get() != 0) //The next byte is for the version.
 					{
-						GameLog.warn("Sound file corrupted: " + file.getAbsolutePath() + ", version is not 0.");
+						CaelumEngine.instance().getLog().log(EnumLogType.WARN, "Sound file corrupted: " + file.getAbsolutePath() + ", version is not 0.");
 						
 						break;
 					}
@@ -112,7 +113,7 @@ public class SoundDecoderOGG implements ISoundDecoder
 					
 					if (t == null) //If the above failed...
 					{
-						GameLog.warn("Sound file corrupted: " + file.getAbsolutePath() + ", invalid header type.");
+						CaelumEngine.instance().getLog().log(EnumLogType.WARN, "Sound file corrupted: " + file.getAbsolutePath() + ", invalid header type.");
 						
 						break; //...Stop EVERYTHING!
 					}
@@ -126,7 +127,7 @@ public class SoundDecoderOGG implements ISoundDecoder
 						
 					}
 					
-					GameLog.debug("Granule found: " + granule);
+					CaelumEngine.instance().getLog().log(EnumLogType.DEBUG, "Granule found: " + granule);
 					
 					for (byte c = 0; c < 4; c++)
 					{
@@ -134,7 +135,7 @@ public class SoundDecoderOGG implements ISoundDecoder
 						
 					}
 					
-					GameLog.debug("Serial number found: " + serial);
+					CaelumEngine.instance().getLog().log(EnumLogType.DEBUG, "Serial number found: " + serial);
 					
 					for (byte c = 0; c < 4; c++)
 					{
@@ -142,7 +143,7 @@ public class SoundDecoderOGG implements ISoundDecoder
 						
 					}
 					
-					GameLog.debug("Sequence number found: " + sequence);
+					CaelumEngine.instance().getLog().log(EnumLogType.DEBUG, "Sequence number found: " + sequence);
 					
 					for (byte c = 0; c < 4; c++)
 					{
@@ -150,13 +151,13 @@ public class SoundDecoderOGG implements ISoundDecoder
 						
 					}
 					
-					GameLog.debug("Checksum: " + checksum);
+					CaelumEngine.instance().getLog().log(EnumLogType.DEBUG, "Checksum: " + checksum);
 					
 					//TODO Handle checksum.
 					
 					byte segCount = buf.get();
 					
-					GameLog.debug("Segment count: " + segCount + ", remaining byte count: " + buf.remaining());
+					CaelumEngine.instance().getLog().log(EnumLogType.DEBUG, "Segment count: " + segCount + ", remaining byte count: " + buf.remaining());
 					
 					ByteBuffer segments = BufferUtils.createByteBuffer(segCount);
 					
@@ -164,7 +165,7 @@ public class SoundDecoderOGG implements ISoundDecoder
 					{
 						byte b = buf.get();
 						
-						GameLog.info("Byte found: " + b + ", char equivalent: " + (char)b);
+						CaelumEngine.instance().getLog().log(EnumLogType.DEBUG, "Byte found: " + b + ", char equivalent: " + (char)b);
 						
 						segments.put(b);
 						
@@ -177,7 +178,7 @@ public class SoundDecoderOGG implements ISoundDecoder
 				}
 				catch (Exception e)
 				{
-					GameLog.error(e);
+					CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
 					
 				}
 				

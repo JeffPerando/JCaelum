@@ -5,8 +5,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import org.lwjgl.openal.AL10;
 import org.lwjgl.util.WaveData;
+import com.elusivehawk.engine.core.CaelumEngine;
+import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.core.FileHelper;
-import com.elusivehawk.engine.core.GameLog;
 
 /**
  * 
@@ -34,7 +35,7 @@ public class SoundDecoderWav implements ISoundDecoder
 		}
 		catch (Exception e)
 		{
-			GameLog.error(e);
+			CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
 			
 		}
 		

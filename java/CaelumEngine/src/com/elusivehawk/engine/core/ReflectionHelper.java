@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.core;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
@@ -25,7 +26,7 @@ public final class ReflectionHelper
 		}
 		catch (Exception e)
 		{
-			GameLog.error(e);
+			e.printStackTrace();
 			
 		}
 		
@@ -85,7 +86,7 @@ public final class ReflectionHelper
 		}
 		catch (Exception e)
 		{
-			GameLog.error(e);
+			e.printStackTrace();
 			
 		}
 		
@@ -128,10 +129,82 @@ public final class ReflectionHelper
 			}
 			catch (Exception e)
 			{
-				GameLog.error(e);
+				e.printStackTrace();
 				
 			}
 			
+		}
+		
+		return null;
+	}
+	
+	public static Object newInstance(String clazz)
+	{
+		return newInstance(clazz, (Class<?>[])null, null);
+	}
+	
+	public static Object newInstance(String clazz, Class<?>[] assign, Class<? extends Annotation>[] annot)
+	{
+		if (clazz == null)
+		{
+			return null;
+		}
+		
+		Class<?> c = null;
+		
+		try
+		{
+			c = Class.forName(clazz);
+			
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			
+		}
+		
+		if (c != null)
+		{
+			if (assign != null)
+			{
+				for (Class<?> a : assign)
+				{
+					if (!c.isAssignableFrom(a))
+					{
+						return null;
+					}
+					
+				}
+				
+			}
+			
+			if (annot != null)
+			{
+				for (Class<? extends Annotation> anno : annot)
+				{
+					if (!c.isAnnotationPresent(anno))
+					{
+						return null;
+					}
+					
+				}
+				
+			}
+			
+			Object ret = null;
+			
+			try
+			{
+				ret = c.newInstance();
+				
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+				
+			}
+			
+			return ret;
 		}
 		
 		return null;
