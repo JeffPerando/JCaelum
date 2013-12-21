@@ -7,6 +7,8 @@ import javax.imageio.ImageIO;
 import com.elusivehawk.engine.core.Buffer;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
+import com.elusivehawk.engine.render.opengl.GL;
+import com.elusivehawk.engine.render.opengl.ITexture;
 
 /**
  * 

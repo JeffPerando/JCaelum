@@ -10,6 +10,10 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.Display;
 import com.elusivehawk.engine.core.Buffer;
 import com.elusivehawk.engine.core.BufferHelper;
+import com.elusivehawk.engine.render.opengl.GL;
+import com.elusivehawk.engine.render.opengl.GLProgram;
+import com.elusivehawk.engine.render.opengl.ITexture;
+import com.elusivehawk.engine.render.opengl.VertexBufferObject;
 
 /**
  * 

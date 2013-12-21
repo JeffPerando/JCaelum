@@ -8,6 +8,9 @@ import java.util.List;
 import org.lwjgl.BufferUtils;
 import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.math.VectorF;
+import com.elusivehawk.engine.render.opengl.GL;
+import com.elusivehawk.engine.render.opengl.GLProgram;
+import com.elusivehawk.engine.render.opengl.VertexBufferObject;
 
 /**
  * 

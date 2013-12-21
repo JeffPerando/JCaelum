@@ -16,6 +16,7 @@ import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.core.FileHelper;
 import com.elusivehawk.engine.core.TextParser;
+import com.elusivehawk.engine.render.opengl.GL;
 
 /**
  * 

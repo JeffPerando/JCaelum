@@ -7,6 +7,7 @@ import org.lwjgl.opengl.Display;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.core.ThreadTimed;
+import com.elusivehawk.engine.render.opengl.GL;
 
 /**
  * 

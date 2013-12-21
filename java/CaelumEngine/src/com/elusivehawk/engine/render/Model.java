@@ -15,6 +15,8 @@ import com.elusivehawk.engine.core.SemiFinalStorage.IStorageListener;
 import com.elusivehawk.engine.core.Tuple;
 import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.math.VectorF;
+import com.elusivehawk.engine.render.opengl.GL;
+import com.elusivehawk.engine.render.opengl.VertexBufferObject;
 
 /**
  * 

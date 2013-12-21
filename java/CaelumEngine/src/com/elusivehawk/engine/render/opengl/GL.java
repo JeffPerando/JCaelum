@@ -1,5 +1,5 @@
 
-package com.elusivehawk.engine.render;
+package com.elusivehawk.engine.render.opengl;
 
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;

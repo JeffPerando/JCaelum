@@ -1,6 +1,9 @@
 
 package com.elusivehawk.engine.render;
 
+import com.elusivehawk.engine.render.opengl.GL;
+import com.elusivehawk.engine.render.opengl.GLProgram;
+
 /**
  * 
  * Renders particles.

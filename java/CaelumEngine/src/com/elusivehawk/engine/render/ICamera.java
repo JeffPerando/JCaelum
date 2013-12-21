@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.render;
 
 import com.elusivehawk.engine.core.IDirty;
+import com.elusivehawk.engine.render.opengl.GLProgram;
 
 /**
  * 
