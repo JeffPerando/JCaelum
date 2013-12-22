@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.android;
 
+import com.elusivehawk.engine.core.CaelumEngine;
 import android.app.Activity;
 import android.os.Bundle;
 
@@ -16,6 +17,8 @@ public class CaelumActivity extends Activity
 	protected void onCreate(Bundle b)
 	{
 		super.onCreate(b);
+		
+		CaelumEngine.main("class:" + AndroidEnvironment.class.getCanonicalName());
 		
 	}
 	

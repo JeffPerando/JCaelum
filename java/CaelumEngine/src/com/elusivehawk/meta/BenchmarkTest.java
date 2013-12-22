@@ -28,7 +28,13 @@ public class BenchmarkTest
 	{
 		System.out.println("Beginning bench testing...");
 		
-		Matrix trs = MatrixHelper.createRotationMatrix(90, 90, 90).mul(MatrixHelper.createRotationMatrix(90, 90, 90));
+		Matrix one = MatrixHelper.createRotationMatrix(90, 90, 90);
+		System.out.println(one.toString());
+		
+		Matrix two = MatrixHelper.createRotationMatrix(90, 90, 90);
+		System.out.println(two.toString());
+		
+		Matrix trs = one.mul(two);
 		
 		System.out.println(trs.toString());
 		

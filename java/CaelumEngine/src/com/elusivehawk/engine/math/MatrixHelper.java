@@ -132,10 +132,7 @@ public final class MatrixHelper
 		
 		buf.rewind();
 		
-		Matrix ret = new Matrix(16);
-		ret.store(buf);
-		
-		return ret;
+		return new Matrix(buf, 4, 4);
 	}
 	
 	public static Matrix createHomogenousMatrix(Vector<Float> rot, Vector<Float> scl, Vector<Float> trans)

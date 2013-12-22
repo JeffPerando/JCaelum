@@ -44,6 +44,18 @@ public class Matrix implements IMathObject<Float>
 		
 	}
 	
+	public Matrix(Buffer<Float> buf, int x, int y)
+	{
+		this(x, y);
+		
+		for (int c = 0; c < buf.remaining(); c++)
+		{
+			set(buf.next(), c);
+			
+		}
+		
+	}
+	
 	public Matrix(FloatBuffer buf, int x, int y)
 	{
 		this(x, y);

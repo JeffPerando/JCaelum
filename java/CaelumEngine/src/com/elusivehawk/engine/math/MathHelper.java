@@ -13,38 +13,6 @@ public final class MathHelper
 	
 	private MathHelper(){}
 	
-	public static double avg(double a, double b)
-	{
-		double a0 = Math.min(a, b);
-		double b0 = Math.max(a, b);
-		
-		return (a0 + ((b0 - a0) / 2));
-	}
-	
-	public static float avg(float a, float b)
-	{
-		float a0 = Math.min(a, b);
-		float b0 = Math.max(a, b);
-		
-		return (a0 + ((b0 - a0) / 2));
-	}
-	
-	public static int avg(int a, int b)
-	{
-		int a0 = Math.min(a, b);
-		int b0 = Math.max(a, b);
-		
-		return (int)(a0 + (float)((b0 - a0) / 2));
-	}
-	
-	public static long avg(long a, long b)
-	{
-		long a0 = Math.min(a, b);
-		long b0 = Math.max(a, b);
-		
-		return (long)(a0 + (float)((b0 - a0) / 2));
-	}
-	
 	public static boolean isOdd(int i)
 	{
 		return i == 0 ? false : (i >> 1) >= i;
