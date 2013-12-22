@@ -73,6 +73,24 @@ public final class RenderHelper
 		return null;
 	}
 	
+	public static int processImage(File img, EnumRenderMode mode, EnumColorFormat format)
+	{
+		ILegibleImage leimg = null;
+		
+		try
+		{
+			leimg = new LegibleBufferedImage(ImageIO.read(img));
+			
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			
+		}
+		
+		return leimg == null ? 0 : processImage(img, mode, format);
+	}
+	
 	public static int processImage(ILegibleImage img, EnumRenderMode mode, EnumColorFormat format)
 	{
 		return processImage(readImage(img, format), img.getWidth(), img.getHeight(), mode);

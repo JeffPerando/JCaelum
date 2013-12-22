@@ -18,12 +18,14 @@ import com.elusivehawk.engine.render.opengl.GL;
 public class ThreadGameRender extends ThreadTimed
 {
 	protected final IRenderHUB hub;
+	protected final IRenderEnvironment env;
 	protected int fps;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public ThreadGameRender(IRenderHUB rhub)
 	{
 		hub = rhub;
+		env = CaelumEngine.instance().getEnvironment().getRenderEnv();
 		
 		System.setProperty("org.lwjgl.opengl.Display.noinput", "true");
 		

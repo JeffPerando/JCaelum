@@ -33,8 +33,9 @@ public interface ICamera extends IDirty
 	 * Called whenever an object wants to use this camera; Use this to update the program's uniforms.
 	 * 
 	 * @param p The GLProgram asking to be manipulated.
+	 * @param mode The render mode to consider when manipulating the program's uniforms.
 	 */
-	public void updateUniform(GLProgram p);
+	public void updateUniform(GLProgram p, EnumRenderMode mode);
 	
 	/**
 	 * 

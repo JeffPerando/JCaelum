@@ -69,6 +69,11 @@ public final class CaelumEngine
 				return;
 			}
 			
+			if (!file.getName().endsWith(".json"))
+			{
+				return;
+			}
+			
 			//TODO Parse JSON file
 			
 			cur = buf.next();
@@ -111,7 +116,7 @@ public final class CaelumEngine
 			
 		}
 		
-		ILog log = env.getLog();
+		ILog log = instance().environment.getLog();
 		
 		if (log != null)
 		{
@@ -229,6 +234,11 @@ public final class CaelumEngine
 	public IGame getCurrentGame()
 	{
 		return this.game;
+	}
+	
+	public IGameEnvironment getEnvironment()
+	{
+		return this.environment;
 	}
 	
 	public ILog getLog()

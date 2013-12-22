@@ -79,7 +79,7 @@ public class Camera3D implements ICamera
 	}
 	
 	@Override
-	public void updateUniform(GLProgram p)
+	public void updateUniform(GLProgram p, EnumRenderMode mode)
 	{
 		if (!this.isDirty())
 		{

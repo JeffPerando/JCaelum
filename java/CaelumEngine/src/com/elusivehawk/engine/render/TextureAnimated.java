@@ -7,6 +7,7 @@ import javax.imageio.ImageIO;
 import com.elusivehawk.engine.core.Buffer;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
+import com.elusivehawk.engine.core.FileHelper;
 import com.elusivehawk.engine.render.opengl.GL;
 import com.elusivehawk.engine.render.opengl.ITexture;
 
@@ -19,6 +20,24 @@ import com.elusivehawk.engine.render.opengl.ITexture;
 public class TextureAnimated implements ITexture
 {
 	private final Buffer<Integer> tex;
+	
+	public TextureAnimated(String gif)
+	{
+		this(FileHelper.createFile(gif));
+		
+	}
+
+	public TextureAnimated(File gif)
+	{
+		this(gif, EnumRenderMode.MODE_2D);
+		
+	}
+	
+	public TextureAnimated(File gif, EnumRenderMode mode)
+	{
+		this(gif, mode, EnumColorFormat.RGBA);
+		
+	}
 	
 	@SuppressWarnings("unqualified-field-access")
 	public TextureAnimated(File gif, EnumRenderMode mode, EnumColorFormat format)

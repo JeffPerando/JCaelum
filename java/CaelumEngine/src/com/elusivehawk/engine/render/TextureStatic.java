@@ -3,7 +3,6 @@ package com.elusivehawk.engine.render;
 
 import java.io.File;
 import java.io.IOException;
-import javax.imageio.ImageIO;
 import com.elusivehawk.engine.render.opengl.GL;
 import com.elusivehawk.engine.render.opengl.ITexture;
 
@@ -26,21 +25,21 @@ public class TextureStatic implements ITexture
 		
 	}
 	
-	public TextureStatic(String path) throws IOException
+	public TextureStatic(String path)
 	{
 		this(path, EnumRenderMode.MODE_2D, EnumColorFormat.RGBA);
 		
 	}
 	
-	public TextureStatic(String path, EnumRenderMode mode, EnumColorFormat format) throws IOException
+	public TextureStatic(String path, EnumRenderMode mode, EnumColorFormat format)
 	{
 		this(new File(ClassLoader.getSystemResource(path).getFile()), mode, format);
 		
 	}
 	
-	public TextureStatic(File file, EnumRenderMode mode, EnumColorFormat format) throws IOException
+	public TextureStatic(File file, EnumRenderMode mode, EnumColorFormat format)
 	{
-		this(new LegibleBufferedImage(ImageIO.read(file)), mode, format);
+		this(RenderHelper.processImage(file, mode, format));
 		
 	}
 	

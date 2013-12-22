@@ -1,6 +1,8 @@
 
 package com.elusivehawk.engine.core;
 
+import com.elusivehawk.engine.render.IRenderEnvironment;
+
 /**
  * 
  * Interface for library-specific implementations, such as:<br>
@@ -19,6 +21,10 @@ public interface IGameEnvironment
 {
 	public void initiate();
 	
+	public String getName();
+	
 	public ILog getLog();
+	
+	public IRenderEnvironment getRenderEnv();
 	
 }

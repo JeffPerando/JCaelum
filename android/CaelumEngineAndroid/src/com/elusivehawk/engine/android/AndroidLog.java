@@ -13,7 +13,7 @@ import com.elusivehawk.engine.core.ILog;
  */
 public class AndroidLog implements ILog
 {
-	private static final String ID = "CaelumDroid";
+	private static final String ID = "CaelumAndroid";
 	
 	@Override
 	public void log(EnumLogType type, String msg)
