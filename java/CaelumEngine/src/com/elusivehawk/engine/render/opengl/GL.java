@@ -9,26 +9,6 @@ import java.nio.LongBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import org.lwjgl.PointerBuffer;
-import org.lwjgl.PointerWrapper;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL14;
-import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL21;
-import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.GL31;
-import org.lwjgl.opengl.GL32;
-import org.lwjgl.opengl.GL33;
-import org.lwjgl.opengl.GL40;
-import org.lwjgl.opengl.GL41;
-import org.lwjgl.opengl.GL42;
-import org.lwjgl.opengl.GL43;
-import org.lwjgl.opengl.GL44;
-import org.lwjgl.opengl.GLSync;
-import org.lwjgl.opengl.KHRDebugCallback;
 
 /**
  * 

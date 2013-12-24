@@ -4,7 +4,7 @@ package com.elusivehawk.engine.render;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import org.lwjgl.BufferUtils;
+import com.elusivehawk.engine.core.BufferHelper;
 
 /**
  * 
@@ -70,7 +70,7 @@ public class PixelGrid implements ILegibleImage
 	
 	public ByteBuffer toByteBuffer()
 	{
-		ByteBuffer ret = BufferUtils.createByteBuffer(this.xSize * this.ySize * 4);
+		ByteBuffer ret = BufferHelper.createByteBuffer(this.xSize * this.ySize * 4);
 		Color col = new Color(this.f);
 		
 		for (int x = 0; x < this.xSize; x++)
@@ -92,7 +92,7 @@ public class PixelGrid implements ILegibleImage
 	
 	public FloatBuffer toFloatBuffer()
 	{
-		FloatBuffer ret = BufferUtils.createFloatBuffer(this.xSize * this.ySize * 4);
+		FloatBuffer ret = BufferHelper.createFloatBuffer(this.xSize * this.ySize * 4);
 		Color col = new Color(this.f);
 		
 		for (int x = 0; x < this.xSize; x++)
@@ -114,7 +114,7 @@ public class PixelGrid implements ILegibleImage
 	
 	public IntBuffer toIntBuffer()
 	{
-		IntBuffer ret = BufferUtils.createIntBuffer(this.xSize * this.ySize);
+		IntBuffer ret = BufferHelper.createIntBuffer(this.xSize * this.ySize);
 		Color col = new Color(this.f);
 		
 		for (int x = 0; x < this.xSize; x++)

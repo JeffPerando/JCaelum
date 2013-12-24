@@ -3,8 +3,8 @@ package com.elusivehawk.engine.render.opengl;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import org.lwjgl.BufferUtils;
 import com.elusivehawk.engine.core.Buffer;
+import com.elusivehawk.engine.core.BufferHelper;
 
 /**
  * 
@@ -115,7 +115,7 @@ public class VertexBufferObject implements IGLCleanable
 	
 	public void updateVBOf(Buffer<Float> buf, int offset)
 	{
-		FloatBuffer nio = BufferUtils.createFloatBuffer(buf.remaining());
+		FloatBuffer nio = BufferHelper.createFloatBuffer(buf.remaining());
 		
 		for (float f : buf)
 		{
@@ -129,7 +129,7 @@ public class VertexBufferObject implements IGLCleanable
 	
 	public void updateVBOi(Buffer<Integer> buf, int offset)
 	{
-		IntBuffer nio = BufferUtils.createIntBuffer(buf.remaining());
+		IntBuffer nio = BufferHelper.createIntBuffer(buf.remaining());
 		
 		for (int i : buf)
 		{

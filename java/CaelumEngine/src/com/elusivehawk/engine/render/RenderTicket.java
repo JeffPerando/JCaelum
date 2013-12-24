@@ -3,7 +3,7 @@ package com.elusivehawk.engine.render;
 
 import java.nio.FloatBuffer;
 import java.util.HashMap;
-import org.lwjgl.BufferUtils;
+import com.elusivehawk.engine.core.BufferHelper;
 import com.elusivehawk.engine.core.IDirty;
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.MatrixHelper;
@@ -44,7 +44,7 @@ public class RenderTicket implements IDirty, ILogicalRender
 	{
 		p = program;
 		m = model;
-		buf = BufferUtils.createFloatBuffer(m.indiceCount.get() * 3);
+		buf = BufferHelper.createFloatBuffer(m.indiceCount.get() * 3);
 		vbo = new VertexBufferObject(GL.GL_VERTEX_ARRAY, this.buf, GL.GL_STREAM_DRAW);
 		
 		p.attachRenderTicket(this);

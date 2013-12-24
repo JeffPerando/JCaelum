@@ -93,12 +93,6 @@ public class VectorI extends Vector<Integer>
 	}
 	
 	@Override
-	public Integer[] array()
-	{
-		return this.data;
-	}
-	
-	@Override
 	public VectorI add(IMathObject<Integer> obj)
 	{
 		int l = Math.min(this.getSize(), obj.getSize());

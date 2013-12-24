@@ -8,7 +8,6 @@ import java.io.FileNotFoundException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import org.lwjgl.BufferUtils;
 import com.elusivehawk.engine.core.BufferHelper;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
@@ -159,7 +158,7 @@ public class SoundDecoderOGG implements ISoundDecoder
 					
 					CaelumEngine.instance().getLog().log(EnumLogType.DEBUG, "Segment count: " + segCount + ", remaining byte count: " + buf.remaining());
 					
-					ByteBuffer segments = BufferUtils.createByteBuffer(segCount);
+					ByteBuffer segments = BufferHelper.createByteBuffer(segCount);
 					
 					for (int c = 0; c < segCount; c++)
 					{

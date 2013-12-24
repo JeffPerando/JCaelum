@@ -1,8 +1,6 @@
 
 package com.elusivehawk.engine.math;
 
-import com.elusivehawk.engine.core.Buffer;
-
 /**
  * 
  * Just a small class I wrote to help with making matrices.
@@ -107,7 +105,13 @@ public final class MatrixHelper
 	
 	public static Matrix createRotationMatrix(float x, float y, float z)
 	{
-		//Hold on to your butts...
+		/*
+		 * Hold on to your butts...
+		 * 
+		 * No, seriously, for some reason using Caelum Buffers screws up the latter portion of
+		 * this equation, even though the last 4 parts are constant.
+		 * 
+		 */
 		
 		float a = (float)Math.cos(x);
 		float b = (float)Math.sin(x);
@@ -119,20 +123,18 @@ public final class MatrixHelper
 		float ad = a * d;
 		float bd = b * d;
 		
-		Buffer<Float> buf = new Buffer<Float>();
+		float[] buf = new float[16];
 		
-		buf.put(c * e).put(-c * f).put(d).put(0f);
+		buf[0] = c * e; buf[1] = -c * f; buf[2] = d; buf[3] = 0f;
 		//-------------------------------------------------
-		buf.put(bd * e + a * f).put(-bd * f + a * e).put(-b * c).put(0f);
+		buf[4] = bd * e + a * f; buf[5] = -bd * f + a * e; buf[6] = -b * c; buf[7] = 0f;
 		//-------------------------------------------------
-		buf.put(-ad * e + b * f).put(ad * f + b * e).put(a * c).put(0f);
+		buf[8] = -ad * e + b * f; buf[9] = ad * f + b * e; buf[10] = a * c; buf[11] = 0f;
 		//-------------------------------------------------
-		buf.put(0f).put(0f).put(0f).put(1f);
+		buf[12] = buf[13] = buf[14] = 0f; buf[15] = 1f;
 		//-------------------------------------------------
 		
-		buf.rewind();
-		
-		return new Matrix(buf, 4, 4);
+		return new Matrix(buf);
 	}
 	
 	public static Matrix createHomogenousMatrix(Vector<Float> rot, Vector<Float> scl, Vector<Float> trans)

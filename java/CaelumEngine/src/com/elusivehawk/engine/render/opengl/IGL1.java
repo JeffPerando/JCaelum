@@ -6,11 +6,11 @@ import com.elusivehawk.engine.render.Color;
 
 /**
  * 
- * Supports OpenGL v1.1.
+ * Supports OpenGL versions 1.0/1 to 1.5.
  * 
  * @author Elusivehawk
  */
-public interface IGL11
+public interface IGL1
 {
 	public void glActiveTexture(int texture);
 	
@@ -66,7 +66,7 @@ public interface IGL11
 	
 	public void glGenTextures(int n, int[] textures, int offset);
 	
-	public void glGenTextures(int n, IntBuffer textures);
+	public void glGenTextures(IntBuffer textures);
 	
 	public int glGetError();
 	

@@ -5,7 +5,7 @@ import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.lwjgl.BufferUtils;
+import com.elusivehawk.engine.core.BufferHelper;
 import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.math.VectorF;
 import com.elusivehawk.engine.render.opengl.GL;
@@ -32,7 +32,7 @@ public class ParticleScene implements ILogicalRender
 	@SuppressWarnings("unqualified-field-access")
 	public ParticleScene(int maxParticles)
 	{
-		buf = BufferUtils.createFloatBuffer(maxParticles * PARTICLE_FLOAT_COUNT);
+		buf = BufferHelper.createFloatBuffer(maxParticles * PARTICLE_FLOAT_COUNT);
 		particleCount = maxParticles;
 		
 		p = GLProgram.create(null); //TODO Create default particle shaders.

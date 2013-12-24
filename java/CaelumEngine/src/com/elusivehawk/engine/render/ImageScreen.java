@@ -45,8 +45,8 @@ public class ImageScreen implements ILogicalRender
 		p = program;
 		tex = texture;
 		
-		buf = BufferUtils.createFloatBuffer(maxImgs * IMG_FLOAT_COUNT);
-		indiceBuf = BufferUtils.createIntBuffer(maxImgs * 6);
+		buf = BufferHelper.createFloatBuffer(maxImgs * IMG_FLOAT_COUNT);
+		indiceBuf = BufferHelper.createIntBuffer(maxImgs * 6);
 		
 		vbo = new VertexBufferObject(GL.GL_ARRAY_BUFFER, buf, GL.GL_STREAM_DRAW);
 		indices = new VertexBufferObject(GL.GL_ELEMENT_ARRAY_BUFFER, indiceBuf, GL.GL_STATIC_DRAW);
@@ -93,7 +93,7 @@ public class ImageScreen implements ILogicalRender
 			
 		}
 		
-		IntBuffer ind = BufferUtils.createIntBuffer(6);
+		IntBuffer ind = BufferHelper.createIntBuffer(6);
 		
 		int indiceOff = position * 4;
 		

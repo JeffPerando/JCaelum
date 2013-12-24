@@ -7,11 +7,8 @@ import java.nio.ByteBuffer;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
-import org.lwjgl.BufferUtils;
-import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.util.glu.GLU;
 import com.elusivehawk.engine.core.Buffer;
+import com.elusivehawk.engine.core.BufferHelper;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.core.FileHelper;
@@ -129,7 +126,7 @@ public final class RenderHelper
 	
 	public static ByteBuffer readImage(ILegibleImage img, EnumColorFormat format)
 	{
-		ByteBuffer buf = BufferUtils.createByteBuffer(img.getHeight() * img.getWidth() * 4);
+		ByteBuffer buf = BufferHelper.createByteBuffer(img.getHeight() * img.getWidth() * 4);
 		
 		for (int x = 0; x < img.getWidth(); ++x)
 		{
@@ -179,7 +176,7 @@ public final class RenderHelper
 	@Deprecated
 	public static synchronized BufferedImage captureScreen()
 	{
-		ByteBuffer buf = BufferUtils.createByteBuffer(Display.getHeight() * Display.getWidth() * 4);
+		ByteBuffer buf = BufferHelper.createByteBuffer(Display.getHeight() * Display.getWidth() * 4);
 		
 		GL.glReadPixels(0, 0, Display.getWidth(), Display.getHeight(), GL.GL_RGBA, GL.GL_BYTE, buf);
 		

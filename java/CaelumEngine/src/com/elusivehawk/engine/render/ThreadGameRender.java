@@ -27,8 +27,6 @@ public class ThreadGameRender extends ThreadTimed
 		hub = rhub;
 		env = CaelumEngine.instance().getEnvironment().getRenderEnv();
 		
-		System.setProperty("org.lwjgl.opengl.Display.noinput", "true");
-		
 	}
 	
 	@Override

@@ -82,18 +82,8 @@ public class Buffer<T> implements IDirty, Iterable<T>, Iterator<T>
 	
 	public Buffer<T> put(T obj)
 	{
-		if (this.hasNext())
-		{
-			this.dirt.set(this.pos, true);
-			this.l.set(this.pos++, obj);
-			
-		}
-		else
-		{
-			this.dirt.add(this.pos, true);
-			this.l.add(this.pos++, obj);
-			
-		}
+		this.dirt.add(this.pos, true);
+		this.l.add(this.pos++, obj);
 		
 		return this;
 	}

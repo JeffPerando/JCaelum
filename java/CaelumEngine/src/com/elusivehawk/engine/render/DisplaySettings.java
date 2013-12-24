@@ -2,7 +2,6 @@
 package com.elusivehawk.engine.render;
 
 import java.nio.ByteBuffer;
-import org.lwjgl.opengl.DisplayMode;
 
 /**
  * 
@@ -13,7 +12,7 @@ import org.lwjgl.opengl.DisplayMode;
 public class DisplaySettings
 {
 	public String title = "Caelum Engine Game (Now with less gimmicks!)";
-	public DisplayMode mode = new DisplayMode(800, 600);
+	public int width = 800, height = 600;
 	public ByteBuffer[] icons = null;
 	public int targetFPS = 30;
 	public boolean resize = false;

@@ -2,8 +2,8 @@
 package com.elusivehawk.engine.math;
 
 import java.nio.FloatBuffer;
-import org.lwjgl.BufferUtils;
 import com.elusivehawk.engine.core.Buffer;
+import com.elusivehawk.engine.core.BufferHelper;
 
 /**
  * 
@@ -13,7 +13,7 @@ import com.elusivehawk.engine.core.Buffer;
  */
 public class Matrix implements IMathObject<Float>
 {
-	protected final Float[] data;
+	protected final float[] data;
 	public final int w, h;
 	
 	public Matrix(int size)
@@ -25,14 +25,14 @@ public class Matrix implements IMathObject<Float>
 	@SuppressWarnings("unqualified-field-access")
 	public Matrix(int x, int y)
 	{
-		data = new Float[x * y];
+		data = new float[x * y];
 		w = x;
 		h = y;
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Matrix(Float[] info)
+	public Matrix(float[] info)
 	{
 		this(info.length);
 		
@@ -85,13 +85,9 @@ public class Matrix implements IMathObject<Float>
 	
 	public FloatBuffer asBuffer()
 	{
-		FloatBuffer ret = BufferUtils.createFloatBuffer(this.w * this.h);
+		FloatBuffer ret = BufferHelper.createFloatBuffer(this.w * this.h);
 		
-		for (int c = 0; c < this.getSize(); c++)
-		{
-			ret.put(this.get(c));
-			
-		}
+		this.load(ret);
 		
 		return ret;
 	}
@@ -158,12 +154,6 @@ public class Matrix implements IMathObject<Float>
 	{
 		this.data[pos] = num;
 		
-	}
-	
-	@Override
-	public Float[] array()
-	{
-		return this.data;
 	}
 	
 	@Override

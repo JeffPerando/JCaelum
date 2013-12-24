@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.core;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.CharBuffer;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
@@ -9,7 +10,6 @@ import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.nio.ShortBuffer;
 import java.util.Collection;
-import org.lwjgl.BufferUtils;
 import com.elusivehawk.engine.render.Color;
 
 /**
@@ -24,6 +24,41 @@ public final class BufferHelper
 {
 	private BufferHelper(){}
 	
+	public static ByteBuffer createByteBuffer(int size)
+	{
+		return ByteBuffer.allocateDirect(size).order(ByteOrder.nativeOrder());
+	}
+	
+	public static CharBuffer createCharBuffer(int size)
+	{
+		return createByteBuffer(size << 1).asCharBuffer();
+	}
+	
+	public static DoubleBuffer createDoubleBuffer(int size)
+	{
+		return createByteBuffer(size << 3).asDoubleBuffer();
+	}
+	
+	public static FloatBuffer createFloatBuffer(int size)
+	{
+		return createByteBuffer(size << 2).asFloatBuffer();
+	}
+	
+	public static IntBuffer createIntBuffer(int size)
+	{
+		return createByteBuffer(size << 2).asIntBuffer();
+	}
+	
+	public static LongBuffer createLongBuffer(int size)
+	{
+		return createByteBuffer(size << 3).asLongBuffer();
+	}
+	
+	public static ShortBuffer createShortBuffer(int size)
+	{
+		return createByteBuffer(size << 1).asShortBuffer();
+	}
+	
 	public static ByteBuffer makeByteBuffer(byte... data)
 	{
 		return makeByteBuffer(data.length, data);
@@ -31,12 +66,12 @@ public final class BufferHelper
 	
 	public static ByteBuffer makeByteBuffer(int l, byte... data)
 	{
-		return (ByteBuffer)BufferUtils.createByteBuffer(l).put(data).flip();
+		return (ByteBuffer)createByteBuffer(l).put(data).flip();
 	}
 	
 	public static ByteBuffer makeByteBuffer(Collection<Byte> data)
 	{
-		ByteBuffer ret = BufferUtils.createByteBuffer(data.size());
+		ByteBuffer ret = createByteBuffer(data.size());
 		
 		for (byte b : data)
 		{
@@ -51,7 +86,7 @@ public final class BufferHelper
 	
 	public static ByteBuffer makeByteBuffer(ByteBuffer buf, int offset, int count)
 	{
-		ByteBuffer ret = BufferUtils.createByteBuffer(count);
+		ByteBuffer ret = createByteBuffer(count);
 		
 		for (int c = 0; c < count; c++)
 		{
@@ -71,12 +106,12 @@ public final class BufferHelper
 	
 	public static CharBuffer makeCharBuffer(int l, char... data)
 	{
-		return (CharBuffer)BufferUtils.createCharBuffer(l).put(data).flip();
+		return (CharBuffer)createCharBuffer(l).put(data).flip();
 	}
 	
 	public static CharBuffer makeCharBuffer(Collection<Character> data)
 	{
-		CharBuffer ret = BufferUtils.createCharBuffer(data.size());
+		CharBuffer ret = createCharBuffer(data.size());
 		
 		for (Character c : data)
 		{
@@ -91,7 +126,7 @@ public final class BufferHelper
 	
 	public static CharBuffer makeCharBuffer(CharBuffer buf, int offset, int count)
 	{
-		CharBuffer ret = BufferUtils.createCharBuffer(count);
+		CharBuffer ret = createCharBuffer(count);
 		
 		for (int c = 0; c < count; c++)
 		{
@@ -111,12 +146,12 @@ public final class BufferHelper
 	
 	public static ShortBuffer makeShortBuffer(int l, short... data)
 	{
-		return (ShortBuffer)BufferUtils.createShortBuffer(l).put(data).flip();
+		return (ShortBuffer)createShortBuffer(l).put(data).flip();
 	}
 	
 	public static ShortBuffer makeShortBuffer(Collection<Short> data)
 	{
-		ShortBuffer ret = BufferUtils.createShortBuffer(data.size());
+		ShortBuffer ret = createShortBuffer(data.size());
 		
 		for (short s : data)
 		{
@@ -131,7 +166,7 @@ public final class BufferHelper
 	
 	public static ShortBuffer makeShortBuffer(ShortBuffer buf, int offset, int count)
 	{
-		ShortBuffer ret = BufferUtils.createShortBuffer(count);
+		ShortBuffer ret = createShortBuffer(count);
 		
 		for (int c = 0; c < count; c++)
 		{
@@ -151,12 +186,12 @@ public final class BufferHelper
 	
 	public static IntBuffer makeIntBuffer(int l, int... data)
 	{
-		return (IntBuffer)BufferUtils.createIntBuffer(l).put(data).flip();
+		return (IntBuffer)createIntBuffer(l).put(data).flip();
 	}
 	
 	public static IntBuffer makeIntBuffer(Collection<Integer> data)
 	{
-		IntBuffer ret = BufferUtils.createIntBuffer(data.size());
+		IntBuffer ret = createIntBuffer(data.size());
 		
 		for (int i : data)
 		{
@@ -171,7 +206,7 @@ public final class BufferHelper
 	
 	public static IntBuffer makeIntBuffer(IntBuffer buf, int offset, int count)
 	{
-		IntBuffer ret = BufferUtils.createIntBuffer(count);
+		IntBuffer ret = createIntBuffer(count);
 		
 		for (int c = 0; c < count; c++)
 		{
@@ -191,12 +226,12 @@ public final class BufferHelper
 	
 	public static DoubleBuffer makeDoubleBuffer(int l, double... data)
 	{
-		return (DoubleBuffer)BufferUtils.createDoubleBuffer(l).put(data).flip();
+		return (DoubleBuffer)createDoubleBuffer(l).put(data).flip();
 	}
 	
 	public static DoubleBuffer makeDoubleBuffer(Collection<Double> data)
 	{
-		DoubleBuffer ret = BufferUtils.createDoubleBuffer(data.size());
+		DoubleBuffer ret = createDoubleBuffer(data.size());
 		
 		for (double d : data)
 		{
@@ -211,7 +246,7 @@ public final class BufferHelper
 	
 	public static DoubleBuffer makeDoubleBuffer(DoubleBuffer buf, int offset, int count)
 	{
-		DoubleBuffer ret = BufferUtils.createDoubleBuffer(count);
+		DoubleBuffer ret = createDoubleBuffer(count);
 		
 		for (int c = 0; c < count; c++)
 		{
@@ -231,12 +266,12 @@ public final class BufferHelper
 	
 	public static FloatBuffer makeFloatBuffer(int l, float... data)
 	{
-		return (FloatBuffer)BufferUtils.createFloatBuffer(l).put(data).flip();
+		return (FloatBuffer)createFloatBuffer(l).put(data).flip();
 	}
 	
 	public static FloatBuffer makeFloatBuffer(Collection<Float> data)
 	{
-		FloatBuffer ret = BufferUtils.createFloatBuffer(data.size());
+		FloatBuffer ret = createFloatBuffer(data.size());
 		
 		for (float f : data)
 		{
@@ -251,7 +286,7 @@ public final class BufferHelper
 	
 	public static FloatBuffer makeFloatBuffer(FloatBuffer buf, int offset, int count)
 	{
-		FloatBuffer ret = BufferUtils.createFloatBuffer(count);
+		FloatBuffer ret = createFloatBuffer(count);
 		
 		for (int c = 0; c < count; c++)
 		{
@@ -271,12 +306,12 @@ public final class BufferHelper
 	
 	public static LongBuffer makeLongBuffer(int l, long... data)
 	{
-		return (LongBuffer)BufferUtils.createLongBuffer(l).put(data).flip();
+		return (LongBuffer)createLongBuffer(l).put(data).flip();
 	}
 	
 	public static LongBuffer makeLongBuffer(Collection<Long> data)
 	{
-		LongBuffer ret = BufferUtils.createLongBuffer(data.size());
+		LongBuffer ret = createLongBuffer(data.size());
 		
 		for (long l : data)
 		{
@@ -291,7 +326,7 @@ public final class BufferHelper
 	
 	public static LongBuffer makeLongBuffer(LongBuffer buf, int offset, int count)
 	{
-		LongBuffer ret = BufferUtils.createLongBuffer(count);
+		LongBuffer ret = createLongBuffer(count);
 		
 		for (int c = 0; c < count; c++)
 		{
@@ -308,7 +343,7 @@ public final class BufferHelper
 	
 	public static ByteBuffer makeByteBufferFromColor(Color... data)
 	{
-		ByteBuffer ret = BufferUtils.createByteBuffer(data.length * 4);
+		ByteBuffer ret = createByteBuffer(data.length * 4);
 		
 		for (Color col : data)
 		{
@@ -323,7 +358,7 @@ public final class BufferHelper
 	
 	public static ByteBuffer makeByteBufferFromColor(Collection<Color> data)
 	{
-		ByteBuffer ret = BufferUtils.createByteBuffer(data.size() * 4);
+		ByteBuffer ret = createByteBuffer(data.size() * 4);
 		
 		for (Color col : data)
 		{
@@ -338,7 +373,7 @@ public final class BufferHelper
 	
 	public static FloatBuffer makeFloatBufferFromColor(Color... data)
 	{
-		FloatBuffer ret = BufferUtils.createFloatBuffer(data.length * 4);
+		FloatBuffer ret = createFloatBuffer(data.length * 4);
 		
 		for (Color col : data)
 		{
@@ -353,7 +388,7 @@ public final class BufferHelper
 	
 	public static FloatBuffer makeFloatBufferFromColor(Collection<Color> data)
 	{
-		FloatBuffer ret = BufferUtils.createFloatBuffer(data.size() * 4);
+		FloatBuffer ret = createFloatBuffer(data.size() * 4);
 		
 		for (Color col : data)
 		{

@@ -42,7 +42,6 @@ public final class CaelumEngine
 		
 		if (args.length == 0)
 		{
-			System.err.println("The starting arguments require the path to the file that the launch settings are in.");
 			return;
 		}
 		

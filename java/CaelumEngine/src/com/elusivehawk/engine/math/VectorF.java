@@ -93,12 +93,6 @@ public class VectorF extends Vector<Float>
 	}
 	
 	@Override
-	public Float[] array()
-	{
-		return this.data;
-	}
-	
-	@Override
 	public VectorF add(IMathObject<Float> obj)
 	{
 		int l = Math.min(this.getSize(), obj.getSize());
