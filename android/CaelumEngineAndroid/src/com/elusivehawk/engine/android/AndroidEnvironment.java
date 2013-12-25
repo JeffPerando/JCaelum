@@ -1,6 +1,8 @@
 
 package com.elusivehawk.engine.android;
 
+import com.eclipsesource.json.JsonObject;
+import com.elusivehawk.engine.core.EnumOS;
 import com.elusivehawk.engine.core.IGameEnvironment;
 import com.elusivehawk.engine.core.ILog;
 import com.elusivehawk.engine.render.IRenderEnvironment;
@@ -14,8 +16,13 @@ import com.elusivehawk.engine.render.IRenderEnvironment;
 public class AndroidEnvironment implements IGameEnvironment
 {
 	@Override
-	public void initiate()
+	public void initiate(JsonObject json, String... args)
 	{
+		if (EnumOS.CURR_OS != EnumOS.ANDROID)
+		{
+			throw new RuntimeException("What day is it?!");
+			
+		}
 		
 	}
 	

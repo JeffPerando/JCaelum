@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.core;
 
+import com.eclipsesource.json.JsonObject;
 import com.elusivehawk.engine.render.IRenderEnvironment;
 
 /**
@@ -19,7 +20,7 @@ import com.elusivehawk.engine.render.IRenderEnvironment;
  */
 public interface IGameEnvironment
 {
-	public void initiate();
+	public void initiate(JsonObject json, String... args);
 	
 	public String getName();
 	

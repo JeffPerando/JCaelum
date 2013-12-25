@@ -1,9 +1,20 @@
 
 package com.elusivehawk.engine.core;
 
+import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * 
@@ -145,31 +156,32 @@ public final class ReflectionHelper
 	
 	public static Object newInstance(String clazz, Class<?>[] assign, Class<? extends Annotation>[] annot)
 	{
-		if (clazz == null)
+		Class<?> cl = null;
+		
+		try
+		{
+			cl = Class.forName(clazz);
+			
+		}
+		catch (Exception e){}
+		
+		if (cl == null)
 		{
 			return null;
 		}
 		
-		Class<?> c = null;
-		
-		try
-		{
-			c = Class.forName(clazz);
-			
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			
-		}
-		
-		if (c != null)
+		return newInstance(cl, assign, annot);
+	}
+	
+	public static Object newInstance(Class<?> clazz, Class<?>[] assign, Class<? extends Annotation>[] annot)
+	{
+		if (clazz != null)
 		{
 			if (assign != null)
 			{
 				for (Class<?> a : assign)
 				{
-					if (!c.isAssignableFrom(a))
+					if (!clazz.isAssignableFrom(a))
 					{
 						return null;
 					}
@@ -182,7 +194,7 @@ public final class ReflectionHelper
 			{
 				for (Class<? extends Annotation> anno : annot)
 				{
-					if (!c.isAnnotationPresent(anno))
+					if (!clazz.isAnnotationPresent(anno))
 					{
 						return null;
 					}
@@ -195,7 +207,7 @@ public final class ReflectionHelper
 			
 			try
 			{
-				ret = c.newInstance();
+				ret = clazz.newInstance();
 				
 			}
 			catch (Exception e)
@@ -208,6 +220,82 @@ public final class ReflectionHelper
 		}
 		
 		return null;
+	}
+	
+	public static Tuple<ClassLoader, Set<Class<?>>> loadLibrary(File file)
+	{
+		Tuple<ClassLoader, Set<Class<?>>> ret = new Tuple<ClassLoader, Set<Class<?>>>(null, null);
+		
+		try
+		{
+			ZipFile zip = file.getName().endsWith(".jar") ? new JarFile(file) : new ZipFile(file);
+			
+			if (zip.size() == 0)
+			{
+				System.out.println("No entries found in: " + file.getAbsolutePath());
+				
+				zip.close();
+				
+				return ret;
+			}
+			
+			Enumeration<? extends ZipEntry> entries = zip.entries();
+			List<URL> urls = new ArrayList<URL>(); 
+			List<String> resources = new ArrayList<String>();
+			
+			while (entries.hasMoreElements())
+			{
+				ZipEntry entry = entries.nextElement();
+				
+				if (entry.isDirectory())
+				{
+					continue;
+				}
+				
+				URL url = new URL("jar:file:" + zip.getName() + "!/" + entry.getName());
+				
+				if (entry.getName().endsWith(".class"))
+				{
+					urls.add(url);
+					resources.add(entry.getName().replaceAll("/", ".").replaceAll(".class", ""));
+					
+				}
+				
+			}
+			
+			zip.close();
+			
+			if (urls.isEmpty())
+			{
+				return ret;
+			}
+			
+			URLClassLoader loader = URLClassLoader.newInstance(urls.toArray(new URL[urls.size()]));
+			Set<Class<?>> set = new TreeSet<Class<?>>();
+			
+			for (String res : resources)
+			{
+				Class<?> cl = loader.loadClass(res);
+				
+				if (cl != null)
+				{
+					set.add(cl);
+					
+				}
+				
+			}
+			
+			ret.one = loader;
+			ret.two = set;
+			
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			
+		}
+		
+		return ret;
 	}
 	
 }

@@ -62,13 +62,6 @@ public class ThreadSoundPlayer extends ThreadStoppable
 			
 		}
 		
-		try
-		{
-			CaelumEngine.instance().startupHook.wait();
-			
-		}
-		catch (Exception e){}
-		
 		return run;
 	}
 	

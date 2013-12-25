@@ -1,10 +1,16 @@
 
 package com.elusivehawk.engine.core;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.lang.management.ManagementFactory;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import com.elusivehawk.engine.render.IRenderHUB;
 import com.elusivehawk.engine.render.ThreadGameRender;
 import com.elusivehawk.engine.sound.ThreadSoundPlayer;
@@ -22,7 +28,6 @@ public final class CaelumEngine
 	public static final boolean DEBUG = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().contains("-agentlib:jdwp");
 	public static final String VERSION = "1.0.0";
 	
-	public final Object startupHook = new Object();
 	public final Object shutdownHook = new Object();
 	private Map<EnumEngineFeature, ThreadStoppable> threads = new HashMap<EnumEngineFeature, ThreadStoppable>();
 	private IGame game;
@@ -47,18 +52,20 @@ public final class CaelumEngine
 		
 		Buffer<String> buf = new Buffer<String>(args);
 		
-		String cur = buf.next();
+		String cur = (buf.hasNext() ? buf.next() : "");
+		IGameEnvironment env = null;
+		JsonObject json = null;
 		
-		if (cur.startsWith("file:"))
+		if (cur.startsWith("class:"))
 		{
-			File file = FileHelper.createFile(".", TextParser.splitOnce(cur, "file:")[1]);
+			env = (IGameEnvironment)ReflectionHelper.newInstance(TextParser.splitOnce(cur, "class:")[1], new Class<?>[]{IGameEnvironment.class}, null);
+			
+		}
+		else
+		{
+			File file = FileHelper.createFile(".", "/Game.json");
 			
 			if (!file.exists())
-			{
-				return;
-			}
-			
-			if (!file.isFile())
 			{
 				return;
 			}
@@ -68,22 +75,65 @@ public final class CaelumEngine
 				return;
 			}
 			
-			if (!file.getName().endsWith(".json"))
+			FileInputStream fis = FileHelper.createInStream(file);
+			
+			if (fis != null)
 			{
-				return;
+				JsonObject j = null;
+				
+				try
+				{
+					j = JsonObject.readFrom(new BufferedReader(new FileReader(file)));
+					
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+					
+				}
+				
+				if (j != null)
+				{
+					JsonValue curEnv = j.get(EnumOS.CURR_OS.toString());
+					
+					if (curEnv != null && curEnv.isObject())
+					{
+						json = curEnv.asObject();
+						JsonValue envLoc = json.get("location");
+						
+						if (envLoc.isString())
+						{
+							File envLibFile = FileHelper.createFile(envLoc.asString());
+							
+							if (envLibFile.exists() && envLibFile.canRead() && envLibFile.getName().endsWith(".jar"))
+							{
+								Tuple<ClassLoader, Set<Class<?>>> tuple = ReflectionHelper.loadLibrary(envLibFile);
+								Set<Class<?>> set = tuple.two;
+								
+								if (set != null && !set.isEmpty())
+								{
+									for (Class<?> c : set)
+									{
+										env = (IGameEnvironment)ReflectionHelper.newInstance(c, new Class<?>[]{IGameEnvironment.class}, null);
+										
+										if (env != null)
+										{
+											break;
+										}
+										
+									}
+									
+								}
+								
+							}
+							
+						}
+						
+					}
+					
+				}
+				
 			}
-			
-			//TODO Parse JSON file
-			
-			cur = buf.next();
-			
-		}
-		
-		IGameEnvironment env = null;
-		
-		if (cur.startsWith("class:"))
-		{
-			env = (IGameEnvironment)ReflectionHelper.newInstance(TextParser.splitOnce(cur, "class:")[1], new Class<?>[]{IGameEnvironment.class}, null);
 			
 		}
 		
@@ -94,7 +144,7 @@ public final class CaelumEngine
 			
 		}
 		
-		env.initiate();
+		env.initiate(json);
 		
 		instance().environment = env;
 		
@@ -135,24 +185,7 @@ public final class CaelumEngine
 		}
 		
 		this.game = g;
-		
-		if (System.getProperty("org.lwjgl.librarypath") == null)
-		{
-			String lwjgl = this.game.getLWJGLPath();
-			
-			if (lwjgl == null)
-			{
-				//GameLog.warn("LWJGL path is set to null! What are you thinking?!");
-				
-				lwjgl = CaelumEngine.determineLWJGLPath();
-				
-			}
-			
-			System.setProperty("org.lwjgl.librarypath", lwjgl);
-			
-		}
-		
-		this.threads.put(EnumEngineFeature.LOGIC, new ThreadGameLoop(this.game));
+		this.threads.put(EnumEngineFeature.LOGIC, new ThreadTimedWrapper(this.game));
 		
 		IRenderHUB hub = this.game.getRenderHUB();
 		
@@ -178,8 +211,6 @@ public final class CaelumEngine
 			
 		}
 		
-		this.startupHook.notifyAll();
-		
 	}
 	
 	public void shutDownGame(String err)
@@ -199,7 +230,7 @@ public final class CaelumEngine
 		{
 			return;
 		}
-
+		
 		for (EnumEngineFeature fe : EnumEngineFeature.values())
 		{
 			ThreadStoppable t = this.threads.get(fe);
@@ -221,13 +252,6 @@ public final class CaelumEngine
 		
 		System.exit(error);
 		
-	}
-	
-	public static String determineLWJGLPath()
-	{
-		//TODO: this only works on Debian... but we'll try it for now.
-		
-		return (EnumOS.OS == EnumOS.LINUX && new File("/usr/lib/jni/liblwjgl.so").exists()) ? "/usr/lib/jni" : FileHelper.createFile("/lwjgl/native/" + EnumOS.OS.toString()).getAbsolutePath();
 	}
 	
 	public IGame getCurrentGame()

@@ -73,13 +73,6 @@ public class ThreadGameRender extends ThreadTimed
 			
 		}
 		
-		try
-		{
-			CaelumEngine.instance().startupHook.wait();
-			
-		}
-		catch (Exception e){}
-		
 		return true;
 	}
 	
