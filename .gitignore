@@ -4,5 +4,7 @@
 *.war
 *.ear
 
+/java/.metadata/.plugins/*
+/java/.metadata/.mylyn/*
 /android/CaelumEngineAndroid/bin/*
 /java/CaelumEngine/bin/*
