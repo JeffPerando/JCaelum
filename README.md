@@ -3,9 +3,25 @@ Caelum-Engine
 
 The Caelum Engine is a game engine/game utilities library, designed with a generic enough architecture so as to enable for near countless different games to be created using it.
 
+
+Instructions
+============
+
 NOTICE: In order to contribute to this repository, you will need:
 
-1. An Eclipse instance.
-2. The coding standards for this repo. (Optional, but recommended)
-3. The Android SDK. Install it yourself, not in the repo itself, and set the %CAELUM_ENGINE_ANDROID_HOME% PATH variable to where you installed it. (Note: This is optional if you don't plan on developing the Android compatibility module)
-4. Enough bandwidth to clone this repo (Duh)
+#1. An Eclipse instance.
+#2. The coding standards for this repo. (Optional, but recommended)
+#3. The Android SDK. Install it yourself, not in the repo itself, ~~and set the %CAELUM_ENGINE_ANDROID_HOME% PATH variable to where you installed it. (Note: This is optional if you don't plan on developing the Android compatibility module)~~ EDIT: Currently, Eclipse doesn't accept system variables, so for now Android development is restricted to Windows users only. However, I have yet to try Kepler, so let me know if that's been taken care of yet.
+#4. Enough bandwidth to clone this repo (Duh)
+
+
+Philosophy
+==========
+
+The philosophy behind this game engine, besides being generic enough for different game genres, is:
+
+* Simplicity: Besides our overly complicated launch system, creating your own game should be relatively simple; Currently, there are only 4 interfaces you need to implement: IGame, IRenderHUB, IScene, and IModelGroup.
+* Straightforwardness: The Caelum Engine is designed with no frills, no unnecessary registries, and no "fancy" code; Just simple, direct, and effective features.
+* Flexibility: If you don't want to use a feature, then you don't have to use it; The Caelum Engine uses null checks at several key points, enabling for features, such as rendering, to be completely bypassed. Also, the Caelum Engine is designed so that the only thing you have to wrap around is the interfaces needed to, well, interface with the engine.
+* Portability: Since Java is a cross-platform programming language, it only makes sense that programs using it are portable, too. In fact, the Caelum Engine is so self-contained, you'll be able to play games you make on your Android phone, even if it wasn't designed for it.
+* Usefulness: Several classes in the Caelum Engine are purely for convenience, such as TextHelper, EnumOS, and Buffer. That doesn't mean, however, that they're superfluous; On the contrary, many of the "convenience" classes in the Caelum Engine are to help consolidate code down to a simple function, constant, or object.
