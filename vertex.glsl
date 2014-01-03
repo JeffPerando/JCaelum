@@ -5,6 +5,8 @@ struct Camera
 	mat4 m;
 	float zFar;
 	float zNear;
+	float aspectRatio;
+	float fov;
 	
 }
 
