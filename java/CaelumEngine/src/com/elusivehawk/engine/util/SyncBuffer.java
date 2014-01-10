@@ -1,5 +1,5 @@
 
-package com.elusivehawk.engine.core;
+package com.elusivehawk.engine.util;
 
 import java.util.Arrays;
 import java.util.List;

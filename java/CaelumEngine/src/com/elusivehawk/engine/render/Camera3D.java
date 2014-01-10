@@ -2,13 +2,13 @@
 package com.elusivehawk.engine.render;
 
 import org.lwjgl.input.Mouse;
-import com.elusivehawk.engine.core.BufferHelper;
-import com.elusivehawk.engine.core.DirtableStorage;
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.MatrixHelper;
 import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.math.VectorF;
 import com.elusivehawk.engine.render.opengl.GLProgram;
+import com.elusivehawk.engine.util.BufferHelper;
+import com.elusivehawk.engine.util.DirtableStorage;
 
 /**
  * 

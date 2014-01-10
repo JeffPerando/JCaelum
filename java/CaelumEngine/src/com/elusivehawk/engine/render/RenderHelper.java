@@ -7,13 +7,13 @@ import java.nio.ByteBuffer;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
-import com.elusivehawk.engine.core.Buffer;
-import com.elusivehawk.engine.core.BufferHelper;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
-import com.elusivehawk.engine.core.FileHelper;
-import com.elusivehawk.engine.core.TextParser;
 import com.elusivehawk.engine.render.opengl.GL;
+import com.elusivehawk.engine.util.Buffer;
+import com.elusivehawk.engine.util.BufferHelper;
+import com.elusivehawk.engine.util.FileHelper;
+import com.elusivehawk.engine.util.TextParser;
 
 /**
  * 

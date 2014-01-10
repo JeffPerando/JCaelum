@@ -4,9 +4,9 @@ package com.elusivehawk.engine.render;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
-import com.elusivehawk.engine.core.Tuple;
 import com.elusivehawk.engine.render.opengl.GL;
 import com.elusivehawk.engine.render.opengl.GLProgram;
+import com.elusivehawk.engine.util.Tuple;
 
 /**
  * 

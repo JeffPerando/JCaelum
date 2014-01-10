@@ -1,5 +1,5 @@
 
-package com.elusivehawk.engine.core;
+package com.elusivehawk.engine.util;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

@@ -8,12 +8,12 @@ import java.util.Arrays;
 import java.util.List;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.Display;
-import com.elusivehawk.engine.core.Buffer;
-import com.elusivehawk.engine.core.BufferHelper;
 import com.elusivehawk.engine.render.opengl.GL;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.ITexture;
 import com.elusivehawk.engine.render.opengl.VertexBufferObject;
+import com.elusivehawk.engine.util.Buffer;
+import com.elusivehawk.engine.util.BufferHelper;
 
 /**
  * 

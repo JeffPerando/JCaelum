@@ -7,11 +7,11 @@ import android.annotation.TargetApi;
 import android.opengl.GLES10;
 import android.opengl.GLES30;
 import android.os.Build;
-import com.elusivehawk.engine.core.BufferHelper;
 import com.elusivehawk.engine.render.Color;
 import com.elusivehawk.engine.render.EnumColorFilter;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.ITexture;
+import com.elusivehawk.engine.util.BufferHelper;
 
 /**
  * 

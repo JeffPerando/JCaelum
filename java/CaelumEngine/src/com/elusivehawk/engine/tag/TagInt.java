@@ -1,8 +1,8 @@
 
 package com.elusivehawk.engine.tag;
 
-import com.elusivehawk.engine.core.Buffer;
 import com.elusivehawk.engine.math.BitHelper;
+import com.elusivehawk.engine.util.Buffer;
 
 /**
  * 

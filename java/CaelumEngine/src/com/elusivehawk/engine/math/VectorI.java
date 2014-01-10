@@ -2,7 +2,7 @@
 package com.elusivehawk.engine.math;
 
 import java.nio.IntBuffer;
-import com.elusivehawk.engine.core.Buffer;
+import com.elusivehawk.engine.util.Buffer;
 
 /**
  * 

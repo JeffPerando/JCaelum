@@ -6,10 +6,10 @@ import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumOS;
-import com.elusivehawk.engine.core.FileHelper;
 import com.elusivehawk.engine.core.IGameEnvironment;
 import com.elusivehawk.engine.core.ILog;
 import com.elusivehawk.engine.render.IRenderEnvironment;
+import com.elusivehawk.engine.util.FileHelper;
 
 /**
  * 

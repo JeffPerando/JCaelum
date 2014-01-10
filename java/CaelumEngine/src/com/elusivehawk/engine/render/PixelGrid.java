@@ -4,7 +4,7 @@ package com.elusivehawk.engine.render;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import com.elusivehawk.engine.core.BufferHelper;
+import com.elusivehawk.engine.util.BufferHelper;
 
 /**
  * 

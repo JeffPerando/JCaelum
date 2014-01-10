@@ -6,17 +6,17 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import com.elusivehawk.engine.core.Buffer;
-import com.elusivehawk.engine.core.BufferHelper;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
-import com.elusivehawk.engine.core.SemiFinalStorage;
-import com.elusivehawk.engine.core.SemiFinalStorage.IStorageListener;
-import com.elusivehawk.engine.core.Tuple;
 import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.math.VectorF;
 import com.elusivehawk.engine.render.opengl.GL;
 import com.elusivehawk.engine.render.opengl.VertexBufferObject;
+import com.elusivehawk.engine.util.Buffer;
+import com.elusivehawk.engine.util.BufferHelper;
+import com.elusivehawk.engine.util.SemiFinalStorage;
+import com.elusivehawk.engine.util.Tuple;
+import com.elusivehawk.engine.util.SemiFinalStorage.IStorageListener;
 
 /**
  * 

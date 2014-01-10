@@ -5,12 +5,12 @@ import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import com.elusivehawk.engine.core.BufferHelper;
 import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.math.VectorF;
 import com.elusivehawk.engine.render.opengl.GL;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBufferObject;
+import com.elusivehawk.engine.util.BufferHelper;
 
 /**
  * 

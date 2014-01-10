@@ -1,5 +1,5 @@
 
-package com.elusivehawk.engine.core;
+package com.elusivehawk.engine.util;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -10,7 +10,6 @@ import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.nio.ShortBuffer;
 import java.util.Collection;
-import com.elusivehawk.engine.render.Color;
 
 /**
  * 
@@ -331,68 +330,6 @@ public final class BufferHelper
 		for (int c = 0; c < count; c++)
 		{
 			ret.put(buf.get(c + offset));
-			
-		}
-		
-		ret.flip();
-		
-		return ret;
-	}
-	
-	//Custom functions for library-specific implementations.
-	
-	public static ByteBuffer makeByteBufferFromColor(Color... data)
-	{
-		ByteBuffer ret = createByteBuffer(data.length * 4);
-		
-		for (Color col : data)
-		{
-			col.store(ret);
-			
-		}
-		
-		ret.flip();
-		
-		return ret;
-	}
-	
-	public static ByteBuffer makeByteBufferFromColor(Collection<Color> data)
-	{
-		ByteBuffer ret = createByteBuffer(data.size() * 4);
-		
-		for (Color col : data)
-		{
-			col.store(ret);
-			
-		}
-		
-		ret.flip();
-		
-		return ret;
-	}
-	
-	public static FloatBuffer makeFloatBufferFromColor(Color... data)
-	{
-		FloatBuffer ret = createFloatBuffer(data.length * 4);
-		
-		for (Color col : data)
-		{
-			col.store(ret);
-			
-		}
-		
-		ret.flip();
-		
-		return ret;
-	}
-	
-	public static FloatBuffer makeFloatBufferFromColor(Collection<Color> data)
-	{
-		FloatBuffer ret = createFloatBuffer(data.size() * 4);
-		
-		for (Color col : data)
-		{
-			col.store(ret);
 			
 		}
 		

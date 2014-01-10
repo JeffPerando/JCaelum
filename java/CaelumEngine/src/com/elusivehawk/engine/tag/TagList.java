@@ -4,8 +4,8 @@ package com.elusivehawk.engine.tag;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import com.elusivehawk.engine.core.Buffer;
 import com.elusivehawk.engine.math.BitHelper;
+import com.elusivehawk.engine.util.Buffer;
 
 /**
  * 

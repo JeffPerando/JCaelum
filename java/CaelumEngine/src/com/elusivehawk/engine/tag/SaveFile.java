@@ -9,10 +9,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import com.elusivehawk.engine.core.Buffer;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
-import com.elusivehawk.engine.core.FileHelper;
+import com.elusivehawk.engine.util.Buffer;
+import com.elusivehawk.engine.util.FileHelper;
 
 /**
  * 

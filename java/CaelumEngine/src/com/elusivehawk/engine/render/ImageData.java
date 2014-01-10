@@ -1,8 +1,8 @@
 
 package com.elusivehawk.engine.render;
 
-import com.elusivehawk.engine.core.Tuple;
 import com.elusivehawk.engine.math.VectorF;
+import com.elusivehawk.engine.util.Tuple;
 
 /**
  * 

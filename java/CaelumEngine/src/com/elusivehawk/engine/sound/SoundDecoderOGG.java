@@ -8,9 +8,9 @@ import java.io.FileNotFoundException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import com.elusivehawk.engine.core.BufferHelper;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
+import com.elusivehawk.engine.util.BufferHelper;
 
 /**
  * 

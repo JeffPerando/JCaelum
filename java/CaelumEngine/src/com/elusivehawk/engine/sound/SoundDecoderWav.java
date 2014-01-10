@@ -7,7 +7,7 @@ import org.lwjgl.openal.AL10;
 import org.lwjgl.util.WaveData;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
-import com.elusivehawk.engine.core.FileHelper;
+import com.elusivehawk.engine.util.FileHelper;
 
 /**
  * 
