@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.network;
 
-import java.net.Socket;
+import java.util.Collection;
 
 /**
  * 
@@ -9,38 +9,41 @@ import java.net.Socket;
  * 
  * @author Elusivehawk
  */
-public class Server
+public class Server implements IHost
 {
 	protected final IP ip;
+	protected final IPacketListener receiver;
 	protected final int ups;
 	
-	protected Socket skt = null;
+	protected Connection con = null;
 	
-	public Server(String ip)
+	public Server(String ip, IPacketListener r)
 	{
-		this(IP.create(ip));
+		this(IP.create(ip), r);
 		
 	}
 	
-	public Server(String ip, int ups)
+	public Server(String ip, IPacketListener r, int ups)
 	{
-		this(IP.create(ip), ups);
+		this(IP.create(ip), r, ups);
 		
 	}
 	
-	public Server(IP ip)
+	public Server(IP ip, IPacketListener r)
 	{
-		this(ip, 30);
+		this(ip, r, 30);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Server(IP ipAddress, int updCount)
+	public Server(IP ipAddress, IPacketListener r, int updCount)
 	{
 		assert ipAddress != null;
+		assert r != null;
 		assert updCount > 0;
 		
 		ip = ipAddress;
+		receiver = r;
 		ups = updCount;
 		
 	}
@@ -48,6 +51,40 @@ public class Server
 	public void connect()
 	{
 		
+	}
+	
+	@Override
+	public void onPacketsReceived(Collection<Packet> pkts)
+	{
+		this.receiver.onPacketsReceived(pkts);
+		
+	}
+	
+	@Override
+	public Side getSide()
+	{
+		return Side.SERVER;
+	}
+	
+	@Override
+	public void sendPackets(Packet... pkts)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void addPacketFormat(PacketFormat format)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public PacketFormat getPacketFormat(short id)
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }
