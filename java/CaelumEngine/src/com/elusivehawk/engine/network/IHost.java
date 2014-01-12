@@ -1,20 +1,21 @@
 
 package com.elusivehawk.engine.network;
 
+import java.io.Closeable;
+import java.util.List;
+
 /**
  * 
  * 
  * 
  * @author Elusivehawk
  */
-public interface IHost extends IPacketListener
+public interface IHost extends IPacketHandler, Closeable
 {
-	public Side getSide();
+	public void beginCommunication();
 	
-	public void sendPackets(Packet... pkts);
+	public void sendPackets(int client, Packet... pkts);
 	
-	public void addPacketFormat(PacketFormat format);
-	
-	public PacketFormat getPacketFormat(short id);
+	public void onHandshakeEnd(boolean success, Connection connection, List<Packet> pkts);
 	
 }

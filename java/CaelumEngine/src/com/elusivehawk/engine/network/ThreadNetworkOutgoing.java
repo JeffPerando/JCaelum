@@ -4,7 +4,6 @@ package com.elusivehawk.engine.network;
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.OutputStream;
-import java.net.Socket;
 import com.elusivehawk.engine.util.SyncBuffer;
 
 /**
@@ -19,10 +18,13 @@ public class ThreadNetworkOutgoing extends ThreadNetwork
 	private DataOutputStream out = null;
 	
 	private final SyncBuffer<Packet> outgoingPkts = new SyncBuffer<Packet>();
+	private final IPacketHandler handler;
 	
-	public ThreadNetworkOutgoing(IHost host, Socket skt, int ups)
+	@SuppressWarnings("unqualified-field-access")
+	public ThreadNetworkOutgoing(IPacketHandler h, Connection con, int ups)
 	{
-		super(host, skt, ups);
+		super(con, ups);
+		handler = h;
 		
 	}
 	
@@ -33,7 +35,7 @@ public class ThreadNetworkOutgoing extends ThreadNetwork
 		
 		try
 		{
-			os = this.skt.getOutputStream();
+			os = this.connect.getSocket().getOutputStream();
 			
 		}
 		catch (Exception e)
@@ -59,7 +61,7 @@ public class ThreadNetworkOutgoing extends ThreadNetwork
 		{
 			this.outgoingPkts.setIsDirty(false);
 			
-			PacketFormat format = this.host.getPacketFormat(pkt.pktId);
+			PacketFormat format = this.handler.getPacketFormat(pkt.pktId);
 			boolean remove = false;
 			
 			if (format == null)
@@ -68,7 +70,7 @@ public class ThreadNetworkOutgoing extends ThreadNetwork
 				
 			}
 			
-			if (!format.getSide().belongsOnSide(this.host.getSide()))
+			if (!format.getSide().belongsOnSide(this.handler.getSide()))
 			{
 				remove = true;
 				

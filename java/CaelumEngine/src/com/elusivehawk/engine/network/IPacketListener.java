@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.network;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * 
@@ -11,6 +11,8 @@ import java.util.Collection;
  */
 public interface IPacketListener
 {
-	public void onPacketsReceived(Collection<Packet> pkts);
+	public Side getSide();
+	
+	public void onPacketsReceived(Connection origin, List<Packet> pkts);
 	
 }

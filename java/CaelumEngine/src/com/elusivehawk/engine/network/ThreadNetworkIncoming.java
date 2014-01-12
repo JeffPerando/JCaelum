@@ -4,7 +4,6 @@ package com.elusivehawk.engine.network;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.InputStream;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,12 +15,19 @@ import java.util.List;
  */
 public class ThreadNetworkIncoming extends ThreadNetwork 
 {
+	private final IPacketHandler receiver;
+	
 	private BufferedInputStream bis = null;
 	private DataInputStream in = null;
 	
-	public ThreadNetworkIncoming(IHost host, Socket skt, int ups) throws Exception
+	@SuppressWarnings("unqualified-field-access")
+	public ThreadNetworkIncoming(IPacketHandler r, Connection con, int ups) throws Exception
 	{
-		super(host, skt, ups);
+		super(con, ups);
+		
+		assert r != null;
+		
+		receiver = r;
 		
 	}
 	
@@ -32,7 +38,7 @@ public class ThreadNetworkIncoming extends ThreadNetwork
 		
 		try
 		{
-			is = this.skt.getInputStream();
+			is = this.connect.getSocket().getInputStream();
 			
 		}
 		catch (Exception e)
@@ -66,9 +72,9 @@ public class ThreadNetworkIncoming extends ThreadNetwork
 		{
 			short id = this.in.readShort();
 			
-			PacketFormat format = this.host.getPacketFormat(id);
+			PacketFormat format = this.receiver.getPacketFormat(id);
 			
-			if (format == null || format.getId() != id)
+			if (format == null || format.getId() != id || !format.getSide().belongsOnSide(this.receiver.getSide()))
 			{
 				this.in.skip(this.in.available());
 				return;
@@ -105,7 +111,7 @@ public class ThreadNetworkIncoming extends ThreadNetwork
 			
 		}
 		
-		this.host.onPacketsReceived(pkts);
+		this.receiver.onPacketsReceived(this.connect, pkts);
 		
 	}
 	

@@ -1,7 +1,6 @@
 
 package com.elusivehawk.engine.network;
 
-import java.net.Socket;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.util.ThreadTimed;
@@ -15,17 +14,14 @@ import com.elusivehawk.engine.util.ThreadTimed;
 abstract class ThreadNetwork extends ThreadTimed
 {
 	protected final int updateCount;
-	protected final Socket skt;
-	protected final IHost host;
+	protected final Connection connect;
 	
 	@SuppressWarnings("unqualified-field-access")
-	ThreadNetwork(IHost h, Socket s, int ups)
+	ThreadNetwork(Connection con, int ups)
 	{
-		assert h != null;
-		assert s != null;
+		assert con != null;
 		
-		host = h;
-		skt = s;
+		connect = con;
 		updateCount = ups;
 		
 	}

@@ -1,7 +1,11 @@
 
 package com.elusivehawk.engine.network;
 
-import java.util.Collection;
+import java.io.IOException;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+import com.elusivehawk.engine.util.SemiFinalStorage;
 
 /**
  * 
@@ -9,54 +13,62 @@ import java.util.Collection;
  * 
  * @author Elusivehawk
  */
-public class Server implements IHost
+public class Server extends HostImpl
 {
-	protected final IP ip;
-	protected final IPacketListener receiver;
 	protected final int ups;
+	protected final IP ip;
+	protected final IConnectionMaster master;
+	protected final ThreadJoinListener listener;
 	
-	protected Connection con = null;
+	protected final List<HandshakeClient> handshakers = new ArrayList<HandshakeClient>();
+	protected final List<Connection> clients = new ArrayList<Connection>();
+	protected final SemiFinalStorage<Boolean> disabled = new SemiFinalStorage<Boolean>(false);
 	
-	public Server(String ip, IPacketListener r)
+	protected int nextConnectionId = 0;
+	
+	public Server(String ip, IConnectionMaster m)
 	{
-		this(IP.create(ip), r);
+		this(IP.create(ip), m);
 		
 	}
 	
-	public Server(String ip, IPacketListener r, int ups)
+	public Server(String ip, IConnectionMaster m, int ups)
 	{
-		this(IP.create(ip), r, ups);
+		this(IP.create(ip), m, ups);
 		
 	}
 	
-	public Server(IP ip, IPacketListener r)
+	public Server(IP ip, IConnectionMaster m)
 	{
-		this(ip, r, 30);
+		this(ip, m, 30);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Server(IP ipAddress, IPacketListener r, int updCount)
+	public Server(IP ipAddress, IConnectionMaster m, int updCount)
 	{
 		assert ipAddress != null;
-		assert r != null;
+		assert m != null;
 		assert updCount > 0;
 		
 		ip = ipAddress;
-		receiver = r;
+		master = m;
+		listener = new ThreadJoinListener(this, ip.getPort());
 		ups = updCount;
 		
 	}
 	
-	public void connect()
+	@Override
+	public void beginCommunication()
 	{
+		this.listener.start();
 		
 	}
 	
 	@Override
-	public void onPacketsReceived(Collection<Packet> pkts)
+	public void onPacketsReceived(Connection origin, List<Packet> pkts)
 	{
-		this.receiver.onPacketsReceived(pkts);
+		this.master.onPacketsReceived(origin, pkts);
 		
 	}
 	
@@ -67,24 +79,60 @@ public class Server implements IHost
 	}
 	
 	@Override
-	public void sendPackets(Packet... pkts)
+	public void sendPackets(int client, Packet... pkts)
 	{
-		// TODO Auto-generated method stub
+		for (Connection connect : this.clients)
+		{
+			if (connect.getConnectionId() == client)
+			{
+				connect.sendPackets(pkts);
+				
+			}
+			
+		}
+		
+	}
+	
+	
+	@Override
+	public void onHandshakeEnd(boolean success, Connection connection, List<Packet> pkts)
+	{
+		this.master.onHandshakeEnd(success, connection, pkts);
+		
+		connection.close(!success);
+		
+		if (success)
+		{
+			Connection connect = Connection.create(this, connection.getSocket(), ++this.nextConnectionId, this.ups);
+			
+			if (connect != null)
+			{
+				this.clients.add(connect);
+				
+			}
+			
+		}
+		
+	}
+	
+	public synchronized void connectClient(Socket s)//TODO Check if this causes a deadlock.
+	{
+		++this.nextConnectionId;
+		
+		HandshakeClient next = new HandshakeClient(this, s, this.nextConnectionId, this.ups, this.master.getHandshakeProtocol());
+		
+		this.handshakers.add(next);
+		
+		next.start();
 		
 	}
 	
 	@Override
-	public void addPacketFormat(PacketFormat format)
+	public void close() throws IOException
 	{
-		// TODO Auto-generated method stub
+		this.listener.stopThread();
 		
-	}
-
-	@Override
-	public PacketFormat getPacketFormat(short id)
-	{
-		// TODO Auto-generated method stub
-		return null;
+		
 	}
 	
 }

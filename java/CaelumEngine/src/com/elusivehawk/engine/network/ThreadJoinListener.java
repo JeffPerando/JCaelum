@@ -47,6 +47,8 @@ public class ThreadJoinListener extends ThreadStoppable
 		{
 			Socket s = this.skt.accept();
 			
+			this.svr.connectClient(s);
+			
 		}
 		catch (Exception e)
 		{
