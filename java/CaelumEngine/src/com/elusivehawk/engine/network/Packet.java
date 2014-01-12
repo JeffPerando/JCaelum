@@ -1,8 +1,8 @@
 
 package com.elusivehawk.engine.network;
 
-import com.elusivehawk.engine.util.Buffer;
-import com.elusivehawk.engine.util.Tuple;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -13,7 +13,7 @@ import com.elusivehawk.engine.util.Tuple;
 public final class Packet
 {
 	public final short pktId;
-	private final Buffer<Tuple<DataType, Object>> data = new Buffer<Tuple<DataType, Object>>();
+	private final List<Object> data = new ArrayList<Object>();
 	
 	@SuppressWarnings("unqualified-field-access")
 	public Packet(short id)
@@ -27,30 +27,15 @@ public final class Packet
 		return this.data.size();
 	}
 	
-	public void addData(DataType type, Object obj)
+	public void addData(Object obj)
 	{
-		this.data.add(new Tuple<DataType, Object>(type, obj));
+		this.data.add(obj);
 		
 	}
 	
-	public DataType[] getFormatting()
+	public List<Object> getData()
 	{
-		DataType[] ret = new DataType[this.data.size()];
-		
-		for (int c = 0; c < this.data.size(); c++)
-		{
-			ret[c] = this.data.get(c).one;
-			
-		}
-		
-		return ret;
-	}
-	
-	public Object next(DataType expected)
-	{
-		Tuple<DataType, Object> ret = this.data.next();
-		
-		return (ret.one == expected) ? ret.two : null;
+		return this.data;
 	}
 	
 }

@@ -97,7 +97,7 @@ public class ThreadNetworkIncoming extends ThreadNetwork
 					default: continue;
 				}
 				
-				pkt.addData(type, obj);
+				pkt.addData(obj);
 				
 			}
 			
