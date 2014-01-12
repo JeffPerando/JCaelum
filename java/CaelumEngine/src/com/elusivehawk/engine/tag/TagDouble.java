@@ -44,7 +44,7 @@ public class TagDouble implements ITag<Double>
 	@Override
 	public void save(Buffer<Byte> buf)
 	{
-		buf.put(BitHelper.createBytes(this.d));
+		buf.add(BitHelper.createBytes(this.d));
 		
 	}
 	

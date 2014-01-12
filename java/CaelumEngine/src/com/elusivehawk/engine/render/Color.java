@@ -2,9 +2,6 @@
 package com.elusivehawk.engine.render;
 
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import com.elusivehawk.engine.core.INIOStoreable;
 import com.elusivehawk.engine.util.Buffer;
 
 /**
@@ -13,7 +10,7 @@ import com.elusivehawk.engine.util.Buffer;
  * 
  * @author Elusivehawk
  */
-public class Color implements INIOStoreable
+public class Color
 {
 	protected int color = 0;
 	public final EnumColorFormat format;
@@ -76,38 +73,6 @@ public class Color implements INIOStoreable
 			
 		}
 		
-	}
-	
-	@Override
-	public boolean store(ByteBuffer buf)
-	{
-		for (EnumColorFilter col : this.format.colors)
-		{
-			buf.put(this.getColor(col));
-			
-		}
-		
-		return true;
-	}
-	
-	@Override
-	public boolean store(FloatBuffer buf)
-	{
-		for (EnumColorFilter col : this.format.colors)
-		{
-			buf.put(this.getColorFloat(col));
-			
-		}
-		
-		return true;
-	}
-	
-	@Override
-	public boolean store(IntBuffer buf)
-	{
-		buf.put(this.getColor());
-		
-		return true;
 	}
 	
 	@Override

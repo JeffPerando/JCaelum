@@ -7,7 +7,7 @@ import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL10;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
-import com.elusivehawk.engine.core.ThreadStoppable;
+import com.elusivehawk.engine.util.ThreadStoppable;
 
 /**
  * 

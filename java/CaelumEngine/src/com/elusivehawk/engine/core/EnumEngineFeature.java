@@ -12,8 +12,6 @@ public enum EnumEngineFeature
 	LOGIC,
 	RENDER,
 	PHYSICS,
-	SOUND,
-	NETWORK,
-	WORK;
+	SOUND;
 	
 }

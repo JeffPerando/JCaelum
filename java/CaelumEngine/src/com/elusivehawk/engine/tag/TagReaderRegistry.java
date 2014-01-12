@@ -89,11 +89,11 @@ public final class TagReaderRegistry
 	public void writeTag(Buffer<Byte> buf, ITag<?> tag)
 	{
 		String name = tag.getName();
-		buf.put((byte)name.length());
+		buf.add((byte)name.length());
 		
 		for (int c = 0; c < name.length(); c++)
 		{
-			buf.put(BitHelper.createBytes((short)name.charAt(c)));
+			buf.add(BitHelper.createBytes((short)name.charAt(c)));
 			
 		}
 		
@@ -105,7 +105,7 @@ public final class TagReaderRegistry
 			
 		}
 		
-		buf.put(type);
+		buf.add(type);
 		
 		tag.save(buf);
 		

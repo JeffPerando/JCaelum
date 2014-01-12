@@ -3,6 +3,7 @@ package com.elusivehawk.engine.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
  * 
  * @author Elusivehawk
  */
-public class Buffer<T> implements IDirty, Iterable<T>, Iterator<T>
+public class Buffer<T> implements IDirty, Collection<T>, Iterator<T>
 {
 	protected final List<T> l;
 	protected final List<Boolean> dirt = new ArrayList<Boolean>();
@@ -80,24 +81,37 @@ public class Buffer<T> implements IDirty, Iterable<T>, Iterator<T>
 		
 	}
 	
-	public Buffer<T> put(T obj)
+	@Override
+	public boolean add(T obj)
 	{
 		this.dirt.add(this.pos, true);
 		this.l.add(this.pos++, obj);
 		
-		return this;
+		return true;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Buffer<T> put(T... objs)
+	public Buffer<T> add(T... objs)
 	{
 		for (T obj : objs)
 		{
-			this.put(obj);
+			this.add(obj);
 			
 		}
 		
 		return this;
+	}
+	
+	@Override
+	public boolean addAll(Collection<? extends T> col)
+	{
+		for (T obj : col)
+		{
+			this.add(obj);
+			
+		}
+		
+		return true;
 	}
 	
 	public int position()
@@ -134,6 +148,7 @@ public class Buffer<T> implements IDirty, Iterable<T>, Iterator<T>
 		
 	}
 	
+	@Override
 	public int size()
 	{
 		return this.l.size();
@@ -161,6 +176,67 @@ public class Buffer<T> implements IDirty, Iterable<T>, Iterator<T>
 	public Iterator<T> iterator()
 	{
 		return this;
+	}
+	
+	@Override
+	public void clear()
+	{
+		while (this.hasNext())
+		{
+			this.remove();
+			
+		}
+		
+	}
+	
+	@Override
+	public boolean contains(Object arg0)
+	{
+		return this.l.contains(arg0);
+	}
+	
+	@Override
+	public boolean containsAll(Collection<?> arg0)
+	{
+		return this.l.containsAll(arg0);
+	}
+	
+	@Override
+	public boolean isEmpty()
+	{
+		return !this.hasNext();
+	}
+	
+	@Override
+	public boolean remove(Object arg0)
+	{
+		return this.l.remove(arg0);
+	}
+	
+	@Override
+	public boolean removeAll(Collection<?> arg0)
+	{
+		return this.l.removeAll(arg0);
+	}
+	
+	@Override
+	public boolean retainAll(Collection<?> arg0)
+	{
+		return this.l.retainAll(arg0);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public T[] toArray()
+	{
+		return (T[])this.l.toArray();
+	}
+	
+	@SuppressWarnings("hiding")
+	@Override
+	public <T> T[] toArray(T[] arg0)
+	{
+		return this.l.toArray(arg0);
 	}
 	
 }

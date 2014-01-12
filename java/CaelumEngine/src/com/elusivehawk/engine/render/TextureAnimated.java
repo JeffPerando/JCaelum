@@ -87,7 +87,7 @@ public class TextureAnimated implements ITexture
 			{
 				BufferedImage sub = img.getSubimage(0, c, img.getWidth(), y);
 				
-				tex.put(RenderHelper.processImage(new LegibleBufferedImage(sub), mode, format));
+				tex.add(RenderHelper.processImage(new LegibleBufferedImage(sub), mode, format));
 				
 			}
 			

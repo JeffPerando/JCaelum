@@ -43,17 +43,17 @@ public class TagString implements ITag<String>
 	@Override
 	public void save(Buffer<Byte> buf)
 	{
-		if (this.str == null)
+		if (this.str == null || "".equals(this.str))
 		{
-			buf.put((byte)0);
+			buf.add((byte)0);
 			return;
 		}
 		
-		buf.put(BitHelper.createBytes((short)this.str.length()));
+		buf.add(BitHelper.createBytes((short)this.str.length()));
 		
 		for (int c = 0; c < this.str.length(); c++)
 		{
-			buf.put(BitHelper.createBytes((short)this.str.charAt(c)));
+			buf.add(BitHelper.createBytes((short)this.str.charAt(c)));
 			
 		}
 		

@@ -43,7 +43,7 @@ public class TagByte implements ITag<Byte>
 	@Override
 	public void save(Buffer<Byte> buf)
 	{
-		buf.put(this.getData());
+		buf.add(this.getData());
 		
 	}
 	

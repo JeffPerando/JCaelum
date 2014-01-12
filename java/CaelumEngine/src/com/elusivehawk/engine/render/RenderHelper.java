@@ -51,7 +51,7 @@ public final class RenderHelper
 				{
 					LegibleBufferedImage img = new LegibleBufferedImage(reader.read(c));
 					
-					ret.put(processImage(img, mode, format));
+					ret.add(processImage(img, mode, format));
 					
 				}
 				
@@ -127,14 +127,19 @@ public final class RenderHelper
 	public static ByteBuffer readImage(ILegibleImage img, EnumColorFormat format)
 	{
 		ByteBuffer buf = BufferHelper.createByteBuffer(img.getHeight() * img.getWidth() * 4);
+		Color col = new Color(format);
 		
 		for (int x = 0; x < img.getWidth(); ++x)
 		{
 			for (int y = 0; y < img.getHeight(); ++y)
 			{
-				Color col = format.convert(new Color(img.getFormat(), img.getPixel(x, y)));
+				col.setColor(img.getPixel(x, y));
 				
-				col.store(buf);
+				for (EnumColorFilter filter : format.colors)
+				{
+					buf.put(col.getColor(filter));
+					
+				}
 				
 			}
 			
@@ -233,7 +238,7 @@ public final class RenderHelper
 		
 		for (EnumColorFilter col : EnumColorFilter.values())
 		{
-			ret.put((a.getColorFloat(col) + b.getColorFloat(col)) % 1f);
+			ret.add((a.getColorFloat(col) + b.getColorFloat(col)) % 1f);
 			
 		}
 		

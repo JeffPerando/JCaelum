@@ -69,7 +69,7 @@ public class ParticleScene implements ILogicalRender
 			
 		}
 		
-		EnumColorFormat.RGBA.convert(p.getColor()).store(this.buf);
+		//EnumColorFormat.RGBA.convert(p.getColor()).store(this.buf);
 		
 		this.particles.add(p);
 		
@@ -106,7 +106,7 @@ public class ParticleScene implements ILogicalRender
 			if (p.updatePositionOrColor())
 			{
 				Vector<Float> vec = new VectorF(3, p.getPosition());
-				Color col = EnumColorFormat.RGBA.convert(p.getColor());
+				Color col = p.getColor();
 				
 				this.buf.position(c * PARTICLE_FLOAT_COUNT);
 				
@@ -116,7 +116,11 @@ public class ParticleScene implements ILogicalRender
 					
 				}
 				
-				col.store(this.buf);
+				for (EnumColorFilter filter : EnumColorFormat.RGBA.colors)
+				{
+					this.buf.put(col.getColorFloat(filter));
+					
+				}
 				
 			}
 			

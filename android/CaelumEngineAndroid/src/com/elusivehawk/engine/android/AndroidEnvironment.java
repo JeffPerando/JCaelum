@@ -18,11 +18,7 @@ public class AndroidEnvironment implements IGameEnvironment
 	@Override
 	public void initiate(JsonObject json, String... args)
 	{
-		if (EnumOS.CURR_OS != EnumOS.ANDROID)
-		{
-			throw new RuntimeException("What day is it?!");
-			
-		}
+		//TODO Things
 		
 	}
 	
@@ -43,6 +39,12 @@ public class AndroidEnvironment implements IGameEnvironment
 	{
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public boolean isCompatible(EnumOS os)
+	{
+		return os == EnumOS.ANDROID;
 	}
 	
 }

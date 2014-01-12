@@ -1,5 +1,5 @@
 
-package com.elusivehawk.engine.core;
+package com.elusivehawk.engine.util;
 
 /**
  * 
@@ -46,13 +46,22 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 		
 		this.time = System.nanoTime() / 1000000000.0;
 		
-		if ((this.nextTime - this.time) > this.getMaxDelta()) this.nextTime = this.time;
+		if (this.getMaxDelta() > 0 && (this.nextTime - this.time) > this.getMaxDelta()) this.nextTime = this.time;
 		
 		if ((this.time + this.delta) >= this.nextTime)
 		{
 			this.updates++;
 			
-			this.update(this.time - this.nextTime);
+			try
+			{
+				this.update(this.time - this.nextTime);
+				
+			}
+			catch (Throwable e)
+			{
+				this.handleException(e);
+				
+			}
 			
 			this.nextTime += this.delta;
 			

@@ -44,7 +44,7 @@ public class TagShort implements ITag<Short>
 	@Override
 	public void save(Buffer<Byte> buf)
 	{
-		buf.put(BitHelper.createBytes(this.s));
+		buf.add(BitHelper.createBytes(this.s));
 		
 	}
 	

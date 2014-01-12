@@ -167,7 +167,7 @@ public class VectorF extends Vector<Float>
 	{
 		for (int c = 0; c < this.getSize(); c++)
 		{
-			buf.put(this.get(c));
+			buf.add(this.get(c));
 			
 		}
 		

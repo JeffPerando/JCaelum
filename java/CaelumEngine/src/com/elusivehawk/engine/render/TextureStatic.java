@@ -2,7 +2,6 @@
 package com.elusivehawk.engine.render;
 
 import java.io.File;
-import java.io.IOException;
 import com.elusivehawk.engine.render.opengl.GL;
 import com.elusivehawk.engine.render.opengl.ITexture;
 

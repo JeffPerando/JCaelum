@@ -1,6 +1,8 @@
 
 package com.elusivehawk.engine.network;
 
+import java.net.Socket;
+
 /**
  * 
  * 
@@ -9,33 +11,42 @@ package com.elusivehawk.engine.network;
  */
 public class Server
 {
-	@SuppressWarnings("static-method")
-	public void connect(String ip, int ups)
+	protected final IP ip;
+	protected final int ups;
+	
+	protected Socket skt = null;
+	
+	public Server(String ip)
 	{
-		assert ip != null;
+		this(IP.create(ip));
 		
-		if (ip.contains(":"))
-		{
-			String[] split = ip.split(":");
-			
-			assert split.length == 2;
-			
-			Short port = null;
-			
-			try
-			{
-				port = Short.valueOf(split[1]);
-				
-			}
-			catch (Exception e){}
-			
-			if (port != null)
-			{
-				//TODO Connect
-				
-			}
-			
-		}
+	}
+	
+	public Server(String ip, int ups)
+	{
+		this(IP.create(ip), ups);
+		
+	}
+	
+	public Server(IP ip)
+	{
+		this(ip, 30);
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public Server(IP ipAddress, int updCount)
+	{
+		assert ipAddress != null;
+		assert updCount > 0;
+		
+		ip = ipAddress;
+		ups = updCount;
+		
+	}
+	
+	public void connect()
+	{
 		
 	}
 	

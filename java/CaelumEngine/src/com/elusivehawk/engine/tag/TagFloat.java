@@ -44,7 +44,7 @@ public class TagFloat implements ITag<Float>
 	@Override
 	public void save(Buffer<Byte> buf)
 	{
-		buf.put(BitHelper.createBytes(this.f));
+		buf.add(BitHelper.createBytes(this.f));
 		
 	}
 	

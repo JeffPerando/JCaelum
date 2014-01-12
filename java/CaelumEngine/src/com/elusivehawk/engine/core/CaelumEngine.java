@@ -18,6 +18,8 @@ import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.FileHelper;
 import com.elusivehawk.engine.util.ReflectionHelper;
 import com.elusivehawk.engine.util.TextParser;
+import com.elusivehawk.engine.util.ThreadStoppable;
+import com.elusivehawk.engine.util.ThreadTimedWrapper;
 import com.elusivehawk.engine.util.Tuple;
 
 /**
@@ -149,11 +151,16 @@ public final class CaelumEngine
 			
 		}
 		
-		env.initiate(json);
-		
-		instance().environment = env;
+		if (!env.isCompatible(EnumOS.CURR_OS))
+		{
+			return;
+		}
 		
 		cur = buf.next();
+		
+		env.initiate(json, buf.toArray());
+		
+		instance().environment = env;
 		
 		IGame g = null;
 		

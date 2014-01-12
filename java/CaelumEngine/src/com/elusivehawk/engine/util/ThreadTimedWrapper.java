@@ -1,5 +1,5 @@
 
-package com.elusivehawk.engine.core;
+package com.elusivehawk.engine.util;
 
 /**
  * 
@@ -27,7 +27,7 @@ public class ThreadTimedWrapper extends ThreadTimed
 	}
 	
 	@Override
-	public void update(double delta)
+	public void update(double delta) throws Throwable
 	{
 		this.t.update(delta);
 		

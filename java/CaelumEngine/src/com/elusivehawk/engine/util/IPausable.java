@@ -1,7 +1,6 @@
 
-package com.elusivehawk.engine.core;
+package com.elusivehawk.engine.util;
 
-import com.elusivehawk.engine.util.IDirty;
 
 /**
  * 

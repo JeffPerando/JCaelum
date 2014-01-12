@@ -79,7 +79,11 @@ public class PixelGrid implements ILegibleImage
 			{
 				col.setColor(this.getPixel(x, y));
 				
-				col.store(ret);
+				for (EnumColorFilter filter : this.f.colors)
+				{
+					ret.put(col.getColor(filter));
+					
+				}
 				
 			}
 			
@@ -101,7 +105,11 @@ public class PixelGrid implements ILegibleImage
 			{
 				col.setColor(this.getPixel(x, y));
 				
-				col.store(ret);
+				for (EnumColorFilter filter : this.f.colors)
+				{
+					ret.put(col.getColorFloat(filter));
+					
+				}
 				
 			}
 			
@@ -115,15 +123,12 @@ public class PixelGrid implements ILegibleImage
 	public IntBuffer toIntBuffer()
 	{
 		IntBuffer ret = BufferHelper.createIntBuffer(this.xSize * this.ySize);
-		Color col = new Color(this.f);
 		
 		for (int x = 0; x < this.xSize; x++)
 		{
 			for (int y = 0; y < this.ySize; y++)
 			{
-				col.setColor(this.getPixel(x, y));
-				
-				col.store(ret);
+				ret.put(this.getPixel(x, y));
 				
 			}
 			

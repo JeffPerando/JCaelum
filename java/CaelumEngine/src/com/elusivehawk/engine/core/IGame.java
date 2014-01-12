@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.core;
 
 import com.elusivehawk.engine.render.IRenderHUB;
+import com.elusivehawk.engine.util.IThreadable;
 
 /**
  * 

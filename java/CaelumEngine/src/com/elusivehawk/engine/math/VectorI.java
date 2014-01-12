@@ -167,7 +167,7 @@ public class VectorI extends Vector<Integer>
 	{
 		for (int c = 0; c < this.getSize(); c++)
 		{
-			buf.put(this.get(c));
+			buf.add(this.get(c));
 			
 		}
 		

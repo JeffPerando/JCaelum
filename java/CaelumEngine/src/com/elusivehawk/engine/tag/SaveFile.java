@@ -66,7 +66,7 @@ public class SaveFile implements ITagList
 			
 			for (int c = 0; c < count; c++)
 			{
-				buf.put(bytes[c]);
+				buf.add(bytes[c]);
 				
 			}
 			

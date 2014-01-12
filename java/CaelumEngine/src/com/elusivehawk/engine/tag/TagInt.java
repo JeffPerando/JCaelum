@@ -44,7 +44,7 @@ public class TagInt implements ITag<Integer>
 	@Override
 	public void save(Buffer<Byte> buf)
 	{
-		buf.put(BitHelper.createBytes(this.i));
+		buf.add(BitHelper.createBytes(this.i));
 		
 	}
 	

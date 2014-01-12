@@ -2,7 +2,7 @@
 package com.elusivehawk.engine.render;
 
 import java.util.Collection;
-import com.elusivehawk.engine.core.IUpdatable;
+import com.elusivehawk.engine.util.IUpdatable;
 
 /**
  * 

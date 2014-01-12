@@ -104,21 +104,21 @@ public class RenderTicket implements IDirty, ILogicalRender
 	{
 		this.buf.position(pos * 9);
 		
-		for (float f : rot.array())
+		for (int c = 0; c < rot.getSize(); c++)
 		{
-			this.buf.put(f);
+			this.buf.put(rot.get(c));
 			
 		}
 		
-		for (float f : trans.array())
+		for (int c = 0; c < trans.getSize(); c++)
 		{
-			this.buf.put(f);
+			this.buf.put(trans.get(c));
 			
 		}
 		
-		for (float f : scale.array())
+		for (int c = 0; c < scale.getSize(); c++)
 		{
-			this.buf.put(f);
+			this.buf.put(scale.get(c));
 			
 		}
 		

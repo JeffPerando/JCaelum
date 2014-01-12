@@ -1,5 +1,4 @@
 
-
 package com.elusivehawk.engine.network;
 
 import com.elusivehawk.engine.util.Buffer;
@@ -13,11 +12,11 @@ import com.elusivehawk.engine.util.Tuple;
  */
 public final class Packet
 {
-	public final byte pktId;
+	public final short pktId;
 	private final Buffer<Tuple<DataType, Object>> data = new Buffer<Tuple<DataType, Object>>();
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Packet(byte id)
+	public Packet(short id)
 	{
 		pktId = id;
 		
@@ -30,7 +29,7 @@ public final class Packet
 	
 	public void addData(DataType type, Object obj)
 	{
-		this.data.put(new Tuple<DataType, Object>(type, obj));
+		this.data.add(new Tuple<DataType, Object>(type, obj));
 		
 	}
 	

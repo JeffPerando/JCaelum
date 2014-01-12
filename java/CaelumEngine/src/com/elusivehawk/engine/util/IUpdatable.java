@@ -1,5 +1,5 @@
 
-package com.elusivehawk.engine.core;
+package com.elusivehawk.engine.util;
 
 /**
  * 
@@ -11,6 +11,6 @@ package com.elusivehawk.engine.core;
  */
 public interface IUpdatable
 {
-	public void update(double delta);
+	public void update(double delta) throws Throwable;
 	
 }

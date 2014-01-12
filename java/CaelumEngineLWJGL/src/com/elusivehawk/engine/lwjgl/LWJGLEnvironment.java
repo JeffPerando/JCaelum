@@ -22,12 +22,6 @@ public class LWJGLEnvironment implements IGameEnvironment
 	@Override
 	public void initiate(JsonObject json, String... args)
 	{
-		if (EnumOS.CURR_OS == EnumOS.ANDROID)
-		{
-			throw new RuntimeException("LWJGL is *NOT* compatible with your smartphone!");
-			
-		}
-		
 		System.setProperty("org.lwjgl.opengl.Display.noinput", "true");
 		
 		String lib = determineLWJGLPath();
@@ -72,6 +66,12 @@ public class LWJGLEnvironment implements IGameEnvironment
 		//TODO: this only works on Debian... but we'll try it for now.
 		
 		return (EnumOS.CURR_OS == EnumOS.LINUX && new File("/usr/lib/jni/liblwjgl.so").exists()) ? "/usr/lib/jni" : FileHelper.createFile("/lwjgl/native/" + EnumOS.CURR_OS.toString()).getAbsolutePath();
+	}
+	
+	@Override
+	public boolean isCompatible(EnumOS os)
+	{
+		return os != EnumOS.ANDROID;
 	}
 	
 }

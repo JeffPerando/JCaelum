@@ -14,12 +14,14 @@ import com.elusivehawk.engine.render.IRenderEnvironment;
  * <li>Display implementation</li>
  * </ul>
  * <p>
- * NOTICE: The game environment in question mustn't be in the same library as the game itself.
+ * NOTICE: The game environment in question shouldn't be in the same library as the game itself.
  * 
  * @author Elusivehawk
  */
 public interface IGameEnvironment
 {
+	public boolean isCompatible(EnumOS os);
+	
 	public void initiate(JsonObject json, String... args);
 	
 	public String getName();

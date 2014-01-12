@@ -6,8 +6,8 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
-import com.elusivehawk.engine.core.ThreadTimed;
 import com.elusivehawk.engine.render.opengl.GL;
+import com.elusivehawk.engine.util.ThreadTimed;
 
 /**
  * 
@@ -77,7 +77,7 @@ public class ThreadGameRender extends ThreadTimed
 	}
 	
 	@Override
-	public void update(double delta)
+	public void update(double delta) throws Throwable
 	{
 		if (this.isPaused())
 		{

@@ -44,7 +44,7 @@ public class TagLong implements ITag<Long>
 	@Override
 	public void save(Buffer<Byte> buf)
 	{
-		buf.put(BitHelper.createBytes(this.l));
+		buf.add(BitHelper.createBytes(this.l));
 		
 	}
 	

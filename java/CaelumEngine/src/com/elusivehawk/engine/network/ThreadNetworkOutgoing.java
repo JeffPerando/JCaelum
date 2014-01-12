@@ -1,7 +1,10 @@
 
 package com.elusivehawk.engine.network;
 
-import com.elusivehawk.engine.core.ThreadTimed;
+import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
+import java.io.OutputStream;
+import java.net.Socket;
 
 /**
  * 
@@ -9,8 +12,38 @@ import com.elusivehawk.engine.core.ThreadTimed;
  * 
  * @author Elusivehawk
  */
-public class ThreadNetworkOutgoing extends ThreadTimed
+public class ThreadNetworkOutgoing extends ThreadNetwork
 {
+	private BufferedOutputStream bos = null;
+	private DataOutputStream out = null;
+	
+	public ThreadNetworkOutgoing(IHost host, Socket skt, int ups)
+	{
+		super(host, skt, ups);
+		
+	}
+	
+	@Override
+	public boolean initiate()
+	{
+		OutputStream os = null;
+		
+		try
+		{
+			os = this.skt.getOutputStream();
+			
+		}
+		catch (Exception e)
+		{
+			return false;
+		}
+		
+		this.bos = new BufferedOutputStream(os);
+		this.out = new DataOutputStream(this.bos);
+		
+		return false;
+	}
+	
 	@Override
 	public void update(double delta)
 	{
@@ -19,15 +52,19 @@ public class ThreadNetworkOutgoing extends ThreadTimed
 	}
 	
 	@Override
-	public int getTargetUpdateCount()
+	public void onThreadStopped()
 	{
-		return 0;
-	}
-	
-	@Override
-	public double getMaxDelta()
-	{
-		return 0.5;
+		try
+		{
+			this.out.close();
+			
+		}
+		catch (Exception e)
+		{
+			this.handleException(e);
+			
+		}
+		
 	}
 	
 }

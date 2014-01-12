@@ -65,7 +65,7 @@ public enum EnumColorFormat
 		
 		for (EnumColorFilter col : this.colors)
 		{
-			buf.put(old.getColor(col));
+			buf.add(old.getColor(col));
 			
 		}
 		

@@ -46,7 +46,7 @@ public class TagList implements ITag<Collection<ITag<?>>>, ITagList
 	@Override
 	public void save(Buffer<Byte> buf)
 	{
-		buf.put(BitHelper.createBytes((short)this.tags.size()));
+		buf.add(BitHelper.createBytes((short)this.tags.size()));
 		
 		if (this.tags.isEmpty())
 		{
@@ -76,6 +76,7 @@ public class TagList implements ITag<Collection<ITag<?>>>, ITagList
 		return null;
 	}
 	
+	@Override
 	public void addTag(ITag<?> tag)
 	{
 		this.tags.add(tag);

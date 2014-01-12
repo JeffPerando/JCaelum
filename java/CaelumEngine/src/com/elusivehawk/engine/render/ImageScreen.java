@@ -215,45 +215,49 @@ public class ImageScreen implements ILogicalRender
 		float c = (x + info.width) / Display.getWidth();
 		float d = (y + info.height) / Display.getHeight();
 		
-		ret.put(a).put(b);
+		ret.add(a);
+		ret.add(b);
 		Color col = info.colors[0];
 		
 		for (EnumColorFilter fil : EnumColorFormat.RGBA.colors)
 		{
-			ret.put(col.getColorFloat(fil));
+			ret.add(col.getColorFloat(fil));
 			
 		}
 		
 		info.texOffs[0].store(ret);
 		
-		ret.put(c).put(b);
+		ret.add(c);
+		ret.add(b);
 		col = info.colors[1];
 		
 		for (EnumColorFilter fil : EnumColorFormat.RGBA.colors)
 		{
-			ret.put(col.getColorFloat(fil));
+			ret.add(col.getColorFloat(fil));
 			
 		}
 		
 		info.texOffs[1].store(ret);
 		
-		ret.put(a).put(d);
+		ret.add(a);
+		ret.add(b);
 		col = info.colors[2];
 		
 		for (EnumColorFilter fil : EnumColorFormat.RGBA.colors)
 		{
-			ret.put(col.getColorFloat(fil));
+			ret.add(col.getColorFloat(fil));
 			
 		}
 		
 		info.texOffs[2].store(ret);
 		
-		ret.put(c).put(d);
+		ret.add(c);
+		ret.add(d);
 		col = info.colors[3];
 		
 		for (EnumColorFilter fil : EnumColorFormat.RGBA.colors)
 		{
-			ret.put(col.getColorFloat(fil));
+			ret.add(col.getColorFloat(fil));
 			
 		}
 		
