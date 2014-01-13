@@ -10,31 +10,23 @@ import java.util.List;
  * 
  * @author Elusivehawk
  */
-public class HandshakeClient implements IPacketHandler
+public class HandshakeConnection implements IPacketHandler
 {
-	private final IHost owner;
+	private final IHost master;
+	private final Socket skt;
 	private final Connection connect;
 	private final short[] expectPkts;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public HandshakeClient(IHost master, Socket s, int id, int ups, short... pktsReq)
+	public HandshakeConnection(IHost owner, Socket s, int id, int ups, short... pktsReq)
 	{
-		assert master != null;
+		assert owner != null;
 		assert s != null;
 		
-		owner = master;
+		master = owner;
+		skt = s;
+		connect = Connection.create(this, id, ups);
 		expectPkts = pktsReq;
-		
-		Connection con = null;
-		
-		try
-		{
-			con = new Connection(this, s, id, ups);
-			
-		}
-		catch (Exception e){}
-		
-		connect = con;
 		
 	}
 	
@@ -45,7 +37,8 @@ public class HandshakeClient implements IPacketHandler
 			return;
 		}
 		
-		this.connect.start();
+		this.connect.connect(this.skt);
+		this.connect.beginComm();
 		
 	}
 	
@@ -76,23 +69,30 @@ public class HandshakeClient implements IPacketHandler
 			
 		}
 		
-		this.owner.onHandshakeEnd(fail, this.connect, pkts);
+		this.master.onHandshakeEnd(fail, this.connect, pkts);
 		
 	}
 	
 	@Override
 	public Side getSide()
 	{
-		return this.owner.getSide();
+		return this.master.getSide();
 	}
 	
 	@Override
-	public void addPacketFormat(PacketFormat format){}
+	public void addPacketFormat(PacketFormat format)
+	{
+		this.master.addPacketFormat(format);
+		
+	}
 	
 	@Override
 	public PacketFormat getPacketFormat(short id)
 	{
-		return this.owner.getPacketFormat(id);
+		return this.master.getPacketFormat(id);
 	}
+	
+	@Override
+	public void onDisconnect(Connection connect){}
 	
 }

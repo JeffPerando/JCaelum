@@ -9,7 +9,7 @@ import java.util.List;
  * 
  * @author Elusivehawk
  */
-public interface IConnectionMaster extends IPacketListener
+public interface IConnectionMaster extends IPacketListener, IPacketFormatter
 {
 	public short[] getHandshakeProtocol();
 	

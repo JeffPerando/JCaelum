@@ -3,6 +3,7 @@ package com.elusivehawk.engine.network;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.google.common.collect.ImmutableList;
 
 /**
  * 
@@ -22,20 +23,20 @@ public final class Packet
 		
 	}
 	
-	public int getDataSize()
-	{
-		return this.data.size();
-	}
-	
 	public void addData(Object obj)
 	{
 		this.data.add(obj);
 		
 	}
 	
-	public List<Object> getData()
+	public int getDataSize()
 	{
-		return this.data;
+		return this.data.size();
+	}
+	
+	public ImmutableList<Object> getData()
+	{
+		return ImmutableList.copyOf(this.data);
 	}
 	
 }

@@ -11,8 +11,6 @@ import java.util.List;
  */
 public interface IPacketListener
 {
-	public Side getSide();
-	
 	public void onPacketsReceived(Connection origin, List<Packet> pkts);
 	
 }

@@ -15,19 +15,12 @@ import java.util.List;
  */
 public class ThreadNetworkIncoming extends ThreadNetwork 
 {
-	private final IPacketHandler receiver;
-	
 	private BufferedInputStream bis = null;
 	private DataInputStream in = null;
 	
-	@SuppressWarnings("unqualified-field-access")
-	public ThreadNetworkIncoming(IPacketHandler r, Connection con, int ups) throws Exception
+	public ThreadNetworkIncoming(IPacketHandler h, Connection con, int ups)
 	{
-		super(con, ups);
-		
-		assert r != null;
-		
-		receiver = r;
+		super(h, con, ups);
 		
 	}
 	
@@ -72,62 +65,26 @@ public class ThreadNetworkIncoming extends ThreadNetwork
 		{
 			short id = this.in.readShort();
 			
-			PacketFormat format = this.receiver.getPacketFormat(id);
+			PacketFormat format = this.handler.getPacketFormat(id);
 			
-			if (format == null || format.getId() != id || !format.getSide().belongsOnSide(this.receiver.getSide()))
+			if (format == null || format.getId() != id || !format.getSide().belongsOnSide(this.handler.getSide()))
 			{
 				this.in.skip(this.in.available());
 				return;
 			}
 			
-			Packet pkt = new Packet(id);
+			Packet pkt = format.decodePkt(this.in);
 			
-			for (DataType type : format.getFormat())
+			if (pkt == null)
 			{
-				if (type == null)
-				{
-					continue;
-				}
-				
-				Object obj = null;
-				
-				switch (type)
-				{
-					case BYTE: obj = this.in.readByte(); break;
-					case SHORT: obj = this.in.readShort(); break;
-					case INT: obj = this.in.readInt(); break;
-					case LONG: obj = this.in.readLong(); break;
-					case FLOAT: obj = this.in.readFloat(); break;
-					case DOUBLE: obj = this.in.readDouble(); break;
-					case STRING: obj = this.in.readUTF(); break;
-					default: continue;
-				}
-				
-				pkt.addData(obj);
-				
+				continue;
 			}
 			
 			pkts.add(pkt);
 			
 		}
 		
-		this.receiver.onPacketsReceived(this.connect, pkts);
-		
-	}
-	
-	@Override
-	public void onThreadStopped()
-	{
-		try
-		{
-			this.in.close();
-			
-		}
-		catch (Exception e)
-		{
-			this.handleException(e);
-			
-		}
+		this.handler.onPacketsReceived(this.connect, pkts);
 		
 	}
 	

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.Socket;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
+import com.elusivehawk.engine.util.SemiFinalStorage;
 
 /**
  * 
@@ -12,30 +13,26 @@ import com.elusivehawk.engine.core.EnumLogType;
  * 
  * @author Elusivehawk
  */
-public final class Connection
+public final class Connection implements IConnectable
 {
-	private final ThreadNetworkIncoming in;
-	private final ThreadNetworkOutgoing out;
-	private final Socket skt;
+	private final IPacketHandler handler;
 	private final int connectId;
+	private final int updCount;
+	private final SemiFinalStorage<Boolean> closed = new SemiFinalStorage<Boolean>(false);
 	
-	public Connection(IPacketHandler h, Socket s, int ups) throws Exception
-	{
-		this(h, s, 0, ups);
-		
-	}
+	private ThreadNetworkIncoming in = null;
+	private ThreadNetworkOutgoing out = null;
+	private Socket skt = null;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Connection(IPacketHandler h, Socket s, int id, int ups) throws Exception
+	private Connection(IPacketHandler h, int id, int ups) throws Exception
 	{
 		assert h != null;
-		assert s != null;
 		assert ups > 0;
 		
+		handler = h;
 		connectId = id;
-		skt = s;
-		in = new ThreadNetworkIncoming(h, this, ups);
-		out = new ThreadNetworkOutgoing(h, this, ups);
+		updCount = ups;
 		
 	}
 	
@@ -55,17 +52,54 @@ public final class Connection
 		
 	}
 	
-	public void start()
+	@Override
+	public void connect(IP ip)
+	{
+		this.connect(ip.toSocket());
+		
+	}
+	
+	@Override
+	public void connect(Socket s)
+	{
+		if (s == null)
+		{
+			return;
+		}
+		
+		this.skt = s;
+		this.in = new ThreadNetworkIncoming(this.handler, this, this.updCount);
+		this.out = new ThreadNetworkOutgoing(this.handler, this, this.updCount);
+		
+	}
+	
+	@Override
+	public void beginComm()
 	{
 		this.in.start();
 		this.out.start();
 		
 	}
 	
+	public boolean isClosed()
+	{
+		return this.closed.get();
+	}
+	
 	public void close(boolean closeSkt)
 	{
+		if (this.isClosed())
+		{
+			return;
+		}
+		
 		this.in.stopThread();
 		this.out.stopThread();
+		
+		this.in = null;
+		this.out = null;
+		
+		this.closed.set(true);
 		
 		if (closeSkt)
 		{
@@ -82,20 +116,22 @@ public final class Connection
 			
 		}
 		
+		this.handler.onDisconnect(this);
+		
 	}
 	
-	public static Connection create(IPacketHandler h, Socket s, int ups)
+	public static Connection create(IPacketHandler h, int ups)
 	{
-		return create(h, s, 0, ups);
+		return create(h, 0, ups);
 	}
 	
-	public static Connection create(IPacketHandler h, Socket s, int id, int ups)
+	public static Connection create(IPacketHandler h, int id, int ups)
 	{
 		Connection ret = null;
 		
 		try
 		{
-			ret = new Connection(h, s, id, ups);
+			ret = new Connection(h, id, ups);
 			
 		}
 		catch (Exception e)

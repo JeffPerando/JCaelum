@@ -7,10 +7,10 @@ package com.elusivehawk.engine.network;
  * 
  * @author Elusivehawk
  */
-public interface IPacketHandler extends IPacketListener
+public interface IPacketHandler extends IPacketListener, IPacketFormatter
 {
-	public void addPacketFormat(PacketFormat format);
+	public Side getSide();
 	
-	public PacketFormat getPacketFormat(short id);
+	public void onDisconnect(Connection connect);
 	
 }

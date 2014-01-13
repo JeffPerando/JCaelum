@@ -25,7 +25,7 @@ public enum Side
 	
 	public boolean belongsOnSide(Side side)
 	{
-		return (side.isClient() && this.isClient()) || (side.isServer() && this.isServer());
+		return this == BOTH || this == side;
 	}
 	
 }

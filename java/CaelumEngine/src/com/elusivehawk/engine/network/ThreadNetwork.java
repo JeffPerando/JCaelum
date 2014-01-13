@@ -14,13 +14,16 @@ import com.elusivehawk.engine.util.ThreadTimed;
 abstract class ThreadNetwork extends ThreadTimed
 {
 	protected final int updateCount;
+	protected final IPacketHandler handler;
 	protected final Connection connect;
 	
 	@SuppressWarnings("unqualified-field-access")
-	ThreadNetwork(Connection con, int ups)
+	ThreadNetwork(IPacketHandler h, Connection con, int ups)
 	{
 		assert con != null;
+		assert h != null;
 		
+		handler = h;
 		connect = con;
 		updateCount = ups;
 		

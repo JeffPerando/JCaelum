@@ -13,55 +13,55 @@ import com.elusivehawk.engine.util.SemiFinalStorage;
  * 
  * @author Elusivehawk
  */
-public class Server extends HostImpl
+public class Server implements IHost
 {
-	protected final int ups;
-	protected final IP ip;
+	protected final int ups, port;
 	protected final IConnectionMaster master;
 	protected final ThreadJoinListener listener;
 	
-	protected final List<HandshakeClient> handshakers = new ArrayList<HandshakeClient>();
+	protected final List<HandshakeConnection> handshakers = new ArrayList<HandshakeConnection>();
 	protected final List<Connection> clients = new ArrayList<Connection>();
 	protected final SemiFinalStorage<Boolean> disabled = new SemiFinalStorage<Boolean>(false);
 	
 	protected int nextConnectionId = 0;
 	
-	public Server(String ip, IConnectionMaster m)
+	public Server(int p, IConnectionMaster m)
 	{
-		this(IP.create(ip), m);
-		
-	}
-	
-	public Server(String ip, IConnectionMaster m, int ups)
-	{
-		this(IP.create(ip), m, ups);
-		
-	}
-	
-	public Server(IP ip, IConnectionMaster m)
-	{
-		this(ip, m, 30);
+		this(p, m, 30);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Server(IP ipAddress, IConnectionMaster m, int updCount)
+	public Server(int p, IConnectionMaster m, int updCount)
 	{
-		assert ipAddress != null;
 		assert m != null;
 		assert updCount > 0;
 		
-		ip = ipAddress;
+		port = p;
 		master = m;
-		listener = new ThreadJoinListener(this, ip.getPort());
+		listener = new ThreadJoinListener(this, p);
 		ups = updCount;
 		
 	}
 	
 	@Override
-	public void beginCommunication()
+	public void beginComm()
 	{
 		this.listener.start();
+		
+	}
+	
+	@Override
+	public void connect(IP ip)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void connect(Socket s)
+	{
+		// TODO Auto-generated method stub
 		
 	}
 	
@@ -93,7 +93,6 @@ public class Server extends HostImpl
 		
 	}
 	
-	
 	@Override
 	public void onHandshakeEnd(boolean success, Connection connection, List<Packet> pkts)
 	{
@@ -103,11 +102,14 @@ public class Server extends HostImpl
 		
 		if (success)
 		{
-			Connection connect = Connection.create(this, connection.getSocket(), ++this.nextConnectionId, this.ups);
+			Connection connect = Connection.create(this, ++this.nextConnectionId, this.ups);
 			
 			if (connect != null)
 			{
 				this.clients.add(connect);
+				
+				connect.connect(connection.getSocket());
+				connect.beginComm();
 				
 			}
 			
@@ -119,7 +121,7 @@ public class Server extends HostImpl
 	{
 		++this.nextConnectionId;
 		
-		HandshakeClient next = new HandshakeClient(this, s, this.nextConnectionId, this.ups, this.master.getHandshakeProtocol());
+		HandshakeConnection next = new HandshakeConnection(this, s, this.nextConnectionId, this.ups, this.master.getHandshakeProtocol());
 		
 		this.handshakers.add(next);
 		
@@ -132,6 +134,25 @@ public class Server extends HostImpl
 	{
 		this.listener.stopThread();
 		
+	}
+	
+	@Override
+	public void addPacketFormat(PacketFormat format)
+	{
+		this.master.addPacketFormat(format);
+		
+	}
+	
+	@Override
+	public PacketFormat getPacketFormat(short id)
+	{
+		return this.master.getPacketFormat(id);
+	}
+	
+	@Override
+	public void onDisconnect(Connection connect)
+	{
+		this.clients.remove(connect);
 		
 	}
 	

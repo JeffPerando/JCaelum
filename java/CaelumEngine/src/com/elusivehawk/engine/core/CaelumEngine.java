@@ -13,7 +13,6 @@ import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import com.elusivehawk.engine.render.IRenderHUB;
 import com.elusivehawk.engine.render.ThreadGameRender;
-import com.elusivehawk.engine.sound.ThreadSoundPlayer;
 import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.FileHelper;
 import com.elusivehawk.engine.util.ReflectionHelper;
@@ -207,7 +206,7 @@ public final class CaelumEngine
 			
 		}
 		
-		this.threads.put(EnumEngineFeature.SOUND, new ThreadSoundPlayer());
+		//this.threads.put(EnumEngineFeature.SOUND, new ThreadSoundPlayer());
 		
 		//TODO Moar threadz!!!
 		
