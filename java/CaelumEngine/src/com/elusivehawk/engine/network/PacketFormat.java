@@ -6,6 +6,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import com.elusivehawk.engine.tag.ITag;
+import com.elusivehawk.engine.tag.TagReaderRegistry;
 
 /**
  * 
@@ -92,6 +94,8 @@ public final class PacketFormat
 			case DOUBLE: obj = in.readDouble(); break;
 			case STRING: obj = in.readUTF(); break;
 			case LIST: if (i == this.format.length - 1){return null;} obj = new ArrayList<Object>(); int size = in.readInt(); for (int c = 0; c < size; c++){((List<Object>)obj).add(this.decodeObj(i + 1, in));}; break;
+			case TAG: obj = TagReaderRegistry.instance().readTag(in);
+			
 		}
 		
 		return obj;
@@ -124,10 +128,10 @@ public final class PacketFormat
 			case DOUBLE: out.writeDouble((Double)obj); break;
 			case STRING: out.writeUTF((String)obj); break;
 			case LIST: if (i == this.format.length - 1){return;} out.writeInt(((List<?>)obj).size()); for (Object object : (List<?>)obj){encodeObj(object, i + 1, out);} break;
+			case TAG: TagReaderRegistry.instance().writeTag(out, (ITag<?>)obj);
 			
 		}
 		
 	}
-	
 	
 }

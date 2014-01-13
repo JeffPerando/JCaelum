@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.render.opengl;
 
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import com.elusivehawk.engine.render.Color;
 
@@ -52,7 +53,7 @@ public interface IGL1
 	
 	public void glDrawArrays(int mode, int first, int count);
 	
-	public void glDrawElements(int mode, int count, int type, java.nio.Buffer indices);
+	public void glDrawElements(int mode, int count, int type, IntBuffer indices);
 	
 	public void glEnable(int cap);
 	
@@ -84,7 +85,7 @@ public interface IGL1
 	
 	public void glPointSize(float size);
 	
-	public void glReadPixels(int x, int y, int width, int height, int format, int type, java.nio.Buffer pixels);
+	public void glReadPixels(int x, int y, int width, int height, int format, int type, ByteBuffer pixels);
 	
 	public void glScissor(int x, int y, int width, int height);
 	
@@ -94,13 +95,13 @@ public interface IGL1
 	
 	public void glStencilOp(int fail, int zfail, int zpass);
 	
-	public void glTexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, java.nio.Buffer pixels);
+	public void glTexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, ByteBuffer pixels);
 	
 	public void glTexParameterf(int target, int pname, float param);
 	
 	public void glTexParameterx(int target, int pname, int param);
 	
-	public void glTexSubImage2D(int target, int level, int xoffset, int yoffset, int width, int height, int format, int type, java.nio.Buffer pixels);
+	public void glTexSubImage2D(int target, int level, int xoffset, int yoffset, int width, int height, int format, int type, ByteBuffer pixels);
 	
 	public void glViewport(int x, int y, int width, int height);
 	

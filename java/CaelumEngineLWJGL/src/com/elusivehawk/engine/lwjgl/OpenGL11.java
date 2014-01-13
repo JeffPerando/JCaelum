@@ -1,7 +1,6 @@
 
 package com.elusivehawk.engine.lwjgl;
 
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import org.lwjgl.opengl.GL11;
@@ -167,9 +166,9 @@ public class OpenGL11 implements IGL1
 	}
 	
 	@Override
-	public void glDrawElements(int mode, int count, int type, Buffer indices)
+	public void glDrawElements(int mode, int count, int type, IntBuffer indices)
 	{
-		GL11.glDrawElements(mode, count, type, (ByteBuffer)indices);
+		GL11.glDrawElements(mode, indices);//TODO Check usage
 		
 	}
 	
@@ -293,9 +292,9 @@ public class OpenGL11 implements IGL1
 	
 	@Override
 	public void glReadPixels(int x, int y, int width, int height, int format,
-			int type, Buffer pixels)
+			int type, ByteBuffer pixels)
 	{
-		GL11.glReadPixels(x, y, width, height, format, type, (ByteBuffer)pixels);
+		GL11.glReadPixels(x, y, width, height, format, type, pixels);
 		
 	}
 	
@@ -330,9 +329,9 @@ public class OpenGL11 implements IGL1
 	@Override
 	public void glTexImage2D(int target, int level, int internalformat,
 			int width, int height, int border, int format, int type,
-			Buffer pixels)
+			ByteBuffer pixels)
 	{
-		GL11.glTexImage2D(target, level, internalformat, width, height, border, format, type, (ByteBuffer)pixels);
+		GL11.glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
 		
 	}
 	
@@ -353,9 +352,9 @@ public class OpenGL11 implements IGL1
 	@Override
 	public void glTexSubImage2D(int target, int level, int xoffset,
 			int yoffset, int width, int height, int format, int type,
-			Buffer pixels)
+			ByteBuffer pixels)
 	{
-		GL11.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, (ByteBuffer)pixels);
+		GL11.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels);
 		
 	}
 	

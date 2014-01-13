@@ -1,7 +1,8 @@
 
 package com.elusivehawk.engine.tag;
 
-import com.elusivehawk.engine.util.Buffer;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
 /**
  * 
@@ -17,6 +18,6 @@ public interface ITag<T>
 	
 	public String getName();
 	
-	public void save(Buffer<Byte> buf);
+	public void save(DataOutputStream out) throws IOException;
 	
 }

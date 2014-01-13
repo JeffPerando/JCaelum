@@ -1,10 +1,11 @@
 
 package com.elusivehawk.engine.tag;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
-import com.elusivehawk.engine.math.BitHelper;
-import com.elusivehawk.engine.util.Buffer;
 
 /**
  * 
@@ -62,18 +63,11 @@ public final class TagReaderRegistry
 		return this.readers[id];
 	}
 	
-	public ITag<?> readTag(Buffer<Byte> buf)
+	public ITag<?> readTag(DataInputStream in) throws IOException
 	{
-		byte length = buf.next();
-		String name = "";
+		String name = in.readUTF();
 		
-		for (int c = 0; c < length; c++)
-		{
-			name += (char)BitHelper.createShort(buf);
-			
-		}
-		
-		byte id = buf.next();
+		byte id = in.readByte();
 		ITagReader<?> r = this.get(id);
 		
 		if (r == null)
@@ -83,31 +77,24 @@ public final class TagReaderRegistry
 			return null;
 		}
 		
-		return r.readTag(name, buf);
+		return r.readTag(name, in);
 	}
 	
-	public void writeTag(Buffer<Byte> buf, ITag<?> tag)
+	public void writeTag(DataOutputStream out, ITag<?> tag) throws IOException
 	{
-		String name = tag.getName();
-		buf.add((byte)name.length());
-		
-		for (int c = 0; c < name.length(); c++)
-		{
-			buf.add(BitHelper.createBytes((short)name.charAt(c)));
-			
-		}
+		out.writeUTF(tag.getName());
 		
 		byte type = tag.getType();
 		
 		if (this.get(type) == null)
 		{
-			CaelumEngine.instance().getLog().log(EnumLogType.WARN, "Tag " + name + "has invalid type ID " + type + ", please rectify.");
+			CaelumEngine.instance().getLog().log(EnumLogType.WARN, "Tag " + tag.getName() + " has invalid type ID " + type + ", please rectify.");
 			
 		}
 		
-		buf.add(type);
+		out.writeByte(type);
 		
-		tag.save(buf);
+		tag.save(out);
 		
 	}
 	

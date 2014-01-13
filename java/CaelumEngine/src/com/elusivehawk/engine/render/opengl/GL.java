@@ -1,15 +1,6 @@
 
 package com.elusivehawk.engine.render.opengl;
 
-import java.nio.ByteBuffer;
-import java.nio.DoubleBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.nio.LongBuffer;
-import java.nio.ShortBuffer;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * 
  * A wrapper for modern OpenGL functions.
@@ -18,7 +9,7 @@ import java.util.List;
  * <p>
  * @author Elusivehawk
  */
-public final class GL
+/*public final class GL
 {
 	private GL(){}
 	
@@ -6419,3 +6410,4 @@ public final class GL
 	}
 	
 }
+*/

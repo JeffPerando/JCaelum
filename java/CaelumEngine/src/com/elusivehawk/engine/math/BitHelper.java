@@ -1,6 +1,8 @@
 
 package com.elusivehawk.engine.math;
 
+import java.io.IOException;
+import java.io.InputStream;
 import com.elusivehawk.engine.util.Buffer;
 
 /**
@@ -132,6 +134,24 @@ public class BitHelper
 		return i;
 	}
 	
+	public static int createInt(InputStream is) throws IOException
+	{
+		if (is == null || is.available() < 4)
+		{
+			return 0;
+		}
+		
+		int i = 0;
+		
+		for (int c = 0; c < 4; c++)
+		{
+			i = (i << 8) | is.read();
+			
+		}
+		
+		return i;
+	}
+	
 	public static long createLong(byte... b)
 	{
 		if (b == null || b.length == 0)
@@ -204,6 +224,24 @@ public class BitHelper
 		return i;
 	}
 	
+	public static long createLong(InputStream is) throws IOException
+	{
+		if (is == null || is.available() < 8)
+		{
+			return 0;
+		}
+		
+		long l = 0;
+		
+		for (int c = 0; c < 8; c++)
+		{
+			l = (l << 8) | is.read();
+			
+		}
+		
+		return l;
+	}
+	
 	public static short createShort(byte... b)
 	{
 		if (b == null || b.length == 0)
@@ -238,6 +276,16 @@ public class BitHelper
 		}
 		
 		return s;
+	}
+	
+	public static short createShort(InputStream is) throws IOException
+	{
+		if (is == null || is.available() < 2)
+		{
+			return 0;
+		}
+		
+		return (short)(is.read() << 8 | is.read());
 	}
 	
 	public static Short[] createShorts(double d)

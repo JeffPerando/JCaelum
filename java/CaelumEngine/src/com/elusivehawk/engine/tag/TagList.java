@@ -1,11 +1,12 @@
 
 package com.elusivehawk.engine.tag;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import com.elusivehawk.engine.math.BitHelper;
-import com.elusivehawk.engine.util.Buffer;
 
 /**
  * 
@@ -44,9 +45,9 @@ public class TagList implements ITag<Collection<ITag<?>>>, ITagList
 	}
 	
 	@Override
-	public void save(Buffer<Byte> buf)
+	public void save(DataOutputStream out) throws IOException
 	{
-		buf.add(BitHelper.createBytes((short)this.tags.size()));
+		out.writeInt(this.tags.size());
 		
 		if (this.tags.isEmpty())
 		{
@@ -55,7 +56,7 @@ public class TagList implements ITag<Collection<ITag<?>>>, ITagList
 		
 		for (ITag<?> tag : this.tags)
 		{
-			TagReaderRegistry.instance().writeTag(buf, tag);
+			TagReaderRegistry.instance().writeTag(out, tag);
 			
 		}
 		
@@ -86,16 +87,16 @@ public class TagList implements ITag<Collection<ITag<?>>>, ITagList
 	public static class ListReader implements ITagReader<Collection<ITag<?>>>
 	{
 		@Override
-		public ITag<Collection<ITag<?>>> readTag(String name, Buffer<Byte> buf)
+		public ITag<Collection<ITag<?>>> readTag(String name, DataInputStream in) throws IOException
 		{
 			TagList ret = new TagList(name);
 			
-			short size = BitHelper.createShort(buf);
+			short size = in.readShort();
 			ITag<?>[] tags = new ITag<?>[size];
 			
 			for (int c = 0; c < size; c++)
 			{
-				ITag<?> tag = TagReaderRegistry.instance().readTag(buf);
+				ITag<?> tag = TagReaderRegistry.instance().readTag(in);
 				
 				if (tag == null)
 				{

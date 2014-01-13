@@ -1,8 +1,9 @@
 
 package com.elusivehawk.engine.tag;
 
-import com.elusivehawk.engine.math.BitHelper;
-import com.elusivehawk.engine.util.Buffer;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
 /**
  * 
@@ -40,20 +41,20 @@ public class TagFloat implements ITag<Float>
 	{
 		return this.name;
 	}
-	
+
 	@Override
-	public void save(Buffer<Byte> buf)
+	public void save(DataOutputStream out) throws IOException
 	{
-		buf.add(BitHelper.createBytes(this.f));
+		out.writeFloat(this.f);
 		
 	}
 	
 	public static class FloatReader implements ITagReader<Float>
 	{
 		@Override
-		public ITag<Float> readTag(String name, Buffer<Byte> buf)
+		public ITag<Float> readTag(String name, DataInputStream in) throws IOException
 		{
-			return new TagFloat(name, Float.intBitsToFloat(BitHelper.createIntFromBytes(buf)));
+			return new TagFloat(name, in.readFloat());
 		}
 		
 	}

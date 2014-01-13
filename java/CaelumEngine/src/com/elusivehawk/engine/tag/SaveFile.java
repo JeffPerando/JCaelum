@@ -3,6 +3,8 @@ package com.elusivehawk.engine.tag;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -11,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
-import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.FileHelper;
 
 /**
@@ -53,35 +54,14 @@ public class SaveFile implements ITagList
 			return;
 		}
 		
-		BufferedInputStream in = new BufferedInputStream(fis);
-		Buffer<Byte> buf = null;
+		BufferedInputStream bis = new BufferedInputStream(fis);
+		DataInputStream in = new DataInputStream(bis);
 		
 		try
 		{
-			byte[] bytes = new byte[in.available()];
-			
-			int count = in.read(bytes);
-			
-			buf = new Buffer<Byte>();
-			
-			for (int c = 0; c < count; c++)
+			while (in.available() > 0)
 			{
-				buf.add(bytes[c]);
-				
-			}
-			
-		}
-		catch (IOException e)
-		{
-			CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
-			
-		}
-		
-		if (buf != null)
-		{
-			while (buf.remaining() != 0)
-			{
-				ITag<?> tag = TagReaderRegistry.instance().readTag(buf);
+				ITag<?> tag = TagReaderRegistry.instance().readTag(in);
 				
 				if (tag == null)
 				{
@@ -91,6 +71,11 @@ public class SaveFile implements ITagList
 				this.tags.add(tag);
 				
 			}
+			
+		}
+		catch (IOException e)
+		{
+			CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
 			
 		}
 		
@@ -121,30 +106,26 @@ public class SaveFile implements ITagList
 			return;
 		}
 		
-		BufferedOutputStream out = new BufferedOutputStream(fos);
+		BufferedOutputStream bos = new BufferedOutputStream(fos);
+		DataOutputStream out = new DataOutputStream(bos);
 		
-		Buffer<Byte> buf = new Buffer<Byte>();
-		
-		for (ITag<?> tag : this.tags)
+		try
 		{
-			TagReaderRegistry.instance().writeTag(buf, tag);
+			for (ITag<?> tag : this.tags)
+			{
+				TagReaderRegistry.instance().writeTag(out, tag);
+				
+			}
 			
 		}
-		
-		buf.norm();
-		
-		byte[] array = new byte[buf.size()];
-		int c = 0;
-		
-		for (Byte b : buf)
+		catch (IOException e)
 		{
-			array[c++] = b;
+			CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
 			
 		}
 		
 		try
 		{
-			out.write(array);
 			out.flush();
 			out.close();
 			

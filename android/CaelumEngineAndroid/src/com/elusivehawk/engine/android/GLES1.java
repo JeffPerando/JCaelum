@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.android;
 
-import java.nio.Buffer;
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import android.annotation.TargetApi;
 import android.opengl.GLES10;
@@ -69,21 +69,21 @@ public class GLES1 implements IGL1
 		this.glClearColor(col.getColorFloat(EnumColorFilter.RED), col.getColorFloat(EnumColorFilter.GREEN), col.getColorFloat(EnumColorFilter.BLUE), col.getColorFloat(EnumColorFilter.ALPHA));
 		
 	}
-
+	
 	@Override
 	public void glClearColor(float r, float g, float b, float a)
 	{
 		GLES10.glClearColor(r, g, b, a);
 		
 	}
-
+	
 	@Override
 	public void glCopyTexImage1D(int target, int level, int internalFormat,
 			int x, int y, int width, int border)
 	{
 		//XXX Unsupported
 	}
-
+	
 	@Override
 	public void glCopyTexImage2D(int target, int level, int internalformat,
 			int x, int y, int width, int height, int border)
@@ -167,7 +167,7 @@ public class GLES1 implements IGL1
 	}
 	
 	@Override
-	public void glDrawElements(int mode, int count, int type, Buffer indices)
+	public void glDrawElements(int mode, int count, int type, IntBuffer indices)
 	{
 		GLES10.glDrawElements(mode, count, type, indices);
 		
@@ -280,7 +280,7 @@ public class GLES1 implements IGL1
 	
 	@Override
 	public void glReadPixels(int x, int y, int width, int height, int format,
-			int type, Buffer pixels)
+			int type, ByteBuffer pixels)
 	{
 		GLES10.glReadPixels(x, y, width, height, format, type, pixels);
 		
@@ -317,7 +317,7 @@ public class GLES1 implements IGL1
 	@Override
 	public void glTexImage2D(int target, int level, int internalformat,
 			int width, int height, int border, int format, int type,
-			Buffer pixels)
+			ByteBuffer pixels)
 	{
 		GLES10.glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
 		
@@ -340,7 +340,7 @@ public class GLES1 implements IGL1
 	@Override
 	public void glTexSubImage2D(int target, int level, int xoffset,
 			int yoffset, int width, int height, int format, int type,
-			Buffer pixels)
+			ByteBuffer pixels)
 	{
 		GLES10.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels);
 		
