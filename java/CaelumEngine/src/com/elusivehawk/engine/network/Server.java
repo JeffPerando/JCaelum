@@ -6,10 +6,11 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import com.elusivehawk.engine.util.SemiFinalStorage;
+import com.google.common.collect.ImmutableList;
 
 /**
  * 
- * 
+ * Primary class for server-sided interfacing.
  * 
  * @author Elusivehawk
  */
@@ -52,21 +53,23 @@ public class Server implements IHost
 	}
 	
 	@Override
-	public void connect(IP ip)
+	public void connect(IP ip){}
+	
+	@Override
+	public synchronized void connect(Socket s)//TODO Check if this causes a deadlock.
 	{
-		// TODO Auto-generated method stub
+		++this.nextConnectionId;
+		
+		HandshakeConnection next = new HandshakeConnection(this, s, this.nextConnectionId, this.ups, this.master.getHandshakeProtocol());
+		
+		this.handshakers.add(next);
+		
+		next.start();
 		
 	}
 	
 	@Override
-	public void connect(Socket s)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
-	public void onPacketsReceived(Connection origin, List<Packet> pkts)
+	public void onPacketsReceived(Connection origin, ImmutableList<Packet> pkts)
 	{
 		this.master.onPacketsReceived(origin, pkts);
 		
@@ -94,6 +97,12 @@ public class Server implements IHost
 	}
 	
 	@Override
+	public short[] getHandshakeProtocol()
+	{
+		return this.master.getHandshakeProtocol();
+	}
+	
+	@Override
 	public void onHandshakeEnd(boolean success, Connection connection, List<Packet> pkts)
 	{
 		this.master.onHandshakeEnd(success, connection, pkts);
@@ -117,29 +126,10 @@ public class Server implements IHost
 		
 	}
 	
-	public synchronized void connectClient(Socket s)//TODO Check if this causes a deadlock.
-	{
-		++this.nextConnectionId;
-		
-		HandshakeConnection next = new HandshakeConnection(this, s, this.nextConnectionId, this.ups, this.master.getHandshakeProtocol());
-		
-		this.handshakers.add(next);
-		
-		next.start();
-		
-	}
-	
 	@Override
 	public void close() throws IOException
 	{
 		this.listener.stopThread();
-		
-	}
-	
-	@Override
-	public void addPacketFormat(PacketFormat format)
-	{
-		this.master.addPacketFormat(format);
 		
 	}
 	

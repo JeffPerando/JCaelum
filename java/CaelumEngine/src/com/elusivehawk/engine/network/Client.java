@@ -5,10 +5,13 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.List;
 import com.elusivehawk.engine.util.SemiFinalStorage;
+import com.google.common.collect.ImmutableList;
 
 /**
  * 
- * 
+ * Primary class for client-sided server interfacing.
+ * <p>
+ * Note: Because of the fact that it's a client, it only supports one connection at a time.
  * 
  * @author Elusivehawk
  */
@@ -44,7 +47,7 @@ public class Client implements IHost
 	}
 	
 	@Override
-	public void onPacketsReceived(Connection origin, List<Packet> pkts)
+	public void onPacketsReceived(Connection origin, ImmutableList<Packet> pkts)
 	{
 		this.master.onPacketsReceived(origin, pkts);
 		
@@ -94,6 +97,12 @@ public class Client implements IHost
 	}
 	
 	@Override
+	public short[] getHandshakeProtocol()
+	{
+		return this.master.getHandshakeProtocol();
+	}
+	
+	@Override
 	public void onHandshakeEnd(boolean success, Connection connection, List<Packet> pkts)
 	{
 		this.master.onHandshakeEnd(success, connection, pkts);
@@ -116,13 +125,6 @@ public class Client implements IHost
 	{
 		this.connection.close(true);
 		this.connection = null;
-		
-	}
-	
-	@Override
-	public void addPacketFormat(PacketFormat format)
-	{
-		this.master.addPacketFormat(format);
 		
 	}
 	

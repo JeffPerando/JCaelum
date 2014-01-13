@@ -9,7 +9,9 @@ import com.elusivehawk.engine.core.EnumLogType;
 
 /**
  * 
- * 
+ * Lightweight class for storing IP addresses.
+ * <p>
+ * Note: This supports static IPs (i.e. 255.255.255.255:7777), as well as hostnames (i.e. example.hostname.com:7777).
  * 
  * @author Elusivehawk
  */
@@ -32,21 +34,41 @@ public final class IP
 		
 	}
 	
-	public String getAddress()
+	/**
+	 * 
+	 * @return The hostname this IP address contains.
+	 */
+	public String getHostname()
 	{
 		return this.ip;
 	}
 	
+	/**
+	 * 
+	 * @return The port this IP address contains.
+	 */
 	public int getPort()
 	{
 		return this.port;
 	}
 	
+	/**
+	 * 
+	 * Converts the IP address into an {@link InetSocketAddress}.
+	 * 
+	 * @return The equivalent socket address.
+	 */
 	public InetSocketAddress toInet()
 	{
 		return InetSocketAddress.createUnresolved(this.ip, this.port);
 	}
 	
+	/**
+	 * 
+	 * Converts the IP address into a {@link Socket}.
+	 * 
+	 * @return A socket, connected to the IP address.
+	 */
 	public Socket toSocket()
 	{
 		Socket ret = null;
@@ -69,6 +91,12 @@ public final class IP
 	public String toString()
 	{
 		return this.ip + ":" + this.port;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		return this.toString().hashCode();
 	}
 	
 	public static IP create(String ip)

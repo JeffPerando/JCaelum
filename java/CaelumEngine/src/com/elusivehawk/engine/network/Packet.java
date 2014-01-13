@@ -7,7 +7,11 @@ import com.google.common.collect.ImmutableList;
 
 /**
  * 
- * 
+ * The core packet class.
+ * <p>
+ * Stores two things: The current ID (Which is how it will be read on the other side), and the data the packet is taking along.
+ * <p>
+ * All data needs to have a corresponding {@link DataType} enum, no exceptions.
  * 
  * @author Elusivehawk
  */

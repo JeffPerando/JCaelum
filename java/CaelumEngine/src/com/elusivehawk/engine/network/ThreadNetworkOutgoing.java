@@ -67,7 +67,7 @@ public class ThreadNetworkOutgoing extends ThreadNetwork
 				
 			}
 			
-			if (!format.getSide().belongsOnSide(this.handler.getSide()))
+			if (!this.handler.getSide().canSend(format.getSide()))
 			{
 				remove = true;
 				

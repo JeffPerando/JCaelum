@@ -3,7 +3,7 @@ package com.elusivehawk.engine.network;
 
 /**
  * 
- * 
+ * Enumeration for client/server sensitivity.
  * 
  * @author Elusivehawk
  */
@@ -23,9 +23,14 @@ public enum Side
 		return this != CLIENT;
 	}
 	
-	public boolean belongsOnSide(Side side)
+	public boolean canReceive(Side s)
 	{
-		return this == BOTH || this == side;
+		return this == BOTH || this != s;
+	}
+	
+	public boolean canSend(Side s)
+	{
+		return this == BOTH || this == s;
 	}
 	
 }

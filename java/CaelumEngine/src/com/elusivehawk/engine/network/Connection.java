@@ -9,7 +9,7 @@ import com.elusivehawk.engine.util.SemiFinalStorage;
 
 /**
  * 
- * 
+ * Handles interaction with connection threads.
  * 
  * @author Elusivehawk
  */
@@ -93,6 +93,8 @@ public final class Connection implements IConnectable
 			return;
 		}
 		
+		this.handler.onDisconnect(this);
+		
 		this.in.stopThread();
 		this.out.stopThread();
 		
@@ -115,8 +117,6 @@ public final class Connection implements IConnectable
 			}
 			
 		}
-		
-		this.handler.onDisconnect(this);
 		
 	}
 	

@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * 
- * 
+ * The core class for how packets are interpreted.
  * 
  * @author Elusivehawk
  */
@@ -19,12 +19,20 @@ public final class PacketFormat
 	private final short pktId;
 	private final DataType[] format;
 	
+	/**
+	 * 
+	 * The primary constructor.
+	 * 
+	 * @param s The side the read packet (should) hail from. (i.e. Client -> Server should be CLIENT, Client <- Server should be SERVER.)
+	 * @param id The ID for this format.
+	 * @param f The format itself.
+	 */
 	@SuppressWarnings("unqualified-field-access")
 	public PacketFormat(Side s, short id, DataType... f)
 	{
 		assert s != null;
 		assert id != 0;
-		assert f != null;
+		assert f != null && f.length > 0;
 		
 		side = s;
 		pktId = id;
@@ -75,6 +83,7 @@ public final class PacketFormat
 		
 		switch (type)
 		{
+			case BOOL: obj = in.readBoolean(); break;
 			case BYTE: obj = in.readByte(); break;
 			case SHORT: obj = in.readShort(); break;
 			case INT: obj = in.readInt(); break;
@@ -106,6 +115,7 @@ public final class PacketFormat
 		
 		switch (type)
 		{
+			case BOOL: out.writeBoolean((Boolean)obj); break;
 			case BYTE: out.writeByte((Byte)obj); break;
 			case SHORT: out.writeShort((Short)obj); break;
 			case INT: out.writeInt((Integer)obj); break;

@@ -14,13 +14,14 @@ import com.elusivehawk.engine.util.ThreadStoppable;
  */
 public class ThreadJoinListener extends ThreadStoppable
 {
-	protected final Server svr;
+	protected final IHost svr;
 	protected final ServerSocket skt;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public ThreadJoinListener(Server server, int port)
+	public ThreadJoinListener(IHost server, int port)
 	{
 		assert server != null;
+		assert server.getSide().isServer();
 		
 		ServerSocket s = null;
 		
@@ -47,7 +48,7 @@ public class ThreadJoinListener extends ThreadStoppable
 		{
 			Socket s = this.skt.accept();
 			
-			this.svr.connectClient(s);
+			this.svr.connect(s);
 			
 		}
 		catch (Exception e)

@@ -6,6 +6,7 @@ import java.io.DataInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import com.google.common.collect.ImmutableList;
 
 /**
  * 
@@ -67,7 +68,7 @@ public class ThreadNetworkIncoming extends ThreadNetwork
 			
 			PacketFormat format = this.handler.getPacketFormat(id);
 			
-			if (format == null || format.getId() != id || !format.getSide().belongsOnSide(this.handler.getSide()))
+			if (format == null || format.getId() != id || !this.handler.getSide().canReceive(format.getSide()))
 			{
 				this.in.skip(this.in.available());
 				return;
@@ -84,7 +85,7 @@ public class ThreadNetworkIncoming extends ThreadNetwork
 			
 		}
 		
-		this.handler.onPacketsReceived(this.connect, pkts);
+		this.handler.onPacketsReceived(this.connect, ImmutableList.copyOf(pkts));
 		
 	}
 	

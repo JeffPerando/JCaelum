@@ -2,11 +2,15 @@
 package com.elusivehawk.engine.network;
 
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
+import com.google.common.collect.ImmutableList;
 
 /**
  * 
- * 
+ * Internal class for handshaking.
+ * <p>
+ * If you're going to attempt coding voodoo/shenanigans, feel free to use it; Otherwise, please don't bother.
  * 
  * @author Elusivehawk
  */
@@ -43,7 +47,7 @@ public class HandshakeConnection implements IPacketHandler
 	}
 	
 	@Override
-	public void onPacketsReceived(Connection origin, List<Packet> pkts)
+	public void onPacketsReceived(Connection origin, ImmutableList<Packet> pkts)
 	{
 		boolean fail = false;
 		
@@ -59,11 +63,32 @@ public class HandshakeConnection implements IPacketHandler
 			
 		}
 		
-		for (int c = 0; c < this.expectPkts.length; c++)
+		if (!fail)
 		{
-			if (pkts.get(c).pktId != this.expectPkts[c])
+			List<Short> pktList = new ArrayList<Short>();
+			
+			for (short i : this.expectPkts)
 			{
-				fail = true;
+				pktList.add(i);
+				
+			}
+			
+			int index;
+			
+			for (Packet pkt : pkts)
+			{
+				index = pktList.indexOf(pkt.pktId);
+				
+				if (index < 0)
+				{
+					fail = true;
+					
+				}
+				else
+				{
+					pktList.remove(index);
+					
+				}
 				
 			}
 			
@@ -77,13 +102,6 @@ public class HandshakeConnection implements IPacketHandler
 	public Side getSide()
 	{
 		return this.master.getSide();
-	}
-	
-	@Override
-	public void addPacketFormat(PacketFormat format)
-	{
-		this.master.addPacketFormat(format);
-		
 	}
 	
 	@Override
