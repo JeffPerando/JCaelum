@@ -33,10 +33,6 @@ public interface IGL2
 	
 	public void glDisableVertexAttribArray(int index);
 	
-	public void glDrawBuffers(int buffer);
-	
-	public void glDrawBuffers(int[] buffers);
-
 	public String glGetActiveAttrib(int program, int index, int maxLength);
 	
 	public String glGetActiveAttrib(int program, int index, int maxLength, IntBuffer sizeType);
@@ -50,7 +46,7 @@ public interface IGL2
 	public String glGetActiveUniform(int program, int index, int maxLength, IntBuffer sizeType);
 	
 	public void glGetActiveUniform(int program, int index, IntBuffer length, IntBuffer size, IntBuffer type, ByteBuffer name);
-
+	
 	public int glGetActiveUniformType(int program, int index);
 	
 	public void glGetAttachedShaders(int program, IntBuffer count, IntBuffer shaders);
