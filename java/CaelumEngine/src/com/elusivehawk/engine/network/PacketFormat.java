@@ -4,10 +4,9 @@ package com.elusivehawk.engine.network;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import com.elusivehawk.engine.tag.ITag;
 import com.elusivehawk.engine.tag.TagReaderRegistry;
+import com.google.common.collect.ImmutableList;
 
 /**
  * 
@@ -17,9 +16,9 @@ import com.elusivehawk.engine.tag.TagReaderRegistry;
  */
 public final class PacketFormat
 {
-	private final Side side;
-	private final short pktId;
-	private final DataType[] format;
+	public final Side side;
+	public final short pktId;
+	public final ImmutableList<DataType> format;
 	
 	/**
 	 * 
@@ -35,33 +34,19 @@ public final class PacketFormat
 		assert s != null;
 		assert id != 0;
 		assert f != null && f.length > 0;
+		assert f[f.length - 1] != DataType.ARRAY;
 		
 		side = s;
 		pktId = id;
-		format = f;
+		format = ImmutableList.copyOf(f);
 		
-	}
-	
-	public Side getSide()
-	{
-		return this.side;
-	}
-	
-	public short getId()
-	{
-		return this.pktId;
-	}
-	
-	public DataType[] getFormat()
-	{
-		return this.format;
 	}
 	
 	public Packet decodePkt(DataInputStream in) throws IOException
 	{
 		Packet ret = new Packet(this.pktId);
 		
-		for (int c = 0; c < this.format.length; c++)
+		for (int c = 0; c < this.format.size(); c++)
 		{
 			Object obj = this.decodeObj(c, in);
 			
@@ -77,36 +62,35 @@ public final class PacketFormat
 		return ret;
 	}
 	
-	@SuppressWarnings("unchecked")
 	private Object decodeObj(int i, DataInputStream in) throws IOException
 	{
-		Object obj = null;
-		DataType type = this.format[i];
+		Object ret = null;
+		DataType type = this.format.get(i);
 		
 		switch (type)
 		{
-			case BOOL: obj = in.readBoolean(); break;
-			case BYTE: obj = in.readByte(); break;
-			case SHORT: obj = in.readShort(); break;
-			case INT: obj = in.readInt(); break;
-			case LONG: obj = in.readLong(); break;
-			case FLOAT: obj = in.readFloat(); break;
-			case DOUBLE: obj = in.readDouble(); break;
-			case STRING: obj = in.readUTF(); break;
-			case LIST: if (i == this.format.length - 1){return null;} obj = new ArrayList<Object>(); int size = in.readInt(); for (int c = 0; c < size; c++){((List<Object>)obj).add(this.decodeObj(i + 1, in));}; break;
-			case TAG: obj = TagReaderRegistry.instance().readTag(in);
+			case BOOL: ret = in.readBoolean(); break;
+			case BYTE: ret = in.readByte(); break;
+			case SHORT: ret = in.readShort(); break;
+			case INT: ret = in.readInt(); break;
+			case LONG: ret = in.readLong(); break;
+			case FLOAT: ret = in.readFloat(); break;
+			case DOUBLE: ret = in.readDouble(); break;
+			case STRING: ret = in.readUTF(); break;
+			case ARRAY: ret = new Object[in.readInt()]; for (int c = 0; c < ((Object[])ret).length; c++){((Object[])ret)[c] = this.decodeObj(i + 1, in);}; break;
+			case TAG: ret = TagReaderRegistry.instance().readTag(in); break;
 			
 		}
 		
-		return obj;
+		return ret;
 	}
 	
 	public void encodePkt(Packet pkt, DataOutputStream out) throws IOException
 	{
-		for (int c = 0; c < this.format.length; c++)
+		ImmutableList<Object> info = pkt.getData();
+		
+		for (int c = 0; c < this.format.size(); c++)
 		{
-			List<Object> info = pkt.getData();
-			
 			this.encodeObj(info.get(c), c, out);
 			
 		}
@@ -115,7 +99,7 @@ public final class PacketFormat
 	
 	private void encodeObj(Object obj, int i, DataOutputStream out) throws IOException
 	{
-		DataType type = this.format[i];
+		DataType type = this.format.get(i);
 		
 		switch (type)
 		{
@@ -127,8 +111,8 @@ public final class PacketFormat
 			case FLOAT: out.writeFloat((Float)obj); break;
 			case DOUBLE: out.writeDouble((Double)obj); break;
 			case STRING: out.writeUTF((String)obj); break;
-			case LIST: if (i == this.format.length - 1){return;} out.writeInt(((List<?>)obj).size()); for (Object object : (List<?>)obj){encodeObj(object, i + 1, out);} break;
-			case TAG: TagReaderRegistry.instance().writeTag(out, (ITag<?>)obj);
+			case ARRAY: out.writeInt(((Object[])obj).length); for (Object object : (Object[])obj){encodeObj(object, i + 1, out);} break;
+			case TAG: TagReaderRegistry.instance().writeTag(out, (ITag<?>)obj); break;
 			
 		}
 		

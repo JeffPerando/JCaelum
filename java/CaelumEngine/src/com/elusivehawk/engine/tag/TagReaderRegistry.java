@@ -48,7 +48,7 @@ public final class TagReaderRegistry
 	
 	public void register(byte id, ITagReader<?> reader)
 	{
-		if (this.get(id) != null)
+		if (this.getReader(id) != null)
 		{
 			CaelumEngine.instance().getLog().log(EnumLogType.WARN, "Overriding tag reader ID #" + id);
 			
@@ -58,7 +58,7 @@ public final class TagReaderRegistry
 		
 	}
 	
-	public ITagReader<?> get(byte id)
+	public ITagReader<?> getReader(byte id)
 	{
 		return this.readers[id];
 	}
@@ -68,7 +68,7 @@ public final class TagReaderRegistry
 		String name = in.readUTF();
 		
 		byte id = in.readByte();
-		ITagReader<?> r = this.get(id);
+		ITagReader<?> r = this.getReader(id);
 		
 		if (r == null)
 		{
@@ -86,7 +86,7 @@ public final class TagReaderRegistry
 		
 		byte type = tag.getType();
 		
-		if (this.get(type) == null)
+		if (this.getReader(type) == null)
 		{
 			CaelumEngine.instance().getLog().log(EnumLogType.WARN, "Tag " + tag.getName() + " has invalid type ID " + type + ", please rectify.");
 			

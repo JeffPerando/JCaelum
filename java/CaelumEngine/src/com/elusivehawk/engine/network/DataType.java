@@ -17,7 +17,7 @@ public enum DataType
 	FLOAT,
 	DOUBLE,
 	STRING,
-	LIST,
+	ARRAY,
 	TAG;
 	
 }

@@ -68,7 +68,7 @@ public class ThreadNetworkIncoming extends ThreadNetwork
 			
 			PacketFormat format = this.handler.getPacketFormat(id);
 			
-			if (format == null || format.getId() != id || !this.handler.getSide().canReceive(format.getSide()))
+			if (format == null || format.pktId != id || !this.handler.getSide().canReceive(format.side))
 			{
 				this.in.skip(this.in.available());
 				return;

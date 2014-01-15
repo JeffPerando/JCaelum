@@ -15,6 +15,8 @@ import com.elusivehawk.engine.render.IRenderEnvironment;
  */
 public class AndroidEnvironment implements IGameEnvironment
 {
+	private final AndroidREnvironment renderEnviro = new AndroidREnvironment();
+	
 	@Override
 	public void initiate(JsonObject json, String... args)
 	{
@@ -37,8 +39,7 @@ public class AndroidEnvironment implements IGameEnvironment
 	@Override
 	public IRenderEnvironment getRenderEnv()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return this.renderEnviro;
 	}
 	
 	@Override

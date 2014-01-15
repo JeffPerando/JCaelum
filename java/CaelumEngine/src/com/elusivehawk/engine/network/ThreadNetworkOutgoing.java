@@ -67,13 +67,13 @@ public class ThreadNetworkOutgoing extends ThreadNetwork
 				
 			}
 			
-			if (!this.handler.getSide().canSend(format.getSide()))
+			if (!this.handler.getSide().canSend(format.side))
 			{
 				remove = true;
 				
 			}
 			
-			if (pkt.getData().size() != format.getFormat().length)
+			if (pkt.getData().size() != format.format.size())
 			{
 				remove = true;
 				

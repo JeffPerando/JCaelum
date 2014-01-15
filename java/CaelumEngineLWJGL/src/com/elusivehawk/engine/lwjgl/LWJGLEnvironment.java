@@ -19,6 +19,8 @@ import com.elusivehawk.engine.util.FileHelper;
  */
 public class LWJGLEnvironment implements IGameEnvironment
 {
+	private final IRenderEnvironment renderEnviro = new OpenGLEnvironment();
+	
 	@Override
 	public void initiate(JsonObject json, String... args)
 	{
@@ -57,8 +59,7 @@ public class LWJGLEnvironment implements IGameEnvironment
 	@Override
 	public IRenderEnvironment getRenderEnv()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return this.renderEnviro;
 	}
 	
 	@Override
