@@ -20,7 +20,7 @@ public class TextureStatic implements ITexture
 	{
 		tex = texture;
 		
-		GL.register(this);
+		RenderHelper.register(this);
 		
 	}
 	

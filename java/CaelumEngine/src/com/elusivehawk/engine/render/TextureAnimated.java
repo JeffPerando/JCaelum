@@ -44,7 +44,7 @@ public class TextureAnimated implements ITexture
 	{
 		tex = RenderHelper.processGifFile(gif, mode, format);
 		
-		GL.register(this);
+		RenderHelper.register(this);
 		
 	}
 	
@@ -93,7 +93,7 @@ public class TextureAnimated implements ITexture
 			
 		}
 		
-		GL.register(this);
+		RenderHelper.register(this);
 		
 	}
 	

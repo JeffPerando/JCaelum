@@ -10,13 +10,13 @@ import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.math.VectorF;
-import com.elusivehawk.engine.render.opengl.GL;
+import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.VertexBufferObject;
 import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.BufferHelper;
 import com.elusivehawk.engine.util.SemiFinalStorage;
-import com.elusivehawk.engine.util.Tuple;
 import com.elusivehawk.engine.util.SemiFinalStorage.IStorageListener;
+import com.elusivehawk.engine.util.Tuple;
 
 /**
  * 
@@ -119,7 +119,7 @@ public class Model implements IStorageListener
 		FloatBuffer fin = BufferHelper.makeFloatBuffer(temp).asReadOnlyBuffer();
 		IntBuffer indices = BufferHelper.makeIntBuffer(indiceList).asReadOnlyBuffer();
 		
-		int vb = GL.glGetInteger(GL.GL_VERTEX_ARRAY);
+		int vb = GL.glGetInteger(GLConst.GL_VERTEX_ARRAY);
 		
 		if (vb != 0)
 		{
@@ -130,8 +130,8 @@ public class Model implements IStorageListener
 		
 		int[] vbos = RenderHelper.createVBOs(2);
 		
-		this.finBuf.set(new VertexBufferObject(vbos[0], GL.GL_ARRAY_BUFFER, fin, GL.GL_STATIC_DRAW));
-		this.indiceBuf.set(new VertexBufferObject(vbos[1], GL.GL_ELEMENT_ARRAY_BUFFER, indices, GL.GL_STATIC_DRAW));
+		this.finBuf.set(new VertexBufferObject(vbos[0], GLConst.GL_ARRAY_BUFFER, fin, GLConst.GL_STATIC_DRAW));
+		this.indiceBuf.set(new VertexBufferObject(vbos[1], GLConst.GL_ELEMENT_ARRAY_BUFFER, indices, GLConst.GL_STATIC_DRAW));
 		
 		if (vb != 0)
 		{

@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
-import com.elusivehawk.engine.render.opengl.GL;
+import com.elusivehawk.engine.render.opengl.GLConst;
 
 /**
  * 
@@ -11,8 +11,8 @@ import com.elusivehawk.engine.render.opengl.GL;
  */
 public enum EnumRenderMode
 {
-	MODE_2D(GL.GL_TEXTURE_2D),
-	MODE_3D(GL.GL_TEXTURE_3D),
+	MODE_2D(GLConst.GL_TEXTURE_2D),
+	MODE_3D(GLConst.GL_TEXTURE_3D),
 	BOTH(0);
 	
 	private int glMode;

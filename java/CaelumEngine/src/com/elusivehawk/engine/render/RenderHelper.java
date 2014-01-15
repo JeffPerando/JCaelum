@@ -11,6 +11,7 @@ import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
+import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.IGLCleanable;
 import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.BufferHelper;
@@ -25,8 +26,8 @@ import com.elusivehawk.engine.util.TextParser;
  */
 public final class RenderHelper
 {
-	public static final int VERTEX_SHADER_3D = loadShader(FileHelper.createFile("/vertex.glsl"), GL.GL_VERTEX_SHADER);
-	public static final int FRAGMENT_SHADER_3D = loadShader(FileHelper.createFile("/fragment.glsl"), GL.GL_FRAGMENT_SHADER);
+	public static final int VERTEX_SHADER_3D = loadShader(FileHelper.createFile("/vertex.glsl"), GLConst.GL_VERTEX_SHADER);
+	public static final int FRAGMENT_SHADER_3D = loadShader(FileHelper.createFile("/fragment.glsl"), GLConst.GL_FRAGMENT_SHADER);
 	
 	public static final int VERTEX_OFFSET = 0;
 	public static final int COLOR_OFFSET = 3;
@@ -61,7 +62,7 @@ public final class RenderHelper
 	
 	public static Buffer<Integer> processGifFile(File gif, EnumRenderMode mode, EnumColorFormat format)
 	{
-		if (!mode.isValidImageMode() || !isContextCurrent())
+		if (!mode.isValidImageMode())
 		{
 			return null;
 		}
@@ -134,19 +135,19 @@ public final class RenderHelper
 		int glId = GL.glGenTextures();
 		
 		GL.glActiveTexture(glId);
-		GL.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 1);
+		GL.glPixelStorei(GLConst.GL_UNPACK_ALIGNMENT, 1);
 		
-		GL.glTexParameteri(mode.getOpenGLMode(), GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
-		GL.glTexParameteri(mode.getOpenGLMode(), GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
+		GL.glTexParameteri(mode.getOpenGLMode(), GLConst.GL_TEXTURE_MIN_FILTER, GLConst.GL_LINEAR);
+		GL.glTexParameteri(mode.getOpenGLMode(), GLConst.GL_TEXTURE_MAG_FILTER, GLConst.GL_LINEAR);
 		
 		if (mode.is3D())
 		{
-			GL.glTexImage3D(GL.GL_TEXTURE_3D, 0, GL.GL_RGBA8, w, h, 0, 0, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, buf);
+			GL.glTexImage3D(GLConst.GL_TEXTURE_3D, 0, GLConst.GL_RGBA8, w, h, 0, 0, GLConst.GL_RGBA, GLConst.GL_UNSIGNED_BYTE, buf);
 			
 		}
 		else
 		{
-			GL.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA8, w, h, 0, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, buf);
+			GL.glTexImage2D(GLConst.GL_TEXTURE_2D, 0, GLConst.GL_RGBA8, w, h, 0, GLConst.GL_RGBA, GLConst.GL_UNSIGNED_BYTE, buf);
 			
 		}
 		
@@ -183,7 +184,7 @@ public final class RenderHelper
 	
 	public static int loadShader(File shader, int type)
 	{
-		if (!isContextCurrent() || !shader.exists() || !shader.getName().endsWith(".glsl"))
+		if (!shader.exists() || !shader.getName().endsWith(".glsl"))
 		{
 			return 0;
 		}
@@ -210,13 +211,13 @@ public final class RenderHelper
 	}
 	
 	@Deprecated
-	public static synchronized BufferedImage captureScreen()
+	public static synchronized BufferedImage captureScreen(IDisplay win)
 	{
-		ByteBuffer buf = BufferHelper.createByteBuffer(Display.getHeight() * Display.getWidth() * 4);
+		ByteBuffer buf = BufferHelper.createByteBuffer(win.getHeight() * win.getWidth() * 4);
 		
-		GL.glReadPixels(0, 0, Display.getWidth(), Display.getHeight(), GL.GL_RGBA, GL.GL_BYTE, buf);
+		GL.glReadPixels(0, 0, win.getWidth(), win.getHeight(), GLConst.GL_RGBA, GLConst.GL_BYTE, buf);
 		
-		BufferedImage ret = new BufferedImage(Display.getWidth(), Display.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		BufferedImage ret = new BufferedImage(win.getWidth(), win.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		
 		for (int x = 0; x < ret.getWidth(); x++)
 		{
@@ -235,11 +236,11 @@ public final class RenderHelper
 	{
 		switch (gl)
 		{
-			case GL.GL_POINTS: return 1;
-			case GL.GL_LINES: return 2;
-			case GL.GL_TRIANGLES: return 3;
-			case GL.GL_QUADS: return 4;
-			case GL.GL_TRIANGLE_FAN: return 5;
+			case GLConst.GL_POINTS: return 1;
+			case GLConst.GL_LINES: return 2;
+			case GLConst.GL_TRIANGLES: return 3;
+			case GLConst.GL_QUADS: return 4;
+			case GLConst.GL_TRIANGLE_FAN: return 5;
 			default: return 0;
 		}
 		
@@ -254,7 +255,7 @@ public final class RenderHelper
 		
 		int err = GL.glGetError();
 		
-		if (err == GL.GL_NO_ERROR)
+		if (err == GLConst.GL_NO_ERROR)
 		{
 			return;
 		}
@@ -280,11 +281,6 @@ public final class RenderHelper
 	
 	public static int[] createVBOs(int count)
 	{
-		if (!isContextCurrent())
-		{
-			return null;
-		}
-		
 		int[] ret = new int[count];
 		
 		for (int c = 0; c < count; c++)
@@ -294,44 +290,6 @@ public final class RenderHelper
 		}
 		
 		return ret;
-	}
-	
-	public static boolean isContextCurrent()
-	{
-		boolean ret = false;
-		
-		try
-		{
-			ret = Display.isCurrent();
-			
-		}
-		catch (Exception e)
-		{
-			CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
-			
-		}
-		
-		return ret;
-	}
-	
-	public static void makeContextCurrent()
-	{
-		if (isContextCurrent())
-		{
-			return;
-		}
-		
-		try
-		{
-			Display.makeCurrent();
-			
-		}
-		catch (LWJGLException e)
-		{
-			CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
-			
-		}
-		
 	}
 	
 }

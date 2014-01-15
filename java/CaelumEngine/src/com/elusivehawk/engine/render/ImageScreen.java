@@ -6,9 +6,7 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.Display;
-import com.elusivehawk.engine.render.opengl.GL;
+import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.ITexture;
 import com.elusivehawk.engine.render.opengl.VertexBufferObject;
@@ -48,8 +46,8 @@ public class ImageScreen implements ILogicalRender
 		buf = BufferHelper.createFloatBuffer(maxImgs * IMG_FLOAT_COUNT);
 		indiceBuf = BufferHelper.createIntBuffer(maxImgs * 6);
 		
-		vbo = new VertexBufferObject(GL.GL_ARRAY_BUFFER, buf, GL.GL_STREAM_DRAW);
-		indices = new VertexBufferObject(GL.GL_ELEMENT_ARRAY_BUFFER, indiceBuf, GL.GL_STATIC_DRAW);
+		vbo = new VertexBufferObject(GLConst.GL_ARRAY_BUFFER, buf, GLConst.GL_STREAM_DRAW);
+		indices = new VertexBufferObject(GLConst.GL_ELEMENT_ARRAY_BUFFER, indiceBuf, GLConst.GL_STATIC_DRAW);
 		
 		if (p.bind())
 		{

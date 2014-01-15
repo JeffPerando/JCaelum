@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
-import com.elusivehawk.engine.render.opengl.GL;
+import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 
 /**
@@ -34,16 +34,16 @@ public class RenderEngineParticles implements IRenderEngine
 			return;
 		}
 		
-		GL.glEnable(GL.GL_DEPTH_TEST);
-		GL.glDepthFunc(GL.GL_LESS);
+		GL.glEnable(GLConst.GL_DEPTH_TEST);
+		GL.glDepthFunc(GLConst.GL_LESS);
 		
-		GL.glEnable(GL.GL_CULL_FACE);
-		GL.glCullFace(GL.GL_BACK);
+		GL.glEnable(GLConst.GL_CULL_FACE);
+		GL.glCullFace(GLConst.GL_BACK);
 		
-		GL.glDrawArrays(GL.GL_POINTS, 0, particles.getParticleCount());
+		GL.glDrawArrays(GLConst.GL_POINTS, 0, particles.getParticleCount());
 		
-		GL.glDisable(GL.GL_CULL_FACE);
-		GL.glDisable(GL.GL_DEPTH_TEST);
+		GL.glDisable(GLConst.GL_CULL_FACE);
+		GL.glDisable(GLConst.GL_DEPTH_TEST);
 		
 		p.unbind();
 		

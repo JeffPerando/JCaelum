@@ -4,7 +4,7 @@ package com.elusivehawk.engine.render;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
-import com.elusivehawk.engine.render.opengl.GL;
+import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.util.Tuple;
 
@@ -38,11 +38,11 @@ public class RenderEngine3D implements IRenderEngine
 			return;
 		}
 		
-		GL.glEnable(GL.GL_DEPTH_TEST);
-		GL.glDepthFunc(GL.GL_LESS);
+		GL.glEnable(GLConst.GL_DEPTH_TEST);
+		GL.glDepthFunc(GLConst.GL_LESS);
 		
-		GL.glEnable(GL.GL_CULL_FACE);
-		GL.glCullFace(GL.GL_BACK);
+		GL.glEnable(GLConst.GL_CULL_FACE);
+		GL.glCullFace(GLConst.GL_BACK);
 		
 		int currTex = 0, tex = 0;
 		
@@ -83,13 +83,13 @@ public class RenderEngine3D implements IRenderEngine
 				{
 					if (GL.glIsTexture(tex))
 					{
-						GL.glBindTexture(GL.GL_TEXTURE0, tex);
+						GL.glBindTexture(GLConst.GL_TEXTURE0, tex);
 						currTex = tex;
 						
 					}
 					else
 					{
-						GL.glBindTexture(GL.GL_TEXTURE0, 0);
+						GL.glBindTexture(GLConst.GL_TEXTURE0, 0);
 						
 					}
 					
@@ -97,7 +97,7 @@ public class RenderEngine3D implements IRenderEngine
 				
 				for (Entry<Integer, Tuple<Integer, Integer>> entry : m.getOffsets().entrySet())
 				{
-					GL.glDrawElements(entry.getKey(), entry.getValue().one, GL.GL_UNSIGNED_INT, entry.getValue().two);
+					GL.glDrawElements(entry.getKey(), entry.getValue().one, GLConst.GL_UNSIGNED_INT, entry.getValue().two);
 					
 				}
 				
@@ -109,8 +109,8 @@ public class RenderEngine3D implements IRenderEngine
 			
 		}
 		
-		GL.glDisable(GL.GL_CULL_FACE);
-		GL.glDisable(GL.GL_DEPTH_TEST);
+		GL.glDisable(GLConst.GL_CULL_FACE);
+		GL.glDisable(GLConst.GL_DEPTH_TEST);
 		
 	}
 	

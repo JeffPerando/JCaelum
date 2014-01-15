@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.math.VectorF;
-import com.elusivehawk.engine.render.opengl.GL;
+import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBufferObject;
 import com.elusivehawk.engine.util.BufferHelper;
@@ -36,7 +36,7 @@ public class ParticleScene implements ILogicalRender
 		particleCount = maxParticles;
 		
 		p = GLProgram.create(null); //TODO Create default particle shaders.
-		vbo = new VertexBufferObject(GL.GL_ARRAY_BUFFER, buf, GL.GL_STREAM_DRAW);
+		vbo = new VertexBufferObject(GLConst.GL_ARRAY_BUFFER, buf, GLConst.GL_STREAM_DRAW);
 		
 		if (p.bind())
 		{

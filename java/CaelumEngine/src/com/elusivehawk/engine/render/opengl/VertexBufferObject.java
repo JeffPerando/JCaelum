@@ -3,6 +3,7 @@ package com.elusivehawk.engine.render.opengl;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.BufferHelper;
 
@@ -23,7 +24,7 @@ public class VertexBufferObject implements IGLCleanable
 		id = GL.glIsBuffer(vbo) ? vbo : GL.glGenBuffers();
 		loadMode = mode;
 		
-		GL.register(this);
+		RenderHelper.register(this);
 		
 	}
 	
@@ -55,7 +56,7 @@ public class VertexBufferObject implements IGLCleanable
 	
 	protected void loadData(FloatBuffer buf)
 	{
-		int vba = GL.glGetInteger(GL.GL_VERTEX_ARRAY_BINDING);
+		int vba = GL.glGetInteger(GLConst.GL_VERTEX_ARRAY_BINDING);
 		
 		if (vba != 0)
 		{
@@ -77,7 +78,7 @@ public class VertexBufferObject implements IGLCleanable
 	
 	protected void loadData(IntBuffer buf)
 	{
-		int vba = GL.glGetInteger(GL.GL_VERTEX_ARRAY_BINDING);
+		int vba = GL.glGetInteger(GLConst.GL_VERTEX_ARRAY_BINDING);
 		
 		if (vba != 0)
 		{

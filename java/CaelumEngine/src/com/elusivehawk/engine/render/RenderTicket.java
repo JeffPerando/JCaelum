@@ -7,7 +7,7 @@ import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.MatrixHelper;
 import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.math.VectorF;
-import com.elusivehawk.engine.render.opengl.GL;
+import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.ITexture;
 import com.elusivehawk.engine.render.opengl.VertexBufferObject;
@@ -45,7 +45,7 @@ public class RenderTicket implements IDirty, ILogicalRender
 		p = program;
 		m = model;
 		buf = BufferHelper.createFloatBuffer(m.indiceCount.get() * 3);
-		vbo = new VertexBufferObject(GL.GL_VERTEX_ARRAY, this.buf, GL.GL_STREAM_DRAW);
+		vbo = new VertexBufferObject(GLConst.GL_VERTEX_ARRAY, this.buf, GLConst.GL_STREAM_DRAW);
 		
 		p.attachRenderTicket(this);
 		

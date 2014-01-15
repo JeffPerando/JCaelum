@@ -2,7 +2,7 @@
 package com.elusivehawk.engine.render;
 
 import java.util.Collection;
-import com.elusivehawk.engine.render.opengl.GL;
+import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 
 /**
@@ -49,21 +49,21 @@ public class RenderEngine2D implements IRenderEngine
 			{
 				if (GL.glIsTexture(tex))
 				{
-					GL.glBindTexture(GL.GL_TEXTURE0, tex);
+					GL.glBindTexture(GLConst.GL_TEXTURE0, tex);
 					currTex = tex;
 					
 				}
 				else
 				{
-					GL.glBindTexture(GL.GL_TEXTURE0, 0);
+					GL.glBindTexture(GLConst.GL_TEXTURE0, 0);
 					
 				}
 				
 			}
 			
-			GL.glDrawElements(GL.GL_TRIANGLES, imgScene.getImgCount() * 6, GL.GL_UNSIGNED_INT, 0);
+			GL.glDrawElements(GLConst.GL_TRIANGLES, imgScene.getImgCount() * 6, GLConst.GL_UNSIGNED_INT, 0);
 			
-			GL.glBindTexture(GL.GL_TEXTURE0, 0);
+			GL.glBindTexture(GLConst.GL_TEXTURE0, 0);
 			
 			p.unbind();
 			

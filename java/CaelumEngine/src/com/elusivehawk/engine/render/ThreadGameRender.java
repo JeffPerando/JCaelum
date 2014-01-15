@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Collection;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
+import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.util.SemiFinalStorage;
 import com.elusivehawk.engine.util.ThreadTimed;
 
@@ -83,7 +84,7 @@ public class ThreadGameRender extends ThreadTimed
 			return;
 		}
 		
-		GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+		GL.glClear(GLConst.GL_COLOR_BUFFER_BIT | GLConst.GL_DEPTH_BUFFER_BIT);
 		
 		int priorityCount = Math.max(this.hub.getHighestPriority(), 1);
 		int renderersUsed = 0;
@@ -110,15 +111,15 @@ public class ThreadGameRender extends ThreadTimed
 				engine.render(this.hub);
 				renderersUsed++;
 				
-				int tex = 0, texUnits = GL.glGetInteger(GL.GL_MAX_TEXTURE_UNITS);
+				int tex = 0, texUnits = GL.glGetInteger(GLConst.GL_MAX_TEXTURE_UNITS);
 				
 				for (int c = 0; c < texUnits; c++)
 				{
-					tex = GL.glGetInteger(GL.GL_TEXTURE0 + c);
+					tex = GL.glGetInteger(GLConst.GL_TEXTURE0 + c);
 					
 					if (tex != 0)
 					{
-						GL.glBindTexture(GL.GL_TEXTURE0 + c, 0);
+						GL.glBindTexture(GLConst.GL_TEXTURE0 + c, 0);
 						
 					}
 					

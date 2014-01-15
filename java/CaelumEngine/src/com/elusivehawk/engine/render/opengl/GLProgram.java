@@ -179,7 +179,7 @@ public class GLProgram implements IGLCleanable
 	
 	private boolean bind0()
 	{
-		int p = GL.glGetInteger(GL.GL_CURRENT_PROGRAM);
+		int p = GL.glGetInteger(GLConst.GL_CURRENT_PROGRAM);
 		
 		if (p == this.id)
 		{
