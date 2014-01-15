@@ -9,9 +9,9 @@ import com.elusivehawk.engine.util.TextParser;
 
 /**
  * 
- * Static class for sending things to the console.
+ * Default logging implementation.
  * <p>
- * Note: Unlike {@link System}.out.println(), this is thread safe.<br>
+ * Note: Unlike {@link System}.out.println(), this is thread safe.
  * 
  * @author Elusivehawk
  */

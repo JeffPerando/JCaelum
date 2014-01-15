@@ -11,9 +11,9 @@ public enum EnumOS
 {
 	WINDOWS, MACOSX, LINUX, SOLARIS, ANDROID, OTHER;
 	
-	public static final EnumOS CURR_OS = getCurrentOS();
+	private static final EnumOS CURR_OS = determineOS();
 	
-	private static EnumOS getCurrentOS()
+	private static EnumOS determineOS()
 	{
 		if (System.getProperty("java.vendor") == "The Android Project")
 		{
@@ -24,7 +24,7 @@ public enum EnumOS
 		
 		for (EnumOS potenOS : values())
 		{
-			if (os.contains(potenOS.toString()))
+			if (os.startsWith(potenOS.toString()))
 			{
 				return potenOS;
 			}
@@ -32,6 +32,11 @@ public enum EnumOS
 		}
 		
 		return OTHER;
+	}
+	
+	public static EnumOS getCurrentOS()
+	{
+		return CURR_OS;
 	}
 	
 	@Override

@@ -9,6 +9,8 @@ package com.elusivehawk.engine.render.opengl;
  */
 public final class GLConst
 {
+	private GLConst(){}
+	
 	//GL #
 	
 	public static final int GL_2_BYTES = 0x1407;

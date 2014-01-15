@@ -100,7 +100,7 @@ public final class CaelumEngine
 				
 				if (j != null)
 				{
-					JsonValue curEnv = j.get(EnumOS.CURR_OS.toString());
+					JsonValue curEnv = j.get(EnumOS.getCurrentOS().toString());
 					
 					if (curEnv != null && curEnv.isObject())
 					{
@@ -150,7 +150,7 @@ public final class CaelumEngine
 			
 		}
 		
-		if (!env.isCompatible(EnumOS.CURR_OS))
+		if (!env.isCompatible(EnumOS.getCurrentOS()))
 		{
 			return;
 		}
