@@ -18,7 +18,7 @@ import com.elusivehawk.engine.util.BufferHelper;
  * 
  * @author Elusivehawk
  */
-public class OpenGL11 implements IGL1
+public class OpenGL1 implements IGL1
 {
 	@Override
 	public void glActiveTexture(int texture)

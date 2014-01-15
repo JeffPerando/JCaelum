@@ -27,6 +27,12 @@ public interface IDisplay extends Closeable
 	
 	/**
 	 * 
+	 * @return If the display has VSync enabled.
+	 */
+	public boolean getVSync();
+	
+	/**
+	 * 
 	 * @return If the display can be closed via X-ing out.
 	 */
 	public boolean canClose();
@@ -67,6 +73,8 @@ public interface IDisplay extends Closeable
 	public void setCloseable(boolean close);
 	
 	public void setFullscreen(boolean full);
+	
+	public void setVSync(boolean vsync);
 	
 	/**
 	 * 

@@ -1,12 +1,11 @@
 
 package com.elusivehawk.engine.render;
 
+import java.io.IOException;
 import java.util.Collection;
-import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.Display;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
-import com.elusivehawk.engine.render.opengl.GL;
+import com.elusivehawk.engine.util.SemiFinalStorage;
 import com.elusivehawk.engine.util.ThreadTimed;
 
 /**
@@ -19,6 +18,7 @@ public class ThreadGameRender extends ThreadTimed
 {
 	protected final IRenderHUB hub;
 	protected final IRenderEnvironment env;
+	protected final SemiFinalStorage<IDisplay> display = new SemiFinalStorage<IDisplay>(null);
 	protected int fps;
 	
 	@SuppressWarnings("unqualified-field-access")
@@ -42,34 +42,9 @@ public class ThreadGameRender extends ThreadTimed
 		
 		this.fps = settings.targetFPS;
 		
-		if (!Display.isCreated())
+		if (!this.display.locked())
 		{
-			try
-			{
-				Display.setTitle(settings.title);
-				Display.setResizable(settings.resize);
-				Display.setVSyncEnabled(settings.vsync);
-				Display.setFullscreen(settings.fullscreen);
-				if (settings.icons != null) Display.setIcon(settings.icons);
-				if (settings.mode != null) Display.setDisplayMode(settings.mode);
-				
-				Color bg = settings.bg;
-				Display.setInitialBackground(bg.getColorFloat(EnumColorFilter.RED), bg.getColorFloat(EnumColorFilter.GREEN), bg.getColorFloat(EnumColorFilter.BLUE));
-				
-				Display.create();
-				
-				//TODO Display.setDisplayConfiguration(settings.gamma, settings.brightness, settings.constrast);
-				
-				GL.glViewport(0, 0, settings.mode.getWidth(), settings.mode.getHeight());
-				GL.glClearColor(bg.getColorFloat(EnumColorFilter.RED), bg.getColorFloat(EnumColorFilter.GREEN), bg.getColorFloat(EnumColorFilter.BLUE), bg.getColorFloat(EnumColorFilter.ALPHA));
-				
-			}
-			catch (LWJGLException e)
-			{
-				CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
-				
-				return false;
-			}
+			this.display.set(this.env.createDisplay("default", settings));
 			
 		}
 		
@@ -88,24 +63,14 @@ public class ThreadGameRender extends ThreadTimed
 		
 		if (this.hub.updateDisplay())
 		{
-			try
-			{
-				DisplaySettings settings = this.hub.getSettings();
-				
-				Display.setDisplayMode(settings.mode);
-				Display.setFullscreen(settings.fullscreen);
-				Display.setVSyncEnabled(settings.vsync);
-				
-				this.fps = settings.targetFPS;
-				
-				//TODO Display.setDisplayConfiguration(settings.gamma, settings.brightness, settings.constrast);
-				
-			}
-			catch (LWJGLException e)
-			{
-				CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
-				
-			}
+			DisplaySettings settings = this.hub.getSettings();
+			
+			this.display.get().resize(settings.height, settings.width);
+			this.display.get().setFullscreen(settings.fullscreen);
+			this.display.get().setVSync(settings.vsync);
+			this.display.get().setFPS(settings.targetFPS);
+			
+			this.fps = settings.targetFPS;
 			
 		}
 		
@@ -176,17 +141,20 @@ public class ThreadGameRender extends ThreadTimed
 		
 		this.hub.getCamera().postRender(this.hub);
 		
-		Display.sync(this.fps);
-		Display.update(false);
+		this.display.get().updateDisplay();
 		
 	}
 	
 	@Override
 	public void onThreadStopped()
 	{
-		GL.cleanup();
+		RenderHelper.cleanup();
 		
-		Display.destroy();
+		try
+		{
+			this.display.get().close();
+		}
+		catch (IOException e){}
 		
 	}
 	
@@ -205,7 +173,7 @@ public class ThreadGameRender extends ThreadTimed
 	@Override
 	public boolean isRunning()
 	{
-		return !Display.isCloseRequested();
+		return super.isRunning() && !this.display.get().isCloseRequested();
 	}
 	
 }

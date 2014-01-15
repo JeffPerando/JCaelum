@@ -61,17 +61,17 @@ public class LWJGLEnvironment implements IGameEnvironment
 		return null;
 	}
 	
+	@Override
+	public boolean isCompatible(EnumOS os)
+	{
+		return os != EnumOS.ANDROID;
+	}
+	
 	public static String determineLWJGLPath()
 	{
 		//TODO: this only works on Debian... but we'll try it for now.
 		
 		return (EnumOS.CURR_OS == EnumOS.LINUX && new File("/usr/lib/jni/liblwjgl.so").exists()) ? "/usr/lib/jni" : FileHelper.createFile("/lwjgl/native/" + EnumOS.CURR_OS.toString()).getAbsolutePath();
-	}
-	
-	@Override
-	public boolean isCompatible(EnumOS os)
-	{
-		return os != EnumOS.ANDROID;
 	}
 	
 }

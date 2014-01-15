@@ -33,6 +33,8 @@ public interface IGL2
 	
 	public void glDisableVertexAttribArray(int index);
 	
+	public void glEnableAttribArray(int index);
+	
 	public String glGetActiveAttrib(int program, int index, int maxLength);
 	
 	public String glGetActiveAttrib(int program, int index, int maxLength, IntBuffer sizeType);
@@ -67,11 +69,7 @@ public interface IGL2
 	
 	public String glGetShaderInfoLog(int shader, int maxLength);
 	
-	public void glGetShaderInfoLog(int shader, IntBuffer length, ByteBuffer infoLog);
-	
 	public String glGetShaderSource(int shader, int maxLength);
-	
-	public void glGetShaderSource(int shader, IntBuffer length, ByteBuffer source);
 	
 	public void glGetUniform(int program, int location, FloatBuffer params);
 	
@@ -83,7 +81,7 @@ public interface IGL2
 	
 	public void glGetVertexAttrib(int index, int pname, IntBuffer params);
 	
-	public String glGetVertexAttribPointer(int index, int pname, long result_size);
+	//public String glGetVertexAttribPointer(int index, int pname, long result_size);
 	
 	public boolean glIsProgram(int program);
 	

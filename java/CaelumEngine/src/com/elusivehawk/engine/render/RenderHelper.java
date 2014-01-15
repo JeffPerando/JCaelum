@@ -4,12 +4,14 @@ package com.elusivehawk.engine.render;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
-import com.elusivehawk.engine.render.opengl.GL;
+import com.elusivehawk.engine.render.opengl.IGLCleanable;
 import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.BufferHelper;
 import com.elusivehawk.engine.util.FileHelper;
@@ -26,7 +28,36 @@ public final class RenderHelper
 	public static final int VERTEX_SHADER_3D = loadShader(FileHelper.createFile("/vertex.glsl"), GL.GL_VERTEX_SHADER);
 	public static final int FRAGMENT_SHADER_3D = loadShader(FileHelper.createFile("/fragment.glsl"), GL.GL_FRAGMENT_SHADER);
 	
+	public static final int VERTEX_OFFSET = 0;
+	public static final int COLOR_OFFSET = 3;
+	public static final int TEXCOORD_OFFSET = 7;
+	
+	private static final List<IGLCleanable> OBJECTS = new ArrayList<IGLCleanable>();
+	
 	private RenderHelper(){}
+	
+	public static void register(IGLCleanable gl)
+	{
+		OBJECTS.add(gl);
+		
+	}
+	
+	public static void cleanup()
+	{
+		if (!OBJECTS.isEmpty())
+		{
+			return;
+		}
+		
+		for (IGLCleanable gl : OBJECTS)
+		{
+			gl.glDelete();
+			
+		}
+		
+		OBJECTS.clear();
+		
+	}
 	
 	public static Buffer<Integer> processGifFile(File gif, EnumRenderMode mode, EnumColorFormat format)
 	{
