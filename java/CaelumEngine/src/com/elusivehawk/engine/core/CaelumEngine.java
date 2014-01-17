@@ -18,7 +18,6 @@ import com.elusivehawk.engine.util.FileHelper;
 import com.elusivehawk.engine.util.ReflectionHelper;
 import com.elusivehawk.engine.util.TextParser;
 import com.elusivehawk.engine.util.ThreadStoppable;
-import com.elusivehawk.engine.util.ThreadTimedWrapper;
 import com.elusivehawk.engine.util.Tuple;
 
 /**
@@ -184,11 +183,11 @@ public final class CaelumEngine
 			
 		}
 		
-		instance().start(g);
+		instance().start(g, buf);
 		
 	}
 	
-	public void start(IGame g)
+	private void start(IGame g, Buffer<String> args)
 	{
 		if (this.game != null)
 		{
@@ -196,7 +195,7 @@ public final class CaelumEngine
 		}
 		
 		this.game = g;
-		this.threads.put(EnumEngineFeature.LOGIC, new ThreadTimedWrapper(this.game));
+		this.threads.put(EnumEngineFeature.LOGIC, new ThreadGameLoop(this.game, args));
 		
 		IRenderHUB hub = this.game.getRenderHUB();
 		
@@ -237,7 +236,7 @@ public final class CaelumEngine
 			return;
 		}
 		
-		if (!this.game.enableShutdown())
+		if (!this.game.onGameShutdown())
 		{
 			return;
 		}

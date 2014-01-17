@@ -2,7 +2,8 @@
 package com.elusivehawk.engine.core;
 
 import com.elusivehawk.engine.render.IRenderHUB;
-import com.elusivehawk.engine.util.IThreadable;
+import com.elusivehawk.engine.util.Buffer;
+import com.elusivehawk.engine.util.IUpdatable;
 
 /**
  * 
@@ -10,15 +11,19 @@ import com.elusivehawk.engine.util.IThreadable;
  * 
  * @author Elusivehawk
  */
-public interface IGame extends IThreadable
+public interface IGame extends IUpdatable
 {
+	public boolean initiate(Buffer<String> args);
+	
+	public int getUpdateCount();
+	
 	/**
 	 * 
 	 * Safety function to prevent malicious thingummywhats from shutting down the game early.
 	 * 
 	 * @return True to enable the game threads to shut down.
 	 */
-	public boolean enableShutdown();
+	public boolean onGameShutdown();
 	
 	/**
 	 * 
