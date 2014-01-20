@@ -27,7 +27,7 @@ public class VectorF extends Vector<Float>
 		
 		for (int c = 0; c < l; c++)
 		{
-			this.set(buf.next(), c);
+			this.set(c, buf.next());
 			
 		}
 		
@@ -47,7 +47,7 @@ public class VectorF extends Vector<Float>
 		
 		for (int c = 0; c < l; c++)
 		{
-			this.set(buf.get(), c);
+			this.set(c, buf.get());
 			
 		}
 		
@@ -59,7 +59,7 @@ public class VectorF extends Vector<Float>
 		
 		for (int c = 0; c < length; c++)
 		{
-			this.set(vec.get(c), c);
+			this.set(c, vec.get(c));
 			
 		}
 		
@@ -86,7 +86,7 @@ public class VectorF extends Vector<Float>
 	}
 	
 	@Override
-	public void set(Float num, int pos)
+	public void set(int pos, Float num)
 	{
 		this.data[pos] = num;
 		
@@ -99,7 +99,7 @@ public class VectorF extends Vector<Float>
 		
 		for (int c = 0; c < l; c++)
 		{
-			this.set(this.get(c) + obj.get(c), c);
+			this.set(c, this.get(c) + obj.get(c));
 			
 		}
 		
@@ -113,7 +113,7 @@ public class VectorF extends Vector<Float>
 		
 		for (int c = 0; c < l; c++)
 		{
-			this.set(this.get(c) / obj.get(c), c);
+			this.set(c, this.get(c) / obj.get(c));
 			
 		}
 		
@@ -127,7 +127,7 @@ public class VectorF extends Vector<Float>
 		
 		for (int c = 0; c < l; c++)
 		{
-			this.set(obj.get(c), c);
+			this.set(c, obj.get(c));
 			
 		}
 		
@@ -141,7 +141,7 @@ public class VectorF extends Vector<Float>
 		
 		for (int c = 0; c < l; c++)
 		{
-			this.set(this.get(c) - obj.get(c), c);
+			this.set(c, this.get(c) - obj.get(c));
 			
 		}
 		
@@ -155,7 +155,7 @@ public class VectorF extends Vector<Float>
 		
 		for (int c = 0; c < l; c++)
 		{
-			this.set(this.get(c) * obj.get(c), c);
+			this.set(c, this.get(c) * obj.get(c));
 			
 		}
 		

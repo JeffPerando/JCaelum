@@ -31,15 +31,9 @@ public final class GameLog implements ILog
 		}
 		
 		StringBuilder b = new StringBuilder();
-		Calendar cal = Calendar.getInstance();
 		
 		b.append("[" + type.name() + "] ");
-		b.append(cal.get(Calendar.DATE) + "-");
-		b.append(cal.get(Calendar.MONTH) + 1 + "-");
-		b.append(cal.get(Calendar.YEAR) + " ");
-		int minute = cal.get(Calendar.MINUTE);
-		boolean amOrPm = cal.get(Calendar.AM_PM) == Calendar.PM;
-		b.append(cal.get(Calendar.HOUR) + ":" + (minute < 10 ? "0" : "") + minute + ":" + cal.get(Calendar.SECOND) + ":" + cal.get(Calendar.MILLISECOND) + " " + (amOrPm ? "PM" : "AM") + ": ");
+		b.append(TextParser.parseDate(Calendar.getInstance()) + ": ");
 		b.append(type.err && msg == null ? this.crashDialog.get(this.rng.nextInt(this.crashDialog.size())) : msg);
 		
 		String fin = b.toString();

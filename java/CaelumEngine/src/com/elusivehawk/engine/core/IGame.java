@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.core;
 
+import com.elusivehawk.engine.physics.IPhysicsScene;
 import com.elusivehawk.engine.render.IRenderHUB;
 import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.IUpdatable;
@@ -32,5 +33,13 @@ public interface IGame extends IUpdatable
 	 * @return The rendering HUB to be used to render the game.
 	 */
 	public IRenderHUB getRenderHUB();
+	
+	/**
+	 * 
+	 * Called during startup.
+	 * 
+	 * @return The physics scene to use during the game's lifespan.
+	 */
+	public IPhysicsScene getPhysicsScene();
 	
 }

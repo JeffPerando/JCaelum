@@ -81,6 +81,13 @@ public final class Connection implements IConnectable
 		
 	}
 	
+	public void setPaused(boolean pause)
+	{
+		this.in.setPaused(pause);
+		this.out.setPaused(pause);
+		
+	}
+	
 	public boolean isClosed()
 	{
 		return this.closed.get();

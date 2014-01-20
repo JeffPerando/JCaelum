@@ -97,6 +97,16 @@ public class Server implements IHost
 	}
 	
 	@Override
+	public void pauseConnections(boolean pause)
+	{
+		for (Connection connect : this.clients)
+		{
+			connect.setPaused(pause);
+			
+		}
+	}
+	
+	@Override
 	public short[] getHandshakeProtocol()
 	{
 		return this.master.getHandshakeProtocol();

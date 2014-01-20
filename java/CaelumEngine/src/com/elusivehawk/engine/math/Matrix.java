@@ -50,7 +50,7 @@ public class Matrix implements IMathObject<Float>
 		
 		for (int c = 0; c < buf.remaining(); c++)
 		{
-			set(buf.next(), c);
+			set(c, buf.next());
 			
 		}
 		
@@ -150,7 +150,7 @@ public class Matrix implements IMathObject<Float>
 	}
 	
 	@Override
-	public void set(Float num, int pos)
+	public void set(int pos, Float num)
 	{
 		this.data[pos] = num;
 		
@@ -163,7 +163,7 @@ public class Matrix implements IMathObject<Float>
 		
 		for (int c = 0; c < this.getSize(); c++)
 		{
-			this.set(this.get(c) + buf.next(), c);
+			this.set(c, this.get(c) + buf.next());
 			
 			if (!buf.hasNext())
 			{
@@ -183,7 +183,7 @@ public class Matrix implements IMathObject<Float>
 		
 		for (int c = 0; c < this.getSize(); c++)
 		{
-			this.set(this.get(c) / buf.next(), c);
+			this.set(c, this.get(c) / buf.next());
 			
 			if (!buf.hasNext())
 			{
@@ -203,7 +203,7 @@ public class Matrix implements IMathObject<Float>
 		
 		for (int c = 0; c < this.getSize(); c++)
 		{
-			this.set(buf.next(), c);
+			this.set(c, buf.next());
 			
 			if (!buf.hasNext())
 			{
@@ -223,7 +223,7 @@ public class Matrix implements IMathObject<Float>
 		
 		for (int c = 0; c < this.getSize(); c++)
 		{
-			this.set(this.get(c) - buf.next(), c);
+			this.set(c, this.get(c) - buf.next());
 			
 			if (!buf.hasNext())
 			{
@@ -243,7 +243,7 @@ public class Matrix implements IMathObject<Float>
 		
 		for (int c = 0; c < this.getSize(); c++)
 		{
-			this.set(this.get(c) * buf.next(), c);
+			this.set(c, this.get(c) * buf.next());
 			
 			if (!buf.hasNext())
 			{

@@ -15,7 +15,7 @@ public interface IMathObject<T extends Number> extends IStorable<T>
 	
 	public T get(int pos);
 	
-	public void set(T num, int pos);
+	public void set(int pos, T num);
 	
 	public IMathObject<T> add(IMathObject<T> obj);
 	

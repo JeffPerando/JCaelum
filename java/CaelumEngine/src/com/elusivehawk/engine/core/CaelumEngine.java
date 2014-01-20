@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Set;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import com.elusivehawk.engine.physics.IPhysicsScene;
+import com.elusivehawk.engine.physics.ThreadPhysics;
 import com.elusivehawk.engine.render.IRenderHUB;
 import com.elusivehawk.engine.render.ThreadGameRender;
 import com.elusivehawk.engine.util.Buffer;
@@ -207,7 +209,13 @@ public final class CaelumEngine
 		
 		//this.threads.put(EnumEngineFeature.SOUND, new ThreadSoundPlayer());
 		
-		//TODO Moar threadz!!!
+		IPhysicsScene ph = this.game.getPhysicsScene();
+		
+		if (ph != null)
+		{
+			this.threads.put(EnumEngineFeature.PHYSICS, new ThreadPhysics(ph, this.game.getUpdateCount()));
+			
+		}
 		
 		for (EnumEngineFeature fe : EnumEngineFeature.values())
 		{

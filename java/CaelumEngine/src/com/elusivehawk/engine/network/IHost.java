@@ -22,4 +22,6 @@ public interface IHost extends IConnectable, IPacketHandler, IHandshaker, Closea
 	 */
 	public void sendPackets(int client, Packet... pkts);
 	
+	public void pauseConnections(boolean pause);
+	
 }

@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -273,6 +274,20 @@ public final class TextParser
 		}
 		
 		return null;
+	}
+	
+	public static String parseDate(Calendar cal)
+	{
+		StringBuilder b = new StringBuilder();
+		
+		b.append(cal.get(Calendar.DATE) + "-");
+		b.append(cal.get(Calendar.MONTH) + 1 + "-");
+		b.append(cal.get(Calendar.YEAR) + " ");
+		int minute = cal.get(Calendar.MINUTE);
+		boolean amOrPm = cal.get(Calendar.AM_PM) == Calendar.PM;
+		b.append(cal.get(Calendar.HOUR) + ":" + (minute < 10 ? "0" : "") + minute + ":" + cal.get(Calendar.SECOND) + ":" + cal.get(Calendar.MILLISECOND) + " " + (amOrPm ? "PM" : "AM"));
+		
+		return b.toString();
 	}
 	
 }

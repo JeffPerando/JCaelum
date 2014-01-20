@@ -97,6 +97,13 @@ public class Client implements IHost
 	}
 	
 	@Override
+	public void pauseConnections(boolean pause)
+	{
+		this.connection.setPaused(pause);
+		
+	}
+	
+	@Override
 	public short[] getHandshakeProtocol()
 	{
 		return this.master.getHandshakeProtocol();

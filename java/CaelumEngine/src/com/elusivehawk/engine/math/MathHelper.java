@@ -13,6 +13,20 @@ public final class MathHelper
 	
 	private MathHelper(){}
 	
+	public static float dist(Vector<Float> from, Vector<Float> to)
+	{
+		return (float)Math.sqrt(distSquare(from, to));
+	}
+	
+	public static float distSquare(Vector<Float> from, Vector<Float> to)
+	{
+		float x = to.get(Vector.X) - from.get(Vector.X),
+		y = to.get(Vector.Y) - from.get(Vector.Y),
+		z = to.get(Vector.Z) - from.get(Vector.Z);
+		
+		return (x * x) + (y * y) + (z * z);
+	}
+	
 	public static boolean isOdd(int i)
 	{
 		return i == 0 ? false : (i >> 1) >= i;

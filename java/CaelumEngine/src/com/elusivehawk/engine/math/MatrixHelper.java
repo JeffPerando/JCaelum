@@ -38,7 +38,7 @@ public final class MatrixHelper
 					
 				}
 				
-				ret.set(info, xPos + (yPos * ret.h));
+				ret.set(xPos + (yPos * ret.h), info);
 				
 			}
 			
@@ -80,7 +80,7 @@ public final class MatrixHelper
 					
 				}
 				
-				ret.set(info, xPos + (yPos * ret.h));
+				ret.set(xPos + (yPos * ret.h), info);
 				
 			}
 			
