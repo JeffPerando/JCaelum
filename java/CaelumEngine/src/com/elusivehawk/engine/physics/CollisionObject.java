@@ -61,4 +61,27 @@ public abstract class CollisionObject implements ICollisionObject
 		
 	}
 	
+	@Override
+	public ICollisionListener getCollisionResult(ICollisionObject obj)
+	{
+		ICollisionListener ret = null;
+		
+		if (!this.children.isEmpty())
+		{
+			for (ICollisionObject col : this.children)
+			{
+				ret = col.getCollisionResult(obj);
+				
+				if (ret != null)
+				{
+					break;
+				}
+				
+			}
+			
+		}
+		
+		return ret;
+	}
+	
 }

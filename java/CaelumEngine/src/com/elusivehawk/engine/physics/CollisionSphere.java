@@ -38,16 +38,23 @@ public class CollisionSphere extends CollisionObject
 	}
 	
 	@Override
-	public ICollisionListener canCollide(ICollisionObject obj)
+	public ICollisionListener getCollisionResult(ICollisionObject obj)
 	{
-		// TODO Auto-generated method stub
+		if (MathHelper.dist(this.getCentralPosition(), obj.createPointForCollision(this)) <= this.radius)
+		{
+			ICollisionListener ret = super.getCollisionResult(obj);
+			
+			return ret == null ? this.listener : ret;
+		}
+		
 		return null;
 	}
 	
 	@Override
-	public boolean canCollide(Vector<Float> vec)
+	public Vector<Float> createPointForCollision(ICollisionObject obj)
 	{
-		return MathHelper.dist(this.getCentralPosition(), vec) <= this.radius;
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

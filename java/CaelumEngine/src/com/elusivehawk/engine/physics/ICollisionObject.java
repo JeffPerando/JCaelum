@@ -19,6 +19,8 @@ public interface ICollisionObject
 	
 	public Vector<Float> getCentralPosition();
 	
+	public Vector<Float> createPointForCollision(ICollisionObject obj);
+	
 	public void addChild(ICollisionObject obj);
 	
 	public void expand(float f);
@@ -27,8 +29,6 @@ public interface ICollisionObject
 	
 	public boolean isNoclipping();
 	
-	public ICollisionListener canCollide(ICollisionObject obj);
-	
-	public boolean canCollide(Vector<Float> vec);
+	public ICollisionListener getCollisionResult(ICollisionObject obj);
 	
 }

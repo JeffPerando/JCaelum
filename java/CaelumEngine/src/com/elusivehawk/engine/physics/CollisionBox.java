@@ -79,54 +79,32 @@ public class CollisionBox extends CollisionObject
 	}
 	
 	@Override
-	public ICollisionListener canCollide(ICollisionObject obj)
+	public ICollisionListener getCollisionResult(ICollisionObject obj)
 	{
-		ICollisionListener ret = null;
+		Vector<Float> vec = obj.createPointForCollision(this);
 		
-		if (obj.canCollide(this.createPoint(obj.getCentralPosition())))
-		{
-			if (this.children.isEmpty())
-			{
-				ret = this.listener;
-				
-			}
-			else
-			{
-				for (ICollisionObject ch : this.children)
-				{
-					ret = ch.canCollide(obj);
-					
-					if (ret != null)
-					{
-						break;
-					}
-					
-				}
-				
-			}
-			
-		}
-		
-		return ret;
-	}
-	
-	@Override
-	public boolean canCollide(Vector<Float> vec)
-	{
 		float x = vec.get(Vector.X),
 		y = vec.get(Vector.Y),
 		z = vec.get(Vector.Z);
 		
-		return (x > this.maxX && x < this.minX)
-				&& (y > this.maxY && y < this.minY)
-				&& (z > this.maxZ && z < this.minZ);
+		if ((x > this.maxX && x < this.minX) && (y > this.maxY && y < this.minY) && (z > this.maxZ && z < this.minZ))
+		{
+			ICollisionListener ret = super.getCollisionResult(obj);
+			
+			return ret == null ? this.listener : ret;
+		}
+		
+		return null;
 	}
 	
-	protected Vector<Float> createPoint(Vector<Float> o)
+	@Override
+	public Vector<Float> createPointForCollision(ICollisionObject obj)
 	{
-		return new VectorF(3, Math.min(Math.max(this.minX, o.get(Vector.X)), this.maxX),
-				Math.min(Math.max(this.minY, o.get(Vector.Y)), this.maxY),
-				Math.min(Math.max(this.minZ, o.get(Vector.Z)), this.maxZ));
+		Vector<Float> vec = obj.getCentralPosition();
+		
+		return new VectorF(3, Math.min(Math.max(this.minX, vec.get(Vector.X)), this.maxX),
+				Math.min(Math.max(this.minY, vec.get(Vector.Y)), this.maxY),
+				Math.min(Math.max(this.minZ, vec.get(Vector.Z)), this.maxZ));
 	}
 	
 }

@@ -60,7 +60,7 @@ public final class ThreadPhysics extends ThreadTimed
 						continue;
 					}
 					
-					collision = obj.canCollide(obj0);
+					collision = obj.getCollisionResult(obj0);
 					
 					if (collision != null)
 					{
