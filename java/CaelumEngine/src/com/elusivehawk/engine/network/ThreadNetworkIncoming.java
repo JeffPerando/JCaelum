@@ -49,18 +49,12 @@ public class ThreadNetworkIncoming extends ThreadNetwork
 	@Override
 	public void update(double delta) throws Exception
 	{
-		List<Packet> pkts = null;
-		
-		if (this.in.available() > 0)
-		{
-			pkts = new ArrayList<Packet>();
-			
-		}
-		
-		if (pkts == null)
+		if (this.in.available() == 0)
 		{
 			return;
 		}
+		
+		List<Packet> pkts = new ArrayList<Packet>();
 		
 		while (this.in.available() > 0)
 		{
