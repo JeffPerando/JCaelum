@@ -50,8 +50,10 @@ abstract class ThreadNetwork extends ThreadTimed
 	}
 	
 	@Override
-	public void onThreadStopped()
+	public synchronized void stopThread()
 	{
+		super.stopThread();
+		
 		try
 		{
 			this.update(0);
