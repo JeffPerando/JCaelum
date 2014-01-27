@@ -29,23 +29,20 @@ public abstract class ThreadStoppable extends Thread implements IPausable
 	@Override
 	public final void run()
 	{
-		if (!this.initiate())
+		if (this.initiate())
 		{
-			this.onThreadStopped();
-			
-			return;
-		}
-		
-		while (this.isRunning())
-		{
-			try
+			while (this.isRunning())
 			{
-				this.rawUpdate();
-				
-			}
-			catch (Throwable e)
-			{
-				this.handleException(e);
+				try
+				{
+					this.rawUpdate();
+					
+				}
+				catch (Throwable e)
+				{
+					this.handleException(e);
+					
+				}
 				
 			}
 			

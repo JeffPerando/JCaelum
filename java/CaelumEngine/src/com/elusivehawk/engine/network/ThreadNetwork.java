@@ -22,6 +22,7 @@ abstract class ThreadNetwork extends ThreadTimed
 	{
 		assert con != null;
 		assert h != null;
+		assert ups > 0;
 		
 		handler = h;
 		connect = con;
@@ -46,6 +47,22 @@ abstract class ThreadNetwork extends ThreadTimed
 	public double getMaxDelta()
 	{
 		return 0.5;
+	}
+	
+	@Override
+	public void onThreadStopped()
+	{
+		try
+		{
+			this.update(0);
+			
+		}
+		catch (Throwable e)
+		{
+			this.handleException(e);
+			
+		}
+		
 	}
 	
 }

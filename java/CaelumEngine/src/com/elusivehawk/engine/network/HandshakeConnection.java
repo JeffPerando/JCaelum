@@ -29,7 +29,7 @@ public class HandshakeConnection implements IPacketHandler
 		
 		master = owner;
 		skt = s;
-		connect = Connection.create(this, id, ups);
+		connect = new Connection(this, id, ups);
 		expectPkts = pktsReq;
 		
 	}

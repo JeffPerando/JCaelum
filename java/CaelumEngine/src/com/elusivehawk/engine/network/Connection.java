@@ -24,8 +24,14 @@ public final class Connection implements IConnectable
 	private ThreadNetworkOutgoing out = null;
 	private Socket skt = null;
 	
+	public Connection(IPacketHandler h, int ups)
+	{
+		this(h, 0, ups);
+		
+	}
+	
 	@SuppressWarnings("unqualified-field-access")
-	private Connection(IPacketHandler h, int id, int ups) throws Exception
+	public Connection(IPacketHandler h, int id, int ups)
 	{
 		assert h != null;
 		assert ups > 0;
@@ -125,29 +131,6 @@ public final class Connection implements IConnectable
 			
 		}
 		
-	}
-	
-	public static Connection create(IPacketHandler h, int ups)
-	{
-		return create(h, 0, ups);
-	}
-	
-	public static Connection create(IPacketHandler h, int id, int ups)
-	{
-		Connection ret = null;
-		
-		try
-		{
-			ret = new Connection(h, id, ups);
-			
-		}
-		catch (Exception e)
-		{
-			CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
-			
-		}
-		
-		return ret;
 	}
 	
 }

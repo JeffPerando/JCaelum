@@ -118,7 +118,7 @@ public class Client implements IHost
 		
 		if (success)
 		{
-			this.connection = Connection.create(this, this.ups);
+			this.connection = new Connection(this, this.ups);
 			
 			this.connection.connect(connection.getSocket());
 			this.connection.beginComm();

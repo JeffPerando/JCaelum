@@ -43,7 +43,7 @@ public class ThreadNetworkIncoming extends ThreadNetwork
 		this.bis = new BufferedInputStream(is);
 		this.in = new DataInputStream(this.bis);
 		
-		return false;
+		return true;
 	}
 	
 	@Override
@@ -77,6 +77,11 @@ public class ThreadNetworkIncoming extends ThreadNetwork
 			
 			pkts.add(pkt);
 			
+		}
+		
+		if (pkts.isEmpty())
+		{
+			return;
 		}
 		
 		this.handler.onPacketsReceived(this.connect, ImmutableList.copyOf(pkts));

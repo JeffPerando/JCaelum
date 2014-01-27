@@ -121,16 +121,12 @@ public class Server implements IHost
 		
 		if (success)
 		{
-			Connection connect = Connection.create(this, ++this.nextConnectionId, this.ups);
+			Connection connect = new Connection(this, ++this.nextConnectionId, this.ups);
 			
-			if (connect != null)
-			{
-				this.clients.add(connect);
-				
-				connect.connect(connection.getSocket());
-				connect.beginComm();
-				
-			}
+			this.clients.add(connect);
+			
+			connect.connect(connection.getSocket());
+			connect.beginComm();
 			
 		}
 		
