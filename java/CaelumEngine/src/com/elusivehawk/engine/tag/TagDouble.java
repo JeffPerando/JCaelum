@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.tag;
 
 import com.elusivehawk.engine.util.io.ByteWrapper;
+import com.elusivehawk.engine.util.io.ByteWriter;
 import com.elusivehawk.engine.util.io.Serializer;
 
 /**
@@ -42,9 +43,9 @@ public class TagDouble implements ITag<Double>
 	}
 	
 	@Override
-	public byte[] save()
+	public int save(ByteWriter w)
 	{
-		return Serializer.DOUBLE.toBytes(this.d);
+		return Serializer.DOUBLE.toBytes(w, this.d);
 	}
 	
 	public static class DoubleReader implements ITagReader<Double>

@@ -1,6 +1,8 @@
 
 package com.elusivehawk.engine.util.io;
 
+import java.util.UUID;
+
 /**
  * 
  * 
@@ -9,16 +11,18 @@ package com.elusivehawk.engine.util.io;
  */
 public interface Serializer<T>
 {
-	public byte[] toBytes(T obj);
+	public int toBytes(ByteWriter w, T obj);
 	
 	public T fromBytes(ByteWrapper b);
 	
 	public static final Serializer<Boolean> BOOLEAN = new Serializer<Boolean>()
 			{
 				@Override
-				public byte[] toBytes(Boolean b)
+				public int toBytes(ByteWriter w, Boolean b)
 				{
-					return new byte[]{(byte)(b ? 1 : 0)};
+					w.write((byte)(b ? 1 : 0));
+					
+					return 1;
 				}
 				
 				@Override
@@ -31,9 +35,11 @@ public interface Serializer<T>
 	public static final Serializer<Byte> BYTE = new Serializer<Byte>()
 			{
 				@Override
-				public byte[] toBytes(Byte b)
+				public int toBytes(ByteWriter w, Byte b)
 				{
-					return new byte[]{b};
+					w.write(b);
+					
+					return 1;
 				}
 				
 				@Override
@@ -46,9 +52,11 @@ public interface Serializer<T>
 	public static final Serializer<Short> SHORT = new Serializer<Short>()
 			{
 				@Override
-				public byte[] toBytes(Short s)
+				public int toBytes(ByteWriter w, Short s)
 				{
-					return new byte[]{(byte)(s & 255), (byte)((s >> 8) & 255)};
+					w.write((byte)(s & 255), (byte)((s >> 8) & 255));
+					
+					return 1;
 				}
 				
 				@Override
@@ -61,17 +69,15 @@ public interface Serializer<T>
 	public static final Serializer<Integer> INTEGER = new Serializer<Integer>()
 			{
 				@Override
-				public byte[] toBytes(Integer i)
+				public int toBytes(ByteWriter w, Integer i)
 				{
-					byte[] ret = new byte[4];
-					
 					for (int c = 0; c < 4; c++)
 					{
-						ret[c] = (byte)(i >> (c * 8) & 255);
+						w.write((byte)(i >> (c * 8) & 255));
 						
 					}
 					
-					return ret;
+					return 4;
 				}
 				
 				@Override
@@ -92,17 +98,15 @@ public interface Serializer<T>
 	public static final Serializer<Long> LONG  = new Serializer<Long>()
 			{
 				@Override
-				public byte[] toBytes(Long l)
+				public int toBytes(ByteWriter w, Long l)
 				{
-					byte[] ret = new byte[8];
-					
 					for (int c = 0; c < 8; c++)
 					{
-						ret[c] = (byte)(l >> (c * 8) & 255);
+						w.write((byte)(l >> (c * 8) & 255));
 						
 					}
 					
-					return ret;
+					return 8;
 				}
 				
 				@Override
@@ -123,9 +127,9 @@ public interface Serializer<T>
 	public static final Serializer<Float> FLOAT = new Serializer<Float>()
 			{
 				@Override
-				public byte[] toBytes(Float f)
+				public int toBytes(ByteWriter w, Float f)
 				{
-					return INTEGER.toBytes(Float.floatToRawIntBits(f));
+					return INTEGER.toBytes(w, Float.floatToRawIntBits(f));
 				}
 				
 				@Override
@@ -138,9 +142,9 @@ public interface Serializer<T>
 	public static final Serializer<Double> DOUBLE = new Serializer<Double>()
 			{
 				@Override
-				public byte[] toBytes(Double d)
+				public int toBytes(ByteWriter w, Double d)
 				{
-					return LONG.toBytes(Double.doubleToRawLongBits(d));
+					return LONG.toBytes(w, Double.doubleToRawLongBits(d));
 				}
 				
 				@Override
@@ -153,25 +157,17 @@ public interface Serializer<T>
 	public static final Serializer<String> STRING = new Serializer<String>()
 			{
 				@Override
-				public byte[] toBytes(String str)
+				public int toBytes(ByteWriter w, String str)
 				{
-					byte[] ret = new byte[(str.length() + 1) * 2];
-					
-					byte[] shr = SHORT.toBytes((short)str.length());
-					
-					ret[0] = shr[0];
-					ret[1] = shr[1];
+					SHORT.toBytes(w, (short)str.length());
 					
 					for (int c = 0; c < str.length(); c++)
 					{
-						shr = SHORT.toBytes((short)str.charAt(c));
-						
-						ret[c + 2] = shr[0];
-						ret[c + 3] = shr[1];
+						SHORT.toBytes(w, (short)str.charAt(c));
 						
 					}
 					
-					return ret;
+					return (str.length() + 1) * 2;
 				}
 				
 				@Override
@@ -186,6 +182,21 @@ public interface Serializer<T>
 					}
 					
 					return new String(str);
+				}
+				
+			};
+	public static final Serializer<UUID> UUID = new Serializer<UUID>()
+			{
+				@Override
+				public int toBytes(ByteWriter w, UUID uuid)
+				{
+					return STRING.toBytes(w, uuid.toString());
+				}
+				
+				@Override
+				public UUID fromBytes(ByteWrapper b)
+				{
+					return java.util.UUID.fromString(STRING.fromBytes(b));
 				}
 				
 			};

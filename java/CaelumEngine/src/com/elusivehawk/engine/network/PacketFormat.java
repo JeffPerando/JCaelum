@@ -2,9 +2,9 @@
 package com.elusivehawk.engine.network;
 
 import java.nio.ByteBuffer;
-import com.elusivehawk.engine.util.BufferHelper;
 import com.elusivehawk.engine.util.io.ByteBuf;
 import com.elusivehawk.engine.util.io.ByteWrapper;
+import com.elusivehawk.engine.util.io.ByteWriter;
 import com.elusivehawk.engine.util.io.Serializer;
 import com.google.common.collect.ImmutableList;
 
@@ -19,8 +19,6 @@ public final class PacketFormat
 	public final Side side;
 	public final short pktId;
 	public final ImmutableList<DataType> format;
-	
-	private final int bArrCount;
 	
 	/**
 	 * 
@@ -38,39 +36,9 @@ public final class PacketFormat
 		assert f != null && f.length > 0;
 		assert f[f.length - 1] != DataType.ARRAY;
 		
-		DataType type;
-		int count = 0;
-		
-		for (int c = 0; c < f.length; c++)
-		{
-			type = f[c];
-			
-			if (type == null)
-			{
-				throw new IllegalArgumentException(new NullPointerException());
-			}
-			
-			if (type != DataType.ARRAY)
-			{
-				if (c > 0)
-				{
-					if (f[c - 1] == DataType.ARRAY)
-					{
-						continue;
-					}
-					
-				}
-				
-				count++;
-				
-			}
-			
-		}
-		
 		side = s;
 		pktId = id;
 		format = ImmutableList.copyOf(f);
-		bArrCount = count;
 		
 	}
 	
@@ -104,14 +72,14 @@ public final class PacketFormat
 		return ret;
 	}
 	
-	public byte[] write(Packet pkt)
+	public int write(Packet pkt, ByteBuffer buf)
 	{
-		byte[][] ret = new byte[this.bArrCount + 1][];
-		int next = 1;
+		ByteWriter w = new ByteBuf(buf);
 		DataType type;
+		int length = Serializer.SHORT.toBytes(w, this.pktId);
 		
-		byte[] b = Serializer.SHORT.toBytes(this.pktId);
-		ret[0] = new byte[]{b[0], b[1], 0, 0};
+		buf.position(buf.position() + 2);
+		buf.mark();
 		
 		for (int c = 0; c < this.format.size(); c++)
 		{
@@ -122,16 +90,17 @@ public final class PacketFormat
 				continue;
 			}
 			
-			ret[next++] = type.encode(this.format, c, pkt.getData().get(c));
+			length += type.encode(this.format, c, pkt.getData().get(c), w);
 			
 		}
 		
-		byte[] fin = BufferHelper.condense(ret);
-		b = Serializer.SHORT.toBytes((short)(fin.length - 2));
-		fin[2] = b[0];
-		fin[3] = b[1];
+		buf.rewind();
 		
-		return fin;
+		Serializer.SHORT.toBytes(w, (short)length);
+		
+		buf.reset();
+		
+		return length;
 	}
 	
 }

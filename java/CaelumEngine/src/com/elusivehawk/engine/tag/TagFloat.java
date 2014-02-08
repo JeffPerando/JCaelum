@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.tag;
 
 import com.elusivehawk.engine.util.io.ByteWrapper;
+import com.elusivehawk.engine.util.io.ByteWriter;
 import com.elusivehawk.engine.util.io.Serializer;
 
 /**
@@ -42,9 +43,9 @@ public class TagFloat implements ITag<Float>
 	}
 
 	@Override
-	public byte[] save()
+	public int save(ByteWriter w)
 	{
-		return Serializer.FLOAT.toBytes(this.f);
+		return Serializer.FLOAT.toBytes(w, this.f);
 	}
 	
 	public static class FloatReader implements ITagReader<Float>

@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.tag;
 
 import com.elusivehawk.engine.util.io.ByteWrapper;
+import com.elusivehawk.engine.util.io.ByteWriter;
 import com.elusivehawk.engine.util.io.Serializer;
 
 /**
@@ -42,9 +43,9 @@ public class TagLong implements ITag<Long>
 	}
 	
 	@Override
-	public byte[] save()
+	public int save(ByteWriter w)
 	{
-		return Serializer.LONG.toBytes(this.l);
+		return Serializer.LONG.toBytes(w, this.l);
 	}
 	
 	public static class LongReader implements ITagReader<Long>

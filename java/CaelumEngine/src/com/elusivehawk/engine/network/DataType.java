@@ -2,8 +2,8 @@
 package com.elusivehawk.engine.network;
 
 import com.elusivehawk.engine.tag.TagReaderRegistry;
-import com.elusivehawk.engine.util.BufferHelper;
 import com.elusivehawk.engine.util.io.ByteWrapper;
+import com.elusivehawk.engine.util.io.ByteWriter;
 import com.elusivehawk.engine.util.io.Serializer;
 import com.google.common.collect.ImmutableList;
 
@@ -45,29 +45,30 @@ public enum DataType
 		}
 		
 		@Override
-		public byte[] encode(ImmutableList<DataType> types, int pos, Object obj)
+		public int encode(ImmutableList<DataType> types, int pos, Object obj, ByteWriter w)
 		{
 			if (pos == types.size() - 1)
 			{
-				return null;
+				return 0;
 			}
 			
 			Object[] arr = (Object[])obj;
 			
-			byte[][] b = new byte[arr.length][];
+			int ret = Serializer.SHORT.toBytes(w, (short)arr.length);
 			
 			for (int c = 0; c < arr.length; c++)
 			{
-				b[c] = types.get(pos + 1).encode(types, pos + 1, arr[c]);
+				ret += types.get(pos + 1).encode(types, pos + 1, arr[c], w);
 				
 				
 			}
 			
-			return BufferHelper.condense(b);
+			return ret;
 		}
 		
 	},
-	TAG(TagReaderRegistry.instance());
+	TAG(TagReaderRegistry.instance()),
+	UUID(Serializer.UUID);
 	
 	protected final Serializer<Object> serial;
 	
@@ -85,9 +86,9 @@ public enum DataType
 	}
 	
 	@SuppressWarnings("unused")
-	public byte[] encode(ImmutableList<DataType> format, int pos, Object obj)
+	public int encode(ImmutableList<DataType> format, int pos, Object obj, ByteWriter w)
 	{
-		return this.serial.toBytes(obj);
+		return this.serial.toBytes(w, obj);
 	}
 	
 }

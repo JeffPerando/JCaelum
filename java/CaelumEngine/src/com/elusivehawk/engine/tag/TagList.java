@@ -4,8 +4,8 @@ package com.elusivehawk.engine.tag;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import com.elusivehawk.engine.util.BufferHelper;
 import com.elusivehawk.engine.util.io.ByteWrapper;
+import com.elusivehawk.engine.util.io.ByteWriter;
 import com.elusivehawk.engine.util.io.Serializer;
 
 /**
@@ -45,25 +45,21 @@ public class TagList implements ITag<Collection<ITag<?>>>, ITagList
 	}
 	
 	@Override
-	public byte[] save()
+	public int save(ByteWriter w)
 	{
-		byte[] ret = Serializer.SHORT.toBytes((short)this.tags.size());
+		int ret = Serializer.SHORT.toBytes(w, (short)this.tags.size());
 		
-		if (this.tags.isEmpty())
+		if (!this.tags.isEmpty())
 		{
-			return ret;
-		}
-		
-		byte[][] b = new byte[this.tags.size() + 1][];
-		b[0] = ret;
-		
-		for (int c = 0; c < this.tags.size(); c++)
-		{
-			b[c + 1] = TagReaderRegistry.instance().writeTag(this.tags.get(c));
+			for (ITag<?> tag : this.tags)
+			{
+				ret += TagReaderRegistry.instance().writeTag(w, tag);
+				
+			}
 			
 		}
 		
-		return BufferHelper.condense(b);
+		return ret;
 	}
 	
 	@Override

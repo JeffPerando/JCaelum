@@ -3,6 +3,7 @@ package com.elusivehawk.engine.util.io;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * 
@@ -10,14 +11,16 @@ import java.io.InputStream;
  * 
  * @author Elusivehawk
  */
-public class ByteStream implements ByteWrapper
+public class ByteStreams implements ByteWrapper, ByteWriter
 {
 	protected final InputStream in;
+	protected final OutputStream out;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public ByteStream(InputStream is)
+	public ByteStreams(InputStream is, OutputStream os)
 	{
 		in = is;
+		out = os;
 		
 	}
 	
@@ -38,6 +41,22 @@ public class ByteStream implements ByteWrapper
 		}
 		
 		return ret;
+	}
+	
+	@Override
+	public void write(byte... bytes)
+	{
+		try
+		{
+			this.out.write(bytes);
+			
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			
+		}
+		
 	}
 	
 }

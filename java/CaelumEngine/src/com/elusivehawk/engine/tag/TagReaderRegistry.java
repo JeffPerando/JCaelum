@@ -3,8 +3,8 @@ package com.elusivehawk.engine.tag;
 
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
-import com.elusivehawk.engine.util.BufferHelper;
 import com.elusivehawk.engine.util.io.ByteWrapper;
+import com.elusivehawk.engine.util.io.ByteWriter;
 import com.elusivehawk.engine.util.io.Serializer;
 
 /**
@@ -80,11 +80,9 @@ public final class TagReaderRegistry implements Serializer<ITag<?>>
 		return r.readTag(name, wrap);
 	}
 	
-	public byte[] writeTag(ITag<?> tag)
+	public int writeTag(ByteWriter w, ITag<?> tag)
 	{
-		byte[][] ret = new byte[3][];
-		
-		ret[0] = Serializer.STRING.toBytes(tag.getName());
+		int count = Serializer.STRING.toBytes(w, tag.getName());
 		
 		byte type = tag.getType();
 		
@@ -94,17 +92,18 @@ public final class TagReaderRegistry implements Serializer<ITag<?>>
 			
 		}
 		
-		ret[1] = new byte[]{type};
+		w.write(type);
+		count++;
 		
-		ret[2] = tag.save();
+		count += tag.save(w);
 		
-		return BufferHelper.condense(ret);
+		return count;
 	}
 	
 	@Override
-	public byte[] toBytes(ITag<?> tag)
+	public int toBytes(ByteWriter w, ITag<?> tag)
 	{
-		return this.writeTag(tag);
+		return this.writeTag(w, tag);
 	}
 	
 	@Override

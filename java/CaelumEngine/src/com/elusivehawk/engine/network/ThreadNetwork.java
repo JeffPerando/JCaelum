@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
-import com.elusivehawk.engine.util.BufferHelper;
 import com.elusivehawk.engine.util.ThreadTimed;
 import com.google.common.collect.ImmutableList;
 
@@ -96,8 +95,6 @@ public class ThreadNetwork extends ThreadTimed
 		if (!this.out.isEmpty())
 		{
 			Iterator<Packet> pktItr = this.out.iterator();
-			byte[][] info = new byte[this.out.size()][];
-			int next = 0;
 			
 			while (pktItr.hasNext())
 			{
@@ -110,13 +107,11 @@ public class ThreadNetwork extends ThreadTimed
 					continue;
 				}
 				
-				info[next++] = format.write(pkt);
+				format.write(pkt, this.bout);
 				
 				pktItr.remove();
 				
 			}
-			
-			this.bout.put(BufferHelper.condense(info));
 			
 			this.bout.flip();
 			this.sch.write(this.bout);

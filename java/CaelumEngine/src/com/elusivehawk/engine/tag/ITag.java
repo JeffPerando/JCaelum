@@ -1,6 +1,8 @@
 
 package com.elusivehawk.engine.tag;
 
+import com.elusivehawk.engine.util.io.ByteWriter;
+
 /**
  * 
  * 
@@ -15,6 +17,6 @@ public interface ITag<T>
 	
 	public String getName();
 	
-	public byte[] save();
+	public int save(ByteWriter w);
 	
 }

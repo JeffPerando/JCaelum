@@ -12,8 +12,9 @@ import java.util.List;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.util.FileHelper;
-import com.elusivehawk.engine.util.io.ByteStream;
+import com.elusivehawk.engine.util.io.ByteStreams;
 import com.elusivehawk.engine.util.io.ByteWrapper;
+import com.elusivehawk.engine.util.io.ByteWriter;
 
 /**
  * 
@@ -55,7 +56,7 @@ public class SaveFile implements ITagList
 		}
 		
 		BufferedInputStream in = new BufferedInputStream(fis);
-		ByteWrapper wrap = new ByteStream(in);
+		ByteWrapper wrap = new ByteStreams(in, null);
 		
 		try
 		{
@@ -107,28 +108,18 @@ public class SaveFile implements ITagList
 		}
 		
 		BufferedOutputStream out = new BufferedOutputStream(fos);
+		ByteWriter stream = new ByteStreams(null, out);
 		
-		try
+		int count = 0;
+		
+		for (ITag<?> tag : this.tags)
 		{
-			byte[] b;
+			count = TagReaderRegistry.instance().writeTag(stream, tag);
 			
-			for (ITag<?> tag : this.tags)
+			if (count == 0)
 			{
-				b = TagReaderRegistry.instance().writeTag(tag);
-				
-				if (b == null)
-				{
-					continue;
-				}
-				
-				out.write(b, 0, b.length);
-				
+				continue;
 			}
-			
-		}
-		catch (IOException e)
-		{
-			CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
 			
 		}
 		

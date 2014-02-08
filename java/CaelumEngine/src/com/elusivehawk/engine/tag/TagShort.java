@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.tag;
 
 import com.elusivehawk.engine.util.io.ByteWrapper;
+import com.elusivehawk.engine.util.io.ByteWriter;
 import com.elusivehawk.engine.util.io.Serializer;
 
 /**
@@ -42,9 +43,9 @@ public class TagShort implements ITag<Short>
 	}
 	
 	@Override
-	public byte[] save()
+	public int save(ByteWriter w)
 	{
-		return Serializer.SHORT.toBytes(this.s);
+		return Serializer.SHORT.toBytes(w, this.s);
 	}
 	
 	public static class ShortReader implements ITagReader<Short>
