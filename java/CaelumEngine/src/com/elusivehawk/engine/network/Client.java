@@ -2,7 +2,7 @@
 package com.elusivehawk.engine.network;
 
 import java.io.IOException;
-import java.net.Socket;
+import java.nio.channels.SocketChannel;
 import java.util.List;
 import java.util.UUID;
 import com.google.common.collect.ImmutableList;
@@ -61,12 +61,12 @@ public class Client implements IHost
 			return;
 		}
 		
-		this.connect(ip.toSocket());
+		this.connect(ip.toChannel());
 		
 	}
 	
 	@Override
-	public void connect(Socket s)
+	public void connect(SocketChannel s)
 	{
 		if (s == null || (this.handshake != null || this.connection != null))
 		{
@@ -152,7 +152,7 @@ public class Client implements IHost
 		{
 			this.connection = new Connection(this, this.ups);
 			
-			this.connection.connect(connection.getConnection().getSocket());
+			this.connection.connect(connection.getConnection().getChannel());
 			this.connection.beginComm();
 			
 		}

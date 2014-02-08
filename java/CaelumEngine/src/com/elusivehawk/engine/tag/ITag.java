@@ -1,9 +1,6 @@
 
 package com.elusivehawk.engine.tag;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-
 /**
  * 
  * 
@@ -18,6 +15,6 @@ public interface ITag<T>
 	
 	public String getName();
 	
-	public void save(DataOutputStream out) throws IOException;
+	public byte[] save();
 	
 }

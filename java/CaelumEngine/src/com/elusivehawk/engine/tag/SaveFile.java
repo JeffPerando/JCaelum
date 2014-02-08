@@ -3,8 +3,6 @@ package com.elusivehawk.engine.tag;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -14,6 +12,8 @@ import java.util.List;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.util.FileHelper;
+import com.elusivehawk.engine.util.io.ByteStream;
+import com.elusivehawk.engine.util.io.ByteWrapper;
 
 /**
  * 
@@ -54,14 +54,14 @@ public class SaveFile implements ITagList
 			return;
 		}
 		
-		BufferedInputStream bis = new BufferedInputStream(fis);
-		DataInputStream in = new DataInputStream(bis);
+		BufferedInputStream in = new BufferedInputStream(fis);
+		ByteWrapper wrap = new ByteStream(in);
 		
 		try
 		{
 			while (in.available() > 0)
 			{
-				ITag<?> tag = TagReaderRegistry.instance().readTag(in);
+				ITag<?> tag = TagReaderRegistry.instance().readTag(wrap);
 				
 				if (tag == null)
 				{
@@ -106,14 +106,22 @@ public class SaveFile implements ITagList
 			return;
 		}
 		
-		BufferedOutputStream bos = new BufferedOutputStream(fos);
-		DataOutputStream out = new DataOutputStream(bos);
+		BufferedOutputStream out = new BufferedOutputStream(fos);
 		
 		try
 		{
+			byte[] b;
+			
 			for (ITag<?> tag : this.tags)
 			{
-				TagReaderRegistry.instance().writeTag(out, tag);
+				b = TagReaderRegistry.instance().writeTag(tag);
+				
+				if (b == null)
+				{
+					continue;
+				}
+				
+				out.write(b, 0, b.length);
 				
 			}
 			

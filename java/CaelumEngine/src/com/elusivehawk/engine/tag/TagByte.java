@@ -1,9 +1,7 @@
 
 package com.elusivehawk.engine.tag;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import com.elusivehawk.engine.util.io.ByteWrapper;
 
 /**
  * 
@@ -43,18 +41,17 @@ public class TagByte implements ITag<Byte>
 	}
 	
 	@Override
-	public void save(DataOutputStream out) throws IOException
+	public byte[] save()
 	{
-		out.writeByte(this.b);
-		
+		return new byte[this.b];
 	}
 	
 	public static class ByteReader implements ITagReader<Byte>
 	{
 		@Override
-		public ITag<Byte> readTag(String name, DataInputStream in) throws IOException
+		public ITag<Byte> readTag(String name, ByteWrapper wrap)
 		{
-			return new TagByte(name, in.readByte());
+			return new TagByte(name, wrap.read());
 		}
 		
 	}

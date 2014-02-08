@@ -1,8 +1,7 @@
 
 package com.elusivehawk.engine.tag;
 
-import java.io.DataInputStream;
-import java.io.IOException;
+import com.elusivehawk.engine.util.io.ByteWrapper;
 
 /**
  * 
@@ -12,6 +11,6 @@ import java.io.IOException;
  */
 public interface ITagReader<T>
 {
-	public ITag<T> readTag(String name, DataInputStream is) throws IOException;
+	public ITag<T> readTag(String name, ByteWrapper wrap);
 	
 }

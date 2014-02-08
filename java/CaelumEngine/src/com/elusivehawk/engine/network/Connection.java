@@ -2,7 +2,7 @@
 package com.elusivehawk.engine.network;
 
 import java.io.IOException;
-import java.net.Socket;
+import java.nio.channels.SocketChannel;
 import java.util.UUID;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
@@ -21,9 +21,8 @@ public final class Connection implements IConnectable
 	private final int updCount;
 	private final SemiFinalStorage<Boolean> closed = new SemiFinalStorage<Boolean>(false);
 	
-	private ThreadNetworkIncoming in = null;
-	private ThreadNetworkOutgoing out = null;
-	private Socket skt = null;
+	private ThreadNetworkIO io = null;
+	private SocketChannel sch = null;
 	
 	public Connection(IPacketHandler h, int ups)
 	{
@@ -43,9 +42,9 @@ public final class Connection implements IConnectable
 		
 	}
 	
-	public Socket getSocket()
+	public SocketChannel getChannel()
 	{
-		return this.skt;
+		return this.sch;
 	}
 	
 	public UUID getConnectionId()
@@ -55,43 +54,36 @@ public final class Connection implements IConnectable
 	
 	public void sendPackets(Packet... pkts)
 	{
-		this.out.sendPackets(pkts);
+		this.io.sendPackets(pkts);
 		
 	}
 	
 	@Override
-	public void connect(IP ip)
-	{
-		this.connect(ip.toSocket());
-		
-	}
+	public void connect(IP ip){}//TODO Never used
 	
 	@Override
-	public void connect(Socket s)
+	public void connect(SocketChannel s)
 	{
-		if (s == null)
+		if (s != null)
 		{
 			return;
 		}
 		
-		this.skt = s;
-		this.in = new ThreadNetworkIncoming(this.handler, this, this.updCount);
-		this.out = new ThreadNetworkOutgoing(this.handler, this, this.updCount);
+		this.sch = s;
+		this.io = new ThreadNetworkIO(this.handler, this, this.updCount);
 		
 	}
 	
 	@Override
 	public void beginComm()
 	{
-		this.in.start();
-		this.out.start();
+		this.io.start();
 		
 	}
 	
 	public void setPaused(boolean pause)
 	{
-		this.in.setPaused(pause);
-		this.out.setPaused(pause);
+		this.io.setPaused(pause);
 		
 	}
 	
@@ -109,11 +101,9 @@ public final class Connection implements IConnectable
 		
 		this.handler.onDisconnect(this);
 		
-		this.in.stopThread();
-		this.out.stopThread();
+		this.io.stopThread();
 		
-		this.in = null;
-		this.out = null;
+		this.io = null;
 		
 		this.closed.set(true);
 		
@@ -121,7 +111,7 @@ public final class Connection implements IConnectable
 		{
 			try
 			{
-				this.skt.close();
+				this.sch.close();
 				
 			}
 			catch (IOException e)

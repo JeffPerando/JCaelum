@@ -1,11 +1,11 @@
 
 package com.elusivehawk.engine.tag;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
+import com.elusivehawk.engine.util.BufferHelper;
+import com.elusivehawk.engine.util.io.ByteWrapper;
+import com.elusivehawk.engine.util.io.Serializer;
 
 /**
  * 
@@ -13,7 +13,7 @@ import com.elusivehawk.engine.core.EnumLogType;
  * 
  * @author Elusivehawk
  */
-public final class TagReaderRegistry
+public final class TagReaderRegistry implements Serializer<ITag<?>>
 {
 	public static final byte BYTE_ID = 0x00;
 	public static final byte SHORT_ID = 0x01;
@@ -63,11 +63,11 @@ public final class TagReaderRegistry
 		return this.readers[id];
 	}
 	
-	public ITag<?> readTag(DataInputStream in) throws IOException
+	public ITag<?> readTag(ByteWrapper wrap)
 	{
-		String name = in.readUTF();
+		String name = Serializer.STRING.fromBytes(wrap);
 		
-		byte id = in.readByte();
+		byte id = wrap.read();
 		ITagReader<?> r = this.getReader(id);
 		
 		if (r == null)
@@ -77,12 +77,14 @@ public final class TagReaderRegistry
 			return null;
 		}
 		
-		return r.readTag(name, in);
+		return r.readTag(name, wrap);
 	}
 	
-	public void writeTag(DataOutputStream out, ITag<?> tag) throws IOException
+	public byte[] writeTag(ITag<?> tag)
 	{
-		out.writeUTF(tag.getName());
+		byte[][] ret = new byte[3][];
+		
+		ret[0] = Serializer.STRING.toBytes(tag.getName());
 		
 		byte type = tag.getType();
 		
@@ -92,10 +94,23 @@ public final class TagReaderRegistry
 			
 		}
 		
-		out.writeByte(type);
+		ret[1] = new byte[]{type};
 		
-		tag.save(out);
+		ret[2] = tag.save();
 		
+		return BufferHelper.condense(ret);
+	}
+	
+	@Override
+	public byte[] toBytes(ITag<?> tag)
+	{
+		return this.writeTag(tag);
+	}
+	
+	@Override
+	public ITag<?> fromBytes(ByteWrapper b)
+	{
+		return this.readTag(b);
 	}
 	
 }

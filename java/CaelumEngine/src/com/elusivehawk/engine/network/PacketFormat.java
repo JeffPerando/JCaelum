@@ -1,11 +1,11 @@
 
 package com.elusivehawk.engine.network;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import com.elusivehawk.engine.tag.ITag;
-import com.elusivehawk.engine.tag.TagReaderRegistry;
+import java.nio.ByteBuffer;
+import com.elusivehawk.engine.util.BufferHelper;
+import com.elusivehawk.engine.util.io.ByteBuf;
+import com.elusivehawk.engine.util.io.ByteWrapper;
+import com.elusivehawk.engine.util.io.Serializer;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -19,6 +19,8 @@ public final class PacketFormat
 	public final Side side;
 	public final short pktId;
 	public final ImmutableList<DataType> format;
+	
+	private final int bArrCount;
 	
 	/**
 	 * 
@@ -36,19 +38,59 @@ public final class PacketFormat
 		assert f != null && f.length > 0;
 		assert f[f.length - 1] != DataType.ARRAY;
 		
+		DataType type;
+		int count = 0;
+		
+		for (int c = 0; c < f.length; c++)
+		{
+			type = f[c];
+			
+			if (type == null)
+			{
+				throw new IllegalArgumentException(new NullPointerException());
+			}
+			
+			if (type != DataType.ARRAY)
+			{
+				if (c > 0)
+				{
+					if (f[c - 1] == DataType.ARRAY)
+					{
+						continue;
+					}
+					
+				}
+				
+				count++;
+				
+			}
+			
+		}
+		
 		side = s;
 		pktId = id;
 		format = ImmutableList.copyOf(f);
+		bArrCount = count;
 		
 	}
 	
-	public Packet decodePkt(DataInputStream in) throws IOException
+	public Packet read(ByteBuffer in)
 	{
 		Packet ret = new Packet(this.pktId);
+		ByteWrapper wrap = new ByteBuf(in);
+		int pos = 0;
+		DataType type;
 		
 		for (int c = 0; c < this.format.size(); c++)
 		{
-			Object obj = this.decodeObj(c, in);
+			type = this.format.get(c);
+			
+			if (pos > 0 && this.format.get(pos - 1) == DataType.ARRAY)
+			{
+				continue;
+			}
+			
+			Object obj = type.decode(this.format, pos, wrap);
 			
 			if (obj == null)
 			{
@@ -62,60 +104,34 @@ public final class PacketFormat
 		return ret;
 	}
 	
-	private Object decodeObj(int i, DataInputStream in) throws IOException
+	public byte[] write(Packet pkt)
 	{
-		Object ret = null;
-		DataType type = this.format.get(i);
+		byte[][] ret = new byte[this.bArrCount + 1][];
+		int next = 1;
+		DataType type;
 		
-		switch (type)
-		{
-			case BOOL: ret = in.readBoolean(); break;
-			case BYTE: ret = in.readByte(); break;
-			case SHORT: ret = in.readShort(); break;
-			case INT: ret = in.readInt(); break;
-			case LONG: ret = in.readLong(); break;
-			case FLOAT: ret = in.readFloat(); break;
-			case DOUBLE: ret = in.readDouble(); break;
-			case STRING: ret = in.readUTF(); break;
-			case ARRAY: ret = new Object[in.readInt()]; for (int c = 0; c < ((Object[])ret).length; c++){((Object[])ret)[c] = this.decodeObj(i + 1, in);}; break;
-			case TAG: ret = TagReaderRegistry.instance().readTag(in); break;
-			
-		}
-		
-		return ret;
-	}
-	
-	public void encodePkt(Packet pkt, DataOutputStream out) throws IOException
-	{
-		ImmutableList<Object> info = pkt.getData();
+		byte[] b = Serializer.SHORT.toBytes(this.pktId);
+		ret[0] = new byte[]{b[0], b[1], 0, 0};
 		
 		for (int c = 0; c < this.format.size(); c++)
 		{
-			this.encodeObj(info.get(c), c, out);
+			type = this.format.get(c);
+			
+			if (c > 0 && this.format.get(c - 1) == DataType.ARRAY)
+			{
+				continue;
+			}
+			
+			ret[next++] = type.encode(this.format, c, pkt.getData().get(c));
 			
 		}
 		
-	}
-	
-	private void encodeObj(Object obj, int i, DataOutputStream out) throws IOException
-	{
-		DataType type = this.format.get(i);
+		byte[] fin = BufferHelper.condense(ret);
+		b = Serializer.SHORT.toBytes((short)(fin.length - 2));
+		fin[2] = b[0];
+		fin[3] = b[1];
 		
-		switch (type)
-		{
-			case BOOL: out.writeBoolean((Boolean)obj); break;
-			case BYTE: out.writeByte((Byte)obj); break;
-			case SHORT: out.writeShort((Short)obj); break;
-			case INT: out.writeInt((Integer)obj); break;
-			case LONG: out.writeLong((Long)obj); break;
-			case FLOAT: out.writeFloat((Float)obj); break;
-			case DOUBLE: out.writeDouble((Double)obj); break;
-			case STRING: out.writeUTF((String)obj); break;
-			case ARRAY: out.writeInt(((Object[])obj).length); for (Object object : (Object[])obj){encodeObj(object, i + 1, out);} break;
-			case TAG: TagReaderRegistry.instance().writeTag(out, (ITag<?>)obj); break;
-			
-		}
-		
+		return fin;
 	}
 	
 }

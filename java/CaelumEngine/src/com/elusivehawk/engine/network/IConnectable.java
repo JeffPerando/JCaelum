@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.network;
 
-import java.net.Socket;
+import java.nio.channels.SocketChannel;
 
 /**
  * 
@@ -16,7 +16,7 @@ public interface IConnectable
 {
 	public void connect(IP ip);
 	
-	public void connect(Socket s);
+	public void connect(SocketChannel sch);
 	
 	public void beginComm();
 	

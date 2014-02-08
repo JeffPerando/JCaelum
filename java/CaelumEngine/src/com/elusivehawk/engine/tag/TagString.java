@@ -1,9 +1,8 @@
 
 package com.elusivehawk.engine.tag;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import com.elusivehawk.engine.util.io.ByteWrapper;
+import com.elusivehawk.engine.util.io.Serializer;
 
 /**
  * 
@@ -42,18 +41,17 @@ public class TagString implements ITag<String>
 	}
 	
 	@Override
-	public void save(DataOutputStream out) throws IOException
+	public byte[] save()
 	{
-		out.writeUTF(this.str);
-		
+		return Serializer.STRING.toBytes(this.str);
 	}
 	
 	public static class StringReader implements ITagReader<String>
 	{
 		@Override
-		public ITag<String> readTag(String name, DataInputStream in) throws IOException
+		public ITag<String> readTag(String name, ByteWrapper wrap)
 		{
-			return new TagString(name, in.readUTF());
+			return new TagString(name, Serializer.STRING.fromBytes(wrap));
 		}
 		
 	}

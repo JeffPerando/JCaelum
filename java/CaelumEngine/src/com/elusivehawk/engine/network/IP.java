@@ -3,6 +3,7 @@ package com.elusivehawk.engine.network;
 
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.nio.channels.SocketChannel;
 import javax.net.SocketFactory;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
@@ -76,6 +77,24 @@ public final class IP
 		try
 		{
 			ret = SocketFactory.getDefault().createSocket(this.ip, this.port);
+			
+		}
+		catch (Exception e)
+		{
+			CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
+			
+		}
+		
+		return ret;
+	}
+	
+	public SocketChannel toChannel()
+	{
+		SocketChannel ret = null;
+		
+		try
+		{
+			ret = SocketChannel.open(this.toInet());
 			
 		}
 		catch (Exception e)

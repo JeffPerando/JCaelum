@@ -2,7 +2,7 @@
 package com.elusivehawk.engine.network;
 
 import java.io.IOException;
-import java.net.Socket;
+import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -60,11 +60,17 @@ public class Server implements IHost
 	}
 	
 	@Override
-	public void connect(IP ip){}
+	public void connect(IP ip)
+	{
+		this.connect(ip.toChannel());
+		
+	}
 	
 	@Override
-	public synchronized void connect(Socket s)//TODO Check if this causes a deadlock.
+	public void connect(SocketChannel s)//TODO Check if this causes a deadlock.
 	{
+		assert s != null;
+		
 		HandshakeConnection next = new HandshakeConnection(this, s, UUID.randomUUID(), this.ups, this.master.getHandshakeProtocol());
 		int i = this.handshakers.indexOf(null);
 		
@@ -191,7 +197,7 @@ public class Server implements IHost
 			this.ids.set(i, connect.getConnectionId());
 			this.playerCount++;
 			
-			connect.connect(connection.getConnection().getSocket());
+			connect.connect(connection.getConnection().getChannel());
 			connect.beginComm();
 			
 		}

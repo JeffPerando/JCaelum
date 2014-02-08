@@ -1,10 +1,11 @@
 
 package com.elusivehawk.engine.network;
 
-import java.net.ServerSocket;
-import java.net.Socket;
-import javax.net.ServerSocketFactory;
-import com.elusivehawk.engine.util.ThreadStoppable;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
+import com.elusivehawk.engine.util.ThreadTimed;
 
 /**
  * 
@@ -12,50 +13,81 @@ import com.elusivehawk.engine.util.ThreadStoppable;
  * 
  * @author Elusivehawk
  */
-public class ThreadJoinListener extends ThreadStoppable
+public class ThreadJoinListener extends ThreadTimed
 {
 	protected final IHost svr;
-	protected final ServerSocket skt;
+	protected final ServerSocketChannel chnl;
+	protected final int updCount;
+	
+	public ThreadJoinListener(IHost server, int port)
+	{
+		this(server, port, 30);
+		
+	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public ThreadJoinListener(IHost server, int port)
+	public ThreadJoinListener(IHost server, int port, int ups)
 	{
 		assert server != null;
 		assert server.getSide().isServer();
 		
-		ServerSocket s = null;
+		svr = server;
+		updCount = ups;
+		
+		ServerSocketChannel ch = null;
 		
 		try
 		{
-			s = ServerSocketFactory.getDefault().createServerSocket(port);
+			ch = ServerSocketChannel.open();
+			ch.configureBlocking(false);
+			
+			ch.socket().bind(new InetSocketAddress(port));
 			
 		}
-		catch (Exception e)
+		catch (IOException e)
 		{
-			handleException(e);
+			e.printStackTrace();
 			
 		}
 		
-		svr = server;
-		skt = s;
+		chnl = ch;
 		
 	}
 	
 	@Override
-	public void rawUpdate()
+	public void update(double delta) throws Throwable
+	{
+		SocketChannel sch = this.chnl.accept();
+		
+		if (sch != null)
+		{
+			this.svr.connect(sch);
+			
+		}
+		
+	}
+	
+	@Override
+	public int getTargetUpdateCount()
+	{
+		return this.updCount;
+	}
+	
+	@Override
+	public double getMaxDelta()
+	{
+		return 0.5;
+	}
+	
+	@Override
+	public void onThreadStopped()
 	{
 		try
 		{
-			Socket s = this.skt.accept();
-			
-			this.svr.connect(s);
+			this.chnl.close();
 			
 		}
-		catch (Exception e)
-		{
-			this.handleException(e);
-			
-		}
+		catch (IOException e){}
 		
 	}
 	
