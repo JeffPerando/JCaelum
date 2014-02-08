@@ -23,35 +23,6 @@ public final class BufferHelper
 {
 	private BufferHelper(){}
 	
-	public static byte[] condense(byte[]... b)
-	{
-		int l = 0;
-		
-		for (byte[] arr : b)
-		{
-			l += arr.length;
-			
-		}
-		
-		l = 0;
-		
-		byte[] ret = new byte[l];
-		
-		for (byte[] arr : b)
-		{
-			for (int c = 0; c < arr.length; c++)
-			{
-				ret[c + l] = arr[c];
-				
-			}
-			
-			l += arr.length;
-			
-		}
-		
-		return ret;
-	}
-	
 	public static ByteBuffer createByteBuffer(int size)
 	{
 		return ByteBuffer.allocateDirect(size).order(ByteOrder.nativeOrder());
