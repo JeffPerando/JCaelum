@@ -27,7 +27,7 @@ public class ThreadNetworkIO extends ThreadTimed
 	
 	//Incoming
 	
-	protected final ByteBuffer h = ByteBuffer.allocate(4), bin = ByteBuffer.allocate(32768);
+	protected final ByteBuffer head = ByteBuffer.allocate(4), bin = ByteBuffer.allocate(32768);
 	
 	//Outgoing
 	
@@ -53,29 +53,31 @@ public class ThreadNetworkIO extends ThreadTimed
 	{
 		short type, length;
 		List<Packet> pkts = new ArrayList<Packet>(32);
+		Packet pkt;
+		PacketFormat format;
 		
-		while (this.sch.read(this.h) != -1)
+		while (this.sch.read(this.head) != -1)
 		{
-			type = this.h.getShort();//Get the packet type
-			length = this.h.getShort();//Get the remaining packet length
+			type = this.head.getShort();//Get the packet type
+			length = this.head.getShort();//Get the remaining packet length
 			
-			this.h.clear();//Clear the buffer for reuse
+			this.head.clear();//Clear the buffer for reuse
 			
-			PacketFormat f = this.handler.getPacketFormat(type);
+			format = this.handler.getPacketFormat(type);
 			
 			this.bin.limit(length);//Make sure we can't go over
 			
 			this.sch.read(this.bin);//Read the data
 			
-			if (f != null)//NOW we check to see if the data in question is valid
+			if (format != null)//NOW we check to see if the data in question is valid
 			{
 				//Huh, it is. Okay, let's read the thing...
 				
-				Packet pkt = f.read(this.bin);//Excuse me Mr. Format, could you tell me what's going on?
+				pkt = format.read(this.bin);//Excuse me Mr. Format, could you tell me what's going on?
 				
 				if (pkt != null)//Check if the packet has been read successfully.
 				{
-					pkts.add(pkt);
+					pkts.add(pkt);//Schedule the packet to be sent to the game.
 					
 				}
 				
@@ -85,13 +87,15 @@ public class ThreadNetworkIO extends ThreadTimed
 			
 		}
 		
-		this.handler.onPacketsReceived(this.connect, ImmutableList.copyOf(pkts));
+		if (!pkts.isEmpty())
+		{
+			this.handler.onPacketsReceived(this.connect, ImmutableList.copyOf(pkts));
+			
+		}
 		
 		if (!this.out.isEmpty())
 		{
 			Iterator<Packet> pktItr = this.out.iterator();
-			Packet pkt;
-			PacketFormat format;
 			byte[][] info = new byte[this.out.size()][];
 			int next = 0;
 			
