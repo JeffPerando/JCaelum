@@ -26,6 +26,8 @@ public interface IHost extends IConnectable, IPacketHandler, IHandshaker, Closea
 	
 	public void sendPacketsExcept(UUID client, Packet... pkts);
 	
+	public int getMaxPlayerCount();
+	
 	public int getPlayerCount();
 	
 	public ImmutableList<UUID> getConnectionIds();

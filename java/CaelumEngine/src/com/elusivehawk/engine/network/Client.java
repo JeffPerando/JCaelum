@@ -109,6 +109,12 @@ public class Client implements IHost
 	}
 	
 	@Override
+	public int getMaxPlayerCount()
+	{
+		return 1;
+	}
+	
+	@Override
 	public int getPlayerCount()
 	{
 		return this.connection == null ? 0 : 1;

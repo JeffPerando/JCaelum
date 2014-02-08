@@ -134,6 +134,12 @@ public class Server implements IHost
 	}
 	
 	@Override
+	public int getMaxPlayerCount()
+	{
+		return this.maxPlayers;
+	}
+	
+	@Override
 	public int getPlayerCount()
 	{
 		return this.playerCount;
@@ -183,6 +189,7 @@ public class Server implements IHost
 			
 			this.clients.set(i, connect);
 			this.ids.set(i, connect.getConnectionId());
+			this.playerCount++;
 			
 			connect.connect(connection.getConnection().getSocket());
 			connect.beginComm();
@@ -195,6 +202,18 @@ public class Server implements IHost
 	public void close() throws IOException
 	{
 		this.listener.stopThread();
+		
+		for (Connection client : this.clients)
+		{
+			client.close(true);
+			
+		}
+		
+		for (int c = 0; c < this.maxPlayers; c++)
+		{
+			this.clients.set(c, null);
+			
+		}
 		
 	}
 	
@@ -209,6 +228,7 @@ public class Server implements IHost
 	{
 		this.clients.remove(connect);
 		this.ids.remove(connect.getConnectionId());
+		this.playerCount--;
 		
 	}
 	
