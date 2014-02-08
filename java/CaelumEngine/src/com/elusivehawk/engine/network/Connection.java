@@ -3,6 +3,7 @@ package com.elusivehawk.engine.network;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.UUID;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.util.SemiFinalStorage;
@@ -16,7 +17,7 @@ import com.elusivehawk.engine.util.SemiFinalStorage;
 public final class Connection implements IConnectable
 {
 	private final IPacketHandler handler;
-	private final int connectId;
+	private final UUID connectId;
 	private final int updCount;
 	private final SemiFinalStorage<Boolean> closed = new SemiFinalStorage<Boolean>(false);
 	
@@ -26,12 +27,12 @@ public final class Connection implements IConnectable
 	
 	public Connection(IPacketHandler h, int ups)
 	{
-		this(h, 0, ups);
+		this(h, null, ups);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Connection(IPacketHandler h, int id, int ups)
+	public Connection(IPacketHandler h, UUID id, int ups)
 	{
 		assert h != null;
 		assert ups > 0;
@@ -47,7 +48,7 @@ public final class Connection implements IConnectable
 		return this.skt;
 	}
 	
-	public int getConnectionId()
+	public UUID getConnectionId()
 	{
 		return this.connectId;
 	}

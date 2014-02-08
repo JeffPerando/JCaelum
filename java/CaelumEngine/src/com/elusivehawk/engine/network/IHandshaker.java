@@ -27,6 +27,6 @@ public interface IHandshaker
 	 * @param connection The connection that was used; Send any "rejection" packets you want to send using it.
 	 * @param sentPkts The packets sent by the connection; Inspect them if you wish.
 	 */
-	public void onHandshakeEnd(boolean success, Connection connection, List<Packet> sentPkts);
+	public void onHandshakeEnd(boolean success, HandshakeConnection connection, List<Packet> sentPkts);
 	
 }

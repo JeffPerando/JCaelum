@@ -4,7 +4,7 @@ package com.elusivehawk.engine.network;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.List;
-import com.elusivehawk.engine.util.SemiFinalStorage;
+import java.util.UUID;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -20,7 +20,7 @@ public class Client implements IHost
 	protected final IConnectionMaster master;
 	protected final int ups;
 	
-	protected final SemiFinalStorage<HandshakeConnection> handshake = new SemiFinalStorage<HandshakeConnection>(null);
+	protected HandshakeConnection handshake = null;
 	protected Connection connection = null;
 	
 	public Client(IConnectionMaster mstr)
@@ -56,7 +56,7 @@ public class Client implements IHost
 	@Override
 	public void connect(IP ip)
 	{
-		if (this.handshake.locked())
+		if (this.handshake != null || this.connection != null)
 		{
 			return;
 		}
@@ -68,32 +68,56 @@ public class Client implements IHost
 	@Override
 	public void connect(Socket s)
 	{
-		if (s == null || this.handshake.locked())
+		if (s == null || (this.handshake != null || this.connection != null))
 		{
 			return;
 		}
 		
-		this.handshake.set(new HandshakeConnection(this, s, 0, this.ups, this.master.getHandshakeProtocol()));
+		this.handshake = new HandshakeConnection(this, s, null, this.ups, this.master.getHandshakeProtocol());
 		
 	}
 	
 	@Override
 	public void beginComm()
 	{
-		this.handshake.get().start();
+		if (this.handshake == null)
+		{
+			return;
+		}
+		
+		this.handshake.start();
 		
 	}
 	
 	@Override
-	public void sendPackets(int client, Packet... pkts)
+	public void sendPackets(UUID client, Packet... pkts)
 	{
-		if (this.connection == null)
+		if (this.connection == null || client != null)
 		{
 			return;
 		}
 		
 		this.connection.sendPackets(pkts);
 		
+	}
+	
+	@Override
+	public void sendPacketsExcept(UUID client, Packet... pkts)
+	{
+		this.sendPackets(null, pkts);
+		
+	}
+	
+	@Override
+	public int getPlayerCount()
+	{
+		return this.connection == null ? 0 : 1;
+	}
+	
+	@Override
+	public UUID[] getConnectionIds()
+	{
+		return this.connection == null ? new UUID[0] : new UUID[]{this.connection.getConnectionId()};
 	}
 	
 	@Override
@@ -110,17 +134,19 @@ public class Client implements IHost
 	}
 	
 	@Override
-	public void onHandshakeEnd(boolean success, Connection connection, List<Packet> pkts)
+	public void onHandshakeEnd(boolean success, HandshakeConnection connection, List<Packet> pkts)
 	{
 		this.master.onHandshakeEnd(success, connection, pkts);
 		
-		connection.close(!success);
+		this.handshake = null;
+		
+		connection.getConnection().close(!success);
 		
 		if (success)
 		{
 			this.connection = new Connection(this, this.ups);
 			
-			this.connection.connect(connection.getSocket());
+			this.connection.connect(connection.getConnection().getSocket());
 			this.connection.beginComm();
 			
 		}

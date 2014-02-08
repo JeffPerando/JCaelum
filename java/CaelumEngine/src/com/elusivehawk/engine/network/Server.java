@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import com.elusivehawk.engine.util.SemiFinalStorage;
 import com.google.common.collect.ImmutableList;
 
@@ -16,32 +17,38 @@ import com.google.common.collect.ImmutableList;
  */
 public class Server implements IHost
 {
-	protected final int ups, port;
+	protected final int ups, port, maxPlayers;
 	protected final IConnectionMaster master;
 	protected final ThreadJoinListener listener;
 	
-	protected final List<HandshakeConnection> handshakers = new ArrayList<HandshakeConnection>();
-	protected final List<Connection> clients = new ArrayList<Connection>();
+	protected final List<HandshakeConnection> handshakers;
+	protected final List<Connection> clients;
 	protected final SemiFinalStorage<Boolean> disabled = new SemiFinalStorage<Boolean>(false);
+	protected final UUID[] ids;
 	
-	protected int nextConnectionId = 0;
+	protected int playerCount = 0;
 	
-	public Server(int p, IConnectionMaster m)
+	public Server(int p, IConnectionMaster m, int players)
 	{
-		this(p, m, 30);
+		this(p, m, 30, players);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Server(int p, IConnectionMaster m, int updCount)
+	public Server(int p, IConnectionMaster m, int updCount, int players)
 	{
 		assert m != null;
 		assert updCount > 0;
+		assert players > 0;
 		
 		port = p;
 		master = m;
 		listener = new ThreadJoinListener(this, p);
 		ups = updCount;
+		maxPlayers = players;
+		handshakers = new ArrayList<HandshakeConnection>(players);
+		clients = new ArrayList<Connection>(players);
+		ids = new UUID[players];
 		
 	}
 	
@@ -58,11 +65,15 @@ public class Server implements IHost
 	@Override
 	public synchronized void connect(Socket s)//TODO Check if this causes a deadlock.
 	{
-		++this.nextConnectionId;
+		HandshakeConnection next = new HandshakeConnection(this, s, UUID.randomUUID(), this.ups, this.master.getHandshakeProtocol());
+		int i = this.handshakers.indexOf(null);
 		
-		HandshakeConnection next = new HandshakeConnection(this, s, this.nextConnectionId, this.ups, this.master.getHandshakeProtocol());
+		if (i == -1)
+		{
+			return;
+		}
 		
-		this.handshakers.add(next);
+		this.handshakers.set(i, next);
 		
 		next.start();
 		
@@ -82,18 +93,56 @@ public class Server implements IHost
 	}
 	
 	@Override
-	public void sendPackets(int client, Packet... pkts)
+	public void sendPackets(UUID client, Packet... pkts)
 	{
+		if (client == null)
+		{
+			return;
+		}
+		
 		for (Connection connect : this.clients)
 		{
-			if (connect.getConnectionId() == client)
+			if (connect.getConnectionId().equals(client))
 			{
 				connect.sendPackets(pkts);
-				
+				break;
 			}
 			
 		}
 		
+	}
+	
+	@Override
+	public void sendPacketsExcept(UUID client, Packet... pkts)
+	{
+		for (Connection connect : this.clients)
+		{
+			if (connect == null)
+			{
+				continue;
+			}
+			
+			if (connect.getConnectionId().equals(client))
+			{
+				continue;
+			}
+			
+			connect.sendPackets(pkts);
+			
+		}
+		
+	}
+	
+	@Override
+	public int getPlayerCount()
+	{
+		return this.playerCount;
+	}
+	
+	@Override
+	public UUID[] getConnectionIds()
+	{
+		return this.ids;
 	}
 	
 	@Override
@@ -113,19 +162,27 @@ public class Server implements IHost
 	}
 	
 	@Override
-	public void onHandshakeEnd(boolean success, Connection connection, List<Packet> pkts)
+	public void onHandshakeEnd(boolean success, HandshakeConnection connection, List<Packet> pkts)
 	{
 		this.master.onHandshakeEnd(success, connection, pkts);
 		
-		connection.close(!success);
+		connection.getConnection().close(!success);
 		
 		if (success)
 		{
-			Connection connect = new Connection(this, ++this.nextConnectionId, this.ups);
+			this.handshakers.remove(connection);
 			
-			this.clients.add(connect);
+			Connection connect = new Connection(this, UUID.randomUUID(), this.ups);
+			int i = this.clients.indexOf(null);
 			
-			connect.connect(connection.getSocket());
+			if (i == -1)
+			{
+				return;
+			}
+			
+			this.clients.set(i, connect);
+			
+			connect.connect(connection.getConnection().getSocket());
 			connect.beginComm();
 			
 		}

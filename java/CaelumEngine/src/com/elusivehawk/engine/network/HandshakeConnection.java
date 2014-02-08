@@ -4,6 +4,7 @@ package com.elusivehawk.engine.network;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -22,7 +23,7 @@ public class HandshakeConnection implements IPacketHandler
 	private final short[] expectPkts;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public HandshakeConnection(IHost owner, Socket s, int id, int ups, short... pktsReq)
+	public HandshakeConnection(IHost owner, Socket s, UUID id, int ups, short... pktsReq)
 	{
 		assert owner != null;
 		assert s != null;
@@ -44,6 +45,11 @@ public class HandshakeConnection implements IPacketHandler
 		this.connect.connect(this.skt);
 		this.connect.beginComm();
 		
+	}
+	
+	public Connection getConnection()
+	{
+		return this.connect;
 	}
 	
 	@Override
@@ -94,7 +100,7 @@ public class HandshakeConnection implements IPacketHandler
 			
 		}
 		
-		this.master.onHandshakeEnd(fail, this.connect, pkts);
+		this.master.onHandshakeEnd(fail, this, pkts);
 		
 	}
 	
