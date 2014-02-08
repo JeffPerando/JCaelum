@@ -18,7 +18,7 @@ import com.google.common.collect.ImmutableList;
  * 
  * @author Elusivehawk
  */
-public class ThreadNetworkIO extends ThreadTimed
+public class ThreadNetwork extends ThreadTimed
 {
 	protected final int updateCount;
 	protected final IPacketHandler handler;
@@ -35,7 +35,7 @@ public class ThreadNetworkIO extends ThreadTimed
 	protected final ByteBuffer bout = ByteBuffer.allocate(32772 * 32);
 	
 	@SuppressWarnings("unqualified-field-access")
-	public ThreadNetworkIO(IPacketHandler h, Connection con, int ups)
+	public ThreadNetwork(IPacketHandler h, Connection con, int ups)
 	{
 		assert con != null;
 		assert h != null;

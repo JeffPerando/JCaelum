@@ -21,7 +21,7 @@ public final class Connection implements IConnectable
 	private final int updCount;
 	private final SemiFinalStorage<Boolean> closed = new SemiFinalStorage<Boolean>(false);
 	
-	private ThreadNetworkIO io = null;
+	private ThreadNetwork io = null;
 	private SocketChannel sch = null;
 	
 	public Connection(IPacketHandler h, int ups)
@@ -70,7 +70,7 @@ public final class Connection implements IConnectable
 		}
 		
 		this.sch = s;
-		this.io = new ThreadNetworkIO(this.handler, this, this.updCount);
+		this.io = new ThreadNetwork(this.handler, this, this.updCount);
 		
 	}
 	
