@@ -23,8 +23,8 @@ public class Server implements IHost
 	
 	protected final List<HandshakeConnection> handshakers;
 	protected final List<Connection> clients;
+	protected final List<UUID> ids;
 	protected final SemiFinalStorage<Boolean> disabled = new SemiFinalStorage<Boolean>(false);
-	protected final UUID[] ids;
 	
 	protected int playerCount = 0;
 	
@@ -48,7 +48,7 @@ public class Server implements IHost
 		maxPlayers = players;
 		handshakers = new ArrayList<HandshakeConnection>(players);
 		clients = new ArrayList<Connection>(players);
-		ids = new UUID[players];
+		ids = new ArrayList<UUID>(players);
 		
 	}
 	
@@ -140,9 +140,9 @@ public class Server implements IHost
 	}
 	
 	@Override
-	public UUID[] getConnectionIds()
+	public ImmutableList<UUID> getConnectionIds()
 	{
-		return this.ids;
+		return ImmutableList.copyOf(this.ids);
 	}
 	
 	@Override
@@ -153,6 +153,7 @@ public class Server implements IHost
 			connect.setPaused(pause);
 			
 		}
+		
 	}
 	
 	@Override
@@ -181,6 +182,7 @@ public class Server implements IHost
 			}
 			
 			this.clients.set(i, connect);
+			this.ids.set(i, connect.getConnectionId());
 			
 			connect.connect(connection.getConnection().getSocket());
 			connect.beginComm();
@@ -206,6 +208,7 @@ public class Server implements IHost
 	public void onDisconnect(Connection connect)
 	{
 		this.clients.remove(connect);
+		this.ids.remove(connect.getConnectionId());
 		
 	}
 	

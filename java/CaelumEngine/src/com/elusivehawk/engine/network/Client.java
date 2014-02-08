@@ -115,9 +115,9 @@ public class Client implements IHost
 	}
 	
 	@Override
-	public UUID[] getConnectionIds()
+	public ImmutableList<UUID> getConnectionIds()
 	{
-		return this.connection == null ? new UUID[0] : new UUID[]{this.connection.getConnectionId()};
+		return this.connection == null ? null : ImmutableList.copyOf(new UUID[]{this.connection.getConnectionId()});
 	}
 	
 	@Override

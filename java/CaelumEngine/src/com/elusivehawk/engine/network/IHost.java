@@ -3,6 +3,7 @@ package com.elusivehawk.engine.network;
 
 import java.io.Closeable;
 import java.util.UUID;
+import com.google.common.collect.ImmutableList;
 
 /**
  * 
@@ -27,7 +28,7 @@ public interface IHost extends IConnectable, IPacketHandler, IHandshaker, Closea
 	
 	public int getPlayerCount();
 	
-	public UUID[] getConnectionIds();
+	public ImmutableList<UUID> getConnectionIds();
 	
 	public void pauseConnections(boolean pause);
 	
