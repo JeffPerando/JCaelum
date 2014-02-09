@@ -26,12 +26,12 @@ public class ThreadNetwork extends ThreadTimed
 	
 	//Incoming
 	
-	protected final ByteBuffer head = ByteBuffer.allocate(4), bin = ByteBuffer.allocate(32768);
+	protected final ByteBuffer head = ByteBuffer.allocate(4), bin = ByteBuffer.allocate(8192);
 	
 	//Outgoing
 	
 	protected final List<Packet> out = new ArrayList<Packet>(32);
-	protected final ByteBuffer bout = ByteBuffer.allocate(32772 * 32);
+	protected final ByteBuffer bout = ByteBuffer.allocate(8192 * 32);
 	
 	@SuppressWarnings("unqualified-field-access")
 	public ThreadNetwork(IPacketHandler h, Connection con, int ups)
@@ -115,6 +115,13 @@ public class ThreadNetwork extends ThreadTimed
 			
 			this.bout.flip();
 			this.sch.write(this.bout);
+			
+			for (int c = 0; c < this.bout.limit(); c++)
+			{
+				this.bout.put(c, (byte)0);
+				
+			}
+			
 			this.bout.clear();
 			
 		}
