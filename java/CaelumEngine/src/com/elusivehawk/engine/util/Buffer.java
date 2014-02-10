@@ -27,6 +27,12 @@ public class Buffer<T> implements IDirty, Collection<T>, Iterator<T>
 		
 	}
 	
+	public Buffer(int limit)
+	{
+		this(new ArrayList<T>(limit));
+		
+	}
+	
 	@SafeVarargs
 	public Buffer(T... array)
 	{

@@ -9,8 +9,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import com.elusivehawk.engine.core.CaelumEngine;
-import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.util.FileHelper;
 import com.elusivehawk.engine.util.io.ByteStreams;
 import com.elusivehawk.engine.util.io.ByteWrapper;
@@ -76,7 +74,7 @@ public class SaveFile implements ITagList
 		}
 		catch (IOException e)
 		{
-			CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
+			e.printStackTrace();
 			
 		}
 		
@@ -87,7 +85,7 @@ public class SaveFile implements ITagList
 		}
 		catch (Exception e)
 		{
-			CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
+			e.printStackTrace();
 			
 		}
 		
@@ -110,16 +108,9 @@ public class SaveFile implements ITagList
 		BufferedOutputStream out = new BufferedOutputStream(fos);
 		ByteWriter stream = new ByteStreams(null, out);
 		
-		int count = 0;
-		
 		for (ITag<?> tag : this.tags)
 		{
-			count = TagReaderRegistry.instance().writeTag(stream, tag);
-			
-			if (count == 0)
-			{
-				continue;
-			}
+			TagReaderRegistry.instance().writeTag(stream, tag);
 			
 		}
 		
@@ -131,7 +122,7 @@ public class SaveFile implements ITagList
 		}
 		catch (IOException e)
 		{
-			CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
+			e.printStackTrace();
 			
 		}
 		

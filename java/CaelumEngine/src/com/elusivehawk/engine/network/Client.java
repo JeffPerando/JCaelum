@@ -54,45 +54,59 @@ public class Client implements IHost
 	}
 	
 	@Override
-	public void connect(IP ip)
+	public UUID connect(UUID id, IP ip, ConnectionType type)
 	{
-		if (this.handshake != null || this.connection != null)
+		if (this.connection != null)
 		{
-			return;
+			if (type.isUdp() && this.connection.getConnectionId().equals(id))
+			{
+				this.connection.connect(id, ip, type);
+				
+			}
+			
 		}
 		
-		this.connect(ip.toChannel());
+		if (type.isUdp())
+		{
+			return null;
+		}
 		
+		return this.connect(ip.toChannel());
 	}
 	
 	@Override
-	public void connect(SocketChannel s)
+	public UUID connect(SocketChannel s)
 	{
 		if (s == null || (this.handshake != null || this.connection != null))
 		{
-			return;
+			return null;
 		}
 		
-		this.handshake = new HandshakeConnection(this, s, null, this.ups, this.master.getHandshakeProtocol());
+		this.handshake = new HandshakeConnection(this, s, UUID.randomUUID(), this.ups, this.master.getHandshakeProtocol());
 		
+		return this.handshake.getConnection().getConnectionId();
 	}
 	
 	@Override
 	public void beginComm()
 	{
-		if (this.handshake == null)
+		if (this.handshake != null)
 		{
-			return;
+			this.handshake.start();
+			
 		}
-		
-		this.handshake.start();
 		
 	}
 	
 	@Override
 	public void sendPackets(UUID client, Packet... pkts)
 	{
-		if (this.connection == null || client != null)
+		if (this.connection == null)
+		{
+			return;
+		}
+		
+		if (!this.connection.getConnectionId().equals(client))
 		{
 			return;
 		}
@@ -104,7 +118,13 @@ public class Client implements IHost
 	@Override
 	public void sendPacketsExcept(UUID client, Packet... pkts)
 	{
-		this.sendPackets(null, pkts);
+		assert client != null;
+		
+		if (!client.equals(this.connection.getConnectionId()))
+		{
+			this.sendPackets(this.connection.getConnectionId(), pkts);
+			
+		}
 		
 	}
 	
@@ -171,6 +191,12 @@ public class Client implements IHost
 	public PacketFormat getPacketFormat(short id)
 	{
 		return this.master.getPacketFormat(id);
+	}
+	
+	@Override
+	public boolean validate(PacketFormat format)
+	{
+		return this.master.validate(format);
 	}
 	
 	@Override

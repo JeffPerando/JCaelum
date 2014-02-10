@@ -3,6 +3,7 @@ package com.elusivehawk.engine.network;
 
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.nio.channels.SocketChannel;
 import javax.net.SocketFactory;
 import com.elusivehawk.engine.core.CaelumEngine;
@@ -116,6 +117,11 @@ public final class IP
 	public int hashCode()
 	{
 		return this.toString().hashCode();
+	}
+	
+	public static IP create(SocketAddress sa)
+	{
+		return create(sa.toString());
 	}
 	
 	public static IP create(String ip)

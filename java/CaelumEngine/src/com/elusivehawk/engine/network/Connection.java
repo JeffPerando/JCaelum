@@ -34,6 +34,7 @@ public final class Connection implements IConnectable
 	public Connection(IPacketHandler h, UUID id, int ups)
 	{
 		assert h != null;
+		assert id != null;
 		assert ups > 0;
 		
 		handler = h;
@@ -59,19 +60,40 @@ public final class Connection implements IConnectable
 	}
 	
 	@Override
-	public void connect(IP ip){}//TODO Never used
+	public UUID connect(UUID id, IP ip, ConnectionType type)
+	{
+		if (!this.connectId.equals(id))
+		{
+			return null;
+		}
+		
+		if (type.isTcp())
+		{
+			return this.connect(ip.toChannel());
+		}
+		
+		if (type.isUdp())
+		{
+			this.io.connectDatagram(ip);
+			
+			return this.connectId;
+		}
+		
+		return null;
+	}
 	
 	@Override
-	public void connect(SocketChannel s)
+	public UUID connect(SocketChannel s)
 	{
 		if (s != null)
 		{
-			return;
+			return null;
 		}
 		
 		this.sch = s;
 		this.io = new ThreadNetwork(this.handler, this, this.updCount);
 		
+		return this.connectId;
 	}
 	
 	@Override

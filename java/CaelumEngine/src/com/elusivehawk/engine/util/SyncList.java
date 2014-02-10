@@ -32,6 +32,12 @@ public class SyncList<T> implements List<T>
 		
 	}
 	
+	public SyncList(int limit)
+	{
+		this(new ArrayList<T>(limit));
+		
+	}
+	
 	@SuppressWarnings("unqualified-field-access")
 	public SyncList(List<T> list)
 	{

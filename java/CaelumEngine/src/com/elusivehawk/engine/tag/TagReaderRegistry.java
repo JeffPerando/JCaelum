@@ -1,8 +1,6 @@
 
 package com.elusivehawk.engine.tag;
 
-import com.elusivehawk.engine.core.CaelumEngine;
-import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.util.io.ByteWrapper;
 import com.elusivehawk.engine.util.io.ByteWriter;
 import com.elusivehawk.engine.util.io.Serializer;
@@ -50,7 +48,7 @@ public final class TagReaderRegistry implements Serializer<ITag<?>>
 	{
 		if (this.getReader(id) != null)
 		{
-			CaelumEngine.instance().getLog().log(EnumLogType.WARN, "Overriding tag reader ID #" + id);
+			System.err.println("Overriding tag reader ID #" + id);
 			
 		}
 		
@@ -72,7 +70,7 @@ public final class TagReaderRegistry implements Serializer<ITag<?>>
 		
 		if (r == null)
 		{
-			CaelumEngine.instance().getLog().log(EnumLogType.ERROR, "Could not continue reading tag, invalid tag ID: " + id);
+			System.err.println("Could not continue reading tag, invalid tag ID: " + id);
 			
 			return null;
 		}
@@ -88,7 +86,7 @@ public final class TagReaderRegistry implements Serializer<ITag<?>>
 		
 		if (this.getReader(type) == null)
 		{
-			CaelumEngine.instance().getLog().log(EnumLogType.WARN, "Tag " + tag.getName() + " has invalid type ID " + type + ", please rectify.");
+			System.err.println("Tag " + tag.getName() + " has invalid type ID " + type + ", please rectify.");
 			
 		}
 		

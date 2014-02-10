@@ -83,7 +83,7 @@ public class HandshakeConnection implements IPacketHandler
 			
 			for (Packet pkt : pkts)
 			{
-				index = pktList.indexOf(pkt.pktId);
+				index = pktList.indexOf(pkt.format.pktId);
 				
 				if (index < 0)
 				{
@@ -114,6 +114,12 @@ public class HandshakeConnection implements IPacketHandler
 	public PacketFormat getPacketFormat(short id)
 	{
 		return this.master.getPacketFormat(id);
+	}
+	
+	@Override
+	public boolean validate(PacketFormat format)
+	{
+		return this.master.validate(format);
 	}
 	
 	@Override

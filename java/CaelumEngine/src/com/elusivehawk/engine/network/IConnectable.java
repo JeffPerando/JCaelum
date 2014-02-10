@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.network;
 
 import java.nio.channels.SocketChannel;
+import java.util.UUID;
 
 /**
  * 
@@ -14,9 +15,9 @@ import java.nio.channels.SocketChannel;
  */
 public interface IConnectable
 {
-	public void connect(IP ip);
+	public UUID connect(UUID origin, IP ip, ConnectionType type);
 	
-	public void connect(SocketChannel sch);
+	public UUID connect(SocketChannel sch);
 	
 	public void beginComm();
 	

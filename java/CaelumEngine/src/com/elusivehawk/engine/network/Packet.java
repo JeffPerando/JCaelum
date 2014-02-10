@@ -17,13 +17,13 @@ import com.google.common.collect.ImmutableList;
  */
 public final class Packet
 {
-	public final short pktId;
+	public final PacketFormat format;
 	private final List<Object> data = new ArrayList<Object>();
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Packet(short id)
+	public Packet(PacketFormat f)
 	{
-		pktId = id;
+		format = f;
 		
 	}
 	

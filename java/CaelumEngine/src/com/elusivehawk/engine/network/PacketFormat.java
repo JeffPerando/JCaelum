@@ -17,6 +17,7 @@ import com.google.common.collect.ImmutableList;
 public final class PacketFormat
 {
 	public final Side side;
+	public final ConnectionType type;
 	public final short pktId;
 	public final ImmutableList<DataType> format;
 	
@@ -25,18 +26,20 @@ public final class PacketFormat
 	 * The primary constructor.
 	 * 
 	 * @param s The side the read packet (should) hail from. (i.e. Client -> Server should be CLIENT, Client <- Server should be SERVER.)
+	 * @param conType The type of connection this format is meant for.
 	 * @param id The ID for this format.
 	 * @param f The format itself.
 	 */
 	@SuppressWarnings("unqualified-field-access")
-	public PacketFormat(Side s, short id, DataType... f)
+	public PacketFormat(Side s, ConnectionType conType, short id, DataType... f)
 	{
 		assert s != null;
-		assert id != 0;
+		assert conType != null;
 		assert f != null && f.length > 0;
 		assert f[f.length - 1] != DataType.ARRAY;
 		
 		side = s;
+		type = conType;
 		pktId = id;
 		format = ImmutableList.copyOf(f);
 		
@@ -44,7 +47,7 @@ public final class PacketFormat
 	
 	public Packet read(ByteBuffer in)
 	{
-		Packet ret = new Packet(this.pktId);
+		Packet ret = new Packet(this);
 		ByteWrapper wrap = new ByteBuf(in);
 		int pos = 0;
 		DataType type;

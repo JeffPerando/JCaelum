@@ -18,6 +18,12 @@ public class SyncBuffer<T> extends Buffer<T>
 		
 	}
 	
+	public SyncBuffer(int limit)
+	{
+		this(new SyncList<T>(limit));
+		
+	}
+	
 	@SafeVarargs
 	public SyncBuffer(T... array)
 	{

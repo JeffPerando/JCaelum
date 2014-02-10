@@ -60,14 +60,32 @@ public class Server implements IHost
 	}
 	
 	@Override
-	public void connect(IP ip)
+	public UUID connect(UUID origin, IP ip, ConnectionType type)
 	{
-		this.connect(ip.toChannel());
+		if (type.isTcp())
+		{
+			return this.connect(ip.toChannel());
+		}
+		else if (type.isUdp())
+		{
+			for (Connection client : this.clients)
+			{
+				if (client.getConnectionId().equals(origin))
+				{
+					client.connect(origin, ip, type);
+					
+					return client.getConnectionId();
+				}
+				
+			}
+			
+		}
 		
+		return null;
 	}
 	
 	@Override
-	public void connect(SocketChannel s)//TODO Check if this causes a deadlock.
+	public UUID connect(SocketChannel s)
 	{
 		assert s != null;
 		
@@ -76,13 +94,14 @@ public class Server implements IHost
 		
 		if (i == -1)
 		{
-			return;
+			return null;
 		}
 		
 		this.handshakers.set(i, next);
 		
 		next.start();
 		
+		return next.getConnection().getConnectionId();
 	}
 	
 	@Override
@@ -227,6 +246,12 @@ public class Server implements IHost
 	public PacketFormat getPacketFormat(short id)
 	{
 		return this.master.getPacketFormat(id);
+	}
+	
+	@Override
+	public boolean validate(PacketFormat format)
+	{
+		return this.master.validate(format);
 	}
 	
 	@Override

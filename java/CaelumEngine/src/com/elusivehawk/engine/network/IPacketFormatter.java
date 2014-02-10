@@ -18,4 +18,6 @@ public interface IPacketFormatter
 	 */
 	public PacketFormat getPacketFormat(short id);
 	
+	public boolean validate(PacketFormat format);
+	
 }
