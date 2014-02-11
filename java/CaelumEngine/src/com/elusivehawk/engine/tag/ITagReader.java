@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.tag;
 
-import com.elusivehawk.engine.util.io.ByteWrapper;
+import com.elusivehawk.engine.util.io.ByteReader;
 
 /**
  * 
@@ -11,6 +11,6 @@ import com.elusivehawk.engine.util.io.ByteWrapper;
  */
 public interface ITagReader<T>
 {
-	public ITag<T> readTag(String name, ByteWrapper wrap);
+	public ITag<T> readTag(String name, ByteReader wrap);
 	
 }

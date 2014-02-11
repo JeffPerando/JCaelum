@@ -13,7 +13,7 @@ public interface Serializer<T>
 {
 	public int toBytes(ByteWriter w, T obj);
 	
-	public T fromBytes(ByteWrapper b);
+	public T fromBytes(ByteReader b);
 	
 	public static final Serializer<Boolean> BOOLEAN = new Serializer<Boolean>()
 			{
@@ -26,7 +26,7 @@ public interface Serializer<T>
 				}
 				
 				@Override
-				public Boolean fromBytes(ByteWrapper b)
+				public Boolean fromBytes(ByteReader b)
 				{
 					return b.read() != 0;
 				}
@@ -43,7 +43,7 @@ public interface Serializer<T>
 				}
 				
 				@Override
-				public Byte fromBytes(ByteWrapper b)
+				public Byte fromBytes(ByteReader b)
 				{
 					return b.read();
 				}
@@ -60,7 +60,7 @@ public interface Serializer<T>
 				}
 				
 				@Override
-				public Short fromBytes(ByteWrapper b)
+				public Short fromBytes(ByteReader b)
 				{
 					return (short)(b.read() | (b.read() << 8));
 				}
@@ -81,7 +81,7 @@ public interface Serializer<T>
 				}
 				
 				@Override
-				public Integer fromBytes(ByteWrapper b)
+				public Integer fromBytes(ByteReader b)
 				{
 					int ret = 0;
 					
@@ -110,7 +110,7 @@ public interface Serializer<T>
 				}
 				
 				@Override
-				public Long fromBytes(ByteWrapper b)
+				public Long fromBytes(ByteReader b)
 				{
 					long ret = 0;
 					
@@ -133,7 +133,7 @@ public interface Serializer<T>
 				}
 				
 				@Override
-				public Float fromBytes(ByteWrapper b)
+				public Float fromBytes(ByteReader b)
 				{
 					return Float.intBitsToFloat(INTEGER.fromBytes(b));
 				}
@@ -148,7 +148,7 @@ public interface Serializer<T>
 				}
 				
 				@Override
-				public Double fromBytes(ByteWrapper b)
+				public Double fromBytes(ByteReader b)
 				{
 					return Double.longBitsToDouble(LONG.fromBytes(b));
 				}
@@ -171,7 +171,7 @@ public interface Serializer<T>
 				}
 				
 				@Override
-				public String fromBytes(ByteWrapper b)
+				public String fromBytes(ByteReader b)
 				{
 					char[] str = new char[SHORT.fromBytes(b) & 0xFFFF];
 					
@@ -194,7 +194,7 @@ public interface Serializer<T>
 				}
 				
 				@Override
-				public UUID fromBytes(ByteWrapper b)
+				public UUID fromBytes(ByteReader b)
 				{
 					return java.util.UUID.fromString(STRING.fromBytes(b));
 				}

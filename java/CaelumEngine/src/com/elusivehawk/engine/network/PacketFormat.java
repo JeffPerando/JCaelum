@@ -3,7 +3,7 @@ package com.elusivehawk.engine.network;
 
 import java.nio.ByteBuffer;
 import com.elusivehawk.engine.util.io.ByteBuf;
-import com.elusivehawk.engine.util.io.ByteWrapper;
+import com.elusivehawk.engine.util.io.ByteReader;
 import com.elusivehawk.engine.util.io.ByteWriter;
 import com.elusivehawk.engine.util.io.Serializer;
 import com.google.common.collect.ImmutableList;
@@ -48,18 +48,13 @@ public final class PacketFormat
 	public Packet read(ByteBuffer in)
 	{
 		Packet ret = new Packet(this);
-		ByteWrapper wrap = new ByteBuf(in);
+		ByteReader wrap = new ByteBuf(in);
 		int pos = 0;
 		DataType type;
 		
-		for (int c = 0; c < this.format.size(); c++)
+		for (int c = 0; c < this.format.size(); c += (1 + type.getSkipCount(c, this.format)))
 		{
 			type = this.format.get(c);
-			
-			if (pos > 0 && this.format.get(pos - 1) == DataType.ARRAY)
-			{
-				continue;
-			}
 			
 			Object obj = type.decode(this.format, pos, wrap);
 			

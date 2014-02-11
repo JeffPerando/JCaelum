@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.tag;
 
-import com.elusivehawk.engine.util.io.ByteWrapper;
+import com.elusivehawk.engine.util.io.ByteReader;
 import com.elusivehawk.engine.util.io.ByteWriter;
 import com.elusivehawk.engine.util.io.Serializer;
 
@@ -61,7 +61,7 @@ public final class TagReaderRegistry implements Serializer<ITag<?>>
 		return this.readers[id];
 	}
 	
-	public ITag<?> readTag(ByteWrapper wrap)
+	public ITag<?> readTag(ByteReader wrap)
 	{
 		String name = Serializer.STRING.fromBytes(wrap);
 		
@@ -105,7 +105,7 @@ public final class TagReaderRegistry implements Serializer<ITag<?>>
 	}
 	
 	@Override
-	public ITag<?> fromBytes(ByteWrapper b)
+	public ITag<?> fromBytes(ByteReader b)
 	{
 		return this.readTag(b);
 	}

@@ -3,7 +3,7 @@ package com.elusivehawk.engine.math;
 
 /**
  * 
- * Convenience (aka helper) class for math functions.
+ * Convenience class for math functions.
  * 
  * @author Elusivehawk
  */
@@ -29,7 +29,7 @@ public final class MathHelper
 	
 	public static boolean isOdd(int i)
 	{
-		return i == 0 ? false : (i >> 1) >= i;
+		return (i & 1) == 1;
 	}
 	
 	public static int percent(int i, int max)

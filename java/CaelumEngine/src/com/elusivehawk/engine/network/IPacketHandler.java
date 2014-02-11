@@ -23,6 +23,6 @@ public interface IPacketHandler extends IPacketListener, IPacketFormatter
 	 * 
 	 * @param connect The connection about to be closed.
 	 */
-	public void onDisconnect(Connection connect);
+	public void onDisconnect(IConnection connect);
 	
 }

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import com.elusivehawk.engine.util.FileHelper;
 import com.elusivehawk.engine.util.io.ByteStreams;
-import com.elusivehawk.engine.util.io.ByteWrapper;
+import com.elusivehawk.engine.util.io.ByteReader;
 import com.elusivehawk.engine.util.io.ByteWriter;
 
 /**
@@ -54,7 +54,7 @@ public class SaveFile implements ITagList
 		}
 		
 		BufferedInputStream in = new BufferedInputStream(fis);
-		ByteWrapper wrap = new ByteStreams(in, null);
+		ByteReader wrap = new ByteStreams(in, null);
 		
 		try
 		{

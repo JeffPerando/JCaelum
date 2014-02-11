@@ -1,7 +1,6 @@
 
 package com.elusivehawk.engine.network;
 
-import java.io.IOException;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,12 +20,12 @@ public class Server implements IHost
 	protected final IConnectionMaster master;
 	protected final ThreadJoinListener listener;
 	
-	protected final List<HandshakeConnection> handshakers;
-	protected final List<Connection> clients;
+	protected final List<IConnection> clients;
 	protected final List<UUID> ids;
 	protected final SemiFinalStorage<Boolean> disabled = new SemiFinalStorage<Boolean>(false);
 	
 	protected int playerCount = 0;
+	protected boolean paused = false;
 	
 	public Server(int p, IConnectionMaster m, int players)
 	{
@@ -46,8 +45,7 @@ public class Server implements IHost
 		listener = new ThreadJoinListener(this, p);
 		ups = updCount;
 		maxPlayers = players;
-		handshakers = new ArrayList<HandshakeConnection>(players);
-		clients = new ArrayList<Connection>(players);
+		clients = new ArrayList<IConnection>(players);
 		ids = new ArrayList<UUID>(players);
 		
 	}
@@ -68,13 +66,13 @@ public class Server implements IHost
 		}
 		else if (type.isUdp())
 		{
-			for (Connection client : this.clients)
+			for (IConnection client : this.clients)
 			{
-				if (client.getConnectionId().equals(origin))
+				if (client.getId().equals(origin))
 				{
 					client.connect(origin, ip, type);
 					
-					return client.getConnectionId();
+					return client.getId();
 				}
 				
 			}
@@ -89,23 +87,30 @@ public class Server implements IHost
 	{
 		assert s != null;
 		
-		HandshakeConnection next = new HandshakeConnection(this, s, UUID.randomUUID(), this.ups, this.master.getHandshakeProtocol());
-		int i = this.handshakers.indexOf(null);
+		IConnection next = ConnectionFactory.factory().createHS(this, s, UUID.randomUUID(), this.ups);
+		int i = this.clients.indexOf(null);
 		
 		if (i == -1)
 		{
-			return null;
+			this.clients.set(i, next);
+			
+			next.beginComm();
+			
+			return next.getId();
 		}
 		
-		this.handshakers.set(i, next);
+		try
+		{
+			next.close();
+			
+		}
+		catch (Exception e){}
 		
-		next.start();
-		
-		return next.getConnection().getConnectionId();
+		return null;
 	}
 	
 	@Override
-	public void onPacketsReceived(Connection origin, ImmutableList<Packet> pkts)
+	public void onPacketsReceived(IConnection origin, ImmutableList<Packet> pkts)
 	{
 		this.master.onPacketsReceived(origin, pkts);
 		
@@ -125,9 +130,9 @@ public class Server implements IHost
 			return;
 		}
 		
-		for (Connection connect : this.clients)
+		for (IConnection connect : this.clients)
 		{
-			if (connect.getConnectionId().equals(client))
+			if (connect.getId().equals(client))
 			{
 				connect.sendPackets(pkts);
 				break;
@@ -140,14 +145,14 @@ public class Server implements IHost
 	@Override
 	public void sendPacketsExcept(UUID client, Packet... pkts)
 	{
-		for (Connection connect : this.clients)
+		for (IConnection connect : this.clients)
 		{
 			if (connect == null)
 			{
 				continue;
 			}
 			
-			if (connect.getConnectionId().equals(client))
+			if (connect.getId().equals(client))
 			{
 				continue;
 			}
@@ -177,14 +182,27 @@ public class Server implements IHost
 	}
 	
 	@Override
-	public void pauseConnections(boolean pause)
+	public void setPaused(boolean pause)
 	{
-		for (Connection connect : this.clients)
+		for (IConnection connect : this.clients)
 		{
+			if (connect == null)
+			{
+				continue;
+			}
+			
 			connect.setPaused(pause);
 			
 		}
 		
+		this.paused = pause;
+		
+	}
+	
+	@Override
+	public boolean isPaused()
+	{
+		return this.paused;
 	}
 	
 	@Override
@@ -194,29 +212,34 @@ public class Server implements IHost
 	}
 	
 	@Override
-	public void onHandshakeEnd(boolean success, HandshakeConnection connection, List<Packet> pkts)
+	public void onHandshakeEnd(boolean success, IConnection connection, List<Packet> pkts)
 	{
 		this.master.onHandshakeEnd(success, connection, pkts);
 		
-		connection.getConnection().close(!success);
+		connection.close(!success);
 		
 		if (success)
 		{
-			this.handshakers.remove(connection);
-			
-			Connection connect = new Connection(this, UUID.randomUUID(), this.ups);
+			IConnection connect = ConnectionFactory.factory().create(this, UUID.randomUUID(), this.ups);
 			int i = this.clients.indexOf(null);
 			
 			if (i == -1)
 			{
+				try
+				{
+					connect.close();
+					
+				}
+				catch (Exception e){}
+				
 				return;
 			}
 			
 			this.clients.set(i, connect);
-			this.ids.set(i, connect.getConnectionId());
+			this.ids.set(i, connect.getId());
 			this.playerCount++;
 			
-			connect.connect(connection.getConnection().getChannel());
+			connect.connect(connection.getChannel());
 			connect.beginComm();
 			
 		}
@@ -224,13 +247,17 @@ public class Server implements IHost
 	}
 	
 	@Override
-	public void close() throws IOException
+	public void close()
 	{
 		this.listener.stopThread();
 		
-		for (Connection client : this.clients)
+		for (IConnection client : this.clients)
 		{
-			client.close(true);
+			if (client != null)
+			{
+				client.close(true);
+				
+			}
 			
 		}
 		
@@ -255,11 +282,31 @@ public class Server implements IHost
 	}
 	
 	@Override
-	public void onDisconnect(Connection connect)
+	public void onDisconnect(IConnection connect)
 	{
-		this.clients.remove(connect);
-		this.ids.remove(connect.getConnectionId());
-		this.playerCount--;
+		int i = this.clients.indexOf(connect);
+		
+		if (i == -1)
+		{
+			return;
+		}
+		
+		this.clients.set(i, null);
+		this.ids.remove(connect.getId());
+		
+		int players = 0;
+		
+		for (int c = 0; c < this.clients.size(); c++)
+		{
+			if (this.clients.get(c) != null)
+			{
+				players++;
+				
+			}
+			
+		}
+		
+		this.playerCount = players;
 		
 	}
 	

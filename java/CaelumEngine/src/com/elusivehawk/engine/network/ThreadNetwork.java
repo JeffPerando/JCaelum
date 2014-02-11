@@ -26,7 +26,7 @@ public class ThreadNetwork extends ThreadTimed
 {
 	protected final int updateCount;
 	protected final IPacketHandler handler;
-	protected final Connection connect;
+	protected final IConnection connect;
 	
 	//NIO channel things
 	
@@ -44,7 +44,7 @@ public class ThreadNetwork extends ThreadTimed
 	protected final ByteBuffer bout = ByteBuffer.allocate(8192 * 32);
 	
 	@SuppressWarnings("unqualified-field-access")
-	public ThreadNetwork(IPacketHandler h, Connection con, int ups)
+	public ThreadNetwork(IPacketHandler h, IConnection con, int ups)
 	{
 		assert con != null;
 		assert h != null;
@@ -87,6 +87,7 @@ public class ThreadNetwork extends ThreadTimed
 	@Override
 	public void update(double delta) throws Throwable
 	{
+		int i;
 		short type, length;
 		List<Packet> pkts = null;
 		Packet pkt;
@@ -126,19 +127,32 @@ public class ThreadNetwork extends ThreadTimed
 							
 							if (format != null && format.type.isCompatible((ConnectionType)key.attachment()))//NOW we check to see if the data in question is valid
 							{
-								//Huh, it is. Okay, let's read the thing...
+								//Huh, it is. Okay, let's read this thing...
 								
 								pkt = format.read(this.bin);//Excuse me Mr. Format, could you tell me what's going on?
 								
 								if (pkt != null)//Check if the packet has been read successfully.
 								{
-									if (pkts == null)//Dynamically load the packet list with a limit of 32 packets.
+									if (pkts == null)//Dynamically load the packet list with a soft limit of 32 packets.
 									{
 										pkts = new ArrayList<Packet>(32);
 										
 									}
 									
-									pkts.add(pkt);//Schedule the packet to be sent to the game.
+									//Schedule the packet to be sent to the game.
+									
+									i = pkts.indexOf(null);
+									
+									if (i == -1)
+									{
+										pkts.add(pkt);
+										
+									}
+									else
+									{
+										pkts.set(i, pkt);
+										
+									}
 									
 								}
 								

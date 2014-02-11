@@ -41,7 +41,7 @@ public class ThreadJoinListener extends ThreadTimed
 			ch = ServerSocketChannel.open();
 			ch.configureBlocking(false);
 			
-			ch.socket().bind(new InetSocketAddress(port));
+			ch.bind(new InetSocketAddress(port));
 			
 		}
 		catch (IOException e)

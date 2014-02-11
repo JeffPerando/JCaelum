@@ -7,7 +7,7 @@ package com.elusivehawk.engine.util.io;
  * 
  * @author Elusivehawk
  */
-public interface ByteWrapper
+public interface ByteReader
 {
 	public byte read();
 	

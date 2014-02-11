@@ -4,7 +4,7 @@ package com.elusivehawk.engine.tag;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import com.elusivehawk.engine.util.io.ByteWrapper;
+import com.elusivehawk.engine.util.io.ByteReader;
 import com.elusivehawk.engine.util.io.ByteWriter;
 import com.elusivehawk.engine.util.io.Serializer;
 
@@ -87,7 +87,7 @@ public class TagList implements ITag<Collection<ITag<?>>>, ITagList
 	public static class ListReader implements ITagReader<Collection<ITag<?>>>
 	{
 		@Override
-		public ITag<Collection<ITag<?>>> readTag(String name, ByteWrapper wrap)
+		public ITag<Collection<ITag<?>>> readTag(String name, ByteReader wrap)
 		{
 			TagList ret = new TagList(name);
 			

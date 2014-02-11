@@ -11,7 +11,7 @@ import java.io.OutputStream;
  * 
  * @author Elusivehawk
  */
-public class ByteStreams implements ByteWrapper, ByteWriter
+public class ByteStreams implements ByteReader, ByteWriter
 {
 	protected final InputStream in;
 	protected final OutputStream out;

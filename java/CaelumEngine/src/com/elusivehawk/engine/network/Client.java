@@ -20,8 +20,8 @@ public class Client implements IHost
 	protected final IConnectionMaster master;
 	protected final int ups;
 	
-	protected HandshakeConnection handshake = null;
-	protected Connection connection = null;
+	protected IConnection connection = null;
+	protected boolean hasHS = false;
 	
 	public Client(IConnectionMaster mstr)
 	{
@@ -47,7 +47,7 @@ public class Client implements IHost
 	}
 	
 	@Override
-	public void onPacketsReceived(Connection origin, ImmutableList<Packet> pkts)
+	public void onPacketsReceived(IConnection origin, ImmutableList<Packet> pkts)
 	{
 		this.master.onPacketsReceived(origin, pkts);
 		
@@ -58,7 +58,7 @@ public class Client implements IHost
 	{
 		if (this.connection != null)
 		{
-			if (type.isUdp() && this.connection.getConnectionId().equals(id))
+			if (type.isUdp() && this.connection.getId().equals(id))
 			{
 				this.connection.connect(id, ip, type);
 				
@@ -77,22 +77,22 @@ public class Client implements IHost
 	@Override
 	public UUID connect(SocketChannel s)
 	{
-		if (s == null || (this.handshake != null || this.connection != null))
+		if (s == null || (this.connection != null || this.hasHS))
 		{
 			return null;
 		}
 		
-		this.handshake = new HandshakeConnection(this, s, UUID.randomUUID(), this.ups, this.master.getHandshakeProtocol());
+		this.connection = ConnectionFactory.factory().createHS(this, s, UUID.randomUUID(), this.ups);
 		
-		return this.handshake.getConnection().getConnectionId();
+		return this.connection.getId();
 	}
 	
 	@Override
 	public void beginComm()
 	{
-		if (this.handshake != null)
+		if (this.connection != null)
 		{
-			this.handshake.start();
+			this.connection.beginComm();
 			
 		}
 		
@@ -106,7 +106,7 @@ public class Client implements IHost
 			return;
 		}
 		
-		if (!this.connection.getConnectionId().equals(client))
+		if (!this.connection.getId().equals(client))
 		{
 			return;
 		}
@@ -120,9 +120,9 @@ public class Client implements IHost
 	{
 		assert client != null;
 		
-		if (!client.equals(this.connection.getConnectionId()))
+		if (!client.equals(this.connection.getId()))
 		{
-			this.sendPackets(this.connection.getConnectionId(), pkts);
+			this.sendPackets(this.connection.getId(), pkts);
 			
 		}
 		
@@ -143,14 +143,24 @@ public class Client implements IHost
 	@Override
 	public ImmutableList<UUID> getConnectionIds()
 	{
-		return this.connection == null ? null : ImmutableList.copyOf(new UUID[]{this.connection.getConnectionId()});
+		return this.connection == null ? null : ImmutableList.copyOf(new UUID[]{this.connection.getId()});
 	}
 	
 	@Override
-	public void pauseConnections(boolean pause)
+	public void setPaused(boolean pause)
 	{
-		this.connection.setPaused(pause);
+		if (this.connection != null)
+		{
+			this.connection.setPaused(pause);
+			
+		}
 		
+	}
+	
+	@Override
+	public boolean isPaused()
+	{
+		return this.connection == null ? false : this.connection.isPaused();
 	}
 	
 	@Override
@@ -160,20 +170,30 @@ public class Client implements IHost
 	}
 	
 	@Override
-	public void onHandshakeEnd(boolean success, HandshakeConnection connection, List<Packet> pkts)
+	public void onHandshakeEnd(boolean success, IConnection connection, List<Packet> pkts)
 	{
+		if (this.hasHS)
+		{
+			return;
+		}
+		
 		this.master.onHandshakeEnd(success, connection, pkts);
 		
-		this.handshake = null;
-		
-		connection.getConnection().close(!success);
+		connection.close(!success);
 		
 		if (success)
 		{
-			this.connection = new Connection(this, this.ups);
+			this.connection = ConnectionFactory.factory().create(this, UUID.randomUUID(), this.ups);
 			
-			this.connection.connect(connection.getConnection().getChannel());
+			this.connection.connect(connection.getChannel());
 			this.connection.beginComm();
+			
+			this.hasHS = true;
+			
+		}
+		else
+		{
+			this.connection = null;
 			
 		}
 		
@@ -200,7 +220,7 @@ public class Client implements IHost
 	}
 	
 	@Override
-	public void onDisconnect(Connection connect)
+	public void onDisconnect(IConnection connect)
 	{
 		if (this.connection != connect)
 		{
@@ -209,6 +229,7 @@ public class Client implements IHost
 		}
 		
 		this.connection = null;
+		this.hasHS = false;
 		
 	}
 	

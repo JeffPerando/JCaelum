@@ -4,8 +4,6 @@ package com.elusivehawk.engine.network;
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
 import java.util.UUID;
-import com.elusivehawk.engine.core.CaelumEngine;
-import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.util.SemiFinalStorage;
 
 /**
@@ -14,24 +12,20 @@ import com.elusivehawk.engine.util.SemiFinalStorage;
  * 
  * @author Elusivehawk
  */
-public final class Connection implements IConnectable
+public class ConnectionImpl implements IConnection
 {
-	private final IPacketHandler handler;
+	protected final IPacketHandler handler;
+	
 	private final UUID connectId;
 	private final int updCount;
 	private final SemiFinalStorage<Boolean> closed = new SemiFinalStorage<Boolean>(false);
 	
-	private ThreadNetwork io = null;
+	protected ThreadNetwork io = null;
+	
 	private SocketChannel sch = null;
 	
-	public Connection(IPacketHandler h, int ups)
-	{
-		this(h, null, ups);
-		
-	}
-	
 	@SuppressWarnings("unqualified-field-access")
-	public Connection(IPacketHandler h, UUID id, int ups)
+	public ConnectionImpl(IPacketHandler h, UUID id, int ups)
 	{
 		assert h != null;
 		assert id != null;
@@ -40,22 +34,6 @@ public final class Connection implements IConnectable
 		handler = h;
 		connectId = id;
 		updCount = ups;
-		
-	}
-	
-	public SocketChannel getChannel()
-	{
-		return this.sch;
-	}
-	
-	public UUID getConnectionId()
-	{
-		return this.connectId;
-	}
-	
-	public void sendPackets(Packet... pkts)
-	{
-		this.io.sendPackets(pkts);
 		
 	}
 	
@@ -74,6 +52,11 @@ public final class Connection implements IConnectable
 		
 		if (type.isUdp())
 		{
+			if (this.io == null)
+			{
+				return null;
+			}
+			
 			this.io.connectDatagram(ip);
 			
 			return this.connectId;
@@ -85,7 +68,7 @@ public final class Connection implements IConnectable
 	@Override
 	public UUID connect(SocketChannel s)
 	{
-		if (s != null)
+		if (s == null || this.io != null)
 		{
 			return null;
 		}
@@ -99,21 +82,61 @@ public final class Connection implements IConnectable
 	@Override
 	public void beginComm()
 	{
+		if (this.io.isAlive())
+		{
+			return;
+		}
+		
 		this.io.start();
 		
 	}
 	
-	public void setPaused(boolean pause)
+	@Override
+	public boolean isPaused()
 	{
-		this.io.setPaused(pause);
+		return this.io.isPaused();
+	}
+	
+	@Override
+	public void setPaused(boolean p)
+	{
+		this.io.setPaused(p);
 		
 	}
 	
+	@Override
+	public void close()
+	{
+		this.close(true);
+		
+	}
+	
+	@Override
+	public UUID getId()
+	{
+		return this.connectId;
+	}
+	
+	@Override
+	public SocketChannel getChannel()
+	{
+		return this.sch;
+	}
+	
+	@Override
+	public void sendPackets(Packet... pkts)
+	{
+		this.io.sendPackets(pkts);
+		
+	}
+	
+	@Override
 	public boolean isClosed()
 	{
 		return this.closed.get();
 	}
 	
+	@Override
 	public void close(boolean closeSkt)
 	{
 		if (this.isClosed())
@@ -138,7 +161,7 @@ public final class Connection implements IConnectable
 			}
 			catch (IOException e)
 			{
-				CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
+				e.printStackTrace();
 				
 			}
 			
