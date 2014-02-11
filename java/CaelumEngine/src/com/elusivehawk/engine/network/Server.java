@@ -87,13 +87,14 @@ public class Server implements IHost
 	{
 		assert s != null;
 		
-		IConnection next = ConnectionFactory.factory().createHS(this, s, UUID.randomUUID(), this.ups);
+		IConnection next = ConnectionFactory.factory().createHS(this, UUID.randomUUID(), this.ups);
 		int i = this.clients.indexOf(null);
 		
 		if (i == -1)
 		{
 			this.clients.set(i, next);
 			
+			next.connect(s);
 			next.beginComm();
 			
 			return next.getId();

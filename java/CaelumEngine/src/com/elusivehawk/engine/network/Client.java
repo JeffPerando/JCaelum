@@ -82,7 +82,9 @@ public class Client implements IHost
 			return null;
 		}
 		
-		this.connection = ConnectionFactory.factory().createHS(this, s, UUID.randomUUID(), this.ups);
+		this.connection = ConnectionFactory.factory().createHS(this, UUID.randomUUID(), this.ups);
+		
+		this.connection.connect(s);
 		
 		return this.connection.getId();
 	}

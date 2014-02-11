@@ -18,26 +18,18 @@ import com.google.common.collect.ImmutableList;
 public class HSConnectionImpl implements IPacketHandler, IConnection
 {
 	private final IHost master;
-	private final SocketChannel sch;
 	private final IConnection connect;
 	private final short[] expectPkts;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public HSConnectionImpl(IHost owner, SocketChannel s, UUID id, int ups)
+	public HSConnectionImpl(IHost owner, UUID id, int ups)
 	{
 		assert owner != null;
-		assert s != null;
 		
 		master = owner;
-		sch = s;
 		connect = ConnectionFactory.factory().create(this, id, ups);
 		expectPkts = owner.getHandshakeProtocol();
 		
-	}
-	
-	public IConnection getConnection()
-	{
-		return this.connect;
 	}
 	
 	@Override
@@ -120,13 +112,13 @@ public class HSConnectionImpl implements IPacketHandler, IConnection
 	@Override
 	public UUID connect(UUID origin, IP ip, ConnectionType type)
 	{
-		return null;
+		return this.connect.connect(origin, ip, type);
 	}
 	
 	@Override
 	public UUID connect(SocketChannel sch)
 	{
-		return null;
+		return this.connect.connect(sch);
 	}
 	
 	@Override
@@ -137,7 +129,6 @@ public class HSConnectionImpl implements IPacketHandler, IConnection
 			return;
 		}
 		
-		this.connect.connect(this.sch);
 		this.connect.beginComm();
 		
 	}
@@ -180,7 +171,7 @@ public class HSConnectionImpl implements IPacketHandler, IConnection
 	@Override
 	public SocketChannel getChannel()
 	{
-		return this.sch;
+		return this.connect == null ? null : this.connect.getChannel();
 	}
 	
 	@Override

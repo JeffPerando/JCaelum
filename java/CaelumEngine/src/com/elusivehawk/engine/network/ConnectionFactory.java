@@ -1,7 +1,6 @@
 
 package com.elusivehawk.engine.network;
 
-import java.nio.channels.SocketChannel;
 import java.util.UUID;
 
 /**
@@ -34,7 +33,7 @@ public abstract class ConnectionFactory
 	
 	public abstract IConnection create(IPacketHandler h, UUID id, int ups);
 	
-	public abstract IConnection createHS(IHost owner, SocketChannel s, UUID id, int ups);
+	public abstract IConnection createHS(IHost owner, UUID id, int ups);
 	
 	private static class ConnectionFactoryImpl extends ConnectionFactory
 	{
@@ -47,9 +46,9 @@ public abstract class ConnectionFactory
 		}
 		
 		@Override
-		public IConnection createHS(IHost owner, SocketChannel s, UUID id, int ups)
+		public IConnection createHS(IHost owner, UUID id, int ups)
 		{
-			return new HSConnectionImpl(owner, s, id, ups);
+			return new HSConnectionImpl(owner, id, ups);
 		}
 		
 	}
