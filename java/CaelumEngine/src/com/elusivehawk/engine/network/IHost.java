@@ -8,7 +8,7 @@ import com.google.common.collect.ImmutableList;
 
 /**
  * 
- * Interface for "host" object (Client, server, etc.)
+ * Interface for "host" objects (Client, server, etc.)
  * <p>
  * Note: It's recommended that you not implement this yourself.
  * 

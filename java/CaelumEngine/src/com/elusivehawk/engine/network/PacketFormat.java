@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.network;
 
 import java.nio.ByteBuffer;
+import java.util.Iterator;
 import com.elusivehawk.engine.util.io.ByteBuf;
 import com.elusivehawk.engine.util.io.ByteReader;
 import com.elusivehawk.engine.util.io.ByteWriter;
@@ -14,7 +15,7 @@ import com.google.common.collect.ImmutableList;
  * 
  * @author Elusivehawk
  */
-public final class PacketFormat
+public final class PacketFormat implements Iterable<DataType>
 {
 	public final Side side;
 	public final ConnectionType type;
@@ -48,15 +49,13 @@ public final class PacketFormat
 	public Packet read(ByteBuffer in)
 	{
 		Packet ret = new Packet(this);
-		ByteReader wrap = new ByteBuf(in);
-		int pos = 0;
-		DataType type;
+		ByteReader r = new ByteBuf(in);
+		PktFormatItr itr = this.iterator();
+		Object obj;
 		
-		for (int c = 0; c < this.format.size(); c += (1 + type.getSkipCount(c, this.format)))
+		while (itr.hasNext())
 		{
-			type = this.format.get(c);
-			
-			Object obj = type.decode(this.format, pos, wrap);
+			obj = itr.next().decode(this.format, itr.position(), r);
 			
 			if (obj == null)
 			{
@@ -73,22 +72,15 @@ public final class PacketFormat
 	public int write(Packet pkt, ByteBuffer buf)
 	{
 		ByteWriter w = new ByteBuf(buf);
-		DataType type;
 		int length = Serializer.SHORT.toBytes(w, this.pktId);
+		PktFormatItr itr = this.iterator();
 		
 		buf.position(buf.position() + 2);
 		buf.mark();
 		
-		for (int c = 0; c < this.format.size(); c++)
+		while (itr.hasNext())
 		{
-			type = this.format.get(c);
-			
-			if (c > 0 && this.format.get(c - 1) == DataType.ARRAY)
-			{
-				continue;
-			}
-			
-			length += type.encode(this.format, c, pkt.getData().get(c), w);
+			length += itr.next().encode(this.format, itr.position(), pkt.getData().get(itr.actualPos()), w);
 			
 		}
 		
@@ -99,6 +91,68 @@ public final class PacketFormat
 		buf.reset();
 		
 		return length;
+	}
+	
+	@Override
+	public PktFormatItr iterator()
+	{
+		return new PktFormatItr(this);
+	}
+	
+	public static class PktFormatItr implements Iterator<DataType>
+	{
+		protected final ImmutableList<DataType> format;
+		protected int pos = 0, nextPos = 0, actualPosition = 0;
+		protected DataType last = null;
+		
+		@SuppressWarnings("unqualified-field-access")
+		public PktFormatItr(PacketFormat f)
+		{
+			assert f != null;
+			
+			format = f.format;
+			
+		}
+		
+		@Override
+		public boolean hasNext()
+		{
+			return this.format.size() > this.pos;
+		}
+		
+		@Override
+		public DataType next()
+		{
+			DataType ret = null;
+			
+			this.pos = this.nextPos;
+			
+			if (this.last != null)
+			{
+				this.nextPos += this.last.getSkipCount(this.pos, this.format);
+				this.actualPosition++;
+				
+			}
+			
+			ret = this.format.get(this.pos);
+			this.last = ret;
+			
+			return ret;
+		}
+		
+		@Override
+		public void remove(){}
+		
+		public int position()
+		{
+			return this.pos;
+		}
+		
+		public int actualPos()
+		{
+			return this.actualPosition;
+		}
+		
 	}
 	
 }
