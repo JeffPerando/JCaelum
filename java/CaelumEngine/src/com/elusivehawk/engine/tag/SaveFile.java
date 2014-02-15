@@ -23,7 +23,7 @@ import com.elusivehawk.engine.util.io.ByteWriter;
 public class SaveFile implements ITagList
 {
 	protected File save;
-	protected List<ITag<?>> tags = new ArrayList<ITag<?>>();
+	protected List<Tag<?>> tags = new ArrayList<Tag<?>>();
 	
 	public SaveFile(String path)
 	{
@@ -60,7 +60,7 @@ public class SaveFile implements ITagList
 		{
 			while (in.available() > 0)
 			{
-				ITag<?> tag = TagReaderRegistry.instance().readTag(wrap);
+				Tag<?> tag = TagReaderRegistry.instance().read(wrap);
 				
 				if (tag == null)
 				{
@@ -106,11 +106,11 @@ public class SaveFile implements ITagList
 		}
 		
 		BufferedOutputStream out = new BufferedOutputStream(fos);
-		ByteWriter stream = new ByteStreams(null, out);
+		ByteWriter writer = new ByteStreams(null, out);
 		
-		for (ITag<?> tag : this.tags)
+		for (Tag<?> tag : this.tags)
 		{
-			TagReaderRegistry.instance().writeTag(stream, tag);
+			TagReaderRegistry.instance().write(writer, tag);
 			
 		}
 		
@@ -129,7 +129,7 @@ public class SaveFile implements ITagList
 	}
 	
 	@Override
-	public void addTag(ITag<?> tag)
+	public void addTag(Tag<?> tag)
 	{
 		int i = -1;
 		
@@ -157,24 +157,99 @@ public class SaveFile implements ITagList
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
-	public ITag<?> getTag(String name)
+	public <T> Tag<T> getTag(String name)
 	{
 		if (this.tags.isEmpty())
 		{
 			return null;
 		}
 		
-		for (ITag<?> tag : this.tags)
+		Tag<T> ret = null;
+		
+		for (Tag<?> tag : this.tags)
 		{
 			if (tag.getName() == name)
 			{
-				return tag;
+				try
+				{
+					ret = (Tag<T>)tag;
+					
+				}
+				catch (ClassCastException e)
+				{
+					e.printStackTrace();
+					
+				}
+				
 			}
 			
 		}
 		
-		return null;
+		return ret;
+	}
+	
+	@Override
+	public Boolean readBoolean(String name)
+	{
+		return this.<Boolean>readOther(name);
+	}
+	
+	@Override
+	public Byte readByte(String name)
+	{
+		return this.<Byte>readOther(name);
+	}
+	
+	@Override
+	public Float readFloat(String name)
+	{
+		return this.<Float>readOther(name);
+	}
+	
+	@Override
+	public Double readDouble(String name)
+	{
+		return this.<Double>readOther(name);
+	}
+	
+	@Override
+	public Integer readInt(String name)
+	{
+		return this.<Integer>readOther(name);
+	}
+	
+	@Override
+	public ITagList readList(String name)
+	{
+		return this.<ITagList>readOther(name);
+	}
+	
+	@Override
+	public Long readLong(String name)
+	{
+		return this.<Long>readOther(name);
+	}
+	
+	@Override
+	public Short readShort(String name)
+	{
+		return this.<Short>readOther(name);
+	}
+	
+	@Override
+	public String readString(String name)
+	{
+		return this.<String>readOther(name);
+	}
+	
+	@Override
+	public <T> T readOther(String name)
+	{
+		Tag<T> ret = this.<T>getTag(name);
+		
+		return ret == null ? null : ret.getData();
 	}
 	
 }

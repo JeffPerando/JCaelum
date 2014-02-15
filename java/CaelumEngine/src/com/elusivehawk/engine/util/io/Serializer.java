@@ -13,7 +13,7 @@ public interface Serializer<T>
 {
 	public int toBytes(ByteWriter w, T obj);
 	
-	public T fromBytes(ByteReader b);
+	public T fromBytes(ByteReader r);
 	
 	public static final Serializer<Boolean> BOOLEAN = new Serializer<Boolean>()
 			{

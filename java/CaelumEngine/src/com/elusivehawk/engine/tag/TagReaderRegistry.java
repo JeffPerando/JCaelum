@@ -11,7 +11,7 @@ import com.elusivehawk.engine.util.io.Serializer;
  * 
  * @author Elusivehawk
  */
-public final class TagReaderRegistry implements Serializer<ITag<?>>
+public final class TagReaderRegistry implements Serializer<Tag<?>>
 {
 	public static final byte BYTE_ID = 0x00;
 	public static final byte SHORT_ID = 0x01;
@@ -24,18 +24,18 @@ public final class TagReaderRegistry implements Serializer<ITag<?>>
 	
 	private static final TagReaderRegistry INSTANCE = new TagReaderRegistry();
 	
-	private final ITagReader<?>[] readers = new ITagReader<?>[256];
+	private final Serializer<?>[] serializers = new Serializer[256];
 	
 	private TagReaderRegistry()
 	{
-		this.register(BYTE_ID, new TagByte.ByteReader());
-		this.register(SHORT_ID, new TagShort.ShortReader());
-		this.register(INT_ID, new TagInt.IntReader());
-		this.register(LONG_ID, new TagLong.LongReader());
-		this.register(FLOAT_ID, new TagFloat.FloatReader());
-		this.register(DOUBLE_ID, new TagDouble.DoubleReader());
-		this.register(STRING_ID, new TagString.StringReader());
-		this.register(LIST_ID, new TagList.ListReader());
+		this.registerReader(BYTE_ID, BYTE);
+		this.registerReader(SHORT_ID, SHORT);
+		this.registerReader(INT_ID, INTEGER);
+		this.registerReader(LONG_ID, LONG);
+		this.registerReader(FLOAT_ID, FLOAT);
+		this.registerReader(DOUBLE_ID, DOUBLE);
+		this.registerReader(STRING_ID, STRING);
+		this.registerReader(LIST_ID, new TagListReader());
 		
 	}
 	
@@ -44,70 +44,75 @@ public final class TagReaderRegistry implements Serializer<ITag<?>>
 		return INSTANCE;
 	}
 	
-	public void register(byte id, ITagReader<?> reader)
+	public <T> Tag<T> read(ByteReader r)
 	{
-		if (this.getReader(id) != null)
+		String name = Serializer.STRING.fromBytes(r);
+		
+		byte id = r.read();
+		Serializer<T> s = null;
+		
+		try
 		{
-			System.err.println("Overriding tag reader ID #" + id);
+			s  = this.getSerializer(id);
 			
 		}
-		
-		this.readers[id] = reader;
-		
-	}
-	
-	public ITagReader<?> getReader(byte id)
-	{
-		return this.readers[id];
-	}
-	
-	public ITag<?> readTag(ByteReader wrap)
-	{
-		String name = Serializer.STRING.fromBytes(wrap);
-		
-		byte id = wrap.read();
-		ITagReader<?> r = this.getReader(id);
-		
-		if (r == null)
+		catch (ClassCastException e)
 		{
-			System.err.println("Could not continue reading tag, invalid tag ID: " + id);
-			
+			e.printStackTrace();
 			return null;
 		}
 		
-		return r.readTag(name, wrap);
+		return new Tag<T>(name, id, s.fromBytes(r));
 	}
 	
-	public int writeTag(ByteWriter w, ITag<?> tag)
+	public <T> int write(ByteWriter w, Tag<T> tag)
 	{
-		int count = Serializer.STRING.toBytes(w, tag.getName());
+		Serializer<T> s = null;
+		int length = 0;
 		
-		byte type = tag.getType();
-		
-		if (this.getReader(type) == null)
+		try
 		{
-			System.err.println("Tag " + tag.getName() + " has invalid type ID " + type + ", please rectify.");
+			s  = this.getSerializer(tag.getReaderId());
+			
+		}
+		catch (ClassCastException e)
+		{
+			e.printStackTrace();
 			
 		}
 		
-		w.write(type);
-		count++;
+		if (s != null)
+		{
+			length += Serializer.STRING.toBytes(w, tag.getName());
+			length += s.toBytes(w, tag.getData());
+			
+		}
 		
-		count += tag.save(w);
+		return length;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> Serializer<T> getSerializer(byte id) throws ClassCastException
+	{
+		return (Serializer<T>)this.serializers[id];
+	}
+	
+	public void registerReader(byte id, Serializer<?> s)
+	{
+		this.serializers[id] = s;
 		
-		return count;
 	}
 	
 	@Override
-	public int toBytes(ByteWriter w, ITag<?> tag)
+	public int toBytes(ByteWriter w, Tag<?> tag)
 	{
-		return this.writeTag(w, tag);
+		return this.write(w, tag);
 	}
 	
 	@Override
-	public ITag<?> fromBytes(ByteReader b)
+	public Tag<?> fromBytes(ByteReader b)
 	{
-		return this.readTag(b);
+		return this.read(b);
 	}
 	
 }
