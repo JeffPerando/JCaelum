@@ -9,9 +9,13 @@ package com.elusivehawk.engine.tag;
  */
 public interface ITagList
 {
+	public int size();
+	
 	public void addTag(Tag<?> tag);
 	
 	public <T> Tag<T> getTag(String name);
+	
+	public <T> Tag<T> getTag(int index);
 	
 	public Boolean readBoolean(String name);
 	
