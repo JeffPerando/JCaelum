@@ -190,13 +190,13 @@ public interface Serializer<T>
 				@Override
 				public int toBytes(ByteWriter w, UUID uuid)
 				{
-					return STRING.toBytes(w, uuid.toString());
+					return LONG.toBytes(w, uuid.getMostSignificantBits()) + LONG.toBytes(w, uuid.getLeastSignificantBits());
 				}
 				
 				@Override
-				public UUID fromBytes(ByteReader b)
+				public UUID fromBytes(ByteReader r)
 				{
-					return java.util.UUID.fromString(STRING.fromBytes(b));
+					return new java.util.UUID(LONG.fromBytes(r), LONG.fromBytes(r));
 				}
 				
 			};
