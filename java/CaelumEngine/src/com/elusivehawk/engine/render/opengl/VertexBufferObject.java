@@ -22,7 +22,7 @@ public class VertexBufferObject implements IGLCleanable
 	private VertexBufferObject(int vbo, int target, int mode, RenderContext context)
 	{
 		t = target;
-		id = GL.glIsBuffer(vbo) ? vbo : GL.glGenBuffers();
+		id = context.getGL1().glIsBuffer(vbo) ? vbo : context.getGL1().glGenBuffers();
 		loadMode = mode;
 		
 		RenderHelper.register(this);
@@ -31,13 +31,13 @@ public class VertexBufferObject implements IGLCleanable
 	
 	public VertexBufferObject(int target, FloatBuffer buf, int mode, RenderContext context)
 	{
-		this(GL.glGenBuffers(), target, buf, mode);
+		this(context.getGL1().glGenBuffers(), target, buf, mode, context);
 		
 	}
 	
 	public VertexBufferObject(int target, IntBuffer buf, int mode, RenderContext context)
 	{
-		this(GL.glGenBuffers(), target, buf, mode);
+		this(context.getGL1().glGenBuffers(), target, buf, mode, context);
 		
 	}
 	
@@ -57,21 +57,21 @@ public class VertexBufferObject implements IGLCleanable
 	
 	protected void loadData(FloatBuffer buf, RenderContext context)
 	{
-		int vba = GL.glGetInteger(GLConst.GL_VERTEX_ARRAY_BINDING);
+		int vba = context.getGL1().glGetInteger(GLConst.GL_VERTEX_ARRAY_BINDING);
 		
 		if (vba != 0)
 		{
-			GL.glBindVertexArray(0);
+			context.getGL3().glBindVertexArray(0);
 			
 		}
 		
-		GL.glBindBuffer(this);
-		GL.glBufferData(this.id, buf, this.loadMode);
-		GL.glBindBuffer(this.t, 0);
+		context.getGL1().glBindBuffer(this);
+		context.getGL1().glBufferData(this.id, GLConst.GL_FLOAT, buf, this.loadMode);
+		context.getGL1().glBindBuffer(this.t, 0);
 		
 		if (vba != 0)
 		{
-			GL.glBindVertexArray(vba);
+			context.getGL3().glBindVertexArray(vba);
 			
 		}
 		
@@ -79,21 +79,21 @@ public class VertexBufferObject implements IGLCleanable
 	
 	protected void loadData(IntBuffer buf, RenderContext context)
 	{
-		int vba = GL.glGetInteger(GLConst.GL_VERTEX_ARRAY_BINDING);
+		int vba = context.getGL1().glGetInteger(GLConst.GL_VERTEX_ARRAY_BINDING);
 		
 		if (vba != 0)
 		{
-			GL.glBindVertexArray(0);
+			context.getGL3().glBindVertexArray(0);
 			
 		}
 		
-		GL.glBindBuffer(this);
-		GL.glBufferData(this.t, buf, this.loadMode);
-		GL.glBindBuffer(this.t, 0);
+		context.getGL1().glBindBuffer(this);
+		context.getGL1().glBufferData(this.t, GLConst.GL_INT, buf, this.loadMode);
+		context.getGL1().glBindBuffer(this.t, 0);
 		
 		if (vba != 0)
 		{
-			GL.glBindVertexArray(vba);
+			context.getGL3().glBindVertexArray(vba);
 			
 		}
 		
@@ -101,17 +101,17 @@ public class VertexBufferObject implements IGLCleanable
 	
 	public void updateEntireVBO(FloatBuffer buf, RenderContext context)
 	{
-		GL.glBindBuffer(this);
-		GL.glBufferSubData(this.t, 0, buf);
-		GL.glBindBuffer(this.t, 0);
+		context.getGL1().glBindBuffer(this);
+		context.getGL1().glBufferSubData(this.t, 0, GLConst.GL_FLOAT, buf);
+		context.getGL1().glBindBuffer(this.t, 0);
 		
 	}
 	
 	public void updateEntireVBO(IntBuffer buf, RenderContext context)
 	{
-		GL.glBindBuffer(this);
-		GL.glBufferSubData(this.t, 0, buf);
-		GL.glBindBuffer(this.t, 0);
+		context.getGL1().glBindBuffer(this);
+		context.getGL1().glBufferSubData(this.t, 0, GLConst.GL_INT, buf);
+		context.getGL1().glBindBuffer(this.t, 0);
 		
 	}
 	
@@ -145,24 +145,24 @@ public class VertexBufferObject implements IGLCleanable
 	
 	public void updateVBO(FloatBuffer buf, int offset, RenderContext context)
 	{
-		GL.glBindBuffer(this);
-		GL.glBufferSubData(this.t, offset * 4, buf);
-		GL.glBindBuffer(this.t, 0);
+		context.getGL1().glBindBuffer(this);
+		context.getGL1().glBufferSubData(this.t, offset * 4, GLConst.GL_FLOAT, buf);
+		context.getGL1().glBindBuffer(this.t, 0);
 		
 	}
 	
 	public void updateVBO(IntBuffer buf, int offset, RenderContext context)
 	{
-		GL.glBindBuffer(this);
-		GL.glBufferSubData(this.t, offset * 4, buf);
-		GL.glBindBuffer(this.t, 0);
+		context.getGL1().glBindBuffer(this);
+		context.getGL1().glBufferSubData(this.t, offset * 4, GLConst.GL_INT, buf);
+		context.getGL1().glBindBuffer(this.t, 0);
 		
 	}
 	
 	@Override
 	public void glDelete(RenderContext context)
 	{
-		GL.glDeleteBuffers(this);
+		context.getGL1().glDeleteBuffers(this);
 		
 	}
 	

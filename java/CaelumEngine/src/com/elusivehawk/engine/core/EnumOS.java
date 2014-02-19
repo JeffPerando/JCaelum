@@ -11,7 +11,7 @@ public enum EnumOS
 {
 	WINDOWS, MACOSX, LINUX, SOLARIS, ANDROID, OTHER;
 	
-	private static final EnumOS CURR_OS = determineOS();
+	private static final EnumOS CURRENT_OS = determineOS();
 	
 	private static EnumOS determineOS()
 	{
@@ -36,7 +36,7 @@ public enum EnumOS
 	
 	public static EnumOS getCurrentOS()
 	{
-		return CURR_OS;
+		return CURRENT_OS;
 	}
 	
 	@Override

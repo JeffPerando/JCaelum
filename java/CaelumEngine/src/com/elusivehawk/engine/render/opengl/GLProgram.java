@@ -38,7 +38,7 @@ public class GLProgram implements IGLCleanable
 	{
 		id = context.getGL2().glCreateProgram();
 		
-		vba = GL.glGenVertexArrays();
+		vba = context.getGL3().glGenVertexArrays();
 		
 		for (int s : sh)
 		{
@@ -122,9 +122,9 @@ public class GLProgram implements IGLCleanable
 		this.attachModel(tkt.getModel());
 		this.attachVBO(tkt.getExtraVBO(), Arrays.asList(3, 4, 5));
 		
-		GL.glVertexAttribPointer(3, 3, false, 0, tkt.getBuffer());
-		GL.glVertexAttribPointer(4, 3, false, 3, tkt.getBuffer());
-		GL.glVertexAttribPointer(5, 3, false, 6, tkt.getBuffer());
+		context.getGL2().glVertexAttribPointer(3, 3, GLConst.GL_FLOAT, false, 0, tkt.getBuffer());
+		context.getGL2().glVertexAttribPointer(4, 3, GLConst.GL_FLOAT, false, 3, tkt.getBuffer());
+		context.getGL2().glVertexAttribPointer(5, 3, GLConst.GL_FLOAT, false, 6, tkt.getBuffer());
 		
 	}
 	
@@ -194,19 +194,19 @@ public class GLProgram implements IGLCleanable
 		
 		context.getGL2().glUseProgram(this);
 		
-		GL.glBindVertexArray(this.vba);
+		context.getGL3().glBindVertexArray(this.vba);
 		
 		if (!this.vbos.isEmpty())
 		{
 			for (Entry<VertexBufferObject, List<Integer>> entry : this.vbos.entrySet())
 			{
-				GL.glBindBuffer(entry.getKey());
+				context.getGL1().glBindBuffer(entry.getKey());
 				
 				if (entry.getValue() != null)
 				{
 					for (int attrib : entry.getValue())
 					{
-						GL.glEnableVertexAttribArray(attrib);
+						context.getGL2().glEnableVertexAttribArray(attrib);
 						
 					}
 					
@@ -229,19 +229,19 @@ public class GLProgram implements IGLCleanable
 				{
 					for (int a : entry.getValue())
 					{
-						GL.glDisableVertexAttribArray(a);
+						context.getGL2().glDisableVertexAttribArray(a);
 						
 					}
 					
 				}
 				
-				GL.glBindBuffer(entry.getKey().t, 0);
+				context.getGL1().glBindBuffer(entry.getKey().t, 0);
 				
 			}
 			
 		}
 		
-		GL.glBindVertexArray(0);
+		context.getGL3().glBindVertexArray(0);
 		
 		context.getGL2().glUseProgram(0);
 		
@@ -252,7 +252,7 @@ public class GLProgram implements IGLCleanable
 	{
 		this.unbind(context);
 		
-		GL.glDeleteVertexArrays(this.vba);
+		context.getGL3().glDeleteVertexArrays(this.vba);
 		
 		for (int shader : this.shaders)
 		{

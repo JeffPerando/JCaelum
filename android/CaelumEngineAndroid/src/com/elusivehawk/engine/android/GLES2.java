@@ -7,6 +7,7 @@ import java.nio.IntBuffer;
 import android.annotation.TargetApi;
 import android.opengl.GLES20;
 import android.os.Build;
+import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.util.BufferHelper;
 
@@ -56,6 +57,13 @@ public class GLES2 implements IGL2
 	public int glCreateShader(int type)
 	{
 		return GLES20.glCreateShader(type);
+	}
+	
+	@Override
+	public void glDeleteProgram(GLProgram program)
+	{
+		this.glDeleteProgram(program.getId());
+		
 	}
 	
 	@Override
@@ -291,6 +299,20 @@ public class GLES2 implements IGL2
 	}
 	
 	@Override
+	public void glLinkProgram(GLProgram program)
+	{
+		this.glLinkProgram(program.getId());
+		
+	}
+	
+	@Override
+	public void glLinkProgram(int program)
+	{
+		GLES20.glLinkProgram(program);
+		
+	}
+	
+	@Override
 	public void glShaderSource(int shader, String string)
 	{
 		GLES20.glShaderSource(shader, string);
@@ -452,9 +474,23 @@ public class GLES2 implements IGL2
 	}
 	
 	@Override
+	public void glUseProgram(GLProgram program)
+	{
+		this.glUseProgram(program.getId());
+		
+	}
+	
+	@Override
 	public void glUseProgram(int program)
 	{
 		GLES20.glUseProgram(program);
+		
+	}
+	
+	@Override
+	public void glValidateProgram(GLProgram program)
+	{
+		this.glValidateProgram(program.getId());
 		
 	}
 	

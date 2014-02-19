@@ -229,7 +229,17 @@ public class GLES1 implements IGL1
 	{
 		return GLES10.glGetError();
 	}
-
+	
+	@Override
+	public int glGetInteger(int pname)
+	{
+		int[] result = new int[1];
+		
+		this.glGetIntegerv(pname, result, 0);
+		
+		return result[0];
+	}
+	
 	@Override
 	public void glGetIntegerv(int pname, int[] params, int offset)
 	{

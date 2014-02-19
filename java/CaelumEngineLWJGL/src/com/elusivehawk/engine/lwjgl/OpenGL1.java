@@ -235,6 +235,12 @@ public class OpenGL1 implements IGL1
 	}
 	
 	@Override
+	public int glGetInteger(int pname)
+	{
+		return GL11.glGetInteger(pname);
+	}
+	
+	@Override
 	public void glGetIntegerv(int pname, int[] params, int offset)
 	{
 		IntBuffer buf = BufferHelper.createIntBuffer(params.length - offset);

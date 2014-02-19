@@ -35,7 +35,7 @@ public interface IGL2
 	
 	public void glDisableVertexAttribArray(int index);
 	
-	public void glEnableAttribArray(int index);
+	public void glEnableVertexAttribArray(int index);
 	
 	public String glGetActiveAttrib(int program, int index, int maxLength);
 	
@@ -154,5 +154,7 @@ public interface IGL2
 	public void glVertexAttrib3f(int index, float x, float y, float z);
 	
 	public void glVertexAttrib4f(int index, float x, float y, float z, float w);
+	
+	public void glVertexAttribPointer(int index, int size, int type, boolean normalized, int stride, java.nio.Buffer buf);
 	
 }

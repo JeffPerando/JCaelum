@@ -4,6 +4,7 @@ package com.elusivehawk.engine.render2;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import javax.imageio.ImageIO;
@@ -12,8 +13,6 @@ import javax.imageio.stream.ImageInputStream;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.render.opengl.GLConst;
-import com.elusivehawk.engine.render.opengl.IGL1;
-import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGLCleanable;
 import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.BufferHelper;
@@ -124,14 +123,12 @@ public final class RenderHelper
 		return processImage(readImage(img, format), img.getWidth(), img.getHeight(), mode, context);
 	}
 	
-	public static int processImage(ByteBuffer buf, int w, int h, EnumRenderMode mode, RenderContext context)
+	public static int processImage(IntBuffer buf, int w, int h, EnumRenderMode mode, RenderContext context)
 	{
 		if (!mode.isValidImageMode())
 		{
 			return 0;
 		}
-		
-		IGL2 gl2 = context.getGL2();
 		
 		int glId = context.getGL1().glGenTextures();
 		
@@ -143,7 +140,7 @@ public final class RenderHelper
 		
 		if (mode.is3D())
 		{
-			GL.glTexImage3D(GLConst.GL_TEXTURE_3D, 0, GLConst.GL_RGBA8, w, h, 0, 0, GLConst.GL_RGBA, GLConst.GL_UNSIGNED_BYTE, buf);
+			context.getGL1().glTexImage3D(GLConst.GL_TEXTURE_3D, 0, GLConst.GL_RGBA8, w, h, 0, 0, GLConst.GL_RGBA, GLConst.GL_UNSIGNED_BYTE, buf);
 			
 		}
 		else
@@ -157,22 +154,17 @@ public final class RenderHelper
 		return glId;
 	}
 	
-	public static ByteBuffer readImage(ILegibleImage img, EnumColorFormat format)
+	public static IntBuffer readImage(ILegibleImage img, EnumColorFormat format)
 	{
-		ByteBuffer buf = BufferHelper.createByteBuffer(img.getHeight() * img.getWidth() * 4);
-		Color col = new Color(format);
+		IntBuffer buf = BufferHelper.createIntBuffer(img.getHeight() * img.getWidth());
+		Color col = new Color(img.getFormat());
 		
 		for (int x = 0; x < img.getWidth(); ++x)
 		{
 			for (int y = 0; y < img.getHeight(); ++y)
 			{
 				col.setColor(img.getPixel(x, y));
-				
-				for (EnumColorFilter filter : format.filters)
-				{
-					buf.put(col.getColor(filter));
-					
-				}
+				buf.put(format.convert(col).getColor());
 				
 			}
 			
@@ -257,8 +249,7 @@ public final class RenderHelper
 			return;
 		}
 		
-		throw new RuntimeException("Caught OpenGL error: " + GLU.gluErrorString(err));
-		
+		throw new RuntimeException("Caught OpenGL error: " + err/*GLU.gluErrorString(err)*/);//TODO Fix after conversion to enums.
 	}
 	
 	public static Buffer<Float> mixColors(Color a, Color b)
@@ -278,11 +269,17 @@ public final class RenderHelper
 	
 	public static int[] createVBOs(int count, RenderContext context)
 	{
+		IntBuffer buf = BufferHelper.createIntBuffer(count);
+		
+		context.getGL1().glGenBuffers(buf);
+		
+		buf.rewind();
+		
 		int[] ret = new int[count];
 		
 		for (int c = 0; c < count; c++)
 		{
-			ret[c] = GL.glGenBuffers();
+			ret[c] = buf.get();
 			
 		}
 		
