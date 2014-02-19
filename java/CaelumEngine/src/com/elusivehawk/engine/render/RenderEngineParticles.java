@@ -3,6 +3,8 @@ package com.elusivehawk.engine.render;
 
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
+import com.elusivehawk.engine.render2.IRenderEngine;
+import com.elusivehawk.engine.render2.IRenderHUB;
 
 /**
  * 
@@ -10,6 +12,7 @@ import com.elusivehawk.engine.render.opengl.GLProgram;
  * 
  * @author Elusivehawk
  */
+@Deprecated
 public class RenderEngineParticles implements IRenderEngine
 {
 	@Override

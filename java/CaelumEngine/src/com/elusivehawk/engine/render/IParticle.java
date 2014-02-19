@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.render;
 
 import com.elusivehawk.engine.math.Vector;
+import com.elusivehawk.engine.render2.Color;
 
 /**
  * 

@@ -12,6 +12,10 @@ import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.math.VectorF;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.VertexBufferObject;
+import com.elusivehawk.engine.render2.Color;
+import com.elusivehawk.engine.render2.EnumColorFilter;
+import com.elusivehawk.engine.render2.EnumColorFormat;
+import com.elusivehawk.engine.render2.RenderHelper;
 import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.BufferHelper;
 import com.elusivehawk.engine.util.SemiFinalStorage;
@@ -24,6 +28,7 @@ import com.elusivehawk.engine.util.Tuple;
  * 
  * @author Elusivehawk
  */
+@Deprecated
 @SuppressWarnings("rawtypes")
 public class Model implements IStorageListener
 {

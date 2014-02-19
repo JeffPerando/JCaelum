@@ -129,8 +129,8 @@ public final class PacketFormat implements Iterable<DataType>
 			
 			if (this.last != null)
 			{
-				this.nextPos += this.last.getSkipCount(this.pos, this.format);
-				this.actualPosition++;
+				this.actualPosition = this.nextPos;
+				this.nextPos += 1 + this.last.getSkipCount(this.pos, this.format);
 				
 			}
 			

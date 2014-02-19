@@ -41,7 +41,14 @@ public final class Packet
 	
 	public void addData(Object obj)
 	{
-		this.data.set(this.data.indexOf(null), obj);
+		int index = this.data.indexOf(null);
+		
+		if (index == -1)
+		{
+			return;
+		}
+		
+		this.data.set(index, obj);
 		
 	}
 	

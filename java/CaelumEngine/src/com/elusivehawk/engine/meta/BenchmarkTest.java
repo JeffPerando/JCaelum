@@ -1,5 +1,5 @@
 
-package com.elusivehawk.meta;
+package com.elusivehawk.engine.meta;
 
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.MatrixHelper;

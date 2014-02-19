@@ -2,7 +2,7 @@
 package com.elusivehawk.engine.core;
 
 import com.elusivehawk.engine.physics.IPhysicsScene;
-import com.elusivehawk.engine.render.IRenderHUB;
+import com.elusivehawk.engine.render2.IRenderHUB;
 import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.IUpdatable;
 

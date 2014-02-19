@@ -1,12 +1,17 @@
 
 package com.elusivehawk.engine.render;
 
+import com.elusivehawk.engine.render2.RenderTicket;
+
 /**
  * 
  * Used in order to animate the model represented by {@link RenderTicket}s.
  * 
+ * @deprecated To be replaced with an actual implementation.
+ * 
  * @author Elusivehawk
  */
+@Deprecated
 public interface IModelAnimation
 {
 	/**

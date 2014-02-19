@@ -1,5 +1,5 @@
 
-package com.elusivehawk.engine.render;
+package com.elusivehawk.engine.render2;
 
 import com.elusivehawk.engine.render.opengl.GLConst;
 

@@ -6,6 +6,12 @@ import java.util.List;
 import java.util.Map.Entry;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
+import com.elusivehawk.engine.render2.IModelGroup;
+import com.elusivehawk.engine.render2.IRenderEngine;
+import com.elusivehawk.engine.render2.IRenderHUB;
+import com.elusivehawk.engine.render2.IScene;
+import com.elusivehawk.engine.render2.RenderHelper;
+import com.elusivehawk.engine.render2.RenderTicket;
 import com.elusivehawk.engine.util.Tuple;
 
 /**
@@ -14,6 +20,7 @@ import com.elusivehawk.engine.util.Tuple;
  * 
  * @author Elusivehawk
  */
+@Deprecated
 public class RenderEngine3D implements IRenderEngine
 {
 	@Override

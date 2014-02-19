@@ -2,6 +2,8 @@
 package com.elusivehawk.engine.render;
 
 import com.elusivehawk.engine.math.VectorF;
+import com.elusivehawk.engine.render2.Color;
+import com.elusivehawk.engine.render2.EnumColorFormat;
 import com.elusivehawk.engine.util.Tuple;
 
 /**

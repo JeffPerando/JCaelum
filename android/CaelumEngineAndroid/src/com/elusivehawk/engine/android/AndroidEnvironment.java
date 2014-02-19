@@ -5,7 +5,7 @@ import com.eclipsesource.json.JsonObject;
 import com.elusivehawk.engine.core.EnumOS;
 import com.elusivehawk.engine.core.IGameEnvironment;
 import com.elusivehawk.engine.core.ILog;
-import com.elusivehawk.engine.render.IRenderEnvironment;
+import com.elusivehawk.engine.render2.IRenderEnvironment;
 
 /**
  * 

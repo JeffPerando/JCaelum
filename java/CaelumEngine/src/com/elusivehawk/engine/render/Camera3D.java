@@ -7,6 +7,10 @@ import com.elusivehawk.engine.math.MatrixHelper;
 import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.math.VectorF;
 import com.elusivehawk.engine.render.opengl.GLProgram;
+import com.elusivehawk.engine.render2.EnumCameraPollType;
+import com.elusivehawk.engine.render2.EnumRenderMode;
+import com.elusivehawk.engine.render2.ICamera;
+import com.elusivehawk.engine.render2.IRenderHUB;
 import com.elusivehawk.engine.util.BufferHelper;
 import com.elusivehawk.engine.util.DirtableStorage;
 
@@ -16,6 +20,7 @@ import com.elusivehawk.engine.util.DirtableStorage;
  * 
  * @author Elusivehawk
  */
+@Deprecated
 public class Camera3D implements ICamera
 {
 	private float[] stats = new float[EnumCameraPollType.values().length];

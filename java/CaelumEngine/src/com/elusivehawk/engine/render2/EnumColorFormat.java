@@ -1,7 +1,8 @@
 
-package com.elusivehawk.engine.render;
+package com.elusivehawk.engine.render2;
 
 import com.elusivehawk.engine.util.Buffer;
+import com.elusivehawk.engine.util.io.ByteBufWrapper;
 
 /**
  * 
@@ -16,42 +17,36 @@ public enum EnumColorFormat
 	ABGR(EnumColorFilter.ALPHA, EnumColorFilter.BLUE, EnumColorFilter.GREEN, EnumColorFilter.RED),
 	BGRA(EnumColorFilter.BLUE, EnumColorFilter.GREEN, EnumColorFilter.RED, EnumColorFilter.ALPHA);
 	
-	public final EnumColorFilter[] colors;
-	public final boolean alpha;
+	public final EnumColorFilter[] filters;
+	private final int[] colors = new int[EnumColorFilter.values().length];
+	private final boolean[] support = new boolean[EnumColorFilter.values().length];
 	
 	@SuppressWarnings("unqualified-field-access")
 	EnumColorFormat(EnumColorFilter... f)
 	{
-		colors = f;
+		filters = f;
 		
-		boolean flag = false;
+		EnumColorFilter color;
 		
-		for (EnumColorFilter color : colors)
+		for (int c = 0; c < f.length; c++)
 		{
-			if (color == EnumColorFilter.ALPHA)
-			{
-				flag = true;
-				
-			}
+			color = f[c];
+			
+			colors[color.ordinal()] = c * 8;
+			support[color.ordinal()] = true;
 			
 		}
-		
-		alpha = flag;
 		
 	}
 	
 	public int getColorOffset(EnumColorFilter col)
 	{
-		for (int c = 0; c < this.colors.length; c++)
-		{
-			if (this.colors[c] == col)
-			{
-				return 24 - (c * 8);
-			}
-			
-		}
-		
-		return 0;
+		return this.supports(col) ? this.colors[col.ordinal()] : -1;
+	}
+	
+	public boolean supports(EnumColorFilter col)
+	{
+		return this.support[col.ordinal()];
 	}
 	
 	public Color convert(Color old)
@@ -63,13 +58,14 @@ public enum EnumColorFormat
 		
 		Buffer<Byte> buf = new Buffer<Byte>();
 		
-		for (EnumColorFilter col : this.colors)
+		for (EnumColorFilter col : this.filters)
 		{
 			buf.add(old.getColor(col));
 			
+			
 		}
 		
-		return new Color(this, buf);
+		return new Color(this, new ByteBufWrapper(buf));
 	}
 	
 }

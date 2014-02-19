@@ -4,6 +4,10 @@ package com.elusivehawk.engine.render;
 import java.util.Collection;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
+import com.elusivehawk.engine.render2.IRenderEngine;
+import com.elusivehawk.engine.render2.IRenderHUB;
+import com.elusivehawk.engine.render2.IScene;
+import com.elusivehawk.engine.render2.RenderHelper;
 
 /**
  * 
@@ -11,6 +15,7 @@ import com.elusivehawk.engine.render.opengl.GLProgram;
  * 
  * @author Elusivehawk
  */
+@Deprecated
 public class RenderEngine2D implements IRenderEngine
 {
 	@Override

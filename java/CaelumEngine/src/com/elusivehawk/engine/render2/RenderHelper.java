@@ -1,5 +1,5 @@
 
-package com.elusivehawk.engine.render;
+package com.elusivehawk.engine.render2;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -17,6 +17,7 @@ import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.BufferHelper;
 import com.elusivehawk.engine.util.FileHelper;
 import com.elusivehawk.engine.util.TextParser;
+import com.elusivehawk.engine.util.io.ByteBuf;
 
 /**
  * 
@@ -167,7 +168,7 @@ public final class RenderHelper
 			{
 				col.setColor(img.getPixel(x, y));
 				
-				for (EnumColorFilter filter : format.colors)
+				for (EnumColorFilter filter : format.filters)
 				{
 					buf.put(col.getColor(filter));
 					
@@ -218,12 +219,13 @@ public final class RenderHelper
 		GL.glReadPixels(0, 0, win.getWidth(), win.getHeight(), GLConst.GL_RGBA, GLConst.GL_BYTE, buf);
 		
 		BufferedImage ret = new BufferedImage(win.getWidth(), win.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		ByteBuf io = new ByteBuf(buf);
 		
 		for (int x = 0; x < ret.getWidth(); x++)
 		{
 			for (int y = 0; y < ret.getHeight(); y++)
 			{
-				ret.setRGB(x, y, EnumColorFormat.ARGB.convert(new Color(EnumColorFormat.RGBA, buf)).getColor());
+				ret.setRGB(x, y, EnumColorFormat.ARGB.convert(new Color(EnumColorFormat.RGBA, io)).getColor());
 				
 			}
 			

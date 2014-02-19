@@ -11,8 +11,8 @@ import java.util.Map.Entry;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.render.Model;
-import com.elusivehawk.engine.render.RenderHelper;
-import com.elusivehawk.engine.render.RenderTicket;
+import com.elusivehawk.engine.render2.RenderHelper;
+import com.elusivehawk.engine.render2.RenderTicket;
 
 /**
  * 

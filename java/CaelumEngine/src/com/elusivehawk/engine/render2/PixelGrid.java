@@ -1,5 +1,5 @@
 
-package com.elusivehawk.engine.render;
+package com.elusivehawk.engine.render2;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -79,7 +79,7 @@ public class PixelGrid implements ILegibleImage
 			{
 				col.setColor(this.getPixel(x, y));
 				
-				for (EnumColorFilter filter : this.f.colors)
+				for (EnumColorFilter filter : this.f.filters)
 				{
 					ret.put(col.getColor(filter));
 					
@@ -105,7 +105,7 @@ public class PixelGrid implements ILegibleImage
 			{
 				col.setColor(this.getPixel(x, y));
 				
-				for (EnumColorFilter filter : this.f.colors)
+				for (EnumColorFilter filter : this.f.filters)
 				{
 					ret.put(col.getColorFloat(filter));
 					

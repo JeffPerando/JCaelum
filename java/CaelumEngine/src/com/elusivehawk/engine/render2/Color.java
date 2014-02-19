@@ -1,8 +1,8 @@
 
-package com.elusivehawk.engine.render;
+package com.elusivehawk.engine.render2;
 
-import java.nio.ByteBuffer;
-import com.elusivehawk.engine.util.Buffer;
+import com.elusivehawk.engine.util.io.ByteArray;
+import com.elusivehawk.engine.util.io.ByteReader;
 
 /**
  * 
@@ -39,37 +39,29 @@ public class Color
 	
 	public Color(EnumColorFormat f, int a, int b, int c, int d)
 	{
-		this(f, new Byte[]{(byte)a, (byte)b, (byte)c, (byte)d});
+		this(f, new byte[]{(byte)a, (byte)b, (byte)c, (byte)d});
 		
 	}
 	
-	public Color(EnumColorFormat f, Byte... cols)
+	public Color(EnumColorFormat f, byte... cols)
 	{
-		this(f, new Buffer<Byte>(cols));
+		this(f, new ByteArray(cols));
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Color(EnumColorFormat f, ByteBuffer buf)
+	public Color(EnumColorFormat f, ByteReader buf)
 	{
 		this(f);
 		
-		for (EnumColorFilter col : f.colors)
+		for (EnumColorFilter col : EnumColorFilter.values())
 		{
-			color = (color << f.getColorOffset(col)) | buf.get();
+			if (!f.supports(col))
+			{
+				continue;
+			}
 			
-		}
-		
-	}
-	
-	@SuppressWarnings("unqualified-field-access")
-	public Color(EnumColorFormat f, Buffer<Byte> buf)
-	{
-		this(f);
-		
-		for (EnumColorFilter col : f.colors)
-		{
-			color = (color << f.getColorOffset(col)) | buf.next();
+			color = (color << f.getColorOffset(col)) | buf.read();
 			
 		}
 		
@@ -105,7 +97,7 @@ public class Color
 	
 	public boolean supportsAlpha()
 	{
-		return this.format.alpha;
+		return this.format.supports(EnumColorFilter.ALPHA);
 	}
 	
 }

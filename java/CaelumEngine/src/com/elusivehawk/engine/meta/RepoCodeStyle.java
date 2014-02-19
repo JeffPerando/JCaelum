@@ -1,5 +1,5 @@
 //Line down, then package.
-package com.elusivehawk.meta;
+package com.elusivehawk.engine.meta;
 //Then another line down before the imports.
 //Note: No "organizing" imports, or more specifically, "grouping" them using line downs.
 

@@ -10,6 +10,11 @@ import com.elusivehawk.engine.math.VectorF;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBufferObject;
+import com.elusivehawk.engine.render2.Color;
+import com.elusivehawk.engine.render2.EnumColorFilter;
+import com.elusivehawk.engine.render2.EnumColorFormat;
+import com.elusivehawk.engine.render2.ILogicalRender;
+import com.elusivehawk.engine.render2.IRenderHUB;
 import com.elusivehawk.engine.util.BufferHelper;
 
 /**
@@ -116,7 +121,7 @@ public class ParticleScene implements ILogicalRender
 					
 				}
 				
-				for (EnumColorFilter filter : EnumColorFormat.RGBA.colors)
+				for (EnumColorFilter filter : EnumColorFormat.RGBA.filters)
 				{
 					this.buf.put(col.getColorFloat(filter));
 					

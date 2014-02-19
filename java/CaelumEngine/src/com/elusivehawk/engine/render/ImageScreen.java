@@ -10,6 +10,11 @@ import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.ITexture;
 import com.elusivehawk.engine.render.opengl.VertexBufferObject;
+import com.elusivehawk.engine.render2.Color;
+import com.elusivehawk.engine.render2.EnumColorFilter;
+import com.elusivehawk.engine.render2.EnumColorFormat;
+import com.elusivehawk.engine.render2.ILogicalRender;
+import com.elusivehawk.engine.render2.IRenderHUB;
 import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.BufferHelper;
 
@@ -217,7 +222,7 @@ public class ImageScreen implements ILogicalRender
 		ret.add(b);
 		Color col = info.colors[0];
 		
-		for (EnumColorFilter fil : EnumColorFormat.RGBA.colors)
+		for (EnumColorFilter fil : EnumColorFormat.RGBA.filters)
 		{
 			ret.add(col.getColorFloat(fil));
 			
@@ -229,7 +234,7 @@ public class ImageScreen implements ILogicalRender
 		ret.add(b);
 		col = info.colors[1];
 		
-		for (EnumColorFilter fil : EnumColorFormat.RGBA.colors)
+		for (EnumColorFilter fil : EnumColorFormat.RGBA.filters)
 		{
 			ret.add(col.getColorFloat(fil));
 			
@@ -241,7 +246,7 @@ public class ImageScreen implements ILogicalRender
 		ret.add(b);
 		col = info.colors[2];
 		
-		for (EnumColorFilter fil : EnumColorFormat.RGBA.colors)
+		for (EnumColorFilter fil : EnumColorFormat.RGBA.filters)
 		{
 			ret.add(col.getColorFloat(fil));
 			
@@ -253,7 +258,7 @@ public class ImageScreen implements ILogicalRender
 		ret.add(d);
 		col = info.colors[3];
 		
-		for (EnumColorFilter fil : EnumColorFormat.RGBA.colors)
+		for (EnumColorFilter fil : EnumColorFormat.RGBA.filters)
 		{
 			ret.add(col.getColorFloat(fil));
 			
