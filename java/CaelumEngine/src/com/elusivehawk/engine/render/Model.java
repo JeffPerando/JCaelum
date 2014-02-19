@@ -128,7 +128,7 @@ public class Model implements IStorageListener
 		
 		if (vb != 0)
 		{
-			CaelumEngine.instance().getLog().log(EnumLogType.WARN, "Temporarily unbinding vertex array!");
+			CaelumEngine.log().log(EnumLogType.WARN, "Temporarily unbinding vertex array!");
 			GL.glBindVertexArray(0);
 			
 		}
@@ -140,7 +140,7 @@ public class Model implements IStorageListener
 		
 		if (vb != 0)
 		{
-			CaelumEngine.instance().getLog().log(EnumLogType.WARN, "Rebinding vertex array");
+			CaelumEngine.log().log(EnumLogType.WARN, "Rebinding vertex array");
 			GL.glBindVertexArray(vb);
 			
 		}

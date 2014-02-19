@@ -6,7 +6,6 @@ import java.io.File;
 import javax.imageio.ImageIO;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
-import com.elusivehawk.engine.render.opengl.GL;
 import com.elusivehawk.engine.render.opengl.ITexture;
 import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.FileHelper;
@@ -21,35 +20,35 @@ public class TextureAnimated implements ITexture
 {
 	private final Buffer<Integer> tex;
 	
-	public TextureAnimated(String gif)
+	public TextureAnimated(String gif, RenderContext context)
 	{
-		this(FileHelper.createFile(gif));
+		this(FileHelper.createFile(gif), context);
 		
 	}
 
-	public TextureAnimated(File gif)
+	public TextureAnimated(File gif, RenderContext context)
 	{
-		this(gif, EnumRenderMode.MODE_2D);
+		this(gif, context, EnumRenderMode.MODE_2D);
 		
 	}
 	
-	public TextureAnimated(File gif, EnumRenderMode mode)
+	public TextureAnimated(File gif, RenderContext context, EnumRenderMode mode)
 	{
-		this(gif, mode, EnumColorFormat.RGBA);
+		this(gif, context, mode, EnumColorFormat.RGBA);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public TextureAnimated(File gif, EnumRenderMode mode, EnumColorFormat format)
+	public TextureAnimated(File gif, RenderContext context, EnumRenderMode mode, EnumColorFormat format)
 	{
-		tex = RenderHelper.processGifFile(gif, mode, format);
+		tex = RenderHelper.processGifFile(gif, context, mode, format);
 		
 		RenderHelper.register(this);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public TextureAnimated(File file, EnumRenderMode mode, EnumColorFormat format, int y)
+	public TextureAnimated(File file, RenderContext context, EnumRenderMode mode, EnumColorFormat format, int y)
 	{
 		if (file.getName().endsWith(".gif"))
 		{
@@ -65,7 +64,7 @@ public class TextureAnimated implements ITexture
 		}
 		catch (Exception e)
 		{
-			CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
+			CaelumEngine.log().log(EnumLogType.ERROR, null, e);
 			
 		}
 		
@@ -87,7 +86,7 @@ public class TextureAnimated implements ITexture
 			{
 				BufferedImage sub = img.getSubimage(0, c, img.getWidth(), y);
 				
-				tex.add(RenderHelper.processImage(new LegibleBufferedImage(sub), mode, format));
+				tex.add(RenderHelper.processImage(new LegibleBufferedImage(sub), mode, format, context));
 				
 			}
 			
@@ -98,13 +97,13 @@ public class TextureAnimated implements ITexture
 	}
 	
 	@Override
-	public void glDelete()
+	public void glDelete(RenderContext context)
 	{
 		this.tex.rewind();
 		
 		for (int i : this.tex)
 		{
-			GL.glDeleteTextures(i);
+			context.getGL1().glDeleteTextures(i);
 			
 		}
 		

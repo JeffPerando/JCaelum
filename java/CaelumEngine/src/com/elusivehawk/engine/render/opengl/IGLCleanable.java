@@ -1,6 +1,8 @@
 
 package com.elusivehawk.engine.render.opengl;
 
+import com.elusivehawk.engine.render2.RenderContext;
+
 /**
  * 
  * 
@@ -9,6 +11,6 @@ package com.elusivehawk.engine.render.opengl;
  */
 public interface IGLCleanable
 {
-	public void glDelete();
+	public void glDelete(RenderContext context);
 	
 }

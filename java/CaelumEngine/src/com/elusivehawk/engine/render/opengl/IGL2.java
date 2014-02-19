@@ -25,6 +25,8 @@ public interface IGL2
 	
 	public int glCreateShader(int type);
 	
+	public void glDeleteProgram(GLProgram program);
+	
 	public void glDeleteProgram(int program);
 	
 	public void glDeleteShader(int shader);
@@ -87,6 +89,10 @@ public interface IGL2
 	
 	public boolean glIsShader(int shader);
 	
+	public void glLinkProgram(GLProgram program);
+	
+	public void glLinkProgram(int program);
+	
 	public void glShaderSource(int shader, String string);
 	
 	public void glStencilFuncSeparate(int face, int func, int ref, int mask);
@@ -133,7 +139,11 @@ public interface IGL2
 	
 	public void glUniformMatrix4fv(int location, int count, boolean transpose, FloatBuffer value);
 	
+	public void glUseProgram(GLProgram program);
+	
 	public void glUseProgram(int program);
+	
+	public void glValidateProgram(GLProgram program);
 	
 	public void glValidateProgram(int program);
 	

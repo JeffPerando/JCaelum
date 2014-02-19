@@ -71,6 +71,8 @@ public interface IGL1
 	
 	public int glGetError();
 	
+	public int glGetInteger(int pname);
+	
 	public void glGetIntegerv(int pname, int[] params, int offset);
 	
 	public void glGetIntegerv(int pname, IntBuffer params);

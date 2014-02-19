@@ -18,7 +18,7 @@ import com.elusivehawk.engine.util.ThreadTimed;
 public class ThreadGameRender extends ThreadTimed
 {
 	protected final IRenderHUB hub;
-	protected final IRenderEnvironment env;
+	protected final RenderContext context;
 	protected final SemiFinalStorage<IDisplay> display = new SemiFinalStorage<IDisplay>(null);
 	protected int fps;
 	
@@ -26,7 +26,7 @@ public class ThreadGameRender extends ThreadTimed
 	public ThreadGameRender(IRenderHUB rhub)
 	{
 		hub = rhub;
-		env = CaelumEngine.instance().getEnvironment().getRenderEnv();
+		context = new RenderContext(rhub);
 		
 	}
 	
@@ -45,7 +45,7 @@ public class ThreadGameRender extends ThreadTimed
 		
 		if (!this.display.locked())
 		{
-			this.display.set(this.env.createDisplay("default", settings));
+			this.display.set(CaelumEngine.renderEnvironment().createDisplay("default", settings));
 			
 		}
 		
@@ -75,7 +75,7 @@ public class ThreadGameRender extends ThreadTimed
 			
 		}
 		
-		this.hub.getCamera().updateCamera(this.hub);
+		this.hub.getCamera().updateCamera(this.context);
 		
 		Collection<IRenderEngine> engines = this.hub.getRenderEngines();
 		
@@ -84,7 +84,7 @@ public class ThreadGameRender extends ThreadTimed
 			return;
 		}
 		
-		GL.glClear(GLConst.GL_COLOR_BUFFER_BIT | GLConst.GL_DEPTH_BUFFER_BIT);
+		this.context.getGL1().glClear(GLConst.GL_COLOR_BUFFER_BIT | GLConst.GL_DEPTH_BUFFER_BIT);
 		
 		int priorityCount = Math.max(this.hub.getHighestPriority(), 1);
 		int renderersUsed = 0;
@@ -111,15 +111,15 @@ public class ThreadGameRender extends ThreadTimed
 				engine.render(this.hub);
 				renderersUsed++;
 				
-				int tex = 0, texUnits = GL.glGetInteger(GLConst.GL_MAX_TEXTURE_UNITS);
+				int tex = 0, texUnits = this.context.getGL1().glGetInteger(GLConst.GL_MAX_TEXTURE_UNITS);
 				
 				for (int c = 0; c < texUnits; c++)
 				{
-					tex = GL.glGetInteger(GLConst.GL_TEXTURE0 + c);
+					tex = this.context.getGL1().glGetInteger(GLConst.GL_TEXTURE0 + c);
 					
 					if (tex != 0)
 					{
-						GL.glBindTexture(GLConst.GL_TEXTURE0 + c, 0);
+						this.context.getGL1().glBindTexture(GLConst.GL_TEXTURE0 + c, 0);
 						
 					}
 					
@@ -127,12 +127,12 @@ public class ThreadGameRender extends ThreadTimed
 				
 				try
 				{
-					RenderHelper.checkForGLError();
+					RenderHelper.checkForGLError(this.context);
 					
 				}
 				catch (Exception e)
 				{
-					CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
+					CaelumEngine.log().log(EnumLogType.ERROR, null, e);
 					
 				}
 				
@@ -140,7 +140,7 @@ public class ThreadGameRender extends ThreadTimed
 			
 		}
 		
-		this.hub.getCamera().postRender(this.hub);
+		this.hub.getCamera().postRender(this.context);
 		
 		this.display.get().updateDisplay();
 		
@@ -149,7 +149,7 @@ public class ThreadGameRender extends ThreadTimed
 	@Override
 	public void onThreadStopped()
 	{
-		RenderHelper.cleanup();
+		RenderHelper.cleanup(this.context);
 		
 		try
 		{

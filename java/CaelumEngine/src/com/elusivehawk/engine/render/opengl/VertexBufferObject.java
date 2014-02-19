@@ -3,6 +3,7 @@ package com.elusivehawk.engine.render.opengl;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import com.elusivehawk.engine.render2.RenderContext;
 import com.elusivehawk.engine.render2.RenderHelper;
 import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.BufferHelper;
@@ -18,7 +19,7 @@ public class VertexBufferObject implements IGLCleanable
 	public final int id, t, loadMode;
 	
 	@SuppressWarnings("unqualified-field-access")
-	private VertexBufferObject(int vbo, int target, int mode)
+	private VertexBufferObject(int vbo, int target, int mode, RenderContext context)
 	{
 		t = target;
 		id = GL.glIsBuffer(vbo) ? vbo : GL.glGenBuffers();
@@ -28,33 +29,33 @@ public class VertexBufferObject implements IGLCleanable
 		
 	}
 	
-	public VertexBufferObject(int target, FloatBuffer buf, int mode)
+	public VertexBufferObject(int target, FloatBuffer buf, int mode, RenderContext context)
 	{
 		this(GL.glGenBuffers(), target, buf, mode);
 		
 	}
 	
-	public VertexBufferObject(int target, IntBuffer buf, int mode)
+	public VertexBufferObject(int target, IntBuffer buf, int mode, RenderContext context)
 	{
 		this(GL.glGenBuffers(), target, buf, mode);
 		
 	}
 	
-	public VertexBufferObject(int vbo, int target, FloatBuffer buf, int mode)
+	public VertexBufferObject(int vbo, int target, FloatBuffer buf, int mode, RenderContext context)
 	{
-		this(vbo, target, mode);
-		loadData(buf);
+		this(vbo, target, mode, context);
+		loadData(buf, context);
 		
 	}
 	
-	public VertexBufferObject(int vbo, int target, IntBuffer buf, int mode)
+	public VertexBufferObject(int vbo, int target, IntBuffer buf, int mode, RenderContext context)
 	{
-		this(vbo, target, mode);
-		loadData(buf);
+		this(vbo, target, mode, context);
+		loadData(buf, context);
 		
 	}
 	
-	protected void loadData(FloatBuffer buf)
+	protected void loadData(FloatBuffer buf, RenderContext context)
 	{
 		int vba = GL.glGetInteger(GLConst.GL_VERTEX_ARRAY_BINDING);
 		
@@ -76,7 +77,7 @@ public class VertexBufferObject implements IGLCleanable
 		
 	}
 	
-	protected void loadData(IntBuffer buf)
+	protected void loadData(IntBuffer buf, RenderContext context)
 	{
 		int vba = GL.glGetInteger(GLConst.GL_VERTEX_ARRAY_BINDING);
 		
@@ -98,7 +99,7 @@ public class VertexBufferObject implements IGLCleanable
 		
 	}
 	
-	public void updateEntireVBO(FloatBuffer buf)
+	public void updateEntireVBO(FloatBuffer buf, RenderContext context)
 	{
 		GL.glBindBuffer(this);
 		GL.glBufferSubData(this.t, 0, buf);
@@ -106,7 +107,7 @@ public class VertexBufferObject implements IGLCleanable
 		
 	}
 	
-	public void updateEntireVBO(IntBuffer buf)
+	public void updateEntireVBO(IntBuffer buf, RenderContext context)
 	{
 		GL.glBindBuffer(this);
 		GL.glBufferSubData(this.t, 0, buf);
@@ -114,7 +115,7 @@ public class VertexBufferObject implements IGLCleanable
 		
 	}
 	
-	public void updateVBOf(Buffer<Float> buf, int offset)
+	public void updateVBOf(Buffer<Float> buf, int offset, RenderContext context)
 	{
 		FloatBuffer nio = BufferHelper.createFloatBuffer(buf.remaining());
 		
@@ -124,11 +125,11 @@ public class VertexBufferObject implements IGLCleanable
 			
 		}
 		
-		this.updateVBO(nio, offset);
+		this.updateVBO(nio, offset, context);
 		
 	}
 	
-	public void updateVBOi(Buffer<Integer> buf, int offset)
+	public void updateVBOi(Buffer<Integer> buf, int offset, RenderContext context)
 	{
 		IntBuffer nio = BufferHelper.createIntBuffer(buf.remaining());
 		
@@ -138,11 +139,11 @@ public class VertexBufferObject implements IGLCleanable
 			
 		}
 		
-		this.updateVBO(nio, offset);
+		this.updateVBO(nio, offset, context);
 		
 	}
 	
-	public void updateVBO(FloatBuffer buf, int offset)
+	public void updateVBO(FloatBuffer buf, int offset, RenderContext context)
 	{
 		GL.glBindBuffer(this);
 		GL.glBufferSubData(this.t, offset * 4, buf);
@@ -150,7 +151,7 @@ public class VertexBufferObject implements IGLCleanable
 		
 	}
 	
-	public void updateVBO(IntBuffer buf, int offset)
+	public void updateVBO(IntBuffer buf, int offset, RenderContext context)
 	{
 		GL.glBindBuffer(this);
 		GL.glBufferSubData(this.t, offset * 4, buf);
@@ -159,7 +160,7 @@ public class VertexBufferObject implements IGLCleanable
 	}
 	
 	@Override
-	public void glDelete()
+	public void glDelete(RenderContext context)
 	{
 		GL.glDeleteBuffers(this);
 		

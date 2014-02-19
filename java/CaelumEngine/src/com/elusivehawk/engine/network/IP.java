@@ -6,8 +6,6 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.nio.channels.SocketChannel;
 import javax.net.SocketFactory;
-import com.elusivehawk.engine.core.CaelumEngine;
-import com.elusivehawk.engine.core.EnumLogType;
 
 /**
  * 
@@ -82,7 +80,7 @@ public final class IP
 		}
 		catch (Exception e)
 		{
-			CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
+			e.printStackTrace();
 			
 		}
 		
@@ -100,7 +98,7 @@ public final class IP
 		}
 		catch (Exception e)
 		{
-			CaelumEngine.instance().getLog().log(EnumLogType.ERROR, null, e);
+			e.printStackTrace();
 			
 		}
 		

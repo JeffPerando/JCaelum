@@ -13,38 +13,9 @@ package com.elusivehawk.engine.render.opengl;
 {
 	private GL(){}
 	
-	//Begin Caelum Engine exclusive functionality.
-	
 	public static final int VERTEX_OFFSET = 0;
 	public static final int COLOR_OFFSET = 3;
 	public static final int TEXCOORD_OFFSET = 7;
-	
-	private static final List<IGLCleanable> OBJECTS = new ArrayList<IGLCleanable>();
-	
-	public static void register(IGLCleanable gl)
-	{
-		OBJECTS.add(gl);
-		
-	}
-	
-	public static void cleanup()
-	{
-		if (!OBJECTS.isEmpty())
-		{
-			return;
-		}
-		
-		for (IGLCleanable gl : OBJECTS)
-		{
-			gl.glDelete();
-			
-		}
-		
-		OBJECTS.clear();
-		
-	}
-	
-	//End Caelum engine exclusive functionality.
 	
 	//GL #
 	

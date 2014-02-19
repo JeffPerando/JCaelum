@@ -35,21 +35,21 @@ public class RenderTicket implements IDirty, ILogicalRender
 	protected IModelAnimation anim = null, lastAnim = null;
 	protected ITexture tex;
 	
-	public RenderTicket(Model model)
+	public RenderTicket(Model model, RenderContext context)
 	{
-		this(GLProgram.create(RenderHelper.VERTEX_SHADER_3D, RenderHelper.FRAGMENT_SHADER_3D), model);
+		this(GLProgram.create(context, context.getDefaultVertexShader(), context.getDefaultFragmentShader()), model, context);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public RenderTicket(GLProgram program, Model model)
+	public RenderTicket(GLProgram program, Model model, RenderContext context)
 	{
 		p = program;
 		m = model;
 		buf = BufferHelper.createFloatBuffer(m.indiceCount.get() * 3);
-		vbo = new VertexBufferObject(GLConst.GL_VERTEX_ARRAY, this.buf, GLConst.GL_STREAM_DRAW);
+		vbo = new VertexBufferObject(GLConst.GL_VERTEX_ARRAY, this.buf, GLConst.GL_STREAM_DRAW, context);
 		
-		p.attachRenderTicket(this);
+		p.attachRenderTicket(this, context);
 		
 		for (EnumVectorType type : EnumVectorType.values())
 		{
@@ -163,7 +163,7 @@ public class RenderTicket implements IDirty, ILogicalRender
 	}
 	
 	@Override
-	public boolean updateBeforeUse(IRenderHUB hub)
+	public boolean updateBeforeUse(RenderContext context)
 	{
 		if (!this.m.isFinished())
 		{
@@ -186,7 +186,7 @@ public class RenderTicket implements IDirty, ILogicalRender
 			{
 				this.buf.rewind();
 				
-				this.vbo.updateEntireVBO(this.buf);
+				this.vbo.updateEntireVBO(this.buf, context);
 				
 			}
 			
@@ -198,9 +198,9 @@ public class RenderTicket implements IDirty, ILogicalRender
 		{
 			Matrix m = MatrixHelper.createHomogenousMatrix(this.vecs.get(EnumVectorType.ROTATION), this.vecs.get(EnumVectorType.SCALING), this.vecs.get(EnumVectorType.TRANSLATION));
 			
-			this.p.attachUniform("model", m.asBuffer(), GLProgram.EnumUniformType.M_FOUR);
+			this.p.attachUniform("model", m.asBuffer(), GLProgram.EnumUniformType.M_FOUR, context);
 			
-			hub.getCamera().updateUniform(this.getProgram(), EnumRenderMode.MODE_3D);
+			context.getHub().getCamera().updateUniform(this.getProgram(), context, EnumRenderMode.MODE_3D);
 			
 			this.setIsDirty(false);
 			

@@ -13,6 +13,7 @@ import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import com.elusivehawk.engine.physics.IPhysicsScene;
 import com.elusivehawk.engine.physics.ThreadPhysics;
+import com.elusivehawk.engine.render2.IRenderEnvironment;
 import com.elusivehawk.engine.render2.IRenderHUB;
 import com.elusivehawk.engine.render2.ThreadGameRender;
 import com.elusivehawk.engine.util.Buffer;
@@ -38,7 +39,8 @@ public final class CaelumEngine
 	public final Object shutdownHook = new Object();
 	private Map<EnumEngineFeature, ThreadStoppable> threads = new HashMap<EnumEngineFeature, ThreadStoppable>();
 	private IGame game;
-	private IGameEnvironment environment;
+	private IGameEnvironment env;
+	private IRenderEnvironment renv;
 	private ILog log = new GameLog();
 	
 	private CaelumEngine(){}
@@ -160,7 +162,8 @@ public final class CaelumEngine
 		
 		env.initiate(json, buf.toArray());
 		
-		instance().environment = env;
+		instance().env = env;
+		instance().renv = env.getRenderEnv();
 		
 		IGame g = null;
 		
@@ -177,7 +180,7 @@ public final class CaelumEngine
 			
 		}
 		
-		ILog log = instance().environment.getLog();
+		ILog log = instance().env.getLog();
 		
 		if (log != null)
 		{
@@ -272,19 +275,24 @@ public final class CaelumEngine
 		
 	}
 	
-	public IGame getCurrentGame()
+	public static IGame game()
 	{
-		return this.game;
+		return instance().game;
 	}
 	
-	public IGameEnvironment getEnvironment()
+	public static IGameEnvironment environment()
 	{
-		return this.environment;
+		return instance().env;
 	}
 	
-	public ILog getLog()
+	public static IRenderEnvironment renderEnvironment()
 	{
-		return this.log;
+		return instance().renv;
+	}
+	
+	public static ILog log()
+	{
+		return instance().log;
 	}
 	
 	public void pauseGame(boolean pause)

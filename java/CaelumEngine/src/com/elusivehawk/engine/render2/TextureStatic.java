@@ -2,7 +2,6 @@
 package com.elusivehawk.engine.render2;
 
 import java.io.File;
-import com.elusivehawk.engine.render.opengl.GL;
 import com.elusivehawk.engine.render.opengl.ITexture;
 
 /**
@@ -24,34 +23,34 @@ public class TextureStatic implements ITexture
 		
 	}
 	
-	public TextureStatic(String path)
+	public TextureStatic(String path, RenderContext context)
 	{
-		this(path, EnumRenderMode.MODE_2D, EnumColorFormat.RGBA);
+		this(path, EnumRenderMode.MODE_2D, EnumColorFormat.RGBA, context);
 		
 	}
 	
-	public TextureStatic(String path, EnumRenderMode mode, EnumColorFormat format)
+	public TextureStatic(String path, EnumRenderMode mode, EnumColorFormat format, RenderContext context)
 	{
-		this(new File(ClassLoader.getSystemResource(path).getFile()), mode, format);
+		this(new File(ClassLoader.getSystemResource(path).getFile()), mode, format, context);
 		
 	}
 	
-	public TextureStatic(File file, EnumRenderMode mode, EnumColorFormat format)
+	public TextureStatic(File file, EnumRenderMode mode, EnumColorFormat format, RenderContext context)
 	{
-		this(RenderHelper.processImage(file, mode, format));
+		this(RenderHelper.processImage(file, mode, format, context));
 		
 	}
 	
-	public TextureStatic(ILegibleImage img, EnumRenderMode mode, EnumColorFormat format)
+	public TextureStatic(ILegibleImage img, EnumRenderMode mode, EnumColorFormat format, RenderContext context)
 	{
-		this(RenderHelper.processImage(img, mode, format));
+		this(RenderHelper.processImage(img, mode, format, context));
 		
 	}
 	
 	@Override
-	public void glDelete()
+	public void glDelete(RenderContext context)
 	{
-		GL.glDeleteTextures(this.getTexture(true));
+		context.getGL1().glDeleteTextures(this.getTexture(true));
 		
 	}
 	

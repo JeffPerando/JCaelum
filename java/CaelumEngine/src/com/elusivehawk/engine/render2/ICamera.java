@@ -16,26 +16,27 @@ public interface ICamera extends IDirty
 	 * 
 	 * Called once every frame; Do whatever you need to before rendering in this method.
 	 * 
-	 * @param hub The current rendering HUB.
+	 * @param context The current rendering context.
 	 */
-	public void updateCamera(IRenderHUB hub);
+	public void updateCamera(RenderContext context);
 	
 	/**
 	 * 
 	 * Called once every frame, after rendering.
 	 * 
-	 * @param hub The current rendering HUB.
+	 * @param context The current rendering context.
 	 */
-	public void postRender(IRenderHUB hub);
+	public void postRender(RenderContext context);
 	
 	/**
 	 * 
 	 * Called whenever an object wants to use this camera; Use this to update the program's uniforms.
 	 * 
 	 * @param p The GLProgram asking to be manipulated.
+	 * @param context The current rendering context.
 	 * @param mode The render mode to consider when manipulating the program's uniforms.
 	 */
-	public void updateUniform(GLProgram p, EnumRenderMode mode);
+	public void updateUniform(GLProgram p, RenderContext context, EnumRenderMode mode);
 	
 	/**
 	 * 
