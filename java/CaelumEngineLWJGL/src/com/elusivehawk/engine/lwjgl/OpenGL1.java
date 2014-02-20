@@ -11,12 +11,12 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
+import com.elusivehawk.engine.render.Color;
+import com.elusivehawk.engine.render.EnumColorFilter;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.ITexture;
 import com.elusivehawk.engine.render.opengl.VertexBufferObject;
-import com.elusivehawk.engine.render2.Color;
-import com.elusivehawk.engine.render2.EnumColorFilter;
 import com.elusivehawk.engine.util.BufferHelper;
 
 /**

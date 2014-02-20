@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.render.opengl;
 
-import com.elusivehawk.engine.render2.RenderContext;
+import com.elusivehawk.engine.render.RenderContext;
 
 /**
  * 

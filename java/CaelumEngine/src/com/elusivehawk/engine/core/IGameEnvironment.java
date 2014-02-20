@@ -2,7 +2,7 @@
 package com.elusivehawk.engine.core;
 
 import com.eclipsesource.json.JsonObject;
-import com.elusivehawk.engine.render2.IRenderEnvironment;
+import com.elusivehawk.engine.render.IRenderEnvironment;
 
 /**
  * 
