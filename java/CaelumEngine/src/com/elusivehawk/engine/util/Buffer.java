@@ -74,6 +74,11 @@ public class Buffer<T> implements IDirty, Collection<T>, Iterator<T>
 		return this.hasNext() ? (this.l.get(next ? this.pos++ : this.pos + 1)) : null;
 	}
 	
+	public T get()
+	{
+		return this.get(this.pos);
+	}
+	
 	public T get(int pos)
 	{
 		return this.l.size() > pos && pos >= 0 ? this.l.get(pos) : null;

@@ -1,12 +1,16 @@
 
-package com.elusivehawk.engine.render;
+package com.elusivehawk.engine.render.opengl;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
-import com.elusivehawk.engine.render.opengl.ITexture;
+import com.elusivehawk.engine.render.EnumColorFormat;
+import com.elusivehawk.engine.render.EnumRenderMode;
+import com.elusivehawk.engine.render.LegibleBufferedImage;
+import com.elusivehawk.engine.render.RenderContext;
+import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.FileHelper;
 
@@ -110,15 +114,25 @@ public class TextureAnimated implements ITexture
 	}
 	
 	@Override
-	public int getTexture(boolean next)
+	public void updateTexture(RenderContext context)
 	{
 		if (this.tex.remaining() == 0)
 		{
 			this.tex.rewind();
 			
 		}
+		else
+		{
+			this.tex.next();
+			
+		}
 		
-		return this.tex.next(next);
+	}
+	
+	@Override
+	public int getTexture()
+	{
+		return this.tex.get();
 	}
 	
 	@Override

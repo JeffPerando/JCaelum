@@ -1,6 +1,8 @@
 
 package com.elusivehawk.engine.render.opengl;
 
+import com.elusivehawk.engine.render.RenderContext;
+
 /**
  * 
  * Interface for texturing.
@@ -10,11 +12,19 @@ package com.elusivehawk.engine.render.opengl;
 public interface ITexture extends IGLCleanable
 {
 	/**
+	 * Called on every frame.
 	 * 
-	 * @param next Whether or not to go to the next index. (Note: Only useful for animated textures)
+	 * Note: Should not be called by user code.
+	 * 
+	 * @param context The current rendering context.
+	 */
+	public void updateTexture(RenderContext context);
+	
+	/**
+	 * 
 	 * @return The texture ID to use.
 	 */
-	public int getTexture(boolean next);
+	public int getTexture();
 	
 	/**
 	 * 

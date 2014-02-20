@@ -118,6 +118,11 @@ public final class RenderHelper
 		return leimg == null ? 0 : processImage(leimg, mode, format, context);
 	}
 	
+	public static int processImage(ILegibleImage img, EnumRenderMode mode, RenderContext context)
+	{
+		return processImage(img, mode, img.getFormat(), context);
+	}
+	
 	public static int processImage(ILegibleImage img, EnumRenderMode mode, EnumColorFormat format, RenderContext context)
 	{
 		return processImage(readImage(img, format), img.getWidth(), img.getHeight(), mode, context);

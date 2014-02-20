@@ -1,8 +1,12 @@
 
-package com.elusivehawk.engine.render;
+package com.elusivehawk.engine.render.opengl;
 
 import java.io.File;
-import com.elusivehawk.engine.render.opengl.ITexture;
+import com.elusivehawk.engine.render.EnumColorFormat;
+import com.elusivehawk.engine.render.EnumRenderMode;
+import com.elusivehawk.engine.render.ILegibleImage;
+import com.elusivehawk.engine.render.RenderContext;
+import com.elusivehawk.engine.render.RenderHelper;
 
 /**
  * 
@@ -50,12 +54,15 @@ public class TextureStatic implements ITexture
 	@Override
 	public void glDelete(RenderContext context)
 	{
-		context.getGL1().glDeleteTextures(this.getTexture(true));
+		context.getGL1().glDeleteTextures(this.getTexture());
 		
 	}
 	
 	@Override
-	public int getTexture(boolean next)
+	public void updateTexture(RenderContext context){}
+	
+	@Override
+	public int getTexture()
 	{
 		return this.tex;
 	}

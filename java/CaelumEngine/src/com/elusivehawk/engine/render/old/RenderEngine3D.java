@@ -85,7 +85,7 @@ public class RenderEngine3D implements IRenderEngine
 					continue;
 				}
 				
-				tex = tkt.getTexture().getTexture(true);
+				tex = tkt.getTexture().getTexture();
 				
 				if (currTex != tex)
 				{
@@ -97,7 +97,7 @@ public class RenderEngine3D implements IRenderEngine
 					}
 					else
 					{
-						context.getGL1().glBindTexture(GLConst.GL_TEXTURE0, 0);
+						context.getGL1().glBindTexture(GLConst.GL_TEXTURE0, context.getDefaultTexture());
 						
 					}
 					

@@ -2,7 +2,6 @@
 package com.elusivehawk.engine.render;
 
 import java.util.Collection;
-import com.elusivehawk.engine.util.IUpdatable;
 
 /**
  * 
@@ -10,8 +9,17 @@ import com.elusivehawk.engine.util.IUpdatable;
  * 
  * @author Elusivehawk
  */
-public interface IRenderHUB extends IUpdatable
+public interface IRenderHUB
 {
+	/**
+	 * 
+	 * Called once every frame.
+	 * 
+	 * @param delta
+	 * @param context
+	 */
+	public void updateHUB(double delta, RenderContext context);
+	
 	/**
 	 * 
 	 * Note: It's recommended to not return null.

@@ -31,7 +31,7 @@ public class GLES1 implements IGL1
 	@Override
 	public void glActiveTexture(ITexture texture)
 	{
-		this.glActiveTexture(texture == null ? 0 : texture.getTexture(true));
+		this.glActiveTexture(texture == null ? 0 : texture.getTexture());
 		
 	}
 	
@@ -45,7 +45,7 @@ public class GLES1 implements IGL1
 	@Override
 	public void glBindTexture(int target, ITexture texture)
 	{
-		this.glBindTexture(target, texture == null ? 0 : texture.getTexture(true));
+		this.glBindTexture(target, texture == null ? 0 : texture.getTexture());
 		
 	}
 	

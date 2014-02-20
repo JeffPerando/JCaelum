@@ -1,11 +1,14 @@
 
 package com.elusivehawk.engine.render;
 
+import java.util.ArrayList;
+import java.util.List;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
+import com.elusivehawk.engine.render.opengl.ITexture;
 import com.elusivehawk.engine.util.FileHelper;
 
 /**
@@ -22,7 +25,12 @@ public final class RenderContext
 	private final IGL2 gl2;
 	private final IGL3 gl3;
 	
-	private final int sVertex, sFrag;
+	private final int sVertex, sFrag, notex;
+	
+	private final List<ITexture> texturePool = new ArrayList<ITexture>();
+	
+	private EnumRenderStage stage = null;
+	private boolean updatedTexturesRecently = false;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public RenderContext(IRenderHUB renderhub)
@@ -35,6 +43,20 @@ public final class RenderContext
 		
 		sVertex = RenderHelper.loadShader(FileHelper.createFile("/vertex.glsl"), GLConst.GL_VERTEX_SHADER, this);
 		sFrag = RenderHelper.loadShader(FileHelper.createFile("/fragment.glsl"), GLConst.GL_FRAGMENT_SHADER, this);
+		
+		PixelGrid ntf = new PixelGrid(32, 32, EnumColorFormat.RGBA);
+		
+		for (int x = 0; x < ntf.getWidth(); x++)
+		{
+			for (int y = 0; y < ntf.getHeight(); y++)
+			{
+				ntf.setPixel(x, y, (x <= 16 && y >= 16) || (x >= 16 && y <= 16) ? 0xFF00FF : 0xFFFFFF);
+				
+			}
+			
+		}
+		
+		notex = RenderHelper.processImage(ntf, EnumRenderMode.MODE_3D, this);
 		
 	}
 	
@@ -66,6 +88,80 @@ public final class RenderContext
 	public int getDefaultVertexShader()
 	{
 		return this.sVertex;
+	}
+	
+	public int getDefaultTexture()
+	{
+		return this.notex;
+	}
+	
+	public void setRenderStage(EnumRenderStage rstage)
+	{
+		if (rstage == this.stage)
+		{
+			return;
+		}
+		
+		this.stage = rstage;
+		
+		if (rstage == EnumRenderStage.PRERENDER)
+		{
+			this.updatedTexturesRecently = false;
+			
+		}
+		
+	}
+	
+	public EnumRenderStage getCurrentRenderingStage()
+	{
+		return this.stage;
+	}
+	
+	public void updateTextures()
+	{
+		if (this.stage != EnumRenderStage.PRERENDER || this.updatedTexturesRecently)
+		{
+			throw new RuntimeException("Should not update textures more than once a frame!");
+		}
+		
+		if (this.texturePool.isEmpty())
+		{
+			return;
+		}
+		
+		for (ITexture tex : this.texturePool)
+		{
+			tex.updateTexture(this);
+			
+		}
+		
+		this.updatedTexturesRecently = true;
+		
+	}
+	
+	public void addTexture(ITexture tex)
+	{
+		assert tex != null;
+		
+		int index = this.texturePool.indexOf(null);
+		
+		if (index == -1)
+		{
+			this.texturePool.add(tex);
+			
+		}
+		else
+		{
+			this.texturePool.set(index, tex);
+			
+		}
+		
+	}
+	
+	public void removeTexture(int index)
+	{
+		this.texturePool.set(index, null);
+		
 	}
 	
 }

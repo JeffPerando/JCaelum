@@ -37,7 +37,7 @@ public class OpenGL1 implements IGL1
 	@Override
 	public void glActiveTexture(ITexture texture)
 	{
-		this.glActiveTexture(texture.getTexture(true));
+		this.glActiveTexture(texture.getTexture());
 		
 	}
 	
@@ -65,7 +65,7 @@ public class OpenGL1 implements IGL1
 	@Override
 	public void glBindTexture(int target, ITexture texture)
 	{
-		GL11.glBindTexture(target, texture.getTexture(true));
+		GL11.glBindTexture(target, texture.getTexture());
 		
 	}
 	

@@ -60,7 +60,9 @@ public class ThreadGameRender extends ThreadTimed
 			return;
 		}
 		
-		this.hub.update(delta);
+		this.context.setRenderStage(EnumRenderStage.PRERENDER);
+		
+		this.hub.updateHUB(delta, this.context);
 		
 		if (this.hub.updateDisplay())
 		{
@@ -77,70 +79,82 @@ public class ThreadGameRender extends ThreadTimed
 		
 		this.hub.getCamera().updateCamera(this.context);
 		
+		this.context.updateTextures();
+		
+		boolean renderedAnything = false;
 		Collection<IRenderEngine> engines = this.hub.getRenderEngines();
 		
-		if (engines == null || engines.isEmpty())
+		if (engines != null && !engines.isEmpty())
 		{
-			return;
-		}
-		
-		this.context.getGL1().glClear(GLConst.GL_COLOR_BUFFER_BIT | GLConst.GL_DEPTH_BUFFER_BIT);
-		
-		int priorityCount = Math.max(this.hub.getHighestPriority(), 1);
-		int renderersUsed = 0;
-		int priority = 0;
-		boolean flag = true;
-		
-		for (int p = 0; p < priorityCount && flag; p++)
-		{
-			for (IRenderEngine engine : engines)
+			this.context.setRenderStage(EnumRenderStage.RENDER);
+			
+			this.context.getGL1().glClear(GLConst.GL_COLOR_BUFFER_BIT | GLConst.GL_DEPTH_BUFFER_BIT);
+			
+			int priorityCount = Math.max(this.hub.getHighestPriority(), 1);
+			int renderersUsed = 0;
+			int priority = 0;
+			boolean flag = true;
+			
+			for (int p = 0; p < priorityCount && flag; p++)
 			{
-				if (renderersUsed == engines.size())
+				for (IRenderEngine engine : engines)
 				{
-					flag = false;
-					break;
-				}
-				
-				priority = Math.min(engine.getPriority(this.hub), priorityCount - 1);
-				
-				if (priority != p)
-				{
-					continue;
-				}
-				
-				engine.render(this.context);
-				renderersUsed++;
-				
-				int tex = 0, texUnits = this.context.getGL1().glGetInteger(GLConst.GL_MAX_TEXTURE_UNITS);
-				
-				for (int c = 0; c < texUnits; c++)
-				{
-					tex = this.context.getGL1().glGetInteger(GLConst.GL_TEXTURE0 + c);
-					
-					if (tex != 0)
+					if (renderersUsed == engines.size())
 					{
-						this.context.getGL1().glBindTexture(GLConst.GL_TEXTURE0 + c, 0);
+						flag = false;
+						break;
+					}
+					
+					priority = Math.min(engine.getPriority(this.hub), priorityCount - 1);
+					
+					if (priority != p)
+					{
+						continue;
+					}
+					
+					engine.render(this.context);
+					renderersUsed++;
+					
+					int tex = 0, texUnits = this.context.getGL1().glGetInteger(GLConst.GL_MAX_TEXTURE_UNITS);
+					
+					for (int c = 0; c < texUnits; c++)
+					{
+						tex = this.context.getGL1().glGetInteger(GLConst.GL_TEXTURE0 + c);
+						
+						if (tex != 0)
+						{
+							this.context.getGL1().glBindTexture(GLConst.GL_TEXTURE0 + c, 0);
+							
+						}
+						
+					}
+					
+					try
+					{
+						RenderHelper.checkForGLError(this.context);
+						
+					}
+					catch (Exception e)
+					{
+						CaelumEngine.log().log(EnumLogType.ERROR, null, e);
 						
 					}
 					
 				}
 				
-				try
-				{
-					RenderHelper.checkForGLError(this.context);
-					
-				}
-				catch (Exception e)
-				{
-					CaelumEngine.log().log(EnumLogType.ERROR, null, e);
-					
-				}
-				
 			}
+			
+			renderedAnything = (renderersUsed > 0);
 			
 		}
 		
-		this.hub.getCamera().postRender(this.context);
+		this.context.setRenderStage(EnumRenderStage.POSTEFFECTS);
+		
+		if (renderedAnything)
+		{
+			this.hub.getCamera().postRender(this.context);
+			
+		}
 		
 		this.display.get().updateDisplay();
 		
