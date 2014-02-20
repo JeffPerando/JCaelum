@@ -10,6 +10,7 @@ import com.elusivehawk.engine.render2.IModelGroup;
 import com.elusivehawk.engine.render2.IRenderEngine;
 import com.elusivehawk.engine.render2.IRenderHUB;
 import com.elusivehawk.engine.render2.IScene;
+import com.elusivehawk.engine.render2.RenderContext;
 import com.elusivehawk.engine.render2.RenderHelper;
 import com.elusivehawk.engine.render2.RenderTicket;
 import com.elusivehawk.engine.util.Tuple;
@@ -24,14 +25,14 @@ import com.elusivehawk.engine.util.Tuple;
 public class RenderEngine3D implements IRenderEngine
 {
 	@Override
-	public void render(IRenderHUB hub)
+	public void render(RenderContext context)
 	{
-		if (!hub.getRenderMode().is3D())
+		if (!context.getHub().getRenderMode().is3D())
 		{
 			return;
 		}
 		
-		IScene scene = hub.getScene();
+		IScene scene = context.getHub().getScene();
 		
 		if (scene == null)
 		{
@@ -45,11 +46,11 @@ public class RenderEngine3D implements IRenderEngine
 			return;
 		}
 		
-		GL.glEnable(GLConst.GL_DEPTH_TEST);
-		GL.glDepthFunc(GLConst.GL_LESS);
+		context.getGL1().glEnable(GLConst.GL_DEPTH_TEST);
+		context.getGL1().glDepthFunc(GLConst.GL_LESS);
 		
-		GL.glEnable(GLConst.GL_CULL_FACE);
-		GL.glCullFace(GLConst.GL_BACK);
+		context.getGL1().glEnable(GLConst.GL_CULL_FACE);
+		context.getGL1().glCullFace(GLConst.GL_BACK);
 		
 		int currTex = 0, tex = 0;
 		
@@ -71,7 +72,7 @@ public class RenderEngine3D implements IRenderEngine
 				
 				RenderTicket tkt = tickets.get(c);
 				
-				if (!tkt.updateBeforeUse(hub))
+				if (!tkt.updateBeforeUse(context))
 				{
 					continue;
 				}
@@ -79,7 +80,7 @@ public class RenderEngine3D implements IRenderEngine
 				Model m = tkt.getModel();
 				GLProgram p = tkt.getProgram();
 				
-				if (!p.bind())
+				if (!p.bind(context))
 				{
 					continue;
 				}
@@ -88,15 +89,15 @@ public class RenderEngine3D implements IRenderEngine
 				
 				if (currTex != tex)
 				{
-					if (GL.glIsTexture(tex))
+					if (context.getGL1().glIsTexture(tex))
 					{
-						GL.glBindTexture(GLConst.GL_TEXTURE0, tex);
+						context.getGL1().glBindTexture(GLConst.GL_TEXTURE0, tex);
 						currTex = tex;
 						
 					}
 					else
 					{
-						GL.glBindTexture(GLConst.GL_TEXTURE0, 0);
+						context.getGL1().glBindTexture(GLConst.GL_TEXTURE0, 0);
 						
 					}
 					
@@ -104,20 +105,20 @@ public class RenderEngine3D implements IRenderEngine
 				
 				for (Entry<Integer, Tuple<Integer, Integer>> entry : m.getOffsets().entrySet())
 				{
-					GL.glDrawElements(entry.getKey(), entry.getValue().one, GLConst.GL_UNSIGNED_INT, entry.getValue().two);
+					context.getGL1().glDrawElements(entry.getKey(), entry.getValue().one, GLConst.GL_UNSIGNED_INT, entry.getValue().two);
 					
 				}
 				
-				RenderHelper.checkForGLError();
+				RenderHelper.checkForGLError(context);
 				
-				p.unbind();
+				p.unbind(context);
 				
 			}
 			
 		}
 		
-		GL.glDisable(GLConst.GL_CULL_FACE);
-		GL.glDisable(GLConst.GL_DEPTH_TEST);
+		context.getGL1().glDisable(GLConst.GL_CULL_FACE);
+		context.getGL1().glDisable(GLConst.GL_DEPTH_TEST);
 		
 	}
 	

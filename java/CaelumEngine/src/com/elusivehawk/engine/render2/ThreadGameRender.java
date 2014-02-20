@@ -108,7 +108,7 @@ public class ThreadGameRender extends ThreadTimed
 					continue;
 				}
 				
-				engine.render(this.hub);
+				engine.render(this.context);
 				renderersUsed++;
 				
 				int tex = 0, texUnits = this.context.getGL1().glGetInteger(GLConst.GL_MAX_TEXTURE_UNITS);

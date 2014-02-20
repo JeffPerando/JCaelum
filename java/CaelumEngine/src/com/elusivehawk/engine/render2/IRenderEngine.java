@@ -14,9 +14,9 @@ public interface IRenderEngine
 	 * 
 	 * Called once every frame.
 	 * 
-	 * @param hub The current rendering HUB
+	 * @param context The current rendering context.
 	 */
-	public void render(IRenderHUB hub);
+	public void render(RenderContext context);
 	
 	/**
 	 * 

@@ -69,6 +69,8 @@ public interface IGL1
 	
 	public void glDrawElements(int mode, int count, int type, IntBuffer indices);
 	
+	public void glDrawElements(int mode, int count, int type, int offset);
+	
 	public void glEnable(int cap);
 	
 	public void glFinish();
@@ -100,6 +102,8 @@ public interface IGL1
 	public void glHint(int target, int mode);
 	
 	public boolean glIsBuffer(int buffer);
+	
+	public boolean glIsTexture(int texture);
 	
 	public void glLogicOp(int op);
 	

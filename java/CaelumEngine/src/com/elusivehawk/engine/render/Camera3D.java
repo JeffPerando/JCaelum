@@ -1,16 +1,13 @@
 
 package com.elusivehawk.engine.render;
 
-import org.lwjgl.input.Mouse;
 import com.elusivehawk.engine.math.Matrix;
-import com.elusivehawk.engine.math.MatrixHelper;
-import com.elusivehawk.engine.math.Vector;
-import com.elusivehawk.engine.math.VectorF;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render2.EnumCameraPollType;
 import com.elusivehawk.engine.render2.EnumRenderMode;
 import com.elusivehawk.engine.render2.ICamera;
 import com.elusivehawk.engine.render2.IRenderHUB;
+import com.elusivehawk.engine.render2.RenderContext;
 import com.elusivehawk.engine.util.BufferHelper;
 import com.elusivehawk.engine.util.DirtableStorage;
 
@@ -36,9 +33,9 @@ public class Camera3D implements ICamera
 	}
 	
 	@Override
-	public void updateCamera(IRenderHUB hub)
+	public void updateCamera(RenderContext context)
 	{
-		if (!hub.getRenderMode().is3D())
+		if (!context.getHub().getRenderMode().is3D())
 		{
 			return;
 		}
@@ -77,23 +74,23 @@ public class Camera3D implements ICamera
 	}
 	
 	@Override
-	public void postRender(IRenderHUB hub)
+	public void postRender(RenderContext context)
 	{
 		this.setIsDirty(false);
 		
 	}
 	
 	@Override
-	public void updateUniform(GLProgram p, EnumRenderMode mode)
+	public void updateUniform(GLProgram p, RenderContext context, EnumRenderMode mode)
 	{
 		if (!this.isDirty())
 		{
 			return;
 		}
 		
-		p.attachUniform("cam.m", this.camMat.asBuffer(), GLProgram.EnumUniformType.M_FOUR);
-		p.attachUniform("cam.zFar", BufferHelper.makeFloatBuffer(this.getFloat(EnumCameraPollType.Z_FAR)), GLProgram.EnumUniformType.ONE);
-		p.attachUniform("cam.zNear", BufferHelper.makeFloatBuffer(this.getFloat(EnumCameraPollType.Z_FAR)), GLProgram.EnumUniformType.ONE);
+		p.attachUniform("cam.m", this.camMat.asBuffer(), GLProgram.EnumUniformType.M_FOUR, context);
+		p.attachUniform("cam.zFar", BufferHelper.makeFloatBuffer(this.getFloat(EnumCameraPollType.Z_FAR)), GLProgram.EnumUniformType.ONE, context);
+		p.attachUniform("cam.zNear", BufferHelper.makeFloatBuffer(this.getFloat(EnumCameraPollType.Z_FAR)), GLProgram.EnumUniformType.ONE, context);
 		
 	}
 	

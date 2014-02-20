@@ -30,9 +30,9 @@ public class RenderTicket implements IDirty, ILogicalRender
 	protected final VertexBufferObject vbo;
 	protected final FloatBuffer buf;
 	
-	protected boolean dirty = false, animPause = false;
-	protected int frame = 0;
-	protected IModelAnimation anim = null, lastAnim = null;
+	protected boolean dirty = false;//, animPause = false;
+	//protected int frame = 0;
+	//protected IModelAnimation anim = null, lastAnim = null;
 	protected ITexture tex;
 	
 	public RenderTicket(Model model, RenderContext context)
@@ -67,7 +67,7 @@ public class RenderTicket implements IDirty, ILogicalRender
 		
 	}
 	
-	public synchronized void setModelAnimation(IModelAnimation a)
+	/*public synchronized void setModelAnimation(IModelAnimation a)
 	{
 		this.lastAnim = this.anim;
 		
@@ -79,7 +79,7 @@ public class RenderTicket implements IDirty, ILogicalRender
 	{
 		this.frame = f;
 		
-	}
+	}*/
 	
 	public synchronized void setTexture(ITexture texture)
 	{
@@ -87,11 +87,11 @@ public class RenderTicket implements IDirty, ILogicalRender
 		
 	}
 	
-	public synchronized void setAnimationPaused(boolean b)
+	/*public synchronized void setAnimationPaused(boolean b)
 	{
 		this.animPause = b;
 		
-	}
+	}*/
 	
 	/**
 	 * 
@@ -141,20 +141,20 @@ public class RenderTicket implements IDirty, ILogicalRender
 		return this.vbo;
 	}
 	
-	public int getCurrentFrame()
+	/*public int getCurrentFrame()
 	{
 		return this.frame;
-	}
+	}*/
 	
 	public ITexture getTexture()
 	{
 		return this.tex;
 	}
 	
-	public boolean isAnimationPaused()
+	/*public boolean isAnimationPaused()
 	{
 		return this.animPause;
-	}
+	}*/
 	
 	@Override
 	public GLProgram getProgram()
@@ -170,7 +170,7 @@ public class RenderTicket implements IDirty, ILogicalRender
 			return false;
 		}
 		
-		if (this.anim != null && !this.isAnimationPaused())
+		/*if (this.anim != null && !this.isAnimationPaused())
 		{
 			boolean usedBefore = this.anim == this.lastAnim;
 			
@@ -192,7 +192,7 @@ public class RenderTicket implements IDirty, ILogicalRender
 			
 			this.frame = (fin ? 0 : this.frame + 1);
 			
-		}
+		}*/
 		
 		if (this.isDirty())
 		{

@@ -84,7 +84,7 @@ public class OpenGL2 implements IGL2
 	}
 	
 	@Override
-	public void glEnableAttribArray(int index)
+	public void glEnableVertexAttribArray(int index)
 	{
 		GL20.glEnableVertexAttribArray(index);
 	}

@@ -335,7 +335,7 @@ public class OpenGL1 implements IGL1
 	@Override
 	public void glTexImage2D(int target, int level, int internalformat,
 			int width, int height, int border, int format, int type,
-			ByteBuffer pixels)
+			IntBuffer pixels)
 	{
 		GL11.glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
 		

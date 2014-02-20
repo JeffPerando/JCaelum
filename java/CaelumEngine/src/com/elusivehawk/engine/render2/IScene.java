@@ -1,7 +1,6 @@
 
 package com.elusivehawk.engine.render2;
 
-import com.elusivehawk.engine.render.ImageScreen;
 import com.elusivehawk.engine.render.ParticleScene;
 import com.elusivehawk.engine.util.SyncList;
 
@@ -17,6 +16,6 @@ public interface IScene
 	
 	public ParticleScene getParticles();
 	
-	public SyncList<ImageScreen> getImages();
+	//public SyncList<ImageScreen> getImages();
 	
 }

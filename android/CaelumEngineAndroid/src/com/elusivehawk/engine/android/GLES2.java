@@ -95,7 +95,7 @@ public class GLES2 implements IGL2
 	}
 	
 	@Override
-	public void glEnableAttribArray(int index)
+	public void glEnableVertexAttribArray(int index)
 	{
 		GLES20.glEnableVertexAttribArray(index);
 		

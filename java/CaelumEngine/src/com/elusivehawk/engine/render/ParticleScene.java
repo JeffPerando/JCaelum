@@ -14,7 +14,7 @@ import com.elusivehawk.engine.render2.Color;
 import com.elusivehawk.engine.render2.EnumColorFilter;
 import com.elusivehawk.engine.render2.EnumColorFormat;
 import com.elusivehawk.engine.render2.ILogicalRender;
-import com.elusivehawk.engine.render2.IRenderHUB;
+import com.elusivehawk.engine.render2.RenderContext;
 import com.elusivehawk.engine.util.BufferHelper;
 
 /**
@@ -86,7 +86,7 @@ public class ParticleScene implements ILogicalRender
 	}
 	
 	@Override
-	public boolean updateBeforeUse(IRenderHUB hub)
+	public boolean updateBeforeUse(RenderContext context)
 	{
 		if (this.getParticleCount() == 0)
 		{

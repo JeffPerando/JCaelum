@@ -5,6 +5,7 @@ import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render2.IRenderEngine;
 import com.elusivehawk.engine.render2.IRenderHUB;
+import com.elusivehawk.engine.render2.RenderContext;
 
 /**
  * 
@@ -16,39 +17,39 @@ import com.elusivehawk.engine.render2.IRenderHUB;
 public class RenderEngineParticles implements IRenderEngine
 {
 	@Override
-	public void render(IRenderHUB hub)
+	public void render(RenderContext context)
 	{
-		if (hub.getScene() == null || !hub.getRenderMode().is3D())
+		if (context.getHub().getScene() == null || !context.getHub().getRenderMode().is3D())
 		{
 			return;
 		}
 		
-		ParticleScene particles = hub.getScene().getParticles();
+		ParticleScene particles = context.getHub().getScene().getParticles();
 		
-		if (particles == null || !particles.updateBeforeUse(hub))
+		if (particles == null || !particles.updateBeforeUse(context))
 		{
 			return;
 		}
 		
 		GLProgram p = particles.getProgram();
 		
-		if (!p.bind())
+		if (!p.bind(context))
 		{
 			return;
 		}
 		
-		GL.glEnable(GLConst.GL_DEPTH_TEST);
-		GL.glDepthFunc(GLConst.GL_LESS);
+		context.getGL1().glEnable(GLConst.GL_DEPTH_TEST);
+		context.getGL1().glDepthFunc(GLConst.GL_LESS);
 		
-		GL.glEnable(GLConst.GL_CULL_FACE);
-		GL.glCullFace(GLConst.GL_BACK);
+		context.getGL1().glEnable(GLConst.GL_CULL_FACE);
+		context.getGL1().glCullFace(GLConst.GL_BACK);
 		
-		GL.glDrawArrays(GLConst.GL_POINTS, 0, particles.getParticleCount());
+		context.getGL1().glDrawArrays(GLConst.GL_POINTS, 0, particles.getParticleCount());
 		
-		GL.glDisable(GLConst.GL_CULL_FACE);
-		GL.glDisable(GLConst.GL_DEPTH_TEST);
+		context.getGL1().glDisable(GLConst.GL_CULL_FACE);
+		context.getGL1().glDisable(GLConst.GL_DEPTH_TEST);
 		
-		p.unbind();
+		p.unbind(context);
 		
 	}
 	
