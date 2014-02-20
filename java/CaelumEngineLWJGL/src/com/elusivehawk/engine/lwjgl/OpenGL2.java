@@ -1,10 +1,15 @@
 
 package com.elusivehawk.engine.lwjgl;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
+import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 import org.lwjgl.opengl.GL20;
+import com.elusivehawk.engine.render.opengl.GLConst;
+import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGL2;
 
 /**
@@ -53,6 +58,13 @@ public class OpenGL2 implements IGL2
 	public int glCreateShader(int type)
 	{
 		return GL20.glCreateShader(type);
+	}
+	
+	@Override
+	public void glDeleteProgram(GLProgram program)
+	{
+		this.glDeleteProgram(program.getId());
+		
 	}
 	
 	@Override
@@ -237,56 +249,67 @@ public class OpenGL2 implements IGL2
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 	@Override
 	public boolean glIsProgram(int program)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return GL20.glIsProgram(program);
 	}
-
+	
 	@Override
 	public boolean glIsShader(int shader)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return GL20.glIsShader(shader);
 	}
-
+	
+	@Override
+	public void glLinkProgram(GLProgram program)
+	{
+		this.glLinkProgram(program.getId());
+		
+	}
+	
+	@Override
+	public void glLinkProgram(int program)
+	{
+		GL20.glLinkProgram(program);
+	}
+	
 	@Override
 	public void glShaderSource(int shader, String string)
 	{
-		// TODO Auto-generated method stub
+		GL20.glShaderSource(shader, string);
 		
 	}
-
+	
 	@Override
 	public void glStencilFuncSeparate(int face, int func, int ref, int mask)
 	{
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 	@Override
 	public void glStencilMaskSeparate(int face, int mask)
 	{
-		// TODO Auto-generated method stub
+		GL20.glStencilMaskSeparate(face, mask);
 		
 	}
-
+	
 	@Override
 	public void glStencilOpSeparate(int face, int sfail, int dpfail, int dppass)
 	{
-		// TODO Auto-generated method stub
+		GL20.glStencilOpSeparate(face, sfail, dpfail, dppass);
 		
 	}
-
+	
 	@Override
 	public void glUniform1f(int location, float x)
 	{
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 	@Override
 	public void glUniform1fv(int location, int count, FloatBuffer v)
 	{
@@ -415,18 +438,32 @@ public class OpenGL2 implements IGL2
 		// TODO Auto-generated method stub
 		
 	}
-
+	
+	@Override
+	public void glUseProgram(GLProgram program)
+	{
+		this.glUseProgram(program.getId());
+		
+	}
+	
 	@Override
 	public void glUseProgram(int program)
 	{
-		// TODO Auto-generated method stub
+		GL20.glUseProgram(program);
 		
 	}
-
+	
+	@Override
+	public void glValidateProgram(GLProgram program)
+	{
+		this.glValidateProgram(program.getId());
+		
+	}
+	
 	@Override
 	public void glValidateProgram(int program)
 	{
-		// TODO Auto-generated method stub
+		GL20.glValidateProgram(program);
 		
 	}
 
@@ -455,6 +492,21 @@ public class OpenGL2 implements IGL2
 	public void glVertexAttrib4f(int index, float x, float y, float z, float w)
 	{
 		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void glVertexAttribPointer(int index, int size, int type, boolean normalized, int stride, Buffer buffer)
+	{
+		switch (type)
+		{
+			case GLConst.GL_BYTE: GL20.glVertexAttribPointer(index, size, false, normalized, stride, (ByteBuffer)buffer);
+			case GLConst.GL_SHORT: GL20.glVertexAttribPointer(index, size, false, normalized, stride, (ShortBuffer)buffer);
+			case GLConst.GL_INT: GL20.glVertexAttribPointer(index, size, false, normalized, stride, (IntBuffer)buffer);
+			case GLConst.GL_FLOAT: GL20.glVertexAttribPointer(index, size, false, stride, (FloatBuffer)buffer);
+			case GLConst.GL_DOUBLE: GL20.glVertexAttribPointer(index, size, false, stride, (DoubleBuffer)buffer);
+			
+		}
 		
 	}
 	

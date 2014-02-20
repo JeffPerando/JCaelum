@@ -1,13 +1,20 @@
 
 package com.elusivehawk.engine.lwjgl;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
+import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL15;
+import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.ITexture;
+import com.elusivehawk.engine.render.opengl.VertexBufferObject;
 import com.elusivehawk.engine.render2.Color;
 import com.elusivehawk.engine.render2.EnumColorFilter;
 import com.elusivehawk.engine.util.BufferHelper;
@@ -35,6 +42,20 @@ public class OpenGL1 implements IGL1
 	}
 	
 	@Override
+	public void glBindBuffer(VertexBufferObject vbo)
+	{
+		this.glBindBuffer(vbo.t, vbo.id);
+		
+	}
+	
+	@Override
+	public void glBindBuffer(int target, int buffer)
+	{
+		GL15.glBindBuffer(target, buffer);
+		
+	}
+	
+	@Override
 	public void glBindTexture(int target, int texture)
 	{
 		GL11.glBindTexture(target, texture);
@@ -52,6 +73,36 @@ public class OpenGL1 implements IGL1
 	public void glBlendFunc(int sfactor, int dfactor)
 	{
 		GL11.glBlendFunc(sfactor, dfactor);
+		
+	}
+	
+	@Override
+	public void glBufferData(int target, int type, Buffer data, int usage)
+	{
+		switch (type)
+		{
+			case GLConst.GL_BYTE: GL15.glBufferData(target, (ByteBuffer)data, usage); break;
+			case GLConst.GL_SHORT: GL15.glBufferData(target, (ShortBuffer)data, usage); break;
+			case GLConst.GL_INT: GL15.glBufferData(target, (IntBuffer)data, usage); break;
+			case GLConst.GL_FLOAT: GL15.glBufferData(target, (FloatBuffer)data, usage); break;
+			case GLConst.GL_DOUBLE: GL15.glBufferData(target, (DoubleBuffer)data, usage); break;
+			
+		}
+		
+	}
+	
+	@Override
+	public void glBufferSubData(int target, long offset, int type, Buffer data)
+	{
+		switch (type)
+		{
+			case GLConst.GL_BYTE: GL15.glBufferSubData(target, offset, (ByteBuffer)data); break;
+			case GLConst.GL_SHORT: GL15.glBufferSubData(target, offset, (ShortBuffer)data); break;
+			case GLConst.GL_INT: GL15.glBufferSubData(target, offset, (IntBuffer)data); break;
+			case GLConst.GL_FLOAT: GL15.glBufferSubData(target, offset, (FloatBuffer)data); break;
+			case GLConst.GL_DOUBLE: GL15.glBufferSubData(target, offset, (DoubleBuffer)data); break;
+			
+		}
 		
 	}
 	
@@ -124,6 +175,27 @@ public class OpenGL1 implements IGL1
 	}
 	
 	@Override
+	public void glDeleteBuffers(VertexBufferObject buffer)
+	{
+		this.glDeleteBuffers(buffer.id);
+		
+	}
+	
+	@Override
+	public void glDeleteBuffers(int buffer)
+	{
+		GL15.glDeleteBuffers(buffer);
+		
+	}
+	
+	@Override
+	public void glDeleteBuffers(IntBuffer buffers)
+	{
+		GL15.glDeleteBuffers(buffers);
+		
+	}
+	
+	@Override
 	public void glDeleteTextures(int length, int... textures)
 	{
 		GL11.glDeleteTextures(BufferHelper.makeIntBuffer(length, textures));
@@ -173,6 +245,13 @@ public class OpenGL1 implements IGL1
 	}
 	
 	@Override
+	public void glDrawElements(int mode, int count, int type, int offset)
+	{
+		GL11.glDrawElements(mode, count, type, offset);
+		
+	}
+	
+	@Override
 	public void glEnable(int cap)
 	{
 		GL11.glEnable(cap);
@@ -197,6 +276,19 @@ public class OpenGL1 implements IGL1
 	public void glFrontFace(int mode)
 	{
 		GL11.glFrontFace(mode);
+		
+	}
+	
+	@Override
+	public int glGenBuffers()
+	{
+		return GL15.glGenBuffers();
+	}
+	
+	@Override
+	public void glGenBuffers(IntBuffer buffers)
+	{
+		GL15.glGenBuffers(buffers);
 		
 	}
 	
@@ -276,6 +368,18 @@ public class OpenGL1 implements IGL1
 	}
 	
 	@Override
+	public boolean glIsBuffer(int buffer)
+	{
+		return GL15.glIsBuffer(buffer);
+	}
+	
+	@Override
+	public boolean glIsTexture(int texture)
+	{
+		return GL11.glIsTexture(texture);
+	}
+	
+	@Override
 	public void glLogicOp(int opcode)
 	{
 		GL11.glLogicOp(opcode);
@@ -338,6 +442,13 @@ public class OpenGL1 implements IGL1
 			IntBuffer pixels)
 	{
 		GL11.glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
+		
+	}
+	
+	@Override
+	public void glTexImage3D(int target, int level, int internalFormat, int width, int height, int depth, int border, int format, int type, IntBuffer pixels)
+	{
+		GL12.glTexImage3D(target, level, internalFormat, width, height, depth, border, format, type, pixels);
 		
 	}
 	

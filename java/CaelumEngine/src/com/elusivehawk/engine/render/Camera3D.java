@@ -6,7 +6,6 @@ import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render2.EnumCameraPollType;
 import com.elusivehawk.engine.render2.EnumRenderMode;
 import com.elusivehawk.engine.render2.ICamera;
-import com.elusivehawk.engine.render2.IRenderHUB;
 import com.elusivehawk.engine.render2.RenderContext;
 import com.elusivehawk.engine.util.BufferHelper;
 import com.elusivehawk.engine.util.DirtableStorage;
@@ -40,7 +39,7 @@ public class Camera3D implements ICamera
 			return;
 		}
 		
-		if (Mouse.isCreated() && Mouse.isInsideWindow())
+		/*if (Mouse.isCreated() && Mouse.isInsideWindow())
 		{
 			if (this.grabMouse.isDirty())
 			{
@@ -70,7 +69,7 @@ public class Camera3D implements ICamera
 			}
 			
 		}
-		
+		*/
 	}
 	
 	@Override

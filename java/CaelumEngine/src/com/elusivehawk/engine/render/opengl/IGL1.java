@@ -29,7 +29,7 @@ public interface IGL1
 	
 	public void glBufferData(int target, int type, java.nio.Buffer data, int usage);
 	
-	public void glBufferSubData(int target, int offset, int type, java.nio.Buffer data);
+	public void glBufferSubData(int target, long offset, int type, java.nio.Buffer data);
 	
 	public void glClear(int mask);
 	

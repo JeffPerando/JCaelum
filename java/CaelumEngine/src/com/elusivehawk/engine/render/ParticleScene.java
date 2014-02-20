@@ -35,19 +35,19 @@ public class ParticleScene implements ILogicalRender
 	protected final GLProgram p;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public ParticleScene(int maxParticles)
+	public ParticleScene(int maxParticles, RenderContext context)
 	{
 		buf = BufferHelper.createFloatBuffer(maxParticles * PARTICLE_FLOAT_COUNT);
 		particleCount = maxParticles;
 		
 		p = GLProgram.create(null); //TODO Create default particle shaders.
-		vbo = new VertexBufferObject(GLConst.GL_ARRAY_BUFFER, buf, GLConst.GL_STREAM_DRAW);
+		vbo = new VertexBufferObject(GLConst.GL_ARRAY_BUFFER, buf, GLConst.GL_STREAM_DRAW, context);
 		
-		if (p.bind())
+		if (p.bind(context))
 		{
 			p.attachVBO(vbo, Arrays.asList(0, 1));
 			
-			p.unbind();
+			p.unbind(context);
 			
 		}
 		else

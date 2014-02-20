@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.android;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -526,6 +527,13 @@ public class GLES2 implements IGL2
 	public void glVertexAttrib4f(int index, float x, float y, float z, float w)
 	{
 		GLES20.glVertexAttrib4f(index, x, y, z, w);
+		
+	}
+	
+	@Override
+	public void glVertexAttribPointer(int index, int size, int type, boolean normalized, int stride, Buffer buf)
+	{
+		GLES20.glVertexAttribPointer(index, size, type, normalized, stride, buf);
 		
 	}
 	
