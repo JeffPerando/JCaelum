@@ -4,6 +4,7 @@ package com.elusivehawk.engine.lwjgl;
 import com.elusivehawk.engine.render.DisplaySettings;
 import com.elusivehawk.engine.render.IDisplay;
 import com.elusivehawk.engine.render.IRenderEnvironment;
+import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
 
@@ -19,6 +20,13 @@ public class OpenGLEnvironment implements IRenderEnvironment
 	protected final IGL2 GL_2 = new OpenGL2();
 	protected final Object GL_3 = null;
 	protected final Object GL_4 = null;
+	
+	@Override
+	public void initiate(RenderContext context)
+	{
+		// TODO Auto-generated method stub
+		
+	}
 	
 	@Override
 	public Object getGL(int version)

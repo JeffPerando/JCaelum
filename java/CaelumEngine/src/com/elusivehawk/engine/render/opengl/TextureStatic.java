@@ -23,8 +23,6 @@ public class TextureStatic implements ITexture
 	{
 		tex = texture;
 		
-		RenderHelper.register(this);
-		
 	}
 	
 	public TextureStatic(String path, RenderContext context)

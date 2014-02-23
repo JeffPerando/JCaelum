@@ -28,13 +28,13 @@ public class SyncList<T> implements List<T>
 	
 	public SyncList()
 	{
-		this(new ArrayList<T>());
+		this(16);
 		
 	}
 	
 	public SyncList(int limit)
 	{
-		this(new ArrayList<T>(limit));
+		this(new SimpleList<T>(limit));
 		
 	}
 	

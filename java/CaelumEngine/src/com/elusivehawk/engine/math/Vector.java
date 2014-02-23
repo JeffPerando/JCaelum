@@ -28,5 +28,16 @@ public abstract class Vector<T extends Number> implements IMathObject<T>
 	{
 		return this.size;
 	}
+
+	@Override
+	public void copy(IMathObject<T> obj)
+	{
+		for (int c = 0; c < Math.min(obj.getSize(), this.getSize()); c++)
+		{
+			this.set(c, obj.get(c));
+			
+		}
+		
+	}
 	
 }

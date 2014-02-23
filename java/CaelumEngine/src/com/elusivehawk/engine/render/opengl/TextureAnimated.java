@@ -47,8 +47,6 @@ public class TextureAnimated implements ITexture
 	{
 		tex = RenderHelper.processGifFile(gif, context, mode, format);
 		
-		RenderHelper.register(this);
-		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
@@ -95,8 +93,6 @@ public class TextureAnimated implements ITexture
 			}
 			
 		}
-		
-		RenderHelper.register(this);
 		
 	}
 	

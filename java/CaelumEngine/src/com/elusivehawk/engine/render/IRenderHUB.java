@@ -13,6 +13,14 @@ public interface IRenderHUB
 {
 	/**
 	 * 
+	 * Called once during the startup phase.
+	 * 
+	 * @param context
+	 */
+	public void initiate(RenderContext context);
+	
+	/**
+	 * 
 	 * Called once every frame.
 	 * 
 	 * @param delta

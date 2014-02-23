@@ -157,6 +157,22 @@ public class Matrix implements IMathObject<Float>
 	}
 	
 	@Override
+	public void copy(IMathObject<Float> obj)
+	{
+		if (obj.getSize() != this.getSize())
+		{
+			return;
+		}
+		
+		for (int c = 0; c < this.getSize(); c++)
+		{
+			this.set(c, obj.get(c));
+			
+		}
+		
+	}
+	
+	@Override
 	public Matrix add(IMathObject<Float> obj)
 	{
 		Buffer<Float> buf = new Buffer<Float>(obj);

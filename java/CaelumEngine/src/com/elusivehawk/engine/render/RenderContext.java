@@ -1,15 +1,16 @@
 
 package com.elusivehawk.engine.render;
 
-import java.util.ArrayList;
 import java.util.List;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
+import com.elusivehawk.engine.render.opengl.IGLCleanable;
 import com.elusivehawk.engine.render.opengl.ITexture;
 import com.elusivehawk.engine.util.FileHelper;
+import com.elusivehawk.engine.util.SimpleList;
 
 /**
  * 
@@ -27,10 +28,10 @@ public final class RenderContext
 	
 	private final int sVertex, sFrag, notex;
 	
-	private final List<ITexture> texturePool = new ArrayList<ITexture>();
+	private final List<ITexture> texturePool = new SimpleList<ITexture>(32);
+	private final List<IGLCleanable> cleanables = new SimpleList<IGLCleanable>(32);
 	
 	private EnumRenderStage stage = null;
-	private boolean updatedTexturesRecently = false;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public RenderContext(IRenderHUB renderhub)
@@ -56,7 +57,7 @@ public final class RenderContext
 			
 		}
 		
-		notex = RenderHelper.processImage(ntf, EnumRenderMode.MODE_3D, this);
+		notex = RenderHelper.processImage(ntf, EnumRenderMode.MODE_2D, this);
 		
 	}
 	
@@ -95,6 +96,11 @@ public final class RenderContext
 		return this.notex;
 	}
 	
+	public EnumRenderMode getRenderMode()
+	{
+		return this.hub.getRenderMode();
+	}
+	
 	public void setRenderStage(EnumRenderStage rstage)
 	{
 		if (rstage == this.stage)
@@ -104,9 +110,9 @@ public final class RenderContext
 		
 		this.stage = rstage;
 		
-		if (rstage == EnumRenderStage.PRERENDER)
+		switch (this.stage)
 		{
-			this.updatedTexturesRecently = false;
+			case PRERENDER: this.updateTextures();
 			
 		}
 		
@@ -117,13 +123,8 @@ public final class RenderContext
 		return this.stage;
 	}
 	
-	public void updateTextures()
+	private void updateTextures()
 	{
-		if (this.stage != EnumRenderStage.PRERENDER || this.updatedTexturesRecently)
-		{
-			throw new RuntimeException("Should not update textures more than once a frame!");
-		}
-		
 		if (this.texturePool.isEmpty())
 		{
 			return;
@@ -135,32 +136,43 @@ public final class RenderContext
 			
 		}
 		
-		this.updatedTexturesRecently = true;
-		
 	}
 	
 	public void addTexture(ITexture tex)
 	{
 		assert tex != null;
+		this.texturePool.add(tex);
 		
-		int index = this.texturePool.indexOf(null);
-		
-		if (index == -1)
-		{
-			this.texturePool.add(tex);
-			
-		}
-		else
-		{
-			this.texturePool.set(index, tex);
-			
-		}
+		this.registerCleanable(tex);
 		
 	}
 	
 	public void removeTexture(int index)
 	{
-		this.texturePool.set(index, null);
+		this.texturePool.remove(index);
+		
+	}
+	
+	public void registerCleanable(IGLCleanable gl)
+	{
+		this.cleanables.add(gl);
+		
+	}
+	
+	public void cleanup()
+	{
+		if (this.cleanables.isEmpty())
+		{
+			return;
+		}
+		
+		for (IGLCleanable gl : this.cleanables)
+		{
+			gl.glDelete(this);
+			
+		}
+		
+		this.cleanables.clear();
 		
 	}
 	

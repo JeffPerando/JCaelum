@@ -34,7 +34,7 @@ public class Camera3D implements ICamera
 	@Override
 	public void updateCamera(RenderContext context)
 	{
-		if (!context.getHub().getRenderMode().is3D())
+		if (!context.getRenderMode().is3D())
 		{
 			return;
 		}

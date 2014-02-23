@@ -1,16 +1,10 @@
 
-package com.elusivehawk.engine.render.old;
+package com.elusivehawk.engine.render;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
-import com.elusivehawk.engine.render.IModelGroup;
-import com.elusivehawk.engine.render.IRenderEngine;
-import com.elusivehawk.engine.render.IRenderHUB;
-import com.elusivehawk.engine.render.IScene;
-import com.elusivehawk.engine.render.RenderContext;
-import com.elusivehawk.engine.render.RenderHelper;
-import com.elusivehawk.engine.render.RenderTicket;
+import com.elusivehawk.engine.render.old.Model;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.util.Tuple;
@@ -21,7 +15,6 @@ import com.elusivehawk.engine.util.Tuple;
  * 
  * @author Elusivehawk
  */
-@Deprecated
 public class RenderEngine3D implements IRenderEngine
 {
 	@Override
@@ -71,17 +64,17 @@ public class RenderEngine3D implements IRenderEngine
 				}
 				
 				RenderTicket tkt = tickets.get(c);
-				
-				if (!tkt.updateBeforeUse(context))
-				{
-					continue;
-				}
-				
 				Model m = tkt.getModel();
 				GLProgram p = tkt.getProgram();
 				
 				if (!p.bind(context))
 				{
+					continue;
+				}
+				
+				if (!tkt.updateBeforeUse(context))
+				{
+					p.unbind(context);
 					continue;
 				}
 				

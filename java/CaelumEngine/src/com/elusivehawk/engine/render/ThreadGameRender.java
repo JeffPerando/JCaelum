@@ -33,6 +33,9 @@ public class ThreadGameRender extends ThreadTimed
 	@Override
 	public boolean initiate()
 	{
+		CaelumEngine.renderEnvironment().initiate(this.context);
+		this.hub.initiate(this.context);
+		
 		DisplaySettings settings = this.hub.getSettings();
 		
 		if (settings == null)
@@ -78,8 +81,6 @@ public class ThreadGameRender extends ThreadTimed
 		}
 		
 		this.hub.getCamera().updateCamera(this.context);
-		
-		this.context.updateTextures();
 		
 		boolean renderedAnything = false;
 		Collection<IRenderEngine> engines = this.hub.getRenderEngines();
@@ -163,7 +164,7 @@ public class ThreadGameRender extends ThreadTimed
 	@Override
 	public void onThreadStopped()
 	{
-		RenderHelper.cleanup(this.context);
+		this.context.cleanup();
 		
 		try
 		{

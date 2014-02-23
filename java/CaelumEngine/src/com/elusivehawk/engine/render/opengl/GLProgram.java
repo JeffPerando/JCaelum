@@ -24,8 +24,9 @@ import com.elusivehawk.engine.render.old.Model;
 public class GLProgram implements IGLCleanable
 {
 	private final int id, vba;
-	private final int[] shaders;
+	private final int sVertex, sFrag;
 	private HashMap<VertexBufferObject, List<Integer>> vbos = new HashMap<VertexBufferObject, List<Integer>>();
+	private boolean bound = false;
 	
 	private GLProgram(RenderContext context)
 	{
@@ -34,24 +35,19 @@ public class GLProgram implements IGLCleanable
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	private GLProgram(RenderContext context, int... sh)
+	private GLProgram(RenderContext context, int vertex, int frag)
 	{
 		id = context.getGL2().glCreateProgram();
 		
 		vba = context.getGL3().glGenVertexArrays();
 		
-		for (int s : sh)
-		{
-			if (s == 0)
-			{
-				continue;
-			}
-			
-			context.getGL2().glAttachShader(id, s);
-			
-		}
+		sVertex = vertex;
+		sFrag = frag;
 		
-		context.getGL2().glLinkProgram(this.id);
+		context.getGL2().glAttachShader(id, vertex);
+		context.getGL2().glAttachShader(id, frag);
+		
+		context.getGL2().glLinkProgram(this);
 		context.getGL2().glValidateProgram(this);
 		
 		try
@@ -65,15 +61,21 @@ public class GLProgram implements IGLCleanable
 			
 		}
 		
-		shaders = sh;
-		
-		RenderHelper.register(this);
+		context.registerCleanable(this);
 		
 	}
 	
-	public static GLProgram create(RenderContext context, int... sh)
+	public static GLProgram create(RenderContext context)
 	{
-		return (sh == null || sh.length == 0) ? new GLProgram(context) : new GLProgram(context, sh);
+		return new GLProgram(context);
+	}
+	
+	public static GLProgram create(RenderContext context, int v, int f)
+	{
+		assert v != 0;
+		assert f != 0;
+		
+		return new GLProgram(context, v, f);
 	}
 	
 	public void attachVBO(VertexBufferObject vbo, List<Integer> attribs)
@@ -122,14 +124,26 @@ public class GLProgram implements IGLCleanable
 		this.attachModel(tkt.getModel());
 		this.attachVBO(tkt.getExtraVBO(), Arrays.asList(3, 4, 5));
 		
+		if (!this.bound && !this.bind(context))
+		{
+			return;
+		}
+		
 		context.getGL2().glVertexAttribPointer(3, 3, GLConst.GL_FLOAT, false, 0, tkt.getBuffer());
 		context.getGL2().glVertexAttribPointer(4, 3, GLConst.GL_FLOAT, false, 3, tkt.getBuffer());
 		context.getGL2().glVertexAttribPointer(5, 3, GLConst.GL_FLOAT, false, 6, tkt.getBuffer());
+		
+		this.unbind(context);
 		
 	}
 	
 	public void attachUniform(String name, FloatBuffer info, EnumUniformType type, RenderContext context)
 	{
+		if (!this.bound && !this.bind(context))
+		{
+			return;
+		}
+		
 		int loc = context.getGL2().glGetUniformLocation(this.id, name);
 		
 		if (loc == 0)
@@ -144,6 +158,11 @@ public class GLProgram implements IGLCleanable
 	
 	public void attachUniform(String name, IntBuffer info, EnumUniformType type, RenderContext context)
 	{
+		if (!this.bound && !this.bind(context))
+		{
+			return;
+		}
+		
 		int loc = context.getGL2().glGetUniformLocation(this.id, name);
 		
 		if (loc == 0)
@@ -161,9 +180,14 @@ public class GLProgram implements IGLCleanable
 		return this.id;
 	}
 	
-	public int[] getShaders()
+	public int getShaderFrag()
 	{
-		return this.shaders;
+		return this.sFrag;
+	}
+	
+	public int getShaderVertex()
+	{
+		return this.sVertex;
 	}
 	
 	public boolean bind(RenderContext context)
@@ -180,14 +204,12 @@ public class GLProgram implements IGLCleanable
 	
 	private boolean bind0(RenderContext context)
 	{
-		int p = context.getGL1().glGetInteger(GLConst.GL_CURRENT_PROGRAM);
-		
-		if (p == this.id)
+		if (this.bound)
 		{
 			return true;
 		}
 		
-		if (p != 0)
+		if (context.getGL1().glGetInteger(GLConst.GL_CURRENT_PROGRAM) != 0)
 		{
 			return false;
 		}
@@ -216,11 +238,18 @@ public class GLProgram implements IGLCleanable
 			
 		}
 		
+		this.bound = true;
+		
 		return true;
 	}
 	
 	public void unbind(RenderContext context)
 	{
+		if (!this.bound)
+		{
+			return;
+		}
+		
 		if (!this.vbos.isEmpty())
 		{
 			for (Entry<VertexBufferObject, List<Integer>> entry : this.vbos.entrySet())
@@ -245,20 +274,23 @@ public class GLProgram implements IGLCleanable
 		
 		context.getGL2().glUseProgram(0);
 		
+		this.bound = false;
+		
 	}
 	
 	@Override
 	public void glDelete(RenderContext context)
 	{
-		this.unbind(context);
+		if (this.bound)
+		{
+			this.unbind(context);
+			
+		}
 		
 		context.getGL3().glDeleteVertexArrays(this.vba);
 		
-		for (int shader : this.shaders)
-		{
-			context.getGL2().glDeleteShader(shader);
-			
-		}
+		context.getGL2().glDeleteShader(this.sVertex);
+		context.getGL2().glDeleteShader(this.sFrag);
 		
 		context.getGL2().glDeleteProgram(this);
 		
