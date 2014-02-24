@@ -92,7 +92,7 @@ public class OpenGL1 implements IGL1
 	}
 	
 	@Override
-	public void glBufferSubData(int target, long offset, int type, Buffer data)
+	public void glBufferSubData(int target, int offset, int type, Buffer data)
 	{
 		switch (type)
 		{
@@ -182,9 +182,18 @@ public class OpenGL1 implements IGL1
 	}
 	
 	@Override
-	public void glDeleteBuffers(int buffer)
+	public void glDeleteBuffers(int... buffers)
 	{
-		GL15.glDeleteBuffers(buffer);
+		if (buffers.length == 1)
+		{
+			GL15.glDeleteBuffers(buffers[0]);
+			
+		}
+		else
+		{
+			this.glDeleteBuffers(BufferHelper.makeIntBuffer(buffers));
+			
+		}
 		
 	}
 	

@@ -1,16 +1,19 @@
 
 package com.elusivehawk.engine.android;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import android.annotation.TargetApi;
 import android.opengl.GLES10;
+import android.opengl.GLES11;
 import android.opengl.GLES30;
 import android.os.Build;
 import com.elusivehawk.engine.render.Color;
 import com.elusivehawk.engine.render.EnumColorFilter;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.ITexture;
+import com.elusivehawk.engine.render.opengl.VertexBufferObject;
 import com.elusivehawk.engine.util.BufferHelper;
 
 /**
@@ -36,6 +39,20 @@ public class GLES1 implements IGL1
 	}
 	
 	@Override
+	public void glBindBuffer(int target, int buffer)
+	{
+		GLES11.glBindBuffer(target, buffer);
+		
+	}
+	
+	@Override
+	public void glBindBuffer(VertexBufferObject vbo)
+	{
+		this.glBindBuffer(vbo.t, vbo.id);
+		
+	}
+	
+	@Override
 	public void glBindTexture(int target, int texture)
 	{
 		GLES10.glBindTexture(target, texture);
@@ -53,6 +70,20 @@ public class GLES1 implements IGL1
 	public void glBlendFunc(int sfactor, int dfactor)
 	{
 		GLES10.glBlendFunc(sfactor, dfactor);
+		
+	}
+	
+	@Override
+	public void glBufferData(int target, int type, Buffer data, int usage)
+	{
+		GLES11.glBufferData(target, data.remaining(), data, usage);
+		
+	}
+	
+	@Override
+	public void glBufferSubData(int target, int offset, int type, Buffer data)
+	{
+		GLES11.glBufferSubData(target, offset, 0, data);
 		
 	}
 	
@@ -125,6 +156,26 @@ public class GLES1 implements IGL1
 	}
 	
 	@Override
+	public void glDeleteBuffers(VertexBufferObject vbo)
+	{
+		this.glDeleteBuffers(vbo.id);
+		
+	}
+	
+	@Override
+	public void glDeleteBuffers(int... buffers)
+	{
+		this.glDeleteBuffers(BufferHelper.makeIntBuffer(buffers));
+	}
+	
+	@Override
+	public void glDeleteBuffers(IntBuffer buffers)
+	{
+		GLES11.glDeleteBuffers(buffers.remaining(), buffers);
+		
+	}
+	
+	@Override
 	public void glDeleteTextures(int length, int... textures)
 	{
 		GLES10.glDeleteTextures(length, BufferHelper.makeIntBuffer(textures));
@@ -174,6 +225,13 @@ public class GLES1 implements IGL1
 	}
 	
 	@Override
+	public void glDrawElements(int mode, int count, int type, int offset)
+	{
+		GLES11.glDrawElements(mode, count, type, offset);
+		
+	}
+	
+	@Override
 	public void glEnable(int cap)
 	{
 		GLES10.glEnable(cap);
@@ -199,6 +257,22 @@ public class GLES1 implements IGL1
 	{
 		GLES10.glFrontFace(mode);
 		
+	}
+	
+	@Override
+	public int glGenBuffers()
+	{
+		IntBuffer buf = BufferHelper.createIntBuffer(1);
+		
+		this.glGenBuffers(buf);
+		
+		return buf.get(0);
+	}
+	
+	@Override
+	public void glGenBuffers(IntBuffer buf)
+	{
+		GLES11.glGenBuffers(buf.remaining(), buf);
 	}
 	
 	@Override
@@ -265,6 +339,18 @@ public class GLES1 implements IGL1
 	{
 		GLES10.glHint(target, mode);
 		
+	}
+	
+	@Override
+	public boolean glIsBuffer(int buffer)
+	{
+		return GLES11.glIsBuffer(buffer);
+	}
+	
+	@Override
+	public boolean glIsTexture(int texture)
+	{
+		return GLES11.glIsTexture(texture);
 	}
 	
 	@Override
@@ -353,6 +439,16 @@ public class GLES1 implements IGL1
 			ByteBuffer pixels)
 	{
 		GLES10.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels);
+		
+	}
+	
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+	@Override
+	public void glTexImage3D(int target, int level, int internalFormat,
+			int width, int height, int depth, int border, int format, int type,
+			IntBuffer pixels)
+	{
+		GLES30.glTexImage3D(target, level, internalFormat, width, height, depth, border, format, type, pixels);
 		
 	}
 	
