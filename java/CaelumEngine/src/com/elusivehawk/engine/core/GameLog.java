@@ -32,8 +32,11 @@ public final class GameLog implements ILog
 		
 		StringBuilder b = new StringBuilder();
 		
-		b.append("[" + type.name() + "] ");
-		b.append(TextParser.parseDate(Calendar.getInstance()) + ": ");
+		b.append("[");
+		b.append(type.name());
+		b.append("] ");
+		b.append(TextParser.parseDate(Calendar.getInstance()));
+		b.append(": ");
 		b.append(type.err && msg == null ? this.crashDialog.get(this.rng.nextInt(this.crashDialog.size())) : msg);
 		
 		String fin = b.toString();
