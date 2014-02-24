@@ -19,7 +19,7 @@ public abstract class Vector<T extends Number> implements IMathObject<T>
 	@SuppressWarnings("unqualified-field-access")
 	protected Vector(int length)
 	{
-		size = Math.max(Math.min(length, 1), 4);
+		size = MathHelper.clamp(length, 1, 4);
 		
 	}
 	

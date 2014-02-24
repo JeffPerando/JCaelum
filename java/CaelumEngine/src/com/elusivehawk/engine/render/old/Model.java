@@ -216,7 +216,7 @@ public class Model implements IStorageListener
 		
 		while (this.texOffs.size() < this.polys.size())
 		{
-			this.texOffs.add(new VectorF(2, 0f, 0f));
+			this.texOffs.add(new VectorF(0f, 0f));
 			
 		}
 		
@@ -235,7 +235,7 @@ public class Model implements IStorageListener
 			return;
 		}
 		
-		this.vertex(new VectorF(3, x, y, z));
+		this.vertex(new VectorF(x, y, z));
 		
 	}
 	
@@ -306,7 +306,7 @@ public class Model implements IStorageListener
 			return;
 		}
 		
-		this.texOffs.add(new VectorF(2, x, y));
+		this.texOffs.add(new VectorF(x, y));
 		
 	}
 	

@@ -14,18 +14,11 @@ public class VectorF extends Vector<Float>
 {
 	protected final Float[] data;
 	
-	public VectorF(int length, Buffer<Float> buf)
+	public VectorF(Buffer<Float> buf)
 	{
-		this(length);
+		this(buf.remaining());
 		
-		if (buf == null || buf.remaining() == 0)
-		{
-			return;
-		}
-		
-		int l = Math.min(length, buf.remaining());
-		
-		for (int c = 0; c < l; c++)
+		for (int c = 0; c < this.size; c++)
 		{
 			this.set(c, buf.next());
 			
@@ -33,19 +26,17 @@ public class VectorF extends Vector<Float>
 		
 	}
 	
-	public VectorF(int length, Float... info)
+	public VectorF(Float... info)
 	{
-		this(length, new Buffer<Float>(info));
+		this(new Buffer<Float>(info));
 		
 	}
 	
-	public VectorF(int length, FloatBuffer buf)
+	public VectorF(FloatBuffer buf)
 	{
-		this(length);
+		this(buf.remaining());
 		
-		int l = Math.min(length, buf.remaining());
-		
-		for (int c = 0; c < l; c++)
+		for (int c = 0; c < this.size; c++)
 		{
 			this.set(c, buf.get());
 			
@@ -72,7 +63,7 @@ public class VectorF extends Vector<Float>
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public VectorF(int length)
+	protected VectorF(int length)
 	{
 		super(length);
 		data = new Float[length];

@@ -223,9 +223,9 @@ public class RenderTicket implements IDirty, ILogicalRender
 	
 	public static enum EnumVectorType
 	{
-		ROTATION(new VectorF(3)),
-		TRANSLATION(new VectorF(3)),
-		SCALING(new VectorF(3, 1.0f, 1.0f, 1.0f));
+		ROTATION(new VectorF(0f, 0f, 0f)),
+		TRANSLATION(new VectorF(0f, 0f, 0f)),
+		SCALING(new VectorF(1.0f, 1.0f, 1.0f));
 		
 		private final VectorF vec;
 		

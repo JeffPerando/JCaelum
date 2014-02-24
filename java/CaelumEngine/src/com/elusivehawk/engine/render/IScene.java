@@ -16,6 +16,8 @@ public interface IScene
 	
 	public ParticleScene getParticles();
 	
+	//public LightMap getLightMap();
+	
 	//public SyncList<ImageScreen> getImages();
 	
 }

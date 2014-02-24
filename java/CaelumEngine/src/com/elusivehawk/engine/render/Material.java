@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
+import com.elusivehawk.engine.math.MathHelper;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.ITexture;
 
@@ -45,7 +46,7 @@ public class Material
 		assert overlay != null;
 		
 		tex = texture;
-		reflectivity = shine;
+		reflectivity = MathHelper.clamp(shine, 0f, 1f);
 		filter = overlay;
 		
 	}

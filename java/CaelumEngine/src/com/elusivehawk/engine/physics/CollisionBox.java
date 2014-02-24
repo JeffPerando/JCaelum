@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.physics;
 
+import com.elusivehawk.engine.math.MathHelper;
 import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.math.VectorF;
 
@@ -83,11 +84,9 @@ public class CollisionBox extends CollisionObject
 	{
 		Vector<Float> vec = obj.createPointForCollision(this);
 		
-		float x = vec.get(Vector.X),
-		y = vec.get(Vector.Y),
-		z = vec.get(Vector.Z);
-		
-		if ((x > this.maxX && x < this.minX) && (y > this.maxY && y < this.minY) && (z > this.maxZ && z < this.minZ))
+		if (MathHelper.bounds(vec.get(Vector.X), this.minX, this.maxX) && 
+				MathHelper.bounds(vec.get(Vector.Y), this.minY, this.maxY) &&
+				MathHelper.bounds(vec.get(Vector.Z), this.minZ, this.maxZ))
 		{
 			ICollisionListener ret = super.getCollisionResult(obj);
 			
@@ -102,9 +101,9 @@ public class CollisionBox extends CollisionObject
 	{
 		Vector<Float> vec = obj.getCentralPosition();
 		
-		return new VectorF(3, Math.min(Math.max(this.minX, vec.get(Vector.X)), this.maxX),
-				Math.min(Math.max(this.minY, vec.get(Vector.Y)), this.maxY),
-				Math.min(Math.max(this.minZ, vec.get(Vector.Z)), this.maxZ));
+		return new VectorF(MathHelper.clamp(vec.get(Vector.X), this.minX, this.maxX),
+				MathHelper.clamp(vec.get(Vector.Y), this.minY, this.maxY),
+				MathHelper.clamp(vec.get(Vector.Z), this.minZ, this.maxZ));
 	}
 	
 }

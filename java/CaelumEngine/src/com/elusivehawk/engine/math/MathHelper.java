@@ -13,6 +13,36 @@ public final class MathHelper
 	
 	private MathHelper(){}
 	
+	public static boolean bounds(float f, float min, float max)
+	{
+		return clamp(f, min, max) == f;
+	}
+	
+	public static boolean bounds(int i, int min, int max)
+	{
+		return clamp(i, min, max) == i;
+	}
+	
+	public static boolean bounds(long l, long min, long max)
+	{
+		return clamp(l, min, max) == l;
+	}
+	
+	public static float clamp(float f, float min, float max)
+	{
+		return Math.min(max, Math.max(f, min));
+	}
+	
+	public static int clamp(int i, int min, int max)
+	{
+		return Math.min(max, Math.max(i, min));
+	}
+	
+	public static long clamp(long l, long min, long max)
+	{
+		return Math.min(max, Math.max(l, min));
+	}
+	
 	public static float dist(Vector<Float> from, Vector<Float> to)
 	{
 		return (float)Math.sqrt(distSquare(from, to));
