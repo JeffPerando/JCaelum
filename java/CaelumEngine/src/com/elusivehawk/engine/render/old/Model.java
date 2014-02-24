@@ -10,17 +10,14 @@ import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.math.VectorF;
-import com.elusivehawk.engine.render.Color;
-import com.elusivehawk.engine.render.EnumColorFilter;
-import com.elusivehawk.engine.render.EnumColorFormat;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.VertexBufferObject;
-import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.BufferHelper;
 import com.elusivehawk.engine.util.SemiFinalStorage;
 import com.elusivehawk.engine.util.SemiFinalStorage.IStorageListener;
+import com.elusivehawk.engine.util.SimpleList;
 import com.elusivehawk.engine.util.Tuple;
 
 /**
@@ -41,12 +38,11 @@ public class Model implements IStorageListener
 	public final SemiFinalStorage<VertexBufferObject> indiceBuf = new SemiFinalStorage<VertexBufferObject>(null, this);
 	
 	private boolean finished = false;
-	private List<VectorF> polys = new ArrayList<VectorF>();
-	private List<Color> color = new ArrayList<Color>();
-	private List<VectorF> texOffs = new ArrayList<VectorF>();
+	private List<Vector<Float>> polys = new SimpleList<Vector<Float>>();
+	private List<Vector<Float>> texOffs = new SimpleList<Vector<Float>>();
+	private List<Vector<Float>> norms = new SimpleList<Vector<Float>>();
 	private int glMode = Integer.MIN_VALUE;
 	private int pointCount = 0, oldPointCount = 0;
-	private Color globalColor = null;
 	private HashMap<Integer, Tuple<Integer, Integer>> arrays = new HashMap<Integer, Tuple<Integer, Integer>>();
 	
 	public void finish(RenderContext context)
@@ -70,21 +66,21 @@ public class Model implements IStorageListener
 		
 		this.finished = true;
 		
-		List<VectorF> vecs = new ArrayList<VectorF>();
-		List<Integer> indiceList = new ArrayList<Integer>();
+		List<Vector<Float>> vecs = new SimpleList<Vector<Float>>();
+		List<Integer> indiceList = new SimpleList<Integer>();
 		
 		List<Float> temp = new ArrayList<Float>();
 		
 		for (int c = 0; c < this.polys.size(); c++)
 		{
-			VectorF vec = this.polys.get(c);
+			Vector<Float> vec = this.polys.get(c);
 			
 			int index = vecs.indexOf(vec);
 			
 			if (index == -1)
 			{
-				Color col = this.color.get(c);
-				VectorF tex = this.texOffs.get(c);
+				Vector<Float> tex = this.texOffs.get(c);
+				Vector<Float> norm = this.norms.get(c);
 				
 				index = vecs.size();
 				vecs.add(vec);
@@ -93,28 +89,12 @@ public class Model implements IStorageListener
 				temp.add(vec.get(Vector.Y));
 				temp.add(vec.get(Vector.Z));
 				
-				if (this.globalColor == null)
-				{
-					temp.add(col.getColorFloat(EnumColorFilter.RED));
-					temp.add(col.getColorFloat(EnumColorFilter.GREEN));
-					temp.add(col.getColorFloat(EnumColorFilter.BLUE));
-					temp.add(col.getColorFloat(EnumColorFilter.ALPHA));
-					
-				}
-				else
-				{
-					Buffer<Float> mixed = RenderHelper.mixColors(col, this.globalColor);
-					
-					for (float f : mixed)
-					{
-						temp.add(f);
-						
-					}
-					
-				}
-				
 				temp.add(tex.get(Vector.X));
 				temp.add(tex.get(Vector.Y));
+				
+				temp.add(norm.get(Vector.X));
+				temp.add(norm.get(Vector.Y));
+				temp.add(norm.get(Vector.Z));
 				
 			}
 			
@@ -147,8 +127,8 @@ public class Model implements IStorageListener
 		}
 		
 		this.polys = null;
-		this.color = null;
 		this.texOffs = null;
+		this.norms = null;
 		
 		this.indiceCount.set(this.pointCount);
 		
@@ -208,15 +188,15 @@ public class Model implements IStorageListener
 		
 		this.pointCount += vectors;
 		
-		while (this.color.size() < this.polys.size())
-		{
-			this.color.add(new Color(EnumColorFormat.RGBA));
-			
-		}
-		
 		while (this.texOffs.size() < this.polys.size())
 		{
 			this.texOffs.add(new VectorF(0f, 0f));
+			
+		}
+		
+		while (this.norms.size() < this.polys.size())
+		{
+			this.norms.add(new VectorF(0f, 0f, 0f));//TODO Automatically calculate surface normals.
 			
 		}
 		
@@ -255,47 +235,20 @@ public class Model implements IStorageListener
 		
 	}
 	
-	public final void color(int r, int g, int b, int a)
+	public final void color(float x, float y, float z)
 	{
-		if (this.finished)
-		{
-			return;
-		}
-		
-		this.color(new Color(EnumColorFormat.RGBA, r, g, b, a));
+		this.normal(new VectorF(x, y, z));
 		
 	}
 	
-	public final void color(Color col)
+	public final void normal(Vector<Float> norm)
 	{
 		if (this.finished)
 		{
 			return;
 		}
 		
-		this.color.add(col);
-		
-	}
-	
-	public final void globalColor(int r, int g, int b, int a)
-	{
-		if (this.finished)
-		{
-			return;
-		}
-		
-		this.globalColor(new Color(EnumColorFormat.RGBA, r, g, b, a));
-		
-	}
-	
-	public final void globalColor(Color col)
-	{
-		if (this.finished)
-		{
-			return;
-		}
-		
-		this.globalColor = col;
+		this.norms.add(norm);
 		
 	}
 	

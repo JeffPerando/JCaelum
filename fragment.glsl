@@ -1,4 +1,4 @@
-#version 110
+#version 330
 
 struct Material
 {
@@ -8,11 +8,20 @@ struct Material
 	
 }
 
-in vec4 frag_color;
+struct Light
+{
+	vec3 position;
+	vec3 direction;
+	vec4 colors;
+	float brightness;
+	
+}
+
 in vec2 frag_texcoord;
+in vec3 frag_norm;
 
 void main()
 {
-	gl_FragColor = frag_color;
+	gl_FragColor = null;
 	
 }

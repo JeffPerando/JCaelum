@@ -18,6 +18,12 @@ public class SimpleList<T> implements List<T>
 	protected int size = 0;
 	protected final boolean exp;
 	
+	public SimpleList()
+	{
+		this(16);
+		
+	}
+	
 	public SimpleList(int length)
 	{
 		this(length, true);

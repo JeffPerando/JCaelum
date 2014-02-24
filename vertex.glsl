@@ -15,20 +15,20 @@ uniform mat4 proj;
 uniform mat4 model;
 
 (location = 0) in vec3 in_position;
-(location = 1) in vec4 in_color;
-(location = 2) in vec2 in_texcoord;
+(location = 1) in vec2 in_texcoord;
+(location = 2) in vec3 in_norm;
 
 (location = 3) in vec3 in_scale;
 (location = 4) in vec3 in_rot;
 (location = 5) in vec3 in_trans;
 
-out vec4 frag_color;
 out vec2 frag_texcoord;
+out vec3 frag_norm;
 
 void main()
 {
 	frag_texcoord = in_texcoord;
-	frag_color = in_color;
+	frag_norm = in_norm;
 	
 	mat4 fin = trans(in_trans) * rotate(in_rot) * scale(in_scale) * vec4(in_position, 1.0);
 	
