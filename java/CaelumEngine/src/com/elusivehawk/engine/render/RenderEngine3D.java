@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import com.elusivehawk.engine.render.old.Model;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
+import com.elusivehawk.engine.render.opengl.ITexture;
 import com.elusivehawk.engine.util.Tuple;
 
 /**
@@ -46,6 +47,7 @@ public class RenderEngine3D implements IRenderEngine
 		context.getGL1().glCullFace(GLConst.GL_BACK);
 		
 		int currTex = 0, tex = 0;
+		boolean zBuffer = true;
 		
 		for (IModelGroup group : models)
 		{
@@ -78,19 +80,34 @@ public class RenderEngine3D implements IRenderEngine
 					continue;
 				}
 				
-				tex = tkt.getTexture().getTexture();
+				tex = tkt.getTexture() == null ? context.getDefaultTexture() : tkt.getTexture().getTexture();
 				
 				if (currTex != tex)
 				{
-					if (context.getGL1().glIsTexture(tex))
+					if (!context.getGL1().glIsTexture(tex))
 					{
-						context.getGL1().glBindTexture(GLConst.GL_TEXTURE0, tex);
-						currTex = tex;
+						tex = context.getDefaultTexture();
+						
+					}
+					
+					context.getGL1().glBindTexture(GLConst.GL_TEXTURE0, tex);
+					currTex = tex;
+					
+				}
+				
+				if (zBuffer != tkt.enableZBuffering())
+				{
+					zBuffer = tkt.enableZBuffering();
+					
+					if (zBuffer)
+					{
+						context.getGL1().glEnable(GLConst.GL_DEPTH_TEST);
+						context.getGL1().glDepthFunc(GLConst.GL_LESS);
 						
 					}
 					else
 					{
-						context.getGL1().glBindTexture(GLConst.GL_TEXTURE0, context.getDefaultTexture());
+						context.getGL1().glDisable(GLConst.GL_DEPTH_TEST);
 						
 					}
 					
@@ -111,7 +128,12 @@ public class RenderEngine3D implements IRenderEngine
 		}
 		
 		context.getGL1().glDisable(GLConst.GL_CULL_FACE);
-		context.getGL1().glDisable(GLConst.GL_DEPTH_TEST);
+		
+		if (zBuffer)
+		{
+			context.getGL1().glDisable(GLConst.GL_DEPTH_TEST);
+			
+		}
 		
 	}
 	

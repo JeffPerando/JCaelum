@@ -29,7 +29,7 @@ public class RenderTicket implements IDirty, ILogicalRender
 	protected final VertexBufferObject vbo;
 	protected final FloatBuffer buf;
 	
-	protected boolean dirty = false;//, animPause = false;
+	protected boolean dirty = false, zBuffer = true;//, animPause = false;
 	//protected int frame = 0;
 	//protected IModelAnimation anim = null, lastAnim = null;
 	protected ITexture tex;
@@ -86,11 +86,11 @@ public class RenderTicket implements IDirty, ILogicalRender
 		
 	}
 	
-	/*public synchronized void setAnimationPaused(boolean b)
+	public synchronized void setEnableZBuffer(boolean b)
 	{
-		this.animPause = b;
+		this.zBuffer = b;
 		
-	}*/
+	}
 	
 	/**
 	 * 
@@ -150,10 +150,10 @@ public class RenderTicket implements IDirty, ILogicalRender
 		return this.tex;
 	}
 	
-	/*public boolean isAnimationPaused()
+	public boolean enableZBuffering()
 	{
-		return this.animPause;
-	}*/
+		return this.zBuffer;
+	}
 	
 	@Override
 	public GLProgram getProgram()
