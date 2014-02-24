@@ -14,7 +14,7 @@ public interface IRenderEnvironment
 	public static final int GL_3 = 3;
 	public static final int GL_4 = 4;
 	
-	public void initiate(RenderContext context);
+	public boolean initiate();
 	
 	/**
 	 * 

@@ -33,7 +33,15 @@ public class ThreadGameRender extends ThreadTimed
 	@Override
 	public boolean initiate()
 	{
-		CaelumEngine.renderEnvironment().initiate(this.context);
+		if (!CaelumEngine.renderEnvironment().initiate())
+		{
+			CaelumEngine.log().log(EnumLogType.ERROR, "Unable to load render environment.");
+			
+			return false;
+		}
+		
+		this.context.initiate();
+		
 		this.hub.initiate(this.context);
 		
 		DisplaySettings settings = this.hub.getSettings();
@@ -82,7 +90,6 @@ public class ThreadGameRender extends ThreadTimed
 		
 		this.hub.getCamera().updateCamera(this.context);
 		
-		boolean renderedAnything = false;
 		Collection<IRenderEngine> engines = this.hub.getRenderEngines();
 		
 		if (engines != null && !engines.isEmpty())
@@ -145,17 +152,9 @@ public class ThreadGameRender extends ThreadTimed
 				
 			}
 			
-			renderedAnything = (renderersUsed > 0);
-			
 		}
 		
 		this.context.setRenderStage(EnumRenderStage.POSTEFFECTS);
-		
-		if (renderedAnything)
-		{
-			this.hub.getCamera().postRender(this.context);
-			
-		}
 		
 		this.display.get().updateDisplay();
 		

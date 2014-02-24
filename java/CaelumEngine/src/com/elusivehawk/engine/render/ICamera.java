@@ -10,7 +10,7 @@ import com.elusivehawk.engine.util.IDirty;
  * 
  * @author Elusivehawk
  */
-public interface ICamera extends IDirty
+public interface ICamera extends IDirty, IPostRenderer
 {
 	/**
 	 * 
@@ -19,14 +19,6 @@ public interface ICamera extends IDirty
 	 * @param context The current rendering context.
 	 */
 	public void updateCamera(RenderContext context);
-	
-	/**
-	 * 
-	 * Called once every frame, after rendering.
-	 * 
-	 * @param context The current rendering context.
-	 */
-	public void postRender(RenderContext context);
 	
 	/**
 	 * 

@@ -4,7 +4,6 @@ package com.elusivehawk.engine.android;
 import com.elusivehawk.engine.render.DisplaySettings;
 import com.elusivehawk.engine.render.IDisplay;
 import com.elusivehawk.engine.render.IRenderEnvironment;
-import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
 
@@ -22,10 +21,10 @@ public class AndroidREnvironment implements IRenderEnvironment
 	protected final Object GL_4  = null;
 	
 	@Override
-	public void initiate(RenderContext context)
+	public boolean initiate()
 	{
 		// TODO Auto-generated method stub
-		
+		return true;
 	}
 	
 	@Override

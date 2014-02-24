@@ -22,28 +22,39 @@ public final class RenderContext
 {
 	private final IRenderHUB hub;
 	
-	private final IGL1 gl1;
-	private final IGL2 gl2;
-	private final IGL3 gl3;
+	private IGL1 gl1;
+	private IGL2 gl2;
+	private IGL3 gl3;
 	
-	private final int sVertex, sFrag, notex;
+	private int sVertex, sFrag, notex;
 	
 	private final List<ITexture> texturePool = new SimpleList<ITexture>(32);
+	private final List<IPostRenderer> postRenderers = new SimpleList<IPostRenderer>(32);
 	private final List<IGLCleanable> cleanables = new SimpleList<IGLCleanable>(32);
 	
 	private EnumRenderStage stage = null;
+	private boolean initiated = false;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public RenderContext(IRenderHUB renderhub)
 	{
 		hub = renderhub;
 		
-		gl1 = (IGL1)CaelumEngine.renderEnvironment().getGL(IRenderEnvironment.GL_1);
-		gl2 = (IGL2)CaelumEngine.renderEnvironment().getGL(IRenderEnvironment.GL_2);
-		gl3 = (IGL3)CaelumEngine.renderEnvironment().getGL(IRenderEnvironment.GL_3);
+	}
+	
+	public void initiate()
+	{
+		if (this.initiated)
+		{
+			return;
+		}
 		
-		sVertex = RenderHelper.loadShader(FileHelper.createFile("/vertex.glsl"), GLConst.GL_VERTEX_SHADER, this);
-		sFrag = RenderHelper.loadShader(FileHelper.createFile("/fragment.glsl"), GLConst.GL_FRAGMENT_SHADER, this);
+		this.gl1 = (IGL1)CaelumEngine.renderEnvironment().getGL(IRenderEnvironment.GL_1);
+		this.gl2 = (IGL2)CaelumEngine.renderEnvironment().getGL(IRenderEnvironment.GL_2);
+		this.gl3 = (IGL3)CaelumEngine.renderEnvironment().getGL(IRenderEnvironment.GL_3);
+		
+		this.sVertex = RenderHelper.loadShader(FileHelper.createFile("/vertex.glsl"), GLConst.GL_VERTEX_SHADER, this);
+		this.sFrag = RenderHelper.loadShader(FileHelper.createFile("/fragment.glsl"), GLConst.GL_FRAGMENT_SHADER, this);
 		
 		PixelGrid ntf = new PixelGrid(32, 32, EnumColorFormat.RGBA);
 		
@@ -57,7 +68,9 @@ public final class RenderContext
 			
 		}
 		
-		notex = RenderHelper.processImage(ntf, EnumRenderMode.MODE_2D, this);
+		this.notex = RenderHelper.processImage(ntf, EnumRenderMode.MODE_2D, this);
+		
+		this.initiated = true;
 		
 	}
 	
@@ -112,7 +125,8 @@ public final class RenderContext
 		
 		switch (this.stage)
 		{
-			case PRERENDER: this.updateTextures();
+			case PRERENDER: this.updateTextures(); break;
+			case POSTEFFECTS: this.onPostRender(); break;
 			
 		}
 		
@@ -173,6 +187,27 @@ public final class RenderContext
 		}
 		
 		this.cleanables.clear();
+		
+	}
+	
+	public void addPostRenderer(IPostRenderer pr)
+	{
+		this.postRenderers.add(pr);
+		
+	}
+	
+	private void onPostRender()
+	{
+		if (this.postRenderers.isEmpty())
+		{
+			return;
+		}
+		
+		for (IPostRenderer pr : this.postRenderers)
+		{
+			pr.postRender(this);
+			
+		}
 		
 	}
 	

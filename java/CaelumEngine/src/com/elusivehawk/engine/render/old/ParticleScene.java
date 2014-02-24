@@ -2,7 +2,6 @@
 package com.elusivehawk.engine.render.old;
 
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import com.elusivehawk.engine.math.Vector;
@@ -16,6 +15,7 @@ import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBufferObject;
 import com.elusivehawk.engine.util.BufferHelper;
+import com.elusivehawk.engine.util.SimpleList;
 
 /**
  * 
@@ -29,7 +29,7 @@ public class ParticleScene implements ILogicalRender
 	public static final int PARTICLE_FLOAT_COUNT = 7;
 	
 	protected final FloatBuffer buf;
-	protected final List<IParticle> particles = new ArrayList<IParticle>();
+	protected final List<IParticle> particles;
 	protected final VertexBufferObject vbo;
 	protected final int particleCount;
 	protected final GLProgram p;
@@ -37,6 +37,7 @@ public class ParticleScene implements ILogicalRender
 	@SuppressWarnings("unqualified-field-access")
 	public ParticleScene(int maxParticles, RenderContext context)
 	{
+		particles = new SimpleList<IParticle>(maxParticles, false);
 		buf = BufferHelper.createFloatBuffer(maxParticles * PARTICLE_FLOAT_COUNT);
 		particleCount = maxParticles;
 		
