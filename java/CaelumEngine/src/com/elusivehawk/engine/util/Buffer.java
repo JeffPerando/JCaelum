@@ -95,8 +95,9 @@ public class Buffer<T> implements IDirty, Collection<T>, Iterator<T>
 	@Override
 	public boolean add(T obj)
 	{
-		this.dirt.add(this.pos, true);
-		this.l.add(this.pos++, obj);
+		this.dirt.add(true);
+		this.l.add(obj);
+		this.pos++;
 		
 		return true;
 	}

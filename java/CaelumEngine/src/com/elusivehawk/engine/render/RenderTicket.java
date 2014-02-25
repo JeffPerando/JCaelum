@@ -199,8 +199,6 @@ public class RenderTicket implements IDirty, ILogicalRender
 			
 			this.p.attachUniform("model", m.asBuffer(), GLProgram.EnumUniformType.M_FOUR, context);
 			
-			context.getHub().getCamera().updateUniform(this.getProgram(), context, EnumRenderMode.MODE_3D);
-			
 			this.setIsDirty(false);
 			
 		}

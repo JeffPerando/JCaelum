@@ -7,7 +7,6 @@ import java.util.Map.Entry;
 import com.elusivehawk.engine.render.old.Model;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
-import com.elusivehawk.engine.render.opengl.ITexture;
 import com.elusivehawk.engine.util.Tuple;
 
 /**
@@ -75,6 +74,19 @@ public class RenderEngine3D implements IRenderEngine
 				}
 				
 				if (!tkt.updateBeforeUse(context))
+				{
+					p.unbind(context);
+					continue;
+				}
+				
+				context.manipulateProgram(p);
+				
+				try
+				{
+					RenderHelper.checkForGLError(context);
+					
+				}
+				catch (Exception e)
 				{
 					p.unbind(context);
 					continue;

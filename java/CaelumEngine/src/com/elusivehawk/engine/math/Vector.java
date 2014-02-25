@@ -14,6 +14,10 @@ public abstract class Vector<T extends Number> implements IMathObject<T>
 	public static final int Z = 2;
 	public static final int W = 3;
 	
+	public static final Vector<Float> X_AXIS = new VectorF(1f, 0f, 0f);
+	public static final Vector<Float> Y_AXIS = new VectorF(0f, 1f, 0f);
+	public static final Vector<Float> Z_AXIS = new VectorF(0f, 0f, 1f);
+	
 	protected final int size;
 	
 	@SuppressWarnings("unqualified-field-access")

@@ -1,17 +1,7 @@
 #version 330
 
-struct Camera
-{
-	mat4 m;
-	float zFar;
-	float zNear;
-	float aspectRatio;
-	float fov;
-	
-}
-
-uniform Camera cam;
 uniform mat4 proj;
+uniform mat4 view;
 uniform mat4 model;
 
 (location = 0) in vec3 in_position;
@@ -32,7 +22,7 @@ void main()
 	
 	mat4 fin = trans(in_trans) * rotate(in_rot) * scale(in_scale) * vec4(in_position, 1.0);
 	
-	gl_Position = proj * cam.m * fin;
+	gl_Position = proj * view * fin;
 	
 }
 

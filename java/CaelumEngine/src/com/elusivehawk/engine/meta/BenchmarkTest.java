@@ -3,6 +3,7 @@ package com.elusivehawk.engine.meta;
 
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.MatrixHelper;
+import com.elusivehawk.engine.math.VectorF;
 
 /**
  * 
@@ -28,17 +29,13 @@ public class BenchmarkTest
 	{
 		System.out.println("Beginning bench testing...");
 		
-		Matrix one = MatrixHelper.createRotationMatrix(90, 90, 90);
-		System.out.println(one.toString());
+		Matrix one = MatrixHelper.createRotationMatrix(new VectorF(90f, 90f, 90f));
 		
-		Matrix two = MatrixHelper.createRotationMatrix(90, 90, 90);
-		System.out.println(two.toString());
+		Matrix two = MatrixHelper.createRotationMatrix(new VectorF(90f, 90f, 90f));
 		
-		Matrix trs = one.mul(two);
+		System.out.println(one.mul(two).toString());
 		
-		System.out.println(trs.toString());
-		
-		System.out.println(MatrixHelper.createRotationMatrix(180, 180, 180).toString());
+		System.out.println(MatrixHelper.createRotationMatrix(new VectorF(180f, 180f, 180f)).toString());
 		
 		System.out.println("Th-th-th-th-That's all, folks!");
 		

@@ -1,7 +1,6 @@
 
 package com.elusivehawk.engine.render;
 
-import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.util.IDirty;
 
 /**
@@ -10,7 +9,7 @@ import com.elusivehawk.engine.util.IDirty;
  * 
  * @author Elusivehawk
  */
-public interface ICamera extends IDirty, IPostRenderer
+public interface ICamera extends IDirty, IPostRenderer, IGLManipulator
 {
 	/**
 	 * 
@@ -19,16 +18,6 @@ public interface ICamera extends IDirty, IPostRenderer
 	 * @param context The current rendering context.
 	 */
 	public void updateCamera(RenderContext context);
-	
-	/**
-	 * 
-	 * Called whenever an object wants to use this camera; Use this to update the program's uniforms.
-	 * 
-	 * @param p The GLProgram asking to be manipulated.
-	 * @param context The current rendering context.
-	 * @param mode The render mode to consider when manipulating the program's uniforms.
-	 */
-	public void updateUniform(GLProgram p, RenderContext context, EnumRenderMode mode);
 	
 	/**
 	 * 

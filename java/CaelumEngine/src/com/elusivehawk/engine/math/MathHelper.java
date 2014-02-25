@@ -67,9 +67,45 @@ public final class MathHelper
 		return (int)(((float) i / max) * 100);
 	}
 	
+	public static float pow(float f, int pow)
+	{
+		float ret = f;
+		
+		for (int c = 0; c < pow; c++)
+		{
+			ret *= f;
+			
+		}
+		
+		return ret;
+	}
+	
+	public static int pow(int i, int pow)
+	{
+		int ret = i;
+		
+		for (int c = 0; c < pow; c++)
+		{
+			ret *= i;
+			
+		}
+		
+		return ret;
+	}
+	
+	public static float square(float f)
+	{
+		return f * f;
+	}
+	
+	public static int square(int i)
+	{
+		return i * i;
+	}
+	
 	public static float toDegrees(float radian)
 	{
-		return ((radian * 180) / PI);
+		return (radian * 180) / PI;
 	}
 	
 	public static int toInt(boolean b)
@@ -79,7 +115,18 @@ public final class MathHelper
 	
 	public static float toRadians(float degree)
 	{
-		return ((degree * PI) / 180);
+		return (degree * PI) / 180;
+	}
+	
+	public static Vector<Float> toRadians(Vector<Float> vec)
+	{
+		Vector<Float> ret = new VectorF(vec);
+		
+		ret.set(Vector.X, toRadians(ret.get(Vector.X)));
+		ret.set(Vector.Y, toRadians(ret.get(Vector.Y)));
+		ret.set(Vector.Z, toRadians(ret.get(Vector.Z)));
+		
+		return ret;
 	}
 	
 }

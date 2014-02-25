@@ -4,6 +4,7 @@ package com.elusivehawk.engine.render;
 import java.util.List;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.render.opengl.GLConst;
+import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
@@ -31,6 +32,7 @@ public final class RenderContext
 	private final List<ITexture> texturePool = new SimpleList<ITexture>(32);
 	private final List<IPostRenderer> postRenderers = new SimpleList<IPostRenderer>(32);
 	private final List<IGLCleanable> cleanables = new SimpleList<IGLCleanable>(32);
+	private final List<IGLManipulator> manipulators = new SimpleList<IGLManipulator>(32);
 	
 	private EnumRenderStage stage = null;
 	private boolean initiated = false;
@@ -206,6 +208,22 @@ public final class RenderContext
 		for (IPostRenderer pr : this.postRenderers)
 		{
 			pr.postRender(this);
+			
+		}
+		
+	}
+	
+	public void addProgramManipulator(IGLManipulator glm)
+	{
+		this.manipulators.add(glm);
+		
+	}
+	
+	public void manipulateProgram(GLProgram p)
+	{
+		for (IGLManipulator glm : this.manipulators)
+		{
+			glm.manipulateUniforms(this, p);
 			
 		}
 		

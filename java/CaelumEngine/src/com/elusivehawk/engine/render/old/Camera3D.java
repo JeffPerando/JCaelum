@@ -2,12 +2,11 @@
 package com.elusivehawk.engine.render.old;
 
 import com.elusivehawk.engine.math.Matrix;
+import com.elusivehawk.engine.math.MatrixHelper;
 import com.elusivehawk.engine.render.EnumCameraPollType;
-import com.elusivehawk.engine.render.EnumRenderMode;
 import com.elusivehawk.engine.render.ICamera;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.opengl.GLProgram;
-import com.elusivehawk.engine.util.BufferHelper;
 import com.elusivehawk.engine.util.DirtableStorage;
 
 /**
@@ -80,16 +79,14 @@ public class Camera3D implements ICamera
 	}
 	
 	@Override
-	public void updateUniform(GLProgram p, RenderContext context, EnumRenderMode mode)
+	public void manipulateUniforms(RenderContext context, GLProgram p)
 	{
 		if (!this.isDirty())
 		{
 			return;
 		}
 		
-		p.attachUniform("cam.m", this.camMat.asBuffer(), GLProgram.EnumUniformType.M_FOUR, context);
-		p.attachUniform("cam.zFar", BufferHelper.makeFloatBuffer(this.getFloat(EnumCameraPollType.Z_FAR)), GLProgram.EnumUniformType.ONE, context);
-		p.attachUniform("cam.zNear", BufferHelper.makeFloatBuffer(this.getFloat(EnumCameraPollType.Z_FAR)), GLProgram.EnumUniformType.ONE, context);
+		p.attachUniform("proj", MatrixHelper.createProjectionMatrix(this).asBuffer(), GLProgram.EnumUniformType.M_FOUR, context);
 		
 	}
 	
