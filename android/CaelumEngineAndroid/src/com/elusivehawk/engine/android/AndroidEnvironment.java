@@ -1,10 +1,12 @@
 
 package com.elusivehawk.engine.android;
 
+import java.util.List;
 import com.eclipsesource.json.JsonObject;
 import com.elusivehawk.engine.core.EnumOS;
 import com.elusivehawk.engine.core.IGameEnvironment;
 import com.elusivehawk.engine.core.ILog;
+import com.elusivehawk.engine.core.Input;
 import com.elusivehawk.engine.render.IRenderEnvironment;
 
 /**
@@ -16,6 +18,12 @@ import com.elusivehawk.engine.render.IRenderEnvironment;
 public class AndroidEnvironment implements IGameEnvironment
 {
 	private final AndroidREnvironment renderEnviro = new AndroidREnvironment();
+	
+	@Override
+	public boolean isCompatible(EnumOS os)
+	{
+		return os == EnumOS.ANDROID;
+	}
 	
 	@Override
 	public void initiate(JsonObject json, String... args)
@@ -43,9 +51,9 @@ public class AndroidEnvironment implements IGameEnvironment
 	}
 	
 	@Override
-	public boolean isCompatible(EnumOS os)
+	public List<Input> loadInputs()
 	{
-		return os == EnumOS.ANDROID;
+		return null;
 	}
 	
 }

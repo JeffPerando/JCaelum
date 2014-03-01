@@ -21,7 +21,7 @@ import com.elusivehawk.engine.render.old.Model;
  * 
  * @author Elusivehawk
  */
-public class GLProgram implements IGLCleanable
+public class GLProgram implements IGLBindable
 {
 	private final int id, vba;
 	private final int sVertex, sFrag;
@@ -190,7 +190,8 @@ public class GLProgram implements IGLCleanable
 		return this.sVertex;
 	}
 	
-	public boolean bind(RenderContext context)
+	@Override
+	public boolean bind(RenderContext context, int... extras)
 	{
 		if (!this.bind0(context))
 		{
@@ -243,7 +244,8 @@ public class GLProgram implements IGLCleanable
 		return true;
 	}
 	
-	public void unbind(RenderContext context)
+	@Override
+	public void unbind(RenderContext context, int... extras)
 	{
 		if (!this.bound)
 		{

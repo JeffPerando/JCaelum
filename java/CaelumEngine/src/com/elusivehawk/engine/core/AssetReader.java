@@ -1,18 +1,16 @@
 
 package com.elusivehawk.engine.core;
 
+import java.io.File;
+
 /**
  * 
  * 
  * 
  * @author Elusivehawk
  */
-public enum EnumEngineFeature
+public interface AssetReader
 {
-	LOGIC,
-	RENDER,
-	PHYSICS,
-	SOUND,
-	ASSET_LOADING;
+	public Asset readAsset(File asset);
 	
 }

@@ -7,12 +7,8 @@ package com.elusivehawk.engine.core;
  * 
  * @author Elusivehawk
  */
-public enum EnumEngineFeature
+public interface IInputListener
 {
-	LOGIC,
-	RENDER,
-	PHYSICS,
-	SOUND,
-	ASSET_LOADING;
+	public void onInputUpdated(Input input);
 	
 }

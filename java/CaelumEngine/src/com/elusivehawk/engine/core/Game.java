@@ -8,15 +8,22 @@ import com.elusivehawk.engine.util.IUpdatable;
 
 /**
  * 
- * The primary interface for your game.
+ * 
  * 
  * @author Elusivehawk
  */
-public interface IGame extends IUpdatable
+@SuppressWarnings({"static-method", "unused"})
+public abstract class Game implements IUpdatable
 {
-	public boolean initiate(Buffer<String> args);
+	public boolean initiate(Buffer<String> args, AssetManager mgr)
+	{
+		return true;
+	}
 	
-	public int getUpdateCount();
+	public int getUpdateCount()
+	{
+		return 30;
+	}
 	
 	/**
 	 * 
@@ -24,7 +31,10 @@ public interface IGame extends IUpdatable
 	 * 
 	 * @return True to enable the game threads to shut down.
 	 */
-	public boolean onGameShutdown();
+	public boolean canGameShutDown()
+	{
+		return true;
+	}
 	
 	/**
 	 * 
@@ -32,7 +42,7 @@ public interface IGame extends IUpdatable
 	 * 
 	 * @return The rendering HUB to be used to render the game.
 	 */
-	public IRenderHUB getRenderHUB();
+	public abstract IRenderHUB getRenderHUB();
 	
 	/**
 	 * 
@@ -40,6 +50,6 @@ public interface IGame extends IUpdatable
 	 * 
 	 * @return The physics scene to use during the game's lifespan.
 	 */
-	public IPhysicsScene getPhysicsScene();
+	public abstract IPhysicsScene getPhysicsScene();
 	
 }

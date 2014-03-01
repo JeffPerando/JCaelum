@@ -2,12 +2,14 @@
 package com.elusivehawk.engine.lwjgl;
 
 import java.io.File;
+import java.util.List;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumOS;
 import com.elusivehawk.engine.core.IGameEnvironment;
 import com.elusivehawk.engine.core.ILog;
+import com.elusivehawk.engine.core.Input;
 import com.elusivehawk.engine.render.IRenderEnvironment;
 import com.elusivehawk.engine.util.FileHelper;
 
@@ -20,6 +22,12 @@ import com.elusivehawk.engine.util.FileHelper;
 public class LWJGLEnvironment implements IGameEnvironment
 {
 	private final IRenderEnvironment renderEnviro = new OpenGLEnvironment();
+	
+	@Override
+	public boolean isCompatible(EnumOS os)
+	{
+		return os != EnumOS.ANDROID;
+	}
 	
 	@Override
 	public void initiate(JsonObject json, String... args)
@@ -63,9 +71,10 @@ public class LWJGLEnvironment implements IGameEnvironment
 	}
 	
 	@Override
-	public boolean isCompatible(EnumOS os)
+	public List<Input> loadInputs()
 	{
-		return os != EnumOS.ANDROID;
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	public static String determineLWJGLPath()

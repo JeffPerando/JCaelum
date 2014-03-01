@@ -8,8 +8,8 @@ import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
-import com.elusivehawk.engine.render.opengl.IGLCleanable;
-import com.elusivehawk.engine.render.opengl.ITexture;
+import com.elusivehawk.engine.render.opengl.IGLBindable;
+import com.elusivehawk.engine.render.opengl.INonStaticTexture;
 import com.elusivehawk.engine.util.FileHelper;
 import com.elusivehawk.engine.util.SimpleList;
 
@@ -29,9 +29,9 @@ public final class RenderContext
 	
 	private int sVertex, sFrag, notex;
 	
-	private final List<ITexture> texturePool = new SimpleList<ITexture>(32);
+	private final List<INonStaticTexture> texturePool = new SimpleList<INonStaticTexture>(32);
 	private final List<IPostRenderer> postRenderers = new SimpleList<IPostRenderer>(32);
-	private final List<IGLCleanable> cleanables = new SimpleList<IGLCleanable>(32);
+	private final List<IGLBindable> cleanables = new SimpleList<IGLBindable>(32);
 	private final List<IGLManipulator> manipulators = new SimpleList<IGLManipulator>(32);
 	
 	private EnumRenderStage stage = null;
@@ -146,7 +146,7 @@ public final class RenderContext
 			return;
 		}
 		
-		for (ITexture tex : this.texturePool)
+		for (INonStaticTexture tex : this.texturePool)
 		{
 			tex.updateTexture(this);
 			
@@ -154,7 +154,7 @@ public final class RenderContext
 		
 	}
 	
-	public void addTexture(ITexture tex)
+	public void addTexture(INonStaticTexture tex)
 	{
 		assert tex != null;
 		this.texturePool.add(tex);
@@ -169,7 +169,7 @@ public final class RenderContext
 		
 	}
 	
-	public void registerCleanable(IGLCleanable gl)
+	public void registerCleanable(IGLBindable gl)
 	{
 		this.cleanables.add(gl);
 		
@@ -182,7 +182,7 @@ public final class RenderContext
 			return;
 		}
 		
-		for (IGLCleanable gl : this.cleanables)
+		for (IGLBindable gl : this.cleanables)
 		{
 			gl.glDelete(this);
 			

@@ -4,6 +4,7 @@ package com.elusivehawk.engine.render.opengl;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import com.elusivehawk.engine.render.RenderContext;
+import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.BufferHelper;
 
@@ -13,7 +14,7 @@ import com.elusivehawk.engine.util.BufferHelper;
  * 
  * @author Elusivehawk
  */
-public class VertexBufferObject implements IGLCleanable
+public class VertexBufferObject implements IGLBindable
 {
 	public final int id, t, loadMode;
 	
@@ -154,6 +155,33 @@ public class VertexBufferObject implements IGLCleanable
 	{
 		context.getGL1().glBindBuffer(this);
 		context.getGL1().glBufferSubData(this.t, offset * 4, GLConst.GL_INT, buf);
+		context.getGL1().glBindBuffer(this.t, 0);
+		
+	}
+	
+	@Override
+	public boolean bind(RenderContext context, int... extras)
+	{
+		context.getGL1().glBindBuffer(this);
+		
+		try
+		{
+			RenderHelper.checkForGLError(context);
+			
+		}
+		catch (Exception e)
+		{
+			this.unbind(context);
+			
+			return false;
+		}
+		
+		return true;
+	}
+	
+	@Override
+	public void unbind(RenderContext context, int... extras)
+	{
 		context.getGL1().glBindBuffer(this.t, 0);
 		
 	}

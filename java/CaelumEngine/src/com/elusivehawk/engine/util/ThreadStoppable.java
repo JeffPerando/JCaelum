@@ -29,20 +29,23 @@ public abstract class ThreadStoppable extends Thread implements IPausable
 	@Override
 	public final void run()
 	{
-		if (this.initiate())
+		if (!this.initiate())
 		{
-			while (this.isRunning())
+			this.running = false;
+			
+			return;
+		}
+		
+		while (this.canRun())
+		{
+			try
 			{
-				try
-				{
-					this.rawUpdate();
-					
-				}
-				catch (Throwable e)
-				{
-					this.handleException(e);
-					
-				}
+				this.rawUpdate();
+				
+			}
+			catch (Throwable e)
+			{
+				this.handleException(e);
 				
 			}
 			
@@ -50,14 +53,16 @@ public abstract class ThreadStoppable extends Thread implements IPausable
 		
 		this.onThreadStopped();
 		
+		this.stopThread();
+		
 	}
 	
-	public boolean initiate()
+	protected boolean initiate()
 	{
 		return true;
 	}
 	
-	public boolean isRunning()
+	public final boolean isRunning()
 	{
 		return this.running;
 	}
@@ -66,6 +71,11 @@ public abstract class ThreadStoppable extends Thread implements IPausable
 	public boolean isPaused()
 	{
 		return this.paused;
+	}
+	
+	protected boolean canRun()
+	{
+		return this.running;
 	}
 	
 	public abstract void rawUpdate() throws Throwable;
@@ -78,7 +88,7 @@ public abstract class ThreadStoppable extends Thread implements IPausable
 		
 	}
 	
-	public synchronized void stopThread()
+	public synchronized final void stopThread()
 	{
 		this.running = false;
 		

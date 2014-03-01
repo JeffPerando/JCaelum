@@ -20,7 +20,7 @@ import com.elusivehawk.engine.util.FileHelper;
  * 
  * @author Elusivehawk
  */
-public class TextureAnimated implements ITexture
+public class TextureAnimated implements INonStaticTexture
 {
 	private final Buffer<Integer> tex;
 	
@@ -132,9 +132,30 @@ public class TextureAnimated implements ITexture
 	}
 	
 	@Override
-	public boolean isStatic()
+	public boolean bind(RenderContext context, int... extras)
 	{
-		return false;
+		context.getGL1().glBindTexture(GLConst.GL_TEXTURE0 + (extras == null || extras.length == 0 ? 0 : extras[0]), this);
+		
+		try
+		{
+			RenderHelper.checkForGLError(context);
+			
+		}
+		catch (Exception e)
+		{
+			this.unbind(context, extras);
+			
+			return false;
+		}
+		
+		return true;
+	}
+	
+	@Override
+	public void unbind(RenderContext context, int... extras)
+	{
+		context.getGL1().glBindTexture(GLConst.GL_TEXTURE0 + (extras == null || extras.length == 0 ? 0 : extras[0]), 0);
+		
 	}
 	
 }

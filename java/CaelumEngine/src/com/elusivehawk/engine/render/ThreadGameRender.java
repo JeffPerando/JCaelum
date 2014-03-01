@@ -186,9 +186,9 @@ public class ThreadGameRender extends ThreadTimed
 	}
 	
 	@Override
-	public boolean isRunning()
+	protected boolean canRun()
 	{
-		return super.isRunning() && !this.display.get().isCloseRequested();
+		return !this.display.get().isCloseRequested();
 	}
 	
 }

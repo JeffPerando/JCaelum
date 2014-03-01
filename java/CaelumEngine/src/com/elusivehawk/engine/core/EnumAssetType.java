@@ -7,13 +7,13 @@ package com.elusivehawk.engine.core;
  * 
  * @author Elusivehawk
  */
-public enum EnumInputType
+public enum EnumAssetType
 {
-	MOUSE,
-	KEYBOARD,
-	STEERING_WHEEL,
-	CONSOLE,
-	JOYSTICK,
+	MODEL,
+	TEXTURE,
+	BUMPMAP,
+	SOUND,
+	FONT,
 	OTHER;
 	
 }

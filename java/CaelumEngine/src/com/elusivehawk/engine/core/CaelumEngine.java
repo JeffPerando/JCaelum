@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.lang.management.ManagementFactory;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import com.eclipsesource.json.JsonObject;
@@ -22,6 +23,7 @@ import com.elusivehawk.engine.util.ReflectionHelper;
 import com.elusivehawk.engine.util.TextParser;
 import com.elusivehawk.engine.util.ThreadStoppable;
 import com.elusivehawk.engine.util.Tuple;
+import com.google.common.collect.Maps;
 
 /**
  * 
@@ -37,11 +39,14 @@ public final class CaelumEngine
 	public static final String VERSION = "1.0.0";
 	
 	public final Object shutdownHook = new Object();
+	
 	private Map<EnumEngineFeature, ThreadStoppable> threads = new HashMap<EnumEngineFeature, ThreadStoppable>();
-	private IGame game;
+	private Game game;
+	private AssetManager assets;
 	private IGameEnvironment env;
 	private IRenderEnvironment renv;
 	private ILog log = new GameLog();
+	private Map<EnumInputType, Input> inputs = Maps.newHashMap();
 	
 	private CaelumEngine(){}
 	
@@ -61,7 +66,13 @@ public final class CaelumEngine
 		
 		Buffer<String> buf = new Buffer<String>(args);
 		
-		String cur = (buf.hasNext() ? buf.next() : "");
+		instance().start(buf);
+		
+	}
+	
+	private void start(Buffer<String> args)
+	{
+		String cur = (args.hasNext() ? args.next() : "");
 		IGameEnvironment env = null;
 		JsonObject json = null;
 		
@@ -158,18 +169,35 @@ public final class CaelumEngine
 			return;
 		}
 		
-		cur = buf.next();
+		cur = args.next();
 		
-		env.initiate(json, buf.toArray());
+		env.initiate(json, args.toArray());
 		
-		instance().env = env;
-		instance().renv = env.getRenderEnv();
+		this.env = env;
+		this.renv = env.getRenderEnv();
 		
-		IGame g = null;
+		List<Input> inputList = env.loadInputs();
+		
+		if (inputList == null || inputList.isEmpty())
+		{
+			this.log.log(EnumLogType.WARN, "Unable to load input.");
+			
+		}
+		else
+		{
+			for (Input input : inputList)
+			{
+				this.inputs.put(input.getType(), input);
+				
+			}
+			
+		}
+		
+		Game g = null;
 		
 		if (cur.startsWith("game:"))
 		{
-			g = (IGame)ReflectionHelper.newInstance(TextParser.splitOnce(cur, "game:")[1], new Class<?>[]{IGame.class}, null);
+			g = (Game)ReflectionHelper.newInstance(TextParser.splitOnce(cur, "game:")[1], new Class<?>[]{Game.class}, null);
 			
 		}
 		
@@ -180,27 +208,33 @@ public final class CaelumEngine
 			
 		}
 		
-		ILog log = instance().env.getLog();
+		ILog log = this.env.getLog();
 		
 		if (log != null)
 		{
-			instance().log = log;
+			this.log = log;
 			
 		}
 		
-		instance().start(g, buf);
-		
-	}
-	
-	private void start(IGame g, Buffer<String> args)
-	{
 		if (this.game != null)
 		{
 			return;
 		}
 		
 		this.game = g;
-		this.threads.put(EnumEngineFeature.LOGIC, new ThreadGameLoop(this.game, args));
+		
+		this.assets = new AssetManager();
+		
+		if (!g.initiate(args, this.assets))
+		{
+			return;
+		}
+		
+		this.assets.initiate();
+		
+		this.threads.put(EnumEngineFeature.ASSET_LOADING, new ThreadAssetLoader(this.assets));
+		
+		this.threads.put(EnumEngineFeature.LOGIC, new ThreadGameLoop(this.inputs, this.game));
 		
 		IRenderHUB hub = this.game.getRenderHUB();
 		
@@ -247,7 +281,7 @@ public final class CaelumEngine
 			return;
 		}
 		
-		if (!this.game.onGameShutdown())
+		if (!this.game.canGameShutDown())
 		{
 			return;
 		}
@@ -275,9 +309,26 @@ public final class CaelumEngine
 		
 	}
 	
-	public static IGame game()
+	public static Game game()
 	{
 		return instance().game;
+	}
+	
+	public static AssetManager assetManager()
+	{
+		ThreadStoppable thr = instance().threads.get(EnumEngineFeature.ASSET_LOADING);
+		
+		if (thr == null)
+		{
+			return null;
+		}
+		
+		if (thr.isRunning())
+		{
+			return null;
+		}
+		
+		return instance().assets;
 	}
 	
 	public static IGameEnvironment environment()

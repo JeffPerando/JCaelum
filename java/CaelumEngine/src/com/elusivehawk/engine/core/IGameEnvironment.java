@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.core;
 
+import java.util.List;
 import com.eclipsesource.json.JsonObject;
 import com.elusivehawk.engine.render.IRenderEnvironment;
 
@@ -29,5 +30,7 @@ public interface IGameEnvironment
 	public ILog getLog();
 	
 	public IRenderEnvironment getRenderEnv();
+	
+	public List<Input> loadInputs();
 	
 }

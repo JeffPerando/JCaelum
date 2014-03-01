@@ -168,7 +168,7 @@ public class SimpleList<T> implements List<T>
 	@Override
 	public boolean isEmpty()
 	{
-		return this.size() > 0;
+		return this.size > 0;
 	}
 	
 	@Override
@@ -276,7 +276,7 @@ public class SimpleList<T> implements List<T>
 	@Override
 	public int size()
 	{
-		return this.size;
+		return this.list.length;
 	}
 	
 	@Override

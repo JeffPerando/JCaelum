@@ -1,8 +1,9 @@
 
 package com.elusivehawk.engine.core;
 
-import com.elusivehawk.engine.util.Buffer;
+import java.util.Map;
 import com.elusivehawk.engine.util.ThreadTimed;
+import com.google.common.collect.Maps;
 
 /**
  * 
@@ -12,26 +13,46 @@ import com.elusivehawk.engine.util.ThreadTimed;
  */
 public final class ThreadGameLoop extends ThreadTimed
 {
-	private final IGame game;
-	private final Buffer<String> arguments;
+	private final Map<EnumInputType, Input> input = Maps.newHashMap();
+	private final Game game;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public ThreadGameLoop(IGame g, Buffer<String> args)
+	public ThreadGameLoop(Map<EnumInputType, Input> inputMap, Game g)
 	{
 		game = g;
-		arguments = args;
+		
+		if (inputMap != null)
+		{
+			input.putAll(inputMap);
+			
+		}
 		
 	}
 	
 	@Override
 	public boolean initiate()
 	{
-		return this.game.initiate(this.arguments);
+		return true;
 	}
 	
 	@Override
 	public void update(double delta) throws Throwable
 	{
+		if (!this.input.isEmpty())
+		{
+			for (Input in : this.input.values())
+			{
+				if (in == null)
+				{
+					continue;
+				}
+				
+				in.updateInput();
+				
+			}
+			
+		}
+		
 		this.game.update(delta);
 		
 	}
