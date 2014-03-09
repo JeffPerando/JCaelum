@@ -257,35 +257,32 @@ public final class TextParser
 		
 		String[] ret = new String[2];
 		
-		ret[1] = str.substring(ind + out.length());
-		
-		String sec = "";
-		
-		for (int c = 0; c < ind; c++)
-		{
-			sec += str.charAt(c);
-			
-		}
-		
-		if (sec != "")
-		{
-			ret[0] = sec;
-			
-		}
+		ret[0] = str.substring(0, ind - 1);
+		ret[1] = str.substring(ind + 1, out.length());
 		
 		return null;
 	}
 	
 	public static String parseDate(Calendar cal)
 	{
-		StringBuilder b = new StringBuilder();
+		StringBuilder b = new StringBuilder(15);
 		
-		b.append(cal.get(Calendar.DATE) + "-");
-		b.append(cal.get(Calendar.MONTH) + 1 + "-");
-		b.append(cal.get(Calendar.YEAR) + " ");
+		b.append(cal.get(Calendar.DATE));
+		b.append("-");
+		b.append(cal.get(Calendar.MONTH) + 1);
+		b.append("-");
+		b.append(cal.get(Calendar.YEAR));
+		b.append(" ");
 		int minute = cal.get(Calendar.MINUTE);
-		boolean amOrPm = cal.get(Calendar.AM_PM) == Calendar.PM;
-		b.append(cal.get(Calendar.HOUR) + ":" + (minute < 10 ? "0" : "") + minute + ":" + cal.get(Calendar.SECOND) + ":" + cal.get(Calendar.MILLISECOND) + " " + (amOrPm ? "PM" : "AM"));
+		b.append(cal.get(Calendar.HOUR));
+		b.append(":");
+		b.append((minute < 10 ? "0" : "") + minute);
+		b.append(":");
+		b.append(cal.get(Calendar.SECOND));
+		b.append(":");
+		b.append(cal.get(Calendar.MILLISECOND));
+		b.append(" ");
+		b.append(cal.get(Calendar.AM_PM) == Calendar.PM ? "PM" : "AM");
 		
 		return b.toString();
 	}

@@ -1,7 +1,10 @@
 
 package com.elusivehawk.engine.core;
 
+import java.io.File;
+import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.ThreadStoppable;
+import com.elusivehawk.engine.util.Tuple;
 
 /**
  * 
@@ -11,34 +14,56 @@ import com.elusivehawk.engine.util.ThreadStoppable;
  */
 public class ThreadAssetLoader extends ThreadStoppable
 {
-	private final AssetManager assetMgr;
-	
-	@SuppressWarnings("unqualified-field-access")
-	public ThreadAssetLoader(AssetManager mgr)
-	{
-		assetMgr = mgr;
-		
-	}
-	
-	@Override
-	public boolean initiate()
-	{
-		this.assetMgr.initiate();
-		
-		return this.assetMgr.canLoadAssets();
-	}
+	private final Buffer<Tuple<String, AssetTicket>> assets = new Buffer<Tuple<String, AssetTicket>>();
+	private AssetManager assetMgr = null;
 	
 	@Override
 	public void rawUpdate() throws Throwable
 	{
-		this.assetMgr.continueLoadingAssets();
+		if (!this.assets.isEmpty())
+		{
+			for (Tuple<String, AssetTicket> tuple : this.assets)
+			{
+				for (File file : this.assetMgr.getFiles())
+				{
+					if (file.getAbsolutePath().endsWith(tuple.one))
+					{
+						AssetReader r = this.assetMgr.getReader(file);
+						
+						if (r != null)
+						{
+							Asset a = r.readAsset(file);
+							
+							if (a != null)
+							{
+								tuple.two.setAsset(a);
+								
+								this.assets.remove();
+								
+							}
+							
+						}
+						
+					}
+					
+				}
+				
+			}
+			
+		}
 		
 	}
 	
-	@Override
-	protected boolean canRun()
+	public void setManager(AssetManager mgr)
 	{
-		return !this.assetMgr.isFinishedLoading();
+		this.assetMgr = mgr;
+		
+	}
+	
+	public synchronized void loadAsset(String location, AssetTicket tkt)
+	{
+		this.assets.add(new Tuple<String, AssetTicket>(location, tkt));
+		
 	}
 	
 }

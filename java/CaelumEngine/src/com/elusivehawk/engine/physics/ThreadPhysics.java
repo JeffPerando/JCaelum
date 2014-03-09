@@ -2,6 +2,8 @@
 package com.elusivehawk.engine.physics;
 
 import java.util.Iterator;
+import com.elusivehawk.engine.core.GameState;
+import com.elusivehawk.engine.core.IGameStateListener;
 import com.elusivehawk.engine.util.SyncList;
 import com.elusivehawk.engine.util.ThreadTimed;
 
@@ -11,9 +13,9 @@ import com.elusivehawk.engine.util.ThreadTimed;
  * 
  * @author Elusivehawk
  */
-public final class ThreadPhysics extends ThreadTimed
+public final class ThreadPhysics extends ThreadTimed implements IGameStateListener
 {
-	private final IPhysicsScene scene;
+	private IPhysicsScene scene;
 	private final int updateCount;
 	
 	@SuppressWarnings("unqualified-field-access")
@@ -27,6 +29,11 @@ public final class ThreadPhysics extends ThreadTimed
 	@Override
 	public void update(double delta) throws Throwable
 	{
+		if (this.scene == null)
+		{
+			return;
+		}
+		
 		SyncList<ICollisionObject> list = this.scene.getCollidables();
 		
 		Iterator<ICollisionObject> itr = list.iterator();
@@ -86,6 +93,13 @@ public final class ThreadPhysics extends ThreadTimed
 	public double getMaxDelta()
 	{
 		return 0.5;
+	}
+	
+	@Override
+	public synchronized void onGameStateSwitch(GameState gs)
+	{
+		this.scene = gs.getPhysicsScene();
+		
 	}
 	
 }

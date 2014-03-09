@@ -4,9 +4,7 @@ package com.elusivehawk.engine.core;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
-import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.FileHelper;
 import com.elusivehawk.engine.util.SimpleList;
 import com.elusivehawk.engine.util.TextParser;
@@ -20,14 +18,20 @@ import com.google.common.collect.Maps;
  */
 public class AssetManager
 {
-	protected final Map<String, UUID> expectedRes = Maps.newHashMap();
+	protected final ThreadAssetLoader worker;
+	protected final Map<String, AssetTicket> expectedRes = Maps.newHashMap();
 	protected final Map<String, AssetReader> readers = Maps.newHashMap();
 	protected final Map<UUID, Asset> assetMap = Maps.newHashMap();
 	protected final List<File> resourceLocations = new SimpleList<File>();
-	protected final Buffer<File> filesToScan = new Buffer<File>();
-	protected boolean loaded = false, preloaded = false;
+	protected final List<File> filesToScan = new SimpleList<File>();
+	protected boolean loaded = false;
 	
-	AssetManager(){}
+	@SuppressWarnings("unqualified-field-access")
+	AssetManager(ThreadAssetLoader thr)
+	{
+		worker = thr;
+		
+	}
 	
 	public void addSearchDirectory(File dir)
 	{
@@ -45,22 +49,21 @@ public class AssetManager
 		
 	}
 	
-	public UUID expectResource(String res)
+	public AssetTicket loadResource(String res)
 	{
 		assert res != null;
 		
 		String fixres = res.replace("/", FileHelper.FILE_SEP);
 		
-		UUID ret = this.expectedRes.get(fixres);
+		AssetTicket ret = this.expectedRes.get(fixres);
 		
-		if (ret != null)
+		if (ret == null)
 		{
-			return ret;
+			ret = new AssetTicket(UUID.randomUUID());
+			
+			this.expectedRes.put(fixres, ret);
+			
 		}
-		
-		ret = UUID.randomUUID();
-		
-		this.expectedRes.put(fixres, ret);
 		
 		return ret;
 	}
@@ -74,14 +77,9 @@ public class AssetManager
 		
 	}
 	
-	public boolean isFinishedLoading()
-	{
-		return this.loaded;
-	}
-	
 	public void initiate()
 	{
-		if (this.loaded || this.preloaded)
+		if (this.loaded)
 		{
 			return;
 		}
@@ -97,7 +95,7 @@ public class AssetManager
 			
 		}
 		
-		this.preloaded = true;
+		this.loaded = true;
 		
 	}
 	
@@ -112,7 +110,7 @@ public class AssetManager
 		{
 			for (File file0 : file.listFiles())
 			{
-				this.scanFile(file0);
+				this.scanForFiles(file0);
 				
 			}
 			
@@ -125,70 +123,14 @@ public class AssetManager
 		
 	}
 	
-	public void continueLoadingAssets()
+	public AssetReader getReader(File file)
 	{
-		if (!this.preloaded || this.loaded)
-		{
-			return;
-		}
-		
-		if (!(Thread.currentThread() instanceof ThreadAssetLoader))
-		{
-			return;
-		}
-		
-		for (File file : this.resourceLocations)
-		{
-			this.scanFile(file);
-			
-		}
-		
-		if (this.filesToScan.remaining() == 0)
-		{
-			this.loaded = true;
-			
-		}
-		
+		return this.readers.get(TextParser.splitOnce(file.getName(), ".")[1]);
 	}
 	
-	protected void scanFile(File file)
+	public List<File> getFiles()
 	{
-		AssetReader r = this.readers.get(TextParser.splitOnce(file.getName(), ".")[1]);
-		
-		if (r == null)
-		{
-			return;
-		}
-		
-		String path = file.getAbsolutePath();
-		UUID id = null;
-		
-		for (Entry<String, UUID> entry : this.expectedRes.entrySet())
-		{
-			if (path.endsWith(entry.getKey()))
-			{
-				id = entry.getValue();
-				break;
-			}
-			
-		}
-		
-		if (id == null)
-		{
-			CaelumEngine.log().log(EnumLogType.WARN, String.format("Unexpected resource found: %s", path));
-			
-			id = UUID.randomUUID();
-			
-		}
-		
-		Asset asset = r.readAsset(file);
-		
-		if (asset != null)
-		{
-			this.assetMap.put(id, asset);
-			
-		}
-		
+		return this.filesToScan;
 	}
 	
 }

@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
+import com.elusivehawk.engine.render.opengl.IGLManipulator;
 import com.elusivehawk.engine.util.IDirty;
 
 /**

@@ -41,10 +41,10 @@ public final class CaelumEngine
 	public final Object shutdownHook = new Object();
 	
 	private Map<EnumEngineFeature, ThreadStoppable> threads = new HashMap<EnumEngineFeature, ThreadStoppable>();
-	private Game game;
-	private AssetManager assets;
-	private IGameEnvironment env;
-	private IRenderEnvironment renv;
+	private Game game = null;
+	private AssetManager assets = null;
+	private IGameEnvironment env = null;
+	private IRenderEnvironment renv = null;
 	private ILog log = new GameLog();
 	private Map<EnumInputType, Input> inputs = Maps.newHashMap();
 	
@@ -57,6 +57,11 @@ public final class CaelumEngine
 	
 	public static void main(String... args)
 	{
+		if (instance().game != null)
+		{
+			return;
+		}
+		
 		System.out.println("Starting Caelum Engine v" + VERSION);
 		
 		if (args.length == 0)
@@ -193,11 +198,19 @@ public final class CaelumEngine
 			
 		}
 		
+		ILog log = this.env.getLog();
+		
+		if (log != null)
+		{
+			this.log = log;
+			
+		}
+		
 		Game g = null;
 		
 		if (cur.startsWith("game:"))
 		{
-			g = (Game)ReflectionHelper.newInstance(TextParser.splitOnce(cur, "game:")[1], new Class<?>[]{Game.class}, null);
+			g = (Game)ReflectionHelper.newInstance(cur.substring(6, cur.length()), new Class<?>[]{Game.class}, null);
 			
 		}
 		
@@ -208,32 +221,20 @@ public final class CaelumEngine
 			
 		}
 		
-		ILog log = this.env.getLog();
-		
-		if (log != null)
-		{
-			this.log = log;
-			
-		}
-		
-		if (this.game != null)
-		{
-			return;
-		}
-		
 		this.game = g;
 		
-		this.assets = new AssetManager();
-		
-		if (!g.initiate(args, this.assets))
+		if (!g.initiate(args))
 		{
 			return;
 		}
 		
+		ThreadAssetLoader al = new ThreadAssetLoader();
+		this.assets = new AssetManager(al);
 		this.assets.initiate();
 		
-		this.threads.put(EnumEngineFeature.ASSET_LOADING, new ThreadAssetLoader(this.assets));
+		g.loadAssets(this.assets);
 		
+		this.threads.put(EnumEngineFeature.ASSET_LOADING, al);
 		this.threads.put(EnumEngineFeature.LOGIC, new ThreadGameLoop(this.inputs, this.game));
 		
 		IRenderHUB hub = this.game.getRenderHUB();
@@ -316,18 +317,6 @@ public final class CaelumEngine
 	
 	public static AssetManager assetManager()
 	{
-		ThreadStoppable thr = instance().threads.get(EnumEngineFeature.ASSET_LOADING);
-		
-		if (thr == null)
-		{
-			return null;
-		}
-		
-		if (thr.isRunning())
-		{
-			return null;
-		}
-		
 		return instance().assets;
 	}
 	

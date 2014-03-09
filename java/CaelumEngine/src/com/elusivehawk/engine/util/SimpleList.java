@@ -307,6 +307,11 @@ public class SimpleList<T> implements List<T>
 		return null;
 	}
 	
+	public static <T> SimpleList<T> createNewList()
+	{
+		return new SimpleList<T>();
+	}
+	
 	protected static Object[] expand(Object[] arr, int length)
 	{
 		if (arr == null)

@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.Collection;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
+import com.elusivehawk.engine.core.GameState;
+import com.elusivehawk.engine.core.IGameStateListener;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.util.SemiFinalStorage;
 import com.elusivehawk.engine.util.ThreadTimed;
@@ -15,9 +17,9 @@ import com.elusivehawk.engine.util.ThreadTimed;
  * 
  * @author Elusivehawk
  */
-public class ThreadGameRender extends ThreadTimed
+public class ThreadGameRender extends ThreadTimed implements IGameStateListener
 {
-	protected final IRenderHUB hub;
+	protected IRenderHUB hub;
 	protected final RenderContext context;
 	protected final SemiFinalStorage<IDisplay> display = new SemiFinalStorage<IDisplay>(null);
 	protected int fps;
@@ -27,6 +29,8 @@ public class ThreadGameRender extends ThreadTimed
 	{
 		hub = rhub;
 		context = new RenderContext(rhub);
+		
+		CaelumEngine.game().addGameStateListener(this);
 		
 	}
 	
@@ -67,6 +71,11 @@ public class ThreadGameRender extends ThreadTimed
 	public void update(double delta) throws Throwable
 	{
 		if (this.isPaused())
+		{
+			return;
+		}
+		
+		if (this.hub == null)
 		{
 			return;
 		}
@@ -189,6 +198,13 @@ public class ThreadGameRender extends ThreadTimed
 	protected boolean canRun()
 	{
 		return !this.display.get().isCloseRequested();
+	}
+	
+	@Override
+	public synchronized void onGameStateSwitch(GameState gs)
+	{
+		this.hub = gs.getRenderHUB();
+		
 	}
 	
 }

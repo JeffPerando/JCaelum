@@ -9,6 +9,7 @@ import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
 import com.elusivehawk.engine.render.opengl.IGLBindable;
+import com.elusivehawk.engine.render.opengl.IGLManipulator;
 import com.elusivehawk.engine.render.opengl.INonStaticTexture;
 import com.elusivehawk.engine.util.FileHelper;
 import com.elusivehawk.engine.util.SimpleList;

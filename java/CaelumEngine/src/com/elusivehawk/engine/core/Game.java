@@ -1,10 +1,12 @@
 
 package com.elusivehawk.engine.core;
 
+import java.util.List;
 import com.elusivehawk.engine.physics.IPhysicsScene;
 import com.elusivehawk.engine.render.IRenderHUB;
 import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.IUpdatable;
+import com.elusivehawk.engine.util.SimpleList;
 
 /**
  * 
@@ -15,14 +17,93 @@ import com.elusivehawk.engine.util.IUpdatable;
 @SuppressWarnings({"static-method", "unused"})
 public abstract class Game implements IUpdatable
 {
-	public boolean initiate(Buffer<String> args, AssetManager mgr)
+	private GameState state = null, nextState = null;
+	private List<IGameStateListener> listeners = SimpleList.createNewList();
+	private boolean initiated = false;
+	
+	public final boolean initiate(Buffer<String> args)
 	{
+		if (this.initiated)
+		{
+			return false;
+		}
+		
+		this.initiated = true;
+		
+		if (!this.initiateGame(args))
+		{
+			return false;
+		}
+		
+		if (this.nextState != null)
+		{
+			this.nextState.initiate();
+			
+			this.state = this.nextState;
+			
+		}
+		
 		return true;
 	}
+	
+	protected abstract boolean initiateGame(Buffer<String> args);
+	
+	public void loadAssets(AssetManager mgr){}
 	
 	public int getUpdateCount()
 	{
 		return 30;
+	}
+	
+	@Override
+	public void update(double delta) throws Throwable
+	{
+		if (this.state == null)
+		{
+			this.updateGame(delta);
+			
+		}
+		else
+		{
+			this.state.updateGameState(this, delta);
+			
+		}
+		
+		if (this.nextState != null)
+		{
+			if (this.state != null)
+			{
+				this.state.finish();
+			}
+			
+			this.nextState.initiate();
+			
+			this.state = this.nextState;
+			
+			if (!this.listeners.isEmpty())
+			{
+				for (IGameStateListener gsl : this.listeners)
+				{
+					gsl.onGameStateSwitch(this.state);
+					
+				}
+				
+			}
+			
+		}
+		
+	}
+	
+	public void swapGameStates(GameState gs)
+	{
+		this.nextState = gs;
+		
+	}
+	
+	public void addGameStateListener(IGameStateListener gsl)
+	{
+		this.listeners.add(gsl);
+		
 	}
 	
 	/**
@@ -38,11 +119,22 @@ public abstract class Game implements IUpdatable
 	
 	/**
 	 * 
+	 * Called if there is no current game state.
+	 * 
+	 * @param delta
+	 */
+	protected abstract void updateGame(double delta);
+	
+	/**
+	 * 
 	 * Called during startup.
 	 * 
 	 * @return The rendering HUB to be used to render the game.
 	 */
-	public abstract IRenderHUB getRenderHUB();
+	public IRenderHUB getRenderHUB()
+	{
+		return this.state == null ? null : this.state.getRenderHUB();
+	}
 	
 	/**
 	 * 
@@ -50,6 +142,9 @@ public abstract class Game implements IUpdatable
 	 * 
 	 * @return The physics scene to use during the game's lifespan.
 	 */
-	public abstract IPhysicsScene getPhysicsScene();
+	public IPhysicsScene getPhysicsScene()
+	{
+		return this.state == null ? null : this.state.getPhysicsScene();
+	}
 	
 }
