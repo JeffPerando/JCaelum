@@ -40,13 +40,12 @@ public abstract class Game implements IUpdatable
 			this.nextState.initiate();
 			
 			this.state = this.nextState;
+			this.nextState = null;
 			
 		}
 		
 		return true;
 	}
-	
-	protected abstract boolean initiateGame(Buffer<String> args);
 	
 	public void loadAssets(AssetManager mgr){}
 	
@@ -56,7 +55,7 @@ public abstract class Game implements IUpdatable
 	}
 	
 	@Override
-	public void update(double delta) throws Throwable
+	public final void update(double delta) throws Throwable
 	{
 		if (this.state == null)
 		{
@@ -79,6 +78,7 @@ public abstract class Game implements IUpdatable
 			this.nextState.initiate();
 			
 			this.state = this.nextState;
+			this.nextState = null;
 			
 			if (!this.listeners.isEmpty())
 			{
@@ -89,6 +89,18 @@ public abstract class Game implements IUpdatable
 				}
 				
 			}
+			
+		}
+		
+	}
+	
+	public final void onShutdown()
+	{
+		this.onGameShutdown();
+		
+		if (this.state != null)
+		{
+			this.state.finish();
 			
 		}
 		
@@ -117,6 +129,8 @@ public abstract class Game implements IUpdatable
 		return true;
 	}
 	
+	protected abstract boolean initiateGame(Buffer<String> args);
+	
 	/**
 	 * 
 	 * Called if there is no current game state.
@@ -124,6 +138,8 @@ public abstract class Game implements IUpdatable
 	 * @param delta
 	 */
 	protected abstract void updateGame(double delta);
+	
+	protected abstract void onGameShutdown();
 	
 	/**
 	 * 

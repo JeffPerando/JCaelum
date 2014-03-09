@@ -299,6 +299,8 @@ public final class CaelumEngine
 			
 		}
 		
+		this.game.onShutdown();
+		
 		try
 		{
 			this.shutdownHook.notifyAll();
