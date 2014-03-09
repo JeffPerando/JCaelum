@@ -14,7 +14,7 @@ public abstract class GameState
 {
 	public abstract void initiate();
 	
-	public abstract void updateGameState(Game game, double delta);
+	public abstract void updateGameState(Game game, double delta) throws Throwable;
 	
 	public abstract void finish();
 	
