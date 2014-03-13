@@ -80,6 +80,13 @@ public class ThreadGameRender extends ThreadTimed implements IGameStateListener
 			return;
 		}
 		
+		if (this.display.get().isCloseRequested())
+		{
+			CaelumEngine.instance().shutDownGame("WINDOW-CLOSED".hashCode());
+			
+			return;
+		}
+		
 		this.context.setRenderStage(EnumRenderStage.PRERENDER);
 		
 		this.hub.updateHUB(delta, this.context);
@@ -177,6 +184,7 @@ public class ThreadGameRender extends ThreadTimed implements IGameStateListener
 		try
 		{
 			this.display.get().close();
+			
 		}
 		catch (IOException e){}
 		
@@ -192,12 +200,6 @@ public class ThreadGameRender extends ThreadTimed implements IGameStateListener
 	public double getMaxDelta()
 	{
 		return 0.5;
-	}
-	
-	@Override
-	protected boolean canRun()
-	{
-		return !this.display.get().isCloseRequested();
 	}
 	
 	@Override
