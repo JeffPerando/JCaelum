@@ -15,7 +15,7 @@ import com.elusivehawk.engine.render.IRenderEnvironment;
  * <li>Display implementation</li>
  * </ul>
  * <p>
- * NOTICE: The game environment in question shouldn't be in the same library as the game itself.
+ * NOTICE: The game environment in question shouldn't be compiled with the game itself.
  * 
  * @author Elusivehawk
  */

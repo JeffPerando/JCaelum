@@ -20,7 +20,6 @@ import com.elusivehawk.engine.render.ThreadGameRender;
 import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.FileHelper;
 import com.elusivehawk.engine.util.ReflectionHelper;
-import com.elusivehawk.engine.util.TextParser;
 import com.elusivehawk.engine.util.ThreadStoppable;
 import com.elusivehawk.engine.util.Tuple;
 import com.google.common.collect.Maps;
@@ -37,8 +36,6 @@ public final class CaelumEngine
 	
 	public static final boolean DEBUG = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().contains("-agentlib:jdwp");
 	public static final String VERSION = "1.0.0";
-	
-	public final Object shutdownHook = new Object();
 	
 	private Map<EnumEngineFeature, ThreadStoppable> threads = new HashMap<EnumEngineFeature, ThreadStoppable>();
 	private Game game = null;
@@ -62,12 +59,12 @@ public final class CaelumEngine
 			return;
 		}
 		
-		System.out.println("Starting Caelum Engine v" + VERSION);
-		
 		if (args.length == 0)
 		{
 			return;
 		}
+		
+		log().log(EnumLogType.INFO, String.format("Starting Caelum Engine v%s", VERSION));
 		
 		Buffer<String> buf = new Buffer<String>(args);
 		
@@ -80,15 +77,21 @@ public final class CaelumEngine
 		String cur = (args.hasNext() ? args.next() : "");
 		IGameEnvironment env = null;
 		JsonObject json = null;
+		Class<?> clazz = null;
 		
 		if (cur.startsWith("class:"))
 		{
-			env = (IGameEnvironment)ReflectionHelper.newInstance(TextParser.splitOnce(cur, "class:")[1], new Class<?>[]{IGameEnvironment.class}, null);
+			try
+			{
+				clazz = Class.forName(cur.substring(6));
+				
+			}
+			catch (Exception e){}
 			
 		}
 		else
 		{
-			File file = FileHelper.createFile(".", "/Game.json");
+			File file = FileHelper.createFile(".", "/game.json");
 			
 			if (!file.exists())
 			{
@@ -139,10 +142,10 @@ public final class CaelumEngine
 								{
 									for (Class<?> c : set)
 									{
-										env = (IGameEnvironment)ReflectionHelper.newInstance(c, new Class<?>[]{IGameEnvironment.class}, null);
-										
-										if (env != null)
+										if (c.isAssignableFrom(IGameEnvironment.class))
 										{
+											clazz = c;
+											
 											break;
 										}
 										
@@ -162,6 +165,17 @@ public final class CaelumEngine
 			
 		}
 		
+		if (clazz != null)
+		{
+			try
+			{
+				env = (IGameEnvironment)clazz.newInstance();
+				
+			}
+			catch (Exception e){}
+			
+		}
+		
 		if (env == null)
 		{
 			System.err.println("Could not load game environment.");
@@ -173,8 +187,6 @@ public final class CaelumEngine
 		{
 			return;
 		}
-		
-		cur = args.next();
 		
 		env.initiate(json, args.toArray());
 		
@@ -206,27 +218,28 @@ public final class CaelumEngine
 			
 		}
 		
+		cur = args.hasNext() ? args.next() : "";
 		Game g = null;
 		
 		if (cur.startsWith("game:"))
 		{
-			g = (Game)ReflectionHelper.newInstance(cur.substring(6, cur.length()), new Class<?>[]{Game.class}, null);
+			g = (Game)ReflectionHelper.newInstance(cur.substring(6), new Class<?>[]{Game.class}, null);
 			
 		}
 		
 		if (g == null)
 		{
-			System.err.println("Could not load game.");
+			this.log.log(EnumLogType.ERROR, "Could not load game.");
 			System.exit("NO-GAME-FOUND".hashCode());
 			
 		}
-		
-		this.game = g;
 		
 		if (!g.initiate(args))
 		{
 			return;
 		}
+		
+		this.game = g;
 		
 		ThreadAssetLoader al = new ThreadAssetLoader();
 		this.assets = new AssetManager(al);
@@ -255,6 +268,17 @@ public final class CaelumEngine
 			
 		}
 		
+		Runtime.getRuntime().addShutdownHook(new Thread(){
+			@SuppressWarnings("synthetic-access")
+			@Override
+			public void run()
+			{
+				CaelumEngine.instance().shutDownGame();
+				
+			}
+			
+		});
+		
 		for (EnumEngineFeature fe : EnumEngineFeature.values())
 		{
 			ThreadStoppable t = this.threads.get(fe);
@@ -269,20 +293,9 @@ public final class CaelumEngine
 		
 	}
 	
-	public void shutDownGame(String err)
-	{
-		this.shutDownGame(err == null ? 0 : err.hashCode());
-		
-	}
-	
-	public void shutDownGame(int error)
+	private void shutDownGame()
 	{
 		if (this.game == null)
-		{
-			return;
-		}
-		
-		if (!this.game.canGameShutDown())
 		{
 			return;
 		}
@@ -300,15 +313,6 @@ public final class CaelumEngine
 		}
 		
 		this.game.onShutdown();
-		
-		try
-		{
-			this.shutdownHook.notifyAll();
-			
-		}
-		catch (Exception e){}
-		
-		System.exit(error);
 		
 	}
 	

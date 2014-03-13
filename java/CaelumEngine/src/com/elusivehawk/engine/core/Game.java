@@ -73,6 +73,7 @@ public abstract class Game implements IUpdatable
 			if (this.state != null)
 			{
 				this.state.finish();
+				
 			}
 			
 			this.nextState.initiate();
@@ -116,17 +117,6 @@ public abstract class Game implements IUpdatable
 	{
 		this.listeners.add(gsl);
 		
-	}
-	
-	/**
-	 * 
-	 * Safety function to prevent malicious thingummywhats from shutting down the game early.
-	 * 
-	 * @return True to enable the game threads to shut down.
-	 */
-	public boolean canGameShutDown()
-	{
-		return true;
 	}
 	
 	protected abstract boolean initiateGame(Buffer<String> args);

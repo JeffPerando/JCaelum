@@ -82,7 +82,7 @@ public class ThreadGameRender extends ThreadTimed implements IGameStateListener
 		
 		if (this.display.get().isCloseRequested())
 		{
-			CaelumEngine.instance().shutDownGame("WINDOW-CLOSED".hashCode());
+			System.exit("WINDOW-CLOSED".hashCode());
 			
 			return;
 		}

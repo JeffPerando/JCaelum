@@ -65,6 +65,8 @@ public class AssetManager
 			
 		}
 		
+		this.worker.loadAsset(fixres, ret);
+		
 		return ret;
 	}
 	
