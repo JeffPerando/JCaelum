@@ -30,6 +30,7 @@ public class Client implements IHost
 		assert mstr != null;
 		
 		master = mstr;
+		thr = new ThreadNetwork(this, 1);
 		
 	}
 	
@@ -76,9 +77,7 @@ public class Client implements IHost
 			return null;
 		}
 		
-		this.thr = new ThreadNetwork(this, 1);
 		this.connection = new HSConnection(this, UUID.randomUUID());
-		
 		this.thr.connect(this.connection, ConnectionType.TCP, s);
 		
 		return this.connection.getId();
