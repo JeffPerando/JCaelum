@@ -20,4 +20,9 @@ public class Tuple<T, E>
 		
 	}
 	
+	public static <O, T> Tuple<O, T> create(O one, T two)
+	{
+		return new Tuple<O, T>(one, two);
+	}
+	
 }

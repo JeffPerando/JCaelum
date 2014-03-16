@@ -224,7 +224,7 @@ public final class ReflectionHelper
 	
 	public static Tuple<ClassLoader, Set<Class<?>>> loadLibrary(File file)
 	{
-		Tuple<ClassLoader, Set<Class<?>>> ret = new Tuple<ClassLoader, Set<Class<?>>>(null, null);
+		Tuple<ClassLoader, Set<Class<?>>> ret = Tuple.create(null, null);
 		
 		try
 		{

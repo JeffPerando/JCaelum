@@ -24,6 +24,11 @@ public class SimpleList<T> implements List<T>
 		
 	}
 	
+	public SimpleList(boolean grow)
+	{
+		this(16, grow);
+	}
+	
 	public SimpleList(int length)
 	{
 		this(length, true);
@@ -68,7 +73,46 @@ public class SimpleList<T> implements List<T>
 	@Override
 	public void add(int i, T obj)
 	{
-		this.list[i] = obj;
+		if (i < 0)
+		{
+			return;
+		}
+		
+		int in = this.indexOf(null);
+		
+		if (in == i)
+		{
+			this.list[i] = obj;
+			
+		}
+		else
+		{
+			in = -1;
+			
+			for (int c = i; c < this.list.length; c++)
+			{
+				if (this.list[c] == null)
+				{
+					in = c;
+					break;
+				}
+				
+			}
+			
+			if (in == -1)
+			{
+				return;
+			}
+			
+			for (int c0 = in - 1; c0 >= i; c0--)
+			{
+				this.list[c0 + 1] = this.list[c0];
+				
+			}
+			
+			this.list[i] = obj;
+			
+		}
 		
 	}
 	
@@ -155,7 +199,7 @@ public class SimpleList<T> implements List<T>
 	{
 		for (int c = 0; c < this.list.length; c++)
 		{
-			if (this.list[c] == obj)
+			if (obj == null ? this.list[c] == null : obj.equals(this.list[c]))
 			{
 				return c;
 			}
@@ -307,9 +351,24 @@ public class SimpleList<T> implements List<T>
 		return null;
 	}
 	
-	public static <T> SimpleList<T> createNewList()
+	public static <T> SimpleList<T> newList()
 	{
 		return new SimpleList<T>();
+	}
+	
+	public static <T> SimpleList<T> newList(boolean grow)
+	{
+		return new SimpleList<T>(grow);
+	}
+	
+	public static <T> SimpleList<T> newList(int l)
+	{
+		return new SimpleList<T>(l);
+	}
+	
+	public static <T> SimpleList<T> newList(int l, boolean grow)
+	{
+		return new SimpleList<T>(l, grow);
 	}
 	
 	protected static Object[] expand(Object[] arr, int length)

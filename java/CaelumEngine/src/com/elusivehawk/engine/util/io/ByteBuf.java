@@ -11,25 +11,32 @@ import java.nio.ByteBuffer;
  */
 public class ByteBuf implements ByteReader, ByteWriter
 {
-	protected final ByteBuffer buf;
+	protected final ByteBuffer in, out;
 	
-	@SuppressWarnings("unqualified-field-access")
 	public ByteBuf(ByteBuffer b)
 	{
-		buf = b;
+		this(b, b);
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public ByteBuf(ByteBuffer i, ByteBuffer o)
+	{
+		in = i;
+		out = o;
 		
 	}
 	
 	@Override
 	public byte read()
 	{
-		return this.buf.get();
+		return this.in.get();
 	}
 	
 	@Override
 	public void write(byte... bytes)
 	{
-		this.buf.put(bytes);
+		this.out.put(bytes);
 		
 	}
 	

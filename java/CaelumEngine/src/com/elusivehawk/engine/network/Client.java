@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.network;
 
 import java.io.IOException;
+import java.nio.channels.DatagramChannel;
 import java.nio.channels.SocketChannel;
 import java.util.List;
 import java.util.UUID;
@@ -17,26 +18,18 @@ import com.google.common.collect.ImmutableList;
  */
 public class Client implements IHost
 {
-	protected final IConnectionMaster master;
-	protected final int ups;
+	protected final INetworkMaster master;
 	
 	protected IConnection connection = null;
+	protected ThreadNetwork thr = null;
 	protected boolean hasHS = false;
 	
-	public Client(IConnectionMaster mstr)
-	{
-		this(mstr, 30);
-		
-	}
-	
 	@SuppressWarnings("unqualified-field-access")
-	public Client(IConnectionMaster mstr, int updCount)
+	public Client(INetworkMaster mstr)
 	{
 		assert mstr != null;
-		assert updCount > 0;
 		
 		master = mstr;
-		ups = updCount;
 		
 	}
 	
@@ -60,8 +53,9 @@ public class Client implements IHost
 		{
 			if (type.isUdp() && this.connection.getId().equals(id))
 			{
-				this.connection.connect(id, ip, type);
+				this.connection.connect(type, ip);
 				
+				return this.connection.getId();
 			}
 			
 		}
@@ -71,7 +65,7 @@ public class Client implements IHost
 			return null;
 		}
 		
-		return this.connect(ip.toChannel());
+		return this.connect((SocketChannel)ip.toChannel(type));
 	}
 	
 	@Override
@@ -82,9 +76,10 @@ public class Client implements IHost
 			return null;
 		}
 		
-		this.connection = ConnectionFactory.factory().createHS(this, UUID.randomUUID(), this.ups);
+		this.thr = new ThreadNetwork(this, 1);
+		this.connection = new HSConnection(this, UUID.randomUUID());
 		
-		this.connection.connect(s);
+		this.thr.connect(this.connection, ConnectionType.TCP, s);
 		
 		return this.connection.getId();
 	}
@@ -94,7 +89,7 @@ public class Client implements IHost
 	{
 		if (this.connection != null)
 		{
-			this.connection.beginComm();
+			this.thr.start();
 			
 		}
 		
@@ -153,7 +148,7 @@ public class Client implements IHost
 	{
 		if (this.connection != null)
 		{
-			this.connection.setPaused(pause);
+			this.thr.setPaused(pause);
 			
 		}
 		
@@ -162,7 +157,7 @@ public class Client implements IHost
 	@Override
 	public boolean isPaused()
 	{
-		return this.connection == null ? false : this.connection.isPaused();
+		return this.connection == null ? false : this.thr.isPaused();
 	}
 	
 	@Override
@@ -185,15 +180,33 @@ public class Client implements IHost
 		
 		if (success)
 		{
-			this.connection = ConnectionFactory.factory().create(this, UUID.randomUUID(), this.ups);
+			this.connection = new Connection(this, UUID.randomUUID());
 			
-			this.connection.connect(connection.getChannel());
-			this.connection.beginComm();
+			boolean finish = true;
 			
-			this.hasHS = true;
+			if (this.connection.connect(ConnectionType.TCP, connection.getTcp()))
+			{
+				finish = false;
+				
+			}
+			
+			ImmutableList<DatagramChannel> udp = connection.getUdp();
+			
+			if (udp != null && !udp.isEmpty())
+			{
+				for (DatagramChannel ch : udp)
+				{
+					this.connection.connect(ConnectionType.UDP, ch);
+					
+				}
+				
+			}
+			
+			this.hasHS = finish;
 			
 		}
-		else
+		
+		if (!this.hasHS)
 		{
 			this.connection = null;
 			

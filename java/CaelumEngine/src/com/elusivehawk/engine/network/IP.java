@@ -4,6 +4,8 @@ package com.elusivehawk.engine.network;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.nio.channels.DatagramChannel;
+import java.nio.channels.NetworkChannel;
 import java.nio.channels.SocketChannel;
 import javax.net.SocketFactory;
 
@@ -87,13 +89,24 @@ public final class IP
 		return ret;
 	}
 	
-	public SocketChannel toChannel()
+	public NetworkChannel toChannel(ConnectionType type)
 	{
-		SocketChannel ret = null;
+		NetworkChannel ret = null;
 		
 		try
 		{
-			ret = SocketChannel.open(this.toInet());
+			if (type.isTcp())
+			{
+				ret = SocketChannel.open(this.toInet());
+				
+			}
+			else
+			{
+				ret = DatagramChannel.open();
+				
+				ret.bind(this.toInet());
+				
+			}
 			
 		}
 		catch (Exception e)

@@ -200,7 +200,7 @@ public class Model implements IStorageListener
 			
 		}
 		
-		Tuple<Integer, Integer> t = new Tuple<Integer, Integer>(this.oldPointCount, this.pointCount);
+		Tuple<Integer, Integer> t = Tuple.create(this.oldPointCount, this.pointCount);
 		
 		this.arrays.put(this.glMode, t);
 		

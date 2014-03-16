@@ -1,11 +1,12 @@
 
 package com.elusivehawk.engine.network;
 
+import java.nio.channels.DatagramChannel;
 import java.nio.channels.SocketChannel;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import com.elusivehawk.engine.util.SemiFinalStorage;
+import com.elusivehawk.engine.util.SimpleList;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -16,9 +17,10 @@ import com.google.common.collect.ImmutableList;
  */
 public class Server implements IHost
 {
-	protected final int ups, port, maxPlayers;
-	protected final IConnectionMaster master;
+	protected final int port, maxPlayers;
+	protected final INetworkMaster master;
 	protected final ThreadJoinListener listener;
+	protected final ThreadNetwork network;
 	
 	protected final List<IConnection> clients;
 	protected final List<UUID> ids;
@@ -27,26 +29,19 @@ public class Server implements IHost
 	protected int playerCount = 0;
 	protected boolean paused = false;
 	
-	public Server(int p, IConnectionMaster m, int players)
-	{
-		this(p, m, 30, players);
-		
-	}
-	
 	@SuppressWarnings("unqualified-field-access")
-	public Server(int p, IConnectionMaster m, int updCount, int players)
+	public Server(int p, INetworkMaster m, int players)
 	{
 		assert m != null;
-		assert updCount > 0;
 		assert players > 0;
 		
 		port = p;
 		master = m;
 		listener = new ThreadJoinListener(this, p);
-		ups = updCount;
+		network = new ThreadNetwork(this, p);
 		maxPlayers = players;
-		clients = new ArrayList<IConnection>(players);
-		ids = new ArrayList<UUID>(players);
+		clients = new SimpleList<IConnection>(players, false);
+		ids = new SimpleList<UUID>(players, false);
 		
 	}
 	
@@ -62,7 +57,7 @@ public class Server implements IHost
 	{
 		if (type.isTcp())
 		{
-			return this.connect(ip.toChannel());
+			return this.connect((SocketChannel)ip.toChannel(type));
 		}
 		else if (type.isUdp())
 		{
@@ -70,7 +65,7 @@ public class Server implements IHost
 			{
 				if (client.getId().equals(origin))
 				{
-					client.connect(origin, ip, type);
+					client.connect(type, ip);
 					
 					return client.getId();
 				}
@@ -82,20 +77,17 @@ public class Server implements IHost
 		return null;
 	}
 	
+	@SuppressWarnings("resource")
 	@Override
 	public UUID connect(SocketChannel s)
 	{
 		assert s != null;
 		
-		IConnection next = ConnectionFactory.factory().createHS(this, UUID.randomUUID(), this.ups);
-		int i = this.clients.indexOf(null);
+		IConnection next = new HSConnection(this, UUID.randomUUID());
 		
-		if (i == -1)
+		if (this.clients.add(next))
 		{
-			this.clients.set(i, next);
-			
-			next.connect(s);
-			next.beginComm();
+			next.connect(ConnectionType.TCP, s);
 			
 			return next.getId();
 		}
@@ -185,17 +177,7 @@ public class Server implements IHost
 	@Override
 	public void setPaused(boolean pause)
 	{
-		for (IConnection connect : this.clients)
-		{
-			if (connect == null)
-			{
-				continue;
-			}
-			
-			connect.setPaused(pause);
-			
-		}
-		
+		this.network.setPaused(pause);
 		this.paused = pause;
 		
 	}
@@ -221,27 +203,35 @@ public class Server implements IHost
 		
 		if (success)
 		{
-			IConnection connect = ConnectionFactory.factory().create(this, UUID.randomUUID(), this.ups);
-			int i = this.clients.indexOf(null);
+			IConnection connect = new Connection(this, UUID.randomUUID());
 			
-			if (i == -1)
+			boolean finish = true;
+			
+			if (connect.connect(ConnectionType.TCP, connection.getTcp()))
 			{
-				try
-				{
-					connect.close();
-					
-				}
-				catch (Exception e){}
+				finish = false;
 				
-				return;
 			}
 			
-			this.clients.set(i, connect);
-			this.ids.set(i, connect.getId());
-			this.playerCount++;
+			ImmutableList<DatagramChannel> udp = connection.getUdp();
 			
-			connect.connect(connection.getChannel());
-			connect.beginComm();
+			if (udp != null && !udp.isEmpty())
+			{
+				for (DatagramChannel ch : udp)
+				{
+					connect.connect(ConnectionType.UDP, ch);
+					
+				}
+				
+			}
+			
+			if (finish)
+			{
+				this.clients.add(connect);
+				this.ids.add(connect.getId());
+				this.playerCount++;
+				
+			}
 			
 		}
 		

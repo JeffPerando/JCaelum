@@ -1,6 +1,8 @@
 
 package com.elusivehawk.engine.network;
 
+import java.nio.channels.DatagramChannel;
+import java.nio.channels.NetworkChannel;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,19 +17,19 @@ import com.google.common.collect.ImmutableList;
  * 
  * @author Elusivehawk
  */
-public class HSConnectionImpl implements IPacketHandler, IConnection
+public class HSConnection implements IPacketHandler, IConnection
 {
 	private final IHost master;
 	private final IConnection connect;
 	private final short[] expectPkts;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public HSConnectionImpl(IHost owner, UUID id, int ups)
+	public HSConnection(IHost owner, UUID id)
 	{
 		assert owner != null;
 		
 		master = owner;
-		connect = ConnectionFactory.factory().create(this, id, ups);
+		connect = new Connection(this, id);
 		expectPkts = owner.getHandshakeProtocol();
 		
 	}
@@ -110,40 +112,15 @@ public class HSConnectionImpl implements IPacketHandler, IConnection
 	}
 	
 	@Override
-	public UUID connect(UUID origin, IP ip, ConnectionType type)
+	public boolean connect(ConnectionType type, IP ip)
 	{
-		return this.connect.connect(origin, ip, type);
+		return this.connect.connect(type, ip);
 	}
 	
 	@Override
-	public UUID connect(SocketChannel sch)
+	public boolean connect(ConnectionType type, NetworkChannel ch)
 	{
-		return this.connect.connect(sch);
-	}
-	
-	@Override
-	public void beginComm()
-	{
-		if (this.connect == null)
-		{
-			return;
-		}
-		
-		this.connect.beginComm();
-		
-	}
-	
-	@Override
-	public boolean isPaused()
-	{
-		return this.connect.isPaused();
-	}
-	
-	@Override
-	public void setPaused(boolean p)
-	{
-		this.connect.setPaused(p);
-		
+		return this.connect.connect(type, ch);
 	}
 	
 	@Override
@@ -169,9 +146,28 @@ public class HSConnectionImpl implements IPacketHandler, IConnection
 	}
 	
 	@Override
-	public SocketChannel getChannel()
+	public SocketChannel getTcp()
 	{
-		return this.connect == null ? null : this.connect.getChannel();
+		return this.connect.getTcp();
+	}
+	
+	@Override
+	public ImmutableList<DatagramChannel> getUdp()
+	{
+		return this.connect.getUdp();
+	}
+	
+	@Override
+	public ImmutableList<Packet> getOutgoingPackets()
+	{
+		return this.connect.getOutgoingPackets();
+	}
+	
+	@Override
+	public void clearPkt(Packet pkt)
+	{
+		this.connect.clearPkt(pkt);
+		
 	}
 	
 	@Override

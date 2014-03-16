@@ -7,7 +7,7 @@ package com.elusivehawk.engine.network;
  * 
  * @author Elusivehawk
  */
-public interface IConnectionMaster extends IPacketListener, IPacketFormatter, IHandshaker
+public interface INetworkMaster extends IPacketListener, IPacketFormatter, IHandshaker
 {
 	
 }

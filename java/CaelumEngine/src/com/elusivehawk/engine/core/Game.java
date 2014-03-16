@@ -18,7 +18,7 @@ import com.elusivehawk.engine.util.SimpleList;
 public abstract class Game implements IUpdatable
 {
 	private GameState state = null, nextState = null;
-	private List<IGameStateListener> listeners = SimpleList.createNewList();
+	private List<IGameStateListener> listeners = SimpleList.newList();
 	private boolean initiated = false;
 	
 	public final boolean initiate(Buffer<String> args)

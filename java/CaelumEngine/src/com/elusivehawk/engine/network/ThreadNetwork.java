@@ -1,20 +1,22 @@
 
 package com.elusivehawk.engine.network;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ByteChannel;
-import java.nio.channels.DatagramChannel;
+import java.nio.channels.NetworkChannel;
+import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
-import java.nio.channels.SocketChannel;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import com.elusivehawk.engine.util.SyncBuffer;
-import com.elusivehawk.engine.util.ThreadTimed;
+import java.util.UUID;
+import com.elusivehawk.engine.util.SimpleList;
+import com.elusivehawk.engine.util.ThreadStoppable;
+import com.elusivehawk.engine.util.Tuple;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Maps;
 
 /**
  * 
@@ -22,47 +24,43 @@ import com.google.common.collect.ImmutableList;
  * 
  * @author Elusivehawk
  */
-public class ThreadNetwork extends ThreadTimed
+public class ThreadNetwork extends ThreadStoppable
 {
-	protected final int updateCount;
+	public static final int HEADER_LENGTH = 4,
+			PKT_LENGTH = 8192,
+			PKT_LIMIT = 32;
+	
 	protected final IPacketHandler handler;
-	protected final IConnection connect;
+	protected final Map<UUID, IConnection> connections;
 	
 	//NIO channel things
 	
 	protected final Selector selector;
-	protected final SocketChannel tcp;
-	protected final List<DatagramChannel> udps = new ArrayList<DatagramChannel>();
 	
 	//Incoming
 	
-	protected final ByteBuffer head = ByteBuffer.allocate(4), bin = ByteBuffer.allocate(8192);
+	protected final ByteBuffer head = ByteBuffer.allocate(HEADER_LENGTH),
+			bin = ByteBuffer.allocate(PKT_LENGTH);
 	
 	//Outgoing
 	
-	protected final SyncBuffer<Packet> outPkts = new SyncBuffer<Packet>(32);
-	protected final ByteBuffer bout = ByteBuffer.allocate(8192 * 32);
+	protected final ByteBuffer bout = ByteBuffer.allocate((HEADER_LENGTH + PKT_LENGTH) * PKT_LIMIT);
 	
 	@SuppressWarnings("unqualified-field-access")
-	public ThreadNetwork(IPacketHandler h, IConnection con, int ups)
+	public ThreadNetwork(IPacketHandler h, int playerCount)
 	{
-		assert con != null;
 		assert h != null;
-		assert ups > 0;
+		assert playerCount > 0;
 		
 		handler = h;
-		connect = con;
-		updateCount = ups;
-		tcp = con.getChannel();
+		connections = Maps.newHashMapWithExpectedSize(playerCount);
 		
 		Selector s = null;
 		
 		try
 		{
-			tcp.configureBlocking(false);
 			
 			s = Selector.open();
-			tcp.register(s, SelectionKey.OP_READ | SelectionKey.OP_WRITE, ConnectionType.TCP);
 			
 		}
 		catch (Exception e){}
@@ -72,22 +70,18 @@ public class ThreadNetwork extends ThreadTimed
 	}
 	
 	@Override
-	public boolean initiate()
+	public void rawUpdate() throws Throwable
 	{
-		try
+		for (IConnection con : this.connections.values())
 		{
-			while(!this.tcp.finishConnect()){}
+			if (con.isClosed())
+			{
+				this.connections.remove(con.getId());
+				
+			}
 			
 		}
-		catch (IOException e){}
 		
-		return true;
-	}
-	
-	@Override
-	public void update(double delta) throws Throwable
-	{
-		int i;
 		short type, length;
 		List<Packet> pkts = null;
 		Packet pkt;
@@ -110,6 +104,9 @@ public class ThreadNetwork extends ThreadTimed
 				{
 					io = (ByteChannel)key.channel();
 					
+					@SuppressWarnings("unchecked")
+					Tuple<ConnectionType, IConnection> info = (Tuple<ConnectionType, IConnection>)key.attachment();
+					
 					if (key.isReadable())
 					{
 						while (io.read(this.head) != -1)
@@ -125,34 +122,23 @@ public class ThreadNetwork extends ThreadTimed
 							
 							io.read(this.bin);//Read the data
 							
-							if (format != null && format.type.isCompatible((ConnectionType)key.attachment()))//NOW we check to see if the data in question is valid
+							if (format != null && format.type.isCompatible(info.one))//NOW we check to see if the data in question is valid
 							{
 								//Huh, it is. Okay, let's read this thing...
 								
 								pkt = format.read(this.bin);//Excuse me Mr. Format, could you tell me what's going on?
 								
-								if (pkt != null)//Check if the packet has been read successfully.
+								if (pkt != null)//Check if the packet has been successfully read.
 								{
 									if (pkts == null)//Dynamically load the packet list with a soft limit of 32 packets.
 									{
-										pkts = new ArrayList<Packet>(32);
+										pkts = new SimpleList<Packet>(32);
 										
 									}
 									
 									//Schedule the packet to be sent to the game.
 									
-									i = pkts.indexOf(null);
-									
-									if (i == -1)
-									{
-										pkts.add(pkt);
-										
-									}
-									else
-									{
-										pkts.set(i, pkt);
-										
-									}
+									pkts.add(pkt);
 									
 								}
 								
@@ -164,38 +150,40 @@ public class ThreadNetwork extends ThreadTimed
 						
 						if (pkts != null)
 						{
-							this.handler.onPacketsReceived(this.connect, ImmutableList.copyOf(pkts));
+							this.handler.onPacketsReceived(info.two, ImmutableList.copyOf(pkts));
 							
 						}
 						
 					}
 					
-					if (key.isWritable() && !this.outPkts.isEmpty())
+					if (key.isWritable())
 					{
-						Iterator<Packet> pktItr = this.outPkts.iterator();
+						ImmutableList<Packet> outPkts = info.two.getOutgoingPackets();
 						
-						for (Packet pkt0 : this.outPkts)
+						Iterator<Packet> pktItr = outPkts.iterator();
+						
+						while (pktItr.hasNext())
 						{
-							pkt0 = pktItr.next();
+							pkt = pktItr.next();
 							
-							if (pkt0.format == null)
+							if (pkt.format == null)
 							{
 								continue;
 							}
 							
-							if (!pkt0.format.type.isCompatible((ConnectionType)key.attachment()))
+							if (!pkt.format.type.isCompatible(info.one))
 							{
 								continue;
 							}
 							
-							if (!this.handler.validate(pkt0.format))
+							if (!this.handler.validate(pkt.format))
 							{
 								continue;
 							}
 							
-							pkt0.format.write(pkt0, this.bout);
+							pkt.format.write(pkt, this.bout);
 							
-							this.outPkts.remove();
+							info.two.clearPkt(pkt);
 							
 						}
 						
@@ -225,79 +213,56 @@ public class ThreadNetwork extends ThreadTimed
 	}
 	
 	@Override
-	public int getTargetUpdateCount()
-	{
-		return this.updateCount;
-	}
-	
-	@Override
-	public double getMaxDelta()
-	{
-		return 0.5;
-	}
-	
-	@Override
 	public void onThreadStopped()
 	{
 		try
 		{
-			this.update(0);
+			this.rawUpdate();
 			
 			this.selector.close();
-			
-			this.tcp.close();
-			
-			if (!this.udps.isEmpty())
-			{
-				for (DatagramChannel udp : this.udps)
-				{
-					udp.close();
-					
-				}
-				
-			}
 			
 		}
 		catch (Throwable e){}
 		
 	}
 	
-	public synchronized void connectDatagram(IP ip)
-	{
-		DatagramChannel ch = null;
-		
-		try
-		{
-			ch = DatagramChannel.open();
-			
-			ch.bind(ip.toInet());
-			ch.configureBlocking(false);
-			
-			ch.register(this.selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE, ConnectionType.UDP);
-			
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			
-		}
-		
-		if (ch != null)
-		{
-			this.udps.add(ch);
-			
-		}
-		
-	}
-	
-	public synchronized void sendPackets(Packet... pkts)
+	public synchronized void sendPackets(UUID id, Packet... pkts)
 	{
 		if (pkts == null || pkts.length == 0)
 		{
 			return;
 		}
 		
-		this.outPkts.add(pkts);
+		IConnection connect = this.connections.get(id);
+		
+		if (connect != null)
+		{
+			connect.sendPackets(pkts);
+			
+		}
+		
+	}
+	
+	public void connect(IConnection con, ConnectionType type, SelectableChannel ch)
+	{
+		if (!con.connect(type, (NetworkChannel)ch))
+		{
+			return;
+		}
+		
+		this.connections.put(con.getId(), con);
+		
+		try
+		{
+			if (type.isTcp())
+			{
+				ch.configureBlocking(false);
+				ch.register(this.selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE, Tuple.create(type, con));
+				
+			}
+			
+		}
+		catch (Exception e){}
 		
 	}
 	

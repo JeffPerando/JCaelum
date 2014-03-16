@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import com.elusivehawk.engine.util.ThreadTimed;
+import com.elusivehawk.engine.util.ThreadStoppable;
 
 /**
  * 
@@ -13,26 +13,18 @@ import com.elusivehawk.engine.util.ThreadTimed;
  * 
  * @author Elusivehawk
  */
-public class ThreadJoinListener extends ThreadTimed
+public class ThreadJoinListener extends ThreadStoppable
 {
 	protected final IHost svr;
 	protected final ServerSocketChannel chnl;
-	protected final int updCount;
-	
-	public ThreadJoinListener(IHost server, int port)
-	{
-		this(server, port, 30);
-		
-	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public ThreadJoinListener(IHost server, int port, int ups)
+	public ThreadJoinListener(IHost server, int port)
 	{
 		assert server != null;
 		assert server.getSide().isServer();
 		
 		svr = server;
-		updCount = ups;
 		
 		ServerSocketChannel ch = null;
 		
@@ -55,7 +47,7 @@ public class ThreadJoinListener extends ThreadTimed
 	}
 	
 	@Override
-	public void update(double delta) throws Throwable
+	public void rawUpdate() throws Throwable
 	{
 		SocketChannel sch = this.chnl.accept();
 		
@@ -65,18 +57,6 @@ public class ThreadJoinListener extends ThreadTimed
 			
 		}
 		
-	}
-	
-	@Override
-	public int getTargetUpdateCount()
-	{
-		return this.updCount;
-	}
-	
-	@Override
-	public double getMaxDelta()
-	{
-		return 0.5;
 	}
 	
 	@Override

@@ -62,7 +62,7 @@ public class ThreadAssetLoader extends ThreadStoppable
 	
 	public synchronized void loadAsset(String location, AssetTicket tkt)
 	{
-		this.assets.add(new Tuple<String, AssetTicket>(location, tkt));
+		this.assets.add(Tuple.create(location, tkt));
 		
 	}
 	

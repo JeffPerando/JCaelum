@@ -49,7 +49,7 @@ public final class PacketFormat implements Iterable<DataType>
 	public Packet read(ByteBuffer in)
 	{
 		Packet ret = new Packet(this);
-		ByteReader r = new ByteBuf(in);
+		ByteReader r = new ByteBuf(in, null);
 		PktFormatItr itr = this.iterator();
 		Object obj;
 		
@@ -71,7 +71,7 @@ public final class PacketFormat implements Iterable<DataType>
 	
 	public int write(Packet pkt, ByteBuffer buf)
 	{
-		ByteWriter w = new ByteBuf(buf);
+		ByteWriter w = new ByteBuf(null, buf);
 		int length = Serializer.SHORT.toBytes(w, this.pktId);
 		PktFormatItr itr = this.iterator();
 		

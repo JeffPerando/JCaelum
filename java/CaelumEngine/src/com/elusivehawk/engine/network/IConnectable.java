@@ -17,7 +17,7 @@ public interface IConnectable
 {
 	public UUID connect(UUID origin, IP ip, ConnectionType type);
 	
-	public UUID connect(SocketChannel sch);
+	public UUID connect(SocketChannel ch);
 	
 	public void beginComm();
 	

@@ -21,4 +21,9 @@ public class SemiFinalTuple<T, E> extends Tuple<SemiFinalStorage<T>, SemiFinalSt
 		
 	}
 	
+	public static <O, T> SemiFinalTuple<O, T> create(O one, T two, int changeCount)
+	{
+		return new SemiFinalTuple<O, T>(one, two, changeCount);
+	}
+	
 }
