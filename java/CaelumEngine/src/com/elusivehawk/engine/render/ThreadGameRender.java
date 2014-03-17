@@ -6,7 +6,9 @@ import java.util.Collection;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.core.GameState;
+import com.elusivehawk.engine.core.IContext;
 import com.elusivehawk.engine.core.IGameStateListener;
+import com.elusivehawk.engine.core.IThreadContext;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.util.SemiFinalStorage;
 import com.elusivehawk.engine.util.ThreadTimed;
@@ -17,21 +19,26 @@ import com.elusivehawk.engine.util.ThreadTimed;
  * 
  * @author Elusivehawk
  */
-public class ThreadGameRender extends ThreadTimed implements IGameStateListener
+public class ThreadGameRender extends ThreadTimed implements IGameStateListener, IThreadContext
 {
 	protected IRenderHUB hub;
 	protected final RenderContext context;
-	protected final SemiFinalStorage<IDisplay> display = new SemiFinalStorage<IDisplay>(null);
+	protected final SemiFinalStorage<IDisplay> display = (SemiFinalStorage<IDisplay>)new SemiFinalStorage<IDisplay>(null).setEnableNull(false);
 	protected int fps;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public ThreadGameRender(IRenderHUB rhub)
 	{
 		hub = rhub;
-		context = new RenderContext(rhub);
+		context = new RenderContext(this);
 		
 		CaelumEngine.game().addGameStateListener(this);
 		
+	}
+	
+	public IRenderHUB getRenderHUB()
+	{
+		return this.hub;
 	}
 	
 	@Override
@@ -44,9 +51,9 @@ public class ThreadGameRender extends ThreadTimed implements IGameStateListener
 			return false;
 		}
 		
-		this.context.initiate();
+		this.context.initContext();
 		
-		this.hub.initiate(this.context);
+		this.hub.initiate();
 		
 		DisplaySettings settings = this.hub.getSettings();
 		
@@ -58,53 +65,41 @@ public class ThreadGameRender extends ThreadTimed implements IGameStateListener
 		
 		this.fps = settings.targetFPS;
 		
-		if (!this.display.locked())
-		{
-			this.display.set(CaelumEngine.renderEnvironment().createDisplay("default", settings));
-			
-		}
-		
-		return true;
+		return this.display.set(CaelumEngine.renderEnvironment().createDisplay("default", settings));
 	}
 	
 	@Override
 	public void update(double delta) throws Throwable
 	{
-		if (this.isPaused())
-		{
-			return;
-		}
-		
-		if (this.hub == null)
+		if (this.isPaused() || this.hub == null)
 		{
 			return;
 		}
 		
 		if (this.display.get().isCloseRequested())
 		{
-			System.exit("WINDOW-CLOSED".hashCode());
+			System.exit(0);
 			
 			return;
 		}
 		
 		this.context.setRenderStage(EnumRenderStage.PRERENDER);
 		
-		this.hub.updateHUB(delta, this.context);
+		this.hub.updateHUB(delta);
 		
 		if (this.hub.updateDisplay())
 		{
 			DisplaySettings settings = this.hub.getSettings();
+			IDisplay d = this.display.get();
 			
-			this.display.get().resize(settings.height, settings.width);
-			this.display.get().setFullscreen(settings.fullscreen);
-			this.display.get().setVSync(settings.vsync);
-			this.display.get().setFPS(settings.targetFPS);
-			
-			this.fps = settings.targetFPS;
+			d.resize(settings.height, settings.width);
+			d.setFullscreen(settings.fullscreen);
+			d.setVSync(settings.vsync);
+			d.setFPS(this.fps = settings.targetFPS);
 			
 		}
 		
-		this.hub.getCamera().updateCamera(this.context);
+		this.hub.getCamera().updateCamera();
 		
 		Collection<IRenderEngine> engines = this.hub.getRenderEngines();
 		
@@ -136,7 +131,7 @@ public class ThreadGameRender extends ThreadTimed implements IGameStateListener
 						continue;
 					}
 					
-					engine.render(this.context);
+					engine.render(this.hub);
 					renderersUsed++;
 					
 					int tex = 0, texUnits = this.context.getGL1().glGetInteger(GLConst.GL_MAX_TEXTURE_UNITS);
@@ -155,7 +150,7 @@ public class ThreadGameRender extends ThreadTimed implements IGameStateListener
 					
 					try
 					{
-						RenderHelper.checkForGLError(this.context);
+						RenderHelper.checkForGLError();
 						
 					}
 					catch (Exception e)
@@ -207,6 +202,12 @@ public class ThreadGameRender extends ThreadTimed implements IGameStateListener
 	{
 		this.hub = gs.getRenderHUB();
 		
+	}
+	
+	@Override
+	public IContext getContext()
+	{
+		return this.context;
 	}
 	
 }

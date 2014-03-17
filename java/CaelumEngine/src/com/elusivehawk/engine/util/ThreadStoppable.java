@@ -31,12 +31,12 @@ public abstract class ThreadStoppable extends Thread implements IPausable
 	{
 		if (!this.initiate())
 		{
-			this.running = false;
+			this.stopThread();
 			
 			return;
 		}
 		
-		while (this.canRun())
+		while (this.isRunning() && this.canRun())
 		{
 			try
 			{
@@ -75,7 +75,7 @@ public abstract class ThreadStoppable extends Thread implements IPausable
 	
 	protected boolean canRun()
 	{
-		return this.running;
+		return true;
 	}
 	
 	public abstract void rawUpdate() throws Throwable;

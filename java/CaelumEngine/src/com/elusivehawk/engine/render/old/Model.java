@@ -10,7 +10,6 @@ import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.math.VectorF;
-import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.VertexBufferObject;
@@ -45,7 +44,7 @@ public class Model implements IStorageListener
 	private int pointCount = 0, oldPointCount = 0;
 	private HashMap<Integer, Tuple<Integer, Integer>> arrays = new HashMap<Integer, Tuple<Integer, Integer>>();
 	
-	public void finish(RenderContext context)
+	public void finish()
 	{
 		if (this.finished)
 		{
@@ -105,24 +104,24 @@ public class Model implements IStorageListener
 		FloatBuffer fin = BufferHelper.makeFloatBuffer(temp).asReadOnlyBuffer();
 		IntBuffer indices = BufferHelper.makeIntBuffer(indiceList).asReadOnlyBuffer();
 		
-		int vb = context.getGL1().glGetInteger(GLConst.GL_VERTEX_ARRAY);
+		int vb = RenderHelper.gl1().glGetInteger(GLConst.GL_VERTEX_ARRAY);
 		
 		if (vb != 0)
 		{
 			CaelumEngine.log().log(EnumLogType.WARN, "Temporarily unbinding vertex array!");
-			context.getGL3().glBindVertexArray(0);
+			RenderHelper.gl3().glBindVertexArray(0);
 			
 		}
 		
-		int[] vbos = RenderHelper.createVBOs(2, context);
+		int[] vbos = RenderHelper.createVBOs(2);
 		
-		this.finBuf.set(new VertexBufferObject(vbos[0], GLConst.GL_ARRAY_BUFFER, fin, GLConst.GL_STATIC_DRAW, context));
-		this.indiceBuf.set(new VertexBufferObject(vbos[1], GLConst.GL_ELEMENT_ARRAY_BUFFER, indices, GLConst.GL_STATIC_DRAW, context));
+		this.finBuf.set(new VertexBufferObject(vbos[0], GLConst.GL_ARRAY_BUFFER, fin, GLConst.GL_STATIC_DRAW));
+		this.indiceBuf.set(new VertexBufferObject(vbos[1], GLConst.GL_ELEMENT_ARRAY_BUFFER, indices, GLConst.GL_STATIC_DRAW));
 		
 		if (vb != 0)
 		{
 			CaelumEngine.log().log(EnumLogType.WARN, "Rebinding vertex array");
-			context.getGL3().glBindVertexArray(vb);
+			RenderHelper.gl3().glBindVertexArray(vb);
 			
 		}
 		

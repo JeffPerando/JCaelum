@@ -13,12 +13,9 @@ import com.elusivehawk.engine.util.IDirty;
 public interface ICamera extends IDirty, IPostRenderer, IGLManipulator
 {
 	/**
-	 * 
 	 * Called once every frame; Do whatever you need to before rendering in this method.
-	 * 
-	 * @param context The current rendering context.
 	 */
-	public void updateCamera(RenderContext context);
+	public void updateCamera();
 	
 	/**
 	 * 

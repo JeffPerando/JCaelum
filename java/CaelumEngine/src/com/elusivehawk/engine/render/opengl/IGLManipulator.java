@@ -1,8 +1,6 @@
 
 package com.elusivehawk.engine.render.opengl;
 
-import com.elusivehawk.engine.render.RenderContext;
-
 /**
  * 
  * 
@@ -11,6 +9,6 @@ import com.elusivehawk.engine.render.RenderContext;
  */
 public interface IGLManipulator
 {
-	public void manipulateUniforms(RenderContext context, GLProgram program);
+	public void manipulateUniforms(GLProgram program);
 	
 }

@@ -16,6 +16,7 @@ import com.elusivehawk.engine.physics.IPhysicsScene;
 import com.elusivehawk.engine.physics.ThreadPhysics;
 import com.elusivehawk.engine.render.IRenderEnvironment;
 import com.elusivehawk.engine.render.IRenderHUB;
+import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.ThreadGameRender;
 import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.FileHelper;
@@ -50,6 +51,53 @@ public final class CaelumEngine
 	public static CaelumEngine instance()
 	{
 		return INSTANCE;
+	}
+	
+	public static Game game()
+	{
+		return instance().game;
+	}
+	
+	public static AssetManager assetManager()
+	{
+		return instance().assets;
+	}
+	
+	public static IGameEnvironment environment()
+	{
+		return instance().env;
+	}
+	
+	public static IRenderEnvironment renderEnvironment()
+	{
+		return instance().renv;
+	}
+	
+	public static ILog log()
+	{
+		return instance().log;
+	}
+	
+	public static IContext getContext(boolean safe)
+	{
+		Thread t = Thread.currentThread();
+		
+		if (safe && !(t instanceof IThreadContext))
+		{
+			return null;
+		}
+		
+		return ((IThreadContext)t).getContext();
+	}
+	
+	public static RenderContext renderContext()
+	{
+		return renderContext(false);
+	}
+	
+	public static RenderContext renderContext(boolean safe)
+	{
+		return (RenderContext)getContext(safe);
 	}
 	
 	public static void main(String... args)
@@ -314,31 +362,6 @@ public final class CaelumEngine
 		
 		this.game.onShutdown();
 		
-	}
-	
-	public static Game game()
-	{
-		return instance().game;
-	}
-	
-	public static AssetManager assetManager()
-	{
-		return instance().assets;
-	}
-	
-	public static IGameEnvironment environment()
-	{
-		return instance().env;
-	}
-	
-	public static IRenderEnvironment renderEnvironment()
-	{
-		return instance().renv;
-	}
-	
-	public static ILog log()
-	{
-		return instance().log;
 	}
 	
 	public void pauseGame(boolean pause)

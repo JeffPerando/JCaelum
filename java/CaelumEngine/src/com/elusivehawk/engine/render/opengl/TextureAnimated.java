@@ -9,7 +9,6 @@ import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.render.EnumColorFormat;
 import com.elusivehawk.engine.render.EnumRenderMode;
 import com.elusivehawk.engine.render.LegibleBufferedImage;
-import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.FileHelper;
@@ -24,33 +23,33 @@ public class TextureAnimated implements INonStaticTexture
 {
 	private final Buffer<Integer> tex;
 	
-	public TextureAnimated(String gif, RenderContext context)
+	public TextureAnimated(String gif)
 	{
-		this(FileHelper.createFile(gif), context);
+		this(FileHelper.createFile(gif));
 		
 	}
 
-	public TextureAnimated(File gif, RenderContext context)
+	public TextureAnimated(File gif)
 	{
-		this(gif, context, EnumRenderMode.MODE_2D);
+		this(gif, EnumRenderMode.MODE_2D);
 		
 	}
 	
-	public TextureAnimated(File gif, RenderContext context, EnumRenderMode mode)
+	public TextureAnimated(File gif, EnumRenderMode mode)
 	{
-		this(gif, context, mode, EnumColorFormat.RGBA);
-		
-	}
-	
-	@SuppressWarnings("unqualified-field-access")
-	public TextureAnimated(File gif, RenderContext context, EnumRenderMode mode, EnumColorFormat format)
-	{
-		tex = RenderHelper.processGifFile(gif, context, mode, format);
+		this(gif, mode, EnumColorFormat.RGBA);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public TextureAnimated(File file, RenderContext context, EnumRenderMode mode, EnumColorFormat format, int y)
+	public TextureAnimated(File gif, EnumRenderMode mode, EnumColorFormat format)
+	{
+		tex = RenderHelper.processGifFile(gif, mode, format);
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public TextureAnimated(File file, EnumRenderMode mode, EnumColorFormat format, int y)
 	{
 		if (file.getName().endsWith(".gif"))
 		{
@@ -88,7 +87,7 @@ public class TextureAnimated implements INonStaticTexture
 			{
 				BufferedImage sub = img.getSubimage(0, c, img.getWidth(), y);
 				
-				tex.add(RenderHelper.processImage(new LegibleBufferedImage(sub), mode, format, context));
+				tex.add(RenderHelper.processImage(new LegibleBufferedImage(sub), mode, format));
 				
 			}
 			
@@ -97,20 +96,20 @@ public class TextureAnimated implements INonStaticTexture
 	}
 	
 	@Override
-	public void glDelete(RenderContext context)
+	public void glDelete()
 	{
 		this.tex.rewind();
 		
 		for (int i : this.tex)
 		{
-			context.getGL1().glDeleteTextures(i);
+			RenderHelper.gl1().glDeleteTextures(i);
 			
 		}
 		
 	}
 	
 	@Override
-	public void updateTexture(RenderContext context)
+	public void updateTexture()
 	{
 		if (this.tex.remaining() == 0)
 		{
@@ -132,18 +131,18 @@ public class TextureAnimated implements INonStaticTexture
 	}
 	
 	@Override
-	public boolean bind(RenderContext context, int... extras)
+	public boolean bind(int... extras)
 	{
-		context.getGL1().glBindTexture(GLConst.GL_TEXTURE0 + (extras == null || extras.length == 0 ? 0 : extras[0]), this);
+		RenderHelper.gl1().glBindTexture(GLConst.GL_TEXTURE0 + (extras == null || extras.length == 0 ? 0 : extras[0]), this);
 		
 		try
 		{
-			RenderHelper.checkForGLError(context);
+			RenderHelper.checkForGLError();
 			
 		}
 		catch (Exception e)
 		{
-			this.unbind(context, extras);
+			this.unbind(extras);
 			
 			return false;
 		}
@@ -152,9 +151,9 @@ public class TextureAnimated implements INonStaticTexture
 	}
 	
 	@Override
-	public void unbind(RenderContext context, int... extras)
+	public void unbind(int... extras)
 	{
-		context.getGL1().glBindTexture(GLConst.GL_TEXTURE0 + (extras == null || extras.length == 0 ? 0 : extras[0]), 0);
+		RenderHelper.gl1().glBindTexture(GLConst.GL_TEXTURE0 + (extras == null || extras.length == 0 ? 0 : extras[0]), 0);
 		
 	}
 	

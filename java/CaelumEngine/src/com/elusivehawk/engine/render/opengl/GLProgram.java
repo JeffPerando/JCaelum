@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
-import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.RenderTicket;
 import com.elusivehawk.engine.render.old.Model;
@@ -28,31 +27,32 @@ public class GLProgram implements IGLBindable
 	private HashMap<VertexBufferObject, List<Integer>> vbos = new HashMap<VertexBufferObject, List<Integer>>();
 	private boolean bound = false;
 	
-	private GLProgram(RenderContext context)
+	private GLProgram()
 	{
-		this(context, context.getDefaultVertexShader(), context.getDefaultFragmentShader());
+		this(CaelumEngine.renderContext().getDefaultVertexShader(), CaelumEngine.renderContext().getDefaultFragmentShader());
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	private GLProgram(RenderContext context, int vertex, int frag)
+	private GLProgram(int vertex, int frag)
 	{
-		id = context.getGL2().glCreateProgram();
+		IGL2 gl2 = RenderHelper.gl2();
 		
-		vba = context.getGL3().glGenVertexArrays();
+		id = gl2.glCreateProgram();
+		vba = RenderHelper.gl3().glGenVertexArrays();
 		
 		sVertex = vertex;
 		sFrag = frag;
 		
-		context.getGL2().glAttachShader(id, vertex);
-		context.getGL2().glAttachShader(id, frag);
+		gl2.glAttachShader(id, vertex);
+		gl2.glAttachShader(id, frag);
 		
-		context.getGL2().glLinkProgram(this);
-		context.getGL2().glValidateProgram(this);
+		gl2.glLinkProgram(this);
+		gl2.glValidateProgram(this);
 		
 		try
 		{
-			RenderHelper.checkForGLError(context);
+			RenderHelper.checkForGLError();
 			
 		}
 		catch (Exception e)
@@ -61,21 +61,21 @@ public class GLProgram implements IGLBindable
 			
 		}
 		
-		context.registerCleanable(this);
+		CaelumEngine.renderContext().registerCleanable(this);
 		
 	}
 	
-	public static GLProgram create(RenderContext context)
+	public static GLProgram create()
 	{
-		return new GLProgram(context);
+		return new GLProgram();
 	}
 	
-	public static GLProgram create(RenderContext context, int v, int f)
+	public static GLProgram create(int v, int f)
 	{
 		assert v != 0;
 		assert f != 0;
 		
-		return new GLProgram(context, v, f);
+		return new GLProgram(v, f);
 	}
 	
 	public void attachVBO(VertexBufferObject vbo, List<Integer> attribs)
@@ -119,32 +119,34 @@ public class GLProgram implements IGLBindable
 		
 	}
 	
-	public void attachRenderTicket(RenderTicket tkt, RenderContext context)
+	public void attachRenderTicket(RenderTicket tkt)
 	{
 		this.attachModel(tkt.getModel());
 		this.attachVBO(tkt.getExtraVBO(), Arrays.asList(3, 4, 5));
 		
-		if (!this.bound && !this.bind(context))
+		if (!this.bound && !this.bind())
 		{
 			return;
 		}
 		
-		context.getGL2().glVertexAttribPointer(3, 3, GLConst.GL_FLOAT, false, 0, tkt.getBuffer());
-		context.getGL2().glVertexAttribPointer(4, 3, GLConst.GL_FLOAT, false, 3, tkt.getBuffer());
-		context.getGL2().glVertexAttribPointer(5, 3, GLConst.GL_FLOAT, false, 6, tkt.getBuffer());
+		IGL2 gl2 = RenderHelper.gl2();
 		
-		this.unbind(context);
+		gl2.glVertexAttribPointer(3, 3, GLConst.GL_FLOAT, false, 0, tkt.getBuffer());
+		gl2.glVertexAttribPointer(4, 3, GLConst.GL_FLOAT, false, 3, tkt.getBuffer());
+		gl2.glVertexAttribPointer(5, 3, GLConst.GL_FLOAT, false, 6, tkt.getBuffer());
+		
+		this.unbind();
 		
 	}
 	
-	public void attachUniform(String name, FloatBuffer info, EnumUniformType type, RenderContext context)
+	public void attachUniform(String name, FloatBuffer info, EnumUniformType type)
 	{
-		if (!this.bound && !this.bind(context))
+		if (!this.bound && !this.bind())
 		{
 			return;
 		}
 		
-		int loc = context.getGL2().glGetUniformLocation(this.id, name);
+		int loc = RenderHelper.gl2().glGetUniformLocation(this.id, name);
 		
 		if (loc == 0)
 		{
@@ -152,18 +154,18 @@ public class GLProgram implements IGLBindable
 			return;
 		}
 		
-		type.loadUniform(loc, info, context);
+		type.loadUniform(loc, info);
 		
 	}
 	
-	public void attachUniform(String name, IntBuffer info, EnumUniformType type, RenderContext context)
+	public void attachUniform(String name, IntBuffer info, EnumUniformType type)
 	{
-		if (!this.bound && !this.bind(context))
+		if (!this.bound && !this.bind())
 		{
 			return;
 		}
 		
-		int loc = context.getGL2().glGetUniformLocation(this.id, name);
+		int loc = RenderHelper.gl2().glGetUniformLocation(this.id, name);
 		
 		if (loc == 0)
 		{
@@ -171,7 +173,7 @@ public class GLProgram implements IGLBindable
 			return;
 		}
 		
-		type.loadUniform(loc, info, context);
+		type.loadUniform(loc, info);
 		
 	}
 	
@@ -191,11 +193,11 @@ public class GLProgram implements IGLBindable
 	}
 	
 	@Override
-	public boolean bind(RenderContext context, int... extras)
+	public boolean bind(int... extras)
 	{
-		if (!this.bind0(context))
+		if (!this.bind0())
 		{
-			this.unbind(context);
+			this.unbind();
 			
 			return false;
 		}
@@ -203,33 +205,33 @@ public class GLProgram implements IGLBindable
 		return true;
 	}
 	
-	private boolean bind0(RenderContext context)
+	private boolean bind0()
 	{
 		if (this.bound)
 		{
 			return true;
 		}
 		
-		if (context.getGL1().glGetInteger(GLConst.GL_CURRENT_PROGRAM) != 0)
+		if (RenderHelper.gl1().glGetInteger(GLConst.GL_CURRENT_PROGRAM) != 0)
 		{
 			return false;
 		}
 		
-		context.getGL2().glUseProgram(this);
+		RenderHelper.gl2().glUseProgram(this);
 		
-		context.getGL3().glBindVertexArray(this.vba);
+		RenderHelper.gl3().glBindVertexArray(this.vba);
 		
 		if (!this.vbos.isEmpty())
 		{
 			for (Entry<VertexBufferObject, List<Integer>> entry : this.vbos.entrySet())
 			{
-				context.getGL1().glBindBuffer(entry.getKey());
+				RenderHelper.gl1().glBindBuffer(entry.getKey());
 				
 				if (entry.getValue() != null)
 				{
 					for (int attrib : entry.getValue())
 					{
-						context.getGL2().glEnableVertexAttribArray(attrib);
+						RenderHelper.gl2().glEnableVertexAttribArray(attrib);
 						
 					}
 					
@@ -245,7 +247,7 @@ public class GLProgram implements IGLBindable
 	}
 	
 	@Override
-	public void unbind(RenderContext context, int... extras)
+	public void unbind(int... extras)
 	{
 		if (!this.bound)
 		{
@@ -260,49 +262,51 @@ public class GLProgram implements IGLBindable
 				{
 					for (int a : entry.getValue())
 					{
-						context.getGL2().glDisableVertexAttribArray(a);
+						RenderHelper.gl2().glDisableVertexAttribArray(a);
 						
 					}
 					
 				}
 				
-				context.getGL1().glBindBuffer(entry.getKey().t, 0);
+				RenderHelper.gl1().glBindBuffer(entry.getKey().t, 0);
 				
 			}
 			
 		}
 		
-		context.getGL3().glBindVertexArray(0);
+		RenderHelper.gl3().glBindVertexArray(0);
 		
-		context.getGL2().glUseProgram(0);
+		RenderHelper.gl2().glUseProgram(0);
 		
 		this.bound = false;
 		
 	}
 	
 	@Override
-	public void glDelete(RenderContext context)
+	public void glDelete()
 	{
 		if (this.bound)
 		{
-			this.unbind(context);
+			this.unbind();
 			
 		}
 		
-		context.getGL3().glDeleteVertexArrays(this.vba);
+		RenderHelper.gl3().glDeleteVertexArrays(this.vba);
 		
-		context.getGL2().glDeleteShader(this.sVertex);
-		context.getGL2().glDeleteShader(this.sFrag);
+		IGL2 gl2 = RenderHelper.gl2();
 		
-		context.getGL2().glDeleteProgram(this);
+		gl2.glDeleteShader(this.sVertex);
+		gl2.glDeleteShader(this.sFrag);
+		
+		gl2.glDeleteProgram(this);
 		
 	}
 	
 	private static interface IUniformType
 	{
-		public void loadUniform(int loc, FloatBuffer buf, RenderContext context);
+		public void loadUniform(int loc, FloatBuffer buf);
 		
-		public void loadUniform(int loc, IntBuffer buf, RenderContext context);
+		public void loadUniform(int loc, IntBuffer buf);
 		
 	}
 	
@@ -317,16 +321,16 @@ public class GLProgram implements IGLBindable
 		ONE
 		{
 			@Override
-			public void loadUniform(int loc, FloatBuffer buf, RenderContext context)
+			public void loadUniform(int loc, FloatBuffer buf)
 			{
-				context.getGL2().glUniform1f(loc, buf.get());
+				RenderHelper.gl2().glUniform1f(loc, buf.get());
 				
 			}
-
+			
 			@Override
-			public void loadUniform(int loc, IntBuffer buf, RenderContext context)
+			public void loadUniform(int loc, IntBuffer buf)
 			{
-				context.getGL2().glUniform1i(loc, buf.get());
+				RenderHelper.gl2().glUniform1i(loc, buf.get());
 				
 			}
 			
@@ -334,16 +338,16 @@ public class GLProgram implements IGLBindable
 		TWO
 		{
 			@Override
-			public void loadUniform(int loc, FloatBuffer buf, RenderContext context)
+			public void loadUniform(int loc, FloatBuffer buf)
 			{
-				context.getGL2().glUniform2f(loc, buf.get(), buf.get());
+				RenderHelper.gl2().glUniform2f(loc, buf.get(), buf.get());
 				
 			}
-
+			
 			@Override
-			public void loadUniform(int loc, IntBuffer buf, RenderContext context)
+			public void loadUniform(int loc, IntBuffer buf)
 			{
-				context.getGL2().glUniform2i(loc, buf.get(), buf.get());
+				RenderHelper.gl2().glUniform2i(loc, buf.get(), buf.get());
 				
 			}
 			
@@ -351,16 +355,16 @@ public class GLProgram implements IGLBindable
 		THREE
 		{
 			@Override
-			public void loadUniform(int loc, FloatBuffer buf, RenderContext context)
+			public void loadUniform(int loc, FloatBuffer buf)
 			{
-				context.getGL2().glUniform3f(loc, buf.get(), buf.get(), buf.get());
+				RenderHelper.gl2().glUniform3f(loc, buf.get(), buf.get(), buf.get());
 				
 			}
-
+			
 			@Override
-			public void loadUniform(int loc, IntBuffer buf, RenderContext context)
+			public void loadUniform(int loc, IntBuffer buf)
 			{
-				context.getGL2().glUniform3i(loc, buf.get(), buf.get(), buf.get());
+				RenderHelper.gl2().glUniform3i(loc, buf.get(), buf.get(), buf.get());
 				
 			}
 			
@@ -368,16 +372,16 @@ public class GLProgram implements IGLBindable
 		FOUR
 		{
 			@Override
-			public void loadUniform(int loc, FloatBuffer buf, RenderContext context)
+			public void loadUniform(int loc, FloatBuffer buf)
 			{
-				context.getGL2().glUniform4f(loc, buf.get(), buf.get(), buf.get(), buf.get());
+				RenderHelper.gl2().glUniform4f(loc, buf.get(), buf.get(), buf.get(), buf.get());
 				
 			}
-
+			
 			@Override
-			public void loadUniform(int loc, IntBuffer buf, RenderContext context)
+			public void loadUniform(int loc, IntBuffer buf)
 			{
-				context.getGL2().glUniform4i(loc, buf.get(), buf.get(), buf.get(), buf.get());
+				RenderHelper.gl2().glUniform4i(loc, buf.get(), buf.get(), buf.get(), buf.get());
 				
 			}
 			
@@ -385,40 +389,40 @@ public class GLProgram implements IGLBindable
 		M_TWO
 		{
 			@Override
-			public void loadUniform(int loc, FloatBuffer buf, RenderContext context)
+			public void loadUniform(int loc, FloatBuffer buf)
 			{
-				context.getGL2().glUniformMatrix2fv(loc, 1, false, buf);
+				RenderHelper.gl2().glUniformMatrix2fv(loc, 1, false, buf);
 				
 			}
-
+			
 			@Override
-			public void loadUniform(int loc, IntBuffer buf, RenderContext context){}
+			public void loadUniform(int loc, IntBuffer buf){}
 			
 		},
 		M_THREE
 		{
 			@Override
-			public void loadUniform(int loc, FloatBuffer buf, RenderContext context)
+			public void loadUniform(int loc, FloatBuffer buf)
 			{
-				context.getGL2().glUniformMatrix3fv(loc, 1, false, buf);
+				RenderHelper.gl2().glUniformMatrix3fv(loc, 1, false, buf);
 				
 			}
-
+			
 			@Override
-			public void loadUniform(int loc, IntBuffer buf, RenderContext context){}
+			public void loadUniform(int loc, IntBuffer buf){}
 			
 		},
 		M_FOUR
 		{
 			@Override
-			public void loadUniform(int loc, FloatBuffer buf, RenderContext context)
+			public void loadUniform(int loc, FloatBuffer buf)
 			{
-				context.getGL2().glUniformMatrix4fv(loc, 1, false, buf);
+				RenderHelper.gl2().glUniformMatrix4fv(loc, 1, false, buf);
 				
 			}
-
+			
 			@Override
-			public void loadUniform(int loc, IntBuffer buf, RenderContext context){}
+			public void loadUniform(int loc, IntBuffer buf){}
 			
 		};
 		

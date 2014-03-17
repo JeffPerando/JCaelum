@@ -12,21 +12,17 @@ import java.util.Collection;
 public interface IRenderHUB
 {
 	/**
-	 * 
 	 * Called once during the startup phase.
-	 * 
-	 * @param context
 	 */
-	public void initiate(RenderContext context);
+	public void initiate();
 	
 	/**
 	 * 
 	 * Called once every frame.
 	 * 
 	 * @param delta
-	 * @param context
 	 */
-	public void updateHUB(double delta, RenderContext context);
+	public void updateHUB(double delta);
 	
 	/**
 	 * 

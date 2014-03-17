@@ -4,6 +4,7 @@ package com.elusivehawk.engine.render;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
+import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.render.old.Model;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
@@ -18,14 +19,14 @@ import com.elusivehawk.engine.util.Tuple;
 public class RenderEngine3D implements IRenderEngine
 {
 	@Override
-	public void render(RenderContext context)
+	public void render(IRenderHUB hub)
 	{
-		if (!context.getHub().getRenderMode().is3D())
+		if (!hub.getRenderMode().is3D())
 		{
 			return;
 		}
 		
-		IScene scene = context.getHub().getScene();
+		IScene scene = hub.getScene();
 		
 		if (scene == null)
 		{
@@ -38,6 +39,8 @@ public class RenderEngine3D implements IRenderEngine
 		{
 			return;
 		}
+		
+		RenderContext context = CaelumEngine.renderContext();
 		
 		context.getGL1().glEnable(GLConst.GL_DEPTH_TEST);
 		context.getGL1().glDepthFunc(GLConst.GL_LESS);
@@ -68,14 +71,14 @@ public class RenderEngine3D implements IRenderEngine
 				Model m = tkt.getModel();
 				GLProgram p = tkt.getProgram();
 				
-				if (!p.bind(context))
+				if (!p.bind())
 				{
 					continue;
 				}
 				
-				if (!tkt.updateBeforeUse(context))
+				if (!tkt.updateBeforeUse())
 				{
-					p.unbind(context);
+					p.unbind();
 					continue;
 				}
 				
@@ -83,12 +86,12 @@ public class RenderEngine3D implements IRenderEngine
 				
 				try
 				{
-					RenderHelper.checkForGLError(context);
+					RenderHelper.checkForGLError();
 					
 				}
 				catch (Exception e)
 				{
-					p.unbind(context);
+					p.unbind();
 					continue;
 				}
 				
@@ -131,9 +134,9 @@ public class RenderEngine3D implements IRenderEngine
 					
 				}
 				
-				RenderHelper.checkForGLError(context);
+				RenderHelper.checkForGLError();
 				
-				p.unbind(context);
+				p.unbind();
 				
 			}
 			
@@ -152,7 +155,7 @@ public class RenderEngine3D implements IRenderEngine
 	@Override
 	public int getPriority(IRenderHUB hub)
 	{
-		return 0;
+		return hub.getRenderMode().is3D() ? 0 : -1;
 	}
 	
 }

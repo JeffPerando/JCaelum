@@ -11,7 +11,7 @@ import com.elusivehawk.engine.render.opengl.GLProgram;
  */
 public interface ILogicalRender
 {
-	public boolean updateBeforeUse(RenderContext context);
+	public boolean updateBeforeUse();
 	
 	public GLProgram getProgram();
 	

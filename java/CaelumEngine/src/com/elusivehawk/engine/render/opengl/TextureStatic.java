@@ -5,7 +5,6 @@ import java.io.File;
 import com.elusivehawk.engine.render.EnumColorFormat;
 import com.elusivehawk.engine.render.EnumRenderMode;
 import com.elusivehawk.engine.render.ILegibleImage;
-import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
 
 /**
@@ -25,34 +24,34 @@ public class TextureStatic implements ITexture
 		
 	}
 	
-	public TextureStatic(String path, RenderContext context)
+	public TextureStatic(String path)
 	{
-		this(path, EnumRenderMode.MODE_2D, EnumColorFormat.RGBA, context);
+		this(path, EnumRenderMode.MODE_2D, EnumColorFormat.RGBA);
 		
 	}
 	
-	public TextureStatic(String path, EnumRenderMode mode, EnumColorFormat format, RenderContext context)
+	public TextureStatic(String path, EnumRenderMode mode, EnumColorFormat format)
 	{
-		this(new File(ClassLoader.getSystemResource(path).getFile()), mode, format, context);
+		this(new File(ClassLoader.getSystemResource(path).getFile()), mode, format);
 		
 	}
 	
-	public TextureStatic(File file, EnumRenderMode mode, EnumColorFormat format, RenderContext context)
+	public TextureStatic(File file, EnumRenderMode mode, EnumColorFormat format)
 	{
-		this(RenderHelper.processImage(file, mode, format, context));
+		this(RenderHelper.processImage(file, mode, format));
 		
 	}
 	
-	public TextureStatic(ILegibleImage img, EnumRenderMode mode, EnumColorFormat format, RenderContext context)
+	public TextureStatic(ILegibleImage img, EnumRenderMode mode, EnumColorFormat format)
 	{
-		this(RenderHelper.processImage(img, mode, format, context));
+		this(RenderHelper.processImage(img, mode, format));
 		
 	}
 	
 	@Override
-	public void glDelete(RenderContext context)
+	public void glDelete()
 	{
-		context.getGL1().glDeleteTextures(this.getTexture());
+		RenderHelper.gl1().glDeleteTextures(this.getTexture());
 		
 	}
 	
@@ -63,18 +62,18 @@ public class TextureStatic implements ITexture
 	}
 	
 	@Override
-	public boolean bind(RenderContext context, int... extras)
+	public boolean bind(int... extras)
 	{
-		context.getGL1().glBindTexture(GLConst.GL_TEXTURE0 + (extras == null || extras.length == 0 ? 0 : extras[0]), this);
+		RenderHelper.gl1().glBindTexture(GLConst.GL_TEXTURE0 + (extras == null || extras.length == 0 ? 0 : extras[0]), this);
 		
 		try
 		{
-			RenderHelper.checkForGLError(context);
+			RenderHelper.checkForGLError();
 			
 		}
 		catch (Exception e)
 		{
-			this.unbind(context, extras);
+			this.unbind(extras);
 			
 			return false;
 		}
@@ -83,9 +82,9 @@ public class TextureStatic implements ITexture
 	}
 	
 	@Override
-	public void unbind(RenderContext context, int... extras)
+	public void unbind(int... extras)
 	{
-		context.getGL1().glBindTexture(GLConst.GL_TEXTURE0 + (extras == null || extras.length == 0 ? 0 : extras[0]), 0);
+		RenderHelper.gl1().glBindTexture(GLConst.GL_TEXTURE0 + (extras == null || extras.length == 0 ? 0 : extras[0]), 0);
 		
 	}
 	

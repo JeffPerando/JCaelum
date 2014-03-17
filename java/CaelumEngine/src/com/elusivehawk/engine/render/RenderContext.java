@@ -3,6 +3,7 @@ package com.elusivehawk.engine.render;
 
 import java.util.List;
 import com.elusivehawk.engine.core.CaelumEngine;
+import com.elusivehawk.engine.core.IContext;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGL1;
@@ -20,9 +21,9 @@ import com.elusivehawk.engine.util.SimpleList;
  * 
  * @author Elusivehawk
  */
-public final class RenderContext
+public final class RenderContext implements IContext
 {
-	private final IRenderHUB hub;
+	private final ThreadGameRender thr;
 	
 	private IGL1 gl1;
 	private IGL2 gl2;
@@ -39,13 +40,14 @@ public final class RenderContext
 	private boolean initiated = false;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public RenderContext(IRenderHUB renderhub)
+	public RenderContext(ThreadGameRender renderThr)
 	{
-		hub = renderhub;
+		thr = renderThr;
 		
 	}
 	
-	public void initiate()
+	@Override
+	public void initContext()
 	{
 		if (this.initiated)
 		{
@@ -56,8 +58,8 @@ public final class RenderContext
 		this.gl2 = (IGL2)CaelumEngine.renderEnvironment().getGL(IRenderEnvironment.GL_2);
 		this.gl3 = (IGL3)CaelumEngine.renderEnvironment().getGL(IRenderEnvironment.GL_3);
 		
-		this.sVertex = RenderHelper.loadShader(FileHelper.createFile("/vertex.glsl"), GLConst.GL_VERTEX_SHADER, this);
-		this.sFrag = RenderHelper.loadShader(FileHelper.createFile("/fragment.glsl"), GLConst.GL_FRAGMENT_SHADER, this);
+		this.sVertex = RenderHelper.loadShader(FileHelper.createFile("/vertex.glsl"), GLConst.GL_VERTEX_SHADER);
+		this.sFrag = RenderHelper.loadShader(FileHelper.createFile("/fragment.glsl"), GLConst.GL_FRAGMENT_SHADER);
 		
 		PixelGrid ntf = new PixelGrid(32, 32, EnumColorFormat.RGBA);
 		
@@ -71,7 +73,7 @@ public final class RenderContext
 			
 		}
 		
-		this.notex = RenderHelper.processImage(ntf, EnumRenderMode.MODE_2D, this);
+		this.notex = RenderHelper.processImage(ntf, EnumRenderMode.MODE_2D);
 		
 		this.initiated = true;
 		
@@ -79,7 +81,7 @@ public final class RenderContext
 	
 	public IRenderHUB getHub()
 	{
-		return this.hub;
+		return this.thr.getRenderHUB();
 	}
 	
 	public IGL1 getGL1()
@@ -114,7 +116,7 @@ public final class RenderContext
 	
 	public EnumRenderMode getRenderMode()
 	{
-		return this.hub.getRenderMode();
+		return this.getHub().getRenderMode();
 	}
 	
 	public void setRenderStage(EnumRenderStage rstage)
@@ -149,7 +151,7 @@ public final class RenderContext
 		
 		for (INonStaticTexture tex : this.texturePool)
 		{
-			tex.updateTexture(this);
+			tex.updateTexture();
 			
 		}
 		
@@ -176,6 +178,7 @@ public final class RenderContext
 		
 	}
 	
+	@Override
 	public void cleanup()
 	{
 		if (this.cleanables.isEmpty())
@@ -185,7 +188,7 @@ public final class RenderContext
 		
 		for (IGLBindable gl : this.cleanables)
 		{
-			gl.glDelete(this);
+			gl.glDelete();
 			
 		}
 		
@@ -208,7 +211,7 @@ public final class RenderContext
 		
 		for (IPostRenderer pr : this.postRenderers)
 		{
-			pr.postRender(this);
+			pr.postRender();
 			
 		}
 		
@@ -224,7 +227,7 @@ public final class RenderContext
 	{
 		for (IGLManipulator glm : this.manipulators)
 		{
-			glm.manipulateUniforms(this, p);
+			glm.manipulateUniforms(p);
 			
 		}
 		

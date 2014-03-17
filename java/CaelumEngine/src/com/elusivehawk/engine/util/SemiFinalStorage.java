@@ -53,11 +53,14 @@ public class SemiFinalStorage<T> extends DirtableStorage<T>
 			return false;
 		}
 		
-		super.set(object);
+		if (super.set(object))
+		{
+			this.count++;
+			
+			return true;
+		}
 		
-		this.count++;
-		
-		return true;
+		return false;
 	}
 	
 	public boolean locked()

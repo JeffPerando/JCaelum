@@ -11,16 +11,15 @@ package com.elusivehawk.engine.render;
 public interface IRenderEngine
 {
 	/**
-	 * 
 	 * Called once every frame.
 	 * 
-	 * @param context The current rendering context.
+	 * @param hub The current rendering HUB.
 	 */
-	public void render(RenderContext context);
+	public void render(IRenderHUB hub);
 	
 	/**
 	 * 
-	 * @param hub The current rendering HUB
+	 * @param hub The current rendering HUB.
 	 * @return The priority of this renderer.
 	 */
 	public int getPriority(IRenderHUB hub);

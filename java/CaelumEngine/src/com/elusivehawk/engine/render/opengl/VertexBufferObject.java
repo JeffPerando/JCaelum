@@ -3,7 +3,7 @@ package com.elusivehawk.engine.render.opengl;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import com.elusivehawk.engine.render.RenderContext;
+import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.BufferHelper;
@@ -19,103 +19,115 @@ public class VertexBufferObject implements IGLBindable
 	public final int id, t, loadMode;
 	
 	@SuppressWarnings("unqualified-field-access")
-	private VertexBufferObject(int vbo, int target, int mode, RenderContext context)
+	private VertexBufferObject(int vbo, int target, int mode)
 	{
+		IGL1 gl1 = RenderHelper.gl1();
+		
 		t = target;
-		id = context.getGL1().glIsBuffer(vbo) ? vbo : context.getGL1().glGenBuffers();
+		id = gl1.glIsBuffer(vbo) ? vbo : gl1.glGenBuffers();
 		loadMode = mode;
 		
-		context.registerCleanable(this);
+		CaelumEngine.renderContext().registerCleanable(this);
 		
 	}
 	
-	public VertexBufferObject(int target, FloatBuffer buf, int mode, RenderContext context)
+	public VertexBufferObject(int target, FloatBuffer buf, int mode)
 	{
-		this(context.getGL1().glGenBuffers(), target, buf, mode, context);
+		this(RenderHelper.gl1().glGenBuffers(), target, buf, mode);
 		
 	}
 	
-	public VertexBufferObject(int target, IntBuffer buf, int mode, RenderContext context)
+	public VertexBufferObject(int target, IntBuffer buf, int mode)
 	{
-		this(context.getGL1().glGenBuffers(), target, buf, mode, context);
+		this(RenderHelper.gl1().glGenBuffers(), target, buf, mode);
 		
 	}
 	
-	public VertexBufferObject(int vbo, int target, FloatBuffer buf, int mode, RenderContext context)
+	public VertexBufferObject(int vbo, int target, FloatBuffer buf, int mode)
 	{
-		this(vbo, target, mode, context);
-		loadData(buf, context);
+		this(vbo, target, mode);
+		loadData(buf);
 		
 	}
 	
-	public VertexBufferObject(int vbo, int target, IntBuffer buf, int mode, RenderContext context)
+	public VertexBufferObject(int vbo, int target, IntBuffer buf, int mode)
 	{
-		this(vbo, target, mode, context);
-		loadData(buf, context);
+		this(vbo, target, mode);
+		loadData(buf);
 		
 	}
 	
-	protected void loadData(FloatBuffer buf, RenderContext context)
+	protected void loadData(FloatBuffer buf)
 	{
-		int vba = context.getGL1().glGetInteger(GLConst.GL_VERTEX_ARRAY_BINDING);
+		IGL1 gl1 = RenderHelper.gl1();
+		IGL3 gl3 = RenderHelper.gl3();
+		
+		int vba = gl1.glGetInteger(GLConst.GL_VERTEX_ARRAY_BINDING);
 		
 		if (vba != 0)
 		{
-			context.getGL3().glBindVertexArray(0);
+			gl3.glBindVertexArray(0);
 			
 		}
 		
-		context.getGL1().glBindBuffer(this);
-		context.getGL1().glBufferData(this.id, GLConst.GL_FLOAT, buf, this.loadMode);
-		context.getGL1().glBindBuffer(this.t, 0);
+		gl1.glBindBuffer(this);
+		gl1.glBufferData(this.id, GLConst.GL_FLOAT, buf, this.loadMode);
+		gl1.glBindBuffer(this.t, 0);
 		
 		if (vba != 0)
 		{
-			context.getGL3().glBindVertexArray(vba);
-			
-		}
-		
-	}
-	
-	protected void loadData(IntBuffer buf, RenderContext context)
-	{
-		int vba = context.getGL1().glGetInteger(GLConst.GL_VERTEX_ARRAY_BINDING);
-		
-		if (vba != 0)
-		{
-			context.getGL3().glBindVertexArray(0);
-			
-		}
-		
-		context.getGL1().glBindBuffer(this);
-		context.getGL1().glBufferData(this.t, GLConst.GL_INT, buf, this.loadMode);
-		context.getGL1().glBindBuffer(this.t, 0);
-		
-		if (vba != 0)
-		{
-			context.getGL3().glBindVertexArray(vba);
+			gl3.glBindVertexArray(vba);
 			
 		}
 		
 	}
 	
-	public void updateEntireVBO(FloatBuffer buf, RenderContext context)
+	protected void loadData(IntBuffer buf)
 	{
-		context.getGL1().glBindBuffer(this);
-		context.getGL1().glBufferSubData(this.t, 0, GLConst.GL_FLOAT, buf);
-		context.getGL1().glBindBuffer(this.t, 0);
+		IGL1 gl1 = RenderHelper.gl1();
+		IGL3 gl3 = RenderHelper.gl3();
+		
+		int vba = gl1.glGetInteger(GLConst.GL_VERTEX_ARRAY_BINDING);
+		
+		if (vba != 0)
+		{
+			gl3.glBindVertexArray(0);
+			
+		}
+		
+		gl1.glBindBuffer(this);
+		gl1.glBufferData(this.t, GLConst.GL_INT, buf, this.loadMode);
+		gl1.glBindBuffer(this.t, 0);
+		
+		if (vba != 0)
+		{
+			gl3.glBindVertexArray(vba);
+			
+		}
 		
 	}
 	
-	public void updateEntireVBO(IntBuffer buf, RenderContext context)
+	public void updateEntireVBO(FloatBuffer buf)
 	{
-		context.getGL1().glBindBuffer(this);
-		context.getGL1().glBufferSubData(this.t, 0, GLConst.GL_INT, buf);
-		context.getGL1().glBindBuffer(this.t, 0);
+		IGL1 gl1 = RenderHelper.gl1();
+		
+		gl1.glBindBuffer(this);
+		gl1.glBufferSubData(this.t, 0, GLConst.GL_FLOAT, buf);
+		gl1.glBindBuffer(this.t, 0);
 		
 	}
 	
-	public void updateVBOf(Buffer<Float> buf, int offset, RenderContext context)
+	public void updateEntireVBO(IntBuffer buf)
+	{
+		IGL1 gl1 = RenderHelper.gl1();
+		
+		gl1.glBindBuffer(this);
+		gl1.glBufferSubData(this.t, 0, GLConst.GL_INT, buf);
+		gl1.glBindBuffer(this.t, 0);
+		
+	}
+	
+	public void updateVBOf(Buffer<Float> buf, int offset)
 	{
 		FloatBuffer nio = BufferHelper.createFloatBuffer(buf.remaining());
 		
@@ -125,11 +137,11 @@ public class VertexBufferObject implements IGLBindable
 			
 		}
 		
-		this.updateVBO(nio, offset, context);
+		this.updateVBO(nio, offset);
 		
 	}
 	
-	public void updateVBOi(Buffer<Integer> buf, int offset, RenderContext context)
+	public void updateVBOi(Buffer<Integer> buf, int offset)
 	{
 		IntBuffer nio = BufferHelper.createIntBuffer(buf.remaining());
 		
@@ -139,39 +151,43 @@ public class VertexBufferObject implements IGLBindable
 			
 		}
 		
-		this.updateVBO(nio, offset, context);
+		this.updateVBO(nio, offset);
 		
 	}
 	
-	public void updateVBO(FloatBuffer buf, int offset, RenderContext context)
+	public void updateVBO(FloatBuffer buf, int offset)
 	{
-		context.getGL1().glBindBuffer(this);
-		context.getGL1().glBufferSubData(this.t, offset * 4, GLConst.GL_FLOAT, buf);
-		context.getGL1().glBindBuffer(this.t, 0);
+		IGL1 gl1 = RenderHelper.gl1();
+		
+		gl1.glBindBuffer(this);
+		gl1.glBufferSubData(this.t, offset * 4, GLConst.GL_FLOAT, buf);
+		gl1.glBindBuffer(this.t, 0);
 		
 	}
 	
-	public void updateVBO(IntBuffer buf, int offset, RenderContext context)
+	public void updateVBO(IntBuffer buf, int offset)
 	{
-		context.getGL1().glBindBuffer(this);
-		context.getGL1().glBufferSubData(this.t, offset * 4, GLConst.GL_INT, buf);
-		context.getGL1().glBindBuffer(this.t, 0);
+		IGL1 gl1 = RenderHelper.gl1();
+		
+		gl1.glBindBuffer(this);
+		gl1.glBufferSubData(this.t, offset * 4, GLConst.GL_INT, buf);
+		gl1.glBindBuffer(this.t, 0);
 		
 	}
 	
 	@Override
-	public boolean bind(RenderContext context, int... extras)
+	public boolean bind(int... extras)
 	{
-		context.getGL1().glBindBuffer(this);
+		RenderHelper.gl1().glBindBuffer(this);
 		
 		try
 		{
-			RenderHelper.checkForGLError(context);
+			RenderHelper.checkForGLError();
 			
 		}
 		catch (Exception e)
 		{
-			this.unbind(context);
+			this.unbind();
 			
 			return false;
 		}
@@ -180,16 +196,16 @@ public class VertexBufferObject implements IGLBindable
 	}
 	
 	@Override
-	public void unbind(RenderContext context, int... extras)
+	public void unbind(int... extras)
 	{
-		context.getGL1().glBindBuffer(this.t, 0);
+		RenderHelper.gl1().glBindBuffer(this.t, 0);
 		
 	}
 	
 	@Override
-	public void glDelete(RenderContext context)
+	public void glDelete()
 	{
-		context.getGL1().glDeleteBuffers(this);
+		RenderHelper.gl1().glDeleteBuffers(this);
 		
 	}
 	

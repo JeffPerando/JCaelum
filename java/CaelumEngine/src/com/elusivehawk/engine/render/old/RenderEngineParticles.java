@@ -3,9 +3,10 @@ package com.elusivehawk.engine.render.old;
 
 import com.elusivehawk.engine.render.IRenderEngine;
 import com.elusivehawk.engine.render.IRenderHUB;
-import com.elusivehawk.engine.render.RenderContext;
+import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
+import com.elusivehawk.engine.render.opengl.IGL1;
 
 /**
  * 
@@ -17,39 +18,41 @@ import com.elusivehawk.engine.render.opengl.GLProgram;
 public class RenderEngineParticles implements IRenderEngine
 {
 	@Override
-	public void render(RenderContext context)
+	public void render(IRenderHUB hub)
 	{
-		if (context.getHub().getScene() == null || !context.getHub().getRenderMode().is3D())
+		if (hub.getScene() == null || !hub.getRenderMode().is3D())
 		{
 			return;
 		}
 		
-		ParticleScene particles = context.getHub().getScene().getParticles();
+		ParticleScene particles = hub.getScene().getParticles();
 		
-		if (particles == null || !particles.updateBeforeUse(context))
+		if (particles == null || !particles.updateBeforeUse())
 		{
 			return;
 		}
 		
 		GLProgram p = particles.getProgram();
 		
-		if (!p.bind(context))
+		if (!p.bind())
 		{
 			return;
 		}
 		
-		context.getGL1().glEnable(GLConst.GL_DEPTH_TEST);
-		context.getGL1().glDepthFunc(GLConst.GL_LESS);
+		IGL1 gl1 = RenderHelper.gl1();
 		
-		context.getGL1().glEnable(GLConst.GL_CULL_FACE);
-		context.getGL1().glCullFace(GLConst.GL_BACK);
+		gl1.glEnable(GLConst.GL_DEPTH_TEST);
+		gl1.glDepthFunc(GLConst.GL_LESS);
 		
-		context.getGL1().glDrawArrays(GLConst.GL_POINTS, 0, particles.getParticleCount());
+		gl1.glEnable(GLConst.GL_CULL_FACE);
+		gl1.glCullFace(GLConst.GL_BACK);
 		
-		context.getGL1().glDisable(GLConst.GL_CULL_FACE);
-		context.getGL1().glDisable(GLConst.GL_DEPTH_TEST);
+		gl1.glDrawArrays(GLConst.GL_POINTS, 0, particles.getParticleCount());
 		
-		p.unbind(context);
+		gl1.glDisable(GLConst.GL_CULL_FACE);
+		gl1.glDisable(GLConst.GL_DEPTH_TEST);
+		
+		p.unbind();
 		
 	}
 	

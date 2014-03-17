@@ -1,11 +1,11 @@
 
 package com.elusivehawk.engine.render.old;
 
+import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.MatrixHelper;
 import com.elusivehawk.engine.render.EnumCameraPollType;
 import com.elusivehawk.engine.render.ICamera;
-import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.util.DirtableStorage;
 
@@ -31,9 +31,9 @@ public class Camera3D implements ICamera
 	}
 	
 	@Override
-	public void updateCamera(RenderContext context)
+	public void updateCamera()
 	{
-		if (!context.getRenderMode().is3D())
+		if (!CaelumEngine.renderContext().getRenderMode().is3D())
 		{
 			return;
 		}
@@ -72,21 +72,21 @@ public class Camera3D implements ICamera
 	}
 	
 	@Override
-	public void postRender(RenderContext context)
+	public void postRender()
 	{
 		this.setIsDirty(false);
 		
 	}
 	
 	@Override
-	public void manipulateUniforms(RenderContext context, GLProgram p)
+	public void manipulateUniforms(GLProgram p)
 	{
 		if (!this.isDirty())
 		{
 			return;
 		}
 		
-		p.attachUniform("proj", MatrixHelper.createProjectionMatrix(this).asBuffer(), GLProgram.EnumUniformType.M_FOUR, context);
+		p.attachUniform("proj", MatrixHelper.createProjectionMatrix(this).asBuffer(), GLProgram.EnumUniformType.M_FOUR);
 		
 	}
 	

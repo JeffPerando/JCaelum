@@ -51,7 +51,7 @@ public class Material
 		
 	}
 	
-	public void update(GLProgram p, RenderContext context)
+	public void update(GLProgram p)
 	{
 		
 	}

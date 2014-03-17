@@ -10,7 +10,6 @@ import com.elusivehawk.engine.render.Color;
 import com.elusivehawk.engine.render.EnumColorFilter;
 import com.elusivehawk.engine.render.EnumColorFormat;
 import com.elusivehawk.engine.render.ILogicalRender;
-import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBufferObject;
@@ -35,20 +34,20 @@ public class ParticleScene implements ILogicalRender
 	protected final GLProgram p;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public ParticleScene(int maxParticles, RenderContext context)
+	public ParticleScene(int maxParticles)
 	{
 		particles = new SimpleList<IParticle>(maxParticles, false);
 		buf = BufferHelper.createFloatBuffer(maxParticles * PARTICLE_FLOAT_COUNT);
 		particleCount = maxParticles;
 		
-		p = GLProgram.create(context); //TODO Create default particle shaders.
-		vbo = new VertexBufferObject(GLConst.GL_ARRAY_BUFFER, buf, GLConst.GL_STREAM_DRAW, context);
+		p = GLProgram.create(); //TODO Create default particle shaders.
+		vbo = new VertexBufferObject(GLConst.GL_ARRAY_BUFFER, buf, GLConst.GL_STREAM_DRAW);
 		
-		if (p.bind(context))
+		if (p.bind())
 		{
 			p.attachVBO(vbo, Arrays.asList(0, 1));
 			
-			p.unbind(context);
+			p.unbind();
 			
 		}
 		else
@@ -87,7 +86,7 @@ public class ParticleScene implements ILogicalRender
 	}
 	
 	@Override
-	public boolean updateBeforeUse(RenderContext context)
+	public boolean updateBeforeUse()
 	{
 		if (this.getParticleCount() == 0)
 		{
