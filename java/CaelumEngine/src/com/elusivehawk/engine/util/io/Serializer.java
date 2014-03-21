@@ -11,14 +11,14 @@ import java.util.UUID;
  */
 public interface Serializer<T>
 {
-	public int toBytes(ByteWriter w, T obj);
+	public int toBytes(IByteWriter w, T obj);
 	
-	public T fromBytes(ByteReader r);
+	public T fromBytes(IByteReader r);
 	
 	public static final Serializer<Boolean> BOOLEAN = new Serializer<Boolean>()
 			{
 				@Override
-				public int toBytes(ByteWriter w, Boolean b)
+				public int toBytes(IByteWriter w, Boolean b)
 				{
 					w.write((byte)(b ? 1 : 0));
 					
@@ -26,7 +26,7 @@ public interface Serializer<T>
 				}
 				
 				@Override
-				public Boolean fromBytes(ByteReader b)
+				public Boolean fromBytes(IByteReader b)
 				{
 					return b.read() != 0;
 				}
@@ -35,7 +35,7 @@ public interface Serializer<T>
 	public static final Serializer<Byte> BYTE = new Serializer<Byte>()
 			{
 				@Override
-				public int toBytes(ByteWriter w, Byte b)
+				public int toBytes(IByteWriter w, Byte b)
 				{
 					w.write(b);
 					
@@ -43,7 +43,7 @@ public interface Serializer<T>
 				}
 				
 				@Override
-				public Byte fromBytes(ByteReader b)
+				public Byte fromBytes(IByteReader b)
 				{
 					return b.read();
 				}
@@ -52,7 +52,7 @@ public interface Serializer<T>
 	public static final Serializer<Short> SHORT = new Serializer<Short>()
 			{
 				@Override
-				public int toBytes(ByteWriter w, Short s)
+				public int toBytes(IByteWriter w, Short s)
 				{
 					w.write((byte)(s & 255), (byte)((s >> 8) & 255));
 					
@@ -60,7 +60,7 @@ public interface Serializer<T>
 				}
 				
 				@Override
-				public Short fromBytes(ByteReader b)
+				public Short fromBytes(IByteReader b)
 				{
 					return (short)(b.read() | (b.read() << 8));
 				}
@@ -69,7 +69,7 @@ public interface Serializer<T>
 	public static final Serializer<Integer> INTEGER = new Serializer<Integer>()
 			{
 				@Override
-				public int toBytes(ByteWriter w, Integer i)
+				public int toBytes(IByteWriter w, Integer i)
 				{
 					for (int c = 0; c < 4; c++)
 					{
@@ -81,7 +81,7 @@ public interface Serializer<T>
 				}
 				
 				@Override
-				public Integer fromBytes(ByteReader b)
+				public Integer fromBytes(IByteReader b)
 				{
 					int ret = 0;
 					
@@ -98,7 +98,7 @@ public interface Serializer<T>
 	public static final Serializer<Long> LONG  = new Serializer<Long>()
 			{
 				@Override
-				public int toBytes(ByteWriter w, Long l)
+				public int toBytes(IByteWriter w, Long l)
 				{
 					for (int c = 0; c < 8; c++)
 					{
@@ -110,7 +110,7 @@ public interface Serializer<T>
 				}
 				
 				@Override
-				public Long fromBytes(ByteReader b)
+				public Long fromBytes(IByteReader b)
 				{
 					long ret = 0;
 					
@@ -127,13 +127,13 @@ public interface Serializer<T>
 	public static final Serializer<Float> FLOAT = new Serializer<Float>()
 			{
 				@Override
-				public int toBytes(ByteWriter w, Float f)
+				public int toBytes(IByteWriter w, Float f)
 				{
 					return INTEGER.toBytes(w, Float.floatToRawIntBits(f));
 				}
 				
 				@Override
-				public Float fromBytes(ByteReader b)
+				public Float fromBytes(IByteReader b)
 				{
 					return Float.intBitsToFloat(INTEGER.fromBytes(b));
 				}
@@ -142,13 +142,13 @@ public interface Serializer<T>
 	public static final Serializer<Double> DOUBLE = new Serializer<Double>()
 			{
 				@Override
-				public int toBytes(ByteWriter w, Double d)
+				public int toBytes(IByteWriter w, Double d)
 				{
 					return LONG.toBytes(w, Double.doubleToRawLongBits(d));
 				}
 				
 				@Override
-				public Double fromBytes(ByteReader b)
+				public Double fromBytes(IByteReader b)
 				{
 					return Double.longBitsToDouble(LONG.fromBytes(b));
 				}
@@ -157,7 +157,7 @@ public interface Serializer<T>
 	public static final Serializer<String> STRING = new Serializer<String>()
 			{
 				@Override
-				public int toBytes(ByteWriter w, String str)
+				public int toBytes(IByteWriter w, String str)
 				{
 					SHORT.toBytes(w, (short)str.length());
 					
@@ -171,7 +171,7 @@ public interface Serializer<T>
 				}
 				
 				@Override
-				public String fromBytes(ByteReader b)
+				public String fromBytes(IByteReader b)
 				{
 					char[] str = new char[SHORT.fromBytes(b) & 0xFFFF];
 					
@@ -188,13 +188,13 @@ public interface Serializer<T>
 	public static final Serializer<UUID> UUID = new Serializer<UUID>()
 			{
 				@Override
-				public int toBytes(ByteWriter w, UUID uuid)
+				public int toBytes(IByteWriter w, UUID uuid)
 				{
 					return LONG.toBytes(w, uuid.getMostSignificantBits()) + LONG.toBytes(w, uuid.getLeastSignificantBits());
 				}
 				
 				@Override
-				public UUID fromBytes(ByteReader r)
+				public UUID fromBytes(IByteReader r)
 				{
 					return new java.util.UUID(LONG.fromBytes(r), LONG.fromBytes(r));
 				}

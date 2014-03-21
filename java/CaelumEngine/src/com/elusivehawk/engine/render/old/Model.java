@@ -10,6 +10,7 @@ import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.math.VectorF;
+import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.VertexBufferObject;
@@ -103,13 +104,14 @@ public class Model implements IStorageListener
 		
 		FloatBuffer fin = BufferHelper.makeFloatBuffer(temp).asReadOnlyBuffer();
 		IntBuffer indices = BufferHelper.makeIntBuffer(indiceList).asReadOnlyBuffer();
+		RenderContext context = CaelumEngine.renderContext();
 		
-		int vb = RenderHelper.gl1().glGetInteger(GLConst.GL_VERTEX_ARRAY);
+		int vb = context.getGL1().glGetInteger(GLConst.GL_VERTEX_ARRAY);
 		
 		if (vb != 0)
 		{
 			CaelumEngine.log().log(EnumLogType.WARN, "Temporarily unbinding vertex array!");
-			RenderHelper.gl3().glBindVertexArray(0);
+			context.getGL3().glBindVertexArray(0);
 			
 		}
 		
@@ -121,7 +123,7 @@ public class Model implements IStorageListener
 		if (vb != 0)
 		{
 			CaelumEngine.log().log(EnumLogType.WARN, "Rebinding vertex array");
-			RenderHelper.gl3().glBindVertexArray(vb);
+			context.getGL3().glBindVertexArray(vb);
 			
 		}
 		

@@ -4,8 +4,8 @@ package com.elusivehawk.engine.network;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
 import com.elusivehawk.engine.util.io.ByteBuf;
-import com.elusivehawk.engine.util.io.ByteReader;
-import com.elusivehawk.engine.util.io.ByteWriter;
+import com.elusivehawk.engine.util.io.IByteReader;
+import com.elusivehawk.engine.util.io.IByteWriter;
 import com.elusivehawk.engine.util.io.Serializer;
 import com.google.common.collect.ImmutableList;
 
@@ -49,7 +49,7 @@ public final class PacketFormat implements Iterable<DataType>
 	public Packet read(ByteBuffer in)
 	{
 		Packet ret = new Packet(this);
-		ByteReader r = new ByteBuf(in, null);
+		IByteReader r = new ByteBuf(in, null);
 		PktFormatItr itr = this.iterator();
 		Object obj;
 		
@@ -71,7 +71,7 @@ public final class PacketFormat implements Iterable<DataType>
 	
 	public int write(Packet pkt, ByteBuffer buf)
 	{
-		ByteWriter w = new ByteBuf(null, buf);
+		IByteWriter w = new ByteBuf(null, buf);
 		int length = Serializer.SHORT.toBytes(w, this.pktId);
 		PktFormatItr itr = this.iterator();
 		

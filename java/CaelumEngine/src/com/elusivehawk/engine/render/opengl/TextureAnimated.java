@@ -100,9 +100,11 @@ public class TextureAnimated implements INonStaticTexture
 	{
 		this.tex.rewind();
 		
+		IGL1 gl1 = RenderHelper.gl1();
+		
 		for (int i : this.tex)
 		{
-			RenderHelper.gl1().glDeleteTextures(i);
+			gl1.glDeleteTextures(i);
 			
 		}
 		

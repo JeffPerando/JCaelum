@@ -27,7 +27,8 @@ import com.google.common.collect.Maps;
 public class ThreadNetwork extends ThreadStoppable
 {
 	public static final int HEADER_LENGTH = 4,
-			PKT_LENGTH = 8192,
+			DATA_LENGTH = 8192,
+			TOTAL_PKT_LENGTH = HEADER_LENGTH + DATA_LENGTH,
 			PKT_LIMIT = 32;
 	
 	protected final IPacketHandler handler;
@@ -40,11 +41,11 @@ public class ThreadNetwork extends ThreadStoppable
 	//Incoming
 	
 	protected final ByteBuffer head = ByteBuffer.allocate(HEADER_LENGTH),
-			bin = ByteBuffer.allocate(PKT_LENGTH);
+			bin = ByteBuffer.allocate(DATA_LENGTH);
 	
 	//Outgoing
 	
-	protected final ByteBuffer bout = ByteBuffer.allocate((HEADER_LENGTH + PKT_LENGTH) * PKT_LIMIT);
+	protected final ByteBuffer bout = ByteBuffer.allocate(TOTAL_PKT_LENGTH * PKT_LIMIT);
 	
 	@SuppressWarnings("unqualified-field-access")
 	public ThreadNetwork(IPacketHandler h, int playerCount)
@@ -122,7 +123,7 @@ public class ThreadNetwork extends ThreadStoppable
 							
 							io.read(this.bin);//Read the data
 							
-							if (format != null && format.type.isCompatible(info.one))//NOW we check to see if the data in question is valid
+							if (format != null && format.type.isCompatible(info.one) && this.handler.getSide().canReceive(format.side))//NOW we check to see if the data in question is valid
 							{
 								//Huh, it is. Okay, let's read this thing...
 								
@@ -132,7 +133,7 @@ public class ThreadNetwork extends ThreadStoppable
 								{
 									if (pkts == null)//Dynamically load the packet list with a soft limit of 32 packets.
 									{
-										pkts = new SimpleList<Packet>(32);
+										pkts = SimpleList.newList(32);
 										
 									}
 									
@@ -170,6 +171,8 @@ public class ThreadNetwork extends ThreadStoppable
 							{
 								continue;
 							}
+							
+							if (this.handler.getSide().canSend(pkt.format.side))
 							
 							if (!pkt.format.type.isCompatible(info.one))
 							{
@@ -254,12 +257,8 @@ public class ThreadNetwork extends ThreadStoppable
 		
 		try
 		{
-			if (type.isTcp())
-			{
-				ch.configureBlocking(false);
-				ch.register(this.selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE, Tuple.create(type, con));
-				
-			}
+			ch.configureBlocking(false);
+			ch.register(this.selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE, Tuple.create(type, con));
 			
 		}
 		catch (Exception e){}

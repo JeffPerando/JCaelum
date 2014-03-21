@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
  * 
  * @author Elusivehawk
  */
-public class ByteBuf implements ByteReader, ByteWriter
+public class ByteBuf implements IByteReader, IByteWriter
 {
 	protected final ByteBuffer in, out;
 	

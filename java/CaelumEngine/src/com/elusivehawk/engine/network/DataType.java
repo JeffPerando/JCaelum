@@ -2,14 +2,14 @@
 package com.elusivehawk.engine.network;
 
 import com.elusivehawk.engine.tag.TagReaderRegistry;
-import com.elusivehawk.engine.util.io.ByteReader;
-import com.elusivehawk.engine.util.io.ByteWriter;
+import com.elusivehawk.engine.util.io.IByteReader;
+import com.elusivehawk.engine.util.io.IByteWriter;
 import com.elusivehawk.engine.util.io.Serializer;
 import com.google.common.collect.ImmutableList;
 
 /**
  * 
- * A data type is something that can read and write objects for packet I/O.
+ * Functions as a sort of enumeration for reading and writing objects for packet I/O.
  * 
  * @author Elusivehawk
  */
@@ -26,7 +26,7 @@ public class DataType
 	public static final DataType ARRAY = new DataType(null)
 	{
 		@Override
-		public Object decode(ImmutableList<DataType> types, int pos, ByteReader b)
+		public Object decode(ImmutableList<DataType> types, int pos, IByteReader b)
 		{
 			if (pos == types.size() - 1)
 			{
@@ -45,7 +45,7 @@ public class DataType
 		}
 		
 		@Override
-		public int encode(ImmutableList<DataType> types, int pos, Object obj, ByteWriter w)
+		public int encode(ImmutableList<DataType> types, int pos, Object obj, IByteWriter w)
 		{
 			if (pos == types.size() - 1)
 			{
@@ -85,13 +85,13 @@ public class DataType
 	}
 	
 	@SuppressWarnings("unused")
-	public Object decode(ImmutableList<DataType> format, int pos, ByteReader b)
+	public Object decode(ImmutableList<DataType> format, int pos, IByteReader b)
 	{
 		return this.serial.fromBytes(b);
 	}
 	
 	@SuppressWarnings("unused")
-	public int encode(ImmutableList<DataType> format, int pos, Object obj, ByteWriter w)
+	public int encode(ImmutableList<DataType> format, int pos, Object obj, IByteWriter w)
 	{
 		return this.serial.toBytes(w, obj);
 	}

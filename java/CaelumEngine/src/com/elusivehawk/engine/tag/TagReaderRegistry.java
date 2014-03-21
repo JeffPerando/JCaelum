@@ -1,8 +1,8 @@
 
 package com.elusivehawk.engine.tag;
 
-import com.elusivehawk.engine.util.io.ByteReader;
-import com.elusivehawk.engine.util.io.ByteWriter;
+import com.elusivehawk.engine.util.io.IByteReader;
+import com.elusivehawk.engine.util.io.IByteWriter;
 import com.elusivehawk.engine.util.io.Serializer;
 
 /**
@@ -44,7 +44,7 @@ public final class TagReaderRegistry implements Serializer<Tag<?>>
 		return INSTANCE;
 	}
 	
-	public <T> Tag<T> read(ByteReader r)
+	public <T> Tag<T> read(IByteReader r)
 	{
 		String name = Serializer.STRING.fromBytes(r);
 		
@@ -65,7 +65,7 @@ public final class TagReaderRegistry implements Serializer<Tag<?>>
 		return new Tag<T>(name, id, s.fromBytes(r));
 	}
 	
-	public <T> int write(ByteWriter w, Tag<T> tag)
+	public <T> int write(IByteWriter w, Tag<T> tag)
 	{
 		Serializer<T> s = null;
 		int length = 0;
@@ -104,13 +104,13 @@ public final class TagReaderRegistry implements Serializer<Tag<?>>
 	}
 	
 	@Override
-	public int toBytes(ByteWriter w, Tag<?> tag)
+	public int toBytes(IByteWriter w, Tag<?> tag)
 	{
 		return this.write(w, tag);
 	}
 	
 	@Override
-	public Tag<?> fromBytes(ByteReader b)
+	public Tag<?> fromBytes(IByteReader b)
 	{
 		return this.read(b);
 	}

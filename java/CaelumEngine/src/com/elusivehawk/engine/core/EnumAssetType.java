@@ -11,6 +11,7 @@ public enum EnumAssetType
 {
 	MODEL,
 	TEXTURE,
+	MATERIAL,
 	BUMPMAP,
 	SOUND,
 	FONT,

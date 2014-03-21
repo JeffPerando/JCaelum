@@ -21,19 +21,19 @@ public abstract class Game implements IUpdatable
 	private List<IGameStateListener> listeners = SimpleList.newList();
 	private boolean initiated = false;
 	
-	public final boolean initiate(Buffer<String> args)
+	public final boolean initiate(GameArguments args)
 	{
 		if (this.initiated)
 		{
 			return false;
 		}
 		
-		this.initiated = true;
-		
 		if (!this.initiateGame(args))
 		{
 			return false;
 		}
+		
+		this.initiated = true;
 		
 		if (this.nextState != null)
 		{
@@ -119,7 +119,7 @@ public abstract class Game implements IUpdatable
 		
 	}
 	
-	protected abstract boolean initiateGame(Buffer<String> args);
+	protected abstract boolean initiateGame(GameArguments args);
 	
 	/**
 	 * 

@@ -1,7 +1,6 @@
 
 package com.elusivehawk.engine.render;
 
-import java.io.IOException;
 import java.util.Collection;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
@@ -126,6 +125,11 @@ public class ThreadGameRender extends ThreadTimed implements IGameStateListener,
 					
 					priority = Math.min(engine.getPriority(this.hub), priorityCount - 1);
 					
+					if (priority == -1)
+					{
+						continue;
+					}
+					
 					if (priority != p)
 					{
 						continue;
@@ -181,7 +185,7 @@ public class ThreadGameRender extends ThreadTimed implements IGameStateListener,
 			this.display.get().close();
 			
 		}
-		catch (IOException e){}
+		catch (Exception e){}
 		
 	}
 	

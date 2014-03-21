@@ -4,6 +4,7 @@ package com.elusivehawk.engine.render.opengl;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import com.elusivehawk.engine.core.CaelumEngine;
+import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.BufferHelper;
@@ -21,13 +22,13 @@ public class VertexBufferObject implements IGLBindable
 	@SuppressWarnings("unqualified-field-access")
 	private VertexBufferObject(int vbo, int target, int mode)
 	{
-		IGL1 gl1 = RenderHelper.gl1();
+		RenderContext context = CaelumEngine.renderContext();
 		
 		t = target;
-		id = gl1.glIsBuffer(vbo) ? vbo : gl1.glGenBuffers();
+		id = context.getGL1().glIsBuffer(vbo) ? vbo : context.getGL1().glGenBuffers();
 		loadMode = mode;
 		
-		CaelumEngine.renderContext().registerCleanable(this);
+		context.registerCleanable(this);
 		
 	}
 	
@@ -59,24 +60,23 @@ public class VertexBufferObject implements IGLBindable
 	
 	protected void loadData(FloatBuffer buf)
 	{
-		IGL1 gl1 = RenderHelper.gl1();
-		IGL3 gl3 = RenderHelper.gl3();
+		RenderContext context = CaelumEngine.renderContext();
 		
-		int vba = gl1.glGetInteger(GLConst.GL_VERTEX_ARRAY_BINDING);
+		int vba = context.getGL1().glGetInteger(GLConst.GL_VERTEX_ARRAY_BINDING);
 		
 		if (vba != 0)
 		{
-			gl3.glBindVertexArray(0);
+			context.getGL3().glBindVertexArray(0);
 			
 		}
 		
-		gl1.glBindBuffer(this);
-		gl1.glBufferData(this.id, GLConst.GL_FLOAT, buf, this.loadMode);
-		gl1.glBindBuffer(this.t, 0);
+		context.getGL1().glBindBuffer(this);
+		context.getGL1().glBufferData(this.id, GLConst.GL_FLOAT, buf, this.loadMode);
+		context.getGL1().glBindBuffer(this.t, 0);
 		
 		if (vba != 0)
 		{
-			gl3.glBindVertexArray(vba);
+			context.getGL3().glBindVertexArray(vba);
 			
 		}
 		
@@ -84,24 +84,23 @@ public class VertexBufferObject implements IGLBindable
 	
 	protected void loadData(IntBuffer buf)
 	{
-		IGL1 gl1 = RenderHelper.gl1();
-		IGL3 gl3 = RenderHelper.gl3();
+		RenderContext context = CaelumEngine.renderContext();
 		
-		int vba = gl1.glGetInteger(GLConst.GL_VERTEX_ARRAY_BINDING);
+		int vba = context.getGL1().glGetInteger(GLConst.GL_VERTEX_ARRAY_BINDING);
 		
 		if (vba != 0)
 		{
-			gl3.glBindVertexArray(0);
+			context.getGL3().glBindVertexArray(0);
 			
 		}
 		
-		gl1.glBindBuffer(this);
-		gl1.glBufferData(this.t, GLConst.GL_INT, buf, this.loadMode);
-		gl1.glBindBuffer(this.t, 0);
+		context.getGL1().glBindBuffer(this);
+		context.getGL1().glBufferData(this.t, GLConst.GL_INT, buf, this.loadMode);
+		context.getGL1().glBindBuffer(this.t, 0);
 		
 		if (vba != 0)
 		{
-			gl3.glBindVertexArray(vba);
+			context.getGL3().glBindVertexArray(vba);
 			
 		}
 		

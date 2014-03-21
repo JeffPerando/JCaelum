@@ -7,7 +7,7 @@ package com.elusivehawk.engine.util.io;
  * 
  * @author Elusivehawk
  */
-public class ByteArray implements ByteReader, ByteWriter
+public class ByteArray implements IByteReader, IByteWriter
 {
 	protected final byte[] info;
 	protected int pos = 0;

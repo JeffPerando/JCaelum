@@ -9,9 +9,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import com.elusivehawk.engine.util.FileHelper;
-import com.elusivehawk.engine.util.io.ByteReader;
+import com.elusivehawk.engine.util.io.IByteReader;
 import com.elusivehawk.engine.util.io.ByteStreams;
-import com.elusivehawk.engine.util.io.ByteWriter;
+import com.elusivehawk.engine.util.io.IByteWriter;
 
 /**
  * 
@@ -53,7 +53,7 @@ public class SaveFile extends TagList
 		}
 		
 		BufferedInputStream in = new BufferedInputStream(fis);
-		ByteReader wrap = new ByteStreams(in, null);
+		IByteReader wrap = new ByteStreams(in, null);
 		
 		try
 		{
@@ -105,7 +105,7 @@ public class SaveFile extends TagList
 		}
 		
 		BufferedOutputStream out = new BufferedOutputStream(fos);
-		ByteWriter writer = new ByteStreams(null, out);
+		IByteWriter writer = new ByteStreams(null, out);
 		
 		for (Tag<?> tag : this.tags)
 		{

@@ -13,7 +13,7 @@ import com.google.common.collect.ImmutableList;
 
 /**
  * 
- * Handles interaction with connection threads.
+ * Handles interaction with the networking thread.
  * 
  * @author Elusivehawk
  */

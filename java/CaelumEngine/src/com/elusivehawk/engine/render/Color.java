@@ -2,7 +2,7 @@
 package com.elusivehawk.engine.render;
 
 import com.elusivehawk.engine.util.io.ByteArray;
-import com.elusivehawk.engine.util.io.ByteReader;
+import com.elusivehawk.engine.util.io.IByteReader;
 
 /**
  * 
@@ -50,7 +50,7 @@ public class Color
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Color(EnumColorFormat f, ByteReader buf)
+	public Color(EnumColorFormat f, IByteReader buf)
 	{
 		this(f);
 		

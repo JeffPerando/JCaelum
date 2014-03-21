@@ -65,13 +65,7 @@ public final class MatrixHelper
 	{
 		//Hold on to your butts...
 		
-		Matrix ret = createIdentityMatrix();
-		
-		ret = rotate(MathHelper.toRadians(x), Vector.X_AXIS, ret);
-		ret = rotate(MathHelper.toRadians(y), Vector.Y_AXIS, ret);
-		ret = rotate(MathHelper.toRadians(z), Vector.Z_AXIS, ret);
-		
-		return ret;
+		return rotate(z, Vector.Z_AXIS, rotate(y, Vector.Y_AXIS, rotate(x, Vector.X_AXIS, createIdentityMatrix())));
 		
 		/* Old code:
 		float a = (float)Math.cos(x);
@@ -152,29 +146,33 @@ public final class MatrixHelper
 	{
 		Matrix ret = createIdentityMatrix();
 		
+		float x = axis.get(Vector.X);
+		float y = axis.get(Vector.Y);
+		float z = axis.get(Vector.Z);
+		
 		float c = (float)Math.cos(angle);
 		float s = (float)Math.sin(angle);
 		float oneminusc = 1.0f - c;
 		
-		float xy = axis.get(Vector.X) * axis.get(Vector.Y);
-		float yz = axis.get(Vector.Y) * axis.get(Vector.Z);
-		float xz = axis.get(Vector.X) * axis.get(Vector.Z);
+		float xy = x * y;
+		float yz = y * z;
+		float xz = x * z;
 		
-		float xs = axis.get(Vector.X) * s;
-		float ys = axis.get(Vector.Y) * s;
-		float zs = axis.get(Vector.Z) * s;
+		float xs = x * s;
+		float ys = y * s;
+		float zs = z * s;
 		
-		float f00 = MathHelper.square(axis.get(Vector.X)) * oneminusc + c;
+		float f00 = MathHelper.square(x) * oneminusc + c;
 		float f01 = xy * oneminusc + zs;
 		float f02 = xz * oneminusc - ys;
 		
 		float f10 = xy * oneminusc - zs;
-		float f11 = MathHelper.square(axis.get(Vector.Y)) * oneminusc + c;
+		float f11 = MathHelper.square(y) * oneminusc + c;
 		float f12 = yz * oneminusc + xs;
 		
 		float f20 = xz * oneminusc + ys;
 		float f21 = yz * oneminusc - xs;
-		float f22 = MathHelper.square(axis.get(Vector.Z)) * oneminusc + c;
+		float f22 = MathHelper.square(z) * oneminusc + c;
 		
 		float t00 = mat.get(0) * f00 + mat.get(4) * f01 + mat.get(8) * f02;
 		float t01 = mat.get(1) * f00 + mat.get(5) * f01 + mat.get(9) * f02;

@@ -15,7 +15,7 @@ import com.google.common.collect.Maps;
 public abstract class Input
 {
 	protected final EnumInputType inputType;
-	protected final List<IInputListener> listeners = new SimpleList<IInputListener>();
+	protected final List<IInputListener> listeners = SimpleList.newList();
 	
 	protected final Map<Integer, Boolean> bools = Maps.newHashMap();
 	protected final Map<Integer, Float> floats = Maps.newHashMap();
@@ -55,60 +55,30 @@ public abstract class Input
 	
 	public abstract void cleanup();
 	
-	public abstract void setFlag(IInputConst name, boolean value);
+	public abstract void setFlag(int name, boolean value);
 	
 	public String getName()
 	{
 		return this.getClass().getSimpleName();
 	}
 	
-	public boolean getBool(IInputConst name)
+	public boolean getBool(int name)
 	{
-		return this.getBool(name, 0);
-	}
-	
-	public boolean getBool(IInputConst name, int extra)
-	{
-		if (name.getInputType() != this.inputType)
-		{
-			return false;
-		}
-		
-		Boolean ret = this.bools.get(name.getValue() + extra);
+		Boolean ret = this.bools.get(name);
 		
 		return ret == null ? false : ret;
 	}
 	
-	public float getFloat(IInputConst name)
+	public float getFloat(int name)
 	{
-		return this.getFloat(name, 0);
-	}
-	
-	public float getFloat(IInputConst name, int extra)
-	{
-		if (name.getInputType() != this.inputType)
-		{
-			return 0f;
-		}
-		
-		Float ret = this.floats.get(name.getValue() + extra);
+		Float ret = this.floats.get(name);
 		
 		return ret == null ? 0f : ret;
 	}
 	
-	public int getInt(IInputConst name)
+	public int getInt(int name)
 	{
-		return this.getInt(name, 0);
-	}
-	
-	public int getInt(IInputConst name, int extra)
-	{
-		if (name.getInputType() != this.inputType)
-		{
-			return 0;
-		}
-		
-		Integer ret = this.integers.get(name.getValue() + extra);
+		Integer ret = this.integers.get(name);
 		
 		return ret == null ? 0 : ret;
 	}

@@ -7,7 +7,7 @@ package com.elusivehawk.engine.util.io;
  * 
  * @author Elusivehawk
  */
-public interface ByteWriter
+public interface IByteWriter
 {
 	public void write(byte... bytes);
 	

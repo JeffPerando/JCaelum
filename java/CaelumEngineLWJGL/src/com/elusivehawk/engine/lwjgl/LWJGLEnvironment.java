@@ -1,7 +1,6 @@
 
 package com.elusivehawk.engine.lwjgl;
 
-import java.io.File;
 import java.util.List;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -81,7 +80,7 @@ public class LWJGLEnvironment implements IGameEnvironment
 	{
 		//TODO: this only works on Debian... but we'll try it for now.
 		
-		return (EnumOS.getCurrentOS() == EnumOS.LINUX && new File("/usr/lib/jni/liblwjgl.so").exists()) ? "/usr/lib/jni" : FileHelper.createFile("/lwjgl/native/" + EnumOS.getCurrentOS().toString()).getAbsolutePath();
+		return (EnumOS.getCurrentOS() == EnumOS.LINUX && FileHelper.createFile("/usr/lib/jni/liblwjgl.so").exists()) ? "/usr/lib/jni" : FileHelper.createFile("/lwjgl/native/" + EnumOS.getCurrentOS().toString()).getAbsolutePath();
 	}
 	
 }

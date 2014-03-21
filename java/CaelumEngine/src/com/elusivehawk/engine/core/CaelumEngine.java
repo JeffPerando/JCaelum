@@ -3,10 +3,8 @@ package com.elusivehawk.engine.core;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.lang.management.ManagementFactory;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -38,13 +36,15 @@ public final class CaelumEngine
 	public static final boolean DEBUG = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().contains("-agentlib:jdwp");
 	public static final String VERSION = "1.0.0";
 	
-	private Map<EnumEngineFeature, ThreadStoppable> threads = new HashMap<EnumEngineFeature, ThreadStoppable>();
-	private Game game = null;
-	private AssetManager assets = null;
+	private final Map<EnumEngineFeature, ThreadStoppable> threads = Maps.newHashMap();
+	private final Map<EnumInputType, Input> inputs = Maps.newHashMap();
+	
+	private ILog log = new GameLog();
 	private IGameEnvironment env = null;
 	private IRenderEnvironment renv = null;
-	private ILog log = new GameLog();
-	private Map<EnumInputType, Input> inputs = Maps.newHashMap();
+	
+	private Game game = null;
+	private AssetManager assets = null;
 	
 	private CaelumEngine(){}
 	
@@ -102,27 +102,21 @@ public final class CaelumEngine
 	
 	public static void main(String... args)
 	{
-		if (instance().game != null)
-		{
-			return;
-		}
-		
-		if (args.length == 0)
-		{
-			return;
-		}
-		
-		log().log(EnumLogType.INFO, String.format("Starting Caelum Engine v%s", VERSION));
-		
-		Buffer<String> buf = new Buffer<String>(args);
-		
-		instance().start(buf);
+		instance().start(args);
 		
 	}
 	
-	private void start(Buffer<String> args)
+	private void start(String... args)
 	{
-		String cur = (args.hasNext() ? args.next() : "");
+		if (this.game != null)
+		{
+			return;
+		}
+		
+		this.log.log(EnumLogType.INFO, String.format("Starting Caelum Engine v%s", VERSION));
+		
+		Buffer<String> buf = new Buffer<String>(args);
+		String cur = (buf.hasNext() ? buf.next() : "");
 		IGameEnvironment env = null;
 		JsonObject json = null;
 		Class<?> clazz = null;
@@ -141,19 +135,7 @@ public final class CaelumEngine
 		{
 			File file = FileHelper.createFile(".", "/game.json");
 			
-			if (!file.exists())
-			{
-				return;
-			}
-			
-			if (!file.canRead())
-			{
-				return;
-			}
-			
-			FileInputStream fis = FileHelper.createInStream(file);
-			
-			if (fis != null)
+			if (file.exists() && file.canRead())
 			{
 				JsonObject j = null;
 				
@@ -236,7 +218,7 @@ public final class CaelumEngine
 			return;
 		}
 		
-		env.initiate(json, args.toArray());
+		env.initiate(json, buf.toArray());
 		
 		this.env = env;
 		this.renv = env.getRenderEnv();
@@ -258,31 +240,28 @@ public final class CaelumEngine
 			
 		}
 		
-		ILog log = this.env.getLog();
+		ILog l = this.env.getLog();
 		
-		if (log != null)
+		if (l != null)
 		{
-			this.log = log;
+			this.log = l;
 			
 		}
 		
-		cur = args.hasNext() ? args.next() : "";
+		cur = buf.hasNext() ? buf.next() : "";
 		Game g = null;
 		
-		if (cur.startsWith("game:"))
+		if (!cur.startsWith("game:"))
 		{
-			g = (Game)ReflectionHelper.newInstance(cur.substring(6), new Class<?>[]{Game.class}, null);
-			
-		}
-		
-		if (g == null)
-		{
-			this.log.log(EnumLogType.ERROR, "Could not load game.");
+			l.log(EnumLogType.ERROR, "Could not load game.");
 			System.exit("NO-GAME-FOUND".hashCode());
 			
+			return;
 		}
 		
-		if (!g.initiate(args))
+		g = (Game)ReflectionHelper.newInstance(cur.substring(5), new Class<?>[]{Game.class}, null);
+		
+		if (!g.initiate(new GameArguments(buf)))
 		{
 			return;
 		}
@@ -291,9 +270,9 @@ public final class CaelumEngine
 		
 		ThreadAssetLoader al = new ThreadAssetLoader();
 		this.assets = new AssetManager(al);
-		this.assets.initiate();
 		
 		g.loadAssets(this.assets);
+		this.assets.initiate();
 		
 		this.threads.put(EnumEngineFeature.ASSET_LOADING, al);
 		this.threads.put(EnumEngineFeature.LOGIC, new ThreadGameLoop(this.inputs, this.game));
@@ -360,7 +339,10 @@ public final class CaelumEngine
 			
 		}
 		
+		this.inputs.clear();
+		
 		this.game.onShutdown();
+		this.game = null;
 		
 	}
 	

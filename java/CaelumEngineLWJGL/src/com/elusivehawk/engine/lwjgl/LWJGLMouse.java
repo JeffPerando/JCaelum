@@ -3,7 +3,6 @@ package com.elusivehawk.engine.lwjgl;
 
 import org.lwjgl.input.Mouse;
 import com.elusivehawk.engine.core.EnumInputType;
-import com.elusivehawk.engine.core.IInputConst;
 import com.elusivehawk.engine.core.Input;
 import com.elusivehawk.engine.core.InputConst;
 import com.elusivehawk.engine.util.DirtableStorage;
@@ -49,12 +48,27 @@ public class LWJGLMouse extends Input
 			
 		}
 		
-		this.bools.put(InputConst.MouseConst.MOUSE_LOCK.getValue(), Mouse.isGrabbed());
+		int buttons = Mouse.getButtonCount();
 		
-		this.integers.put(InputConst.MouseConst.MOUSE_X.getValue(), Mouse.getX());
-		this.integers.put(InputConst.MouseConst.MOUSE_Y.getValue(), Mouse.getY());
-		this.integers.put(InputConst.MouseConst.MOUSE_DX.getValue(), Mouse.getDX());
-		this.integers.put(InputConst.MouseConst.MOUSE_DY.getValue(), Mouse.getDY());
+		for (int c = 0; c < buttons; c++)
+		{
+			this.bools.put(InputConst.MOUSE_CLICK | ((c + 1) << 16), Mouse.isButtonDown(c));
+			
+		}
+		
+		this.bools.put(InputConst.MOUSE_LOCK, Mouse.isGrabbed());
+		
+		this.integers.put(InputConst.MOUSE_X, Mouse.getX());
+		this.integers.put(InputConst.MOUSE_Y, Mouse.getY());
+		this.integers.put(InputConst.MOUSE_DX, Mouse.getDX());
+		this.integers.put(InputConst.MOUSE_DY, Mouse.getDY());
+		
+		if (Mouse.hasWheel())
+		{
+			this.integers.put(InputConst.MOUSE_DWHEEL, Mouse.getDWheel());
+			this.bools.put(InputConst.MOUSE_CWHEEL, /*FIXME*/false);
+			
+		}
 		
 	}
 	
@@ -66,9 +80,9 @@ public class LWJGLMouse extends Input
 	}
 	
 	@Override
-	public void setFlag(IInputConst name, boolean value)
+	public void setFlag(int name, boolean value)
 	{
-		if (name == InputConst.MouseConst.MOUSE_LOCK)
+		if (name == InputConst.MOUSE_LOCK)
 		{
 			this.grabMouse.set(value);
 			

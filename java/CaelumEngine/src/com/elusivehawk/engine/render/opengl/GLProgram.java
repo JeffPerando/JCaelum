@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
+import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.RenderTicket;
 import com.elusivehawk.engine.render.old.Model;
@@ -27,22 +28,23 @@ public class GLProgram implements IGLBindable
 	private HashMap<VertexBufferObject, List<Integer>> vbos = new HashMap<VertexBufferObject, List<Integer>>();
 	private boolean bound = false;
 	
-	private GLProgram()
+	public GLProgram()
 	{
-		this(CaelumEngine.renderContext().getDefaultVertexShader(), CaelumEngine.renderContext().getDefaultFragmentShader());
+		this(0, 0);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	private GLProgram(int vertex, int frag)
+	public GLProgram(int vertex, int frag)
 	{
-		IGL2 gl2 = RenderHelper.gl2();
+		RenderContext context = CaelumEngine.renderContext();
+		IGL2 gl2 = context.getGL2();
 		
 		id = gl2.glCreateProgram();
-		vba = RenderHelper.gl3().glGenVertexArrays();
+		vba = context.getGL3().glGenVertexArrays();
 		
-		sVertex = vertex;
-		sFrag = frag;
+		sVertex = gl2.glIsShader(vertex) ? vertex : 0;
+		sFrag = gl2.glIsShader(frag) ? frag : 0;
 		
 		gl2.glAttachShader(id, vertex);
 		gl2.glAttachShader(id, frag);
@@ -61,21 +63,8 @@ public class GLProgram implements IGLBindable
 			
 		}
 		
-		CaelumEngine.renderContext().registerCleanable(this);
+		context.registerCleanable(this);
 		
-	}
-	
-	public static GLProgram create()
-	{
-		return new GLProgram();
-	}
-	
-	public static GLProgram create(int v, int f)
-	{
-		assert v != 0;
-		assert f != 0;
-		
-		return new GLProgram(v, f);
 	}
 	
 	public void attachVBO(VertexBufferObject vbo, List<Integer> attribs)
@@ -212,26 +201,28 @@ public class GLProgram implements IGLBindable
 			return true;
 		}
 		
-		if (RenderHelper.gl1().glGetInteger(GLConst.GL_CURRENT_PROGRAM) != 0)
+		RenderContext context = CaelumEngine.renderContext();
+		
+		if (context.getGL1().glGetInteger(GLConst.GL_CURRENT_PROGRAM) != 0)
 		{
 			return false;
 		}
 		
-		RenderHelper.gl2().glUseProgram(this);
+		context.getGL2().glUseProgram(this);
 		
-		RenderHelper.gl3().glBindVertexArray(this.vba);
+		context.getGL3().glBindVertexArray(this.vba);
 		
 		if (!this.vbos.isEmpty())
 		{
 			for (Entry<VertexBufferObject, List<Integer>> entry : this.vbos.entrySet())
 			{
-				RenderHelper.gl1().glBindBuffer(entry.getKey());
+				context.getGL1().glBindBuffer(entry.getKey());
 				
 				if (entry.getValue() != null)
 				{
 					for (int attrib : entry.getValue())
 					{
-						RenderHelper.gl2().glEnableVertexAttribArray(attrib);
+						context.getGL2().glEnableVertexAttribArray(attrib);
 						
 					}
 					
@@ -254,6 +245,8 @@ public class GLProgram implements IGLBindable
 			return;
 		}
 		
+		RenderContext context = CaelumEngine.renderContext();
+		
 		if (!this.vbos.isEmpty())
 		{
 			for (Entry<VertexBufferObject, List<Integer>> entry : this.vbos.entrySet())
@@ -262,21 +255,21 @@ public class GLProgram implements IGLBindable
 				{
 					for (int a : entry.getValue())
 					{
-						RenderHelper.gl2().glDisableVertexAttribArray(a);
+						context.getGL2().glDisableVertexAttribArray(a);
 						
 					}
 					
 				}
 				
-				RenderHelper.gl1().glBindBuffer(entry.getKey().t, 0);
+				context.getGL1().glBindBuffer(entry.getKey().t, 0);
 				
 			}
 			
 		}
 		
-		RenderHelper.gl3().glBindVertexArray(0);
+		context.getGL3().glBindVertexArray(0);
 		
-		RenderHelper.gl2().glUseProgram(0);
+		context.getGL2().glUseProgram(0);
 		
 		this.bound = false;
 		
@@ -291,14 +284,14 @@ public class GLProgram implements IGLBindable
 			
 		}
 		
-		RenderHelper.gl3().glDeleteVertexArrays(this.vba);
+		RenderContext context = CaelumEngine.renderContext();
 		
-		IGL2 gl2 = RenderHelper.gl2();
+		context.getGL3().glDeleteVertexArrays(this.vba);
 		
-		gl2.glDeleteShader(this.sVertex);
-		gl2.glDeleteShader(this.sFrag);
+		context.getGL2().glDeleteShader(this.sVertex);
+		context.getGL2().glDeleteShader(this.sFrag);
 		
-		gl2.glDeleteProgram(this);
+		context.getGL2().glDeleteProgram(this);
 		
 	}
 	

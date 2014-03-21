@@ -36,13 +36,16 @@ public class RenderTicket implements IDirty, ILogicalRender
 	
 	public RenderTicket(Model model)
 	{
-		this(GLProgram.create(), model);
+		this(new GLProgram(), model);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
 	public RenderTicket(GLProgram program, Model model)
 	{
+		assert program != null;
+		assert model != null;
+		
 		p = program;
 		m = model;
 		buf = BufferHelper.createFloatBuffer(m.indiceCount.get() * 3);

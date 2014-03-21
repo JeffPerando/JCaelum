@@ -7,7 +7,7 @@ package com.elusivehawk.engine.util;
  * 
  * @author Elusivehawk
  */
-public class DirtableStorage<T> implements IDirty
+public class DirtableStorage<T> implements IDirty, IGettable<T>, ISettable<T>
 {
 	protected T obj;
 	protected boolean dirty = false, enableNull = true;
@@ -17,25 +17,6 @@ public class DirtableStorage<T> implements IDirty
 	{
 		obj = object;
 		
-	}
-	
-	public T get()
-	{
-		return this.obj;
-	}
-	
-	public boolean set(T object)
-	{
-		if (object == null && !this.enableNull)
-		{
-			return false;
-		}
-		
-		this.obj = object;
-		
-		this.setIsDirty(true);
-		
-		return true;
 	}
 	
 	public DirtableStorage<T> setEnableNull(boolean b)
@@ -56,6 +37,27 @@ public class DirtableStorage<T> implements IDirty
 	{
 		this.dirty = b;
 		
+	}
+	
+	@Override
+	public T get()
+	{
+		return this.obj;
+	}
+	
+	@Override
+	public boolean set(T object)
+	{
+		if (object == null && !this.enableNull)
+		{
+			return false;
+		}
+		
+		this.obj = object;
+		
+		this.setIsDirty(true);
+		
+		return true;
 	}
 	
 }

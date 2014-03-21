@@ -3,8 +3,8 @@ package com.elusivehawk.engine.tag;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.elusivehawk.engine.util.io.ByteReader;
-import com.elusivehawk.engine.util.io.ByteWriter;
+import com.elusivehawk.engine.util.io.IByteReader;
+import com.elusivehawk.engine.util.io.IByteWriter;
 import com.elusivehawk.engine.util.io.Serializer;
 
 /**
@@ -16,7 +16,7 @@ import com.elusivehawk.engine.util.io.Serializer;
 public class TagListReader implements Serializer<List<Tag<?>>>
 {
 	@Override
-	public int toBytes(ByteWriter w, List<Tag<?>> obj)
+	public int toBytes(IByteWriter w, List<Tag<?>> obj)
 	{
 		int ret = INTEGER.toBytes(w, obj  == null ? 0 : obj.size());
 		
@@ -35,7 +35,7 @@ public class TagListReader implements Serializer<List<Tag<?>>>
 	}
 	
 	@Override
-	public List<Tag<?>> fromBytes(ByteReader r)
+	public List<Tag<?>> fromBytes(IByteReader r)
 	{
 		int length = INTEGER.fromBytes(r);
 		

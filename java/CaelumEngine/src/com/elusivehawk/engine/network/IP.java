@@ -121,7 +121,7 @@ public final class IP
 	@Override
 	public String toString()
 	{
-		return this.ip + ":" + this.port;
+		return String.format("%s:%s", this.ip, this.port);
 	}
 	
 	@Override
@@ -156,7 +156,7 @@ public final class IP
 		
 		try
 		{
-			port = Integer.valueOf(str[1]);
+			port = Integer.parseInt(str[1]);
 			
 		}
 		catch (Exception e)
@@ -174,7 +174,7 @@ public final class IP
 			{
 				try
 				{
-					bytes[c] = Byte.valueOf(array[c]);
+					bytes[c] = Byte.parseByte(array[c]);
 					
 				}
 				catch (Exception e)

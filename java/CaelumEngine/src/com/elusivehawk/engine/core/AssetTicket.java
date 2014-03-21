@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.core;
 
 import java.util.UUID;
+import com.elusivehawk.engine.util.IGettable;
 
 /**
  * 
@@ -9,7 +10,7 @@ import java.util.UUID;
  * 
  * @author Elusivehawk
  */
-public final class AssetTicket
+public final class AssetTicket implements IGettable<Asset>
 {
 	private final UUID uuid;
 	private Asset asset = null;
@@ -21,7 +22,8 @@ public final class AssetTicket
 		
 	}
 	
-	public Asset getAsset()
+	@Override
+	public Asset get()
 	{
 		return this.asset;
 	}

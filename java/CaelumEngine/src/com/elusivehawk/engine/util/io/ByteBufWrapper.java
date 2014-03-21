@@ -9,14 +9,21 @@ import com.elusivehawk.engine.util.Buffer;
  * 
  * @author Elusivehawk
  */
-public class ByteBufWrapper implements ByteReader, ByteWriter
+public class ByteBufWrapper implements IByteReader, IByteWriter
 {
-	protected final Buffer<Byte> buffer;
+	protected final Buffer<Byte> in, out;
 	
-	@SuppressWarnings("unqualified-field-access")
 	public ByteBufWrapper(Buffer<Byte> buf)
 	{
-		buffer = buf;
+		this(buf, buf);
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public ByteBufWrapper(Buffer<Byte> i, Buffer<Byte> o)
+	{
+		in = i;
+		out = o;
 		
 	}
 	
@@ -25,7 +32,7 @@ public class ByteBufWrapper implements ByteReader, ByteWriter
 	{
 		for (byte b : bytes)
 		{
-			this.buffer.add(b);
+			this.in.add(b);
 			
 		}
 		
@@ -34,7 +41,7 @@ public class ByteBufWrapper implements ByteReader, ByteWriter
 	@Override
 	public byte read()
 	{
-		return this.buffer.next();
+		return this.out.next();
 	}
 	
 }

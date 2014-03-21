@@ -245,7 +245,7 @@ public final class RenderHelper
 	
 	public static void checkForGLError() throws RuntimeException
 	{
-		int err = CaelumEngine.renderContext().getGL1().glGetError();
+		int err = gl1().glGetError();
 		
 		if (err == GLConst.GL_NO_ERROR)
 		{
