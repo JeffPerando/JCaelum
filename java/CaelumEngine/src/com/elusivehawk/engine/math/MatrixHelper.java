@@ -16,11 +16,7 @@ public final class MatrixHelper
 	
 	public static Matrix createHomogenousMatrix(Vector<Float> rot, Vector<Float> scl, Vector<Float> trans)
 	{
-		Matrix rotate = createRotationMatrix(rot);
-		Matrix scale = createScalingMatrix(scl);
-		Matrix translate = createTranslationMatrix(trans);
-		
-		return rotate.mul(scale).mul(translate);
+		return createRotationMatrix(rot).mul(createScalingMatrix(scl), true).mul(createTranslationMatrix(trans), true);
 	}
 	
 	public static Matrix createIdentityMatrix()

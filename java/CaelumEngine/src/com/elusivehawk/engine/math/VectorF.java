@@ -12,45 +12,27 @@ import com.elusivehawk.engine.util.Buffer;
  */
 public class VectorF extends Vector<Float>
 {
-	protected final Float[] data;
-	
-	public VectorF(Buffer<Float> buf)
+	public VectorF(int length, Buffer<Float> buf)
 	{
-		this(buf.remaining());
-		
-		for (int c = 0; c < this.size; c++)
-		{
-			this.set(c, buf.next());
-			
-		}
+		super(length, buf);
 		
 	}
 	
 	public VectorF(Float... info)
 	{
-		this(new Buffer<Float>(info));
+		super(info);
 		
 	}
 	
-	public VectorF(FloatBuffer buf)
+	public VectorF(int length, FloatBuffer buf)
 	{
-		this(buf.remaining());
+		super(length);
 		
-		for (int c = 0; c < this.size; c++)
+		int l = Math.min(length, buf.remaining());
+		
+		for (int c = 0; c < l; c++)
 		{
-			this.set(c, buf.get());
-			
-		}
-		
-	}
-	
-	public VectorF(int length, Vector<Float> vec)
-	{
-		this(length);
-		
-		for (int c = 0; c < length; c++)
-		{
-			this.set(c, vec.get(c));
+			set(c, buf.get());
 			
 		}
 		
@@ -58,99 +40,82 @@ public class VectorF extends Vector<Float>
 	
 	public VectorF(Vector<Float> vec)
 	{
-		this(vec.getSize(), vec);
+		super(vec);
 		
 	}
 	
-	@SuppressWarnings("unqualified-field-access")
-	protected VectorF(int length)
+	public VectorF(int size)
 	{
-		super(length);
-		data = new Float[length];
-		
-	}
-	
-	@Override
-	public Float get(int pos)
-	{
-		return pos < this.data.length && pos > 0 ? this.data[pos] : 0f;
-	}
-	
-	@Override
-	public void set(int pos, Float num)
-	{
-		this.data[pos] = num;
+		super(size);
 		
 	}
 	
 	@Override
-	public VectorF add(IMathObject<Float> obj)
+	public VectorF add(IMathObject<Float> obj, boolean local)
 	{
 		int l = Math.min(this.getSize(), obj.getSize());
+		VectorF ret = local ? this : new VectorF(this);
 		
 		for (int c = 0; c < l; c++)
 		{
-			this.set(c, this.get(c) + obj.get(c));
+			ret.set(c, this.get(c) + obj.get(c));
 			
 		}
 		
-		return this;
+		ret.onChanged();
+		
+		return ret;
 	}
 	
 	@Override
-	public VectorF div(IMathObject<Float> obj)
+	public VectorF div(IMathObject<Float> obj, boolean local)
 	{
 		int l = Math.min(this.getSize(), obj.getSize());
+		VectorF ret = local ? this : new VectorF(this);
 		
 		for (int c = 0; c < l; c++)
 		{
-			this.set(c, this.get(c) / obj.get(c));
+			ret.set(c, this.get(c) / obj.get(c));
 			
 		}
 		
-		return this;
+		ret.onChanged();
+		
+		return ret;
 	}
 	
 	@Override
-	public VectorF set(IMathObject<Float> obj)
+	public VectorF sub(IMathObject<Float> obj, boolean local)
 	{
 		int l = Math.min(this.getSize(), obj.getSize());
+		VectorF ret = local ? this : new VectorF(this);
 		
 		for (int c = 0; c < l; c++)
 		{
-			this.set(c, obj.get(c));
+			ret.set(c, this.get(c) - obj.get(c));
 			
 		}
 		
-		return this;
+		ret.onChanged();
+		
+		return ret;
 	}
 	
 	@Override
-	public VectorF sub(IMathObject<Float> obj)
+	public VectorF mul(IMathObject<Float> obj, boolean local)
 	{
 		int l = Math.min(this.getSize(), obj.getSize());
+		VectorF ret = local ? this : new VectorF(this);
 		
 		for (int c = 0; c < l; c++)
 		{
-			this.set(c, this.get(c) - obj.get(c));
+			ret.set(c, this.get(c) * obj.get(c));
 			
 		}
 		
-		return this;
-	}
-	
-	@Override
-	public VectorF mul(IMathObject<Float> obj)
-	{
-		int l = Math.min(this.getSize(), obj.getSize());
+		ret.onChanged();
 		
-		for (int c = 0; c < l; c++)
-		{
-			this.set(c, this.get(c) * obj.get(c));
-			
-		}
-		
-		return this;
+		return ret;
 	}
 	
 	@Override

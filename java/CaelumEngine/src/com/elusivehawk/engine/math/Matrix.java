@@ -157,62 +157,6 @@ public class Matrix implements IMathObject<Float>
 	}
 	
 	@Override
-	public void copy(IMathObject<Float> obj)
-	{
-		if (obj.getSize() != this.getSize())
-		{
-			return;
-		}
-		
-		for (int c = 0; c < this.getSize(); c++)
-		{
-			this.set(c, obj.get(c));
-			
-		}
-		
-	}
-	
-	@Override
-	public Matrix add(IMathObject<Float> obj)
-	{
-		Buffer<Float> buf = new Buffer<Float>(obj);
-		
-		for (int c = 0; c < this.getSize(); c++)
-		{
-			this.set(c, this.get(c) + buf.next());
-			
-			if (!buf.hasNext())
-			{
-				buf.rewind();
-				
-			}
-			
-		}
-		
-		return this;
-	}
-	
-	@Override
-	public Matrix div(IMathObject<Float> obj)
-	{
-		Buffer<Float> buf = new Buffer<Float>(obj);
-		
-		for (int c = 0; c < this.getSize(); c++)
-		{
-			this.set(c, this.get(c) / buf.next());
-			
-			if (!buf.hasNext())
-			{
-				buf.rewind();
-				
-			}
-			
-		}
-		
-		return this;
-	}
-	
-	@Override
 	public Matrix set(IMathObject<Float> obj)
 	{
 		Buffer<Float> buf = new Buffer<Float>(obj);
@@ -233,13 +177,14 @@ public class Matrix implements IMathObject<Float>
 	}
 	
 	@Override
-	public Matrix sub(IMathObject<Float> obj)
+	public Matrix add(IMathObject<Float> obj,  boolean local)
 	{
 		Buffer<Float> buf = new Buffer<Float>(obj);
+		Matrix ret = local ? this : new Matrix(this);
 		
 		for (int c = 0; c < this.getSize(); c++)
 		{
-			this.set(c, this.get(c) - buf.next());
+			ret.set(c, this.get(c) + buf.next());
 			
 			if (!buf.hasNext())
 			{
@@ -249,17 +194,18 @@ public class Matrix implements IMathObject<Float>
 			
 		}
 		
-		return this;
+		return ret;
 	}
 	
 	@Override
-	public Matrix mul(IMathObject<Float> obj)
+	public Matrix div(IMathObject<Float> obj,  boolean local)
 	{
 		Buffer<Float> buf = new Buffer<Float>(obj);
+		Matrix ret = local ? this : new Matrix(this);
 		
 		for (int c = 0; c < this.getSize(); c++)
 		{
-			this.set(c, this.get(c) * buf.next());
+			ret.set(c, this.get(c) / buf.next());
 			
 			if (!buf.hasNext())
 			{
@@ -269,7 +215,49 @@ public class Matrix implements IMathObject<Float>
 			
 		}
 		
-		return this;
+		return ret;
+	}
+	
+	@Override
+	public Matrix sub(IMathObject<Float> obj,  boolean local)
+	{
+		Buffer<Float> buf = new Buffer<Float>(obj);
+		Matrix ret = local ? this : new Matrix(this);
+		
+		for (int c = 0; c < this.getSize(); c++)
+		{
+			ret.set(c, this.get(c) - buf.next());
+			
+			if (!buf.hasNext())
+			{
+				buf.rewind();
+				
+			}
+			
+		}
+		
+		return ret;
+	}
+	
+	@Override
+	public Matrix mul(IMathObject<Float> obj,  boolean local)
+	{
+		Buffer<Float> buf = new Buffer<Float>(obj);
+		Matrix ret = local ? this : new Matrix(this);
+		
+		for (int c = 0; c < this.getSize(); c++)
+		{
+			ret.set(c, this.get(c) * buf.next());
+			
+			if (!buf.hasNext())
+			{
+				buf.rewind();
+				
+			}
+			
+		}
+		
+		return ret;
 	}
 	
 }

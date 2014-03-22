@@ -29,11 +29,9 @@ public class BenchmarkTest
 	{
 		System.out.println("Beginning bench testing...");
 		
-		Matrix one = MatrixHelper.createRotationMatrix(new VectorF(90f, 90f, 90f));
+		Matrix m = MatrixHelper.createRotationMatrix(new VectorF(90f, 90f, 90f));
 		
-		Matrix two = MatrixHelper.createRotationMatrix(new VectorF(90f, 90f, 90f));
-		
-		System.out.println(one.mul(two).toString());
+		System.out.println(m.mul(m, true).toString());
 		
 		System.out.println(MatrixHelper.createRotationMatrix(new VectorF(180f, 180f, 180f)).toString());
 		
