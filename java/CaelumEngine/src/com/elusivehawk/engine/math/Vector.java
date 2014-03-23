@@ -24,6 +24,7 @@ public abstract class Vector<T extends Number> implements IMathObject<T>
 	
 	protected final Number[] nums;
 	protected final List<IVectorListener<T>> listeners = SimpleList.newList();
+	protected String name = null;
 	
 	protected Vector(int length, Buffer<T> buf)
 	{
@@ -127,6 +128,42 @@ public abstract class Vector<T extends Number> implements IMathObject<T>
 			
 		}
 		
+	}
+	
+	public Vector<T> name(String str)
+	{
+		this.name = str;
+		
+		return this;
+	}
+	
+	public String getName()
+	{
+		return this.name;
+	}
+	
+	@Override
+	public String toString()
+	{
+		StringBuilder b = new StringBuilder(10);
+		
+		b.append(this.getName() == null ? "vector" : this.getName());
+		b.append(":[");
+		
+		T num = null;
+		
+		for (int c = 0; c < 4; c++)
+		{
+			num = this.get(c);
+			
+			b.append(num == null ? "0" : num.toString());
+			if (c < 3) b.append(", ");
+			
+		}
+		
+		b.append("]");
+		
+		return b.toString();
 	}
 	
 }
