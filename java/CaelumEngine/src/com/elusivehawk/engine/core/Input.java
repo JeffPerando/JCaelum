@@ -35,6 +35,10 @@ public abstract class Input
 	
 	public final void update()
 	{
+		this.bools.clear();
+		this.floats.clear();
+		this.integers.clear();
+		
 		this.updateInput();
 		
 		if (!this.listeners.isEmpty())
