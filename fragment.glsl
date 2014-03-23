@@ -14,7 +14,7 @@ struct Light
 uniform struct Material
 {
 	sampler2d tex;
-	vec3 color;
+	vec4 color;
 	float shininess;
 	
 } mat;

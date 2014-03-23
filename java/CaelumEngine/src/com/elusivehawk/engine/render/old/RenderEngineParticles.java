@@ -3,10 +3,7 @@ package com.elusivehawk.engine.render.old;
 
 import com.elusivehawk.engine.render.IRenderEngine;
 import com.elusivehawk.engine.render.IRenderHUB;
-import com.elusivehawk.engine.render.RenderHelper;
-import com.elusivehawk.engine.render.opengl.GLConst;
-import com.elusivehawk.engine.render.opengl.GLProgram;
-import com.elusivehawk.engine.render.opengl.IGL1;
+import com.elusivehawk.engine.render.RenderContext;
 
 /**
  * 
@@ -18,9 +15,9 @@ import com.elusivehawk.engine.render.opengl.IGL1;
 public class RenderEngineParticles implements IRenderEngine
 {
 	@Override
-	public void render(IRenderHUB hub)
+	public void render(RenderContext context, IRenderHUB hub)
 	{
-		if (hub.getScene() == null || !hub.getRenderMode().is3D())
+		/*if (hub.getScene() == null || !hub.getRenderMode().is3D())
 		{
 			return;
 		}
@@ -53,7 +50,7 @@ public class RenderEngineParticles implements IRenderEngine
 		gl1.glDisable(GLConst.GL_DEPTH_TEST);
 		
 		p.unbind();
-		
+		*/
 	}
 	
 	@Override

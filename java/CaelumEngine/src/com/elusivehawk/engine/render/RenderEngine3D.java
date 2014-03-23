@@ -4,7 +4,6 @@ package com.elusivehawk.engine.render;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
-import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.render.old.Model;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
@@ -19,7 +18,7 @@ import com.elusivehawk.engine.util.Tuple;
 public class RenderEngine3D implements IRenderEngine
 {
 	@Override
-	public void render(IRenderHUB hub)
+	public void render(RenderContext context, IRenderHUB hub)
 	{
 		if (!hub.getRenderMode().is3D())
 		{
@@ -39,8 +38,6 @@ public class RenderEngine3D implements IRenderEngine
 		{
 			return;
 		}
-		
-		RenderContext context = CaelumEngine.renderContext();
 		
 		context.getGL1().glEnable(GLConst.GL_DEPTH_TEST);
 		context.getGL1().glDepthFunc(GLConst.GL_LESS);

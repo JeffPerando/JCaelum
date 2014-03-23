@@ -1,6 +1,8 @@
 
 package com.elusivehawk.engine.render;
 
+import java.nio.FloatBuffer;
+import com.elusivehawk.engine.util.BufferHelper;
 import com.elusivehawk.engine.util.io.ByteArray;
 import com.elusivehawk.engine.util.io.IByteReader;
 
@@ -98,6 +100,20 @@ public class Color
 	public boolean supportsAlpha()
 	{
 		return this.format.supports(EnumColorFilter.ALPHA);
+	}
+	
+	public FloatBuffer asBufferF()
+	{
+		float[] colors = new float[this.format.filters.length];
+		int c = 0;
+		
+		for (EnumColorFilter filter : this.format.filters)
+		{
+			colors[c++] = this.getColorFloat(filter);
+			
+		}
+		
+		return BufferHelper.makeFloatBuffer(colors);
 	}
 	
 }

@@ -4,6 +4,7 @@ package com.elusivehawk.engine.render;
 import com.elusivehawk.engine.math.MathHelper;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.ITexture;
+import com.elusivehawk.engine.util.BufferHelper;
 
 /**
  * 
@@ -53,6 +54,9 @@ public class Material
 	
 	public void update(GLProgram p)
 	{
+		p.attachUniform("mat.tex", BufferHelper.makeIntBuffer(new int[]{this.tex.getTexture()}), GLProgram.EnumUniformType.ONE);
+		p.attachUniform("mat.color", this.filter.asBufferF(), GLProgram.EnumUniformType.FOUR);
+		p.attachUniform("mat.shininess", BufferHelper.makeFloatBuffer(this.reflectivity), GLProgram.EnumUniformType.ONE);
 		
 	}
 	

@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
-import java.util.List;
+import com.elusivehawk.engine.util.SyncList;
 
 /**
  * 
@@ -21,7 +21,7 @@ public interface IModelGroup
 	 * 
 	 * @return The tickets (aka models) to render
 	 */
-	public List<RenderTicket> getTickets();
+	public SyncList<RenderTicket> getTickets();
 	
 	/**
 	 * 
