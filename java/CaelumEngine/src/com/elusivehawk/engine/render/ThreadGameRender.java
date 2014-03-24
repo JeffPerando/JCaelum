@@ -20,15 +20,18 @@ import com.elusivehawk.engine.util.ThreadTimed;
  */
 public class ThreadGameRender extends ThreadTimed implements IGameStateListener, IThreadContext
 {
-	protected IRenderHUB hub;
+	protected final IRenderEnvironment renv;
 	protected final RenderContext context;
 	protected final SemiFinalStorage<IDisplay> display = (SemiFinalStorage<IDisplay>)new SemiFinalStorage<IDisplay>(null).setEnableNull(false);
+	
+	protected IRenderHUB hub;
 	protected int fps;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public ThreadGameRender(IRenderHUB rhub)
+	public ThreadGameRender(IRenderEnvironment renderEnv, IRenderHUB rhub)
 	{
 		hub = rhub;
+		renv = renderEnv;
 		context = new RenderContext(this);
 		
 		CaelumEngine.game().addGameStateListener(this);
@@ -40,10 +43,15 @@ public class ThreadGameRender extends ThreadTimed implements IGameStateListener,
 		return this.hub;
 	}
 	
+	public IRenderEnvironment getRenderEnv()
+	{
+		return this.renv;
+	}
+	
 	@Override
 	public boolean initiate()
 	{
-		if (!CaelumEngine.renderEnvironment().initiate())
+		if (!this.renv.initiate())
 		{
 			CaelumEngine.log().log(EnumLogType.ERROR, "Unable to load render environment.");
 			
@@ -64,7 +72,7 @@ public class ThreadGameRender extends ThreadTimed implements IGameStateListener,
 		
 		this.fps = settings.targetFPS;
 		
-		return this.display.set(CaelumEngine.renderEnvironment().createDisplay("default", settings));
+		return this.display.set(this.renv.createDisplay("default", settings));
 	}
 	
 	@Override

@@ -2,7 +2,6 @@
 package com.elusivehawk.engine.render;
 
 import java.util.List;
-import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.IContext;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
@@ -54,9 +53,9 @@ public final class RenderContext implements IContext
 			return;
 		}
 		
-		this.gl1 = (IGL1)CaelumEngine.renderEnvironment().getGL(IRenderEnvironment.GL_1);
-		this.gl2 = (IGL2)CaelumEngine.renderEnvironment().getGL(IRenderEnvironment.GL_2);
-		this.gl3 = (IGL3)CaelumEngine.renderEnvironment().getGL(IRenderEnvironment.GL_3);
+		this.gl1 = (IGL1)this.thr.getRenderEnv().getGL(IRenderEnvironment.GL_1);
+		this.gl2 = (IGL2)this.thr.getRenderEnv().getGL(IRenderEnvironment.GL_2);
+		this.gl3 = (IGL3)this.thr.getRenderEnv().getGL(IRenderEnvironment.GL_3);
 		
 		this.sVertex = RenderHelper.loadShader(FileHelper.createFile("/vertex.glsl"), GLConst.GL_VERTEX_SHADER);
 		this.sFrag = RenderHelper.loadShader(FileHelper.createFile("/fragment.glsl"), GLConst.GL_FRAGMENT_SHADER);

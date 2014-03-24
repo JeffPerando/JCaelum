@@ -68,11 +68,6 @@ public final class CaelumEngine
 		return instance().env;
 	}
 	
-	public static IRenderEnvironment renderEnvironment()
-	{
-		return instance().renv;
-	}
-	
 	public static ILog log()
 	{
 		return instance().log;
@@ -281,7 +276,7 @@ public final class CaelumEngine
 		
 		if (hub != null)
 		{
-			this.threads.put(EnumEngineFeature.RENDER, new ThreadGameRender(hub));
+			this.threads.put(EnumEngineFeature.RENDER, new ThreadGameRender(this.renv, hub));
 			
 		}
 		

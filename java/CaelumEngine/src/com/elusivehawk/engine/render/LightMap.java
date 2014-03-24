@@ -12,7 +12,9 @@ import com.elusivehawk.engine.util.SimpleList;
  */
 public class LightMap
 {
-	protected final List<Light> lights = new SimpleList<Light>(256, false);
+	public static final int LIGHT_CAP = 1024;
+	
+	protected final List<Light> lights = SimpleList.newList(LIGHT_CAP, false);
 	
 	public LightMap()
 	{
