@@ -9,7 +9,7 @@ package com.elusivehawk.engine.math;
  */
 public final class MathHelper
 {
-	public static final float PI = 3.14159265f;
+	public static final float PI = 3.141592653589793238f;
 	
 	private MathHelper(){}
 	
