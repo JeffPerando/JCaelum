@@ -21,7 +21,8 @@ import com.elusivehawk.engine.util.FileHelper;
  */
 public class TextureAnimated implements INonStaticTexture
 {
-	private final Buffer<Integer> tex;
+	protected final Buffer<Integer> tex;
+	protected boolean dirty = true;
 	
 	public TextureAnimated(String gif)
 	{
@@ -124,6 +125,8 @@ public class TextureAnimated implements INonStaticTexture
 			
 		}
 		
+		this.dirty = true;
+		
 	}
 	
 	@Override
@@ -156,6 +159,19 @@ public class TextureAnimated implements INonStaticTexture
 	public void unbind(int... extras)
 	{
 		RenderHelper.gl1().glBindTexture(GLConst.GL_TEXTURE0 + (extras == null || extras.length == 0 ? 0 : extras[0]), 0);
+		
+	}
+	
+	@Override
+	public boolean isDirty()
+	{
+		return this.dirty;
+	}
+	
+	@Override
+	public void setIsDirty(boolean b)
+	{
+		this.dirty = b;
 		
 	}
 	

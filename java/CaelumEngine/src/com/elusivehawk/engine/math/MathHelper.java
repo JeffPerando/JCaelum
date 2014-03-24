@@ -9,7 +9,7 @@ package com.elusivehawk.engine.math;
  */
 public final class MathHelper
 {
-	public static final float PI = 3.14159f;
+	public static final float PI = 3.14159265f;
 	
 	private MathHelper(){}
 	
@@ -125,6 +125,26 @@ public final class MathHelper
 		ret.set(Vector.X, toRadians(ret.get(Vector.X)));
 		ret.set(Vector.Y, toRadians(ret.get(Vector.Y)));
 		ret.set(Vector.Z, toRadians(ret.get(Vector.Z)));
+		
+		return ret;
+	}
+	
+	public static float interpolate(float one, float two, float factor)
+	{
+		assert bounds(factor, 0.0f, 1.0f);
+		
+		return ((two * factor) + ((1f - factor) * one));
+	}
+	
+	public static Vector<Float> interpolate(Vector<Float> one, Vector<Float> two, float factor)
+	{
+		Vector<Float> ret = new VectorF(Math.min(one.getSize(), two.getSize()));
+		
+		for (int c = 0; c < ret.getSize(); c++)
+		{
+			ret.set(c, interpolate(one.get(c), two.get(c), factor));
+			
+		}
 		
 		return ret;
 	}

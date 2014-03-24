@@ -14,8 +14,21 @@ import com.elusivehawk.engine.util.io.IByteReader;
  */
 public class Color
 {
-	protected int color = 0;
+	public static final Color BLACK = new Color(EnumColorFormat.RGBA, 0x000000);
+	public static final Color GREY = new Color(EnumColorFormat.RGBA, 0x7F7F7F);
+	public static final Color GRAY = GREY;
+	public static final Color WHITE = new Color(EnumColorFormat.RGBA, 0xFFFFFF);
+	
+	public static final Color RED = new Color(EnumColorFormat.RGBA, 0xFF0000);
+	public static final Color GREEN = new Color(EnumColorFormat.RGBA, 0x00FF00);
+	public static final Color BLUE = new Color(EnumColorFormat.RGBA, 0x0000FF);
+	
+	public static final Color YELLOW = new Color(EnumColorFormat.RGBA, 0xFFFF00);
+	public static final Color PINK = new Color(EnumColorFormat.RGBA, 0xFF00FF);
+	public static final Color CYAN = new Color(EnumColorFormat.RGBA, 0x00FFFF);
+	
 	public final EnumColorFormat format;
+	protected int color = 0;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public Color(EnumColorFormat f)

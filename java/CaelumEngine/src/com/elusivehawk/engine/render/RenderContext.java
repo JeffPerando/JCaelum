@@ -215,6 +215,12 @@ public final class RenderContext implements IContext
 			
 		}
 		
+		for (INonStaticTexture tex : this.texturePool)
+		{
+			tex.setIsDirty(false);
+			
+		}
+		
 	}
 	
 	public void addProgramManipulator(IGLManipulator glm)
