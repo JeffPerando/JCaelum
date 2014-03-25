@@ -183,7 +183,7 @@ public final class BufferHelper
 		return makeIntBuffer(data.length, data);
 	}
 	
-	public static IntBuffer makeIntBuffer(int l, int... data)
+	public static IntBuffer makeIntBuffer(int l, int[] data)
 	{
 		return (IntBuffer)createIntBuffer(l).put(data).flip();
 	}

@@ -65,7 +65,7 @@ public class TextureStatic implements Asset
 	@Override
 	public boolean isFinished()
 	{
-		return true;
+		return true;//FIXME
 	}
 	
 	@Override

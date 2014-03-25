@@ -1,5 +1,5 @@
 
-package com.elusivehawk.engine.render.opengl;
+package com.elusivehawk.engine.render;
 
 import com.elusivehawk.engine.core.Asset;
 import com.elusivehawk.engine.util.IDirty;

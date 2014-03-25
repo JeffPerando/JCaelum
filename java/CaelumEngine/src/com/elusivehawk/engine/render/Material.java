@@ -75,7 +75,7 @@ public class Material implements Asset, IGLManipulator
 	{
 		if (this.isTexDirtable && ((IDirty)this.tex).isDirty())
 		{
-			this.ints[0] = this.getIds()[0];
+			this.ints[0] = this.tex.getIds()[0];
 			
 		}
 		
@@ -89,16 +89,12 @@ public class Material implements Asset, IGLManipulator
 	}
 	
 	@Override
-	public void finish()
-	{
-		// TODO Auto-generated method stub
-		
-	}
+	public void finish(){}
 	
 	@Override
 	public void manipulateUniforms(GLProgram p)
 	{
-		p.attachUniform("mat.tex", BufferHelper.makeIntBuffer(new int[]{this.tex.getIds()[0]}), GLProgram.EnumUniformType.ONE);
+		p.attachUniform("mat.tex", BufferHelper.makeIntBuffer(this.tex.getIds()[0]), GLProgram.EnumUniformType.ONE);
 		p.attachUniform("mat.color", this.filter.asBufferF(), GLProgram.EnumUniformType.FOUR);
 		p.attachUniform("mat.shininess", BufferHelper.makeFloatBuffer(this.shininess), GLProgram.EnumUniformType.ONE);
 		

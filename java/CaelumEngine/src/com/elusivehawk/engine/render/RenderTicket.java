@@ -5,6 +5,7 @@ import java.nio.FloatBuffer;
 import java.util.HashMap;
 import com.elusivehawk.engine.core.Asset;
 import com.elusivehawk.engine.core.EnumAssetType;
+import com.elusivehawk.engine.core.IAssetRequester;
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.MatrixHelper;
 import com.elusivehawk.engine.math.Vector;
@@ -22,7 +23,7 @@ import com.elusivehawk.engine.util.IDirty;
  * 
  * @author Elusivehawk
  */
-public class RenderTicket implements IDirty, ILogicalRender
+public class RenderTicket implements IDirty, ILogicalRender, IAssetRequester
 {
 	protected final HashMap<EnumVectorType, Vector<Float>> vecs = new HashMap<EnumVectorType, Vector<Float>>();
 	protected final Model m;
@@ -57,6 +58,81 @@ public class RenderTicket implements IDirty, ILogicalRender
 		for (EnumVectorType type : EnumVectorType.values())
 		{
 			vecs.put(type, type.getDefault());
+			
+		}
+		
+	}
+	
+	@Override
+	public boolean isDirty()
+	{
+		return this.dirty;
+	}
+	
+	@Override
+	public void setIsDirty(boolean b)
+	{
+		this.dirty = b;
+		
+	}
+	
+	@Override
+	public GLProgram getProgram()
+	{
+		return this.p;
+	}
+	
+	@Override
+	public boolean updateBeforeUse()
+	{
+		if (!this.m.isFinished())
+		{
+			return false;
+		}
+		
+		/*if (this.anim != null && !this.isAnimationPaused())
+		{
+			boolean usedBefore = this.anim == this.lastAnim;
+			
+			if (!usedBefore)
+			{
+				this.frame = 0;
+				
+			}
+			
+			boolean fin = (this.frame == this.anim.getFrameCount());
+			
+			if (this.anim.update(this, usedBefore, fin))
+			{
+				this.buf.rewind();
+				
+				this.vbo.updateEntireVBO(this.buf, context);
+				
+			}
+			
+			this.frame = (fin ? 0 : this.frame + 1);
+			
+		}*/
+		
+		if (this.isDirty())
+		{
+			Matrix m = MatrixHelper.createHomogenousMatrix(this.vecs.get(EnumVectorType.ROTATION), this.vecs.get(EnumVectorType.SCALING), this.vecs.get(EnumVectorType.TRANSLATION));
+			
+			this.p.attachUniform("model", m.asBuffer(), GLProgram.EnumUniformType.M_FOUR);
+			
+			this.setIsDirty(false);
+			
+		}
+		
+		return true;
+	}
+	
+	@Override
+	public synchronized void onAssetLoaded(Asset asset)
+	{
+		if (asset.getType() == EnumAssetType.TEXTURE && this.tex == null)
+		{
+			this.tex = asset;
 			
 		}
 		
@@ -159,70 +235,6 @@ public class RenderTicket implements IDirty, ILogicalRender
 	public boolean enableZBuffering()
 	{
 		return this.zBuffer;
-	}
-	
-	@Override
-	public GLProgram getProgram()
-	{
-		return this.p;
-	}
-	
-	@Override
-	public boolean updateBeforeUse()
-	{
-		if (!this.m.isFinished())
-		{
-			return false;
-		}
-		
-		/*if (this.anim != null && !this.isAnimationPaused())
-		{
-			boolean usedBefore = this.anim == this.lastAnim;
-			
-			if (!usedBefore)
-			{
-				this.frame = 0;
-				
-			}
-			
-			boolean fin = (this.frame == this.anim.getFrameCount());
-			
-			if (this.anim.update(this, usedBefore, fin))
-			{
-				this.buf.rewind();
-				
-				this.vbo.updateEntireVBO(this.buf, context);
-				
-			}
-			
-			this.frame = (fin ? 0 : this.frame + 1);
-			
-		}*/
-		
-		if (this.isDirty())
-		{
-			Matrix m = MatrixHelper.createHomogenousMatrix(this.vecs.get(EnumVectorType.ROTATION), this.vecs.get(EnumVectorType.SCALING), this.vecs.get(EnumVectorType.TRANSLATION));
-			
-			this.p.attachUniform("model", m.asBuffer(), GLProgram.EnumUniformType.M_FOUR);
-			
-			this.setIsDirty(false);
-			
-		}
-		
-		return true;
-	}
-	
-	@Override
-	public boolean isDirty()
-	{
-		return this.dirty;
-	}
-	
-	@Override
-	public void setIsDirty(boolean b)
-	{
-		this.dirty = b;
-		
 	}
 	
 	public static enum EnumVectorType

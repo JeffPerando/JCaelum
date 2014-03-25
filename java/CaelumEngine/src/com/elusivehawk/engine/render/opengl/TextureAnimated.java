@@ -4,12 +4,12 @@ package com.elusivehawk.engine.render.opengl;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
-import com.elusivehawk.engine.core.Asset;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumAssetType;
 import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.render.EnumColorFormat;
 import com.elusivehawk.engine.render.EnumRenderMode;
+import com.elusivehawk.engine.render.INonStaticTexture;
 import com.elusivehawk.engine.render.LegibleBufferedImage;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.util.Buffer;
@@ -113,7 +113,7 @@ public class TextureAnimated implements INonStaticTexture
 	@Override
 	public boolean isFinished()
 	{
-		return true;
+		return true;//FIXME
 	}
 	
 	@Override
