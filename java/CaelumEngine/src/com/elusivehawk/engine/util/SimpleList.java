@@ -256,20 +256,21 @@ public class SimpleList<T> implements List<T>
 	@Override
 	public boolean remove(Object obj)
 	{
-		if (obj == null)
+		if (this.isEmpty())
 		{
 			return false;
 		}
 		
-		int index = this.indexOf(obj);
+		int in = this.indexOf(obj);
 		
-		if (index != -1)
+		if (in == -1)
 		{
-			this.list[index] = null;
-			return true;
+			return false;
 		}
 		
-		return false;
+		this.remove(in);
+		
+		return true;
 	}
 	
 	@Override
@@ -278,6 +279,14 @@ public class SimpleList<T> implements List<T>
 		T ret = this.get(i);
 		
 		this.list[i] = null;
+		
+		for (int c = i + 1; c < this.list.length; c++)
+		{
+			this.list[c - 1] = this.list[c];
+			
+		}
+		
+		this.list[this.list.length - 1] = null;
 		
 		return ret;
 	}

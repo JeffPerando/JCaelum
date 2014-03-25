@@ -36,7 +36,7 @@ public final class RenderContext implements IContext
 	private final List<IGLManipulator> manipulators = new SimpleList<IGLManipulator>(32);
 	
 	private EnumRenderStage stage = null;
-	private boolean initiated = false;
+	private boolean initiated = false, flipScreen = false;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public RenderContext(ThreadGameRender renderThr)
@@ -118,6 +118,16 @@ public final class RenderContext implements IContext
 		return this.getHub().getRenderMode();
 	}
 	
+	public EnumRenderStage getCurrentRenderingStage()
+	{
+		return this.stage;
+	}
+	
+	public boolean isScreenFlipped()
+	{
+		return this.flipScreen;
+	}
+	
 	public void setRenderStage(EnumRenderStage rstage)
 	{
 		if (rstage == this.stage)
@@ -134,11 +144,6 @@ public final class RenderContext implements IContext
 			
 		}
 		
-	}
-	
-	public EnumRenderStage getCurrentRenderingStage()
-	{
-		return this.stage;
 	}
 	
 	private void updateTextures()
@@ -235,6 +240,12 @@ public final class RenderContext implements IContext
 			glm.manipulateUniforms(p);
 			
 		}
+		
+	}
+	
+	public void setScreenFlipped(boolean b)
+	{
+		this.flipScreen = b;
 		
 	}
 	

@@ -48,6 +48,12 @@ public class ThreadGameRender extends ThreadTimed implements IGameStateListener,
 		return this.renv;
 	}
 	
+	public synchronized void flipScreen(boolean flip)
+	{
+		this.context.setScreenFlipped(flip);
+		
+	}
+	
 	@Override
 	public boolean initiate()
 	{

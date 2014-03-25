@@ -3,9 +3,10 @@
 uniform mat4 proj;
 uniform mat4 view;
 uniform mat4 model;
+uniform boolean flip;
 
-(location = 0) in vec3 in_position;
-(location = 1) in vec2 in_texcoord;
+(location = 0) in vec3 in_pos;
+(location = 1) in vec2 in_tex;
 (location = 2) in vec3 in_norm;
 
 (location = 3) in vec3 in_scale;
@@ -17,10 +18,10 @@ out vec3 frag_norm;
 
 void main()
 {
-	frag_texcoord = in_texcoord;
+	frag_tex = in_tex;
 	frag_norm = in_norm;
 	
-	mat4 fin = trans(in_trans) * rotate(in_rot) * scale(in_scale) * vec4(in_position, 1.0);
+	mat4 fin = trans(in_trans) * rotate(in_rot) * scale(in_scale) * vec4(vec3(flip ? in_pos.y : in_pos.x, flip ? in_pos.x : in_pos.y, in_pos.z), 1.0);
 	
 	gl_Position = proj * view * fin;
 	

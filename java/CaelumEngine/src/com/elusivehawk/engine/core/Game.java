@@ -49,6 +49,8 @@ public abstract class Game implements IUpdatable
 	
 	public void loadAssets(AssetManager mgr){}
 	
+	public void onScreenFlipped(boolean flip){}
+	
 	public int getUpdateCount()
 	{
 		return 30;

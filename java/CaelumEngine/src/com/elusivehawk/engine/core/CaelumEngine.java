@@ -95,6 +95,18 @@ public final class CaelumEngine
 		return (RenderContext)getContext(safe);
 	}
 	
+	public static void flipScreen(boolean flip)
+	{
+		if (instance().game == null)
+		{
+			return;
+		}
+		
+		((ThreadGameRender)instance().threads.get(EnumEngineFeature.RENDER)).flipScreen(flip);
+		instance().game.onScreenFlipped(flip);
+		
+	}
+	
 	public static void main(String... args)
 	{
 		instance().start(args);
