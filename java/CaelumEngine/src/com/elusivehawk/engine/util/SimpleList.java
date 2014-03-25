@@ -87,17 +87,7 @@ public class SimpleList<T> implements List<T>
 		}
 		else
 		{
-			in = -1;
-			
-			for (int c = i; c < this.list.length; c++)
-			{
-				if (this.list[c] == null)
-				{
-					in = c;
-					break;
-				}
-				
-			}
+			in = this.indexOf(i, null);
 			
 			if (in == -1)
 			{
@@ -119,34 +109,40 @@ public class SimpleList<T> implements List<T>
 	@Override
 	public boolean addAll(Collection<? extends T> collection)
 	{
-		return this.addAll(collection.size(), collection);
+		return this.addAll(0, collection);
 	}
 	
 	@Override
-	public boolean addAll(int count, Collection<? extends T> collection)
+	public boolean addAll(int loc, Collection<? extends T> collection)
 	{
-		if (count + collection.size() > this.list.length && !this.exp)
+		if (collection.size() > this.list.length - this.size && !this.exp)
 		{
 			return false;
 		}
 		
-		int index = 0, c = 0;
-		Iterator<? extends T> itr = collection.iterator();
+		int count = 0;
 		
-		while (itr.hasNext() && c < count)
+		for (int c = loc; c < this.list.length; c++)
 		{
-			index = this.indexOf(null);
-			
-			if (index == -1)
+			if (this.list[c] == null)
 			{
-				this.list = expand(this.list, count - c);
-				index = this.indexOf(null);
+				count++;
 				
 			}
 			
-			this.add(index, itr.next());
+		}
+		
+		if (count < collection.size())
+		{
+			this.list = expand(this.list, count);
 			
-			c++;
+		}
+		
+		Iterator<? extends T> itr = collection.iterator();
+		
+		while (itr.hasNext())
+		{
+			this.list[this.indexOf(loc, null)] = itr.next();
 			
 		}
 		
@@ -197,7 +193,12 @@ public class SimpleList<T> implements List<T>
 	@Override
 	public int indexOf(Object obj)
 	{
-		for (int c = 0; c < this.list.length; c++)
+		return this.indexOf(0, obj);
+	}
+	
+	public int indexOf(int start, Object obj)
+	{
+		for (int c = start; c < this.list.length; c++)
 		{
 			if (obj == null ? this.list[c] == null : obj.equals(this.list[c]))
 			{
@@ -212,7 +213,7 @@ public class SimpleList<T> implements List<T>
 	@Override
 	public boolean isEmpty()
 	{
-		return this.size > 0;
+		return this.size == 0;
 	}
 	
 	@Override
@@ -310,10 +311,22 @@ public class SimpleList<T> implements List<T>
 	}
 	
 	@Override
-	public boolean retainAll(Collection<?> arg0)
+	public boolean retainAll(Collection<?> collection)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		boolean ret = false;
+		
+		for (int c = 0; c < this.list.length; c++)
+		{
+			if (!collection.contains(this.list[c]))
+			{
+				this.remove(c);
+				ret = true;
+				
+			}
+			
+		}
+		
+		return ret;
 	}
 	
 	@Override
