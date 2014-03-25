@@ -11,8 +11,8 @@ public final class InputConst
 {
 	private InputConst(){}
 	
-	public static final int COMMAND_BITMASK = 0b00000000000000001111111111111111;
-	public static final int COUNT_BITMASK =   0b11111111111111110000000000000000;
+	public static final int COMMAND_BITMASK = 0x0000FFFF;//0b00000000000000001111111111111111;
+	public static final int COUNT_BITMASK =   0xFFFF0000;//0b11111111111111110000000000000000;
 	
 	public static final int ZERO = 0x00,
 			ONE = 0x01 << 16,

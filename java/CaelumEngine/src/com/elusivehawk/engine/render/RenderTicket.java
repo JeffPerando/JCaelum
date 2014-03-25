@@ -19,7 +19,7 @@ import com.elusivehawk.engine.util.IDirty;
 
 /**
  * 
- * Used to render static {@link Model}s with non-static information (i.e. rotation, {@link IModelAnimation})
+ * Used to render static {@link Model}s with non-static information (i.e. rotation)
  * 
  * @author Elusivehawk
  */
