@@ -11,11 +11,12 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
+import com.elusivehawk.engine.core.Asset;
+import com.elusivehawk.engine.core.EnumAssetType;
 import com.elusivehawk.engine.render.Color;
 import com.elusivehawk.engine.render.EnumColorFilter;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.IGL1;
-import com.elusivehawk.engine.render.opengl.ITexture;
 import com.elusivehawk.engine.render.opengl.VertexBufferObject;
 import com.elusivehawk.engine.util.BufferHelper;
 
@@ -35,9 +36,11 @@ public class OpenGL1 implements IGL1
 	}
 	
 	@Override
-	public void glActiveTexture(ITexture texture)
+	public void glActiveTexture(Asset texture)
 	{
-		this.glActiveTexture(texture.getTexture());
+		assert texture.getType() == EnumAssetType.TEXTURE;
+		
+		this.glActiveTexture(texture.getIds()[0]);
 		
 	}
 	
@@ -63,9 +66,11 @@ public class OpenGL1 implements IGL1
 	}
 	
 	@Override
-	public void glBindTexture(int target, ITexture texture)
+	public void glBindTexture(int target, Asset texture)
 	{
-		GL11.glBindTexture(target, texture.getTexture());
+		assert texture.getType() == EnumAssetType.TEXTURE;
+		
+		GL11.glBindTexture(target, texture.getIds()[0]);
 		
 	}
 	
@@ -205,9 +210,42 @@ public class OpenGL1 implements IGL1
 	}
 	
 	@Override
-	public void glDeleteTextures(int length, int... textures)
+	public void glDeleteTextures(Asset... textures)
 	{
-		GL11.glDeleteTextures(BufferHelper.makeIntBuffer(length, textures));
+		IntBuffer buf = BufferHelper.createIntBuffer(textures.length);
+		
+		for (Asset asset : textures)
+		{
+			if (asset.getType() == EnumAssetType.TEXTURE)
+			{
+				buf.put(asset.getIds()[0]);
+				
+			}
+			
+		}
+		
+		buf.flip();
+		
+		if (buf.limit() == 0)
+		{
+			return;
+		}
+		
+		this.glDeleteTextures(buf);
+		
+	}
+	
+	@Override
+	public void glDeleteTextures(int... textures)
+	{
+		this.glDeleteTextures(BufferHelper.makeIntBuffer(textures));
+		
+	}
+	
+	@Override
+	public void glDeleteTextures(IntBuffer textures)
+	{
+		GL11.glDeleteTextures(textures);
 		
 	}
 	

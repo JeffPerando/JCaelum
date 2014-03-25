@@ -92,7 +92,7 @@ public class RenderEngine3D implements IRenderEngine
 					continue;
 				}
 				
-				tex = tkt.getTexture() == null ? context.getDefaultTexture() : tkt.getTexture().getTexture();
+				tex = tkt.getTexture() == null ? context.getDefaultTexture() : tkt.getTexture().getIds()[0];
 				
 				if (currTex != tex)
 				{

@@ -175,7 +175,7 @@ public class VertexBufferObject implements IGLBindable
 	}
 	
 	@Override
-	public boolean bind(int... extras)
+	public boolean bind()
 	{
 		RenderHelper.gl1().glBindBuffer(this);
 		
@@ -195,7 +195,7 @@ public class VertexBufferObject implements IGLBindable
 	}
 	
 	@Override
-	public void unbind(int... extras)
+	public void unbind()
 	{
 		RenderHelper.gl1().glBindBuffer(this.t, 0);
 		

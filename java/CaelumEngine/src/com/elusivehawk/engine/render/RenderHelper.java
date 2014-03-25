@@ -53,6 +53,7 @@ public final class RenderHelper
 		return CaelumEngine.renderContext().getGL4();
 	}*/
 	
+	@Deprecated
 	public static Buffer<Integer> processGifFile(File gif, EnumRenderMode mode, EnumColorFormat format)
 	{
 		if (!mode.isValidImageMode())
@@ -95,6 +96,7 @@ public final class RenderHelper
 		return null;
 	}
 	
+	@Deprecated
 	public static int processImage(File img, EnumRenderMode mode, EnumColorFormat format)
 	{
 		ILegibleImage leimg = null;
@@ -113,16 +115,19 @@ public final class RenderHelper
 		return leimg == null ? 0 : processImage(leimg, mode, format);
 	}
 	
+	@Deprecated
 	public static int processImage(ILegibleImage img, EnumRenderMode mode)
 	{
 		return processImage(img, mode, img.getFormat());
 	}
 	
+	@Deprecated
 	public static int processImage(ILegibleImage img, EnumRenderMode mode, EnumColorFormat format)
 	{
 		return processImage(readImage(img, format), img.getWidth(), img.getHeight(), mode);
 	}
 	
+	@Deprecated
 	public static int processImage(IntBuffer buf, int w, int h, EnumRenderMode mode)
 	{
 		if (!mode.isValidImageMode())
@@ -177,6 +182,7 @@ public final class RenderHelper
 		return buf;
 	}
 	
+	@Deprecated
 	public static int loadShader(File shader, int type)
 	{
 		if (!shader.exists() || !shader.getName().endsWith(".glsl"))

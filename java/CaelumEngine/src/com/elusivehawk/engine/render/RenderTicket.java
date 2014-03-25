@@ -3,6 +3,8 @@ package com.elusivehawk.engine.render;
 
 import java.nio.FloatBuffer;
 import java.util.HashMap;
+import com.elusivehawk.engine.core.Asset;
+import com.elusivehawk.engine.core.EnumAssetType;
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.MatrixHelper;
 import com.elusivehawk.engine.math.Vector;
@@ -10,7 +12,6 @@ import com.elusivehawk.engine.math.VectorF;
 import com.elusivehawk.engine.render.old.Model;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
-import com.elusivehawk.engine.render.opengl.ITexture;
 import com.elusivehawk.engine.render.opengl.VertexBufferObject;
 import com.elusivehawk.engine.util.BufferHelper;
 import com.elusivehawk.engine.util.IDirty;
@@ -32,7 +33,7 @@ public class RenderTicket implements IDirty, ILogicalRender
 	protected boolean dirty = false, zBuffer = true;//, animPause = false;
 	//protected int frame = 0;
 	//protected IModelAnimation anim = null, lastAnim = null;
-	protected ITexture tex;
+	protected Asset tex;
 	
 	public RenderTicket(Model model)
 	{
@@ -83,8 +84,10 @@ public class RenderTicket implements IDirty, ILogicalRender
 		
 	}*/
 	
-	public synchronized void setTexture(ITexture texture)
+	public synchronized void setTexture(Asset texture)
 	{
+		assert texture.getType() == EnumAssetType.TEXTURE;
+		
 		this.tex = texture;
 		
 	}
@@ -148,7 +151,7 @@ public class RenderTicket implements IDirty, ILogicalRender
 		return this.frame;
 	}*/
 	
-	public ITexture getTexture()
+	public Asset getTexture()
 	{
 		return this.tex;
 	}

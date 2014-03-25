@@ -9,9 +9,9 @@ package com.elusivehawk.engine.render.opengl;
  */
 public interface IGLBindable
 {
-	public boolean bind(int... extras);
+	public boolean bind();
 	
-	public void unbind(int... extras);
+	public void unbind();
 	
 	public void glDelete();
 	

@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.render;
 
 import java.util.List;
+import com.elusivehawk.engine.core.Asset;
 import com.elusivehawk.engine.core.IContext;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
@@ -161,8 +162,6 @@ public final class RenderContext implements IContext
 		assert tex != null;
 		this.texturePool.add(tex);
 		
-		this.registerCleanable(tex);
-		
 	}
 	
 	public void removeTexture(int index)
@@ -190,6 +189,8 @@ public final class RenderContext implements IContext
 			gl.glDelete();
 			
 		}
+		
+		this.gl1.glDeleteTextures(this.texturePool.toArray(new Asset[this.texturePool.size()]));
 		
 		this.cleanables.clear();
 		

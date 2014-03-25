@@ -13,6 +13,7 @@ public enum EnumAssetType
 	TEXTURE,
 	MATERIAL,
 	BUMPMAP,
+	SHADER,
 	SOUND,
 	FONT,
 	OTHER;

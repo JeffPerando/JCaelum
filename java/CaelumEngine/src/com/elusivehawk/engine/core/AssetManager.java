@@ -4,7 +4,6 @@ package com.elusivehawk.engine.core;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import com.elusivehawk.engine.util.FileHelper;
 import com.elusivehawk.engine.util.SimpleList;
 import com.elusivehawk.engine.util.TextParser;
@@ -19,17 +18,18 @@ import com.google.common.collect.Maps;
 public class AssetManager
 {
 	protected final ThreadAssetLoader worker;
-	protected final Map<String, AssetTicket> expectedRes = Maps.newHashMap();
+	protected final Map<String, IAssetRequester> expectedRes = Maps.newHashMap();
 	protected final Map<String, AssetReader> readers = Maps.newHashMap();
-	protected final Map<UUID, Asset> assetMap = Maps.newHashMap();
-	protected final List<File> resourceLocations = new SimpleList<File>();
-	protected final List<File> filesToScan = new SimpleList<File>();
+	protected final List<Asset> assets = SimpleList.newList();
+	protected final List<File> resourceLocations = SimpleList.newList();
+	protected final List<File> filesToScan = SimpleList.newList();
 	protected boolean loaded = false;
 	
 	@SuppressWarnings("unqualified-field-access")
 	AssetManager(ThreadAssetLoader thr)
 	{
 		worker = thr;
+		thr.setManager(this);
 		
 	}
 	
@@ -49,25 +49,13 @@ public class AssetManager
 		
 	}
 	
-	public AssetTicket loadResource(String res)
+	public void loadResource(String res, IAssetRequester req)
 	{
 		assert res != null;
+		assert req != null;
 		
-		String fixres = res.replace("/", FileHelper.FILE_SEP);
+		this.worker.loadAsset(res.replace("/", FileHelper.FILE_SEP), req);
 		
-		AssetTicket ret = this.expectedRes.get(fixres);
-		
-		if (ret == null)
-		{
-			ret = new AssetTicket(UUID.randomUUID());
-			
-			this.expectedRes.put(fixres, ret);
-			
-		}
-		
-		this.worker.loadAsset(fixres, ret);
-		
-		return ret;
 	}
 	
 	public void addAssetReader(String ext, AssetReader r)

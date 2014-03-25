@@ -9,10 +9,11 @@ import android.opengl.GLES10;
 import android.opengl.GLES11;
 import android.opengl.GLES30;
 import android.os.Build;
+import com.elusivehawk.engine.core.Asset;
+import com.elusivehawk.engine.core.EnumAssetType;
 import com.elusivehawk.engine.render.Color;
 import com.elusivehawk.engine.render.EnumColorFilter;
 import com.elusivehawk.engine.render.opengl.IGL1;
-import com.elusivehawk.engine.render.opengl.ITexture;
 import com.elusivehawk.engine.render.opengl.VertexBufferObject;
 import com.elusivehawk.engine.util.BufferHelper;
 
@@ -32,9 +33,11 @@ public class GLES1 implements IGL1
 	}
 	
 	@Override
-	public void glActiveTexture(ITexture texture)
+	public void glActiveTexture(Asset texture)
 	{
-		this.glActiveTexture(texture == null ? 0 : texture.getTexture());
+		assert texture.getType() == EnumAssetType.TEXTURE;
+		
+		this.glActiveTexture(texture == null ? 0 : texture.getIds()[0]);
 		
 	}
 	
@@ -60,9 +63,11 @@ public class GLES1 implements IGL1
 	}
 	
 	@Override
-	public void glBindTexture(int target, ITexture texture)
+	public void glBindTexture(int target, Asset texture)
 	{
-		this.glBindTexture(target, texture == null ? 0 : texture.getTexture());
+		assert texture.getType() == EnumAssetType.TEXTURE;
+		
+		this.glBindTexture(target, texture == null ? 0 : texture.getIds()[0]);
 		
 	}
 	
@@ -176,9 +181,42 @@ public class GLES1 implements IGL1
 	}
 	
 	@Override
-	public void glDeleteTextures(int length, int... textures)
+	public void glDeleteTextures(Asset... textures)
 	{
-		GLES10.glDeleteTextures(length, BufferHelper.makeIntBuffer(textures));
+		IntBuffer buf = BufferHelper.createIntBuffer(textures.length);
+		
+		for (Asset asset : textures)
+		{
+			if (asset.getType() == EnumAssetType.TEXTURE)
+			{
+				buf.put(asset.getIds()[0]);
+				
+			}
+			
+		}
+		
+		buf.flip();
+		
+		if (buf.limit() == 0)
+		{
+			return;
+		}
+		
+		this.glDeleteTextures(buf);
+		
+	}
+	
+	@Override
+	public void glDeleteTextures(int... textures)
+	{
+		this.glDeleteTextures(BufferHelper.makeIntBuffer(textures));
+		
+	}
+	
+	@Override
+	public void glDeleteTextures(IntBuffer textures)
+	{
+		GLES10.glDeleteTextures(textures.remaining(), textures);
 		
 	}
 	

@@ -3,6 +3,7 @@ package com.elusivehawk.engine.render.opengl;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import com.elusivehawk.engine.core.Asset;
 import com.elusivehawk.engine.render.Color;
 
 /**
@@ -15,7 +16,7 @@ public interface IGL1
 {
 	public void glActiveTexture(int texture);
 	
-	public void glActiveTexture(ITexture texture);
+	public void glActiveTexture(Asset texture);
 	
 	public void glBindBuffer(VertexBufferObject vbo);
 	
@@ -23,7 +24,7 @@ public interface IGL1
 	
 	public void glBindTexture(int target, int texture);
 	
-	public void glBindTexture(int target, ITexture texture);
+	public void glBindTexture(int target, Asset texture);
 	
 	public void glBlendFunc(int sfactor, int dfactor);
 	
@@ -55,7 +56,11 @@ public interface IGL1
 	
 	public void glDeleteBuffers(IntBuffer buffers);
 	
-	public void glDeleteTextures(int length, int... textures);
+	public void glDeleteTextures(Asset... textures);
+	
+	public void glDeleteTextures(int... textures);
+	
+	public void glDeleteTextures(IntBuffer textures);
 	
 	public void glDepthFunc(int func);
 	

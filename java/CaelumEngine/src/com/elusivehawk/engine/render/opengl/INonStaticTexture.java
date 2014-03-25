@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.render.opengl;
 
+import com.elusivehawk.engine.core.Asset;
 import com.elusivehawk.engine.util.IDirty;
 
 /**
@@ -9,7 +10,7 @@ import com.elusivehawk.engine.util.IDirty;
  * 
  * @author Elusivehawk
  */
-public interface INonStaticTexture extends ITexture, IDirty
+public interface INonStaticTexture extends Asset, IDirty
 {
 	/**
 	 * Called once a frame.

@@ -1,15 +1,13 @@
 
 package com.elusivehawk.engine.core;
 
-import com.elusivehawk.engine.util.IGettable;
-
 /**
  * 
  * 
  * 
  * @author Elusivehawk
  */
-public interface Asset extends IGettable<Asset>
+public interface Asset
 {
 	public EnumAssetType getType();
 	

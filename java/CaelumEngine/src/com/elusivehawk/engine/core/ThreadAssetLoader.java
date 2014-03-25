@@ -14,33 +14,36 @@ import com.elusivehawk.engine.util.Tuple;
  */
 public class ThreadAssetLoader extends ThreadStoppable
 {
-	private final Buffer<Tuple<String, AssetTicket>> assets = new Buffer<Tuple<String, AssetTicket>>();
+	private final Buffer<Tuple<String, IAssetRequester>> assets = new Buffer<Tuple<String, IAssetRequester>>();
 	private AssetManager assetMgr = null;
 	
 	@Override
 	public void rawUpdate() throws Throwable
 	{
-		if (!this.assets.isEmpty())
+		if (this.assets.isEmpty())
 		{
-			for (Tuple<String, AssetTicket> tuple : this.assets)
+			Thread.sleep(1L);
+			
+			return;
+		}
+		
+		for (Tuple<String, IAssetRequester> tuple : this.assets)
+		{
+			for (File file : this.assetMgr.getFiles())
 			{
-				for (File file : this.assetMgr.getFiles())
+				if (file.getAbsolutePath().endsWith(tuple.one))
 				{
-					if (file.getAbsolutePath().endsWith(tuple.one))
+					AssetReader r = this.assetMgr.getReader(file);
+					
+					if (r != null)
 					{
-						AssetReader r = this.assetMgr.getReader(file);
+						Asset a = r.readAsset(file);
 						
-						if (r != null)
+						if (a != null)
 						{
-							Asset a = r.readAsset(file);
+							tuple.two.onAssetLoaded(a);
 							
-							if (a != null)
-							{
-								tuple.two.setAsset(a);
-								
-								this.assets.remove();
-								
-							}
+							this.assets.remove();
 							
 						}
 						
@@ -60,7 +63,7 @@ public class ThreadAssetLoader extends ThreadStoppable
 		
 	}
 	
-	public synchronized void loadAsset(String location, AssetTicket tkt)
+	public synchronized void loadAsset(String location, IAssetRequester tkt)
 	{
 		this.assets.add(Tuple.create(location, tkt));
 		

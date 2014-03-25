@@ -2,6 +2,8 @@
 package com.elusivehawk.engine.render.opengl;
 
 import java.io.File;
+import com.elusivehawk.engine.core.Asset;
+import com.elusivehawk.engine.core.EnumAssetType;
 import com.elusivehawk.engine.render.EnumColorFormat;
 import com.elusivehawk.engine.render.EnumRenderMode;
 import com.elusivehawk.engine.render.ILegibleImage;
@@ -13,7 +15,7 @@ import com.elusivehawk.engine.render.RenderHelper;
  * 
  * @author Elusivehawk
  */
-public class TextureStatic implements ITexture
+public class TextureStatic implements Asset
 {
 	protected final int tex;
 	
@@ -49,43 +51,24 @@ public class TextureStatic implements ITexture
 	}
 	
 	@Override
-	public void glDelete()
+	public EnumAssetType getType()
 	{
-		RenderHelper.gl1().glDeleteTextures(this.getTexture());
-		
+		return EnumAssetType.TEXTURE;
 	}
 	
 	@Override
-	public int getTexture()
+	public int[] getIds()
 	{
-		return this.tex;
+		return new int[]{this.tex};
 	}
 	
 	@Override
-	public boolean bind(int... extras)
+	public boolean isFinished()
 	{
-		RenderHelper.gl1().glBindTexture(GLConst.GL_TEXTURE0 + (extras == null || extras.length == 0 ? 0 : extras[0]), this);
-		
-		try
-		{
-			RenderHelper.checkForGLError();
-			
-		}
-		catch (Exception e)
-		{
-			this.unbind(extras);
-			
-			return false;
-		}
-		
 		return true;
 	}
 	
 	@Override
-	public void unbind(int... extras)
-	{
-		RenderHelper.gl1().glBindTexture(GLConst.GL_TEXTURE0 + (extras == null || extras.length == 0 ? 0 : extras[0]), 0);
-		
-	}
+	public void finish(){}
 	
 }

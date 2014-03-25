@@ -182,7 +182,7 @@ public class GLProgram implements IGLBindable
 	}
 	
 	@Override
-	public boolean bind(int... extras)
+	public boolean bind()
 	{
 		if (!this.bind0())
 		{
@@ -238,7 +238,7 @@ public class GLProgram implements IGLBindable
 	}
 	
 	@Override
-	public void unbind(int... extras)
+	public void unbind()
 	{
 		if (!this.bound)
 		{
