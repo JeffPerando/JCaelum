@@ -14,12 +14,12 @@ import com.elusivehawk.engine.math.Vector;
 public abstract class CollisionObject implements ICollisionObject
 {
 	protected boolean inactive = false;
-	protected Vector<Float> pos;
+	protected Vector pos;
 	protected ICollisionListener listener;
 	protected List<ICollisionObject> children = new ArrayList<ICollisionObject>();
 	
 	@SuppressWarnings("unqualified-field-access")
-	protected CollisionObject(Vector<Float> origin, ICollisionListener lis)
+	protected CollisionObject(Vector origin, ICollisionListener lis)
 	{
 		pos = origin;
 		listener = lis;
@@ -43,7 +43,7 @@ public abstract class CollisionObject implements ICollisionObject
 	}
 	
 	@Override
-	public Vector<Float> getCentralPosition()
+	public Vector getCentralPosition()
 	{
 		return this.pos;
 	}

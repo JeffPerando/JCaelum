@@ -3,7 +3,6 @@ package com.elusivehawk.engine.physics;
 
 import com.elusivehawk.engine.math.MathHelper;
 import com.elusivehawk.engine.math.Vector;
-import com.elusivehawk.engine.math.VectorF;
 
 /**
  * 
@@ -16,38 +15,38 @@ public class CollisionBox extends CollisionObject
 	protected float maxX, maxY, maxZ;
 	protected float minX, minY, minZ;
 	
-	public CollisionBox(Vector<Float> origin, float f)
+	public CollisionBox(Vector origin, float f)
 	{
 		this(origin, null, f, f, f);
 		
 	}
 	
-	public CollisionBox(Vector<Float> origin, ICollisionListener lis, float f)
+	public CollisionBox(Vector origin, ICollisionListener lis, float f)
 	{
 		this(origin, lis, f, f, f);
 		
 	}
 	
-	public CollisionBox(Vector<Float> origin, float x, float y, float z)
+	public CollisionBox(Vector origin, float x, float y, float z)
 	{
 		this(origin, null, x, y, z);
 		
 	}
 	
-	public CollisionBox(Vector<Float> origin, ICollisionListener lis, float x, float y, float z)
+	public CollisionBox(Vector origin, ICollisionListener lis, float x, float y, float z)
 	{
 		this(origin, lis, -x, -y, -z, x, y, z);
 		
 	}
 	
-	public CollisionBox(Vector<Float> origin, float minX, float minY, float minZ, float maxX, float maxY, float maxZ)
+	public CollisionBox(Vector origin, float minX, float minY, float minZ, float maxX, float maxY, float maxZ)
 	{
 		this(origin, null, minX, minY, minZ, maxX, maxY, maxZ);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public CollisionBox(Vector<Float> origin, ICollisionListener lis, float Xmin, float Ymin, float Zmin, float Xmax, float Ymax, float Zmax)
+	public CollisionBox(Vector origin, ICollisionListener lis, float Xmin, float Ymin, float Zmin, float Xmax, float Ymax, float Zmax)
 	{
 		super(origin, lis);
 		
@@ -82,7 +81,7 @@ public class CollisionBox extends CollisionObject
 	@Override
 	public ICollisionListener getCollisionResult(ICollisionObject obj)
 	{
-		Vector<Float> vec = obj.createPointForCollision(this);
+		Vector vec = obj.createPointForCollision(this);
 		
 		if (MathHelper.bounds(vec.get(Vector.X), this.minX, this.maxX) && 
 				MathHelper.bounds(vec.get(Vector.Y), this.minY, this.maxY) &&
@@ -97,11 +96,11 @@ public class CollisionBox extends CollisionObject
 	}
 	
 	@Override
-	public Vector<Float> createPointForCollision(ICollisionObject obj)
+	public Vector createPointForCollision(ICollisionObject obj)
 	{
-		Vector<Float> vec = obj.getCentralPosition();
+		Vector vec = obj.getCentralPosition();
 		
-		return new VectorF(MathHelper.clamp(vec.get(Vector.X), this.minX, this.maxX),
+		return new Vector(MathHelper.clamp(vec.get(Vector.X), this.minX, this.maxX),
 				MathHelper.clamp(vec.get(Vector.Y), this.minY, this.maxY),
 				MathHelper.clamp(vec.get(Vector.Z), this.minZ, this.maxZ));
 	}

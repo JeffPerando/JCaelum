@@ -15,7 +15,7 @@ public interface IParticle
 {
 	public void updateParticle();
 	
-	public Vector<Float> getPosition();
+	public Vector getPosition();
 	
 	public Color getColor();
 	

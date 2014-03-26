@@ -5,7 +5,6 @@ import java.nio.FloatBuffer;
 import java.util.Arrays;
 import java.util.List;
 import com.elusivehawk.engine.math.Vector;
-import com.elusivehawk.engine.math.VectorF;
 import com.elusivehawk.engine.render.Color;
 import com.elusivehawk.engine.render.EnumColorFilter;
 import com.elusivehawk.engine.render.EnumColorFormat;
@@ -66,7 +65,7 @@ public class ParticleScene implements ILogicalRender
 		}
 		
 		this.buf.position(this.particles.size() * PARTICLE_FLOAT_COUNT);
-		Vector<Float> pos = new VectorF(3).set(p.getPosition());
+		Vector pos = new Vector(3).set(p.getPosition());
 		
 		for (int c = 0; c < 3; c++)
 		{
@@ -110,7 +109,7 @@ public class ParticleScene implements ILogicalRender
 			
 			if (p.updatePositionOrColor())
 			{
-				Vector<Float> vec = new VectorF(3).set(p.getPosition());
+				Vector vec = new Vector(3).set(p.getPosition());
 				Color col = p.getColor();
 				
 				this.buf.position(c * PARTICLE_FLOAT_COUNT);

@@ -9,7 +9,6 @@ import com.elusivehawk.engine.assets.IAssetRequester;
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.MatrixHelper;
 import com.elusivehawk.engine.math.Vector;
-import com.elusivehawk.engine.math.VectorF;
 import com.elusivehawk.engine.render.old.Model;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
@@ -25,7 +24,7 @@ import com.elusivehawk.engine.util.IDirty;
  */
 public class RenderTicket implements IDirty, ILogicalRender, IAssetRequester
 {
-	protected final HashMap<EnumVectorType, Vector<Float>> vecs = new HashMap<EnumVectorType, Vector<Float>>();
+	protected final HashMap<EnumVectorType, Vector> vecs = new HashMap<EnumVectorType, Vector>();
 	protected final Model m;
 	protected final GLProgram p;
 	protected final VertexBufferObject vbo;
@@ -138,7 +137,7 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetRequester
 		
 	}
 	
-	public synchronized void setVector(EnumVectorType type, Vector<Float> vec)
+	public synchronized void setVector(EnumVectorType type, Vector vec)
 	{
 		this.vecs.get(type).set(vec);
 		
@@ -183,7 +182,7 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetRequester
 	 * @param trans
 	 * @param scale
 	 */
-	public void setIndice(int pos, Vector<Float> rot, Vector<Float> trans, Vector<Float> scale)
+	public void setIndice(int pos, Vector rot, Vector trans, Vector scale)
 	{
 		this.buf.position(pos * 9);
 		
@@ -239,22 +238,22 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetRequester
 	
 	public static enum EnumVectorType
 	{
-		ROTATION(new VectorF(0f, 0f, 0f)),
-		TRANSLATION(new VectorF(0f, 0f, 0f)),
-		SCALING(new VectorF(1.0f, 1.0f, 1.0f));
+		ROTATION(new Vector(0f, 0f, 0f)),
+		TRANSLATION(new Vector(0f, 0f, 0f)),
+		SCALING(new Vector(1.0f, 1.0f, 1.0f));
 		
-		private final VectorF vec;
+		private final Vector vec;
 		
 		@SuppressWarnings("unqualified-field-access")
-		EnumVectorType(VectorF d)
+		EnumVectorType(Vector d)
 		{
 			vec = d;
 			
 		}
 		
-		protected VectorF getDefault()
+		protected Vector getDefault()
 		{
-			return new VectorF(this.vec);
+			return new Vector(this.vec);
 		}
 		
 	}

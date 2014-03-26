@@ -11,22 +11,22 @@ import com.elusivehawk.engine.util.SimpleList;
  * 
  * @author Elusivehawk
  */
-public abstract class Vector<T extends Number> implements IMathObject<T>
+public class Vector implements IMathObject<Float>
 {
 	public static final int X = 0;
 	public static final int Y = 1;
 	public static final int Z = 2;
 	public static final int W = 3;
 	
-	public static final Vector<Float> X_AXIS = new VectorF(1f, 0f, 0f);
-	public static final Vector<Float> Y_AXIS = new VectorF(0f, 1f, 0f);
-	public static final Vector<Float> Z_AXIS = new VectorF(0f, 0f, 1f);
+	public static final Vector X_AXIS = new Vector(1f, 0f, 0f);
+	public static final Vector Y_AXIS = new Vector(0f, 1f, 0f);
+	public static final Vector Z_AXIS = new Vector(0f, 0f, 1f);
 	
-	protected final Number[] nums;
-	protected final List<IVectorListener<T>> listeners = SimpleList.newList();
+	protected final float[] nums;
+	protected final List<IVectorListener> listeners = SimpleList.newList();
 	protected String name = null;
 	
-	protected Vector(int length, Buffer<T> buf)
+	public Vector(int length, Buffer<Float> buf)
 	{
 		this(length);
 		
@@ -39,14 +39,14 @@ public abstract class Vector<T extends Number> implements IMathObject<T>
 	}
 	
 	@SafeVarargs
-	protected Vector(T... info)
+	public Vector(Float... info)
 	{
-		this(info.length, new Buffer<T>(info));
+		this(info.length, new Buffer<Float>(info));
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	protected Vector(Vector<T> vec)
+	public Vector(Vector vec)
 	{
 		this(vec.getSize());
 		
@@ -61,9 +61,9 @@ public abstract class Vector<T extends Number> implements IMathObject<T>
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	protected Vector(int length)
+	public Vector(int length)
 	{
-		nums = new Number[MathHelper.clamp(length, 1, 4)];
+		nums = new float[MathHelper.clamp(length, 1, 4)];
 		
 	}
 	
@@ -73,22 +73,21 @@ public abstract class Vector<T extends Number> implements IMathObject<T>
 		return this.nums.length;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
-	public T get(int pos)
+	public Float get(int pos)
 	{
-		return (T)this.nums[pos];
+		return this.nums[pos];
 	}
 	
 	@Override
-	public void set(int pos, T num)
+	public void set(int pos, Float num)
 	{
 		this.nums[pos] = num;
 		
 	}
 	
 	@Override
-	public Vector<T> set(IMathObject<T> obj)
+	public Vector set(IMathObject<Float> obj)
 	{
 		int l = Math.min(this.getSize(), obj.getSize());
 		
@@ -103,13 +102,92 @@ public abstract class Vector<T extends Number> implements IMathObject<T>
 		return this;
 	}
 	
-	public void registerListener(IVectorListener<T> veclis)
+	@Override
+	public Vector add(IMathObject<Float> obj, boolean local)
+	{
+		int l = Math.min(this.getSize(), obj.getSize());
+		Vector ret = local ? this : new Vector(this);
+		
+		for (int c = 0; c < l; c++)
+		{
+			ret.set(c, this.get(c) + obj.get(c));
+			
+		}
+		
+		ret.onChanged();
+		
+		return ret;
+	}
+	
+	@Override
+	public Vector div(IMathObject<Float> obj, boolean local)
+	{
+		int l = Math.min(this.getSize(), obj.getSize());
+		Vector ret = local ? this : new Vector(this);
+		
+		for (int c = 0; c < l; c++)
+		{
+			ret.set(c, this.get(c) / obj.get(c));
+			
+		}
+		
+		ret.onChanged();
+		
+		return ret;
+	}
+	
+	@Override
+	public Vector sub(IMathObject<Float> obj, boolean local)
+	{
+		int l = Math.min(this.getSize(), obj.getSize());
+		Vector ret = local ? this : new Vector(this);
+		
+		for (int c = 0; c < l; c++)
+		{
+			ret.set(c, this.get(c) - obj.get(c));
+			
+		}
+		
+		ret.onChanged();
+		
+		return ret;
+	}
+	
+	@Override
+	public Vector mul(IMathObject<Float> obj, boolean local)
+	{
+		int l = Math.min(this.getSize(), obj.getSize());
+		Vector ret = local ? this : new Vector(this);
+		
+		for (int c = 0; c < l; c++)
+		{
+			ret.set(c, this.get(c) * obj.get(c));
+			
+		}
+		
+		ret.onChanged();
+		
+		return ret;
+	}
+	
+	@Override
+	public void store(Buffer<Float> buf)
+	{
+		for (int c = 0; c < this.getSize(); c++)
+		{
+			buf.add(this.get(c));
+			
+		}
+		
+	}
+	
+	public void registerListener(IVectorListener veclis)
 	{
 		this.listeners.add(veclis);
 		
 	}
 	
-	public void removeListener(IVectorListener<T> veclis)
+	public void removeListener(IVectorListener veclis)
 	{
 		this.listeners.remove(veclis);
 		
@@ -122,7 +200,7 @@ public abstract class Vector<T extends Number> implements IMathObject<T>
 			return;
 		}
 		
-		for (IVectorListener<T> lis : this.listeners)
+		for (IVectorListener lis : this.listeners)
 		{
 			lis.onVectorChanged(this);
 			
@@ -130,7 +208,7 @@ public abstract class Vector<T extends Number> implements IMathObject<T>
 		
 	}
 	
-	public Vector<T> name(String str)
+	public Vector name(String str)
 	{
 		this.name = str;
 		
@@ -150,7 +228,7 @@ public abstract class Vector<T extends Number> implements IMathObject<T>
 		b.append(this.getName() == null ? "vector" : this.getName());
 		b.append(":[");
 		
-		T num = null;
+		Float num = null;
 		
 		for (int c = 0; c < 4; c++)
 		{

@@ -15,7 +15,7 @@ public class CollisionSphere extends CollisionObject
 	protected float radius;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public CollisionSphere(Vector<Float> origin, ICollisionListener lis, float r)
+	public CollisionSphere(Vector origin, ICollisionListener lis, float r)
 	{
 		super(origin, lis);
 		
@@ -51,7 +51,7 @@ public class CollisionSphere extends CollisionObject
 	}
 	
 	@Override
-	public Vector<Float> createPointForCollision(ICollisionObject obj)
+	public Vector createPointForCollision(ICollisionObject obj)
 	{
 		// TODO Auto-generated method stub
 		return null;

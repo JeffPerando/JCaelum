@@ -14,7 +14,7 @@ public final class MatrixHelper
 {
 	private MatrixHelper(){}
 	
-	public static Matrix createHomogenousMatrix(Vector<Float> rot, Vector<Float> scl, Vector<Float> trans)
+	public static Matrix createHomogenousMatrix(Vector rot, Vector scl, Vector trans)
 	{
 		return createRotationMatrix(rot).mul(createScalingMatrix(scl), true).mul(createTranslationMatrix(trans), true);
 	}
@@ -52,7 +52,7 @@ public final class MatrixHelper
 		return new Matrix(ret);
 	}
 	
-	public static Matrix createRotationMatrix(Vector<Float> vec)
+	public static Matrix createRotationMatrix(Vector vec)
 	{
 		return createRotationMatrix(vec.get(Vector.X), vec.get(Vector.Y), vec.get(Vector.Z));
 	}
@@ -88,7 +88,7 @@ public final class MatrixHelper
 		return new Matrix(buf);*/
 	}
 	
-	public static Matrix createScalingMatrix(Vector<Float> vec)
+	public static Matrix createScalingMatrix(Vector vec)
 	{
 		return createScalingMatrix(vec.get(Vector.X), vec.get(Vector.Y), vec.get(Vector.Z));
 	}
@@ -113,7 +113,7 @@ public final class MatrixHelper
 		return ret;
 	}
 	
-	public static Matrix createTranslationMatrix(Vector<Float> vec)
+	public static Matrix createTranslationMatrix(Vector vec)
 	{
 		return createTranslationMatrix(vec.get(Vector.X), vec.get(Vector.Y), vec.get(Vector.Z));
 	}
@@ -138,7 +138,7 @@ public final class MatrixHelper
 		return ret;
 	}
 	
-	public static Matrix rotate(float angle, Vector<Float> axis, Matrix mat)
+	public static Matrix rotate(float angle, Vector axis, Matrix mat)
 	{
 		Matrix ret = createIdentityMatrix();
 		

@@ -7,8 +7,8 @@ package com.elusivehawk.engine.math;
  * 
  * @author Elusivehawk
  */
-public interface IVectorListener<T extends Number>
+public interface IVectorListener
 {
-	public void onVectorChanged(Vector<T> vec);
+	public void onVectorChanged(Vector vec);
 	
 }

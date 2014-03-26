@@ -17,9 +17,9 @@ public interface ICollisionObject
 	
 	public void setInactive(boolean inactive);
 	
-	public Vector<Float> getCentralPosition();
+	public Vector getCentralPosition();
 	
-	public Vector<Float> createPointForCollision(ICollisionObject obj);
+	public Vector createPointForCollision(ICollisionObject obj);
 	
 	public void addChild(ICollisionObject obj);
 	

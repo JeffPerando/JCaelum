@@ -9,7 +9,6 @@ import java.util.List;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.math.Vector;
-import com.elusivehawk.engine.math.VectorF;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.opengl.GLConst;
@@ -38,9 +37,9 @@ public class Model implements IStorageListener
 	public final SemiFinalStorage<VertexBufferObject> indiceBuf = new SemiFinalStorage<VertexBufferObject>(null, this);
 	
 	private boolean finished = false;
-	private List<Vector<Float>> polys = new SimpleList<Vector<Float>>();
-	private List<Vector<Float>> texOffs = new SimpleList<Vector<Float>>();
-	private List<Vector<Float>> norms = new SimpleList<Vector<Float>>();
+	private List<Vector> polys = SimpleList.newList();
+	private List<Vector> texOffs = SimpleList.newList();
+	private List<Vector> norms = SimpleList.newList();
 	private int glMode = Integer.MIN_VALUE;
 	private int pointCount = 0, oldPointCount = 0;
 	private HashMap<Integer, Tuple<Integer, Integer>> arrays = new HashMap<Integer, Tuple<Integer, Integer>>();
@@ -66,21 +65,21 @@ public class Model implements IStorageListener
 		
 		this.finished = true;
 		
-		List<Vector<Float>> vecs = new SimpleList<Vector<Float>>();
+		List<Vector> vecs = new SimpleList<Vector>();
 		List<Integer> indiceList = new SimpleList<Integer>();
 		
 		List<Float> temp = new ArrayList<Float>();
 		
 		for (int c = 0; c < this.polys.size(); c++)
 		{
-			Vector<Float> vec = this.polys.get(c);
+			Vector vec = this.polys.get(c);
 			
 			int index = vecs.indexOf(vec);
 			
 			if (index == -1)
 			{
-				Vector<Float> tex = this.texOffs.get(c);
-				Vector<Float> norm = this.norms.get(c);
+				Vector tex = this.texOffs.get(c);
+				Vector norm = this.norms.get(c);
 				
 				index = vecs.size();
 				vecs.add(vec);
@@ -191,13 +190,13 @@ public class Model implements IStorageListener
 		
 		while (this.texOffs.size() < this.polys.size())
 		{
-			this.texOffs.add(new VectorF(0f, 0f));
+			this.texOffs.add(new Vector(0f, 0f));
 			
 		}
 		
 		while (this.norms.size() < this.polys.size())
 		{
-			this.norms.add(new VectorF(0f, 0f, 0f));//TODO Automatically calculate surface normals.
+			this.norms.add(new Vector(0f, 0f, 0f));//TODO Automatically calculate surface normals.
 			
 		}
 		
@@ -216,11 +215,11 @@ public class Model implements IStorageListener
 			return;
 		}
 		
-		this.vertex(new VectorF(x, y, z));
+		this.vertex(new Vector(x, y, z));
 		
 	}
 	
-	public final void vertex(VectorF vec)
+	public final void vertex(Vector vec)
 	{
 		if (this.finished)
 		{
@@ -238,11 +237,11 @@ public class Model implements IStorageListener
 	
 	public final void color(float x, float y, float z)
 	{
-		this.normal(new VectorF(x, y, z));
+		this.normal(new Vector(x, y, z));
 		
 	}
 	
-	public final void normal(Vector<Float> norm)
+	public final void normal(Vector norm)
 	{
 		if (this.finished)
 		{
@@ -260,7 +259,7 @@ public class Model implements IStorageListener
 			return;
 		}
 		
-		this.texOffs.add(new VectorF(x, y));
+		this.texOffs.add(new Vector(x, y));
 		
 	}
 	
