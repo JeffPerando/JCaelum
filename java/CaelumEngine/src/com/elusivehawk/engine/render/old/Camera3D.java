@@ -31,7 +31,14 @@ public class Camera3D implements ICamera
 	}
 	
 	@Override
-	public void updateCamera()
+	public void postRender()
+	{
+		this.setIsDirty(false);
+		
+	}
+	
+	@Override
+	public void updateUniforms()
 	{
 		if (!CaelumEngine.renderContext().getRenderMode().is3D())
 		{
@@ -69,13 +76,6 @@ public class Camera3D implements ICamera
 			
 		}
 		*/
-	}
-	
-	@Override
-	public void postRender()
-	{
-		this.setIsDirty(false);
-		
 	}
 	
 	@Override

@@ -112,7 +112,7 @@ public class ThreadGameRender extends ThreadTimed implements IGameStateListener,
 			
 		}
 		
-		this.hub.getCamera().updateCamera();
+		this.hub.getCamera().updateUniforms();
 		
 		Collection<IRenderEngine> engines = this.hub.getRenderEngines();
 		

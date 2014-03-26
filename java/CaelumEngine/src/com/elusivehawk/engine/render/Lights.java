@@ -34,6 +34,9 @@ public class Lights implements IGLManipulator
 	}
 	
 	@Override
+	public void updateUniforms(){}
+	
+	@Override
 	public void manipulateUniforms(GLProgram p)
 	{
 		// TODO Auto-generated method stub

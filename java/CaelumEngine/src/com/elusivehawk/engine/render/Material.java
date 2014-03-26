@@ -92,6 +92,9 @@ public class Material implements Asset, IGLManipulator
 	public void finish(){}
 	
 	@Override
+	public void updateUniforms(){}
+	
+	@Override
 	public void manipulateUniforms(GLProgram p)
 	{
 		p.attachUniform("mat.tex", BufferHelper.makeIntBuffer(this.tex.getIds()[0]), GLProgram.EnumUniformType.ONE);
