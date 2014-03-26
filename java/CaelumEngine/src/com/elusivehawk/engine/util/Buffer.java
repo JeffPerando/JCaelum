@@ -102,6 +102,7 @@ public class Buffer<T> implements IDirty, Collection<T>, Iterator<T>
 		return true;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Buffer<T> add(T... objs)
 	{
 		for (T obj : objs)

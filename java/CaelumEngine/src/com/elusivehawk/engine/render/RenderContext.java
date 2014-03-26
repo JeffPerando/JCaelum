@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.render;
 
 import java.util.List;
+import java.util.Map;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.core.IContext;
 import com.elusivehawk.engine.render.opengl.GLConst;
@@ -13,6 +14,7 @@ import com.elusivehawk.engine.render.opengl.IGLBindable;
 import com.elusivehawk.engine.render.opengl.IGLManipulator;
 import com.elusivehawk.engine.util.FileHelper;
 import com.elusivehawk.engine.util.SimpleList;
+import com.google.common.collect.Maps;
 
 /**
  * 
@@ -30,10 +32,9 @@ public final class RenderContext implements IContext
 	
 	private int sVertex, sFrag, notex;
 	
-	private final List<INonStaticTexture> texturePool = new SimpleList<INonStaticTexture>(32);
-	private final List<IPostRenderer> postRenderers = new SimpleList<IPostRenderer>(32);
-	private final List<IGLBindable> cleanables = new SimpleList<IGLBindable>(32);
-	private final List<IGLManipulator> manipulators = new SimpleList<IGLManipulator>(32);
+	private final List<INonStaticTexture> texturePool = SimpleList.newList(32);
+	private final List<IGLBindable> cleanables = SimpleList.newList(32);;
+	private final Map<EnumRenderMode, List<IGLManipulator>> manipulators = Maps.newHashMapWithExpectedSize(3);
 	
 	private EnumRenderStage stage = null;
 	private boolean initiated = false, flipScreen = false;
@@ -139,23 +140,45 @@ public final class RenderContext implements IContext
 		
 		switch (this.stage)
 		{
-			case PRERENDER: this.updateTextures(); break;
+			case PRERENDER: this.updateEverything(); break;
 			case POSTEFFECTS: this.onPostRender(); break;
 			
 		}
 		
 	}
 	
-	private void updateTextures()
+	private void updateEverything()
 	{
-		if (this.texturePool.isEmpty())
+		if (!this.texturePool.isEmpty())
 		{
-			return;
+			for (INonStaticTexture tex : this.texturePool)
+			{
+				tex.updateTexture();
+				
+			}
+			
 		}
 		
-		for (INonStaticTexture tex : this.texturePool)
+		if (!this.manipulators.isEmpty())
 		{
-			tex.updateTexture();
+			List<IGLManipulator> mani;
+			
+			for (EnumRenderMode mode : EnumRenderMode.values())
+			{
+				mani = this.manipulators.get(mode);
+				
+				if (mani == null || mani.isEmpty())
+				{
+					continue;
+				}
+				
+				for (IGLManipulator glm : mani)
+				{
+					glm.updateUniforms(this);
+					
+				}
+				
+			}
 			
 		}
 		
@@ -200,22 +223,28 @@ public final class RenderContext implements IContext
 		
 	}
 	
-	public void addPostRenderer(IPostRenderer pr)
-	{
-		this.postRenderers.add(pr);
-		
-	}
-	
 	private void onPostRender()
 	{
-		if (this.postRenderers.isEmpty())
+		if (!this.manipulators.isEmpty())
 		{
-			return;
-		}
-		
-		for (IPostRenderer pr : this.postRenderers)
-		{
-			pr.postRender();
+			List<IGLManipulator> mani;
+			
+			for (EnumRenderMode mode : EnumRenderMode.values())
+			{
+				mani = this.manipulators.get(mode);
+				
+				if (mani == null || mani.isEmpty())
+				{
+					continue;
+				}
+				
+				for (IGLManipulator glm : mani)
+				{
+					glm.postRender();
+					
+				}
+				
+			}
 			
 		}
 		
@@ -227,17 +256,34 @@ public final class RenderContext implements IContext
 		
 	}
 	
-	public void addProgramManipulator(IGLManipulator glm)
+	public void attachManipulator(EnumRenderMode mode, IGLManipulator glm)
 	{
-		this.manipulators.add(glm);
+		List<IGLManipulator> mani = this.manipulators.get(mode);
+		
+		if (mani == null)
+		{
+			mani = SimpleList.newList(32);
+			
+			this.manipulators.put(mode, mani);
+			
+		}
+		
+		mani.add(glm);
 		
 	}
 	
-	public void manipulateProgram(GLProgram p)
+	public void manipulateProgram(EnumRenderMode mode, GLProgram p)
 	{
-		for (IGLManipulator glm : this.manipulators)
+		List<IGLManipulator> mani = this.manipulators.get(mode);
+		
+		if (mani == null || mani.isEmpty())
 		{
-			glm.manipulateUniforms(p);
+			return;
+		}
+		
+		for (IGLManipulator glm : mani)
+		{
+			glm.manipulateUniforms(this, p);
 			
 		}
 		

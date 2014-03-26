@@ -43,11 +43,6 @@ public interface IRenderHUB
 	public DisplaySettings getSettings();
 	
 	/**
-	 * @return The camera to use for rendering.
-	 */
-	public ICamera getCamera();
-	
-	/**
 	 * @return The current scene to render.
 	 */
 	public IScene getScene();

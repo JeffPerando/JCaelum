@@ -79,7 +79,7 @@ public class RenderEngine3D implements IRenderEngine
 					continue;
 				}
 				
-				context.manipulateProgram(p);
+				context.manipulateProgram(EnumRenderMode.MODE_3D, p);
 				
 				try
 				{

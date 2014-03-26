@@ -1,9 +1,6 @@
 
 package com.elusivehawk.engine.math;
 
-import com.elusivehawk.engine.render.EnumCameraPollType;
-import com.elusivehawk.engine.render.ICamera;
-
 /**
  * 
  * Just a small class I wrote to help with making matrices.
@@ -32,15 +29,12 @@ public final class MatrixHelper
 		return new Matrix(ret);
 	}
 	
-	public static Matrix createProjectionMatrix(ICamera cam)
+	public static Matrix createProjectionMatrix(Vector pos, Vector rot, float fov, float aspect, float zFar, float zNear)
 	{
 		float[] ret = new float[16];
 		
-		float zFar = cam.getFloat(EnumCameraPollType.Z_FAR);
-		float zNear = cam.getFloat(EnumCameraPollType.Z_NEAR);
-		
-		float yScale = 1 / (float)Math.tan(MathHelper.toRadians(cam.getFloat(EnumCameraPollType.FOV) / 2f));
-		float xScale = yScale / cam.getFloat(EnumCameraPollType.ASPECT_RATIO);
+		float yScale = 1 / (float)Math.tan(MathHelper.toRadians(fov / 2f));
+		float xScale = yScale / aspect;
 		float frustumLength = zFar - zNear;
 		
 		ret[0] = xScale;

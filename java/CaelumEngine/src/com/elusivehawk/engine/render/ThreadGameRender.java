@@ -96,9 +96,9 @@ public class ThreadGameRender extends ThreadTimed implements IGameStateListener,
 			return;
 		}
 		
-		this.context.setRenderStage(EnumRenderStage.PRERENDER);
-		
 		this.hub.updateHUB(delta);
+		
+		this.context.setRenderStage(EnumRenderStage.PRERENDER);
 		
 		if (this.hub.updateDisplay())
 		{
@@ -111,8 +111,6 @@ public class ThreadGameRender extends ThreadTimed implements IGameStateListener,
 			d.setFPS(this.fps = settings.targetFPS);
 			
 		}
-		
-		this.hub.getCamera().updateUniforms();
 		
 		Collection<IRenderEngine> engines = this.hub.getRenderEngines();
 		

@@ -34,10 +34,26 @@ public class Lights implements IGLManipulator
 	}
 	
 	@Override
-	public void updateUniforms(){}
+	public boolean isDirty()
+	{
+		return false;
+	}
 	
 	@Override
-	public void manipulateUniforms(GLProgram p)
+	public void setIsDirty(boolean b){}
+	
+	@Override
+	public void updateUniforms(RenderContext context){}
+	
+	@Override
+	public void manipulateUniforms(RenderContext context, GLProgram p)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void postRender()
 	{
 		// TODO Auto-generated method stub
 		

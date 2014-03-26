@@ -1,12 +1,11 @@
 
 package com.elusivehawk.engine.render.old;
 
-import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.MatrixHelper;
-import com.elusivehawk.engine.render.EnumCameraPollType;
-import com.elusivehawk.engine.render.ICamera;
+import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.opengl.GLProgram;
+import com.elusivehawk.engine.render.opengl.IGLManipulator;
 import com.elusivehawk.engine.util.DirtableStorage;
 
 /**
@@ -16,9 +15,8 @@ import com.elusivehawk.engine.util.DirtableStorage;
  * @author Elusivehawk
  */
 @Deprecated
-public class Camera3D implements ICamera
+public class Camera3D implements IGLManipulator
 {
-	private float[] stats = new float[EnumCameraPollType.values().length];
 	private DirtableStorage<Boolean> grabMouse = new DirtableStorage<Boolean>(true);
 	private boolean dirty = true;
 	private Matrix camMat = new Matrix(16);
@@ -31,16 +29,22 @@ public class Camera3D implements ICamera
 	}
 	
 	@Override
-	public void postRender()
+	public boolean isDirty()
 	{
-		this.setIsDirty(false);
+		return this.dirty;
+	}
+	
+	@Override
+	public void setIsDirty(boolean b)
+	{
+		this.dirty = b;
 		
 	}
 	
 	@Override
-	public void updateUniforms()
+	public void updateUniforms(RenderContext context)
 	{
-		if (!CaelumEngine.renderContext().getRenderMode().is3D())
+		if (!context.getRenderMode().is3D())
 		{
 			return;
 		}
@@ -79,44 +83,22 @@ public class Camera3D implements ICamera
 	}
 	
 	@Override
-	public void manipulateUniforms(GLProgram p)
+	public void manipulateUniforms(RenderContext context, GLProgram p)
 	{
 		if (!this.isDirty())
 		{
 			return;
 		}
 		
-		p.attachUniform("proj", MatrixHelper.createProjectionMatrix(this).asBuffer(), GLProgram.EnumUniformType.M_FOUR);
+		p.attachUniform("proj", /*FIXME*/MatrixHelper.createProjectionMatrix(null, null, 0f, 0f, 0f, 0f).asBuffer(), GLProgram.EnumUniformType.M_FOUR);
 		
 	}
 	
 	@Override
-	public boolean isDirty()
+	public void postRender()
 	{
-		return this.dirty;
-	}
-	
-	@Override
-	public void setIsDirty(boolean b)
-	{
-		this.dirty = b;
+		this.setIsDirty(false);
 		
-	}
-	
-	@Override
-	public float getFloat(EnumCameraPollType pollType)
-	{
-		return this.stats[pollType.ordinal()];
-	}
-	
-	@Override
-	public boolean setFloat(EnumCameraPollType pollType, float f)
-	{
-		this.stats[pollType.ordinal()] = f;
-		
-		this.setIsDirty(true);
-		
-		return true;
 	}
 	
 	public void setMouseGrabbed(boolean b)
