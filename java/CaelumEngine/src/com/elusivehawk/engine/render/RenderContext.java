@@ -2,7 +2,7 @@
 package com.elusivehawk.engine.render;
 
 import java.util.List;
-import com.elusivehawk.engine.core.Asset;
+import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.core.IContext;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;

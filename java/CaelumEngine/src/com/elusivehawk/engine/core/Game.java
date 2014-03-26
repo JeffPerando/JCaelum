@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.core;
 
 import java.util.List;
+import com.elusivehawk.engine.assets.AssetManager;
 import com.elusivehawk.engine.physics.IPhysicsScene;
 import com.elusivehawk.engine.render.IRenderHUB;
 import com.elusivehawk.engine.util.Buffer;

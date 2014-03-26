@@ -3,9 +3,9 @@ package com.elusivehawk.engine.render;
 
 import java.nio.FloatBuffer;
 import java.util.HashMap;
-import com.elusivehawk.engine.core.Asset;
-import com.elusivehawk.engine.core.EnumAssetType;
-import com.elusivehawk.engine.core.IAssetRequester;
+import com.elusivehawk.engine.assets.Asset;
+import com.elusivehawk.engine.assets.EnumAssetType;
+import com.elusivehawk.engine.assets.IAssetRequester;
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.MatrixHelper;
 import com.elusivehawk.engine.math.Vector;

@@ -3,7 +3,7 @@ package com.elusivehawk.engine.render.opengl;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import com.elusivehawk.engine.core.Asset;
+import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.render.Color;
 
 /**

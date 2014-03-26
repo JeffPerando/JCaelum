@@ -58,6 +58,12 @@ public class Color
 		
 	}
 	
+	public Color(EnumColorFormat f, float a, float b, float c, float d)
+	{
+		this(f, (byte)(255 * a), (byte)(255 * b), (byte)(255 * c), (byte)(255 * d));
+		
+	}
+	
 	public Color(EnumColorFormat f, byte... cols)
 	{
 		this(f, new ByteArray(cols));

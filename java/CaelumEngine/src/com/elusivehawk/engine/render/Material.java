@@ -1,8 +1,8 @@
 
 package com.elusivehawk.engine.render;
 
-import com.elusivehawk.engine.core.Asset;
-import com.elusivehawk.engine.core.EnumAssetType;
+import com.elusivehawk.engine.assets.Asset;
+import com.elusivehawk.engine.assets.EnumAssetType;
 import com.elusivehawk.engine.math.MathHelper;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGLManipulator;

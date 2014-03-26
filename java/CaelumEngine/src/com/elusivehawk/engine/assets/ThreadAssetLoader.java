@@ -1,7 +1,9 @@
 
-package com.elusivehawk.engine.core;
+package com.elusivehawk.engine.assets;
 
 import java.io.File;
+import com.elusivehawk.engine.core.CaelumEngine;
+import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.ThreadStoppable;
 import com.elusivehawk.engine.util.Tuple;
@@ -39,13 +41,18 @@ public class ThreadAssetLoader extends ThreadStoppable
 					{
 						Asset a = r.readAsset(file);
 						
-						if (a != null)
+						if (a == null)
+						{
+							CaelumEngine.log().log(EnumLogType.WARN, String.format("Asset %s failed to load", file.getAbsolutePath()));
+							
+						}
+						else
 						{
 							tuple.two.onAssetLoaded(a);
 							
-							this.assets.remove();
-							
 						}
+						
+						this.assets.remove();
 						
 					}
 					

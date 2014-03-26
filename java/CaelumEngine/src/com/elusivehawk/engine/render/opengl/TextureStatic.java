@@ -2,8 +2,8 @@
 package com.elusivehawk.engine.render.opengl;
 
 import java.io.File;
-import com.elusivehawk.engine.core.Asset;
-import com.elusivehawk.engine.core.EnumAssetType;
+import com.elusivehawk.engine.assets.Asset;
+import com.elusivehawk.engine.assets.EnumAssetType;
 import com.elusivehawk.engine.render.EnumColorFormat;
 import com.elusivehawk.engine.render.EnumRenderMode;
 import com.elusivehawk.engine.render.ILegibleImage;

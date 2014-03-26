@@ -1,5 +1,5 @@
 
-package com.elusivehawk.engine.core;
+package com.elusivehawk.engine.assets;
 
 import java.io.File;
 import java.util.List;
@@ -26,7 +26,7 @@ public class AssetManager
 	protected boolean loaded = false;
 	
 	@SuppressWarnings("unqualified-field-access")
-	AssetManager(ThreadAssetLoader thr)
+	public AssetManager(ThreadAssetLoader thr)
 	{
 		worker = thr;
 		thr.setManager(this);

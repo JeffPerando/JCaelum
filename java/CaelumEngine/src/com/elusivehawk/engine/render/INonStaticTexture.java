@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
-import com.elusivehawk.engine.core.Asset;
+import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.util.IDirty;
 
 /**

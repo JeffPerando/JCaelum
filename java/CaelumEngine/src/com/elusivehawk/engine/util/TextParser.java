@@ -37,44 +37,28 @@ public final class TextParser
 	public static List<String> read(File file)
 	{
 		List<String> text = new ArrayList<String>();
+		FileReader fr = FileHelper.createReader(file);
 		
-		if (!file.exists())
+		if (fr != null)
 		{
-			System.err.println("File with path " + file.getAbsolutePath() + " does not exist. It may have been tampered with.");
-			
-			return text;
-		}
-		
-		if (!file.isFile())
-		{
-			System.err.println("File with path " + file.getAbsolutePath() + " is in fact a directory. It may have been tampered with.");
-			
-			return text;
-		}
-		
-		if (!file.canRead())
-		{
-			System.err.println("File with path " + file.getAbsolutePath() + " cannot be read. It may have been tampered with.");
-			
-			return text;
-		}
-		
-		try
-		{
-			BufferedReader reader = new BufferedReader(new FileReader(file));
-			
-			for (String line = reader.readLine(); line != null; line = reader.readLine())
+			try
 			{
-				text.add(line);
+				BufferedReader r = new BufferedReader(fr);
+				
+				for (String line = r.readLine(); line != null; line = r.readLine())
+				{
+					text.add(line);
+					
+				}
+				
+				r.close();
 				
 			}
-			
-			reader.close();
-			
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
+			catch (Exception e)
+			{
+				e.printStackTrace();
+				
+			}
 			
 		}
 		

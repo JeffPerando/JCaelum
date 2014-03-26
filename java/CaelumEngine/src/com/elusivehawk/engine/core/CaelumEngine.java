@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import com.elusivehawk.engine.assets.AssetManager;
+import com.elusivehawk.engine.assets.ThreadAssetLoader;
 import com.elusivehawk.engine.physics.IPhysicsScene;
 import com.elusivehawk.engine.physics.ThreadPhysics;
 import com.elusivehawk.engine.render.IRenderEnvironment;
