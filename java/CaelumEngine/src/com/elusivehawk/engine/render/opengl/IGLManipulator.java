@@ -9,6 +9,8 @@ package com.elusivehawk.engine.render.opengl;
  */
 public interface IGLManipulator
 {
-	public void manipulateUniforms(GLProgram program);
+	public void updateUniforms();
+	
+	public void manipulateUniforms(GLProgram p);
 	
 }

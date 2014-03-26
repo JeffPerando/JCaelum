@@ -134,7 +134,7 @@ public class SimpleList<T> implements List<T>
 		
 		if (count < collection.size())
 		{
-			this.list = expand(this.list, count);
+			this.list = expand(this.list, collection.size() - count);
 			
 		}
 		

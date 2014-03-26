@@ -2,6 +2,8 @@
 package com.elusivehawk.engine.render;
 
 import java.util.List;
+import com.elusivehawk.engine.render.opengl.GLProgram;
+import com.elusivehawk.engine.render.opengl.IGLManipulator;
 import com.elusivehawk.engine.util.SimpleList;
 
 /**
@@ -10,13 +12,13 @@ import com.elusivehawk.engine.util.SimpleList;
  * 
  * @author Elusivehawk
  */
-public class LightMap
+public class Lights implements IGLManipulator
 {
 	public static final int LIGHT_CAP = 1024;
 	
 	protected final List<Light> lights = SimpleList.newList(LIGHT_CAP, false);
 	
-	public LightMap()
+	public Lights()
 	{
 		
 	}
@@ -29,6 +31,13 @@ public class LightMap
 		}
 		
 		return l;
+	}
+	
+	@Override
+	public void manipulateUniforms(GLProgram p)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
