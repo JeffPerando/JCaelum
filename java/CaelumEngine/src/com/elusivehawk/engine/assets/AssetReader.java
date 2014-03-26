@@ -11,6 +11,6 @@ import java.io.File;
  */
 public interface AssetReader
 {
-	public Asset readAsset(File file);
+	public Asset readAsset(File file) throws Exception;
 	
 }

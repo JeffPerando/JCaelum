@@ -43,7 +43,7 @@ public class Buffer<T> implements IDirty, Collection<T>, Iterator<T>
 	public Buffer(List<T> list)
 	{
 		l = list;
-		dirt = new SimpleList<Boolean>(16);
+		dirt = SimpleList.newList(list.size());
 		
 	}
 	
@@ -131,6 +131,11 @@ public class Buffer<T> implements IDirty, Collection<T>, Iterator<T>
 		return this.pos;
 	}
 	
+	public void position(int position)
+	{
+		this.pos = position;
+	}
+	
 	public void mark()
 	{
 		this.mark = this.pos;
@@ -157,6 +162,7 @@ public class Buffer<T> implements IDirty, Collection<T>, Iterator<T>
 	public void rewind()
 	{
 		this.pos = this.mark;
+		this.mark = 0;
 		
 	}
 	

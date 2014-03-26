@@ -53,7 +53,7 @@ public class SaveFile extends TagList
 		}
 		
 		BufferedInputStream in = new BufferedInputStream(fis);
-		IByteReader wrap = new ByteStreams(in, null);
+		IByteReader wrap = new ByteStreams(in);
 		
 		try
 		{
@@ -105,7 +105,7 @@ public class SaveFile extends TagList
 		}
 		
 		BufferedOutputStream out = new BufferedOutputStream(fos);
-		IByteWriter writer = new ByteStreams(null, out);
+		IByteWriter writer = new ByteStreams(out);
 		
 		for (Tag<?> tag : this.tags)
 		{

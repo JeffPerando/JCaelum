@@ -158,22 +158,12 @@ public final class TextParser
 			return d;
 		}
 		
-		StringBuilder b = new StringBuilder();
+		StringBuilder b = new StringBuilder(strs.size() * 2);
 		
 		for (int c = 0; c < strs.size(); ++c)
 		{
-			String str = strs.get(c);
-			
-			if (c + 1 == strs.size())
-			{
-				b.append(str + endWith);
-				
-			}
-			else
-			{
-				b.append(str + separator);
-				
-			}
+			b.append(strs.get(c));
+			b.append(c + 1 == strs.size() ? endWith : separator);
 			
 		}
 		

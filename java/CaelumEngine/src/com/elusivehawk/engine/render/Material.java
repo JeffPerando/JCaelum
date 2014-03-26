@@ -92,15 +92,6 @@ public class Material implements Asset, IGLManipulator
 	public void finish(){}
 	
 	@Override
-	public boolean isDirty()
-	{
-		return false;
-	}
-	
-	@Override
-	public void setIsDirty(boolean b){}
-	
-	@Override
 	public void updateUniforms(RenderContext context){}
 	
 	@Override

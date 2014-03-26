@@ -5,7 +5,7 @@ import java.nio.FloatBuffer;
 import java.util.HashMap;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.EnumAssetType;
-import com.elusivehawk.engine.assets.IAssetRequester;
+import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.MatrixHelper;
 import com.elusivehawk.engine.math.Vector;
@@ -22,7 +22,7 @@ import com.elusivehawk.engine.util.IDirty;
  * 
  * @author Elusivehawk
  */
-public class RenderTicket implements IDirty, ILogicalRender, IAssetRequester
+public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 {
 	protected final HashMap<EnumVectorType, Vector> vecs = new HashMap<EnumVectorType, Vector>();
 	protected final Model m;

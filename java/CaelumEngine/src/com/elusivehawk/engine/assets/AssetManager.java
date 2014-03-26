@@ -18,7 +18,7 @@ import com.google.common.collect.Maps;
 public class AssetManager
 {
 	protected final ThreadAssetLoader worker;
-	protected final Map<String, IAssetRequester> expectedRes = Maps.newHashMap();
+	protected final Map<String, IAssetReceiver> expectedRes = Maps.newHashMap();
 	protected final Map<String, AssetReader> readers = Maps.newHashMap();
 	protected final List<Asset> assets = SimpleList.newList();
 	protected final List<File> resourceLocations = SimpleList.newList();
@@ -49,7 +49,7 @@ public class AssetManager
 		
 	}
 	
-	public void loadResource(String res, IAssetRequester req)
+	public void loadResource(String res, IAssetReceiver req)
 	{
 		assert res != null;
 		assert req != null;

@@ -16,6 +16,18 @@ public class ByteStreams implements IByteReader, IByteWriter
 	protected final InputStream in;
 	protected final OutputStream out;
 	
+	public ByteStreams(InputStream is)
+	{
+		this(is, null);
+		
+	}
+	
+	public ByteStreams(OutputStream os)
+	{
+		this(null, os);
+		
+	}
+	
 	@SuppressWarnings("unqualified-field-access")
 	public ByteStreams(InputStream is, OutputStream os)
 	{

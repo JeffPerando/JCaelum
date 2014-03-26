@@ -2,7 +2,6 @@
 package com.elusivehawk.engine.render.opengl;
 
 import com.elusivehawk.engine.render.RenderContext;
-import com.elusivehawk.engine.util.IDirty;
 
 /**
  * 
@@ -10,7 +9,7 @@ import com.elusivehawk.engine.util.IDirty;
  * 
  * @author Elusivehawk
  */
-public interface IGLManipulator extends IDirty
+public interface IGLManipulator
 {
 	/**
 	 * 

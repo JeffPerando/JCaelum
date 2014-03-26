@@ -34,15 +34,6 @@ public class Lights implements IGLManipulator
 	}
 	
 	@Override
-	public boolean isDirty()
-	{
-		return false;
-	}
-	
-	@Override
-	public void setIsDirty(boolean b){}
-	
-	@Override
 	public void updateUniforms(RenderContext context){}
 	
 	@Override

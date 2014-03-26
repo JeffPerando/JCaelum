@@ -29,19 +29,6 @@ public class Camera3D implements IGLManipulator
 	}
 	
 	@Override
-	public boolean isDirty()
-	{
-		return this.dirty;
-	}
-	
-	@Override
-	public void setIsDirty(boolean b)
-	{
-		this.dirty = b;
-		
-	}
-	
-	@Override
 	public void updateUniforms(RenderContext context)
 	{
 		if (!context.getRenderMode().is3D())
@@ -85,7 +72,7 @@ public class Camera3D implements IGLManipulator
 	@Override
 	public void manipulateUniforms(RenderContext context, GLProgram p)
 	{
-		if (!this.isDirty())
+		if (!this.dirty)
 		{
 			return;
 		}
@@ -97,7 +84,7 @@ public class Camera3D implements IGLManipulator
 	@Override
 	public void postRender()
 	{
-		this.setIsDirty(false);
+		this.dirty = false;;
 		
 	}
 	

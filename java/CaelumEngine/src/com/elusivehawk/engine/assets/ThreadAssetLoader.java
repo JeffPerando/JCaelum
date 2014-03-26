@@ -16,7 +16,7 @@ import com.elusivehawk.engine.util.Tuple;
  */
 public class ThreadAssetLoader extends ThreadStoppable
 {
-	private final Buffer<Tuple<String, IAssetRequester>> assets = new Buffer<Tuple<String, IAssetRequester>>();
+	private final Buffer<Tuple<String, IAssetReceiver>> assets = new Buffer<Tuple<String, IAssetReceiver>>();
 	private AssetManager assetMgr = null;
 	
 	@Override
@@ -29,7 +29,7 @@ public class ThreadAssetLoader extends ThreadStoppable
 			return;
 		}
 		
-		for (Tuple<String, IAssetRequester> tuple : this.assets)
+		for (Tuple<String, IAssetReceiver> tuple : this.assets)
 		{
 			for (File file : this.assetMgr.getFiles())
 			{
@@ -39,7 +39,18 @@ public class ThreadAssetLoader extends ThreadStoppable
 					
 					if (r != null)
 					{
-						Asset a = r.readAsset(file);
+						Asset a = null;
+						
+						try
+						{
+							a = r.readAsset(file);
+							
+						}
+						catch (Exception e)
+						{
+							CaelumEngine.log().log(EnumLogType.ERROR, null, e);
+							
+						}
 						
 						if (a == null)
 						{
@@ -70,7 +81,7 @@ public class ThreadAssetLoader extends ThreadStoppable
 		
 	}
 	
-	public synchronized void loadAsset(String location, IAssetRequester tkt)
+	public synchronized void loadAsset(String location, IAssetReceiver tkt)
 	{
 		this.assets.add(Tuple.create(location, tkt));
 		
