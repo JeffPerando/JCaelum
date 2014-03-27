@@ -143,7 +143,6 @@ public class GLProgram implements IGLBindable
 		
 		if (loc == 0)
 		{
-			CaelumEngine.log().log(EnumLogType.WARN, "You can't use the non-existent uniform: " + name);
 			return;
 		}
 		
@@ -164,7 +163,6 @@ public class GLProgram implements IGLBindable
 		
 		if (loc == 0)
 		{
-			CaelumEngine.log().log(EnumLogType.WARN, "You can't use the non-existent uniform: " + name);
 			return;
 		}
 		

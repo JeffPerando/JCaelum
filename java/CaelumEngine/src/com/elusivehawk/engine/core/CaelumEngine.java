@@ -215,7 +215,7 @@ public final class CaelumEngine
 			
 		}
 		
-		if (env == null)
+		if (env == null)//FIXME
 		{
 			System.err.println("Could not load game environment.");
 			System.exit("NO-ENVIRONMENT-FOUND".hashCode());

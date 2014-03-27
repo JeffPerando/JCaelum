@@ -158,17 +158,28 @@ public final class RenderHelper
 		return buf;
 	}
 	
-	public static int loadShader(File shader, int type)
+	public static int loadShader(File file, int type)
 	{
-		if (!shader.exists())
+		return loadShader(TextParser.read(file), type);
+	}
+	
+	public static int loadShader(List<String> s, int type)
+	{
+		if (s == null || s.isEmpty())
 		{
 			return 0;
 		}
 		
-		String program = TextParser.concat(TextParser.read(shader), "\n", "", null);
-		RenderContext context = CaelumEngine.renderContext();
-		IGL2 gl2 = context.getGL2();
+		String program = TextParser.concat(s, "\n", "", null);
 		
+		if (program == null)
+		{
+			return 0;
+		}
+		
+		RenderContext context = CaelumEngine.renderContext();
+		
+		IGL2 gl2 = context.getGL2();
 		int id = gl2.glCreateShader(type);
 		gl2.glShaderSource(id, program);
 		gl2.glCompileShader(type);
@@ -177,15 +188,15 @@ public final class RenderHelper
 		{
 			checkForGLError(context);
 			
-			return id;
 		}
 		catch (Exception e)
 		{
 			CaelumEngine.log().log(EnumLogType.ERROR, null, e);
 			
+			return 0;
 		}
 		
-		return 0;
+		return id;
 	}
 	
 	@Deprecated
