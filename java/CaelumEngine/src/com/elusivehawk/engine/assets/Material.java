@@ -83,6 +83,13 @@ public class Material implements Asset
 	
 	@Override
 	public void finish(){}
+	
+	@Override
+	public Object getAttachment()
+	{
+		return null;
+	}
+	
 	/*
 	@Override
 	public void updateUniforms(RenderContext context){}

@@ -17,4 +17,6 @@ public interface Asset
 	
 	public void finish();
 	
+	public Object getAttachment();
+	
 }

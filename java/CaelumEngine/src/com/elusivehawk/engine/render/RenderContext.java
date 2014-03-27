@@ -34,7 +34,6 @@ public final class RenderContext implements IContext
 	
 	private final List<INonStaticTexture> texturePool = SimpleList.newList(32);
 	private final List<IGLBindable> cleanables = SimpleList.newList(32);
-	private final List<GLProgram> programs = SimpleList.newList(32);
 	private final Map<EnumRenderMode, List<IGLManipulator>> manipulators = Maps.newHashMapWithExpectedSize(3);
 	
 	private EnumRenderStage stage = null;
@@ -259,6 +258,11 @@ public final class RenderContext implements IContext
 	
 	public void attachManipulator(EnumRenderMode mode, IGLManipulator glm)
 	{
+		if (!glm.isModeValid(mode))
+		{
+			throw new RuntimeException(String.format("Invalid rendering mode: %s", mode.name()));
+		}
+		
 		List<IGLManipulator> mani = this.manipulators.get(mode);
 		
 		if (mani == null)
@@ -294,27 +298,6 @@ public final class RenderContext implements IContext
 	{
 		this.flipScreen = b;
 		
-	}
-	
-	public void registerProgram(GLProgram p)
-	{
-		this.programs.add(p);
-		this.registerCleanable(p);
-		
-	}
-	
-	public GLProgram getProgram(int i)
-	{
-		for (GLProgram p : this.programs)
-		{
-			if (p.getId() == i)
-			{
-				return p;
-			}
-			
-		}
-		
-		return null;
 	}
 	
 }

@@ -63,7 +63,7 @@ public class GLProgram implements IGLBindable
 			
 		}
 		
-		context.registerProgram(this);
+		context.registerCleanable(this);
 		
 	}
 	

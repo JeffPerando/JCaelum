@@ -34,6 +34,12 @@ public class Lights implements IGLManipulator
 	}
 	
 	@Override
+	public boolean isModeValid(EnumRenderMode mode)
+	{
+		return mode.is3D();
+	}
+	
+	@Override
 	public void updateUniforms(RenderContext context){}
 	
 	@Override

@@ -47,4 +47,10 @@ public class Texture implements Asset
 		
 	}
 	
+	@Override
+	public Object getAttachment()
+	{
+		return null;
+	}
+	
 }

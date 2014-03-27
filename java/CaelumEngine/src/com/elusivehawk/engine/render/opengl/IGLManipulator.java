@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.render.opengl;
 
+import com.elusivehawk.engine.render.EnumRenderMode;
 import com.elusivehawk.engine.render.RenderContext;
 
 /**
@@ -11,6 +12,8 @@ import com.elusivehawk.engine.render.RenderContext;
  */
 public interface IGLManipulator
 {
+	public boolean isModeValid(EnumRenderMode mode);
+	
 	/**
 	 * 
 	 * Called once every frame; Do whatever you need to before rendering in this method.

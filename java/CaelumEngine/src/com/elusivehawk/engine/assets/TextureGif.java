@@ -90,4 +90,10 @@ public class TextureGif implements INonStaticTexture
 		
 	}
 	
+	@Override
+	public Object getAttachment()
+	{
+		return null;
+	}
+	
 }

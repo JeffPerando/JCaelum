@@ -3,6 +3,7 @@ package com.elusivehawk.engine.render.old;
 
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.MatrixHelper;
+import com.elusivehawk.engine.render.EnumRenderMode;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGLManipulator;
@@ -26,6 +27,12 @@ public class Camera3D implements IGLManipulator
 	{
 		grabMouse.setIsDirty(true);
 		
+	}
+	
+	@Override
+	public boolean isModeValid(EnumRenderMode mode)
+	{
+		return mode.is3D();
 	}
 	
 	@Override
