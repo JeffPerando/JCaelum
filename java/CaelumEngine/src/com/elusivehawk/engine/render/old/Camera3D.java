@@ -67,6 +67,10 @@ public class Camera3D implements IGLManipulator
 			
 		}
 		*/
+		
+		this.camMat = /*FIXME*/MatrixHelper.createProjectionMatrix(null, null, 0f, 0f, 0f, 0f);
+		this.dirty = true;
+		
 	}
 	
 	@Override
@@ -77,7 +81,7 @@ public class Camera3D implements IGLManipulator
 			return;
 		}
 		
-		p.attachUniform("proj", /*FIXME*/MatrixHelper.createProjectionMatrix(null, null, 0f, 0f, 0f, 0f).asBuffer(), GLProgram.EnumUniformType.M_FOUR);
+		p.attachUniform("proj", this.camMat.asBuffer(), GLProgram.EnumUniformType.M_FOUR);
 		
 	}
 	

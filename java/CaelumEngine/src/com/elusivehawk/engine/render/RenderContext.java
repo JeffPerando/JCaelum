@@ -33,7 +33,8 @@ public final class RenderContext implements IContext
 	private int sVertex, sFrag, notex;
 	
 	private final List<INonStaticTexture> texturePool = SimpleList.newList(32);
-	private final List<IGLBindable> cleanables = SimpleList.newList(32);;
+	private final List<IGLBindable> cleanables = SimpleList.newList(32);
+	private final List<GLProgram> programs = SimpleList.newList(32);
 	private final Map<EnumRenderMode, List<IGLManipulator>> manipulators = Maps.newHashMapWithExpectedSize(3);
 	
 	private EnumRenderStage stage = null;
@@ -73,7 +74,7 @@ public final class RenderContext implements IContext
 			
 		}
 		
-		this.notex = RenderHelper.processImage(ntf, EnumRenderMode.MODE_2D);
+		this.notex = RenderHelper.processImage(ntf);
 		
 		this.initiated = true;
 		
@@ -213,7 +214,7 @@ public final class RenderContext implements IContext
 		
 		for (IGLBindable gl : this.cleanables)
 		{
-			gl.glDelete();
+			gl.glDelete(this);
 			
 		}
 		
@@ -293,6 +294,27 @@ public final class RenderContext implements IContext
 	{
 		this.flipScreen = b;
 		
+	}
+	
+	public void registerProgram(GLProgram p)
+	{
+		this.programs.add(p);
+		this.registerCleanable(p);
+		
+	}
+	
+	public GLProgram getProgram(int i)
+	{
+		for (GLProgram p : this.programs)
+		{
+			if (p.getId() == i)
+			{
+				return p;
+			}
+			
+		}
+		
+		return null;
 	}
 	
 }

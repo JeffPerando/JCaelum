@@ -54,7 +54,7 @@ public class GLProgram implements IGLBindable
 		
 		try
 		{
-			RenderHelper.checkForGLError();
+			RenderHelper.checkForGLError(context);
 			
 		}
 		catch (Exception e)
@@ -63,7 +63,7 @@ public class GLProgram implements IGLBindable
 			
 		}
 		
-		context.registerCleanable(this);
+		context.registerProgram(this);
 		
 	}
 	
@@ -113,29 +113,33 @@ public class GLProgram implements IGLBindable
 		this.attachModel(tkt.getModel());
 		this.attachVBO(tkt.getExtraVBO(), Arrays.asList(3, 4, 5));
 		
-		if (!this.bound && !this.bind())
+		RenderContext context = CaelumEngine.renderContext();
+		
+		if (!this.bound && !this.bind(context))
 		{
 			return;
 		}
 		
-		IGL2 gl2 = RenderHelper.gl2();
+		IGL2 gl2 = context.getGL2();
 		
 		gl2.glVertexAttribPointer(3, 3, GLConst.GL_FLOAT, false, 0, tkt.getBuffer());
 		gl2.glVertexAttribPointer(4, 3, GLConst.GL_FLOAT, false, 3, tkt.getBuffer());
 		gl2.glVertexAttribPointer(5, 3, GLConst.GL_FLOAT, false, 6, tkt.getBuffer());
 		
-		this.unbind();
+		this.unbind(context);
 		
 	}
 	
 	public void attachUniform(String name, FloatBuffer info, EnumUniformType type)
 	{
-		if (!this.bound && !this.bind())
+		RenderContext context = CaelumEngine.renderContext();
+		
+		if (!this.bound && !this.bind(context))
 		{
 			return;
 		}
 		
-		int loc = RenderHelper.gl2().glGetUniformLocation(this.id, name);
+		int loc = context.getGL2().glGetUniformLocation(this.id, name);
 		
 		if (loc == 0)
 		{
@@ -149,12 +153,14 @@ public class GLProgram implements IGLBindable
 	
 	public void attachUniform(String name, IntBuffer info, EnumUniformType type)
 	{
-		if (!this.bound && !this.bind())
+		RenderContext context = CaelumEngine.renderContext();
+		
+		if (!this.bound && !this.bind(context))
 		{
 			return;
 		}
 		
-		int loc = RenderHelper.gl2().glGetUniformLocation(this.id, name);
+		int loc = context.getGL2().glGetUniformLocation(this.id, name);
 		
 		if (loc == 0)
 		{
@@ -182,11 +188,11 @@ public class GLProgram implements IGLBindable
 	}
 	
 	@Override
-	public boolean bind()
+	public boolean bind(RenderContext context)
 	{
-		if (!this.bind0())
+		if (!this.bind0(context))
 		{
-			this.unbind();
+			this.unbind(context);
 			
 			return false;
 		}
@@ -194,14 +200,12 @@ public class GLProgram implements IGLBindable
 		return true;
 	}
 	
-	private boolean bind0()
+	private boolean bind0(RenderContext context)
 	{
 		if (this.bound)
 		{
 			return true;
 		}
-		
-		RenderContext context = CaelumEngine.renderContext();
 		
 		if (context.getGL1().glGetInteger(GLConst.GL_CURRENT_PROGRAM) != 0)
 		{
@@ -238,14 +242,12 @@ public class GLProgram implements IGLBindable
 	}
 	
 	@Override
-	public void unbind()
+	public void unbind(RenderContext context)
 	{
 		if (!this.bound)
 		{
 			return;
 		}
-		
-		RenderContext context = CaelumEngine.renderContext();
 		
 		if (!this.vbos.isEmpty())
 		{
@@ -276,15 +278,13 @@ public class GLProgram implements IGLBindable
 	}
 	
 	@Override
-	public void glDelete()
+	public void glDelete(RenderContext context)
 	{
 		if (this.bound)
 		{
-			this.unbind();
+			this.unbind(context);
 			
 		}
-		
-		RenderContext context = CaelumEngine.renderContext();
 		
 		context.getGL3().glDeleteVertexArrays(this.vba);
 		

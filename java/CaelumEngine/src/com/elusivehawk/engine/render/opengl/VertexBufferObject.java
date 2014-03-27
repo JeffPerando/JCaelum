@@ -175,18 +175,18 @@ public class VertexBufferObject implements IGLBindable
 	}
 	
 	@Override
-	public boolean bind()
+	public boolean bind(RenderContext context)
 	{
-		RenderHelper.gl1().glBindBuffer(this);
+		context.getGL1().glBindBuffer(this);
 		
 		try
 		{
-			RenderHelper.checkForGLError();
+			RenderHelper.checkForGLError(context);
 			
 		}
 		catch (Exception e)
 		{
-			this.unbind();
+			this.unbind(context);
 			
 			return false;
 		}
@@ -195,16 +195,16 @@ public class VertexBufferObject implements IGLBindable
 	}
 	
 	@Override
-	public void unbind()
+	public void unbind(RenderContext context)
 	{
-		RenderHelper.gl1().glBindBuffer(this.t, 0);
+		context.getGL1().glBindBuffer(this.t, 0);
 		
 	}
 	
 	@Override
-	public void glDelete()
+	public void glDelete(RenderContext context)
 	{
-		RenderHelper.gl1().glDeleteBuffers(this);
+		context.getGL1().glDeleteBuffers(this);
 		
 	}
 	

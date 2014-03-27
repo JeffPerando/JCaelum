@@ -166,7 +166,7 @@ public class ThreadGameRender extends ThreadTimed implements IGameStateListener,
 					
 					try
 					{
-						RenderHelper.checkForGLError();
+						RenderHelper.checkForGLError(this.context);
 						
 					}
 					catch (Exception e)

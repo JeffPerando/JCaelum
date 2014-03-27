@@ -1,13 +1,9 @@
 
-package com.elusivehawk.engine.render;
+package com.elusivehawk.engine.assets;
 
-import com.elusivehawk.engine.assets.Asset;
-import com.elusivehawk.engine.assets.EnumAssetType;
 import com.elusivehawk.engine.math.MathHelper;
-import com.elusivehawk.engine.render.opengl.GLProgram;
-import com.elusivehawk.engine.render.opengl.IGLManipulator;
-import com.elusivehawk.engine.util.BufferHelper;
-import com.elusivehawk.engine.util.IDirty;
+import com.elusivehawk.engine.render.Color;
+import com.elusivehawk.engine.render.EnumColorFormat;
 
 /**
  * 
@@ -15,14 +11,12 @@ import com.elusivehawk.engine.util.IDirty;
  * 
  * @author Elusivehawk
  */
-public class Material implements Asset, IGLManipulator
+public class Material implements Asset
 {
 	protected final Asset tex;
 	protected final float shininess;
 	protected final Color filter;
-	
 	protected final int[] ints = new int[3];
-	protected final boolean isTexDirtable;
 	
 	public Material(Color overlay)
 	{
@@ -56,7 +50,6 @@ public class Material implements Asset, IGLManipulator
 		tex = texture;
 		shininess = MathHelper.clamp(shine, 0f, 1f);
 		filter = EnumColorFormat.RGBA.convert(overlay);
-		isTexDirtable = tex instanceof IDirty;
 		
 		ints[0] = tex.getIds()[0];
 		ints[1] = Float.floatToIntBits(shininess);
@@ -73,7 +66,7 @@ public class Material implements Asset, IGLManipulator
 	@Override
 	public int[] getIds()
 	{
-		if (this.isTexDirtable && ((IDirty)this.tex).isDirty())
+		if (this.tex.getIds()[1] == 1)
 		{
 			this.ints[0] = this.tex.getIds()[0];
 			
@@ -90,7 +83,7 @@ public class Material implements Asset, IGLManipulator
 	
 	@Override
 	public void finish(){}
-	
+	/*
 	@Override
 	public void updateUniforms(RenderContext context){}
 	
@@ -105,5 +98,6 @@ public class Material implements Asset, IGLManipulator
 	
 	@Override
 	public void postRender(){}
+	*/
 	
 }

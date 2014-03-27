@@ -28,7 +28,7 @@ public class Color
 	public static final Color CYAN = new Color(EnumColorFormat.RGBA, 0x00FFFF);
 	
 	public final EnumColorFormat format;
-	protected int color = 0;
+	public int color = 0;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public Color(EnumColorFormat f)

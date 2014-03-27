@@ -68,14 +68,14 @@ public class RenderEngine3D implements IRenderEngine
 				Model m = tkt.getModel();
 				GLProgram p = tkt.getProgram();
 				
-				if (!p.bind())
+				if (!p.bind(context))
 				{
 					continue;
 				}
 				
 				if (!tkt.updateBeforeUse())
 				{
-					p.unbind();
+					p.unbind(context);
 					continue;
 				}
 				
@@ -83,12 +83,12 @@ public class RenderEngine3D implements IRenderEngine
 				
 				try
 				{
-					RenderHelper.checkForGLError();
+					RenderHelper.checkForGLError(context);
 					
 				}
 				catch (Exception e)
 				{
-					p.unbind();
+					p.unbind(context);
 					continue;
 				}
 				
@@ -131,9 +131,9 @@ public class RenderEngine3D implements IRenderEngine
 					
 				}
 				
-				RenderHelper.checkForGLError();
+				RenderHelper.checkForGLError(context);
 				
-				p.unbind();
+				p.unbind(context);
 				
 			}
 			

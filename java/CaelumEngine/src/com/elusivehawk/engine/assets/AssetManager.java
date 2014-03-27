@@ -105,7 +105,7 @@ public class AssetManager
 			}
 			
 		}
-		else if (file.isFile())
+		else if (FileHelper.canReadFile(file))
 		{
 			this.filesToScan.add(file);
 			

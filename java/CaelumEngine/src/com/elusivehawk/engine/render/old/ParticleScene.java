@@ -4,11 +4,13 @@ package com.elusivehawk.engine.render.old;
 import java.nio.FloatBuffer;
 import java.util.Arrays;
 import java.util.List;
+import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.render.Color;
 import com.elusivehawk.engine.render.EnumColorFilter;
 import com.elusivehawk.engine.render.EnumColorFormat;
 import com.elusivehawk.engine.render.ILogicalRender;
+import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBufferObject;
@@ -42,11 +44,13 @@ public class ParticleScene implements ILogicalRender
 		p = new GLProgram(); //TODO Create default particle shaders.
 		vbo = new VertexBufferObject(GLConst.GL_ARRAY_BUFFER, buf, GLConst.GL_STREAM_DRAW);
 		
-		if (p.bind())
+		RenderContext context = CaelumEngine.renderContext();
+		
+		if (p.bind(context))
 		{
 			p.attachVBO(vbo, Arrays.asList(0, 1));
 			
-			p.unbind();
+			p.unbind(context);
 			
 		}
 		else

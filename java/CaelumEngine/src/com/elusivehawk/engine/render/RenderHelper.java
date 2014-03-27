@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.List;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
@@ -16,6 +17,7 @@ import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
 import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.BufferHelper;
+import com.elusivehawk.engine.util.SimpleList;
 import com.elusivehawk.engine.util.TextParser;
 import com.elusivehawk.engine.util.io.ByteBuf;
 
@@ -53,14 +55,8 @@ public final class RenderHelper
 		return CaelumEngine.renderContext().getGL4();
 	}*/
 	
-	@Deprecated
-	public static Buffer<Integer> processGifFile(File gif, EnumRenderMode mode, EnumColorFormat format)
+	public static List<ILegibleImage> readGifFile(File gif)
 	{
-		if (!mode.isValidImageMode())
-		{
-			return null;
-		}
-		
 		if (gif.getName().endsWith(".gif"))
 		{
 			try
@@ -71,13 +67,11 @@ public final class RenderHelper
 				
 				int max = reader.getNumImages(true);
 				
-				Buffer<Integer> ret = new Buffer<Integer>();
+				List<ILegibleImage> ret = SimpleList.newList(max);
 				
 				for (int c = 0; c < max; c++)
 				{
-					LegibleBufferedImage img = new LegibleBufferedImage(reader.read(c));
-					
-					ret.add(processImage(img, mode, format));
+					ret.add(new LegibleBufferedImage(reader.read(c)));
 					
 				}
 				
@@ -96,8 +90,7 @@ public final class RenderHelper
 		return null;
 	}
 	
-	@Deprecated
-	public static int processImage(File img, EnumRenderMode mode, EnumColorFormat format)
+	public static int processImage(File img)
 	{
 		ILegibleImage leimg = null;
 		
@@ -112,29 +105,21 @@ public final class RenderHelper
 			
 		}
 		
-		return leimg == null ? 0 : processImage(leimg, mode, format);
+		return leimg == null ? 0 : processImage(leimg);
 	}
 	
-	@Deprecated
-	public static int processImage(ILegibleImage img, EnumRenderMode mode)
+	public static int processImage(ILegibleImage img)
 	{
-		return processImage(img, mode, img.getFormat());
+		return processImage(img, img.getFormat());
 	}
 	
-	@Deprecated
-	public static int processImage(ILegibleImage img, EnumRenderMode mode, EnumColorFormat format)
+	public static int processImage(ILegibleImage img, EnumColorFormat format)
 	{
-		return processImage(readImage(img, format), img.getWidth(), img.getHeight(), mode);
+		return processImage(readImage(img, format), img.getWidth(), img.getHeight());
 	}
 	
-	@Deprecated
-	public static int processImage(IntBuffer buf, int w, int h, EnumRenderMode mode)
+	public static int processImage(IntBuffer buf, int w, int h)
 	{
-		if (!mode.isValidImageMode())
-		{
-			return 0;
-		}
-		
 		IGL1 gl1 = gl1();
 		
 		int glId = gl1.glGenTextures();
@@ -142,19 +127,10 @@ public final class RenderHelper
 		gl1.glActiveTexture(glId);
 		gl1.glPixelStorei(GLConst.GL_UNPACK_ALIGNMENT, 1);
 		
-		gl1.glTexParameterx(mode.getOpenGLMode(), GLConst.GL_TEXTURE_MIN_FILTER, GLConst.GL_LINEAR);
-		gl1.glTexParameterx(mode.getOpenGLMode(), GLConst.GL_TEXTURE_MAG_FILTER, GLConst.GL_LINEAR);
+		gl1.glTexParameterx(GLConst.GL_TEXTURE_2D, GLConst.GL_TEXTURE_MIN_FILTER, GLConst.GL_LINEAR);
+		gl1.glTexParameterx(GLConst.GL_TEXTURE_2D, GLConst.GL_TEXTURE_MAG_FILTER, GLConst.GL_LINEAR);
 		
-		if (mode.is3D())
-		{
-			gl1.glTexImage3D(GLConst.GL_TEXTURE_3D, 0, GLConst.GL_RGBA8, w, h, 0, 0, GLConst.GL_RGBA, GLConst.GL_UNSIGNED_BYTE, buf);
-			
-		}
-		else
-		{
-			gl1.glTexImage2D(GLConst.GL_TEXTURE_2D, 0, GLConst.GL_RGBA8, w, h, 0, GLConst.GL_RGBA, GLConst.GL_UNSIGNED_BYTE, buf);
-			
-		}
+		gl1.glTexImage2D(GLConst.GL_TEXTURE_2D, 0, GLConst.GL_RGBA8, w, h, 0, GLConst.GL_RGBA, GLConst.GL_UNSIGNED_BYTE, buf);
 		
 		gl1.glActiveTexture(0);
 		
@@ -182,16 +158,16 @@ public final class RenderHelper
 		return buf;
 	}
 	
-	@Deprecated
 	public static int loadShader(File shader, int type)
 	{
-		if (!shader.exists() || !shader.getName().endsWith(".glsl"))
+		if (!shader.exists())
 		{
 			return 0;
 		}
 		
 		String program = TextParser.concat(TextParser.read(shader), "\n", "", null);
-		IGL2 gl2 = gl2();
+		RenderContext context = CaelumEngine.renderContext();
+		IGL2 gl2 = context.getGL2();
 		
 		int id = gl2.glCreateShader(type);
 		gl2.glShaderSource(id, program);
@@ -199,7 +175,7 @@ public final class RenderHelper
 		
 		try
 		{
-			checkForGLError();
+			checkForGLError(context);
 			
 			return id;
 		}
@@ -251,14 +227,20 @@ public final class RenderHelper
 	
 	public static void checkForGLError() throws RuntimeException
 	{
-		int err = gl1().glGetError();
+		checkForGLError(CaelumEngine.renderContext());
+		
+	}
+	
+	public static void checkForGLError(RenderContext context) throws RuntimeException
+	{
+		int err = context.getGL1().glGetError();
 		
 		if (err == GLConst.GL_NO_ERROR)
 		{
 			return;
 		}
 		
-		throw new RuntimeException("Caught OpenGL error: " + err/*GLU.gluErrorString(err)*/);//TODO Fix after conversion to enums.
+		throw new RuntimeException(String.format("Caught OpenGL error: %s",err)/*GLU.gluErrorString(err)*/);//TODO Fix after conversion to enums.
 	}
 	
 	public static Buffer<Float> mixColors(Color a, Color b)
