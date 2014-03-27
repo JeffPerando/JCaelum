@@ -23,7 +23,7 @@ public class Vector implements IMathObject<Float>
 	public static final Vector Z_AXIS = new Vector(0f, 0f, 1f);
 	
 	protected final float[] nums;
-	protected final List<IVectorListener> listeners = SimpleList.newList();
+	protected List<IVectorListener> listeners = null;
 	protected String name = null;
 	
 	public Vector(int length, Buffer<Float> buf)
@@ -56,7 +56,7 @@ public class Vector implements IMathObject<Float>
 			
 		}
 		
-		listeners.addAll(vec.listeners);
+		listeners = vec.listeners;
 		
 	}
 	
@@ -83,6 +83,8 @@ public class Vector implements IMathObject<Float>
 	public void set(int pos, Float num)
 	{
 		this.nums[pos] = num;
+		
+		this.onChanged();
 		
 	}
 	
@@ -183,12 +185,23 @@ public class Vector implements IMathObject<Float>
 	
 	public void registerListener(IVectorListener veclis)
 	{
+		if (this.listeners == null)
+		{
+			this.listeners = SimpleList.newList();
+			
+		}
+		
 		this.listeners.add(veclis);
 		
 	}
 	
 	public void removeListener(IVectorListener veclis)
 	{
+		if (this.listeners == null || this.listeners.isEmpty())
+		{
+			return;
+		}
+		
 		this.listeners.remove(veclis);
 		
 	}
@@ -232,7 +245,7 @@ public class Vector implements IMathObject<Float>
 		
 		for (int c = 0; c < 4; c++)
 		{
-			num = this.get(c);
+			num = c < this.getSize() ? this.get(c) : null;
 			
 			b.append(num == null ? "0" : num.toString());
 			if (c < 3) b.append(", ");

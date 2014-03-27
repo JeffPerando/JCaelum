@@ -50,7 +50,7 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 		p = program;
 		m = model;
 		buf = BufferHelper.createFloatBuffer(m.indiceCount.get() * 3);
-		vbo = new VertexBufferObject(GLConst.GL_ARRAY_BUFFER, this.buf, GLConst.GL_STREAM_DRAW);
+		vbo = new VertexBufferObject(GLConst.GL_ARRAY_BUFFER, buf, GLConst.GL_STREAM_DRAW);
 		
 		p.attachRenderTicket(this);
 		

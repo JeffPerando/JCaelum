@@ -95,7 +95,9 @@ public class Matrix implements IMathObject<Float>
 	@Override
 	public String toString()
 	{
-		StringBuilder b = new StringBuilder("\n");
+		StringBuilder b = new StringBuilder(1 + ((this.h + 1) * ((this.w * 2) + 2)));
+		
+		b.append("/n");
 		
 		for (int y = 0; y < this.h; y++)
 		{

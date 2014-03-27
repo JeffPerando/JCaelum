@@ -267,12 +267,6 @@ public class Server implements IHost
 	}
 	
 	@Override
-	public boolean validate(PacketFormat format)
-	{
-		return this.master.validate(format);
-	}
-	
-	@Override
 	public void onDisconnect(IConnection connect)
 	{
 		int i = this.clients.indexOf(connect);

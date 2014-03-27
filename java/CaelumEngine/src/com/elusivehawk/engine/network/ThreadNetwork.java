@@ -179,11 +179,6 @@ public class ThreadNetwork extends ThreadStoppable
 								continue;
 							}
 							
-							if (!this.handler.validate(pkt.format))
-							{
-								continue;
-							}
-							
 							pkt.format.write(pkt, this.bout);
 							
 							info.two.clearPkt(pkt);

@@ -19,9 +19,9 @@ import com.google.common.collect.ImmutableList;
 public class Client implements IHost
 {
 	protected final INetworkMaster master;
+	protected final ThreadNetwork thr;
 	
 	protected IConnection connection = null;
-	protected ThreadNetwork thr = null;
 	protected boolean hasHS = false;
 	
 	@SuppressWarnings("unqualified-field-access")
@@ -225,12 +225,6 @@ public class Client implements IHost
 	public PacketFormat getPacketFormat(short id)
 	{
 		return this.master.getPacketFormat(id);
-	}
-	
-	@Override
-	public boolean validate(PacketFormat format)
-	{
-		return this.master.validate(format);
 	}
 	
 	@Override

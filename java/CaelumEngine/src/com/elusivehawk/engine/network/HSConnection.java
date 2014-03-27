@@ -99,12 +99,6 @@ public class HSConnection implements IPacketHandler, IConnection
 	}
 	
 	@Override
-	public boolean validate(PacketFormat format)
-	{
-		return this.master.validate(format);
-	}
-	
-	@Override
 	public void onDisconnect(IConnection connect)
 	{
 		this.master.onDisconnect(connect);
