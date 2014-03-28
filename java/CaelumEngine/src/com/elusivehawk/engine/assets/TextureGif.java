@@ -3,7 +3,6 @@ package com.elusivehawk.engine.assets;
 
 import java.util.List;
 import com.elusivehawk.engine.render.ILegibleImage;
-import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.util.Buffer;
 
 /**
@@ -15,14 +14,13 @@ import com.elusivehawk.engine.util.Buffer;
 public class TextureGif extends AbstractTexture
 {
 	protected final List<ILegibleImage> imgs;
-	protected final Buffer<Integer> tex;
+	protected Buffer<Texture> textures;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public TextureGif(String filename, List<ILegibleImage> listimgs)
 	{
 		super(filename);
 		imgs = listimgs;
-		tex = new Buffer<Integer>(imgs.size());
 		
 	}
 	
@@ -35,26 +33,30 @@ public class TextureGif extends AbstractTexture
 	@Override
 	protected boolean finishAsset()
 	{
+		Texture tex;
 		boolean flag = true;
-		int i = 0;
+		
+		this.textures = new Buffer<Texture>(this.getFrameCount());
 		
 		for (ILegibleImage img : this.imgs)
 		{
-			i = RenderHelper.processImage(img);
+			tex = new Texture(this.name, img);
 			
-			if (i == 0)
+			tex.finish();
+			
+			if (!tex.isFinished())
 			{
 				flag = false;
-				break;
+				
 			}
 			
-			this.tex.add(i);
+			this.textures.add(tex);
 			
 		}
 		
 		if (!flag)
 		{
-			this.tex.clear();
+			this.textures.clear();
 			
 		}
 		
@@ -64,18 +66,21 @@ public class TextureGif extends AbstractTexture
 	@Override
 	public void updateTexture()
 	{
-		if (this.tex.remaining() == 0)
+		if (this.textures.remaining() == 0)
 		{
-			this.tex.rewind();
+			this.textures.rewind();
 			
 		}
 		else
 		{
-			this.tex.next();
+			this.textures.next();
 			
 		}
 		
-		this.ids[0] = this.tex.get();
+		Asset tex = this.textures.get();
+		
+		this.ids[0] = tex.getIds()[0];
+		this.ids[2] = tex.getIds()[2];
 		
 	}
 	
@@ -86,10 +91,20 @@ public class TextureGif extends AbstractTexture
 	}
 	
 	@Override
-	public void setColor(int color)
+	public void setColor(int frame, int color)
 	{
-		this.ids[2] = color;
+		if (this.textures != null)
+		{
+			this.textures.get(frame).setColor(0, color);
+			
+		}
 		
+	}
+	
+	@Override
+	public int getFrameCount()
+	{
+		return this.imgs.size();
 	}
 	
 	@Override

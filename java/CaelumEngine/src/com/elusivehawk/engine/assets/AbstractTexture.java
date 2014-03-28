@@ -17,13 +17,19 @@ public abstract class AbstractTexture extends Asset
 		
 	}
 	
-	public void setColor(int color)
+	public void setColor(int frame, int color)
 	{
 		this.ids[2] = color;
 		
 	}
 	
 	public void updateTexture(){}
+	
+	@SuppressWarnings("static-method")
+	public int getFrameCount()
+	{
+		return 0;
+	}
 	
 	public abstract boolean isAnimated();
 	
