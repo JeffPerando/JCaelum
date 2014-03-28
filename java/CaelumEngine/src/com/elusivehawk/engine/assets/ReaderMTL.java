@@ -61,6 +61,7 @@ public class ReaderMTL implements IAssetReader
 			
 		}
 		
+		Asset[] textures = new Asset[3];
 		Color[] colors = new Color[3];
 		
 		String name = mtl.get(PREFIXES[0]);
@@ -74,6 +75,7 @@ public class ReaderMTL implements IAssetReader
 			if (str == null)
 			{
 				colors[c] = new Color(EnumColorFormat.RGBA);
+				
 			}
 			else
 			{
@@ -85,6 +87,29 @@ public class ReaderMTL implements IAssetReader
 				}
 				
 				colors[c] = new Color(EnumColorFormat.RGBA, Float.parseFloat(strFl[0]), Float.parseFloat(strFl[1]), Float.parseFloat(strFl[2]), 0f);
+				
+				str = mtl.get(String.format("map_%s", PREFIXES[c + 1]));
+				
+				if (str != null)
+				{
+					File texfile = new File(file.getParentFile(), str);
+					
+					Asset tex = mgr.readAsset(texfile);
+					
+					if (tex.type == EnumAssetType.TEXTURE)
+					{
+						textures[c] = tex;
+						
+						try
+						{
+							((AbstractTexture)tex).setColor(colors[c].color);
+							
+						}
+						catch (Exception e){}
+						
+					}
+					
+				}
 				
 			}
 			

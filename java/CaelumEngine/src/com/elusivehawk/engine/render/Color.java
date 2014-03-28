@@ -121,7 +121,7 @@ public class Color
 		return this.format.supports(EnumColorFilter.ALPHA);
 	}
 	
-	public FloatBuffer asBufferF()
+	public float[] asFloats()
 	{
 		float[] colors = new float[this.format.filters.length];
 		int c = 0;
@@ -132,7 +132,12 @@ public class Color
 			
 		}
 		
-		return BufferHelper.makeFloatBuffer(colors);
+		return colors;
+	}
+	
+	public FloatBuffer asBufferF()
+	{
+		return BufferHelper.makeFloatBuffer(this.asFloats());
 	}
 	
 }

@@ -2,9 +2,11 @@
 package com.elusivehawk.engine.assets;
 
 import java.io.File;
+import java.util.Iterator;
+import java.util.List;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
-import com.elusivehawk.engine.util.Buffer;
+import com.elusivehawk.engine.util.SimpleList;
 import com.elusivehawk.engine.util.ThreadStoppable;
 import com.elusivehawk.engine.util.Tuple;
 
@@ -16,54 +18,40 @@ import com.elusivehawk.engine.util.Tuple;
  */
 public class ThreadAssetLoader extends ThreadStoppable
 {
-	private final Buffer<Tuple<String, IAssetReceiver>> assets = new Buffer<Tuple<String, IAssetReceiver>>();
+	private final List<Tuple<String, IAssetReceiver>> assets = SimpleList.newList();
 	private AssetManager assetMgr = null;
 	
 	@Override
 	public void rawUpdate() throws Throwable
 	{
-		if (this.assets.isEmpty())
+		if (this.assetMgr == null || this.assets.isEmpty())
 		{
 			Thread.sleep(1L);
 			
 			return;
 		}
 		
-		for (Tuple<String, IAssetReceiver> tuple : this.assets)
+		Iterator<Tuple<String, IAssetReceiver>> itr = this.assets.iterator();
+		Tuple<String, IAssetReceiver> tuple;
+		Asset a;
+		
+		while (itr.hasNext())
 		{
-			for (File file : this.assetMgr.getFiles())
+			tuple = itr.next();
+			a = this.assetMgr.getExistingAsset(tuple.one);
+			
+			if (a == null)
 			{
-				if (file.getAbsolutePath().endsWith(tuple.one))
+				for (File file : this.assetMgr.getFiles())
 				{
-					IAssetReader r = this.assetMgr.getReader(file);
-					
-					if (r != null)
+					if (file.getAbsolutePath().endsWith(tuple.one))
 					{
-						Asset a = null;
+						a = this.assetMgr.readAsset(file);
 						
-						try
+						if (a != null)
 						{
-							a = r.readAsset(this.assetMgr, file);
-							
+							break;
 						}
-						catch (Exception e)
-						{
-							CaelumEngine.log().log(EnumLogType.ERROR, null, e);
-							
-						}
-						
-						if (a == null)
-						{
-							CaelumEngine.log().log(EnumLogType.WARN, String.format("Asset %s failed to load", file.getAbsolutePath()));
-							
-						}
-						else
-						{
-							tuple.two.onAssetLoaded(a);
-							
-						}
-						
-						this.assets.remove();
 						
 					}
 					
@@ -71,11 +59,27 @@ public class ThreadAssetLoader extends ThreadStoppable
 				
 			}
 			
+			if (a == null)
+			{
+				CaelumEngine.log().log(EnumLogType.WARN, String.format("Asset %s failed to load", tuple.one));
+				
+			}
+			else
+			{
+				tuple.two.onAssetLoaded(a);
+				this.assetMgr.registerAsset(a);
+				
+				a = null;
+				
+			}
+			
+			itr.remove();
+			
 		}
 		
 	}
 	
-	public void setManager(AssetManager mgr)
+	public synchronized void setManager(AssetManager mgr)
 	{
 		this.assetMgr = mgr;
 		

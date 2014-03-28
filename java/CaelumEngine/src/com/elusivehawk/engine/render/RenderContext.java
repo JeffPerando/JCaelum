@@ -3,6 +3,7 @@ package com.elusivehawk.engine.render;
 
 import java.util.List;
 import java.util.Map;
+import com.elusivehawk.engine.assets.AbstractTexture;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.core.IContext;
 import com.elusivehawk.engine.render.opengl.GLEnumShader;
@@ -32,7 +33,7 @@ public final class RenderContext implements IContext
 	
 	private int sVertex, sFrag, notex;
 	
-	private final List<NonStaticTexture> texturePool = SimpleList.newList(32);
+	private final List<AbstractTexture> texturePool = SimpleList.newList(32);
 	private final List<IGLBindable> cleanables = SimpleList.newList(32);
 	private final Map<EnumRenderMode, List<IGLManipulator>> manipulators = Maps.newHashMapWithExpectedSize(3);
 	
@@ -151,8 +152,13 @@ public final class RenderContext implements IContext
 	{
 		if (!this.texturePool.isEmpty())
 		{
-			for (NonStaticTexture tex : this.texturePool)
+			for (AbstractTexture tex : this.texturePool)
 			{
+				if (!tex.isAnimated())
+				{
+					continue;
+				}
+				
 				tex.updateTexture();
 				
 			}
@@ -184,7 +190,7 @@ public final class RenderContext implements IContext
 		
 	}
 	
-	public void addTexture(NonStaticTexture tex)
+	public void addTexture(AbstractTexture tex)
 	{
 		assert tex != null;
 		
@@ -246,12 +252,6 @@ public final class RenderContext implements IContext
 				}
 				
 			}
-			
-		}
-		
-		for (NonStaticTexture tex : this.texturePool)
-		{
-			tex.setIsDirty(false);
 			
 		}
 		

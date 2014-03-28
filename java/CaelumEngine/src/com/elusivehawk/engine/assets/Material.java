@@ -16,7 +16,7 @@ public class Material extends Asset
 	protected final Asset tex;
 	protected final float shininess;
 	protected final Color filter;
-	protected final int[] ints = new int[3];
+	protected final int[] ids = new int[3];
 	
 	public Material(String filename, Color overlay)
 	{
@@ -53,9 +53,9 @@ public class Material extends Asset
 		shininess = MathHelper.clamp(shine, 0f, 1f);
 		filter = EnumColorFormat.RGBA.convert(overlay);
 		
-		ints[0] = tex.getIds()[0];
-		ints[1] = Float.floatToIntBits(shininess);
-		ints[2] = filter.color;
+		ids[0] = tex.getIds()[0];
+		ids[1] = Float.floatToIntBits(shininess);
+		ids[2] = filter.color;
 		
 	}
 	
@@ -64,11 +64,11 @@ public class Material extends Asset
 	{
 		if (this.tex.getIds()[1] == 1)
 		{
-			this.ints[0] = this.tex.getIds()[0];
+			this.ids[0] = this.tex.getIds()[0];
 			
 		}
 		
-		return this.ints;
+		return this.ids;
 	}
 	
 	@Override

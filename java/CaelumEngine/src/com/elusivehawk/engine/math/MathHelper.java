@@ -154,11 +154,6 @@ public final class MathHelper
 		return (radian * 180) / PI;
 	}
 	
-	public static int toInt(boolean b)
-	{
-		return b ? 1 : 0;
-	}
-	
 	public static float toRadians(float degree)
 	{
 		return (degree * PI) / 180;

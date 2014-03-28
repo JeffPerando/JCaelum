@@ -4,6 +4,8 @@ package com.elusivehawk.engine.assets;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import com.elusivehawk.engine.core.CaelumEngine;
+import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.util.FileHelper;
 import com.elusivehawk.engine.util.SimpleList;
 import com.elusivehawk.engine.util.TextParser;
@@ -18,11 +20,13 @@ import com.google.common.collect.Maps;
 public class AssetManager
 {
 	protected final ThreadAssetLoader worker;
+	
 	protected final Map<String, IAssetReceiver> expectedRes = Maps.newHashMap();
 	protected final Map<String, IAssetReader> readers = Maps.newHashMap();
 	protected final List<Asset> assets = SimpleList.newList();
-	protected final List<File> resourceLocations = SimpleList.newList();
-	protected final List<File> filesToScan = SimpleList.newList();
+	protected final List<File> resourceLocations = SimpleList.newList(),
+			filesToScan = SimpleList.newList();
+	
 	protected boolean loaded = false;
 	
 	@SuppressWarnings("unqualified-field-access")
@@ -33,7 +37,7 @@ public class AssetManager
 		
 	}
 	
-	public void addSearchDirectory(File dir)
+	public synchronized void addSearchDirectory(File dir)
 	{
 		if (!dir.exists())
 		{
@@ -51,20 +55,44 @@ public class AssetManager
 	
 	public void loadResource(String res, IAssetReceiver req)
 	{
-		assert res != null;
+		assert res != null && !"".equals(res);
 		assert req != null;
 		
 		this.worker.loadAsset(res.replace("/", FileHelper.FILE_SEP), req);
 		
 	}
 	
-	public void addAssetReader(String ext, IAssetReader r)
+	public synchronized void addAssetReader(String ext, IAssetReader r)
 	{
 		assert ext != null;
 		assert r != null;
 		
 		this.readers.put(ext, r);
 		
+	}
+	
+	public synchronized void registerAsset(Asset a)
+	{
+		this.assets.add(a);
+		
+	}
+	
+	public Asset getExistingAsset(String filename)
+	{
+		if (!this.assets.isEmpty())
+		{
+			for (Asset a : this.assets)
+			{
+				if (filename.endsWith(a.getName()))
+				{
+					return a;
+				}
+				
+			}
+			
+		}
+		
+		return null;
 	}
 	
 	public void initiate()
@@ -121,6 +149,34 @@ public class AssetManager
 	public List<File> getFiles()
 	{
 		return this.filesToScan;
+	}
+	
+	public Asset readAsset(File file)
+	{
+		if (!FileHelper.canReadFile(file))
+		{
+			return null;
+		}
+		
+		Asset ret = null;
+		IAssetReader r = this.getReader(file);
+		
+		if (r != null)
+		{
+			try
+			{
+				ret = r.readAsset(this, file);
+				
+			}
+			catch (Exception e)
+			{
+				CaelumEngine.log().log(EnumLogType.ERROR, null, e);
+				
+			}
+			
+		}
+		
+		return ret;
 	}
 	
 }

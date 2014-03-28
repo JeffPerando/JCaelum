@@ -3,7 +3,6 @@ package com.elusivehawk.engine.assets;
 
 import java.util.List;
 import com.elusivehawk.engine.render.ILegibleImage;
-import com.elusivehawk.engine.render.NonStaticTexture;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.util.Buffer;
 
@@ -13,11 +12,10 @@ import com.elusivehawk.engine.util.Buffer;
  * 
  * @author Elusivehawk
  */
-public class TextureGif extends NonStaticTexture
+public class TextureGif extends AbstractTexture
 {
 	protected final List<ILegibleImage> imgs;
 	protected final Buffer<Integer> tex;
-	protected final int[] ids = new int[]{0, 1};
 	
 	@SuppressWarnings("unqualified-field-access")
 	public TextureGif(String filename, List<ILegibleImage> listimgs)
@@ -79,7 +77,18 @@ public class TextureGif extends NonStaticTexture
 		
 		this.ids[0] = this.tex.get();
 		
-		this.dirty = true;
+	}
+	
+	@Override
+	public boolean isAnimated()
+	{
+		return true;
+	}
+	
+	@Override
+	public void setColor(int color)
+	{
+		this.ids[2] = color;
 		
 	}
 	
