@@ -47,7 +47,7 @@ public class TextureGif extends AbstractTexture
 			if (!tex.isFinished())
 			{
 				flag = false;
-				
+				break;
 			}
 			
 			this.textures.add(tex);
@@ -88,17 +88,6 @@ public class TextureGif extends AbstractTexture
 	public boolean isAnimated()
 	{
 		return true;
-	}
-	
-	@Override
-	public void setColor(int frame, int color)
-	{
-		if (this.textures != null)
-		{
-			this.textures.get(frame).setColor(0, color);
-			
-		}
-		
 	}
 	
 	@Override

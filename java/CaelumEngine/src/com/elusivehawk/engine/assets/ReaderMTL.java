@@ -100,16 +100,6 @@ public class ReaderMTL implements IAssetReader
 					{
 						textures[c] = tex;
 						
-						if (tex instanceof AbstractTexture)
-						{
-							for (int count = 0; count < ((AbstractTexture)tex).getFrameCount(); count++)
-							{
-								((AbstractTexture)tex).setColor(count, colors[c].color);
-								
-							}
-							
-						}
-						
 					}
 					
 				}
