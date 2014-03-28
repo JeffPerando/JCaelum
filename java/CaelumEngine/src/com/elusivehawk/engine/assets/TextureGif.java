@@ -80,7 +80,6 @@ public class TextureGif extends AbstractTexture
 		Asset tex = this.textures.get();
 		
 		this.ids[0] = tex.getIds()[0];
-		this.ids[2] = tex.getIds()[2];
 		
 	}
 	
