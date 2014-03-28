@@ -3,7 +3,7 @@ package com.elusivehawk.engine.assets;
 
 import java.util.List;
 import com.elusivehawk.engine.render.ILegibleImage;
-import com.elusivehawk.engine.render.INonStaticTexture;
+import com.elusivehawk.engine.render.NonStaticTexture;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.util.Buffer;
 
@@ -13,25 +13,19 @@ import com.elusivehawk.engine.util.Buffer;
  * 
  * @author Elusivehawk
  */
-public class TextureGif implements INonStaticTexture
+public class TextureGif extends NonStaticTexture
 {
 	protected final List<ILegibleImage> imgs;
 	protected final Buffer<Integer> tex;
 	protected final int[] ids = new int[]{0, 1};
-	protected boolean dirty = true;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public TextureGif(List<ILegibleImage> listimgs)
+	public TextureGif(String filename, List<ILegibleImage> listimgs)
 	{
+		super(filename);
 		imgs = listimgs;
 		tex = new Buffer<Integer>(imgs.size());
 		
-	}
-	
-	@Override
-	public EnumAssetType getType()
-	{
-		return EnumAssetType.TEXTURE;
 	}
 	
 	@Override
@@ -41,33 +35,32 @@ public class TextureGif implements INonStaticTexture
 	}
 	
 	@Override
-	public boolean isFinished()
+	protected boolean finishAsset()
 	{
-		return !this.tex.isEmpty();
-	}
-	
-	@Override
-	public void finish()
-	{
+		boolean flag = true;
+		int i = 0;
+		
 		for (ILegibleImage img : this.imgs)
 		{
-			this.tex.add(RenderHelper.processImage(img));
+			i = RenderHelper.processImage(img);
+			
+			if (i == 0)
+			{
+				flag = false;
+				break;
+			}
+			
+			this.tex.add(i);
 			
 		}
 		
-	}
-	
-	@Override
-	public boolean isDirty()
-	{
-		return this.dirty;
-	}
-	
-	@Override
-	public void setIsDirty(boolean b)
-	{
-		this.dirty = b;
+		if (!flag)
+		{
+			this.tex.clear();
+			
+		}
 		
+		return flag;
 	}
 	
 	@Override

@@ -12,17 +12,17 @@ import com.elusivehawk.engine.render.RenderHelper;
  * 
  * @author Elusivehawk
  */
-public class ReaderImg implements AssetReader
+public class ReaderImg implements IAssetReader
 {
 	@Override
-	public Asset readAsset(File file) throws Exception
+	public Asset readAsset(AssetManager mgr, File file) throws Exception
 	{
 		if (file.getName().endsWith(".gif"))
 		{
-			return new TextureGif(RenderHelper.readGifFile(file));
+			return new TextureGif(file.getName(), RenderHelper.readGifFile(file));
 		}
 		
-		return new Texture(new LegibleBufferedImage(ImageIO.read(file)));
+		return new Texture(file.getName(), new LegibleBufferedImage(ImageIO.read(file)));
 	}
 	
 }

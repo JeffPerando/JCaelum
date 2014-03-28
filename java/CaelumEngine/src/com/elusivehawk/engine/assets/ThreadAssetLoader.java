@@ -35,7 +35,7 @@ public class ThreadAssetLoader extends ThreadStoppable
 			{
 				if (file.getAbsolutePath().endsWith(tuple.one))
 				{
-					AssetReader r = this.assetMgr.getReader(file);
+					IAssetReader r = this.assetMgr.getReader(file);
 					
 					if (r != null)
 					{
@@ -43,7 +43,7 @@ public class ThreadAssetLoader extends ThreadStoppable
 						
 						try
 						{
-							a = r.readAsset(file);
+							a = r.readAsset(this.assetMgr, file);
 							
 						}
 						catch (Exception e)

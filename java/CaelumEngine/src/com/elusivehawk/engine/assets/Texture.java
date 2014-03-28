@@ -10,22 +10,17 @@ import com.elusivehawk.engine.render.RenderHelper;
  * 
  * @author Elusivehawk
  */
-public class Texture implements Asset
+public class Texture extends Asset
 {
 	protected final ILegibleImage image;
 	protected int[] ids = new int[2];
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Texture(ILegibleImage img)
+	public Texture(String filename, ILegibleImage img)
 	{
+		super(filename, EnumAssetType.TEXTURE);
 		image = img;
 		
-	}
-	
-	@Override
-	public EnumAssetType getType()
-	{
-		return EnumAssetType.TEXTURE;
 	}
 	
 	@Override
@@ -35,16 +30,11 @@ public class Texture implements Asset
 	}
 	
 	@Override
-	public boolean isFinished()
-	{
-		return this.ids[0] != 0;
-	}
-	
-	@Override
-	public void finish()
+	protected boolean finishAsset()
 	{
 		this.ids[0] = RenderHelper.processImage(this.image);
 		
+		return this.ids[0] != 0;
 	}
 	
 	@Override

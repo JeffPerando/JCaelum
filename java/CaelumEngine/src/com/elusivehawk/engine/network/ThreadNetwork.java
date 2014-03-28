@@ -127,7 +127,7 @@ public class ThreadNetwork extends ThreadStoppable
 							{
 								//Huh, it is. Okay, let's read this thing...
 								
-								pkt = format.read(this.bin);//Excuse me Mr. Format, could you tell me what's going on?
+								pkt = format.read(info.two.decryptData(this.bin));//Excuse me Mr. Format, could you tell me what's going on?
 								
 								if (pkt != null)//Check if the packet has been successfully read.
 								{
@@ -179,7 +179,7 @@ public class ThreadNetwork extends ThreadStoppable
 								continue;
 							}
 							
-							pkt.format.write(pkt, this.bout);
+							info.two.encryptData(pkt.toBytes(), this.bout);
 							
 							info.two.clearPkt(pkt);
 							

@@ -2,13 +2,20 @@
 package com.elusivehawk.engine.network;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.NetworkChannel;
 import java.nio.channels.SocketChannel;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.List;
 import java.util.UUID;
+import javax.crypto.Cipher;
 import com.elusivehawk.engine.util.SemiFinalStorage;
 import com.elusivehawk.engine.util.SimpleList;
+import com.elusivehawk.engine.util.io.IByteReader;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -21,6 +28,8 @@ public class Connection implements IConnection
 {
 	protected final IPacketHandler handler;
 	protected final UUID connectId;
+	protected final PublicKey pub;
+	protected final PrivateKey priv;
 	
 	private final SemiFinalStorage<Boolean> closed = new SemiFinalStorage<Boolean>(false);
 	
@@ -29,14 +38,35 @@ public class Connection implements IConnection
 	
 	private List<Packet> incoming = SimpleList.newList();
 	
-	@SuppressWarnings("unqualified-field-access")
 	public Connection(IPacketHandler h, UUID id)
+	{
+		this(h, id, 1024);
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public Connection(IPacketHandler h, UUID id, int bits)
 	{
 		assert h != null;
 		assert id != null;
 		
 		handler = h;
 		connectId = id;
+		
+		KeyPairGenerator kpg = null;
+		
+		try
+		{
+			kpg = KeyPairGenerator.getInstance("RSA");
+			
+		}
+		catch (Exception e){}
+		
+		kpg.initialize(bits);
+		KeyPair kp = kpg.genKeyPair();
+		
+		pub = kp.getPublic();
+		priv = kp.getPrivate();
 		
 	}
 	
@@ -167,5 +197,33 @@ public class Connection implements IConnection
 		}
 		
 	}
-
+	
+	@Override
+	public ByteBuffer decryptData(ByteBuffer buf)
+	{
+		return null;//FIXME
+	}
+	
+	@Override
+	public void encryptData(IByteReader r, ByteBuffer buf)
+	{
+		byte[] info = null;
+		
+		try
+		{
+			Cipher cipher = Cipher.getInstance("RSA");
+			cipher.init(Cipher.ENCRYPT_MODE, this.pub);
+			info = cipher.doFinal(r.readAll());
+			
+		}
+		catch (Exception e){}
+		
+		if (info != null)
+		{
+			buf.put(info);
+			
+		}
+		
+	}
+	
 }

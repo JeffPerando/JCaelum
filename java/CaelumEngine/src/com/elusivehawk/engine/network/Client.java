@@ -4,8 +4,10 @@ package com.elusivehawk.engine.network;
 import java.io.IOException;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SocketChannel;
+import java.security.Key;
 import java.util.List;
 import java.util.UUID;
+import com.elusivehawk.engine.math.MathHelper;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -20,17 +22,37 @@ public class Client implements IHost
 {
 	protected final INetworkMaster master;
 	protected final ThreadNetwork thr;
+	//protected final PublicKey pub;
+	//protected final PrivateKey priv;
 	
 	protected IConnection connection = null;
 	protected boolean hasHS = false;
+	protected Key outgoing = null;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Client(INetworkMaster mstr)
+	public Client(INetworkMaster mstr, int bits)
 	{
 		assert mstr != null;
+		assert MathHelper.bounds(bits, 0, 4096);
 		
 		master = mstr;
 		thr = new ThreadNetwork(this, 1);
+		
+		/*KeyPairGenerator kpg = null;
+		
+		try
+		{
+			kpg = KeyPairGenerator.getInstance("RSA");
+			
+		}
+		catch (NoSuchAlgorithmException e){}
+		
+		kpg.initialize(bits);
+		
+		KeyPair kp = kpg.genKeyPair();
+		
+		pub = kp.getPublic();
+		priv = kp.getPrivate();*/
 		
 	}
 	
@@ -40,6 +62,34 @@ public class Client implements IHost
 		return Side.CLIENT;
 	}
 	
+	@Override
+	public void onDisconnect(IConnection connect)
+	{
+		if (this.connection != connect)
+		{
+			throw new RuntimeException("Please quit pulling off coding voodoo.");
+			
+		}
+		
+		this.connection = null;
+		this.hasHS = false;
+		
+	}
+	/*
+	@Override
+	public ByteBuffer decryptData(ByteBuffer buf)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public ByteBuffer encryptData(ByteBuffer buf)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+	*/
 	@Override
 	public void onPacketsReceived(IConnection origin, ImmutableList<Packet> pkts)
 	{
@@ -225,20 +275,6 @@ public class Client implements IHost
 	public PacketFormat getPacketFormat(short id)
 	{
 		return this.master.getPacketFormat(id);
-	}
-	
-	@Override
-	public void onDisconnect(IConnection connect)
-	{
-		if (this.connection != connect)
-		{
-			throw new RuntimeException("Please quit pulling off coding voodoo.");
-			
-		}
-		
-		this.connection = null;
-		this.hasHS = false;
-		
 	}
 	
 }

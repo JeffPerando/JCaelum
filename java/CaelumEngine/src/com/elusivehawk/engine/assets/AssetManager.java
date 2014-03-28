@@ -19,7 +19,7 @@ public class AssetManager
 {
 	protected final ThreadAssetLoader worker;
 	protected final Map<String, IAssetReceiver> expectedRes = Maps.newHashMap();
-	protected final Map<String, AssetReader> readers = Maps.newHashMap();
+	protected final Map<String, IAssetReader> readers = Maps.newHashMap();
 	protected final List<Asset> assets = SimpleList.newList();
 	protected final List<File> resourceLocations = SimpleList.newList();
 	protected final List<File> filesToScan = SimpleList.newList();
@@ -58,7 +58,7 @@ public class AssetManager
 		
 	}
 	
-	public void addAssetReader(String ext, AssetReader r)
+	public void addAssetReader(String ext, IAssetReader r)
 	{
 		assert ext != null;
 		assert r != null;
@@ -113,7 +113,7 @@ public class AssetManager
 		
 	}
 	
-	public AssetReader getReader(File file)
+	public IAssetReader getReader(File file)
 	{
 		return this.readers.get(TextParser.splitOnce(file.getName(), ".")[1]);
 	}

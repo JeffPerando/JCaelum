@@ -35,7 +35,7 @@ public class GLES1 implements IGL1
 	@Override
 	public void glActiveTexture(Asset texture)
 	{
-		assert texture.getType() == EnumAssetType.TEXTURE;
+		assert texture.type == EnumAssetType.TEXTURE;
 		
 		this.glActiveTexture(texture == null ? 0 : texture.getIds()[0]);
 		
@@ -65,7 +65,7 @@ public class GLES1 implements IGL1
 	@Override
 	public void glBindTexture(int target, Asset texture)
 	{
-		assert texture.getType() == EnumAssetType.TEXTURE;
+		assert texture.type == EnumAssetType.TEXTURE;
 		
 		this.glBindTexture(target, texture == null ? 0 : texture.getIds()[0]);
 		
@@ -187,7 +187,7 @@ public class GLES1 implements IGL1
 		
 		for (Asset asset : textures)
 		{
-			if (asset.getType() == EnumAssetType.TEXTURE)
+			if (asset.type == EnumAssetType.TEXTURE)
 			{
 				buf.put(asset.getIds()[0]);
 				

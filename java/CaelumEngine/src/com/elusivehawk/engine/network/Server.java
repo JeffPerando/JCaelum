@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.network;
 
+import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SocketChannel;
 import java.util.List;
@@ -115,6 +116,49 @@ public class Server implements IHost
 		return Side.SERVER;
 	}
 	
+	@Override
+	public void onDisconnect(IConnection connect)
+	{
+		int i = this.clients.indexOf(connect);
+		
+		if (i == -1)
+		{
+			return;
+		}
+		
+		this.clients.set(i, null);
+		this.ids.remove(connect.getId());
+		
+		int players = 0;
+		
+		for (int c = 0; c < this.clients.size(); c++)
+		{
+			if (this.clients.get(c) != null)
+			{
+				players++;
+				
+			}
+			
+		}
+		
+		this.playerCount = players;
+		
+	}
+	/*
+	@Override
+	public ByteBuffer decryptData(ByteBuffer buf)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public ByteBuffer encryptData(ByteBuffer buf)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+	*/
 	@Override
 	public void sendPackets(UUID client, Packet... pkts)
 	{
@@ -264,35 +308,6 @@ public class Server implements IHost
 	public PacketFormat getPacketFormat(short id)
 	{
 		return this.master.getPacketFormat(id);
-	}
-	
-	@Override
-	public void onDisconnect(IConnection connect)
-	{
-		int i = this.clients.indexOf(connect);
-		
-		if (i == -1)
-		{
-			return;
-		}
-		
-		this.clients.set(i, null);
-		this.ids.remove(connect.getId());
-		
-		int players = 0;
-		
-		for (int c = 0; c < this.clients.size(); c++)
-		{
-			if (this.clients.get(c) != null)
-			{
-				players++;
-				
-			}
-			
-		}
-		
-		this.playerCount = players;
-		
 	}
 	
 }

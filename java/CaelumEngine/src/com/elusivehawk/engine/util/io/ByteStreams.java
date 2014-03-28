@@ -37,6 +37,20 @@ public class ByteStreams implements IByteReader, IByteWriter
 	}
 	
 	@Override
+	public int remaining()
+	{
+		int ret = 0;
+		
+		try
+		{
+			ret = this.in.available();
+		}
+		catch (Exception e){}
+		
+		return ret;
+	}
+	
+	@Override
 	public byte read()
 	{
 		byte ret = -1;
@@ -49,6 +63,26 @@ public class ByteStreams implements IByteReader, IByteWriter
 		catch (IOException e)
 		{
 			e.printStackTrace();
+			
+		}
+		
+		return ret;
+	}
+	
+	@Override
+	public byte[] readAll()
+	{
+		int rem = this.remaining();
+		byte[] ret = new byte[rem];
+		
+		if (rem > 0)
+		{
+			try
+			{
+				this.in.read(ret);
+				
+			}
+			catch (IOException e){}
 			
 		}
 		

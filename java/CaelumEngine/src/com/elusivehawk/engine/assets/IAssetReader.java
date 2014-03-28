@@ -9,8 +9,8 @@ import java.io.File;
  * 
  * @author Elusivehawk
  */
-public interface AssetReader
+public interface IAssetReader
 {
-	public Asset readAsset(File file) throws Exception;
+	public Asset readAsset(AssetManager mgr, File file) throws Exception;
 	
 }

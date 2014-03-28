@@ -12,6 +12,7 @@ import javax.imageio.stream.ImageInputStream;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.render.opengl.GLConst;
+import com.elusivehawk.engine.render.opengl.GLEnumShader;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
@@ -57,55 +58,38 @@ public final class RenderHelper
 	
 	public static List<ILegibleImage> readGifFile(File gif)
 	{
-		if (gif.getName().endsWith(".gif"))
+		if (!gif.getName().endsWith(".gif"))
 		{
-			try
+			return null;
+		}
+		
+		try
+		{
+			ImageReader r = ImageIO.getImageReadersByFormatName("gif").next();
+			ImageInputStream in = ImageIO.createImageInputStream(gif);
+			r.setInput(in, false);
+			
+			int max = r.getNumImages(true);
+			
+			List<ILegibleImage> ret = SimpleList.newList(max);
+			
+			for (int c = 0; c < max; c++)
 			{
-				ImageReader reader = ImageIO.getImageReadersByFormatName("gif").next();
-				ImageInputStream in = ImageIO.createImageInputStream(gif);
-				reader.setInput(in, false);
-				
-				int max = reader.getNumImages(true);
-				
-				List<ILegibleImage> ret = SimpleList.newList(max);
-				
-				for (int c = 0; c < max; c++)
-				{
-					ret.add(new LegibleBufferedImage(reader.read(c)));
-					
-				}
-				
-				in.close();
-				
-				return ret;
-			}
-			catch (Exception e)
-			{
-				CaelumEngine.log().log(EnumLogType.ERROR, null, e);
+				ret.add(new LegibleBufferedImage(r.read(c)));
 				
 			}
+			
+			in.close();
+			
+			return ret;
+		}
+		catch (Exception e)
+		{
+			CaelumEngine.log().log(EnumLogType.ERROR, null, e);
 			
 		}
 		
 		return null;
-	}
-	
-	public static int processImage(File img)
-	{
-		ILegibleImage leimg = null;
-		
-		try
-		{
-			leimg = new LegibleBufferedImage(ImageIO.read(img));
-			
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			
-		}
-		
-		return leimg == null ? 0 : processImage(leimg);
 	}
 	
 	public static int processImage(ILegibleImage img)
@@ -158,30 +142,18 @@ public final class RenderHelper
 		return buf;
 	}
 	
-	public static int loadShader(File file, int type)
+	public static int loadShader(File file, GLEnumShader type)
 	{
-		return loadShader(TextParser.read(file), type);
+		return loadShader(TextParser.concat(TextParser.read(file), "\n", "", null), type);
 	}
 	
-	public static int loadShader(List<String> s, int type)
+	public static int loadShader(String src, GLEnumShader type)
 	{
-		if (s == null || s.isEmpty())
-		{
-			return 0;
-		}
-		
-		String program = TextParser.concat(s, "\n", "", null);
-		
-		if (program == null)
-		{
-			return 0;
-		}
-		
 		RenderContext context = CaelumEngine.renderContext();
 		
 		IGL2 gl2 = context.getGL2();
 		int id = gl2.glCreateShader(type);
-		gl2.glShaderSource(id, program);
+		gl2.glShaderSource(id, src);
 		gl2.glCompileShader(type);
 		
 		try

@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.util.io;
 
-import java.nio.ByteBuffer;
+import java.util.List;
 
 /**
  * 
@@ -9,18 +9,19 @@ import java.nio.ByteBuffer;
  * 
  * @author Elusivehawk
  */
-public class ByteBuf implements IByteReader, IByteWriter
+public class ByteLists implements IByteReader, IByteWriter
 {
-	protected final ByteBuffer in, out;
+	protected final List<Byte> in, out;
+	public int inPos = 0, outPos = 0;
 	
-	public ByteBuf(ByteBuffer b)
+	public ByteLists(List<Byte> l)
 	{
-		this(b, b);
+		this(l, l);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public ByteBuf(ByteBuffer i, ByteBuffer o)
+	public ByteLists(List<Byte> i, List<Byte> o)
 	{
 		in = i;
 		out = o;
@@ -30,13 +31,13 @@ public class ByteBuf implements IByteReader, IByteWriter
 	@Override
 	public int remaining()
 	{
-		return this.in.remaining();
+		return this.in.size() - this.inPos;
 	}
 	
 	@Override
 	public byte read()
 	{
-		return this.in.get();
+		return this.in.get(this.inPos++);
 	}
 	
 	@Override
@@ -56,7 +57,11 @@ public class ByteBuf implements IByteReader, IByteWriter
 	@Override
 	public void write(byte... bytes)
 	{
-		this.out.put(bytes);
+		for (byte b : bytes)
+		{
+			this.out.add(this.outPos++, b);
+			
+		}
 		
 	}
 	

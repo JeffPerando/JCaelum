@@ -17,12 +17,12 @@ import com.google.common.collect.Maps;
  * 
  * @author Elusivehawk
  */
-public class ReaderMTL implements AssetReader
+public class ReaderMTL implements IAssetReader
 {
 	public static final String[] PREFIXES = {"newmtl", "Ka", "Kd", "Ks", "Ns", "d", "Tr", "illum"};
 	
 	@Override
-	public Asset readAsset(File file)
+	public Asset readAsset(AssetManager mgr, File file)
 	{
 		List<String> lines = TextParser.read(file);
 		

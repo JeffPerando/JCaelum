@@ -1,8 +1,12 @@
 
 package com.elusivehawk.engine.network;
 
-import java.util.ArrayList;
 import java.util.List;
+import com.elusivehawk.engine.network.PacketFormat.PktFormatItr;
+import com.elusivehawk.engine.util.SimpleList;
+import com.elusivehawk.engine.util.io.ByteLists;
+import com.elusivehawk.engine.util.io.IByteReader;
+import com.elusivehawk.engine.util.io.Serializer;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -35,20 +39,13 @@ public final class Packet
 			
 		}
 		
-		data = new ArrayList<Object>(pktSize);
+		data = SimpleList.newList(pktSize);
 		
 	}
 	
 	public void addData(Object obj)
 	{
-		int index = this.data.indexOf(null);
-		
-		if (index == -1)
-		{
-			return;
-		}
-		
-		this.data.set(index, obj);
+		this.data.add(obj);
 		
 	}
 	
@@ -60,6 +57,28 @@ public final class Packet
 	public ImmutableList<Object> getData()
 	{
 		return ImmutableList.copyOf(this.data);
+	}
+	
+	public IByteReader toBytes()
+	{
+		ByteLists l = new ByteLists(SimpleList.<Byte>newList());
+		int length = Serializer.SHORT.toBytes(l, this.format.pktId);
+		
+		l.outPos = 4;
+		
+		PktFormatItr itr = this.format.iterator();
+		
+		while (itr.hasNext())
+		{
+			length += itr.next().encode(this.format.format, itr.position(), this.data.get(itr.actualPos()), l);
+			
+		}
+		
+		l.outPos = 2;
+		
+		Serializer.SHORT.toBytes(l, (short)length);
+		
+		return l;
 	}
 	
 }

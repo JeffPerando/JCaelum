@@ -17,6 +17,7 @@ public class SimpleList<T> implements List<T>
 	protected Object[] list;
 	protected int size = 0;
 	protected final boolean exp;
+	protected final int expansionLength;
 	
 	public SimpleList()
 	{
@@ -40,6 +41,7 @@ public class SimpleList<T> implements List<T>
 	{
 		list = new Object[length];
 		exp = grow;
+		expansionLength = length;
 		
 	}
 	
@@ -55,16 +57,12 @@ public class SimpleList<T> implements List<T>
 				return false;
 			}
 			
-			this.list = expand(this.list, 1);
-			this.list[this.list.length - 1] = obj;
-			
-		}
-		else
-		{
-			this.list[index] = obj;
+			this.list = expand(this.list, this.expansionLength);
+			index = this.indexOf(null);
 			
 		}
 		
+		this.list[index] = obj;
 		this.size++;
 		
 		return true;

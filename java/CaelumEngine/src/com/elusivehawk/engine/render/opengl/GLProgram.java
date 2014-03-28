@@ -8,12 +8,15 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import com.elusivehawk.engine.assets.Asset;
+import com.elusivehawk.engine.assets.EnumAssetType;
+import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.core.CaelumEngine;
-import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.RenderTicket;
 import com.elusivehawk.engine.render.old.Model;
+import com.elusivehawk.engine.util.SimpleList;
 
 /**
  * 
@@ -21,21 +24,15 @@ import com.elusivehawk.engine.render.old.Model;
  * 
  * @author Elusivehawk
  */
-public class GLProgram implements IGLBindable
+public class GLProgram implements IGLBindable, IAssetReceiver
 {
 	private final int id, vba;
-	private final int sVertex, sFrag;
+	private final List<Asset> shaders = SimpleList.newList(GLEnumShader.values().length, false);
 	private HashMap<VertexBufferObject, List<Integer>> vbos = new HashMap<VertexBufferObject, List<Integer>>();
-	private boolean bound = false;
-	
-	public GLProgram()
-	{
-		this(0, 0);
-		
-	}
+	private boolean bound = false, relink = true;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public GLProgram(int vertex, int frag)
+	public GLProgram()
 	{
 		RenderContext context = CaelumEngine.renderContext();
 		IGL2 gl2 = context.getGL2();
@@ -43,151 +40,53 @@ public class GLProgram implements IGLBindable
 		id = gl2.glCreateProgram();
 		vba = context.getGL3().glGenVertexArrays();
 		
-		sVertex = gl2.glIsShader(vertex) ? vertex : 0;
-		sFrag = gl2.glIsShader(frag) ? frag : 0;
-		
-		gl2.glAttachShader(id, vertex);
-		gl2.glAttachShader(id, frag);
-		
-		gl2.glLinkProgram(this);
-		gl2.glValidateProgram(this);
-		
-		try
-		{
-			RenderHelper.checkForGLError(context);
-			
-		}
-		catch (Exception e)
-		{
-			CaelumEngine.log().log(EnumLogType.ERROR, null, e);
-			
-		}
-		
 		context.registerCleanable(this);
 		
-	}
-	
-	public void attachVBO(VertexBufferObject vbo, List<Integer> attribs)
-	{
-		if (attribs == null || attribs.size() == 0)
-		{
-			this.vbos.put(vbo, null);
-			
-			return;
-		}
-		
-		List<Integer> valid = new ArrayList<Integer>(attribs);
-		
-		for (Entry<VertexBufferObject, List<Integer>> entry : this.vbos.entrySet())
-		{
-			for (int a : attribs)
-			{
-				if (entry.getValue().contains(a))
-				{
-					valid.remove((Integer)a);
-					
-				}
-				
-			}
-			
-		}
-		
-		if (valid.isEmpty())
-		{
-			return;
-		}
-		
-		this.vbos.put(vbo, valid);
-		
-	}
-	
-	public void attachModel(Model m)
-	{
-		this.attachVBO(m.finBuf.get(), Arrays.asList(0, 1, 2));
-		this.attachVBO(m.indiceBuf.get(), null);
-		
-	}
-	
-	public void attachRenderTicket(RenderTicket tkt)
-	{
-		this.attachModel(tkt.getModel());
-		this.attachVBO(tkt.getExtraVBO(), Arrays.asList(3, 4, 5));
-		
-		RenderContext context = CaelumEngine.renderContext();
-		
-		if (!this.bound && !this.bind(context))
-		{
-			return;
-		}
-		
-		IGL2 gl2 = context.getGL2();
-		
-		gl2.glVertexAttribPointer(3, 3, GLConst.GL_FLOAT, false, 0, tkt.getBuffer());
-		gl2.glVertexAttribPointer(4, 3, GLConst.GL_FLOAT, false, 3, tkt.getBuffer());
-		gl2.glVertexAttribPointer(5, 3, GLConst.GL_FLOAT, false, 6, tkt.getBuffer());
-		
-		this.unbind(context);
-		
-	}
-	
-	public void attachUniform(String name, FloatBuffer info, EnumUniformType type)
-	{
-		RenderContext context = CaelumEngine.renderContext();
-		
-		if (!this.bound && !this.bind(context))
-		{
-			return;
-		}
-		
-		int loc = context.getGL2().glGetUniformLocation(this.id, name);
-		
-		if (loc == 0)
-		{
-			return;
-		}
-		
-		type.loadUniform(loc, info);
-		
-	}
-	
-	public void attachUniform(String name, IntBuffer info, EnumUniformType type)
-	{
-		RenderContext context = CaelumEngine.renderContext();
-		
-		if (!this.bound && !this.bind(context))
-		{
-			return;
-		}
-		
-		int loc = context.getGL2().glGetUniformLocation(this.id, name);
-		
-		if (loc == 0)
-		{
-			return;
-		}
-		
-		type.loadUniform(loc, info);
-		
-	}
-	
-	public int getId()
-	{
-		return this.id;
-	}
-	
-	public int getShaderFrag()
-	{
-		return this.sFrag;
-	}
-	
-	public int getShaderVertex()
-	{
-		return this.sVertex;
 	}
 	
 	@Override
 	public boolean bind(RenderContext context)
 	{
+		if (this.shaders.isEmpty())
+		{
+			return false;
+		}
+		
+		if (this.relink)
+		{
+			boolean flag = false;
+			
+			for (GLEnumShader stype : GLEnumShader.values())
+			{
+				Asset s = this.shaders.get(stype.ordinal());
+				
+				if (s != null)
+				{
+					flag = true;
+					context.getGL2().glAttachShader(this, s);
+					
+				}
+				
+			}
+			
+			if (flag)
+			{
+				context.getGL2().glLinkProgram(this);
+				context.getGL2().glValidateProgram(this);
+				
+				try
+				{
+					RenderHelper.checkForGLError(context);
+					
+					this.relink =  false;
+					
+				}
+				catch (Exception e){}
+				
+			}
+			
+		}
+		
 		if (!this.bind0(context))
 		{
 			this.unbind(context);
@@ -286,11 +185,145 @@ public class GLProgram implements IGLBindable
 		
 		context.getGL3().glDeleteVertexArrays(this.vba);
 		
-		context.getGL2().glDeleteShader(this.sVertex);
-		context.getGL2().glDeleteShader(this.sFrag);
+		if (!this.shaders.isEmpty())
+		{
+			for (Asset s : this.shaders)
+			{
+				context.getGL2().glDetachShader(this, s);
+				context.getGL2().glDeleteShader(s);
+				
+			}
+			
+		}
 		
 		context.getGL2().glDeleteProgram(this);
 		
+	}
+	
+	@Override
+	public synchronized void onAssetLoaded(Asset a)
+	{
+		if (a.type == EnumAssetType.SHADER)
+		{
+			this.shaders.set(a.getIds()[1], a);
+			this.relink = true;
+			
+		}
+		
+	}
+	
+	public void attachVBO(VertexBufferObject vbo, List<Integer> attribs)
+	{
+		if (attribs == null || attribs.size() == 0)
+		{
+			this.vbos.put(vbo, null);
+			
+			return;
+		}
+		
+		List<Integer> valid = new ArrayList<Integer>(attribs);
+		
+		for (Entry<VertexBufferObject, List<Integer>> entry : this.vbos.entrySet())
+		{
+			for (int a : attribs)
+			{
+				if (entry.getValue().contains(a))
+				{
+					valid.remove((Integer)a);
+					
+				}
+				
+			}
+			
+		}
+		
+		if (valid.isEmpty())
+		{
+			return;
+		}
+		
+		this.vbos.put(vbo, valid);
+		
+	}
+	
+	@Deprecated
+	public void attachModel(Model m)
+	{
+		this.attachVBO(m.finBuf.get(), Arrays.asList(0, 1, 2));
+		this.attachVBO(m.indiceBuf.get(), null);
+		
+	}
+	
+	public void attachRenderTicket(RenderTicket tkt)
+	{
+		this.attachModel(tkt.getModel());
+		this.attachVBO(tkt.getExtraVBO(), Arrays.asList(3, 4, 5));
+		
+		RenderContext context = CaelumEngine.renderContext();
+		
+		if (!this.bound && !this.bind(context))
+		{
+			return;
+		}
+		
+		IGL2 gl2 = context.getGL2();
+		
+		gl2.glVertexAttribPointer(3, 3, GLConst.GL_FLOAT, false, 0, tkt.getBuffer());
+		gl2.glVertexAttribPointer(4, 3, GLConst.GL_FLOAT, false, 3, tkt.getBuffer());
+		gl2.glVertexAttribPointer(5, 3, GLConst.GL_FLOAT, false, 6, tkt.getBuffer());
+		
+		this.unbind(context);
+		
+	}
+	
+	public void attachUniform(String name, FloatBuffer info, EnumUniformType type)
+	{
+		RenderContext context = CaelumEngine.renderContext();
+		
+		if (!this.bound && !this.bind(context))
+		{
+			return;
+		}
+		
+		int loc = context.getGL2().glGetUniformLocation(this.id, name);
+		
+		if (loc == 0)
+		{
+			return;
+		}
+		
+		type.loadUniform(loc, info);
+		
+	}
+	
+	public void attachUniform(String name, IntBuffer info, EnumUniformType type)
+	{
+		RenderContext context = CaelumEngine.renderContext();
+		
+		if (!this.bound && !this.bind(context))
+		{
+			return;
+		}
+		
+		int loc = context.getGL2().glGetUniformLocation(this.id, name);
+		
+		if (loc == 0)
+		{
+			return;
+		}
+		
+		type.loadUniform(loc, info);
+		
+	}
+	
+	public int getId()
+	{
+		return this.id;
+	}
+	
+	public Asset getShader(GLEnumShader type)
+	{
+		return this.shaders.get(type.ordinal());
 	}
 	
 	private static interface IUniformType

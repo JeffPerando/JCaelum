@@ -1,12 +1,14 @@
 
 package com.elusivehawk.engine.network;
 
+import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.NetworkChannel;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import com.elusivehawk.engine.util.io.IByteReader;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -93,16 +95,30 @@ public class HSConnection implements IPacketHandler, IConnection
 	}
 	
 	@Override
-	public PacketFormat getPacketFormat(short id)
-	{
-		return this.master.getPacketFormat(id);
-	}
-	
-	@Override
 	public void onDisconnect(IConnection connect)
 	{
 		this.master.onDisconnect(connect);
 		
+	}
+	
+	@Override
+	public ByteBuffer decryptData(ByteBuffer buf)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public void encryptData(IByteReader r, ByteBuffer buf)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public PacketFormat getPacketFormat(short id)
+	{
+		return this.master.getPacketFormat(id);
 	}
 	
 	@Override

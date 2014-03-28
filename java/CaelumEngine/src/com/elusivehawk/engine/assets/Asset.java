@@ -7,16 +7,45 @@ package com.elusivehawk.engine.assets;
  * 
  * @author Elusivehawk
  */
-public interface Asset
+public abstract class Asset
 {
-	public EnumAssetType getType();
+	public final EnumAssetType type;
 	
-	public int[] getIds();
+	protected final String name;
+	protected boolean finished = false;
 	
-	public boolean isFinished();
+	@SuppressWarnings("unqualified-field-access")
+	protected Asset(String filename, EnumAssetType atype)
+	{
+		name = filename;
+		type = atype;
+		
+	}
 	
-	public void finish();
+	public final boolean isFinished()
+	{
+		return this.finished;
+	}
 	
-	public Object getAttachment();
+	public final void finish()
+	{
+		this.finished = this.finishAsset();
+		
+	}
+	
+	public String getName()
+	{
+		return this.name;
+	}
+	
+	@SuppressWarnings("static-method")
+	public Object getAttachment()
+	{
+		return null;
+	}
+	
+	public abstract int[] getIds();
+	
+	protected abstract boolean finishAsset();
 	
 }

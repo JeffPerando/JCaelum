@@ -127,11 +127,16 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 	}
 	
 	@Override
-	public synchronized void onAssetLoaded(Asset asset)
+	public synchronized void onAssetLoaded(Asset a)
 	{
-		if (asset.getType() == EnumAssetType.TEXTURE && this.tex == null)
+		if (a.type == EnumAssetType.SHADER)
 		{
-			this.tex = asset;
+			this.p.onAssetLoaded(a);
+			
+		}
+		else if (a.type == EnumAssetType.TEXTURE && this.tex == null)
+		{
+			this.tex = a;
 			
 		}
 		
@@ -161,7 +166,7 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 	
 	public synchronized void setTexture(Asset texture)
 	{
-		assert texture.getType() == EnumAssetType.TEXTURE;
+		assert texture.type == EnumAssetType.TEXTURE;
 		
 		this.tex = texture;
 		

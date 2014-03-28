@@ -5,8 +5,6 @@ import java.nio.ByteBuffer;
 import java.util.Iterator;
 import com.elusivehawk.engine.util.io.ByteBuf;
 import com.elusivehawk.engine.util.io.IByteReader;
-import com.elusivehawk.engine.util.io.IByteWriter;
-import com.elusivehawk.engine.util.io.Serializer;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -46,10 +44,15 @@ public final class PacketFormat implements Iterable<DataType>
 		
 	}
 	
-	public Packet read(ByteBuffer in)
+	public Packet read(ByteBuffer buf)
 	{
+		if (buf == null)
+		{
+			return null;
+		}
+		
 		Packet ret = new Packet(this);
-		IByteReader r = new ByteBuf(in, null);
+		IByteReader r = new ByteBuf(buf);
 		PktFormatItr itr = this.iterator();
 		Object obj;
 		
@@ -67,30 +70,6 @@ public final class PacketFormat implements Iterable<DataType>
 		}
 		
 		return ret;
-	}
-	
-	public int write(Packet pkt, ByteBuffer buf)
-	{
-		IByteWriter w = new ByteBuf(null, buf);
-		int length = Serializer.SHORT.toBytes(w, this.pktId);
-		PktFormatItr itr = this.iterator();
-		
-		buf.position(buf.position() + 2);
-		buf.mark();
-		
-		while (itr.hasNext())
-		{
-			length += itr.next().encode(this.format, itr.position(), pkt.getData().get(itr.actualPos()), w);
-			
-		}
-		
-		buf.rewind();
-		
-		Serializer.SHORT.toBytes(w, (short)length);
-		
-		buf.reset();
-		
-		return length;
 	}
 	
 	@Override

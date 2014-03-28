@@ -11,41 +11,43 @@ import com.elusivehawk.engine.render.EnumColorFormat;
  * 
  * @author Elusivehawk
  */
-public class Material implements Asset
+public class Material extends Asset
 {
 	protected final Asset tex;
 	protected final float shininess;
 	protected final Color filter;
 	protected final int[] ints = new int[3];
 	
-	public Material(Color overlay)
+	public Material(String filename, Color overlay)
 	{
-		this(null, 0.0f, overlay);
+		this(filename, null, 0.0f, overlay);
 	}
 	
-	public Material(Asset texture)
+	public Material(String filename, Asset texture)
 	{
-		this(texture, 0.0f, new Color(EnumColorFormat.RGBA));
+		this(filename, texture, 0.0f, new Color(EnumColorFormat.RGBA));
 		
 	}
 	
-	public Material(Asset texture, Color overlay)
+	public Material(String filename, Asset texture, Color overlay)
 	{
-		this(texture, 0.0f, overlay);
+		this(filename, texture, 0.0f, overlay);
 		
 	}
 	
-	public Material(Asset texture, float shine)
+	public Material(String filename, Asset texture, float shine)
 	{
-		this(texture, shine, new Color(EnumColorFormat.RGBA));
+		this(filename, texture, shine, new Color(EnumColorFormat.RGBA));
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Material(Asset texture, float shine, Color overlay)
+	public Material(String filename, Asset texture, float shine, Color overlay)
 	{
+		super(filename, EnumAssetType.MATERIAL);
+		
 		assert overlay != null;
-		assert texture.getType() == EnumAssetType.TEXTURE;
+		assert texture.type == EnumAssetType.TEXTURE;
 		
 		tex = texture;
 		shininess = MathHelper.clamp(shine, 0f, 1f);
@@ -55,12 +57,6 @@ public class Material implements Asset
 		ints[1] = Float.floatToIntBits(shininess);
 		ints[2] = filter.color;
 		
-	}
-	
-	@Override
-	public EnumAssetType getType()
-	{
-		return EnumAssetType.MATERIAL;
 	}
 	
 	@Override
@@ -76,18 +72,9 @@ public class Material implements Asset
 	}
 	
 	@Override
-	public boolean isFinished()
+	protected boolean finishAsset()
 	{
 		return true;
-	}
-	
-	@Override
-	public void finish(){}
-	
-	@Override
-	public Object getAttachment()
-	{
-		return null;
 	}
 	
 	/*

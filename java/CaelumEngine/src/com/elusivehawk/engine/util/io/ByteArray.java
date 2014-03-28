@@ -10,13 +10,19 @@ package com.elusivehawk.engine.util.io;
 public class ByteArray implements IByteReader, IByteWriter
 {
 	protected final byte[] info;
-	protected int pos = 0;
+	public int pos = 0;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public ByteArray(byte... b)
 	{
 		info = b;
 		
+	}
+	
+	@Override
+	public int remaining()
+	{
+		return this.info.length - this.pos;
 	}
 	
 	@Override
@@ -28,6 +34,25 @@ public class ByteArray implements IByteReader, IByteWriter
 		}
 		
 		return this.info[this.pos++];
+	}
+	
+	@Override
+	public byte[] readAll()
+	{
+		if (this.pos == 0)
+		{
+			return this.info;
+		}
+		
+		byte[] ret = new byte[this.remaining()];
+		
+		for (int c = 0; c < ret.length; c++)
+		{
+			ret[c] = this.read();
+			
+		}
+		
+		return ret;
 	}
 	
 	@Override

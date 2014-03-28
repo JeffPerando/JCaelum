@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.core.IContext;
-import com.elusivehawk.engine.render.opengl.GLConst;
+import com.elusivehawk.engine.render.opengl.GLEnumShader;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
@@ -32,7 +32,7 @@ public final class RenderContext implements IContext
 	
 	private int sVertex, sFrag, notex;
 	
-	private final List<INonStaticTexture> texturePool = SimpleList.newList(32);
+	private final List<NonStaticTexture> texturePool = SimpleList.newList(32);
 	private final List<IGLBindable> cleanables = SimpleList.newList(32);
 	private final Map<EnumRenderMode, List<IGLManipulator>> manipulators = Maps.newHashMapWithExpectedSize(3);
 	
@@ -58,8 +58,8 @@ public final class RenderContext implements IContext
 		this.gl2 = (IGL2)this.thr.getRenderEnv().getGL(IRenderEnvironment.GL_2);
 		this.gl3 = (IGL3)this.thr.getRenderEnv().getGL(IRenderEnvironment.GL_3);
 		
-		this.sVertex = RenderHelper.loadShader(FileHelper.createFile("/vertex.glsl"), GLConst.GL_VERTEX_SHADER);
-		this.sFrag = RenderHelper.loadShader(FileHelper.createFile("/fragment.glsl"), GLConst.GL_FRAGMENT_SHADER);
+		this.sVertex = RenderHelper.loadShader(FileHelper.createFile("/vertex.glsl"), GLEnumShader.VERTEX);
+		this.sFrag = RenderHelper.loadShader(FileHelper.createFile("/fragment.glsl"), GLEnumShader.FRAG);
 		
 		PixelGrid ntf = new PixelGrid(32, 32, EnumColorFormat.RGBA);
 		
@@ -151,7 +151,7 @@ public final class RenderContext implements IContext
 	{
 		if (!this.texturePool.isEmpty())
 		{
-			for (INonStaticTexture tex : this.texturePool)
+			for (NonStaticTexture tex : this.texturePool)
 			{
 				tex.updateTexture();
 				
@@ -184,9 +184,10 @@ public final class RenderContext implements IContext
 		
 	}
 	
-	public void addTexture(INonStaticTexture tex)
+	public void addTexture(NonStaticTexture tex)
 	{
 		assert tex != null;
+		
 		this.texturePool.add(tex);
 		
 	}
@@ -248,7 +249,7 @@ public final class RenderContext implements IContext
 			
 		}
 		
-		for (INonStaticTexture tex : this.texturePool)
+		for (NonStaticTexture tex : this.texturePool)
 		{
 			tex.setIsDirty(false);
 			

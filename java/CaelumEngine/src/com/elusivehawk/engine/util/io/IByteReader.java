@@ -9,6 +9,10 @@ package com.elusivehawk.engine.util.io;
  */
 public interface IByteReader
 {
+	public int remaining();
+	
 	public byte read();
+	
+	public byte[] readAll();
 	
 }

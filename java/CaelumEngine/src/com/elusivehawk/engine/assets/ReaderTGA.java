@@ -14,7 +14,7 @@ import com.elusivehawk.engine.util.io.ByteBufWrapper;
  * 
  * @author Elusivehawk
  */
-public class ReaderTGA implements AssetReader
+public class ReaderTGA implements IAssetReader
 {
 	public static final String SIGNATURE = "TRUEVISION-XFILE";
 	
@@ -22,7 +22,7 @@ public class ReaderTGA implements AssetReader
 	public static final int B_T_BIT = 0b00100000;
 	
 	@Override
-	public Asset readAsset(File file) throws Exception
+	public Asset readAsset(AssetManager mgr, File file) throws Exception
 	{
 		FileInputStream fis = FileHelper.createInStream(file);
 		

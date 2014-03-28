@@ -2,10 +2,12 @@
 package com.elusivehawk.engine.network;
 
 import java.io.Closeable;
+import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.NetworkChannel;
 import java.nio.channels.SocketChannel;
 import java.util.UUID;
+import com.elusivehawk.engine.util.io.IByteReader;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -35,5 +37,9 @@ public interface IConnection extends Closeable
 	public boolean isClosed();
 	
 	public void close(boolean closeSkt);
+	
+	public ByteBuffer decryptData(ByteBuffer buf);
+	
+	public void encryptData(IByteReader in, ByteBuffer out);
 	
 }
