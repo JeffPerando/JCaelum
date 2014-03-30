@@ -14,7 +14,7 @@ import com.elusivehawk.engine.render.opengl.IGL3;
 import com.elusivehawk.engine.render.opengl.IGLBindable;
 import com.elusivehawk.engine.render.opengl.IGLManipulator;
 import com.elusivehawk.engine.util.FileHelper;
-import com.elusivehawk.engine.util.SimpleList;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
@@ -33,8 +33,8 @@ public final class RenderContext implements IContext
 	
 	private int sVertex, sFrag, notex;
 	
-	private final List<AbstractTexture> texturePool = SimpleList.newList(32);
-	private final List<IGLBindable> cleanables = SimpleList.newList(32);
+	private final List<AbstractTexture> texturePool = Lists.newArrayList();
+	private final List<IGLBindable> cleanables = Lists.newArrayList();
 	private final Map<EnumRenderMode, List<IGLManipulator>> manipulators = Maps.newHashMapWithExpectedSize(3);
 	
 	private EnumRenderStage stage = null;
@@ -268,7 +268,7 @@ public final class RenderContext implements IContext
 		
 		if (mani == null)
 		{
-			mani = SimpleList.newList(32);
+			mani = Lists.newArrayList();
 			
 			this.manipulators.put(mode, mani);
 			

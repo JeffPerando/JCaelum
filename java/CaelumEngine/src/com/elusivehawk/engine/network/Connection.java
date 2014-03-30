@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.UUID;
 import javax.crypto.Cipher;
 import com.elusivehawk.engine.util.SemiFinalStorage;
-import com.elusivehawk.engine.util.SimpleList;
 import com.elusivehawk.engine.util.io.IByteReader;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 /**
  * 
@@ -34,9 +34,9 @@ public class Connection implements IConnection
 	private final SemiFinalStorage<Boolean> closed = new SemiFinalStorage<Boolean>(false);
 	
 	private SocketChannel tcp = null;
-	private List<DatagramChannel> udp = SimpleList.newList();
+	private List<DatagramChannel> udp = Lists.newArrayList();
 	
-	private List<Packet> incoming = SimpleList.newList();
+	private List<Packet> incoming = Lists.newArrayList();
 	
 	public Connection(IPacketHandler h, UUID id)
 	{

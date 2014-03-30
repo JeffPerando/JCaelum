@@ -1,13 +1,11 @@
 
 package com.elusivehawk.engine.meta;
 
-import com.elusivehawk.engine.math.Matrix;
-import com.elusivehawk.engine.math.MatrixHelper;
-
 /**
  * 
  * Test log:
  * 
+ * Simple vs. Array List
  * Testing matrix stuff.
  * Testing sound decoding.
  * Testing file byte reading.
@@ -28,12 +26,71 @@ public class BenchmarkTest
 	{
 		System.out.println("Beginning bench testing...");
 		
-		Matrix m = MatrixHelper.createRotationMatrix(90f, 90f, 90f);
+		/*long[] simptime = new long[TESTS],
+				arrtime = new long[TESTS];
 		
-		System.out.println(m.mul(m, true).toString());
+		long simpw = 0L;
+		long simpb = 0L;
+		long arrw = 0L;
+		long arrb = 0L;
 		
-		System.out.println(MatrixHelper.createRotationMatrix(180f, 180f, 180f).toString());
+		Timer t = new Timer();
 		
+		for (int test = 0; test < TESTS; test++)
+		{
+			SimpleList<Object> simp = SimpleList.newList(32);
+			ArrayList<Object> arr = Lists.newArrayListWithCapacity(32);
+			
+			for (int c = 0; c < TESTS; c++)
+			{
+				t.start();
+				
+				simp.add(new Object());
+				
+				t.stop();
+				
+				simptime[c] = t.report();
+				
+			}
+			
+			for (int c = 0; c < TESTS; c++)
+			{
+				t.start();
+				
+				arr.add(new Object());
+				
+				t.stop();
+				
+				arrtime[c] = t.report();
+				
+			}
+			
+			long finsimp = 0L;
+			long finarr = 0L;
+			
+			for (int c = 0; c < TESTS; c++)
+			{
+				finsimp += simptime[c];
+				finarr += arrtime[c];
+				
+			}
+			
+			finsimp /= TESTS;
+			finarr /= TESTS;
+			
+			simpw = test == 0 ? finsimp : Math.max(simpw, finsimp);
+			simpb = test == 0 ? finsimp : Math.min(simpb, finsimp);
+			
+			arrw = test == 0 ? finarr : Math.max(arrw, finarr);
+			arrb = test == 0 ? finarr :  Math.min(arrb, finarr);
+			
+			System.out.println(String.format("Test %s results: SimpleList - %s, ArrayList - %s", test + 1, finsimp, finarr));
+			
+		}
+		
+		System.out.println(String.format("SimpleList final results:\tBest - %s\tWorst - %s",  simpb, simpw));
+		System.out.println(String.format("ArrayList final results:\tBest - %s\tWorst - %s",  arrb, arrw));
+		*/
 		System.out.println("Th-th-th-th-That's all, folks!");
 		
 	}

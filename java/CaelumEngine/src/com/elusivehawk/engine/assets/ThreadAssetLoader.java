@@ -6,9 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
-import com.elusivehawk.engine.util.SimpleList;
 import com.elusivehawk.engine.util.ThreadStoppable;
 import com.elusivehawk.engine.util.Tuple;
+import com.google.common.collect.Lists;
 
 /**
  * 
@@ -18,7 +18,7 @@ import com.elusivehawk.engine.util.Tuple;
  */
 public class ThreadAssetLoader extends ThreadStoppable
 {
-	private final List<Tuple<String, IAssetReceiver>> assets = SimpleList.newList();
+	private final List<Tuple<String, IAssetReceiver>> assets = Lists.newArrayList();
 	private AssetManager assetMgr = null;
 	
 	@Override

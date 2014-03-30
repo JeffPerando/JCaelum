@@ -10,8 +10,8 @@ package com.elusivehawk.engine.assets;
 public abstract class Asset
 {
 	public final EnumAssetType type;
+	public final String name;
 	
-	protected final String name;
 	protected boolean finished = false;
 	
 	@SuppressWarnings("unqualified-field-access")
@@ -31,11 +31,6 @@ public abstract class Asset
 	{
 		this.finished = this.finishAsset();
 		
-	}
-	
-	public String getName()
-	{
-		return this.name;
 	}
 	
 	@SuppressWarnings("static-method")

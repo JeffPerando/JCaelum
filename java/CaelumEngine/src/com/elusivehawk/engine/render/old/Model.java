@@ -16,8 +16,8 @@ import com.elusivehawk.engine.render.opengl.VertexBufferObject;
 import com.elusivehawk.engine.util.BufferHelper;
 import com.elusivehawk.engine.util.SemiFinalStorage;
 import com.elusivehawk.engine.util.SemiFinalStorage.IStorageListener;
-import com.elusivehawk.engine.util.SimpleList;
 import com.elusivehawk.engine.util.Tuple;
+import com.google.common.collect.Lists;
 
 /**
  * 
@@ -37,9 +37,9 @@ public class Model implements IStorageListener
 	public final SemiFinalStorage<VertexBufferObject> indiceBuf = new SemiFinalStorage<VertexBufferObject>(null, this);
 	
 	private boolean finished = false;
-	private List<Vector> polys = SimpleList.newList();
-	private List<Vector> texOffs = SimpleList.newList();
-	private List<Vector> norms = SimpleList.newList();
+	private List<Vector> polys = Lists.newArrayList();
+	private List<Vector> texOffs = Lists.newArrayList();
+	private List<Vector> norms = Lists.newArrayList();
 	private int glMode = Integer.MIN_VALUE;
 	private int pointCount = 0, oldPointCount = 0;
 	private HashMap<Integer, Tuple<Integer, Integer>> arrays = new HashMap<Integer, Tuple<Integer, Integer>>();
@@ -65,8 +65,8 @@ public class Model implements IStorageListener
 		
 		this.finished = true;
 		
-		List<Vector> vecs = new SimpleList<Vector>();
-		List<Integer> indiceList = new SimpleList<Integer>();
+		List<Vector> vecs = Lists.newArrayList();
+		List<Integer> indiceList = Lists.newArrayList();;
 		
 		List<Float> temp = new ArrayList<Float>();
 		

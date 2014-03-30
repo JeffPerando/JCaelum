@@ -15,7 +15,6 @@ import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBufferObject;
 import com.elusivehawk.engine.util.BufferHelper;
-import com.elusivehawk.engine.util.SimpleList;
 
 /**
  * 
@@ -37,7 +36,7 @@ public class ParticleScene implements ILogicalRender
 	@SuppressWarnings("unqualified-field-access")
 	public ParticleScene(int maxParticles)
 	{
-		particles = new SimpleList<IParticle>(maxParticles, false);
+		particles = null;//FIXME new SimpleList<IParticle>(maxParticles, false);
 		buf = BufferHelper.createFloatBuffer(maxParticles * PARTICLE_FLOAT_COUNT);
 		particleCount = maxParticles;
 		

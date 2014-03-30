@@ -3,7 +3,7 @@ package com.elusivehawk.engine.core;
 
 import java.util.List;
 import java.util.Map;
-import com.elusivehawk.engine.util.SimpleList;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
@@ -15,7 +15,7 @@ import com.google.common.collect.Maps;
 public abstract class Input
 {
 	protected final EnumInputType inputType;
-	protected final List<IInputListener> listeners = SimpleList.newList();
+	protected final List<IInputListener> listeners = Lists.newArrayList();
 	
 	protected final Map<Integer, Boolean> bools = Maps.newHashMap();
 	protected final Map<Integer, Float> floats = Maps.newHashMap();

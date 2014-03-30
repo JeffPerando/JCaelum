@@ -1,13 +1,12 @@
 
 package com.elusivehawk.engine.network;
 
-import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SocketChannel;
 import java.util.List;
 import java.util.UUID;
+import com.elusivehawk.engine.util.ArrayHelper;
 import com.elusivehawk.engine.util.SemiFinalStorage;
-import com.elusivehawk.engine.util.SimpleList;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -23,8 +22,8 @@ public class Server implements IHost
 	protected final ThreadJoinListener listener;
 	protected final ThreadNetwork network;
 	
-	protected final List<IConnection> clients;
-	protected final List<UUID> ids;
+	protected final IConnection[] clients;
+	protected final UUID[] ids;
 	protected final SemiFinalStorage<Boolean> disabled = new SemiFinalStorage<Boolean>(false);
 	
 	protected int playerCount = 0;
@@ -41,8 +40,8 @@ public class Server implements IHost
 		listener = new ThreadJoinListener(this, p);
 		network = new ThreadNetwork(this, p);
 		maxPlayers = players;
-		clients = new SimpleList<IConnection>(players, false);
-		ids = new SimpleList<UUID>(players, false);
+		clients = new IConnection[players];
+		ids = new UUID[players];
 		
 	}
 	
@@ -86,7 +85,7 @@ public class Server implements IHost
 		
 		IConnection next = new HSConnection(this, UUID.randomUUID());
 		
-		if (this.clients.add(next))
+		if (ArrayHelper.add(this.clients, next))
 		{
 			next.connect(ConnectionType.TCP, s);
 			
@@ -119,29 +118,10 @@ public class Server implements IHost
 	@Override
 	public void onDisconnect(IConnection connect)
 	{
-		int i = this.clients.indexOf(connect);
+		ArrayHelper.remove(this.clients, connect);
+		ArrayHelper.remove(this.ids, connect.getId());
 		
-		if (i == -1)
-		{
-			return;
-		}
-		
-		this.clients.set(i, null);
-		this.ids.remove(connect.getId());
-		
-		int players = 0;
-		
-		for (int c = 0; c < this.clients.size(); c++)
-		{
-			if (this.clients.get(c) != null)
-			{
-				players++;
-				
-			}
-			
-		}
-		
-		this.playerCount = players;
+		this.playerCount--;
 		
 	}
 	/*
@@ -271,8 +251,9 @@ public class Server implements IHost
 			
 			if (finish)
 			{
-				this.clients.add(connect);
-				this.ids.add(connect.getId());
+				ArrayHelper.add(this.clients, connect);
+				ArrayHelper.add(this.ids, connect.getId());
+				
 				this.playerCount++;
 				
 			}
@@ -298,7 +279,7 @@ public class Server implements IHost
 		
 		for (int c = 0; c < this.maxPlayers; c++)
 		{
-			this.clients.set(c, null);
+			this.clients[c] = null;
 			
 		}
 		

@@ -3,7 +3,7 @@ package com.elusivehawk.engine.math;
 
 import java.util.List;
 import com.elusivehawk.engine.util.Buffer;
-import com.elusivehawk.engine.util.SimpleList;
+import com.google.common.collect.Lists;
 
 /**
  * 
@@ -187,7 +187,7 @@ public class Vector implements IMathObject<Float>
 	{
 		if (this.listeners == null)
 		{
-			this.listeners = SimpleList.newList();
+			this.listeners = Lists.newArrayList();
 			
 		}
 		

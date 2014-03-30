@@ -5,7 +5,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import java.util.List;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
@@ -18,7 +17,6 @@ import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
 import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.BufferHelper;
-import com.elusivehawk.engine.util.SimpleList;
 import com.elusivehawk.engine.util.TextParser;
 import com.elusivehawk.engine.util.io.ByteBuf;
 
@@ -56,7 +54,7 @@ public final class RenderHelper
 		return CaelumEngine.renderContext().getGL4();
 	}*/
 	
-	public static List<ILegibleImage> readGifFile(File gif)
+	public static ILegibleImage[] readGifFile(File gif)
 	{
 		if (!gif.getName().endsWith(".gif"))
 		{
@@ -71,11 +69,11 @@ public final class RenderHelper
 			
 			int max = r.getNumImages(true);
 			
-			List<ILegibleImage> ret = SimpleList.newList(max);
+			ILegibleImage[] ret = new ILegibleImage[max];
 			
 			for (int c = 0; c < max; c++)
 			{
-				ret.add(new LegibleBufferedImage(r.read(c)));
+				ret[c] = new LegibleBufferedImage(r.read(c));
 				
 			}
 			

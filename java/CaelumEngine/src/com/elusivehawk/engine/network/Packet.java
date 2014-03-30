@@ -1,13 +1,14 @@
 
 package com.elusivehawk.engine.network;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.elusivehawk.engine.network.PacketFormat.PktFormatItr;
-import com.elusivehawk.engine.util.SimpleList;
 import com.elusivehawk.engine.util.io.ByteLists;
 import com.elusivehawk.engine.util.io.IByteReader;
 import com.elusivehawk.engine.util.io.Serializer;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 /**
  * 
@@ -39,7 +40,7 @@ public final class Packet
 			
 		}
 		
-		data = SimpleList.newList(pktSize);
+		data = Lists.newArrayListWithCapacity(pktSize);
 		
 	}
 	
@@ -61,7 +62,7 @@ public final class Packet
 	
 	public IByteReader toBytes()
 	{
-		ByteLists l = new ByteLists(SimpleList.<Byte>newList());
+		ByteLists l = new ByteLists(new ArrayList<Byte>());
 		int length = Serializer.SHORT.toBytes(l, this.format.pktId);
 		
 		l.outPos = 4;

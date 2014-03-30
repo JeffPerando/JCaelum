@@ -25,6 +25,10 @@ public abstract class AbstractTexture extends Asset
 		return 0;
 	}
 	
-	public abstract boolean isAnimated();
+	@SuppressWarnings("static-method")
+	public boolean isAnimated()
+	{
+		return false;
+	}
 	
 }

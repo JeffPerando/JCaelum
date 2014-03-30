@@ -1,10 +1,12 @@
 
 package com.elusivehawk.engine.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import com.google.common.collect.Lists;
 
 /**
  * 
@@ -28,7 +30,7 @@ public class Buffer<T> implements IDirty, Collection<T>, Iterator<T>
 	
 	public Buffer(int limit)
 	{
-		this(new SimpleList<T>(limit));
+		this(new ArrayList<T>(limit));
 		
 	}
 	
@@ -43,7 +45,7 @@ public class Buffer<T> implements IDirty, Collection<T>, Iterator<T>
 	public Buffer(List<T> list)
 	{
 		l = list;
-		dirt = SimpleList.newList(list.size());
+		dirt = Lists.newArrayListWithCapacity(list.size());
 		
 	}
 	

@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import com.elusivehawk.engine.util.SimpleList;
 import com.elusivehawk.engine.util.ThreadStoppable;
 import com.elusivehawk.engine.util.Tuple;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
@@ -133,7 +133,7 @@ public class ThreadNetwork extends ThreadStoppable
 								{
 									if (pkts == null)//Dynamically load the packet list with a soft limit of 32 packets.
 									{
-										pkts = SimpleList.newList(32);
+										pkts = Lists.newArrayListWithCapacity(32);
 										
 									}
 									

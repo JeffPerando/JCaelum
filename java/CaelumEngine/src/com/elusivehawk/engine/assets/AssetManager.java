@@ -7,8 +7,8 @@ import java.util.Map;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.util.FileHelper;
-import com.elusivehawk.engine.util.SimpleList;
 import com.elusivehawk.engine.util.TextParser;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
@@ -23,9 +23,9 @@ public class AssetManager
 	
 	protected final Map<String, IAssetReceiver> expectedRes = Maps.newHashMap();
 	protected final Map<String, IAssetReader> readers = Maps.newHashMap();
-	protected final List<Asset> assets = SimpleList.newList();
-	protected final List<File> resourceLocations = SimpleList.newList(),
-			filesToScan = SimpleList.newList();
+	protected final List<Asset> assets = Lists.newArrayList();
+	protected final List<File> resourceLocations = Lists.newArrayList(),
+			filesToScan = Lists.newArrayList();
 	
 	protected boolean loaded = false;
 	
@@ -83,7 +83,7 @@ public class AssetManager
 		{
 			for (Asset a : this.assets)
 			{
-				if (filename.endsWith(a.getName()))
+				if (filename.endsWith(a.name))
 				{
 					return a;
 				}

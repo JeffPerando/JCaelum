@@ -5,9 +5,8 @@ import java.util.List;
 import com.elusivehawk.engine.assets.AssetManager;
 import com.elusivehawk.engine.physics.IPhysicsScene;
 import com.elusivehawk.engine.render.IRenderHUB;
-import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.IUpdatable;
-import com.elusivehawk.engine.util.SimpleList;
+import com.google.common.collect.Lists;
 
 /**
  * 
@@ -19,7 +18,7 @@ import com.elusivehawk.engine.util.SimpleList;
 public abstract class Game implements IUpdatable
 {
 	private GameState state = null, nextState = null;
-	private List<IGameStateListener> listeners = SimpleList.newList();
+	private List<IGameStateListener> listeners = Lists.newArrayList();
 	private boolean initiated = false;
 	
 	public final boolean initiate(GameArguments args)

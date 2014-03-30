@@ -16,7 +16,6 @@ import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.RenderTicket;
 import com.elusivehawk.engine.render.old.Model;
-import com.elusivehawk.engine.util.SimpleList;
 
 /**
  * 
@@ -27,7 +26,7 @@ import com.elusivehawk.engine.util.SimpleList;
 public class GLProgram implements IGLBindable, IAssetReceiver
 {
 	private final int id, vba;
-	private final List<Asset> shaders = SimpleList.newList(GLEnumShader.values().length, false);
+	private final Asset[] shaders = new Asset[GLEnumShader.values().length];
 	private HashMap<VertexBufferObject, List<Integer>> vbos = new HashMap<VertexBufferObject, List<Integer>>();
 	private boolean bound = false, relink = true;
 	
@@ -47,18 +46,13 @@ public class GLProgram implements IGLBindable, IAssetReceiver
 	@Override
 	public boolean bind(RenderContext context)
 	{
-		if (this.shaders.isEmpty())
-		{
-			return false;
-		}
-		
 		if (this.relink)
 		{
 			boolean flag = false;
 			
 			for (GLEnumShader stype : GLEnumShader.values())
 			{
-				Asset s = this.shaders.get(stype.ordinal());
+				Asset s = this.shaders[stype.ordinal()];
 				
 				if (s != null)
 				{
@@ -84,6 +78,7 @@ public class GLProgram implements IGLBindable, IAssetReceiver
 				catch (Exception e){}
 				
 			}
+			else return false;
 			
 		}
 		
@@ -185,14 +180,15 @@ public class GLProgram implements IGLBindable, IAssetReceiver
 		
 		context.getGL3().glDeleteVertexArrays(this.vba);
 		
-		if (!this.shaders.isEmpty())
+		for (Asset s : this.shaders)
 		{
-			for (Asset s : this.shaders)
+			if (s == null)
 			{
-				context.getGL2().glDetachShader(this, s);
-				context.getGL2().glDeleteShader(s);
-				
+				continue;
 			}
+			
+			context.getGL2().glDetachShader(this, s);
+			context.getGL2().glDeleteShader(s);
 			
 		}
 		
@@ -205,7 +201,7 @@ public class GLProgram implements IGLBindable, IAssetReceiver
 	{
 		if (a.type == EnumAssetType.SHADER)
 		{
-			this.shaders.set(a.getIds()[1], a);
+			this.shaders[a.getIds()[1]] = a;
 			this.relink = true;
 			
 		}
@@ -323,7 +319,7 @@ public class GLProgram implements IGLBindable, IAssetReceiver
 	
 	public Asset getShader(GLEnumShader type)
 	{
-		return this.shaders.get(type.ordinal());
+		return this.shaders[type.ordinal()];
 	}
 	
 	private static interface IUniformType

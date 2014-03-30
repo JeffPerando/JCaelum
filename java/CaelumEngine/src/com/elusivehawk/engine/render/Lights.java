@@ -1,10 +1,8 @@
 
 package com.elusivehawk.engine.render;
 
-import java.util.List;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGLManipulator;
-import com.elusivehawk.engine.util.SimpleList;
 
 /**
  * 
@@ -16,7 +14,7 @@ public class Lights implements IGLManipulator
 {
 	public static final int LIGHT_CAP = 1024;
 	
-	protected final List<Light> lights = SimpleList.newList(LIGHT_CAP, false);
+	protected final Light[] lights = new Light[LIGHT_CAP];
 	
 	public Lights()
 	{
@@ -25,12 +23,18 @@ public class Lights implements IGLManipulator
 	
 	public Light attachLight(Light l)
 	{
-		if (!this.lights.add(l))
+		for (int c = 0; c < LIGHT_CAP; c++)
 		{
-			return null;
+			if (this.lights[c] == null)
+			{
+				this.lights[c] = l;
+				
+				return l;
+			}
+			
 		}
 		
-		return l;
+		return null;
 	}
 	
 	@Override

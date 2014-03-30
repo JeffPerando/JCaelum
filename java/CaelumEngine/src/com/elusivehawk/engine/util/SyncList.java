@@ -34,7 +34,7 @@ public class SyncList<T> implements List<T>
 	
 	public SyncList(int limit)
 	{
-		this(new SimpleList<T>(limit));
+		this(new ArrayList<T>(limit));
 		
 	}
 	

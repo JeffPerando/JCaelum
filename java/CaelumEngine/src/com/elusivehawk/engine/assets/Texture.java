@@ -37,12 +37,6 @@ public class Texture extends AbstractTexture
 	}
 	
 	@Override
-	public boolean isAnimated()
-	{
-		return false;
-	}
-	
-	@Override
 	public Object getAttachment()
 	{
 		return this.image;

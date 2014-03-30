@@ -1,7 +1,6 @@
 
 package com.elusivehawk.engine.assets;
 
-import java.util.List;
 import com.elusivehawk.engine.render.ILegibleImage;
 import com.elusivehawk.engine.util.Buffer;
 
@@ -13,11 +12,11 @@ import com.elusivehawk.engine.util.Buffer;
  */
 public class TextureGif extends AbstractTexture
 {
-	protected final List<ILegibleImage> imgs;
+	protected final ILegibleImage[] imgs;
 	protected Buffer<Texture> textures;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public TextureGif(String filename, List<ILegibleImage> listimgs)
+	public TextureGif(String filename, ILegibleImage[] listimgs)
 	{
 		super(filename);
 		imgs = listimgs;
@@ -77,9 +76,7 @@ public class TextureGif extends AbstractTexture
 			
 		}
 		
-		Asset tex = this.textures.get();
-		
-		this.ids[0] = tex.getIds()[0];
+		this.ids[0] = this.textures.get().getIds()[0];
 		
 	}
 	
@@ -92,7 +89,7 @@ public class TextureGif extends AbstractTexture
 	@Override
 	public int getFrameCount()
 	{
-		return this.imgs.size();
+		return this.imgs.length;
 	}
 	
 	@Override
