@@ -3,6 +3,7 @@ package com.elusivehawk.engine.render;
 
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGLManipulator;
+import com.elusivehawk.engine.util.ArrayHelper;
 
 /**
  * 
@@ -23,18 +24,7 @@ public class Lights implements IGLManipulator
 	
 	public Light attachLight(Light l)
 	{
-		for (int c = 0; c < LIGHT_CAP; c++)
-		{
-			if (this.lights[c] == null)
-			{
-				this.lights[c] = l;
-				
-				return l;
-			}
-			
-		}
-		
-		return null;
+		return ArrayHelper.add(this.lights, l) ? l : null;
 	}
 	
 	@Override

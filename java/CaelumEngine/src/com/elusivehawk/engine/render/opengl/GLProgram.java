@@ -16,6 +16,7 @@ import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.RenderTicket;
 import com.elusivehawk.engine.render.old.Model;
+import com.elusivehawk.engine.util.ArrayHelper;
 
 /**
  * 
@@ -46,39 +47,36 @@ public class GLProgram implements IGLBindable, IAssetReceiver
 	@Override
 	public boolean bind(RenderContext context)
 	{
+		if (ArrayHelper.isEmpty(this.shaders))
+		{
+			return false;
+		}
+		
 		if (this.relink)
 		{
-			boolean flag = false;
-			
 			for (GLEnumShader stype : GLEnumShader.values())
 			{
 				Asset s = this.shaders[stype.ordinal()];
 				
 				if (s != null)
 				{
-					flag = true;
 					context.getGL2().glAttachShader(this, s);
 					
 				}
 				
 			}
 			
-			if (flag)
+			context.getGL2().glLinkProgram(this);
+			context.getGL2().glValidateProgram(this);
+			
+			try
 			{
-				context.getGL2().glLinkProgram(this);
-				context.getGL2().glValidateProgram(this);
+				RenderHelper.checkForGLError(context);
 				
-				try
-				{
-					RenderHelper.checkForGLError(context);
-					
-					this.relink =  false;
-					
-				}
-				catch (Exception e){}
+				this.relink =  false;
 				
 			}
-			else return false;
+			catch (Exception e){}
 			
 		}
 		

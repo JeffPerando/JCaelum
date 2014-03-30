@@ -71,4 +71,18 @@ public class ArrayHelper
 		return true;
 	}
 	
+	public static boolean isEmpty(Object[] arr)
+	{
+		for (Object obj : arr)
+		{
+			if (obj != null)
+			{
+				return false;
+			}
+			
+		}
+		
+		return true;
+	}
+	
 }
