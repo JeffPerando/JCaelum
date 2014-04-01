@@ -4,8 +4,9 @@ package com.elusivehawk.engine.render;
 import java.nio.FloatBuffer;
 import java.util.HashMap;
 import com.elusivehawk.engine.assets.Asset;
-import com.elusivehawk.engine.assets.EnumAssetType;
 import com.elusivehawk.engine.assets.IAssetReceiver;
+import com.elusivehawk.engine.assets.Shader;
+import com.elusivehawk.engine.assets.Texture;
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.MatrixHelper;
 import com.elusivehawk.engine.math.Vector;
@@ -33,7 +34,7 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 	protected boolean dirty = false, zBuffer = true;//, animPause = false;
 	//protected int frame = 0;
 	//protected IModelAnimation anim = null, lastAnim = null;
-	protected Asset tex;
+	protected Texture tex;
 	
 	public RenderTicket(Model model)
 	{
@@ -129,14 +130,14 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 	@Override
 	public synchronized void onAssetLoaded(Asset a)
 	{
-		if (a.type == EnumAssetType.SHADER)
+		if (a instanceof Shader)
 		{
 			this.p.onAssetLoaded(a);
 			
 		}
-		else if (a.type == EnumAssetType.TEXTURE && this.tex == null)
+		else if (a instanceof Texture && this.tex == null)
 		{
-			this.tex = a;
+			this.tex = (Texture)a;
 			
 		}
 		
@@ -164,10 +165,8 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 		
 	}*/
 	
-	public synchronized void setTexture(Asset texture)
+	public synchronized void setTexture(Texture texture)
 	{
-		assert texture.type == EnumAssetType.TEXTURE;
-		
 		this.tex = texture;
 		
 	}

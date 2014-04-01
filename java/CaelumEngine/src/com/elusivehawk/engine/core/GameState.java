@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.core;
 
-import com.elusivehawk.engine.physics.IPhysicsScene;
+import com.elusivehawk.engine.physics.IPhysicsSimulator;
 import com.elusivehawk.engine.render.IRenderHUB;
 
 /**
@@ -18,8 +18,17 @@ public abstract class GameState
 	
 	public abstract void finish();
 	
-	public abstract IRenderHUB getRenderHUB();
+	@SuppressWarnings("static-method")
+	public IRenderHUB getRenderHUB()
+	{
+		return null;
+	}
 	
-	public abstract IPhysicsScene getPhysicsScene();
+	@Deprecated
+	@SuppressWarnings("static-method")
+	public IPhysicsSimulator getPhysicsScene()
+	{
+		return null;
+	}
 	
 }

@@ -2,7 +2,6 @@
 package com.elusivehawk.engine.assets;
 
 import com.elusivehawk.engine.render.ILegibleImage;
-import com.elusivehawk.engine.render.RenderHelper;
 
 /**
  * 
@@ -10,36 +9,34 @@ import com.elusivehawk.engine.render.RenderHelper;
  * 
  * @author Elusivehawk
  */
-public class Texture extends AbstractTexture
+public abstract class Texture extends Asset
 {
-	protected final ILegibleImage image;
+	protected final int[] ids = new int[]{0, this.isAnimated() ? 1 : 0};
 	
-	@SuppressWarnings("unqualified-field-access")
-	public Texture(String filename, ILegibleImage img)
+	protected Texture(String filename)
 	{
 		super(filename);
-		image = img;
 		
 	}
 	
-	@Override
-	public int[] getIds()
+	public void updateTexture(){}
+	
+	@SuppressWarnings("static-method")
+	public int getFrameCount()
 	{
-		return this.ids;
+		return 0;
 	}
 	
-	@Override
-	protected boolean finishAsset()
+	@SuppressWarnings("static-method")
+	public boolean isAnimated()
 	{
-		this.ids[0] = RenderHelper.processImage(this.image);
-		
-		return this.ids[0] != 0;
+		return false;
 	}
 	
-	@Override
-	public Object getAttachment()
+	@SuppressWarnings({"static-method", "unused"})
+	public ILegibleImage getSourceImg(int frame)
 	{
-		return this.image;
+		return null;
 	}
 	
 }

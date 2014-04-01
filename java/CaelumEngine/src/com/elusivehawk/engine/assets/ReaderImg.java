@@ -22,7 +22,7 @@ public class ReaderImg implements IAssetReader
 			return new TextureGif(file.getName(), RenderHelper.readGifFile(file));
 		}
 		
-		return new Texture(file.getName(), new LegibleBufferedImage(ImageIO.read(file)));
+		return new TextureStatic(file.getName(), new LegibleBufferedImage(ImageIO.read(file)));
 	}
 	
 }

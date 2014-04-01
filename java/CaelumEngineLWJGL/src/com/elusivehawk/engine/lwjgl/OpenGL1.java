@@ -12,7 +12,7 @@ import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
 import com.elusivehawk.engine.assets.Asset;
-import com.elusivehawk.engine.assets.EnumAssetType;
+import com.elusivehawk.engine.assets.Texture;
 import com.elusivehawk.engine.render.Color;
 import com.elusivehawk.engine.render.EnumColorFilter;
 import com.elusivehawk.engine.render.opengl.GLConst;
@@ -36,10 +36,8 @@ public class OpenGL1 implements IGL1
 	}
 	
 	@Override
-	public void glActiveTexture(Asset texture)
+	public void glActiveTexture(Texture texture)
 	{
-		assert texture.type == EnumAssetType.TEXTURE;
-		
 		this.glActiveTexture(texture.getIds()[0]);
 		
 	}
@@ -66,10 +64,8 @@ public class OpenGL1 implements IGL1
 	}
 	
 	@Override
-	public void glBindTexture(int target, Asset texture)
+	public void glBindTexture(int target, Texture texture)
 	{
-		assert texture.type == EnumAssetType.TEXTURE;
-		
 		GL11.glBindTexture(target, texture.getIds()[0]);
 		
 	}
@@ -210,17 +206,13 @@ public class OpenGL1 implements IGL1
 	}
 	
 	@Override
-	public void glDeleteTextures(Asset... textures)
+	public void glDeleteTextures(Texture... textures)
 	{
 		IntBuffer buf = BufferHelper.createIntBuffer(textures.length);
 		
 		for (Asset asset : textures)
 		{
-			if (asset.type == EnumAssetType.TEXTURE)
-			{
-				buf.put(asset.getIds()[0]);
-				
-			}
+			buf.put(asset.getIds()[0]);
 			
 		}
 		

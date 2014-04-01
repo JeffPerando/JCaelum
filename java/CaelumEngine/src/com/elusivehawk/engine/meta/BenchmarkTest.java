@@ -4,17 +4,18 @@ package com.elusivehawk.engine.meta;
 /**
  * 
  * Test log:
- * 
- * Simple vs. Array List
- * Testing matrix stuff.
- * Testing sound decoding.
- * Testing file byte reading.
- * Testing "++".
- * Using PrintStream.
- * More buffer testing.
- * List iterating.
- * Buffer.put(int, int) testing.
- * Instanceof speed benchmarking.
+ * <p>
+ * Comparing vs. Instanceof check<br>
+ * Simple vs. Array List.<br>
+ * Testing matrix stuff.<br>
+ * Testing sound decoding.<br>
+ * Testing file byte reading.<br>
+ * Testing "++".<br>
+ * Using PrintStream.<br>
+ * More buffer testing.<br>
+ * List iterating.<br>
+ * Buffer.put(int, int) testing.<br>
+ * Instanceof speed benchmarking.<br>
  * 
  * @author Elusivehawk
  */
@@ -26,30 +27,29 @@ public class BenchmarkTest
 	{
 		System.out.println("Beginning bench testing...");
 		
-		/*long[] simptime = new long[TESTS],
-				arrtime = new long[TESTS];
+		/*long[] iftime = new long[TESTS],
+				instoftime = new long[TESTS];
 		
-		long simpw = 0L;
-		long simpb = 0L;
-		long arrw = 0L;
-		long arrb = 0L;
+		long ifw = 0L;
+		long ifb = 0L;
+		long instofw = 0L;
+		long instofb = 0L;
 		
 		Timer t = new Timer();
 		
+		Asset testobj = new TextureStatic(null, null);
+		
 		for (int test = 0; test < TESTS; test++)
 		{
-			SimpleList<Object> simp = SimpleList.newList(32);
-			ArrayList<Object> arr = Lists.newArrayListWithCapacity(32);
-			
 			for (int c = 0; c < TESTS; c++)
 			{
 				t.start();
 				
-				simp.add(new Object());
+				if (testobj.type == EnumAssetType.TEXTURE){}
 				
 				t.stop();
 				
-				simptime[c] = t.report();
+				iftime[c] = t.report();
 				
 			}
 			
@@ -57,39 +57,39 @@ public class BenchmarkTest
 			{
 				t.start();
 				
-				arr.add(new Object());
+				if (testobj instanceof Texture){}
 				
 				t.stop();
 				
-				arrtime[c] = t.report();
+				instoftime[c] = t.report();
 				
 			}
 			
-			long finsimp = 0L;
-			long finarr = 0L;
+			long finif = 0L;
+			long fininstof = 0L;
 			
 			for (int c = 0; c < TESTS; c++)
 			{
-				finsimp += simptime[c];
-				finarr += arrtime[c];
+				finif += iftime[c];
+				fininstof += instoftime[c];
 				
 			}
 			
-			finsimp /= TESTS;
-			finarr /= TESTS;
+			finif /= TESTS;
+			fininstof /= TESTS;
 			
-			simpw = test == 0 ? finsimp : Math.max(simpw, finsimp);
-			simpb = test == 0 ? finsimp : Math.min(simpb, finsimp);
+			ifw = test == 0 ? finif : Math.max(ifw, finif);
+			ifb = test == 0 ? finif : Math.min(ifb, finif);
 			
-			arrw = test == 0 ? finarr : Math.max(arrw, finarr);
-			arrb = test == 0 ? finarr :  Math.min(arrb, finarr);
+			instofw = test == 0 ? fininstof : Math.max(instofw, fininstof);
+			instofb = test == 0 ? fininstof :  Math.min(instofb, fininstof);
 			
-			System.out.println(String.format("Test %s results: SimpleList - %s, ArrayList - %s", test + 1, finsimp, finarr));
+			System.out.println(String.format("Test %s results: If - %s, Instanceof - %s", test + 1, finif, fininstof));
 			
 		}
 		
-		System.out.println(String.format("SimpleList final results:\tBest - %s\tWorst - %s",  simpb, simpw));
-		System.out.println(String.format("ArrayList final results:\tBest - %s\tWorst - %s",  arrb, arrw));
+		System.out.println(String.format("If final results:\t\tBest - %s\tWorst - %s",  ifb, ifw));
+		System.out.println(String.format("Instanceof final results:\tBest - %s\tWorst - %s",  instofb, instofw));
 		*/
 		System.out.println("Th-th-th-th-That's all, folks!");
 		

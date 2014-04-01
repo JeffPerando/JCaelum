@@ -12,8 +12,6 @@ import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import com.elusivehawk.engine.assets.AssetManager;
 import com.elusivehawk.engine.assets.ThreadAssetLoader;
-import com.elusivehawk.engine.physics.IPhysicsScene;
-import com.elusivehawk.engine.physics.ThreadPhysics;
 import com.elusivehawk.engine.render.IRenderEnvironment;
 import com.elusivehawk.engine.render.IRenderHUB;
 import com.elusivehawk.engine.render.RenderContext;
@@ -204,6 +202,27 @@ public final class CaelumEngine
 			
 		}
 		
+		if (clazz == null)
+		{
+			this.log.log(EnumLogType.WARN, "Unable to load custom game environment, preparing default environment...");
+			
+			try
+			{
+				switch (EnumOS.getCurrentOS())
+				{
+					case WINDOWS:
+					case MAC:
+					case LINUX: clazz = Class.forName("com.elusivehawk.engine.lwjgl.LWJGLEnvironment"); break;
+					case ANDROID: clazz = Class.forName("com.elusivehawk.engine.android.AndroidEnvironment"); break;
+					default: this.log.log(EnumLogType.WTF, String.format("Unsupported OS! Enum: %s; OS: %s", EnumOS.getCurrentOS(), System.getProperty("os.name")));
+					
+				}
+				
+			}
+			catch (Exception e){}
+			
+		}
+		
 		if (clazz != null)
 		{
 			try
@@ -215,9 +234,9 @@ public final class CaelumEngine
 			
 		}
 		
-		if (env == null)//FIXME
+		if (env == null)
 		{
-			System.err.println("Could not load game environment.");
+			this.log.log(EnumLogType.ERROR, String.format("Unable to load environment: %s", clazz));
 			System.exit("NO-ENVIRONMENT-FOUND".hashCode());
 			
 		}
@@ -296,13 +315,13 @@ public final class CaelumEngine
 		
 		//this.threads.put(EnumEngineFeature.SOUND, new ThreadSoundPlayer());
 		
-		IPhysicsScene ph = this.game.getPhysicsScene();
+		/*IPhysicsSimulator ph = this.game.getPhysicsScene();
 		
 		if (ph != null)
 		{
 			this.threads.put(EnumEngineFeature.PHYSICS, new ThreadPhysics(ph, this.game.getUpdateCount()));
 			
-		}
+		}*/
 		
 		Runtime.getRuntime().addShutdownHook(new Thread(){
 			@SuppressWarnings("synthetic-access")

@@ -13,9 +13,10 @@ import com.elusivehawk.engine.render.EnumColorFormat;
  */
 public class Material extends Asset
 {
-	protected final Asset tex;
+	protected final Texture tex;
 	protected final float shininess;
 	protected final Color filter;
+	
 	protected final int[] ids = new int[3];
 	
 	public Material(String filename, Color overlay)
@@ -23,31 +24,30 @@ public class Material extends Asset
 		this(filename, null, 0.0f, overlay);
 	}
 	
-	public Material(String filename, Asset texture)
+	public Material(String filename, Texture texture)
 	{
 		this(filename, texture, 0.0f, new Color(EnumColorFormat.RGBA));
 		
 	}
 	
-	public Material(String filename, Asset texture, Color overlay)
+	public Material(String filename, Texture texture, Color overlay)
 	{
 		this(filename, texture, 0.0f, overlay);
 		
 	}
 	
-	public Material(String filename, Asset texture, float shine)
+	public Material(String filename, Texture texture, float shine)
 	{
 		this(filename, texture, shine, new Color(EnumColorFormat.RGBA));
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Material(String filename, Asset texture, float shine, Color overlay)
+	public Material(String filename, Texture texture, float shine, Color overlay)
 	{
-		super(filename, EnumAssetType.MATERIAL);
+		super(filename);
 		
 		assert overlay != null;
-		assert texture.type == EnumAssetType.TEXTURE;
 		
 		tex = texture;
 		shininess = MathHelper.clamp(shine, 0f, 1f);
@@ -74,7 +74,14 @@ public class Material extends Asset
 	@Override
 	protected boolean finishAsset()
 	{
-		return true;
+		if (this.tex == null || this.tex.isFinished())
+		{
+			return true;
+		}
+		
+		this.tex.finish();
+		
+		return this.tex.isFinished();
 	}
 	
 	/*

@@ -21,7 +21,7 @@ public class Shader extends Asset
 	@SuppressWarnings("unqualified-field-access")
 	public Shader(File file, GLEnumShader type)
 	{
-		super(file.getName(), EnumAssetType.SHADER);
+		super(file.getName());
 		
 		gltype = type;
 		source = TextParser.concat(TextParser.read(file), "\n", "", null);
@@ -30,8 +30,7 @@ public class Shader extends Asset
 		
 	}
 	
-	@Override
-	public Object getAttachment()
+	public String getSource()
 	{
 		return this.source;
 	}

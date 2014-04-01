@@ -8,12 +8,7 @@ import com.elusivehawk.engine.util.BufferHelper;
 
 /**
  * 
- * Use this to create procedurally generated textures.
- * <p>
- * <b>NOTICE:</b> Unlike {@link RenderHelper}'s method of handling textures,
- * this is more direct, so do *NOT* be an idiot when working with this.
- * <p>
- * You have been warned.
+ * Helper class for creating procedurally generated textures.
  * 
  * @author Elusivehawk
  */

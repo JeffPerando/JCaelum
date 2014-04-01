@@ -9,16 +9,14 @@ package com.elusivehawk.engine.assets;
  */
 public abstract class Asset
 {
-	public final EnumAssetType type;
 	public final String name;
 	
 	protected boolean finished = false;
 	
 	@SuppressWarnings("unqualified-field-access")
-	protected Asset(String filename, EnumAssetType atype)
+	protected Asset(String filename)
 	{
 		name = filename;
-		type = atype;
 		
 	}
 	
@@ -31,12 +29,6 @@ public abstract class Asset
 	{
 		this.finished = this.finishAsset();
 		
-	}
-	
-	@SuppressWarnings("static-method")
-	public Object getAttachment()
-	{
-		return null;
 	}
 	
 	public abstract int[] getIds();

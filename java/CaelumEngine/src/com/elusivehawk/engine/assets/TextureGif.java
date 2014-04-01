@@ -10,10 +10,10 @@ import com.elusivehawk.engine.util.Buffer;
  * 
  * @author Elusivehawk
  */
-public class TextureGif extends AbstractTexture
+public class TextureGif extends Texture
 {
 	protected final ILegibleImage[] imgs;
-	protected Buffer<Texture> textures;
+	protected Buffer<TextureStatic> textures;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public TextureGif(String filename, ILegibleImage[] listimgs)
@@ -32,14 +32,14 @@ public class TextureGif extends AbstractTexture
 	@Override
 	protected boolean finishAsset()
 	{
-		Texture tex;
+		TextureStatic tex;
 		boolean flag = true;
 		
-		this.textures = new Buffer<Texture>(this.getFrameCount());
+		this.textures = new Buffer<TextureStatic>(this.getFrameCount());
 		
 		for (ILegibleImage img : this.imgs)
 		{
-			tex = new Texture(this.name, img);
+			tex = new TextureStatic(this.name, img);
 			
 			tex.finish();
 			
@@ -93,9 +93,9 @@ public class TextureGif extends AbstractTexture
 	}
 	
 	@Override
-	public Object getAttachment()
+	public ILegibleImage getSourceImg(int frame)
 	{
-		return this.imgs;
+		return this.imgs[frame];
 	}
 	
 }

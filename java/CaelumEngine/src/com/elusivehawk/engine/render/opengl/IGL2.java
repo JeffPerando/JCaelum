@@ -4,7 +4,7 @@ package com.elusivehawk.engine.render.opengl;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import com.elusivehawk.engine.assets.Asset;
+import com.elusivehawk.engine.assets.Shader;
 
 /**
  * 
@@ -14,7 +14,7 @@ import com.elusivehawk.engine.assets.Asset;
  */
 public interface IGL2
 {
-	public void glAttachShader(GLProgram program, Asset shader);
+	public void glAttachShader(GLProgram program, Shader shader);
 	
 	public void glAttachShader(int program, int shader);
 	
@@ -36,11 +36,11 @@ public interface IGL2
 	
 	public void glDeleteProgram(int program);
 	
-	public void glDeleteShader(Asset shader);
+	public void glDeleteShader(Shader shader);
 	
 	public void glDeleteShader(int shader);
 	
-	public void glDetachShader(GLProgram program, Asset shader);
+	public void glDetachShader(GLProgram program, Shader shader);
 	
 	public void glDetachShader(int program, int shader);
 	

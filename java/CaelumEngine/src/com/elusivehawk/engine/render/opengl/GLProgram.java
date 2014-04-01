@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import com.elusivehawk.engine.assets.Asset;
-import com.elusivehawk.engine.assets.EnumAssetType;
 import com.elusivehawk.engine.assets.IAssetReceiver;
+import com.elusivehawk.engine.assets.Shader;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
@@ -27,7 +27,7 @@ import com.elusivehawk.engine.util.ArrayHelper;
 public class GLProgram implements IGLBindable, IAssetReceiver
 {
 	private final int id, vba;
-	private final Asset[] shaders = new Asset[GLEnumShader.values().length];
+	private final Shader[] shaders = new Shader[GLEnumShader.values().length];
 	private HashMap<VertexBufferObject, List<Integer>> vbos = new HashMap<VertexBufferObject, List<Integer>>();
 	private boolean bound = false, relink = true;
 	
@@ -56,7 +56,7 @@ public class GLProgram implements IGLBindable, IAssetReceiver
 		{
 			for (GLEnumShader stype : GLEnumShader.values())
 			{
-				Asset s = this.shaders[stype.ordinal()];
+				Shader s = this.shaders[stype.ordinal()];
 				
 				if (s != null)
 				{
@@ -178,7 +178,7 @@ public class GLProgram implements IGLBindable, IAssetReceiver
 		
 		context.getGL3().glDeleteVertexArrays(this.vba);
 		
-		for (Asset s : this.shaders)
+		for (Shader s : this.shaders)
 		{
 			if (s == null)
 			{
@@ -197,9 +197,9 @@ public class GLProgram implements IGLBindable, IAssetReceiver
 	@Override
 	public synchronized void onAssetLoaded(Asset a)
 	{
-		if (a.type == EnumAssetType.SHADER)
+		if (a instanceof Shader)
 		{
-			this.shaders[a.getIds()[1]] = a;
+			this.shaders[a.getIds()[1]] = (Shader)a;
 			this.relink = true;
 			
 		}
@@ -315,7 +315,7 @@ public class GLProgram implements IGLBindable, IAssetReceiver
 		return this.id;
 	}
 	
-	public Asset getShader(GLEnumShader type)
+	public Shader getShader(GLEnumShader type)
 	{
 		return this.shaders[type.ordinal()];
 	}

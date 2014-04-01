@@ -42,7 +42,7 @@ public class Lights implements IGLManipulator
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 	@Override
 	public void postRender()
 	{

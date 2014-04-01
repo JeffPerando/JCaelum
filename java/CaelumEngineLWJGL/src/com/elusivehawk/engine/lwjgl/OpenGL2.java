@@ -8,8 +8,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import org.lwjgl.opengl.GL20;
-import com.elusivehawk.engine.assets.Asset;
-import com.elusivehawk.engine.assets.EnumAssetType;
+import com.elusivehawk.engine.assets.Shader;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLEnumShader;
 import com.elusivehawk.engine.render.opengl.GLProgram;
@@ -24,10 +23,8 @@ import com.elusivehawk.engine.render.opengl.IGL2;
 public class OpenGL2 implements IGL2
 {
 	@Override
-	public void glAttachShader(GLProgram program, Asset shader)
+	public void glAttachShader(GLProgram program, Shader shader)
 	{
-		assert shader.type== EnumAssetType.SHADER;
-		
 		this.glAttachShader(program.getId(), shader.getIds()[0]);
 		
 	}
@@ -100,10 +97,8 @@ public class OpenGL2 implements IGL2
 	}
 	
 	@Override
-	public void glDeleteShader(Asset shader)
+	public void glDeleteShader(Shader shader)
 	{
-		assert shader.type == EnumAssetType.SHADER;
-		
 		this.glDeleteShader(shader.getIds()[0]);
 		
 	}
@@ -116,10 +111,8 @@ public class OpenGL2 implements IGL2
 	}
 	
 	@Override
-	public void glDetachShader(GLProgram program, Asset shader)
+	public void glDetachShader(GLProgram program, Shader shader)
 	{
-		assert shader.type == EnumAssetType.SHADER;
-		
 		this.glDetachShader(program.getId(), shader.getIds()[0]);
 		
 	}

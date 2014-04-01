@@ -3,7 +3,7 @@ package com.elusivehawk.engine.core;
 
 import java.util.List;
 import com.elusivehawk.engine.assets.AssetManager;
-import com.elusivehawk.engine.physics.IPhysicsScene;
+import com.elusivehawk.engine.physics.IPhysicsSimulator;
 import com.elusivehawk.engine.render.IRenderHUB;
 import com.elusivehawk.engine.util.IUpdatable;
 import com.google.common.collect.Lists;
@@ -150,7 +150,8 @@ public abstract class Game implements IUpdatable
 	 * 
 	 * @return The physics scene to use during the game's lifespan.
 	 */
-	public IPhysicsScene getPhysicsScene()
+	@Deprecated
+	public IPhysicsSimulator getPhysicsScene()
 	{
 		return this.state == null ? null : this.state.getPhysicsScene();
 	}

@@ -9,7 +9,7 @@ package com.elusivehawk.engine.core;
  */
 public enum EnumOS
 {
-	WINDOWS, MACOSX, LINUX, SOLARIS, ANDROID, OTHER;
+	WINDOWS, MAC, LINUX, SOLARIS, ANDROID, OTHER;
 	
 	private static final EnumOS CURRENT_OS = determineOS();
 	

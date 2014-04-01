@@ -3,8 +3,7 @@ package com.elusivehawk.engine.render;
 
 import java.util.List;
 import java.util.Map;
-import com.elusivehawk.engine.assets.AbstractTexture;
-import com.elusivehawk.engine.assets.Asset;
+import com.elusivehawk.engine.assets.Texture;
 import com.elusivehawk.engine.core.IContext;
 import com.elusivehawk.engine.render.opengl.GLEnumShader;
 import com.elusivehawk.engine.render.opengl.GLProgram;
@@ -33,7 +32,7 @@ public final class RenderContext implements IContext
 	
 	private int sVertex, sFrag, notex;
 	
-	private final List<AbstractTexture> texturePool = Lists.newArrayList();
+	private final List<Texture> texturePool = Lists.newArrayList();
 	private final List<IGLBindable> cleanables = Lists.newArrayList();
 	private final Map<EnumRenderMode, List<IGLManipulator>> manipulators = Maps.newHashMapWithExpectedSize(3);
 	
@@ -152,7 +151,7 @@ public final class RenderContext implements IContext
 	{
 		if (!this.texturePool.isEmpty())
 		{
-			for (AbstractTexture tex : this.texturePool)
+			for (Texture tex : this.texturePool)
 			{
 				if (!tex.isAnimated())
 				{
@@ -190,7 +189,7 @@ public final class RenderContext implements IContext
 		
 	}
 	
-	public void addTexture(AbstractTexture tex)
+	public void addTexture(Texture tex)
 	{
 		assert tex != null;
 		
@@ -224,7 +223,7 @@ public final class RenderContext implements IContext
 			
 		}
 		
-		this.gl1.glDeleteTextures(this.texturePool.toArray(new Asset[this.texturePool.size()]));
+		this.gl1.glDeleteTextures(this.texturePool.toArray(new Texture[this.texturePool.size()]));
 		
 		this.cleanables.clear();
 		
