@@ -276,15 +276,20 @@ public final class CaelumEngine
 			
 		}
 		
-		cur = buf.hasNext() ? buf.next() : "";
 		Game g = null;
 		
 		if (!cur.startsWith("game:"))
 		{
-			l.log(EnumLogType.ERROR, "Could not load game.");
-			System.exit("NO-GAME-FOUND".hashCode());
+			cur = buf.hasNext() ? buf.next() : "";
 			
-			return;
+			if (!cur.startsWith("game:"))
+			{
+				l.log(EnumLogType.ERROR, "Could not load game.");
+				System.exit("NO-GAME-FOUND".hashCode());
+				
+				return;
+			}
+			
 		}
 		
 		g = (Game)ReflectionHelper.newInstance(cur.substring(5), new Class<?>[]{Game.class}, null);
