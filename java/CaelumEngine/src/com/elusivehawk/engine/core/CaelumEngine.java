@@ -8,6 +8,8 @@ import java.lang.management.ManagementFactory;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import com.elusivehawk.engine.assets.AssetManager;
@@ -47,7 +49,8 @@ public final class CaelumEngine
 	private AssetManager assets = null;
 	private JsonObject envConfig = null;
 	
-	//private ScriptEngine scriptengine = null;
+	private ScriptEngine sEngine = null;
+	private EnumScriptType sType = EnumScriptType.OTHER;
 	
 	private CaelumEngine(){}
 	
@@ -98,10 +101,15 @@ public final class CaelumEngine
 		return (RenderContext)getContext(safe);
 	}
 	
-	/*public static ScriptEngine scripting()
+	public static ScriptEngine scripting()
 	{
-		return instance().scriptengine;
-	}*/
+		return instance().sEngine;
+	}
+	
+	public static EnumScriptType scriptType()
+	{
+		return instance().sType;
+	}
 	
 	public static void flipScreen(boolean flip)
 	{
@@ -172,8 +180,6 @@ public final class CaelumEngine
 		
 		if (clazz == null)
 		{
-			this.log.log(EnumLogType.WARN, "Unable to load custom game environment, preparing default environment...");
-			
 			try
 			{
 				switch (EnumOS.getCurrentOS())
@@ -188,6 +194,11 @@ public final class CaelumEngine
 				
 			}
 			catch (Exception e){}
+			
+		}
+		else
+		{
+			this.log.log(EnumLogType.WARN, "Loading custom game environment, this is gonna suck...");
 			
 		}
 		
@@ -245,43 +256,26 @@ public final class CaelumEngine
 			}
 			else
 			{
-				/*ScriptEngineManager mgr = new ScriptEngineManager();
+				this.sType = EnumScriptType.getType(se);
 				
-				this.scriptengine = mgr.getEngineByName(se);
+				ScriptEngineManager mgr = new ScriptEngineManager();
 				
-				if (this.scriptengine != null)
+				this.sEngine = mgr.getEngineByName(this.sType.engineName == null ? se : this.sType.engineName);
+				
+				if (this.sEngine != null)
 				{
-					if (this.scriptengine instanceof Invocable && this.scriptengine instanceof Compilable)
+					try
 					{
-						FileReader fr = FileHelper.createReader(FileHelper.createFile(".", game));
-						
-						if (fr != null)
-						{
-							CompiledScript script = null;
-							
-							try
-							{
-								script = ((Compilable)this.scriptengine).compile(fr);
-								
-							}
-							catch (Exception e)
-							{
-								this.log.log(EnumLogType.ERROR, null, e);
-								
-							}
-							
-							g = new ScriptedGame(script);
-							
-						}
+						g = new ScriptedGame(FileHelper.createFile(".", game));
 						
 					}
-					else
+					catch (Exception e)
 					{
-						this.log.log(EnumLogType.ERROR, String.format("Scripting engine for %s is not OO! Cancelling!", se));
+						this.log.log(EnumLogType.ERROR, String.format("Loading scripted game instance for %s failed!", this.sType.name()), e);
 						
 					}
 					
-				}*/
+				}
 				
 			}
 			
@@ -293,6 +287,12 @@ public final class CaelumEngine
 			System.exit("NO-GAME-FOUND".hashCode());
 			
 			return;
+		}
+		
+		if (this.sEngine != null)
+		{
+			this.loadScriptGlobals(this.sEngine);
+			
 		}
 		
 		this.log.log(EnumLogType.INFO, String.format("Loading game: %s", g.toString()));
@@ -423,6 +423,13 @@ public final class CaelumEngine
 		}
 		
 		return null;
+	}
+	
+	private void loadScriptGlobals(ScriptEngine e)
+	{
+		e.put("caelum", this);
+		e.put("currOs", EnumOS.getCurrentOS());
+		
 	}
 	
 	private void shutDownGame()

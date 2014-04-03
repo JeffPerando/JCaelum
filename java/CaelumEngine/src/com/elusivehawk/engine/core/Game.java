@@ -148,12 +148,12 @@ public abstract class Game implements IUpdatable
 	 * 
 	 * Called during startup.
 	 * 
-	 * @return The physics scene to use during the game's lifespan.
+	 * @return The physics simulator to use during the game's lifespan.
 	 */
 	@Deprecated
-	public IPhysicsSimulator getPhysicsScene()
+	public IPhysicsSimulator getPhysicsSimulator()
 	{
-		return this.state == null ? null : this.state.getPhysicsScene();
+		return this.state == null ? null : this.state.getPhysicsSimulator();
 	}
 	
 	@Override
