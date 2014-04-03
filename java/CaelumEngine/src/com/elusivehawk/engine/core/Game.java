@@ -156,4 +156,10 @@ public abstract class Game implements IUpdatable
 		return this.state == null ? null : this.state.getPhysicsScene();
 	}
 	
+	@Override
+	public String toString()
+	{
+		return this.getClass().getSimpleName();
+	}
+	
 }

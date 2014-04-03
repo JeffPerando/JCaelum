@@ -2,7 +2,6 @@
 package com.elusivehawk.engine.core;
 
 import java.util.Map;
-import com.elusivehawk.engine.util.Buffer;
 import com.google.common.collect.Maps;
 
 /**
@@ -16,24 +15,17 @@ public class GameArguments
 	protected final Map<String, String> args = Maps.newHashMap();
 	
 	@SuppressWarnings("unqualified-field-access")
-	public GameArguments(Buffer<String> buf)
+	public GameArguments(Iterable<String> buf)
 	{
-		if (buf.hasNext())
+		String[] spl;
+		
+		for (String str : buf)
 		{
-			String str;
-			String[] spl;
-			
-			while (buf.hasNext())
+			if (str.contains("="))
 			{
-				str = buf.next();
+				spl = str.split("=");
 				
-				if (str.contains("="))
-				{
-					spl = str.split("=");
-					
-					args.put(spl[0], spl[1]);
-					
-				}
+				args.put(spl[0], spl[1]);
 				
 			}
 			

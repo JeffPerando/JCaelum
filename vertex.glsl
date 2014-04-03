@@ -12,37 +12,42 @@ uniform boolean flip;
 (location = 3) in vec3 in_scale;
 (location = 4) in vec3 in_rot;
 (location = 5) in vec3 in_trans;
+(location = 6) in int in_mindex;
 
 out vec2 frag_texcoord;
 out vec3 frag_norm;
+
+out mat4 frag_m;
+out int frag_mindex;
 
 void main()
 {
 	frag_tex = in_tex;
 	frag_norm = in_norm;
 	
-	mat4 fin = trans(in_trans) * rotate(in_rot) * scale(in_scale) * vec4(vec3(flip ? in_pos.y : in_pos.x, flip ? in_pos.x : in_pos.y, in_pos.z), 1.0);
+	frag_m = model;
+	frag_mindex = in_mindex;
 	
-	gl_Position = proj * view * fin;
+	gl_Position = proj * view * (trans(in_trans) * rotate(in_rot) * scale(in_scale) * vec4(vec3(flip ? in_pos.y : in_pos.x, flip ? in_pos.x : in_pos.y, in_pos.z), 1.0));
 	
 }
 
-mat4 scale(vec3 scl)
+mat4 scale(vec3 s)
 {
-	return mat4(scl.x, 0.0, 0.0, 0.0,
-				0.0, scl.y, 0.0, 0.0,
-				0.0, 0.0, scl.z, 0.0,
+	return mat4(s.x, 0.0, 0.0, 0.0,
+				0.0, s.y, 0.0, 0.0,
+				0.0, 0.0, s.z, 0.0,
 				0.0, 0.0, 0.0, 1.0);
 }
 
-mat4 rotate(vec3 rot)
+mat4 rotate(vec3 r)
 {
-	float a = cos(rot.x);
-	float b = sin(rot.x);
-	float c = cos(rot.y);
-	float d = sin(rot.y);
-	float e = cos(rot.z);
-	float f = sin(rot.z);
+	float a = cos(r.x);
+	float b = sin(r.x);
+	float c = cos(r.y);
+	float d = sin(r.y);
+	float e = cos(r.z);
+	float f = sin(r.z);
 	
 	float ad = a * d;
 	float bd = b * d;
@@ -53,10 +58,10 @@ mat4 rotate(vec3 rot)
 				0.0, 0.0, 0.0, 1.0);
 }
 
-mat4 trans(vec3 trans)
+mat4 trans(vec3 t)
 {
-	return mat4(1.0, 0.0, 0.0, trans.x,
-				0.0, 1.0, 0.0, trans.y,
-				0.0, 0.0, 1.0, trans.z,
+	return mat4(1.0, 0.0, 0.0, t.x,
+				0.0, 1.0, 0.0, t.y,
+				0.0, 0.0, 1.0, t.z,
 				0.0, 0.0, 0.0, 1.0);
 }

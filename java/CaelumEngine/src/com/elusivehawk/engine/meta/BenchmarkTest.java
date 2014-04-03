@@ -1,10 +1,18 @@
 
 package com.elusivehawk.engine.meta;
 
+import javax.script.Compilable;
+import javax.script.CompiledScript;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+import com.elusivehawk.engine.util.Timer;
+
 /**
  * 
  * Test log:
  * <p>
+ * RHINO benchmarking<br>
  * Comparing vs. Instanceof check<br>
  * Simple vs. Array List.<br>
  * Testing matrix stuff.<br>
@@ -21,76 +29,87 @@ package com.elusivehawk.engine.meta;
  */
 public class BenchmarkTest
 {
-	public static final int TESTS = 1024;
+	public static final int TESTS = 128;
 	
 	public static void main(String[] args)
 	{
 		System.out.println("Beginning bench testing...");
 		
-		/*long[] iftime = new long[TESTS],
-				instoftime = new long[TESTS];
+		ScriptEngineManager factory = new ScriptEngineManager();
+		ScriptEngine engine = factory.getEngineByName("JavaScript");
 		
-		long ifw = 0L;
-		long ifb = 0L;
-		long instofw = 0L;
-		long instofb = 0L;
+		CompiledScript script = null;
 		
-		Timer t = new Timer();
-		
-		Asset testobj = new TextureStatic(null, null);
-		
-		for (int test = 0; test < TESTS; test++)
+		try
 		{
-			for (int c = 0; c < TESTS; c++)
-			{
-				t.start();
-				
-				if (testobj.type == EnumAssetType.TEXTURE){}
-				
-				t.stop();
-				
-				iftime[c] = t.report();
-				
-			}
+			script = ((Compilable)engine).compile("println('Hello World!')");
 			
-			for (int c = 0; c < TESTS; c++)
-			{
-				t.start();
-				
-				if (testobj instanceof Texture){}
-				
-				t.stop();
-				
-				instoftime[c] = t.report();
-				
-			}
-			
-			long finif = 0L;
-			long fininstof = 0L;
-			
-			for (int c = 0; c < TESTS; c++)
-			{
-				finif += iftime[c];
-				fininstof += instoftime[c];
-				
-			}
-			
-			finif /= TESTS;
-			fininstof /= TESTS;
-			
-			ifw = test == 0 ? finif : Math.max(ifw, finif);
-			ifb = test == 0 ? finif : Math.min(ifb, finif);
-			
-			instofw = test == 0 ? fininstof : Math.max(instofw, fininstof);
-			instofb = test == 0 ? fininstof :  Math.min(instofb, fininstof);
-			
-			System.out.println(String.format("Test %s results: If - %s, Instanceof - %s", test + 1, finif, fininstof));
+		}
+		catch (ScriptException e)
+		{
+			e.printStackTrace();
 			
 		}
 		
-		System.out.println(String.format("If final results:\t\tBest - %s\tWorst - %s",  ifb, ifw));
-		System.out.println(String.format("Instanceof final results:\tBest - %s\tWorst - %s",  instofb, instofw));
-		*/
+		long[] ctrltime = new long[TESTS],
+				jstime = new long[TESTS];
+		
+		long ctrlw = 0L;
+		long ctrlb = 0L;
+		long jsw = 0L;
+		long jsb = 0L;
+		
+		Timer t = new Timer();
+		
+		for (int test = 0; test < TESTS; test++)
+		{
+			t.start();
+			
+			System.out.println("Hello World!");
+			
+			t.stop();
+			
+			ctrltime[test] = t.report();
+			
+			t.start();
+			
+			try
+			{
+				script.eval();
+				
+			}
+			catch (ScriptException e){}
+			
+			t.stop();
+			
+			jstime[test] = t.report();
+			
+			ctrlw = test == 0 ? ctrltime[test] : Math.max(ctrlw, ctrltime[test]);
+			ctrlb = test == 0 ? ctrltime[test] : Math.min(ctrlb, ctrltime[test]);
+			
+			jsw = test == 0 ? jstime[test] : Math.max(jsw, jstime[test]);
+			jsb = test == 0 ? jstime[test] :  Math.min(jsb, jstime[test]);
+			
+			System.out.println(String.format("Test #%s results: Control - %s, JavaScript - %s", test + 1, ctrltime[test], jstime[test]));
+			
+		}
+		
+		long ctrlavg = 0L;
+		long jsavg = 0L;
+		
+		for (int c = 0; c < TESTS; c++)
+		{
+			ctrlavg += ctrltime[c];
+			jsavg += jstime[c];
+			
+		}
+		
+		ctrlavg /= TESTS;
+		jsavg /= TESTS;
+		
+		System.out.println(String.format("Control final results:\t\tBest - \t%s\t\tWorst - %s\t\tAvg - %s",  ctrlb, ctrlw, ctrlavg));
+		System.out.println(String.format("JavaScript final results:\tBest - \t%s\t\tWorst - %s\tAvg - %s",  jsb, jsw, jsavg));
+		
 		System.out.println("Th-th-th-th-That's all, folks!");
 		
 	}

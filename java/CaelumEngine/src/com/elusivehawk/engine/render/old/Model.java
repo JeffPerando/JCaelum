@@ -26,14 +26,11 @@ import com.google.common.collect.Lists;
  * @author Elusivehawk
  */
 @Deprecated
-@SuppressWarnings("rawtypes")
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class Model implements IStorageListener
 {
-	@SuppressWarnings("unchecked")
 	public final SemiFinalStorage<Integer> indiceCount = new SemiFinalStorage<Integer>(0, this);
-	@SuppressWarnings("unchecked")
 	public final SemiFinalStorage<VertexBufferObject> finBuf = new SemiFinalStorage<VertexBufferObject>(null, this);
-	@SuppressWarnings("unchecked")
 	public final SemiFinalStorage<VertexBufferObject> indiceBuf = new SemiFinalStorage<VertexBufferObject>(null, this);
 	
 	private boolean finished = false;

@@ -16,11 +16,11 @@ import com.elusivehawk.engine.render.IRenderEnvironment;
 import com.elusivehawk.engine.render.IRenderHUB;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.ThreadGameRender;
-import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.FileHelper;
 import com.elusivehawk.engine.util.ReflectionHelper;
 import com.elusivehawk.engine.util.ThreadStoppable;
 import com.elusivehawk.engine.util.Tuple;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
@@ -45,6 +45,9 @@ public final class CaelumEngine
 	
 	private Game game = null;
 	private AssetManager assets = null;
+	private JsonObject envConfig = null;
+	
+	//private ScriptEngine scriptengine = null;
 	
 	private CaelumEngine(){}
 	
@@ -95,6 +98,11 @@ public final class CaelumEngine
 		return (RenderContext)getContext(safe);
 	}
 	
+	/*public static ScriptEngine scripting()
+	{
+		return instance().scriptengine;
+	}*/
+	
 	public static void flipScreen(boolean flip)
 	{
 		if (instance().game == null)
@@ -122,17 +130,35 @@ public final class CaelumEngine
 		
 		this.log.log(EnumLogType.INFO, String.format("Starting Caelum Engine v%s", VERSION));
 		
-		Buffer<String> buf = new Buffer<String>(args);
-		String cur = (buf.hasNext() ? buf.next() : "");
-		IGameEnvironment env = null;
-		JsonObject json = null;
-		Class<?> clazz = null;
+		List<String> gameargs = Lists.newArrayList();
+		Map<String, String> strs = Maps.newHashMap();
+		String[] spl;
 		
-		if (cur.startsWith("class:"))
+		for (String str : args)
+		{
+			if (str.indexOf(":") == -1)
+			{
+				gameargs.add(str);
+				
+			}
+			else
+			{
+				spl = str.split(":");
+				strs.put(spl[0], spl[1]);
+				
+			}
+			
+		}
+		
+		IGameEnvironment env = null;
+		Class<?> clazz = null;
+		String cl = strs.get("class");
+		
+		if (cl != null)
 		{
 			try
 			{
-				clazz = Class.forName(cur.substring(6));
+				clazz = Class.forName(cl);
 				
 			}
 			catch (Exception e){}
@@ -140,65 +166,7 @@ public final class CaelumEngine
 		}
 		else
 		{
-			File file = FileHelper.createFile(".", "/game.json");
-			
-			if (file.exists() && file.canRead())
-			{
-				JsonObject j = null;
-				
-				try
-				{
-					j = JsonObject.readFrom(new BufferedReader(new FileReader(file)));
-					
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-					
-				}
-				
-				if (j != null)
-				{
-					JsonValue curEnv = j.get(EnumOS.getCurrentOS().toString());
-					
-					if (curEnv != null && curEnv.isObject())
-					{
-						json = curEnv.asObject();
-						JsonValue envLoc = json.get("location");
-						
-						if (envLoc.isString())
-						{
-							File envLibFile = FileHelper.createFile(envLoc.asString());
-							
-							if (envLibFile.exists() && envLibFile.canRead() && envLibFile.getName().endsWith(".jar"))
-							{
-								Tuple<ClassLoader, Set<Class<?>>> tuple = ReflectionHelper.loadLibrary(envLibFile);
-								Set<Class<?>> set = tuple.two;
-								
-								if (set != null && !set.isEmpty())
-								{
-									for (Class<?> c : set)
-									{
-										if (c.isAssignableFrom(IGameEnvironment.class))
-										{
-											clazz = c;
-											
-											break;
-										}
-										
-									}
-									
-								}
-								
-							}
-							
-						}
-						
-					}
-					
-				}
-				
-			}
+			clazz = this.loadEnvironmentFromJson();
 			
 		}
 		
@@ -223,30 +191,16 @@ public final class CaelumEngine
 			
 		}
 		
-		if (clazz != null)
-		{
-			try
-			{
-				env = (IGameEnvironment)clazz.newInstance();
-				
-			}
-			catch (Exception e){}
-			
-		}
+		env = (IGameEnvironment)ReflectionHelper.newInstance(clazz, new Class[]{IGameEnvironment.class}, null);
 		
-		if (env == null)
+		if (env == null || !env.isCompatible(EnumOS.getCurrentOS()))
 		{
 			this.log.log(EnumLogType.ERROR, String.format("Unable to load environment: %s", clazz));
 			System.exit("NO-ENVIRONMENT-FOUND".hashCode());
 			
 		}
 		
-		if (!env.isCompatible(EnumOS.getCurrentOS()))
-		{
-			return;
-		}
-		
-		env.initiate(json, buf.toArray());
+		env.initiate(this.envConfig, args);
 		
 		this.env = env;
 		this.renv = env.getRenderEnv();
@@ -278,23 +232,72 @@ public final class CaelumEngine
 		
 		Game g = null;
 		
-		if (!cur.startsWith("game:"))
+		String game = strs.get("game");
+		
+		if (game != null)
 		{
-			cur = buf.hasNext() ? buf.next() : "";
+			String se = strs.get("scripting");
 			
-			if (!cur.startsWith("game:"))
+			if (se == null)
 			{
-				l.log(EnumLogType.ERROR, "Could not load game.");
-				System.exit("NO-GAME-FOUND".hashCode());
+				g = (Game)ReflectionHelper.newInstance(game, new Class<?>[]{Game.class}, null);
 				
-				return;
+			}
+			else
+			{
+				/*ScriptEngineManager mgr = new ScriptEngineManager();
+				
+				this.scriptengine = mgr.getEngineByName(se);
+				
+				if (this.scriptengine != null)
+				{
+					if (this.scriptengine instanceof Invocable && this.scriptengine instanceof Compilable)
+					{
+						FileReader fr = FileHelper.createReader(FileHelper.createFile(".", game));
+						
+						if (fr != null)
+						{
+							CompiledScript script = null;
+							
+							try
+							{
+								script = ((Compilable)this.scriptengine).compile(fr);
+								
+							}
+							catch (Exception e)
+							{
+								this.log.log(EnumLogType.ERROR, null, e);
+								
+							}
+							
+							g = new ScriptedGame(script);
+							
+						}
+						
+					}
+					else
+					{
+						this.log.log(EnumLogType.ERROR, String.format("Scripting engine for %s is not OO! Cancelling!", se));
+						
+					}
+					
+				}*/
+				
 			}
 			
 		}
 		
-		g = (Game)ReflectionHelper.newInstance(cur.substring(5), new Class<?>[]{Game.class}, null);
+		if (g == null)
+		{
+			this.log.log(EnumLogType.ERROR, "Could not load game.");
+			System.exit("NO-GAME-FOUND".hashCode());
+			
+			return;
+		}
 		
-		if (!g.initiate(new GameArguments(buf)))
+		this.log.log(EnumLogType.INFO, String.format("Loading game: %s", g.toString()));
+		
+		if (!g.initiate(new GameArguments(gameargs)))
 		{
 			return;
 		}
@@ -351,6 +354,75 @@ public final class CaelumEngine
 			
 		}
 		
+	}
+	
+	private Class<?> loadEnvironmentFromJson()
+	{
+		FileReader fr = FileHelper.createReader(FileHelper.createFile(".", "/game.json"));
+		
+		if (fr == null)
+		{
+			return null;
+		}
+		
+		JsonObject j = null;
+		
+		try
+		{
+			j = JsonObject.readFrom(new BufferedReader(fr));
+			
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			
+		}
+		
+		if (j == null)
+		{
+			return null;
+		}
+		
+		JsonValue curEnv = j.get(EnumOS.getCurrentOS().toString());
+		
+		if (curEnv == null || !curEnv.isObject())
+		{
+			return null;
+		}
+		
+		this.envConfig = curEnv.asObject();
+		JsonValue envLoc = this.envConfig.get("location");
+		
+		if (!envLoc.isString())
+		{
+			return null;
+		}
+		
+		File envLibFile = FileHelper.createFile(envLoc.asString());
+		
+		if (!FileHelper.canReadFile(envLibFile) || !envLibFile.getName().endsWith(".jar"))
+		{
+			return null;
+		}
+		
+		Tuple<ClassLoader, Set<Class<?>>> tuple = ReflectionHelper.loadLibrary(envLibFile);
+		Set<Class<?>> set = tuple.two;
+		
+		if (set == null || set.isEmpty())
+		{
+			return null;
+		}
+		
+		for (Class<?> c : set)
+		{
+			if (c.isAssignableFrom(IGameEnvironment.class))
+			{
+				return c;
+			}
+			
+		}
+		
+		return null;
 	}
 	
 	private void shutDownGame()
