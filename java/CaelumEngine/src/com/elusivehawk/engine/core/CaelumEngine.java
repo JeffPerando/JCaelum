@@ -256,22 +256,28 @@ public final class CaelumEngine
 			}
 			else
 			{
-				this.sType = EnumScriptType.getType(se);
+				File scriptfile = FileHelper.createFile(".", game);
 				
-				ScriptEngineManager mgr = new ScriptEngineManager();
-				
-				this.sEngine = mgr.getEngineByName(this.sType.engineName == null ? se : this.sType.engineName);
-				
-				if (this.sEngine != null)
+				if (FileHelper.canReadFile(scriptfile))
 				{
-					try
+					this.sType = EnumScriptType.getType(se);
+					
+					ScriptEngineManager mgr = new ScriptEngineManager();
+					
+					this.sEngine = mgr.getEngineByName(this.sType.engineName == null ? se : this.sType.engineName);
+					
+					if (this.sEngine != null)
 					{
-						g = new ScriptedGame(FileHelper.createFile(".", game));
-						
-					}
-					catch (Exception e)
-					{
-						this.log.log(EnumLogType.ERROR, String.format("Loading scripted game instance for %s failed!", this.sType.name()), e);
+						try
+						{
+							g = new ScriptedGame(scriptfile);
+							
+						}
+						catch (Exception e)
+						{
+							this.log.log(EnumLogType.ERROR, String.format("Loading scripted game instance for %s failed!", this.sType.name()), e);
+							
+						}
 						
 					}
 					
@@ -295,7 +301,7 @@ public final class CaelumEngine
 			
 		}
 		
-		this.log.log(EnumLogType.INFO, String.format("Loading game: %s", g.toString()));
+		this.log.log(EnumLogType.INFO, String.format("Loading game: %s", g.name));
 		
 		if (!g.initiate(new GameArguments(gameargs)))
 		{

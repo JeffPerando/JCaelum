@@ -24,14 +24,13 @@ import com.elusivehawk.engine.util.FileHelper;
  */
 public class ScriptedGame extends Game implements ScriptContext
 {
-	protected final String filename;
 	protected final CompiledScript script;
 	protected final Object scriptObj;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public ScriptedGame(File file) throws ScriptException, NullPointerException
 	{
-		filename = file.getName();
+		super(file.getName().substring(0, file.getName().indexOf(".")));
 		
 		script = ((Compilable)CaelumEngine.scripting()).compile(FileHelper.createReader(file));
 		scriptObj = script.eval(this);
@@ -252,12 +251,6 @@ public class ScriptedGame extends Game implements ScriptContext
 		}
 		
 		return ret;
-	}
-	
-	@Override
-	public String toString()
-	{
-		return String.format("%s:%s", super.toString(), this.filename);
 	}
 	
 }

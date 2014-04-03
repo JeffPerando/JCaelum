@@ -17,9 +17,18 @@ import com.google.common.collect.Lists;
 @SuppressWarnings({"static-method", "unused"})
 public abstract class Game implements IUpdatable
 {
+	public final String name;
+	
 	private GameState state = null, nextState = null;
 	private List<IGameStateListener> listeners = Lists.newArrayList();
 	private boolean initiated = false;
+	
+	@SuppressWarnings("unqualified-field-access")
+	protected Game(String title)
+	{
+		name = title;
+		
+	}
 	
 	public final boolean initiate(GameArguments args)
 	{
@@ -154,12 +163,6 @@ public abstract class Game implements IUpdatable
 	public IPhysicsSimulator getPhysicsSimulator()
 	{
 		return this.state == null ? null : this.state.getPhysicsSimulator();
-	}
-	
-	@Override
-	public String toString()
-	{
-		return this.getClass().getSimpleName();
 	}
 	
 }
