@@ -8,8 +8,6 @@ import java.lang.management.ManagementFactory;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import com.elusivehawk.engine.assets.AssetManager;
@@ -48,9 +46,6 @@ public final class CaelumEngine
 	private Game game = null;
 	private AssetManager assets = null;
 	private JsonObject envConfig = null;
-	
-	private ScriptEngine sEngine = null;
-	private EnumScriptType sType = EnumScriptType.OTHER;
 	
 	private CaelumEngine(){}
 	
@@ -99,16 +94,6 @@ public final class CaelumEngine
 	public static RenderContext renderContext(boolean safe)
 	{
 		return (RenderContext)getContext(safe);
-	}
-	
-	public static ScriptEngine scripting()
-	{
-		return instance().sEngine;
-	}
-	
-	public static EnumScriptType scriptType()
-	{
-		return instance().sType;
 	}
 	
 	public static void flipScreen(boolean flip)
@@ -247,43 +232,7 @@ public final class CaelumEngine
 		
 		if (game != null)
 		{
-			String se = strs.get("scripting");
-			
-			if (se == null)
-			{
-				g = (Game)ReflectionHelper.newInstance(game, new Class<?>[]{Game.class}, null);
-				
-			}
-			else
-			{
-				File scriptfile = FileHelper.createFile(".", game);
-				
-				if (FileHelper.canReadFile(scriptfile))
-				{
-					this.sType = EnumScriptType.getType(se);
-					
-					ScriptEngineManager mgr = new ScriptEngineManager();
-					
-					this.sEngine = mgr.getEngineByName(this.sType.engineName == null ? se : this.sType.engineName);
-					
-					if (this.sEngine != null)
-					{
-						try
-						{
-							g = new ScriptedGame(scriptfile);
-							
-						}
-						catch (Exception e)
-						{
-							this.log.log(EnumLogType.ERROR, String.format("Loading scripted game instance for %s failed!", this.sType.name()), e);
-							
-						}
-						
-					}
-					
-				}
-				
-			}
+			g = (Game)ReflectionHelper.newInstance(game, new Class<?>[]{Game.class}, null);
 			
 		}
 		
@@ -293,12 +242,6 @@ public final class CaelumEngine
 			System.exit("NO-GAME-FOUND".hashCode());
 			
 			return;
-		}
-		
-		if (this.sEngine != null)
-		{
-			this.loadScriptGlobals(this.sEngine);
-			
 		}
 		
 		this.log.log(EnumLogType.INFO, String.format("Loading game: %s", g.name));
@@ -429,13 +372,6 @@ public final class CaelumEngine
 		}
 		
 		return null;
-	}
-	
-	private void loadScriptGlobals(ScriptEngine e)
-	{
-		e.put("caelum", this);
-		e.put("currOs", EnumOS.getCurrentOS());
-		
 	}
 	
 	private void shutDownGame()
