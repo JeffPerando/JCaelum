@@ -25,7 +25,7 @@ public class GLES2 implements IGL2
 	@Override
 	public void glAttachShader(GLProgram program, Shader shader)
 	{
-		this.glAttachShader(program.getId(), shader.getIds()[0]);
+		this.glAttachShader(program.getId(), shader.getGLId());
 		
 	}
 	
@@ -99,7 +99,7 @@ public class GLES2 implements IGL2
 	@Override
 	public void glDeleteShader(Shader shader)
 	{
-		this.glDeleteShader(shader.getIds()[0]);
+		this.glDeleteShader(shader.getGLId());
 		
 	}
 	
@@ -113,7 +113,7 @@ public class GLES2 implements IGL2
 	@Override
 	public void glDetachShader(GLProgram program, Shader shader)
 	{
-		this.glDetachShader(program.getId(), shader.getIds()[0]);
+		this.glDetachShader(program.getId(), shader.getGLId());
 		
 	}
 	

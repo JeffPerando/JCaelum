@@ -6,7 +6,7 @@ import java.util.List;
 import com.elusivehawk.engine.network.PacketFormat.PktFormatItr;
 import com.elusivehawk.engine.util.io.ByteLists;
 import com.elusivehawk.engine.util.io.IByteReader;
-import com.elusivehawk.engine.util.io.Serializer;
+import com.elusivehawk.engine.util.io.Serializers;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
@@ -63,7 +63,7 @@ public final class Packet
 	public IByteReader toBytes()
 	{
 		ByteLists l = new ByteLists(new ArrayList<Byte>());
-		int length = Serializer.SHORT.toBytes(l, this.format.pktId);
+		int length = Serializers.SHORT.toBytes(l, this.format.pktId);
 		
 		l.outPos = 4;
 		
@@ -77,7 +77,7 @@ public final class Packet
 		
 		l.outPos = 2;
 		
-		Serializer.SHORT.toBytes(l, (short)length);
+		Serializers.SHORT.toBytes(l, (short)length);
 		
 		return l;
 	}

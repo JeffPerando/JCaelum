@@ -34,7 +34,7 @@ public class GLES1 implements IGL1
 	@Override
 	public void glActiveTexture(Texture texture)
 	{
-		this.glActiveTexture(texture == null ? 0 : texture.getIds()[0]);
+		this.glActiveTexture(texture == null ? 0 : texture.getTexId());
 		
 	}
 	
@@ -62,7 +62,7 @@ public class GLES1 implements IGL1
 	@Override
 	public void glBindTexture(int target, Texture texture)
 	{
-		this.glBindTexture(target, texture == null ? 0 : texture.getIds()[0]);
+		this.glBindTexture(target, texture == null ? 0 : texture.getTexId());
 		
 	}
 	
@@ -182,7 +182,7 @@ public class GLES1 implements IGL1
 		
 		for (Texture tex : textures)
 		{
-			buf.put(tex.getIds()[0]);
+			buf.put(tex.getTexId());
 			
 		}
 		

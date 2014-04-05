@@ -31,8 +31,6 @@ public abstract class Asset
 		
 	}
 	
-	public abstract int[] getIds();
-	
 	protected abstract boolean finishAsset();
 	
 }

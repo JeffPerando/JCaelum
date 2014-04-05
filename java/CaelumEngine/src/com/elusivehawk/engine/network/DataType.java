@@ -5,6 +5,7 @@ import com.elusivehawk.engine.tag.TagReaderRegistry;
 import com.elusivehawk.engine.util.io.IByteReader;
 import com.elusivehawk.engine.util.io.IByteWriter;
 import com.elusivehawk.engine.util.io.Serializer;
+import com.elusivehawk.engine.util.io.Serializers;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -15,14 +16,14 @@ import com.google.common.collect.ImmutableList;
  */
 public class DataType
 {
-	public static final DataType BOOL = new DataType(Serializer.BOOLEAN);
-	public static final DataType BYTE = new DataType(Serializer.BYTE);
-	public static final DataType SHORT = new DataType(Serializer.SHORT);
-	public static final DataType INT = new DataType(Serializer.INTEGER);
-	public static final DataType LONG = new DataType(Serializer.LONG);
-	public static final DataType FLOAT = new DataType(Serializer.FLOAT);
-	public static final DataType DOUBLE = new DataType(Serializer.DOUBLE);
-	public static final DataType STRING = new DataType(Serializer.STRING);
+	public static final DataType BOOL = new DataType(Serializers.BOOLEAN);
+	public static final DataType BYTE = new DataType(Serializers.BYTE);
+	public static final DataType SHORT = new DataType(Serializers.SHORT);
+	public static final DataType INT = new DataType(Serializers.INTEGER);
+	public static final DataType LONG = new DataType(Serializers.LONG);
+	public static final DataType FLOAT = new DataType(Serializers.FLOAT);
+	public static final DataType DOUBLE = new DataType(Serializers.DOUBLE);
+	public static final DataType STRING = new DataType(Serializers.STRING);
 	public static final DataType ARRAY = new DataType(null)
 	{
 		@Override
@@ -33,7 +34,7 @@ public class DataType
 				return null;
 			}
 			
-			Object[] ret = new Object[Serializer.SHORT.fromBytes(b)];
+			Object[] ret = new Object[Serializers.SHORT.fromBytes(b)];
 			
 			for (int c = 0; c < ret.length; c++)
 			{
@@ -54,7 +55,7 @@ public class DataType
 			
 			Object[] arr = (Object[])obj;
 			
-			int ret = Serializer.SHORT.toBytes(w, (short)arr.length);
+			int ret = Serializers.SHORT.toBytes(w, (short)arr.length);
 			
 			for (int c = 0; c < arr.length; c++)
 			{
@@ -73,7 +74,7 @@ public class DataType
 		
 	};
 	public static final DataType TAG = new DataType(TagReaderRegistry.instance());
-	public static final DataType UUID = new DataType(Serializer.UUID);
+	public static final DataType UUID = new DataType(Serializers.UUID);
 	
 	protected final Serializer<Object> serial;
 	

@@ -11,12 +11,17 @@ import com.elusivehawk.engine.render.ILegibleImage;
  */
 public abstract class Texture extends Asset
 {
-	protected final int[] ids = new int[]{0, this.isAnimated() ? 1 : 0};
+	protected int tex = 0;
 	
 	protected Texture(String filename)
 	{
 		super(filename);
 		
+	}
+	
+	public int getTexId()
+	{
+		return this.tex;
 	}
 	
 	public void updateTexture(){}

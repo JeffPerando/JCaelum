@@ -24,12 +24,6 @@ public class TextureGif extends Texture
 	}
 	
 	@Override
-	public int[] getIds()
-	{
-		return this.ids;
-	}
-	
-	@Override
 	protected boolean finishAsset()
 	{
 		TextureStatic tex;
@@ -76,7 +70,7 @@ public class TextureGif extends Texture
 			
 		}
 		
-		this.ids[0] = this.textures.get().getIds()[0];
+		this.tex = this.textures.get().getTexId();
 		
 	}
 	

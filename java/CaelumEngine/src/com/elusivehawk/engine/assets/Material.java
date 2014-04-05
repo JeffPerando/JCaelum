@@ -13,11 +13,9 @@ import com.elusivehawk.engine.render.EnumColorFormat;
  */
 public class Material extends Asset
 {
-	protected final Texture tex;
-	protected final float shininess;
-	protected final Color filter;
-	
-	protected final int[] ids = new int[3];
+	public final Texture tex;
+	public final float shininess;
+	public final Color filter;
 	
 	public Material(String filename, Color overlay)
 	{
@@ -53,22 +51,6 @@ public class Material extends Asset
 		shininess = MathHelper.clamp(shine, 0f, 1f);
 		filter = EnumColorFormat.RGBA.convert(overlay);
 		
-		ids[0] = tex.getIds()[0];
-		ids[1] = Float.floatToIntBits(shininess);
-		ids[2] = filter.color;
-		
-	}
-	
-	@Override
-	public int[] getIds()
-	{
-		if (this.tex.getIds()[1] == 1)
-		{
-			this.ids[0] = this.tex.getIds()[0];
-			
-		}
-		
-		return this.ids;
 	}
 	
 	@Override

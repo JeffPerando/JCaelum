@@ -199,7 +199,7 @@ public class GLProgram implements IGLBindable, IAssetReceiver
 	{
 		if (a instanceof Shader)
 		{
-			this.shaders[a.getIds()[1]] = (Shader)a;
+			this.shaders[((Shader)a).gltype.ordinal()] = (Shader)a;
 			this.relink = true;
 			
 		}

@@ -11,7 +11,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
-import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.Texture;
 import com.elusivehawk.engine.render.Color;
 import com.elusivehawk.engine.render.EnumColorFilter;
@@ -38,7 +37,7 @@ public class OpenGL1 implements IGL1
 	@Override
 	public void glActiveTexture(Texture texture)
 	{
-		this.glActiveTexture(texture.getIds()[0]);
+		this.glActiveTexture(texture.getTexId());
 		
 	}
 	
@@ -66,7 +65,7 @@ public class OpenGL1 implements IGL1
 	@Override
 	public void glBindTexture(int target, Texture texture)
 	{
-		GL11.glBindTexture(target, texture.getIds()[0]);
+		GL11.glBindTexture(target, texture.getTexId());
 		
 	}
 	
@@ -210,9 +209,9 @@ public class OpenGL1 implements IGL1
 	{
 		IntBuffer buf = BufferHelper.createIntBuffer(textures.length);
 		
-		for (Asset asset : textures)
+		for (Texture asset : textures)
 		{
-			buf.put(asset.getIds()[0]);
+			buf.put(asset.getTexId());
 			
 		}
 		

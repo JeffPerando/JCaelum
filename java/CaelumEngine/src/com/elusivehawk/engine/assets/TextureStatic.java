@@ -23,17 +23,11 @@ public class TextureStatic extends Texture
 	}
 	
 	@Override
-	public int[] getIds()
-	{
-		return this.ids;
-	}
-	
-	@Override
 	protected boolean finishAsset()
 	{
-		this.ids[0] = RenderHelper.processImage(this.image);
+		this.tex = RenderHelper.processImage(this.image);
 		
-		return this.ids[0] != 0;
+		return this.tex != 0;
 	}
 	
 	@Override

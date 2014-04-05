@@ -4,6 +4,7 @@ package com.elusivehawk.engine.tag;
 import com.elusivehawk.engine.util.io.IByteReader;
 import com.elusivehawk.engine.util.io.IByteWriter;
 import com.elusivehawk.engine.util.io.Serializer;
+import com.elusivehawk.engine.util.io.Serializers;
 
 /**
  * 
@@ -28,13 +29,13 @@ public final class TagReaderRegistry implements Serializer<Tag<?>>
 	
 	private TagReaderRegistry()
 	{
-		this.registerReader(BYTE_ID, BYTE);
-		this.registerReader(SHORT_ID, SHORT);
-		this.registerReader(INT_ID, INTEGER);
-		this.registerReader(LONG_ID, LONG);
-		this.registerReader(FLOAT_ID, FLOAT);
-		this.registerReader(DOUBLE_ID, DOUBLE);
-		this.registerReader(STRING_ID, STRING);
+		this.registerReader(BYTE_ID, Serializers.BYTE);
+		this.registerReader(SHORT_ID, Serializers.SHORT);
+		this.registerReader(INT_ID, Serializers.INTEGER);
+		this.registerReader(LONG_ID, Serializers.LONG);
+		this.registerReader(FLOAT_ID, Serializers.FLOAT);
+		this.registerReader(DOUBLE_ID, Serializers.DOUBLE);
+		this.registerReader(STRING_ID, Serializers.STRING);
 		this.registerReader(LIST_ID, new TagListReader());
 		
 	}
@@ -46,7 +47,7 @@ public final class TagReaderRegistry implements Serializer<Tag<?>>
 	
 	public <T> Tag<T> read(IByteReader r)
 	{
-		String name = Serializer.STRING.fromBytes(r);
+		String name = Serializers.STRING.fromBytes(r);
 		
 		byte id = r.read();
 		Serializer<T> s = null;
@@ -83,7 +84,7 @@ public final class TagReaderRegistry implements Serializer<Tag<?>>
 		
 		if (s != null)
 		{
-			length += Serializer.STRING.toBytes(w, tag.getName());
+			length += Serializers.STRING.toBytes(w, tag.getName());
 			length += s.toBytes(w, tag.getData());
 			
 		}

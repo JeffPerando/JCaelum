@@ -14,9 +14,10 @@ import com.elusivehawk.engine.util.TextParser;
  */
 public class Shader extends Asset
 {
-	protected final GLEnumShader gltype;
-	protected final String source;
-	protected int[] ids = new int[2];
+	public final GLEnumShader gltype;
+	public final String source;
+	
+	protected int glId = 0;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public Shader(File file, GLEnumShader type)
@@ -26,27 +27,19 @@ public class Shader extends Asset
 		gltype = type;
 		source = TextParser.concat(TextParser.read(file), "\n", "", null);
 		
-		ids[1] = type.ordinal();
-		
 	}
 	
-	public String getSource()
+	public int getGLId()
 	{
-		return this.source;
-	}
-	
-	@Override
-	public int[] getIds()
-	{
-		return this.ids;
+		return this.glId;
 	}
 	
 	@Override
 	protected boolean finishAsset()
 	{
-		this.ids[0] = RenderHelper.loadShader(this.source, this.gltype);
+		this.glId = RenderHelper.loadShader(this.source, this.gltype);
 		
-		return this.ids[0] != 0;
+		return this.glId != 0;
 	}
 	
 }

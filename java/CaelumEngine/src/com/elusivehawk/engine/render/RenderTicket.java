@@ -230,7 +230,7 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 		return this.frame;
 	}*/
 	
-	public Asset getTexture()
+	public Texture getTexture()
 	{
 		return this.tex;
 	}
