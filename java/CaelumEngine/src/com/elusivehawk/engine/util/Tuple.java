@@ -7,13 +7,13 @@ package com.elusivehawk.engine.util;
  * 
  * @author Elusivehawk
  */
-public class Tuple<T, E>
+public class Tuple<O, T>
 {
-	public T one;
-	public E two;
+	public O one;
+	public T two;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Tuple(T first, E second)
+	public Tuple(O first, T second)
 	{
 		one = first;
 		two = second;

@@ -76,7 +76,7 @@ public class Vector implements IMathObject<Float>
 	@Override
 	public Float get(int pos)
 	{
-		return this.nums[pos];
+		return MathHelper.bounds(pos, 0, this.getSize() - 1) ? this.nums[pos] : 0f;
 	}
 	
 	@Override
@@ -183,6 +183,26 @@ public class Vector implements IMathObject<Float>
 		
 	}
 	
+	@Override
+	public String toString()
+	{
+		StringBuilder b = new StringBuilder(10);
+		
+		b.append(this.getName() == null ? "vector" : this.getName());
+		b.append(":[");
+		
+		for (int c = 0; c < 4; c++)
+		{
+			b.append(this.get(c));
+			if (c < 3) b.append(", ");
+			
+		}
+		
+		b.append("]");
+		
+		return b.toString();
+	}
+	
 	public void registerListener(IVectorListener veclis)
 	{
 		if (this.listeners == null)
@@ -233,28 +253,32 @@ public class Vector implements IMathObject<Float>
 		return this.name;
 	}
 	
-	@Override
-	public String toString()
+	public Vector cross(Vector other)
 	{
-		StringBuilder b = new StringBuilder(10);
+		return MathHelper.cross(this, other);
+	}
+	
+	public float dot(Vector other)
+	{
+		return MathHelper.dot(this, other);
+	}
+	
+	public float length()
+	{
+		return MathHelper.length(this);
+	}
+	
+	public Vector scale(float f, boolean local)
+	{
+		Vector ret = local ? this : new Vector(this);
 		
-		b.append(this.getName() == null ? "vector" : this.getName());
-		b.append(":[");
-		
-		Float num = null;
-		
-		for (int c = 0; c < 4; c++)
+		for (int c = 0; c < this.getSize(); c++)
 		{
-			num = c < this.getSize() ? this.get(c) : null;
-			
-			b.append(num == null ? "0" : num.toString());
-			if (c < 3) b.append(", ");
+			ret.set(c, ret.get(c) * f);
 			
 		}
 		
-		b.append("]");
-		
-		return b.toString();
+		return ret;
 	}
 	
 }

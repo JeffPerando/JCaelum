@@ -42,10 +42,10 @@ public final class CaelumEngine
 	private ILog log = new GameLog();
 	private IGameEnvironment env = null;
 	private IRenderEnvironment renv = null;
+	private JsonObject envConfig = null;
 	
 	private Game game = null;
 	private AssetManager assets = null;
-	private JsonObject envConfig = null;
 	
 	private CaelumEngine(){}
 	
@@ -98,13 +98,13 @@ public final class CaelumEngine
 	
 	public static void flipScreen(boolean flip)
 	{
-		if (instance().game == null)
+		if (game() == null)
 		{
 			return;
 		}
 		
 		((ThreadGameRender)instance().threads.get(EnumEngineFeature.RENDER)).flipScreen(flip);
-		instance().game.onScreenFlipped(flip);
+		game().onScreenFlipped(flip);
 		
 	}
 	
@@ -145,9 +145,14 @@ public final class CaelumEngine
 		
 		IGameEnvironment env = null;
 		Class<?> clazz = null;
-		String cl = strs.get("class");
+		String cl = strs.get("env");
 		
-		if (cl != null)
+		if (cl == null)
+		{
+			clazz = this.loadEnvironmentFromJson();
+			
+		}
+		else
 		{
 			try
 			{
@@ -155,11 +160,6 @@ public final class CaelumEngine
 				
 			}
 			catch (Exception e){}
-			
-		}
-		else
-		{
-			clazz = this.loadEnvironmentFromJson();
 			
 		}
 		
