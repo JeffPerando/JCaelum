@@ -11,6 +11,7 @@ import java.nio.LongBuffer;
 import java.nio.ShortBuffer;
 import java.util.Collection;
 import com.elusivehawk.engine.util.io.IByteReader;
+import com.elusivehawk.engine.util.storage.Buffer;
 
 /**
  * 

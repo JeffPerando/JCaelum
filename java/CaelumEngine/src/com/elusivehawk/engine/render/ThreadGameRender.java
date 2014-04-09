@@ -9,8 +9,8 @@ import com.elusivehawk.engine.core.IContext;
 import com.elusivehawk.engine.core.IGameStateListener;
 import com.elusivehawk.engine.core.IThreadContext;
 import com.elusivehawk.engine.render.opengl.GLConst;
-import com.elusivehawk.engine.util.SemiFinalStorage;
 import com.elusivehawk.engine.util.ThreadTimed;
+import com.elusivehawk.engine.util.storage.SemiFinalStorage;
 
 /**
  * 

@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
-import com.elusivehawk.engine.util.SyncList;
+import com.elusivehawk.engine.util.storage.SyncList;
 
 /**
  * 

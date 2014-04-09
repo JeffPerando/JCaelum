@@ -5,7 +5,7 @@ import org.lwjgl.input.Mouse;
 import com.elusivehawk.engine.core.EnumInputType;
 import com.elusivehawk.engine.core.Input;
 import com.elusivehawk.engine.core.InputConst;
-import com.elusivehawk.engine.util.DirtableStorage;
+import com.elusivehawk.engine.util.storage.DirtableStorage;
 
 /**
  * 

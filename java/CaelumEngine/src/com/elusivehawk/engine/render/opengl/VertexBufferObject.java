@@ -6,8 +6,8 @@ import java.nio.IntBuffer;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
-import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.BufferHelper;
+import com.elusivehawk.engine.util.storage.Buffer;
 
 /**
  * 

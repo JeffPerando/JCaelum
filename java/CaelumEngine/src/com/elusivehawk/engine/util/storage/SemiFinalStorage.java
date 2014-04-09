@@ -1,5 +1,5 @@
 
-package com.elusivehawk.engine.util;
+package com.elusivehawk.engine.util.storage;
 
 /**
  * 
@@ -71,6 +71,16 @@ public class SemiFinalStorage<T> extends DirtableStorage<T>
 	public int getChangeCount()
 	{
 		return this.count;
+	}
+	
+	public static <T> SemiFinalStorage<T> create(T obj)
+	{
+		return new SemiFinalStorage<T>(obj);
+	}
+	
+	public static <T> SemiFinalStorage<T> create(T obj, int c)
+	{
+		return new SemiFinalStorage<T>(obj, c);
 	}
 	
 	public static interface IStorageListener<T>

@@ -10,13 +10,15 @@ import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.render.RenderContext;
+import com.elusivehawk.engine.render.RenderException;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.VertexBufferObject;
 import com.elusivehawk.engine.util.BufferHelper;
-import com.elusivehawk.engine.util.SemiFinalStorage;
-import com.elusivehawk.engine.util.SemiFinalStorage.IStorageListener;
-import com.elusivehawk.engine.util.Tuple;
+import com.elusivehawk.engine.util.storage.Pair;
+import com.elusivehawk.engine.util.storage.SemiFinalStorage;
+import com.elusivehawk.engine.util.storage.SemiFinalStorage.IStorageListener;
+import com.elusivehawk.engine.util.storage.Tuple;
 import com.google.common.collect.Lists;
 
 /**
@@ -25,32 +27,33 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-@Deprecated
 @SuppressWarnings({"rawtypes", "unchecked"})
-public class Model implements IStorageListener
+public class Tessellator implements IStorageListener
 {
+	@Deprecated
 	public final SemiFinalStorage<Integer> indiceCount = new SemiFinalStorage<Integer>(0, this);
-	public final SemiFinalStorage<VertexBufferObject> finBuf = new SemiFinalStorage<VertexBufferObject>(null, this);
-	public final SemiFinalStorage<VertexBufferObject> indiceBuf = new SemiFinalStorage<VertexBufferObject>(null, this);
+	@Deprecated
+	public final SemiFinalStorage<VertexBufferObject> finBuf = new SemiFinalStorage<VertexBufferObject>(null, this),
+		indiceBuf = new SemiFinalStorage<VertexBufferObject>(null, this);
 	
-	private boolean finished = false;
 	private List<Vector> polys = Lists.newArrayList();
 	private List<Vector> texOffs = Lists.newArrayList();
 	private List<Vector> norms = Lists.newArrayList();
 	private int glMode = Integer.MIN_VALUE;
 	private int pointCount = 0, oldPointCount = 0;
 	private HashMap<Integer, Tuple<Integer, Integer>> arrays = new HashMap<Integer, Tuple<Integer, Integer>>();
+	private Pair<VertexBufferObject> fin = null;
 	
-	public void finish()
+	public Pair<VertexBufferObject> finish()
 	{
-		if (this.finished)
+		if (this.isFinished())
 		{
-			return;
+			return this.fin;
 		}
 		
 		if (this.polys.size() == 0)
 		{
-			throw new RuntimeException("You forgot to load polygons!");
+			throw new RenderException("You forgot to load polygons!");
 			
 		}
 		
@@ -59,8 +62,6 @@ public class Model implements IStorageListener
 			this.end();
 			
 		}
-		
-		this.finished = true;
 		
 		List<Vector> vecs = Lists.newArrayList();
 		List<Integer> indiceList = Lists.newArrayList();;
@@ -129,11 +130,14 @@ public class Model implements IStorageListener
 		
 		this.indiceCount.set(this.pointCount);
 		
+		this.fin = Pair.createPair(this.finBuf.get(), this.indiceBuf.get());
+		
+		return this.fin;
 	}
 	
 	public final void begin(int gl)
 	{
-		if (this.finished)
+		if (this.isFinished())
 		{
 			return;
 		}
@@ -163,7 +167,7 @@ public class Model implements IStorageListener
 	
 	public final void end()
 	{
-		if (this.finished)
+		if (this.isFinished())
 		{
 			return;
 		}
@@ -207,7 +211,7 @@ public class Model implements IStorageListener
 	
 	public final void vertex(float x, float y, float z)
 	{
-		if (this.finished)
+		if (this.isFinished())
 		{
 			return;
 		}
@@ -218,7 +222,7 @@ public class Model implements IStorageListener
 	
 	public final void vertex(Vector vec)
 	{
-		if (this.finished)
+		if (this.isFinished())
 		{
 			return;
 		}
@@ -240,7 +244,7 @@ public class Model implements IStorageListener
 	
 	public final void normal(Vector norm)
 	{
-		if (this.finished)
+		if (this.isFinished())
 		{
 			return;
 		}
@@ -251,7 +255,7 @@ public class Model implements IStorageListener
 	
 	public final void texOff(float x, float y)
 	{
-		if (this.finished)
+		if (this.isFinished())
 		{
 			return;
 		}
@@ -267,7 +271,7 @@ public class Model implements IStorageListener
 	
 	public boolean isFinished()
 	{
-		return this.finished;
+		return this.fin != null;
 	}
 	
 	@Override

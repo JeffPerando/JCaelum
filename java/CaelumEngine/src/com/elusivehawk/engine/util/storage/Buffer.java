@@ -1,11 +1,12 @@
 
-package com.elusivehawk.engine.util;
+package com.elusivehawk.engine.util.storage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import com.elusivehawk.engine.util.IDirty;
 import com.google.common.collect.Lists;
 
 /**

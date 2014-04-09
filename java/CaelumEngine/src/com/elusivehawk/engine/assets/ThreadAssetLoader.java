@@ -7,7 +7,7 @@ import java.util.List;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.util.ThreadStoppable;
-import com.elusivehawk.engine.util.Tuple;
+import com.elusivehawk.engine.util.storage.Tuple;
 import com.google.common.collect.Lists;
 
 /**

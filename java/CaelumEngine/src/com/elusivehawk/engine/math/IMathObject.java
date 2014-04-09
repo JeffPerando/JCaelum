@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.math;
 
-import com.elusivehawk.engine.util.IStorable;
+import com.elusivehawk.engine.util.storage.IStorable;
 
 /**
  * 

@@ -15,7 +15,7 @@ import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.RenderTicket;
-import com.elusivehawk.engine.render.old.Model;
+import com.elusivehawk.engine.render.old.Tessellator;
 import com.elusivehawk.engine.util.ArrayHelper;
 
 /**
@@ -241,7 +241,7 @@ public class GLProgram implements IGLBindable, IAssetReceiver
 	}
 	
 	@Deprecated
-	public void attachModel(Model m)
+	public void attachModel(Tessellator m)
 	{
 		this.attachVBO(m.finBuf.get(), Arrays.asList(0, 1, 2));
 		this.attachVBO(m.indiceBuf.get(), null);

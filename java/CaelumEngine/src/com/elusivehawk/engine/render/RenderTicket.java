@@ -10,7 +10,7 @@ import com.elusivehawk.engine.assets.Texture;
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.MatrixHelper;
 import com.elusivehawk.engine.math.Vector;
-import com.elusivehawk.engine.render.old.Model;
+import com.elusivehawk.engine.render.old.Tessellator;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBufferObject;
@@ -19,14 +19,14 @@ import com.elusivehawk.engine.util.IDirty;
 
 /**
  * 
- * Used to render static {@link Model}s with non-static information (i.e. rotation)
+ * Used to render static {@link Tessellator}s with non-static information (i.e. rotation)
  * 
  * @author Elusivehawk
  */
 public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 {
 	protected final HashMap<EnumVectorType, Vector> vecs = new HashMap<EnumVectorType, Vector>();
-	protected final Model m;
+	protected final Tessellator m;
 	protected final GLProgram p;
 	protected final VertexBufferObject vbo;
 	protected final FloatBuffer buf;
@@ -36,14 +36,14 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 	//protected IModelAnimation anim = null, lastAnim = null;
 	protected Texture tex;
 	
-	public RenderTicket(Model model)
+	public RenderTicket(Tessellator model)
 	{
 		this(new GLProgram(), model);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public RenderTicket(GLProgram program, Model model)
+	public RenderTicket(GLProgram program, Tessellator model)
 	{
 		assert program != null;
 		assert model != null;
@@ -215,7 +215,7 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 		return this.buf;
 	}
 	
-	public Model getModel()
+	public Tessellator getModel()
 	{
 		return this.m;
 	}

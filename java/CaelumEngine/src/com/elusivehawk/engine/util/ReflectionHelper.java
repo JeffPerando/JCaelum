@@ -15,6 +15,7 @@ import java.util.TreeSet;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import com.elusivehawk.engine.util.storage.Tuple;
 
 /**
  * 

@@ -1,5 +1,7 @@
 
-package com.elusivehawk.engine.util;
+package com.elusivehawk.engine.util.storage;
+
+import com.elusivehawk.engine.util.IDirty;
 
 /**
  * 

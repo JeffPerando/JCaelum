@@ -2,8 +2,8 @@
 package com.elusivehawk.engine.math;
 
 import java.nio.FloatBuffer;
-import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.BufferHelper;
+import com.elusivehawk.engine.util.storage.Buffer;
 
 /**
  * 

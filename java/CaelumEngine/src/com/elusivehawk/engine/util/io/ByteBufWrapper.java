@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.util.io;
 
-import com.elusivehawk.engine.util.Buffer;
+import com.elusivehawk.engine.util.storage.Buffer;
 
 /**
  * 

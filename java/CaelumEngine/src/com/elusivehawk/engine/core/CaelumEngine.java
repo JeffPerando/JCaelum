@@ -19,7 +19,7 @@ import com.elusivehawk.engine.render.ThreadGameRender;
 import com.elusivehawk.engine.util.FileHelper;
 import com.elusivehawk.engine.util.ReflectionHelper;
 import com.elusivehawk.engine.util.ThreadStoppable;
-import com.elusivehawk.engine.util.Tuple;
+import com.elusivehawk.engine.util.storage.Tuple;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -36,8 +36,8 @@ public final class CaelumEngine
 	public static final boolean DEBUG = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().contains("-agentlib:jdwp");
 	public static final String VERSION = "1.0.0";
 	
-	private final Map<EnumEngineFeature, ThreadStoppable> threads = Maps.newHashMap();
-	private final Map<EnumInputType, Input> inputs = Maps.newHashMap();
+	private final Map<EnumEngineFeature, ThreadStoppable> threads = Maps.newEnumMap(EnumEngineFeature.class);
+	private final Map<EnumInputType, Input> inputs = Maps.newEnumMap(EnumInputType.class);
 	
 	private ILog log = new GameLog();
 	private IGameEnvironment env = null;

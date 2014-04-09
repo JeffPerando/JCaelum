@@ -12,13 +12,14 @@ import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLEnumShader;
+import com.elusivehawk.engine.render.opengl.GLException;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
-import com.elusivehawk.engine.util.Buffer;
 import com.elusivehawk.engine.util.BufferHelper;
 import com.elusivehawk.engine.util.TextParser;
 import com.elusivehawk.engine.util.io.ByteBuf;
+import com.elusivehawk.engine.util.storage.Buffer;
 
 /**
  * 
@@ -212,7 +213,7 @@ public final class RenderHelper
 		
 	}
 	
-	public static void checkForGLError(RenderContext context) throws RuntimeException
+	public static void checkForGLError(RenderContext context) throws GLException
 	{
 		int err = context.getGL1().glGetError();
 		
@@ -221,7 +222,7 @@ public final class RenderHelper
 			return;
 		}
 		
-		throw new RuntimeException(String.format("Caught OpenGL error: %s",err)/*GLU.gluErrorString(err)*/);//TODO Fix after conversion to enums.
+		throw new GLException(err);//GLU.gluErrorString(err) TODO Fix after conversion to enums.
 	}
 	
 	public static Buffer<Float> mixColors(Color a, Color b)

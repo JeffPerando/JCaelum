@@ -2,7 +2,7 @@
 package com.elusivehawk.engine.assets;
 
 import com.elusivehawk.engine.render.ILegibleImage;
-import com.elusivehawk.engine.util.Buffer;
+import com.elusivehawk.engine.util.storage.Buffer;
 
 /**
  * 

@@ -6,7 +6,7 @@ import java.nio.channels.SocketChannel;
 import java.util.List;
 import java.util.UUID;
 import com.elusivehawk.engine.util.ArrayHelper;
-import com.elusivehawk.engine.util.SemiFinalStorage;
+import com.elusivehawk.engine.util.storage.SemiFinalStorage;
 import com.google.common.collect.ImmutableList;
 
 /**
