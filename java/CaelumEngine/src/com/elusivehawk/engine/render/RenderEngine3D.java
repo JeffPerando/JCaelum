@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
-import com.elusivehawk.engine.util.storage.Tuple;
+import com.elusivehawk.engine.util.storage.Pair;
 
 /**
  * 
@@ -124,7 +124,7 @@ public class RenderEngine3D implements IRenderEngine
 					
 				}
 				
-				for (Entry<Integer, Tuple<Integer, Integer>> entry : m.getOffsets().entrySet())
+				for (Entry<Integer, Pair<Integer>> entry : m.getOffsets().entrySet())
 				{
 					context.getGL1().glDrawElements(entry.getKey(), entry.getValue().one, GLConst.GL_UNSIGNED_INT, entry.getValue().two);
 					

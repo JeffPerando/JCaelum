@@ -9,8 +9,10 @@ import com.elusivehawk.engine.assets.Mesh;
 import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.util.BufferHelper;
 import com.elusivehawk.engine.util.storage.Buffer;
+import com.elusivehawk.engine.util.storage.Pair;
 import com.elusivehawk.engine.util.storage.Tuple;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * 
@@ -31,7 +33,7 @@ public final class Tessellator
 	private int pointCount = 0, oldPointCount = 0;
 	private boolean working = false;
 	
-	private HashMap<Integer, Tuple<Integer, Integer>> arrays = new HashMap<Integer, Tuple<Integer, Integer>>();
+	private HashMap<Integer, Pair<Integer>> arrays = Maps.newHashMap();
 	
 	public void begin(int gl) throws RenderException
 	{
@@ -157,9 +159,7 @@ public final class Tessellator
 			
 		}
 		
-		Tuple<Integer, Integer> t = Tuple.create(this.oldPointCount, this.pointCount);
-		
-		this.arrays.put(this.glMode, t);
+		this.arrays.put(this.glMode, Pair.createPair(this.oldPointCount, this.pointCount));
 		
 		this.glMode = -1;
 		this.working = false;
@@ -218,7 +218,7 @@ public final class Tessellator
 		
 	}
 	
-	public HashMap<Integer, Tuple<Integer, Integer>> getOffsets()
+	public HashMap<Integer, Pair<Integer>> getOffsets()
 	{
 		return this.arrays;
 	}
