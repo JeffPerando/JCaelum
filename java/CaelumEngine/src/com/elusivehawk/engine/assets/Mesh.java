@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.assets;
 
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.util.storage.ImmutableArray;
 
 /**
@@ -11,11 +12,11 @@ import com.elusivehawk.engine.util.storage.ImmutableArray;
  */
 public class Mesh extends Asset
 {
-	public final ImmutableArray<Float> points;
+	public final ImmutableArray<Vector> points;
 	public final ImmutableArray<Integer> indices;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Mesh(String filename, Float[] p, Integer[] in)
+	public Mesh(String filename, Vector[] p, Integer[] in)
 	{
 		super(filename);
 		points = ImmutableArray.create(p);

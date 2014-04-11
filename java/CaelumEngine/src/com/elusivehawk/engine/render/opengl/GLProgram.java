@@ -15,7 +15,7 @@ import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.RenderTicket;
-import com.elusivehawk.engine.render.old.Tessellator;
+import com.elusivehawk.engine.render.Tessellator;
 import com.elusivehawk.engine.util.ArrayHelper;
 
 /**
@@ -28,7 +28,7 @@ public class GLProgram implements IGLBindable, IAssetReceiver
 {
 	private final int id, vba;
 	private final Shader[] shaders = new Shader[GLEnumShader.values().length];
-	private HashMap<VertexBufferObject, List<Integer>> vbos = new HashMap<VertexBufferObject, List<Integer>>();
+	private HashMap<VertexBuffer, List<Integer>> vbos = new HashMap<VertexBuffer, List<Integer>>();
 	private boolean bound = false, relink = true;
 	
 	@SuppressWarnings("unqualified-field-access")
@@ -108,7 +108,7 @@ public class GLProgram implements IGLBindable, IAssetReceiver
 		
 		if (!this.vbos.isEmpty())
 		{
-			for (Entry<VertexBufferObject, List<Integer>> entry : this.vbos.entrySet())
+			for (Entry<VertexBuffer, List<Integer>> entry : this.vbos.entrySet())
 			{
 				context.getGL1().glBindBuffer(entry.getKey());
 				
@@ -141,7 +141,7 @@ public class GLProgram implements IGLBindable, IAssetReceiver
 		
 		if (!this.vbos.isEmpty())
 		{
-			for (Entry<VertexBufferObject, List<Integer>> entry : this.vbos.entrySet())
+			for (Entry<VertexBuffer, List<Integer>> entry : this.vbos.entrySet())
 			{
 				if (entry.getValue() != null)
 				{
@@ -206,7 +206,7 @@ public class GLProgram implements IGLBindable, IAssetReceiver
 		
 	}
 	
-	public void attachVBO(VertexBufferObject vbo, List<Integer> attribs)
+	public void attachVBO(VertexBuffer vbo, List<Integer> attribs)
 	{
 		if (attribs == null || attribs.size() == 0)
 		{
@@ -217,7 +217,7 @@ public class GLProgram implements IGLBindable, IAssetReceiver
 		
 		List<Integer> valid = new ArrayList<Integer>(attribs);
 		
-		for (Entry<VertexBufferObject, List<Integer>> entry : this.vbos.entrySet())
+		for (Entry<VertexBuffer, List<Integer>> entry : this.vbos.entrySet())
 		{
 			for (int a : attribs)
 			{
@@ -243,8 +243,8 @@ public class GLProgram implements IGLBindable, IAssetReceiver
 	@Deprecated
 	public void attachModel(Tessellator m)
 	{
-		this.attachVBO(m.finBuf.get(), Arrays.asList(0, 1, 2));
-		this.attachVBO(m.indiceBuf.get(), null);
+		this.attachVBO(new VertexBuffer(GLConst.GL_ARRAY_BUFFER, m.getPolygons(), GLConst.GL_STREAM_DRAW), Arrays.asList(0, 1, 2));
+		this.attachVBO(new VertexBuffer(GLConst.GL_ARRAY_BUFFER, m.getIndices(), GLConst.GL_STATIC_DRAW), null);
 		
 	}
 	

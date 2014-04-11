@@ -30,15 +30,15 @@ public class ImmutableArray<T> implements Iterable<T>
 		return this.array[i];
 	}
 	
-	public static <T> ImmutableArray<T> create(T[] array)
-	{
-		return new ImmutableArray<T>(array);
-	}
-	
 	@Override
 	public Iterator<T> iterator()
 	{
 		return new Buffer<T>(this.array);
+	}
+	
+	public static <T> ImmutableArray<T> create(T[] array)
+	{
+		return new ImmutableArray<T>(array);
 	}
 	
 }

@@ -3,7 +3,7 @@ package com.elusivehawk.engine.render;
 
 import java.util.List;
 import com.elusivehawk.engine.assets.Mesh;
-import com.elusivehawk.engine.render.opengl.VertexBufferObject;
+import com.elusivehawk.engine.render.opengl.VertexBuffer;
 import com.elusivehawk.engine.util.storage.Pair;
 import com.google.common.collect.Lists;
 
@@ -16,7 +16,9 @@ import com.google.common.collect.Lists;
 public class Model
 {
 	protected final String name;
+	
 	protected ModelSection sec = null;
+	protected Pair<VertexBuffer> fin = null;
 	protected List<ModelSection> sections = Lists.newArrayList();
 	
 	@SuppressWarnings("unqualified-field-access")
@@ -63,35 +65,9 @@ public class Model
 		throw new RenderException(String.format("Cannot add mesh to model section! Model: %s", this.name));
 	}
 	
-	public void finish() throws RenderException
+	public Pair<VertexBuffer> finish() throws RenderException
 	{
-		
-		
-	}
-	
-	protected static final class ModelSection
-	{
-		public final String name;
-		private final List<Mesh> meshes = Lists.newArrayList();
-		
-		@SuppressWarnings("unqualified-field-access")
-		ModelSection(String title)
-		{
-			name = title;
-			
-		}
-		
-		public void addMesh(Mesh m)
-		{
-			this.meshes.add(m);
-			
-		}
-		
-		public Pair<VertexBufferObject> compile()
-		{
-			return null;//FIXME
-		}
-		
+		return null;//FIXME
 	}
 	
 }

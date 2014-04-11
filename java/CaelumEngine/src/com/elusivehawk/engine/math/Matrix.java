@@ -262,4 +262,10 @@ public class Matrix implements IMathObject<Float>
 		return ret;
 	}
 	
+	@Override
+	public Float[] multiget(int bitmask)
+	{
+		throw new UnsupportedOperationException("Matrices do not currently support multiget().");
+	}
+	
 }

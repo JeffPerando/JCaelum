@@ -15,12 +15,12 @@ import com.elusivehawk.engine.util.storage.Buffer;
  * 
  * @author Elusivehawk
  */
-public class VertexBufferObject implements IGLBindable
+public class VertexBuffer implements IGLBindable
 {
 	public final int id, t, loadMode;
 	
 	@SuppressWarnings("unqualified-field-access")
-	private VertexBufferObject(int vbo, int target, int mode)
+	private VertexBuffer(int vbo, int target, int mode)
 	{
 		RenderContext context = CaelumEngine.renderContext();
 		
@@ -32,26 +32,26 @@ public class VertexBufferObject implements IGLBindable
 		
 	}
 	
-	public VertexBufferObject(int target, FloatBuffer buf, int mode)
+	public VertexBuffer(int target, FloatBuffer buf, int mode)
 	{
 		this(RenderHelper.gl1().glGenBuffers(), target, buf, mode);
 		
 	}
 	
-	public VertexBufferObject(int target, IntBuffer buf, int mode)
+	public VertexBuffer(int target, IntBuffer buf, int mode)
 	{
 		this(RenderHelper.gl1().glGenBuffers(), target, buf, mode);
 		
 	}
 	
-	public VertexBufferObject(int vbo, int target, FloatBuffer buf, int mode)
+	public VertexBuffer(int vbo, int target, FloatBuffer buf, int mode)
 	{
 		this(vbo, target, mode);
 		loadData(buf);
 		
 	}
 	
-	public VertexBufferObject(int vbo, int target, IntBuffer buf, int mode)
+	public VertexBuffer(int vbo, int target, IntBuffer buf, int mode)
 	{
 		this(vbo, target, mode);
 		loadData(buf);

@@ -30,6 +30,8 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 	{
 		if (!this.initiated)
 		{
+			this.stopThread();
+			
 			return;
 		}
 		

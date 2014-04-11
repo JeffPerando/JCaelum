@@ -20,8 +20,14 @@ public class ArrayHelper
 			return false;
 		}
 		
-		arr[i] = obj;
+		if (arr[i] != null)
+		{
+			System.arraycopy(arr, i, arr, i + 1, sizeof(i, arr));
+			
+		}
 		
+		arr[i] = obj;
+				
 		return true;
 	}
 	
@@ -83,6 +89,28 @@ public class ArrayHelper
 		}
 		
 		return true;
+	}
+	
+	public static int sizeof(Object[] arr)
+	{
+		return sizeof(0, arr);
+	}
+	
+	public static int sizeof(int start, Object[] arr)
+	{
+		int ret = 0;
+		
+		for (int c = start; c < arr.length; c++)
+		{
+			if (arr[c] != null)
+			{
+				ret++;
+				
+			}
+			
+		}
+		
+		return ret;
 	}
 	
 }

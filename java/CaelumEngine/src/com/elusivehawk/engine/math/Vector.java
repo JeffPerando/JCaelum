@@ -18,6 +18,18 @@ public class Vector implements IMathObject<Float>
 	public static final int Z = 2;
 	public static final int W = 3;
 	
+	public static final int X_BITMASK = 0b0001;
+	public static final int Y_BITMASK = 0b0010;
+	public static final int Z_BITMASK = 0b0100;
+	public static final int W_BITMASK = 0b1000;
+	
+	public static final int[] BITMASKS = {X_BITMASK, Y_BITMASK, Z_BITMASK, W_BITMASK};
+	
+	public static final int XY =	X_BITMASK | Y_BITMASK;
+	public static final int XZ =	X_BITMASK | Z_BITMASK;
+	public static final int XYZ =	X_BITMASK | Y_BITMASK | Z_BITMASK;
+	public static final int XYZW =	X_BITMASK | Y_BITMASK | Z_BITMASK | W_BITMASK;
+	
 	public static final Vector X_AXIS = new Vector(1f, 0f, 0f);
 	public static final Vector Y_AXIS = new Vector(0f, 1f, 0f);
 	public static final Vector Z_AXIS = new Vector(0f, 0f, 1f);
@@ -77,6 +89,42 @@ public class Vector implements IMathObject<Float>
 	public Float get(int pos)
 	{
 		return MathHelper.bounds(pos, 0, this.getSize() - 1) ? this.nums[pos] : 0f;
+	}
+	
+	@Override
+	public Float[] multiget(int bitmask)
+	{
+		int count = 0;
+		
+		for (int bits : BITMASKS)
+		{
+			if ((bitmask & bits) != 0)
+			{
+				count++;
+				
+			}
+			
+		}
+		
+		if (count == 0)
+		{
+			return new Float[0];
+		}
+		
+		count = 0;
+		Float[] ret = new Float[count];
+		
+		for (int c = 0; c < BITMASKS.length; c++)
+		{
+			if ((bitmask & BITMASKS[c]) != 0)
+			{
+				ret[count++] = this.get(c);
+				
+			}
+			
+		}
+		
+		return ret;
 	}
 	
 	@Override

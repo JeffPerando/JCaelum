@@ -13,7 +13,7 @@ import com.elusivehawk.engine.render.ILogicalRender;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
-import com.elusivehawk.engine.render.opengl.VertexBufferObject;
+import com.elusivehawk.engine.render.opengl.VertexBuffer;
 import com.elusivehawk.engine.util.BufferHelper;
 
 /**
@@ -29,7 +29,7 @@ public class ParticleScene implements ILogicalRender
 	
 	protected final FloatBuffer buf;
 	protected final List<IParticle> particles;
-	protected final VertexBufferObject vbo;
+	protected final VertexBuffer vbo;
 	protected final int particleCount;
 	protected final GLProgram p;
 	
@@ -41,7 +41,7 @@ public class ParticleScene implements ILogicalRender
 		particleCount = maxParticles;
 		
 		p = new GLProgram(); //TODO Create default particle shaders.
-		vbo = new VertexBufferObject(GLConst.GL_ARRAY_BUFFER, buf, GLConst.GL_STREAM_DRAW);
+		vbo = new VertexBuffer(GLConst.GL_ARRAY_BUFFER, buf, GLConst.GL_STREAM_DRAW);
 		
 		RenderContext context = CaelumEngine.renderContext();
 		

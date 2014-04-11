@@ -4,7 +4,6 @@ package com.elusivehawk.engine.render;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
-import com.elusivehawk.engine.render.old.Tessellator;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.util.storage.Tuple;

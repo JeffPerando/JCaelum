@@ -393,6 +393,7 @@ public final class CaelumEngine
 			
 		}
 		
+		this.threads.clear();
 		this.inputs.clear();
 		
 		this.game.onShutdown();

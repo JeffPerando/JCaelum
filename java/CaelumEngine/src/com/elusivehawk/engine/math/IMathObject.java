@@ -15,6 +15,8 @@ public interface IMathObject<T extends Number> extends IStorable<T>
 	
 	public T get(int pos);
 	
+	public T[] multiget(int bitmask);
+	
 	public void set(int pos, T num);
 	
 	public IMathObject<T> set(IMathObject<T> obj);

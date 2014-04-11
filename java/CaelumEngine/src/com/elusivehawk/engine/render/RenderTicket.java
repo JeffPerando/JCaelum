@@ -10,10 +10,9 @@ import com.elusivehawk.engine.assets.Texture;
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.MatrixHelper;
 import com.elusivehawk.engine.math.Vector;
-import com.elusivehawk.engine.render.old.Tessellator;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
-import com.elusivehawk.engine.render.opengl.VertexBufferObject;
+import com.elusivehawk.engine.render.opengl.VertexBuffer;
 import com.elusivehawk.engine.util.BufferHelper;
 import com.elusivehawk.engine.util.IDirty;
 
@@ -28,7 +27,7 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 	protected final HashMap<EnumVectorType, Vector> vecs = new HashMap<EnumVectorType, Vector>();
 	protected final Tessellator m;
 	protected final GLProgram p;
-	protected final VertexBufferObject vbo;
+	protected final VertexBuffer vbo;
 	protected final FloatBuffer buf;
 	
 	protected boolean dirty = false, zBuffer = true;//, animPause = false;
@@ -50,8 +49,8 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 		
 		p = program;
 		m = model;
-		buf = BufferHelper.createFloatBuffer(m.indiceCount.get() * 3);
-		vbo = new VertexBufferObject(GLConst.GL_ARRAY_BUFFER, buf, GLConst.GL_STREAM_DRAW);
+		buf = BufferHelper.createFloatBuffer(m.getPointCount() * 3);
+		vbo = new VertexBuffer(GLConst.GL_ARRAY_BUFFER, buf, GLConst.GL_STREAM_DRAW);
 		
 		p.attachRenderTicket(this);
 		
@@ -85,7 +84,7 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 	@Override
 	public boolean updateBeforeUse()
 	{
-		if (!this.m.isFinished())
+		if (this.m.isWorking())
 		{
 			return false;
 		}
@@ -220,7 +219,7 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 		return this.m;
 	}
 	
-	public VertexBufferObject getExtraVBO()
+	public VertexBuffer getExtraVBO()
 	{
 		return this.vbo;
 	}

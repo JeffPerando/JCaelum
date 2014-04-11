@@ -16,7 +16,7 @@ import com.elusivehawk.engine.render.Color;
 import com.elusivehawk.engine.render.EnumColorFilter;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.IGL1;
-import com.elusivehawk.engine.render.opengl.VertexBufferObject;
+import com.elusivehawk.engine.render.opengl.VertexBuffer;
 import com.elusivehawk.engine.util.BufferHelper;
 
 /**
@@ -42,7 +42,7 @@ public class OpenGL1 implements IGL1
 	}
 	
 	@Override
-	public void glBindBuffer(VertexBufferObject vbo)
+	public void glBindBuffer(VertexBuffer vbo)
 	{
 		this.glBindBuffer(vbo.t, vbo.id);
 		
@@ -175,7 +175,7 @@ public class OpenGL1 implements IGL1
 	}
 	
 	@Override
-	public void glDeleteBuffers(VertexBufferObject buffer)
+	public void glDeleteBuffers(VertexBuffer buffer)
 	{
 		this.glDeleteBuffers(buffer.id);
 		

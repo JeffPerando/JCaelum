@@ -1,6 +1,8 @@
 
 package com.elusivehawk.engine.math;
 
+import java.util.Random;
+
 /**
  * 
  * Convenience class for math functions.
@@ -10,6 +12,8 @@ package com.elusivehawk.engine.math;
 public final class MathHelper
 {
 	public static final float PI = 3.141592653589793238f;
+	
+	public static final Random RNG = new Random("Elusivehawk".hashCode());
 	
 	private MathHelper(){}
 	
@@ -110,7 +114,7 @@ public final class MathHelper
 	
 	public static int percent(int i, int max)
 	{
-		return (int)(((float) i / max) * 100);
+		return (int)(((float)i / max) * 100);
 	}
 	
 	public static float pow(float f, int pow)
@@ -137,6 +141,11 @@ public final class MathHelper
 		}
 		
 		return ret;
+	}
+	
+	public static boolean rollDice(float weight)
+	{
+		return weight > RNG.nextFloat();
 	}
 	
 	public static float square(float f)

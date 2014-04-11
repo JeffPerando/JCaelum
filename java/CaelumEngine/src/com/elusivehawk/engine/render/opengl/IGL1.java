@@ -18,7 +18,7 @@ public interface IGL1
 	
 	public void glActiveTexture(Texture texture);
 	
-	public void glBindBuffer(VertexBufferObject vbo);
+	public void glBindBuffer(VertexBuffer vbo);
 	
 	public void glBindBuffer(int target, int buffer);
 	
@@ -50,7 +50,7 @@ public interface IGL1
 	
 	public void glCullFace(int mode);
 	
-	public void glDeleteBuffers(VertexBufferObject buffer);
+	public void glDeleteBuffers(VertexBuffer buffer);
 	
 	public void glDeleteBuffers(int... buffer);
 	
