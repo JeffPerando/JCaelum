@@ -3,8 +3,10 @@ package com.elusivehawk.engine.render;
 
 import java.nio.FloatBuffer;
 import java.util.HashMap;
+import java.util.List;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
+import com.elusivehawk.engine.assets.Material;
 import com.elusivehawk.engine.assets.Shader;
 import com.elusivehawk.engine.assets.Texture;
 import com.elusivehawk.engine.math.Matrix;
@@ -15,6 +17,7 @@ import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
 import com.elusivehawk.engine.util.BufferHelper;
 import com.elusivehawk.engine.util.IDirty;
+import com.google.common.collect.Lists;
 
 /**
  * 
@@ -25,7 +28,7 @@ import com.elusivehawk.engine.util.IDirty;
 public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 {
 	protected final HashMap<EnumVectorType, Vector> vecs = new HashMap<EnumVectorType, Vector>();
-	protected final Tessellator m;
+	protected final Model m;
 	protected final GLProgram p;
 	protected final VertexBuffer vbo;
 	protected final FloatBuffer buf;
@@ -34,23 +37,30 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 	//protected int frame = 0;
 	//protected IModelAnimation anim = null, lastAnim = null;
 	protected Texture tex;
+	protected final List<Material> mats = Lists.newArrayListWithCapacity(RenderHelper.MATERIAL_CAP);
 	
-	public RenderTicket(Tessellator model)
+	public RenderTicket(Model mdl)
 	{
-		this(new GLProgram(), model);
+		this(new GLProgram(), mdl);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public RenderTicket(GLProgram program, Tessellator model)
+	public RenderTicket(GLProgram program, Model mdl)
 	{
 		assert program != null;
-		assert model != null;
+		assert mdl != null;
 		
 		p = program;
-		m = model;
-		buf = BufferHelper.createFloatBuffer(m.getPointCount() * 3);
+		m = mdl;
+		buf = BufferHelper.createFloatBuffer(m.getTotalPointCount() * 7);
 		vbo = new VertexBuffer(GLConst.GL_ARRAY_BUFFER, buf, GLConst.GL_STREAM_DRAW);
+		
+		if (!m.isFinished())
+		{
+			m.finish();
+			
+		}
 		
 		p.attachRenderTicket(this);
 		
@@ -84,11 +94,6 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 	@Override
 	public boolean updateBeforeUse()
 	{
-		if (this.m.isWorking())
-		{
-			return false;
-		}
-		
 		/*if (this.anim != null && !this.isAnimationPaused())
 		{
 			boolean usedBefore = this.anim == this.lastAnim;
@@ -136,7 +141,12 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 		}
 		else if (a instanceof Texture && this.tex == null)
 		{
-			this.tex = (Texture)a;
+			this.setTexture((Texture)a);
+			
+		}
+		else if (a instanceof Material)
+		{
+			this.addMaterials((Material)a);
 			
 		}
 		
@@ -173,6 +183,21 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 	public synchronized void setEnableZBuffer(boolean b)
 	{
 		this.zBuffer = b;
+		
+	}
+	
+	public synchronized void addMaterials(Material... materials)
+	{
+		for (Material mat : materials)
+		{
+			if (this.mats.size() == RenderHelper.MATERIAL_CAP)
+			{
+				return;
+			}
+			
+			this.mats.add(mat);
+			
+		}
 		
 	}
 	
@@ -214,7 +239,7 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 		return this.buf;
 	}
 	
-	public Tessellator getModel()
+	public Model getModel()
 	{
 		return this.m;
 	}

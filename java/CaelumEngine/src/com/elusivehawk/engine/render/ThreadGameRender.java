@@ -202,6 +202,13 @@ public class ThreadGameRender extends ThreadTimed implements IGameStateListener,
 	}
 	
 	@Override
+	public void handleException(Throwable e)
+	{
+		CaelumEngine.log().log(EnumLogType.ERROR, "Error caught during rendering: ", e);
+		
+	}
+	
+	@Override
 	public int getTargetUpdateCount()
 	{
 		return this.fps;

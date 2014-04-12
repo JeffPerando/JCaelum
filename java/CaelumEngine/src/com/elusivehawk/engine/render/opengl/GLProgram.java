@@ -12,10 +12,10 @@ import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.assets.Shader;
 import com.elusivehawk.engine.core.CaelumEngine;
+import com.elusivehawk.engine.render.Model;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.RenderTicket;
-import com.elusivehawk.engine.render.Tessellator;
 import com.elusivehawk.engine.util.ArrayHelper;
 
 /**
@@ -240,20 +240,21 @@ public class GLProgram implements IGLBindable, IAssetReceiver
 		
 	}
 	
-	@Deprecated
-	public void attachModel(Tessellator m)
+	public void attachModel(Model m)
 	{
-		this.attachVBO(new VertexBuffer(GLConst.GL_ARRAY_BUFFER, m.getPolygons(), GLConst.GL_STREAM_DRAW), Arrays.asList(0, 1, 2));
-		this.attachVBO(new VertexBuffer(GLConst.GL_ARRAY_BUFFER, m.getIndices(), GLConst.GL_STATIC_DRAW), null);
+		this.attachVBO(m.getVBOs().one, Arrays.asList(0, 1, 2));
+		this.attachVBO(m.getVBOs().two, null);
+		this.attachVBO(m.getVBOs().three, Arrays.asList(6));
 		
 	}
 	
 	public void attachRenderTicket(RenderTicket tkt)
 	{
 		this.attachModel(tkt.getModel());
+		
 		this.attachVBO(tkt.getExtraVBO(), Arrays.asList(3, 4, 5));
 		
-		RenderContext context = CaelumEngine.renderContext();
+		/*RenderContext context = CaelumEngine.renderContext();
 		
 		if (!this.bound && !this.bind(context))
 		{
@@ -266,7 +267,7 @@ public class GLProgram implements IGLBindable, IAssetReceiver
 		gl2.glVertexAttribPointer(4, 3, GLConst.GL_FLOAT, false, 3, tkt.getBuffer());
 		gl2.glVertexAttribPointer(5, 3, GLConst.GL_FLOAT, false, 6, tkt.getBuffer());
 		
-		this.unbind(context);
+		this.unbind(context);*/
 		
 	}
 	

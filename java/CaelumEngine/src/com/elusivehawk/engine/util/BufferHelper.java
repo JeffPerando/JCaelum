@@ -120,6 +120,29 @@ public final class BufferHelper
 		return ret;
 	}
 	
+	public static ByteBuffer makeByteBuffer(ByteBuffer... bufs)
+	{
+		int length = 0;
+		
+		for (ByteBuffer buf : bufs)
+		{
+			length += buf.remaining();
+			
+		}
+		
+		ByteBuffer ret = createByteBuffer(length);
+		
+		for (ByteBuffer buf : bufs)
+		{
+			ret.put(buf);
+			
+		}
+		
+		ret.flip();
+		
+		return ret;
+	}
+	
 	public static CharBuffer makeCharBuffer(char... data)
 	{
 		return makeCharBuffer(data.length, data);
@@ -152,6 +175,29 @@ public final class BufferHelper
 		for (int c = 0; c < count; c++)
 		{
 			ret.put(buf.get(c + offset));
+			
+		}
+		
+		ret.flip();
+		
+		return ret;
+	}
+	
+	public static CharBuffer makeCharBuffer(CharBuffer... bufs)
+	{
+		int length = 0;
+		
+		for (CharBuffer buf : bufs)
+		{
+			length += buf.remaining();
+			
+		}
+		
+		CharBuffer ret = createCharBuffer(length);
+		
+		for (CharBuffer buf : bufs)
+		{
+			ret.put(buf);
 			
 		}
 		
@@ -200,6 +246,29 @@ public final class BufferHelper
 		return ret;
 	}
 	
+	public static ShortBuffer makeShortBuffer(ShortBuffer... bufs)
+	{
+		int length = 0;
+		
+		for (ShortBuffer buf : bufs)
+		{
+			length += buf.remaining();
+			
+		}
+		
+		ShortBuffer ret = createShortBuffer(length);
+		
+		for (ShortBuffer buf : bufs)
+		{
+			ret.put(buf);
+			
+		}
+		
+		ret.flip();
+		
+		return ret;
+	}
+	
 	public static IntBuffer makeIntBuffer(int... data)
 	{
 		return makeIntBuffer(data.length, data);
@@ -232,6 +301,29 @@ public final class BufferHelper
 		for (int c = 0; c < count; c++)
 		{
 			ret.put(buf.get(c + offset));
+			
+		}
+		
+		ret.flip();
+		
+		return ret;
+	}
+	
+	public static IntBuffer makeIntBuffer(IntBuffer... bufs)
+	{
+		int length = 0;
+		
+		for (IntBuffer buf : bufs)
+		{
+			length += buf.remaining();
+			
+		}
+		
+		IntBuffer ret = createIntBuffer(length);
+		
+		for (IntBuffer buf : bufs)
+		{
+			ret.put(buf);
 			
 		}
 		
@@ -280,6 +372,29 @@ public final class BufferHelper
 		return ret;
 	}
 	
+	public static DoubleBuffer makeDoubleBuffer(DoubleBuffer... bufs)
+	{
+		int length = 0;
+		
+		for (DoubleBuffer buf : bufs)
+		{
+			length += buf.remaining();
+			
+		}
+		
+		DoubleBuffer ret = createDoubleBuffer(length);
+		
+		for (DoubleBuffer buf : bufs)
+		{
+			ret.put(buf);
+			
+		}
+		
+		ret.flip();
+		
+		return ret;
+	}
+	
 	public static FloatBuffer makeFloatBuffer(float... data)
 	{
 		return makeFloatBuffer(data.length, data);
@@ -320,6 +435,29 @@ public final class BufferHelper
 		return ret;
 	}
 	
+	public static FloatBuffer makeFloatBuffer(FloatBuffer... bufs)
+	{
+		int length = 0;
+		
+		for (FloatBuffer buf : bufs)
+		{
+			length += buf.remaining();
+			
+		}
+		
+		FloatBuffer ret = createFloatBuffer(length);
+		
+		for (FloatBuffer buf : bufs)
+		{
+			ret.put(buf);
+			
+		}
+		
+		ret.flip();
+		
+		return ret;
+	}
+	
 	public static LongBuffer makeLongBuffer(long... data)
 	{
 		return makeLongBuffer(data.length, data);
@@ -352,6 +490,29 @@ public final class BufferHelper
 		for (int c = 0; c < count; c++)
 		{
 			ret.put(buf.get(c + offset));
+			
+		}
+		
+		ret.flip();
+		
+		return ret;
+	}
+	
+	public static LongBuffer makeLongBuffer(LongBuffer... bufs)
+	{
+		int length = 0;
+		
+		for (LongBuffer buf : bufs)
+		{
+			length += buf.remaining();
+			
+		}
+		
+		LongBuffer ret = createLongBuffer(length);
+		
+		for (LongBuffer buf : bufs)
+		{
+			ret.put(buf);
 			
 		}
 		

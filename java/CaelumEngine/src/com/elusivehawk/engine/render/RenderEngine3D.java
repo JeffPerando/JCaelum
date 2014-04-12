@@ -3,10 +3,8 @@ package com.elusivehawk.engine.render;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map.Entry;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
-import com.elusivehawk.engine.util.storage.Pair;
 
 /**
  * 
@@ -64,7 +62,7 @@ public class RenderEngine3D implements IRenderEngine
 				}
 				
 				RenderTicket tkt = tickets.get(c);
-				Tessellator m = tkt.getModel();
+				Model m = tkt.getModel();
 				GLProgram p = tkt.getProgram();
 				
 				if (!p.bind(context))
@@ -124,11 +122,7 @@ public class RenderEngine3D implements IRenderEngine
 					
 				}
 				
-				for (Entry<Integer, Pair<Integer>> entry : m.getOffsets().entrySet())
-				{
-					context.getGL1().glDrawElements(entry.getKey(), entry.getValue().one, GLConst.GL_UNSIGNED_INT, entry.getValue().two);
-					
-				}
+				context.getGL1().glDrawElements(m.getDrawMode(), 0, GLConst.GL_UNSIGNED_INT, m.getPolyCount());
 				
 				RenderHelper.checkForGLError(context);
 				

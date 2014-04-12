@@ -77,6 +77,12 @@ public class Vector implements IMathObject<Float>
 	{
 		nums = new float[MathHelper.clamp(length, 1, 4)];
 		
+		for (int c = 0; c < getSize(); c++)
+		{
+			nums[c] = 0f;
+			
+		}
+		
 	}
 	
 	@Override
@@ -249,6 +255,33 @@ public class Vector implements IMathObject<Float>
 		b.append("]");
 		
 		return b.toString();
+	}
+	
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (!(obj instanceof Vector))
+		{
+			return false;
+		}
+		
+		Vector vec = (Vector)obj;
+		
+		if (vec.getSize() != this.getSize())
+		{
+			return false;
+		}
+		
+		for (int c = 0; c < this.getSize(); c++)
+		{
+			if (!vec.get(c).equals(this.get(c)))
+			{
+				return false;
+			}
+			
+		}
+		
+		return true;
 	}
 	
 	public void registerListener(IVectorListener veclis)

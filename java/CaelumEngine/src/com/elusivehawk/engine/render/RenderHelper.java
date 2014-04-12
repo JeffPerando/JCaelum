@@ -33,6 +33,8 @@ public final class RenderHelper
 	public static final int COLOR_OFFSET = 3;
 	public static final int TEXCOORD_OFFSET = 7;
 	
+	public static final int MATERIAL_CAP = 16;
+	
 	private RenderHelper(){}
 	
 	public static IGL1 gl1()
@@ -178,7 +180,7 @@ public final class RenderHelper
 		gl1().glReadPixels(0, 0, win.getWidth(), win.getHeight(), GLConst.GL_RGBA, GLConst.GL_BYTE, buf);
 		
 		BufferedImage ret = new BufferedImage(win.getWidth(), win.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		ByteBuf io = new ByteBuf(buf);
+		ByteBuf io = new ByteBuf(buf, null);
 		
 		for (int x = 0; x < ret.getWidth(); x++)
 		{
@@ -202,20 +204,37 @@ public final class RenderHelper
 			case GLConst.GL_TRIANGLES: return 3;
 			case GLConst.GL_QUADS: return 4;
 			case GLConst.GL_TRIANGLE_FAN: return 5;
-			default: return 0;
+			
 		}
 		
+		return 0;
 	}
 	
-	public static void checkForGLError() throws RuntimeException
+	public static int getPolygonCount(int points, int gl)
 	{
-		checkForGLError(CaelumEngine.renderContext());
+		return gl == GLConst.GL_TRIANGLE_STRIP ? points - 2 : points / getPointCount(gl);
+	}
+	
+	public static int getPointCount(int polycount, int gl)
+	{
+		return gl == GLConst.GL_TRIANGLE_STRIP ? polycount + 2 : polycount * getPointCount(gl);
+	}
+	
+	public static void checkForGLError() throws GLException
+	{
+		checkForGLError(gl1());
 		
 	}
 	
 	public static void checkForGLError(RenderContext context) throws GLException
 	{
-		int err = context.getGL1().glGetError();
+		checkForGLError(context.getGL1());
+		
+	}
+	
+	public static void checkForGLError(IGL1 gl) throws GLException
+	{
+		int err = gl.glGetError();
 		
 		if (err == GLConst.GL_NO_ERROR)
 		{

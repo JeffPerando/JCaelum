@@ -1,7 +1,9 @@
 
 package com.elusivehawk.engine.util.storage;
 
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * 
@@ -20,6 +22,12 @@ public class ImmutableArray<T> implements Iterable<T>
 		
 	}
 	
+	@Override
+	public Iterator<T> iterator()
+	{
+		return new Buffer<T>(this.array);
+	}
+	
 	public int length()
 	{
 		return this.array.length;
@@ -30,10 +38,9 @@ public class ImmutableArray<T> implements Iterable<T>
 		return this.array[i];
 	}
 	
-	@Override
-	public Iterator<T> iterator()
+	public List<T> asList()
 	{
-		return new Buffer<T>(this.array);
+		return Arrays.asList(this.array);
 	}
 	
 	public static <T> ImmutableArray<T> create(T[] array)

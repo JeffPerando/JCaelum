@@ -12,15 +12,15 @@ import com.elusivehawk.engine.util.storage.ImmutableArray;
  */
 public class Mesh extends Asset
 {
-	public final ImmutableArray<Vector> points;
-	public final ImmutableArray<Integer> indices;
+	public final ImmutableArray<Vector> points, texOffs, normals;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Mesh(String filename, Vector[] p, Integer[] in)
+	public Mesh(String filename, Vector[] p, Vector[] tex, Vector[] norm)
 	{
 		super(filename);
 		points = ImmutableArray.create(p);
-		indices = ImmutableArray.create(in);
+		texOffs = ImmutableArray.create(tex);
+		normals = ImmutableArray.create(norm);
 		
 	}
 	
