@@ -136,7 +136,20 @@ public class Vector implements IMathObject<Float>
 	@Override
 	public void set(int pos, Float num)
 	{
-		this.nums[pos] = num;
+		this.nums[pos] = num.floatValue();
+		
+		this.onChanged();
+		
+	}
+	
+	@Override
+	public void setAll(Float num)
+	{
+		for (int c = 0; c < this.getSize(); c++)
+		{
+			this.nums[c] = num.floatValue();
+			
+		}
 		
 		this.onChanged();
 		

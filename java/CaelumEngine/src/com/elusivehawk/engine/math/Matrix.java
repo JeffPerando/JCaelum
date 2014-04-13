@@ -154,7 +154,7 @@ public class Matrix implements IMathObject<Float>
 	@Override
 	public void set(int pos, Float num)
 	{
-		this.data[pos] = num;
+		this.data[pos] = num.floatValue();
 		
 	}
 	
@@ -266,6 +266,17 @@ public class Matrix implements IMathObject<Float>
 	public Float[] multiget(int bitmask)
 	{
 		throw new UnsupportedOperationException("Matrices do not currently support multiget().");
+	}
+	
+	@Override
+	public void setAll(Float num)
+	{
+		for (int c = 0; c < this.getSize(); c++)
+		{
+			this.set(c, num);
+			
+		}
+		
 	}
 	
 }
