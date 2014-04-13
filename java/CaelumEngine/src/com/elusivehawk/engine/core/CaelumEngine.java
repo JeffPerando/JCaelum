@@ -89,7 +89,7 @@ public final class CaelumEngine
 	
 	public static RenderContext renderContext()
 	{
-		return renderContext(false);
+		return renderContext(true);
 	}
 	
 	public static RenderContext renderContext(boolean safe)
@@ -263,7 +263,6 @@ public final class CaelumEngine
 			this.log.log(EnumLogType.ERROR, "Could not load game");
 			System.exit("NO-GAME-FOUND".hashCode());
 			
-			return;
 		}
 		
 		this.log.log(EnumLogType.INFO, String.format("Loading game: %s", g.name));
