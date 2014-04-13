@@ -15,12 +15,12 @@ import com.elusivehawk.engine.util.TextParser;
  * 
  * @author Elusivehawk
  */
-public final class GameLog implements ILog
+public class GameLog implements ILog
 {
-	private final List<String> crashDialog = TextParser.read(FileHelper.createFile((CaelumEngine.DEBUG ? "src" : ".") + "/com/elusivehawk/engine/core/CrashReportDialog.txt"));
-	private final Random rng = new Random();
+	protected final List<String> crashDialog = TextParser.read(FileHelper.createFile((CaelumEngine.DEBUG ? "src" : ".") + "/com/elusivehawk/engine/core/CrashReportDialog.txt"));
+	protected final Random rng = new Random();
 	
-	public boolean enableVerbosity = true;
+	private boolean enableVerbosity = true;
 	
 	@Override
 	public void log(EnumLogType type, String msg)
@@ -59,6 +59,19 @@ public final class GameLog implements ILog
 	{
 		this.log(type, msg);
 		e.printStackTrace();
+		
+	}
+	
+	@Override
+	public boolean enableVerbosity()
+	{
+		return this.enableVerbosity;
+	}
+	
+	@Override
+	public void setEnableVerbosity(boolean v)
+	{
+		this.enableVerbosity = v;
 		
 	}
 	

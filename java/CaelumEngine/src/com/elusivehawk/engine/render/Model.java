@@ -2,6 +2,8 @@
 package com.elusivehawk.engine.render;
 
 import java.util.List;
+import com.elusivehawk.engine.assets.Asset;
+import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.assets.Mesh;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
@@ -15,7 +17,7 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-public class Model
+public class Model implements IAssetReceiver
 {
 	protected final String name;
 	
@@ -29,6 +31,17 @@ public class Model
 	public Model(String title)
 	{
 		name = title;
+		
+	}
+	
+	@Override
+	public synchronized void onAssetLoaded(Asset a)
+	{
+		if (a instanceof Mesh)
+		{
+			this.addMesh((Mesh)a);
+			
+		}
 		
 	}
 	

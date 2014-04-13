@@ -3,12 +3,12 @@ package com.elusivehawk.engine.render;
 
 import java.nio.FloatBuffer;
 import java.util.HashMap;
-import java.util.List;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.assets.Material;
 import com.elusivehawk.engine.assets.Shader;
 import com.elusivehawk.engine.assets.Texture;
+import com.elusivehawk.engine.math.MathHelper;
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.MatrixHelper;
 import com.elusivehawk.engine.math.Vector;
@@ -17,11 +17,10 @@ import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
 import com.elusivehawk.engine.util.BufferHelper;
 import com.elusivehawk.engine.util.IDirty;
-import com.google.common.collect.Lists;
 
 /**
  * 
- * Used to render static {@link Tessellator}s with non-static information (i.e. rotation)
+ * Used to render static {@link Model}s with non-static information (i.e. rotation)
  * 
  * @author Elusivehawk
  */
@@ -37,7 +36,8 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 	//protected int frame = 0;
 	//protected IModelAnimation anim = null, lastAnim = null;
 	protected Texture tex;
-	protected final List<Material> mats = Lists.newArrayListWithCapacity(RenderHelper.MATERIAL_CAP);
+	protected final Material[] mats = new Material[RenderHelper.MATERIAL_CAP];
+	protected int matCount = 0;
 	
 	public RenderTicket(Model mdl)
 	{
@@ -124,6 +124,8 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 			
 			this.p.attachUniform("model", m.asBuffer(), GLProgram.EnumUniformType.M_FOUR);
 			
+			
+			
 			this.setIsDirty(false);
 			
 		}
@@ -156,7 +158,7 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 	{
 		this.vecs.get(type).set(vec);
 		
-		this.dirty = true;
+		this.setIsDirty(true);
 		
 	}
 	
@@ -190,14 +192,29 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 	{
 		for (Material mat : materials)
 		{
-			if (this.mats.size() == RenderHelper.MATERIAL_CAP)
+			if (this.matCount == RenderHelper.MATERIAL_CAP)
 			{
 				return;
 			}
 			
-			this.mats.add(mat);
+			this.mats[this.matCount++] = mat;
+			this.setIsDirty(true);
 			
 		}
+		
+	}
+	
+	public synchronized void setMaterial(int i, Material m)
+	{
+		assert MathHelper.bounds(i, 0, 15);
+		
+		if (this.mats[i] == null)
+		{
+			this.matCount++;
+			
+		}
+		
+		this.mats[i] = m;
 		
 	}
 	

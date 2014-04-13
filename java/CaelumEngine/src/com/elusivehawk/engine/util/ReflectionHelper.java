@@ -164,7 +164,11 @@ public final class ReflectionHelper
 			cl = Class.forName(clazz);
 			
 		}
-		catch (Exception e){}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			
+		}
 		
 		if (cl == null)
 		{
@@ -182,7 +186,7 @@ public final class ReflectionHelper
 			{
 				for (Class<?> a : assign)
 				{
-					if (!clazz.isAssignableFrom(a))
+					if (!a.isAssignableFrom(clazz))
 					{
 						return null;
 					}

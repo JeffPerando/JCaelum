@@ -21,13 +21,6 @@ public class DirtableStorage<T> implements IDirty, IGettable<T>, ISettable<T>
 		
 	}
 	
-	public DirtableStorage<T> setEnableNull(boolean b)
-	{
-		this.enableNull = b;
-		
-		return this;
-	}
-	
 	@Override
 	public boolean isDirty()
 	{
@@ -60,6 +53,13 @@ public class DirtableStorage<T> implements IDirty, IGettable<T>, ISettable<T>
 		this.setIsDirty(true);
 		
 		return true;
+	}
+	
+	public DirtableStorage<T> setEnableNull(boolean b)
+	{
+		this.enableNull = b;
+		
+		return this;
 	}
 	
 }

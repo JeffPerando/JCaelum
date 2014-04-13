@@ -65,6 +65,11 @@ public final class Tessellator
 	
 	public int point(Vector vtx, Vector tex, Vector norm) throws RenderException
 	{
+		if (!this.isWorking())
+		{
+			throw new RenderException("Not tessellating! *trollface*");
+		}
+		
 		assert vtx != null;
 		
 		Vector t = tex, n = norm;
@@ -79,11 +84,6 @@ public final class Tessellator
 		{
 			n = new Vector(3);
 			
-		}
-		
-		if (!this.isWorking())
-		{
-			throw new RenderException("Not tessellating! *trollface*");
 		}
 		
 		if (vtx.getSize() < 3 || t.getSize() < 2 || n.getSize() < 3)

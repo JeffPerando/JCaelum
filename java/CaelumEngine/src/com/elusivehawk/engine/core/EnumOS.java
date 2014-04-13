@@ -42,7 +42,7 @@ public enum EnumOS
 	@Override
 	public String toString()
 	{
-		return name().toLowerCase();
+		return this.name().toLowerCase();
 	}
 	
 }

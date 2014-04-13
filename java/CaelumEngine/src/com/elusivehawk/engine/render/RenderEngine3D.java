@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
+import com.elusivehawk.engine.render.opengl.IGL1;
 
 /**
  * 
@@ -36,14 +37,20 @@ public class RenderEngine3D implements IRenderEngine
 			return;
 		}
 		
-		context.getGL1().glEnable(GLConst.GL_DEPTH_TEST);
-		context.getGL1().glDepthFunc(GLConst.GL_LESS);
+		IGL1 gl1 = context.getGL1();
 		
-		context.getGL1().glEnable(GLConst.GL_CULL_FACE);
-		context.getGL1().glCullFace(GLConst.GL_BACK);
+		gl1.glEnable(GLConst.GL_DEPTH_TEST);
+		gl1.glDepthFunc(GLConst.GL_LESS);
+		
+		gl1.glEnable(GLConst.GL_CULL_FACE);
+		gl1.glCullFace(GLConst.GL_BACK);
 		
 		int currTex = 0, tex = 0;
 		boolean zBuffer = true;
+		
+		RenderTicket tkt;
+		Model m;
+		GLProgram p;
 		
 		for (IModelGroup group : models)
 		{
@@ -61,9 +68,10 @@ public class RenderEngine3D implements IRenderEngine
 					continue;
 				}
 				
-				RenderTicket tkt = tickets.get(c);
-				Model m = tkt.getModel();
-				GLProgram p = tkt.getProgram();
+				tkt = tickets.get(c);
+				
+				m = tkt.getModel();
+				p = tkt.getProgram();
 				
 				if (!p.bind(context))
 				{
@@ -93,13 +101,13 @@ public class RenderEngine3D implements IRenderEngine
 				
 				if (currTex != tex)
 				{
-					if (!context.getGL1().glIsTexture(tex))
+					if (!gl1.glIsTexture(tex))
 					{
 						tex = context.getDefaultTexture();
 						
 					}
 					
-					context.getGL1().glBindTexture(GLConst.GL_TEXTURE0, tex);
+					gl1.glBindTexture(GLConst.GL_TEXTURE0, tex);
 					currTex = tex;
 					
 				}
@@ -110,21 +118,21 @@ public class RenderEngine3D implements IRenderEngine
 					
 					if (zBuffer)
 					{
-						context.getGL1().glEnable(GLConst.GL_DEPTH_TEST);
-						context.getGL1().glDepthFunc(GLConst.GL_LESS);
+						gl1.glEnable(GLConst.GL_DEPTH_TEST);
+						gl1.glDepthFunc(GLConst.GL_LESS);
 						
 					}
 					else
 					{
-						context.getGL1().glDisable(GLConst.GL_DEPTH_TEST);
+						gl1.glDisable(GLConst.GL_DEPTH_TEST);
 						
 					}
 					
 				}
 				
-				context.getGL1().glDrawElements(m.getDrawMode(), 0, GLConst.GL_UNSIGNED_INT, m.getPolyCount());
+				gl1.glDrawElements(m.getDrawMode(), 0, GLConst.GL_UNSIGNED_INT, m.getPolyCount());
 				
-				RenderHelper.checkForGLError(context);
+				RenderHelper.checkForGLError(gl1);
 				
 				p.unbind(context);
 				
@@ -132,11 +140,11 @@ public class RenderEngine3D implements IRenderEngine
 			
 		}
 		
-		context.getGL1().glDisable(GLConst.GL_CULL_FACE);
+		gl1.glDisable(GLConst.GL_CULL_FACE);
 		
 		if (zBuffer)
 		{
-			context.getGL1().glDisable(GLConst.GL_DEPTH_TEST);
+			gl1.glDisable(GLConst.GL_DEPTH_TEST);
 			
 		}
 		

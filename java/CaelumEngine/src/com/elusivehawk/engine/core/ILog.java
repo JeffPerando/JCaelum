@@ -13,4 +13,8 @@ public interface ILog
 	
 	public void log(EnumLogType type, String msg, Throwable e);
 	
+	public boolean enableVerbosity();
+	
+	public void setEnableVerbosity(boolean v);
+	
 }

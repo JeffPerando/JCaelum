@@ -35,7 +35,7 @@ public class LWJGLEnvironment implements IGameEnvironment
 		
 		String lib = determineLWJGLPath();
 		
-		if (CaelumEngine.DEBUG)
+		if (CaelumEngine.DEBUG && json != null)
 		{
 			JsonValue val = json.get("debugNativeLocation");
 			

@@ -38,22 +38,6 @@ public class ThreadGameRender extends ThreadTimed implements IGameStateListener,
 		
 	}
 	
-	public IRenderHUB getRenderHUB()
-	{
-		return this.hub;
-	}
-	
-	public IRenderEnvironment getRenderEnv()
-	{
-		return this.renv;
-	}
-	
-	public synchronized void flipScreen(boolean flip)
-	{
-		this.context.setScreenFlipped(flip);
-		
-	}
-	
 	@Override
 	public boolean initiate()
 	{
@@ -116,14 +100,13 @@ public class ThreadGameRender extends ThreadTimed implements IGameStateListener,
 		
 		if (engines != null && !engines.isEmpty())
 		{
+			int priority = 0, priorityCount = Math.max(this.hub.getHighestPriority(), 1);
+			int renderersUsed = 0;
+			boolean flag = true;
+			
 			this.context.setRenderStage(EnumRenderStage.RENDER);
 			
 			this.context.getGL1().glClear(GLConst.GL_COLOR_BUFFER_BIT | GLConst.GL_DEPTH_BUFFER_BIT);
-			
-			int priorityCount = Math.max(this.hub.getHighestPriority(), 1);
-			int renderersUsed = 0;
-			int priority = 0;
-			boolean flag = true;
 			
 			for (int p = 0; p < priorityCount && flag; p++)
 			{
@@ -231,6 +214,22 @@ public class ThreadGameRender extends ThreadTimed implements IGameStateListener,
 	public IContext getContext()
 	{
 		return this.context;
+	}
+	
+	public IRenderHUB getRenderHUB()
+	{
+		return this.hub;
+	}
+	
+	public IRenderEnvironment getRenderEnv()
+	{
+		return this.renv;
+	}
+	
+	public synchronized void flipScreen(boolean flip)
+	{
+		this.context.setScreenFlipped(flip);
+		
 	}
 	
 }

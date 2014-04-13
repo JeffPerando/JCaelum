@@ -40,9 +40,9 @@ public final class RenderContext implements IContext
 	private boolean initiated = false, flipScreen = false;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public RenderContext(ThreadGameRender renderThr)
+	public RenderContext(ThreadGameRender rThr)
 	{
-		thr = renderThr;
+		thr = rThr;
 		
 	}
 	

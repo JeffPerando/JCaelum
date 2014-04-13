@@ -29,10 +29,6 @@ import com.elusivehawk.engine.util.storage.Buffer;
  */
 public final class RenderHelper
 {
-	public static final int VERTEX_OFFSET = 0;
-	public static final int COLOR_OFFSET = 3;
-	public static final int TEXCOORD_OFFSET = 7;
-	
 	public static final int MATERIAL_CAP = 16;
 	
 	private RenderHelper(){}
