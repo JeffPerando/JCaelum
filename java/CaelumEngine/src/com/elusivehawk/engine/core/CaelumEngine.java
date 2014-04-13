@@ -211,7 +211,7 @@ public final class CaelumEngine
 		
 		if (!env.isCompatible(EnumOS.getCurrentOS()))
 		{
-			this.log.log(EnumLogType.ERROR, String.format("Unable to load environment, current OS is incompatible. Class: %s; OS: %s", clazz == null ? "NULL" : clazz.getCanonicalName(), EnumOS.getCurrentOS()));
+			this.log.log(EnumLogType.ERROR, String.format("Unable to load environment: Current OS is incompatible. Class: %s; OS: %s", clazz == null ? "NULL" : clazz.getCanonicalName(), EnumOS.getCurrentOS()));
 			System.exit("NO-ENVIRONMENT-FOUND".hashCode());
 			
 		}
