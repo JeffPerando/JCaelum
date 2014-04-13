@@ -26,6 +26,20 @@ public class Vector2f extends Vector
 		
 	}
 	
+	public Vector2f(float a, float b)
+	{
+		this();
+		
+		set(a, b);
+		
+	}
+	
+	public Vector2f(Vector2f vec)
+	{
+		super(vec);
+		
+	}
+	
 	@Override
 	protected void onChanged()
 	{
@@ -33,6 +47,25 @@ public class Vector2f extends Vector
 		this.y = this.get(Y);
 		
 		super.onChanged();
+		
+	}
+	
+	public void scale(float f)
+	{
+		this.scale(f, true);
+		
+	}
+	
+	public void set(float a, float b)
+	{
+		this.x = a;
+		this.y = b;
+		
+	}
+	
+	public void sub(Vector2f vec)
+	{
+		this.sub(vec, true);
 		
 	}
 	
