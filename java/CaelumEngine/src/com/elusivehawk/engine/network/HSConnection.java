@@ -5,10 +5,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.NetworkChannel;
 import java.nio.channels.SocketChannel;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
-import com.elusivehawk.engine.util.io.IByteReader;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -23,7 +20,6 @@ public class HSConnection implements IPacketHandler, IConnection
 {
 	private final IHost master;
 	private final IConnection connect;
-	private final short[] expectPkts;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public HSConnection(IHost owner, UUID id)
@@ -32,60 +28,20 @@ public class HSConnection implements IPacketHandler, IConnection
 		
 		master = owner;
 		connect = new Connection(this, id);
-		expectPkts = owner.getHandshakeProtocol();
 		
 	}
 	
 	@Override
 	public void onPacketsReceived(IConnection origin, ImmutableList<Packet> pkts)
 	{
-		boolean fail = false;
+		this.master.onHandshake(this, pkts);
 		
-		if (this.expectPkts == null)
-		{
-			fail = true;
-			
-		}
-		
-		if (pkts.size() != this.expectPkts.length)
-		{
-			fail = true;
-			
-		}
-		
-		if (!fail)
-		{
-			List<Short> pktList = new ArrayList<Short>();
-			
-			for (short i : this.expectPkts)
-			{
-				pktList.add(i);
-				
-			}
-			
-			int index;
-			
-			for (Packet pkt : pkts)
-			{
-				index = pktList.indexOf(pkt.format.pktId);
-				
-				if (index < 0)
-				{
-					fail = true;
-					
-				}
-				else
-				{
-					pktList.remove(index);
-					
-				}
-				
-			}
-			
-		}
-		
-		this.master.onHandshakeEnd(fail, this, pkts);
-		
+	}
+	
+	@Override
+	public boolean isPacketSafe(Packet pkt)
+	{
+		return this.master.isPacketSafe(pkt);
 	}
 	
 	@Override
@@ -102,23 +58,17 @@ public class HSConnection implements IPacketHandler, IConnection
 	}
 	
 	@Override
-	public ByteBuffer decryptData(ByteBuffer buf)
+	public byte[] decryptData(ByteBuffer buf)
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
-	public void encryptData(IByteReader r, ByteBuffer buf)
+	public void encryptData(byte[] r, ByteBuffer buf)
 	{
 		// TODO Auto-generated method stub
 		
-	}
-	
-	@Override
-	public PacketFormat getPacketFormat(short id)
-	{
-		return this.master.getPacketFormat(id);
 	}
 	
 	@Override

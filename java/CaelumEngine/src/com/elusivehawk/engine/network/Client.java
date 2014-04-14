@@ -75,6 +75,7 @@ public class Client implements IHost
 		this.hasHS = false;
 		
 	}
+	
 	/*
 	@Override
 	public ByteBuffer decryptData(ByteBuffer buf)
@@ -95,6 +96,12 @@ public class Client implements IHost
 	{
 		this.master.onPacketsReceived(origin, pkts);
 		
+	}
+	
+	@Override
+	public boolean isPacketSafe(Packet pkt)
+	{
+		return this.master.isPacketSafe(pkt);
 	}
 	
 	@Override
@@ -210,20 +217,14 @@ public class Client implements IHost
 	}
 	
 	@Override
-	public short[] getHandshakeProtocol()
-	{
-		return this.master.getHandshakeProtocol();
-	}
-	
-	@Override
-	public void onHandshakeEnd(boolean success, IConnection connection, List<Packet> pkts)
+	public void onHandshake(IConnection connection, List<Packet> pkts)
 	{
 		if (this.hasHS)
 		{
 			return;
 		}
 		
-		this.master.onHandshakeEnd(success, connection, pkts);
+		boolean success = this.master.handshake(connection, pkts);
 		
 		connection.close(!success);
 		
@@ -269,12 +270,6 @@ public class Client implements IHost
 		this.connection.close(true);
 		this.connection = null;
 		
-	}
-	
-	@Override
-	public PacketFormat getPacketFormat(short id)
-	{
-		return this.master.getPacketFormat(id);
 	}
 	
 }

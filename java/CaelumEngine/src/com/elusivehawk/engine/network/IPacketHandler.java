@@ -8,7 +8,7 @@ package com.elusivehawk.engine.network;
  * 
  * @author Elusivehawk
  */
-public interface IPacketHandler extends IPacketListener, IPacketFormatter
+public interface IPacketHandler extends IPacketListener
 {
 	/**
 	 * 

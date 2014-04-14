@@ -110,6 +110,12 @@ public class Server implements IHost
 	}
 	
 	@Override
+	public boolean isPacketSafe(Packet pkt)
+	{
+		return this.master.isPacketSafe(pkt);
+	}
+	
+	@Override
 	public Side getSide()
 	{
 		return Side.SERVER;
@@ -213,15 +219,9 @@ public class Server implements IHost
 	}
 	
 	@Override
-	public short[] getHandshakeProtocol()
+	public void onHandshake(IConnection connection, List<Packet> pkts)
 	{
-		return this.master.getHandshakeProtocol();
-	}
-	
-	@Override
-	public void onHandshakeEnd(boolean success, IConnection connection, List<Packet> pkts)
-	{
-		this.master.onHandshakeEnd(success, connection, pkts);
+		boolean success = this.master.handshake(connection, pkts);
 		
 		connection.close(!success);
 		
@@ -283,12 +283,6 @@ public class Server implements IHost
 			
 		}
 		
-	}
-	
-	@Override
-	public PacketFormat getPacketFormat(short id)
-	{
-		return this.master.getPacketFormat(id);
 	}
 	
 }

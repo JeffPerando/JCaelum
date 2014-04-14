@@ -22,4 +22,6 @@ public interface IPacketListener
 	 */
 	public void onPacketsReceived(IConnection origin, ImmutableList<Packet> pkts);
 	
+	public boolean isPacketSafe(Packet pkt);
+	
 }

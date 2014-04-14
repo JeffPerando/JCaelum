@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import com.elusivehawk.engine.math.MathHelper;
 import com.elusivehawk.engine.util.ThreadStoppable;
 import com.elusivehawk.engine.util.storage.Tuple;
 import com.google.common.collect.ImmutableList;
@@ -26,7 +27,7 @@ import com.google.common.collect.Maps;
  */
 public class ThreadNetwork extends ThreadStoppable
 {
-	public static final int HEADER_LENGTH = 4,
+	public static final int HEADER_LENGTH = 3,
 			DATA_LENGTH = 8192,
 			TOTAL_PKT_LENGTH = HEADER_LENGTH + DATA_LENGTH,
 			PKT_LIMIT = 32;
@@ -83,10 +84,12 @@ public class ThreadNetwork extends ThreadStoppable
 			
 		}
 		
-		short type, length;
+		byte s;
+		short length;
+		byte[] b;
 		List<Packet> pkts = null;
 		Packet pkt;
-		PacketFormat format;
+		Side side;
 		
 		int select = this.selector.selectNow();
 		
@@ -112,36 +115,42 @@ public class ThreadNetwork extends ThreadStoppable
 					{
 						while (io.read(this.head) != -1)
 						{
-							type = this.head.getShort();//Get the packet type
-							length = this.head.getShort();//Get the remaining packet length
+							s = this.head.get();
+							length = (short)MathHelper.clamp(this.head.getShort(), 1, DATA_LENGTH);//Get the remaining packet length
 							
 							this.head.clear();//Clear the buffer for reuse
-							
-							format = this.handler.getPacketFormat(type);
 							
 							this.bin.limit(length);//Make sure we can't go over
 							
 							io.read(this.bin);//Read the data
 							
-							if (format != null && format.type.isCompatible(info.one) && this.handler.getSide().canReceive(format.side))//NOW we check to see if the data in question is valid
+							b = info.two.decryptData(this.bin);//Decrypt the data
+							
+							if (b == null)//Unlikely, but...
 							{
-								//Huh, it is. Okay, let's read this thing...
-								
-								pkt = format.read(info.two.decryptData(this.bin));//Excuse me Mr. Format, could you tell me what's going on?
-								
-								if (pkt != null)//Check if the packet has been successfully read.
+								continue;
+							}
+							
+							side = Side.values()[s];
+							
+							if (!this.handler.getSide().canReceive(side))//Maintains the good ol' side check
+							{
+								continue;
+							}
+							
+							pkt = new Packet(Side.values()[s], b);
+							
+							if (this.handler.isPacketSafe(pkt))//Is the packet is safe...
+							{
+								if (pkts == null)//Dynamically load the packet list with a soft limit of 32 packets.
 								{
-									if (pkts == null)//Dynamically load the packet list with a soft limit of 32 packets.
-									{
-										pkts = Lists.newArrayListWithCapacity(32);
-										
-									}
-									
-									//Schedule the packet to be sent to the game.
-									
-									pkts.add(pkt);
+									pkts = Lists.newArrayListWithCapacity(32);
 									
 								}
+								
+								//Schedule the packet to be sent to the game.
+								
+								pkts.add(pkt);
 								
 							}
 							
@@ -167,19 +176,17 @@ public class ThreadNetwork extends ThreadStoppable
 						{
 							pkt = pktItr.next();
 							
-							if (pkt.format == null)
+							if (!this.handler.getSide().canSend(pkt.getSide()))
 							{
 								continue;
 							}
 							
-							if (this.handler.getSide().canSend(pkt.format.side))
-							
-							if (!pkt.format.type.isCompatible(info.one))
+							if (!this.handler.isPacketSafe(pkt))
 							{
 								continue;
 							}
 							
-							info.two.encryptData(pkt.toBytes(), this.bout);
+							info.two.encryptData(pkt.getBytes(), this.bout);
 							
 							info.two.clearPkt(pkt);
 							

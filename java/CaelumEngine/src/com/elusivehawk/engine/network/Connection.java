@@ -13,7 +13,6 @@ import java.security.PublicKey;
 import java.util.List;
 import java.util.UUID;
 import javax.crypto.Cipher;
-import com.elusivehawk.engine.util.io.IByteReader;
 import com.elusivehawk.engine.util.storage.SemiFinalStorage;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -199,13 +198,13 @@ public class Connection implements IConnection
 	}
 	
 	@Override
-	public ByteBuffer decryptData(ByteBuffer buf)
+	public byte[] decryptData(ByteBuffer buf)
 	{
 		return null;//FIXME
 	}
 	
 	@Override
-	public void encryptData(IByteReader r, ByteBuffer buf)
+	public void encryptData(byte[] b, ByteBuffer buf)
 	{
 		byte[] info = null;
 		
@@ -213,7 +212,7 @@ public class Connection implements IConnection
 		{
 			Cipher cipher = Cipher.getInstance("RSA");
 			cipher.init(Cipher.ENCRYPT_MODE, this.pub);
-			info = cipher.doFinal(r.readAll());
+			info = cipher.doFinal(b);
 			
 		}
 		catch (Exception e){}

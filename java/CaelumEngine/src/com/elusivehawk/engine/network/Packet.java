@@ -1,14 +1,8 @@
 
 package com.elusivehawk.engine.network;
 
-import java.util.ArrayList;
-import java.util.List;
-import com.elusivehawk.engine.network.PacketFormat.PktFormatItr;
-import com.elusivehawk.engine.util.io.ByteLists;
-import com.elusivehawk.engine.util.io.IByteReader;
-import com.elusivehawk.engine.util.io.Serializers;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
+import com.elusivehawk.engine.math.MathHelper;
+import com.elusivehawk.engine.util.io.IByteWriter;
 
 /**
  * 
@@ -20,66 +14,65 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-public final class Packet
+public final class Packet implements IByteWriter
 {
-	public final PacketFormat format;
-	private final List<Object> data;
+	private final Side side;
+	private final byte[] data;
+	private int pos = 0;
 	
-	@SuppressWarnings({"unqualified-field-access", "unused"})
-	public Packet(PacketFormat f)
+	public Packet(Side s, int length)
 	{
-		assert f != null;
-		
-		format = f;
-		
-		int pktSize = 0;
-		
-		for (DataType type : f)
-		{
-			pktSize++;
-			
-		}
-		
-		data = Lists.newArrayListWithCapacity(pktSize);
+		this(s, new byte[MathHelper.clamp(length, 1, ThreadNetwork.DATA_LENGTH) + ThreadNetwork.HEADER_LENGTH]);
 		
 	}
 	
-	public void addData(Object obj)
+	@SuppressWarnings("unqualified-field-access")
+	public Packet(Side s, byte[] b)
 	{
-		this.data.add(obj);
+		assert b != null;
+		assert MathHelper.bounds(b.length, 1, ThreadNetwork.TOTAL_PKT_LENGTH);
+		
+		side = s;
+		data = b;
+		
+		data[0] = (byte)s.ordinal();
+		
+		int l = this.getDataSize();
+		
+		data[1] = (byte)(l & 0xFF);
+		data[2] = (byte)((l >> 8) & 0xFF);
+		
+	}
+	
+	@Override
+	public void write(byte... bytes)
+	{
+		if (this.pos == this.getDataSize())
+		{
+			return;
+		}
+		
+		for (byte b : bytes)
+		{
+			this.data[this.pos++] = b;
+			
+		}
 		
 	}
 	
 	public int getDataSize()
 	{
-		return this.data.size();
+		return this.data.length - 3;
 	}
 	
-	public ImmutableList<Object> getData()
+	public byte[] getBytes()
 	{
-		return ImmutableList.copyOf(this.data);
+		return this.data;
 	}
 	
-	public IByteReader toBytes()
+	public Side getSide()
 	{
-		ByteLists l = new ByteLists(new ArrayList<Byte>());
-		int length = Serializers.SHORT.toBytes(l, this.format.pktId);
-		
-		l.outPos = 4;
-		
-		PktFormatItr itr = this.format.iterator();
-		
-		while (itr.hasNext())
-		{
-			length += itr.next().encode(this.format.format, itr.position(), this.data.get(itr.actualPos()), l);
-			
-		}
-		
-		l.outPos = 2;
-		
-		Serializers.SHORT.toBytes(l, (short)length);
-		
-		return l;
+		return this.side;
 	}
 	
 }
