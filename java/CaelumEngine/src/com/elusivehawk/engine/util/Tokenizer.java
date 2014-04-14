@@ -40,11 +40,11 @@ public class Tokenizer
 		
 		if ((str != null && !"".equalsIgnoreCase(str)) && !this.tokens.isEmpty())
 		{
-			char[] chrs = str.toCharArray();
+			char ch;
 			
-			for (int c = 0; c < chrs.length; c++)
+			for (int c = 0; c < str.length(); c++)
 			{
-				char ch = chrs[c];
+				ch = str.charAt(c);
 				
 				for (char token : this.tokens)
 				{

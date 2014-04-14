@@ -27,17 +27,18 @@ public final class JsonParser
 	{
 		String str;
 		
-		while (true)
+		while (buf.hasNext())
 		{
 			str = buf.next(false);
 			
-			if (" ".equalsIgnoreCase(str) || "\t".equalsIgnoreCase(str) || "\n".equalsIgnoreCase(str))
+			switch (str)
 			{
-				buf.next();
-				continue;
+				case " ":
+				case "\t":
+				case "\n": buf.skip(1); continue;
+				default: return;
 			}
 			
-			break;
 		}
 		
 	}
@@ -59,7 +60,7 @@ public final class JsonParser
 	
 	public static JsonObject parse(String str)
 	{
-		if (str == null || "".equalsIgnoreCase(str))
+		if (str == null)
 		{
 			return null;
 		}
@@ -75,7 +76,7 @@ public final class JsonParser
 		return parseObj(buf);
 	}
 	
-	public static JsonValue parseValue(Buffer<String> buf)
+	public static JsonValue parseKeypair(Buffer<String> buf)
 	{
 		skipWhitespace(buf);
 		
@@ -95,28 +96,35 @@ public final class JsonParser
 	
 	public static JsonValue parseContent(String name, Buffer<String> buf)
 	{
-		String str = buf.next(false);
+		String str = buf.next(false).toLowerCase();
 		JsonValue ret = null;
 		
-		String intType = null;
-		
-		try
+		switch (str)
 		{
-			intType = StringHelper.getIntType(str);
-			
-		}
-		catch (Exception e){}
-		
-		if (intType != null)
-		{
-			ret = new JsonValue(EnumJsonType.valueOfSafe(intType), name, str);
-			
-		}
-		else switch (str)
-		{
+			case "true":
+			case "false": ret = new JsonValue(EnumJsonType.BOOL, name, str); break;
 			case "\"": ret = new JsonValue(EnumJsonType.STRING, name, parseString(buf)); break;
-			case "{": ret = parseObj(name, buf);
-			case "[": ret = parseArray(name, buf);
+			case "{": ret = parseObj(name, buf); break;
+			case "[": ret = parseArray(name, buf); break;
+			
+		}
+		
+		if (ret == null)
+		{
+			String intType = null;
+			
+			try
+			{
+				intType = StringHelper.getIntType(str);
+				
+			}
+			catch (Exception e){}
+			
+			if (intType != null)
+			{
+				ret = new JsonValue(EnumJsonType.valueOfSafe(intType), name, str);
+				
+			}
 			
 		}
 		
@@ -153,7 +161,7 @@ public final class JsonParser
 		
 		while (!"}".equalsIgnoreCase(buf.next(false)))
 		{
-			JsonValue v = parseValue(buf);
+			JsonValue v = parseKeypair(buf);
 			
 			if (v != null)
 			{
@@ -190,11 +198,6 @@ public final class JsonParser
 		
 		while (!"]".equalsIgnoreCase(buf.next(false)))
 		{
-			if (kill)
-			{
-				return null;
-			}
-			
 			skipWhitespace(buf);
 			
 			list.add(parseContent("", buf));
@@ -203,6 +206,11 @@ public final class JsonParser
 			
 			if (!",".equalsIgnoreCase(buf.next()))
 			{
+				if (kill)
+				{
+					return null;
+				}
+				
 				kill = true;
 				
 			}

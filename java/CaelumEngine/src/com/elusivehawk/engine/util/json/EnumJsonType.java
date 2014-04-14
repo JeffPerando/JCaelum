@@ -9,7 +9,7 @@ package com.elusivehawk.engine.util.json;
  */
 public enum EnumJsonType
 {
-	ARRAY, OBJECT, STRING, BYTE, FLOAT, DOUBLE, SHORT, INT, LONG;
+	ARRAY, OBJECT, STRING, BOOL, BYTE, FLOAT, DOUBLE, SHORT, INT, LONG;
 	
 	public static EnumJsonType valueOfSafe(String name)
 	{
