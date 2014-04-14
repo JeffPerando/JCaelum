@@ -30,6 +30,9 @@ public final class StringHelper
 	public static final String[] NUMBERS =	{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
 	public static final String[] HEX =		{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"};
 	
+	public static final String[] ESCAPES =		{"\b", "\t", "\n", "\f", "\r", "\"", "\'", "\\"};
+	public static final String[] S_ESCAPES =	{"\\b", "\\t", "\\n", "\\f", "\\r", "\\\"", "\\\'", "\\\\"};
+	
 	private StringHelper(){}
 	
 	public static List<String> read(String path)
@@ -270,21 +273,22 @@ public final class StringHelper
 	{
 		String ret = str;
 		
-		switch (str)
-		{
-			case "\\n": ret = "\n"; break;
-			case "\\t": ret = "\t"; break;
-			case "\\\'": ret = "\'"; break;
-			case "\\\"": ret = "\""; break;
-			case "\\b": ret = "\b"; break;
-			case "\\f": ret = "\f"; break;
-			case "\\r": ret = "\r"; break;
-			
-		}
-		
 		if (str.startsWith("\\u"))
 		{
 			ret = ((Character)((char)Short.parseShort(String.format("0x%s", str.substring(3))))).toString();
+			
+		}
+		else
+		{
+			for (int c = 0; c < S_ESCAPES.length; c++)
+			{
+				if (S_ESCAPES[c].equalsIgnoreCase(str))
+				{
+					ret = ESCAPES[c];
+					break;
+				}
+				
+			}
 			
 		}
 		
@@ -295,15 +299,9 @@ public final class StringHelper
 	{
 		String ret = str;
 		
-		switch (str)
+		for (int c = 0; c < ESCAPES.length; c++)
 		{
-			case "\n": ret = "\\n"; break;
-			case "\t": ret = "\\t"; break;
-			case "\'": ret = "\\\'"; break;
-			case "\"": ret = "\\\""; break;
-			case "\b": ret = "\\b"; break;
-			case "\f": ret = "\\f"; break;
-			case "\r": ret = "\\r"; break;
+			ret = ret.replaceAll(ESCAPES[c], S_ESCAPES[c]);
 			
 		}
 		
