@@ -31,7 +31,7 @@ public final class JsonParser
 		{
 			str = buf.next(false);
 			
-			if (" ".equalsIgnoreCase(str) || "\t".equalsIgnoreCase(str))
+			if (" ".equalsIgnoreCase(str) || "\t".equalsIgnoreCase(str) || "\n".equalsIgnoreCase(str))
 			{
 				buf.next();
 				continue;
