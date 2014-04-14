@@ -123,12 +123,12 @@ public final class JsonParser
 	
 	public static String parseString(Buffer<String> buf)
 	{
-		String expectStr = "\"".equalsIgnoreCase(buf.next()) ? "\"" : " ";
+		assert "\"".equalsIgnoreCase(buf.next());
 		
 		StringBuilder b = new StringBuilder();
 		String next;
 		
-		while (!expectStr.equalsIgnoreCase((next = buf.next())))
+		while (!"\"".equalsIgnoreCase((next = buf.next())))
 		{
 			b.append(StringHelper.valueOf(next));
 			
