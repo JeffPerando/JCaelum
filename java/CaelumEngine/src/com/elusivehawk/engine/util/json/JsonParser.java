@@ -81,6 +81,8 @@ public final class JsonParser
 		
 		String name = parseString(buf);
 		
+		skipWhitespace(buf);
+		
 		if (!":".equalsIgnoreCase(buf.next()))
 		{
 			return null;
@@ -153,7 +155,11 @@ public final class JsonParser
 		{
 			JsonValue v = parseValue(buf);
 			
-			map.put(v.key, v);
+			if (v != null)
+			{
+				map.put(v.key, v);
+				
+			}
 			
 			skipWhitespace(buf);
 			
