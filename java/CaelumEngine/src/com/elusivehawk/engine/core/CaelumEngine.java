@@ -18,7 +18,7 @@ import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.ThreadGameRender;
 import com.elusivehawk.engine.util.FileHelper;
 import com.elusivehawk.engine.util.ReflectionHelper;
-import com.elusivehawk.engine.util.TextParser;
+import com.elusivehawk.engine.util.StringHelper;
 import com.elusivehawk.engine.util.ThreadStoppable;
 import com.elusivehawk.engine.util.storage.Tuple;
 import com.google.common.collect.Lists;
@@ -135,7 +135,7 @@ public final class CaelumEngine
 			}
 			else
 			{
-				spl = TextParser.splitOnce(str, ":");
+				spl = StringHelper.splitOnce(str, ":");
 				strs.put(spl[0], spl[1]);
 				
 			}

@@ -17,7 +17,7 @@ import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
 import com.elusivehawk.engine.util.BufferHelper;
-import com.elusivehawk.engine.util.TextParser;
+import com.elusivehawk.engine.util.StringHelper;
 import com.elusivehawk.engine.util.io.ByteBuf;
 import com.elusivehawk.engine.util.storage.Buffer;
 
@@ -141,7 +141,7 @@ public final class RenderHelper
 	
 	public static int loadShader(File file, GLEnumShader type)
 	{
-		return loadShader(TextParser.concat(TextParser.read(file), "\n", "", null), type);
+		return loadShader(StringHelper.concat(StringHelper.read(file), "\n", "", null), type);
 	}
 	
 	public static int loadShader(String src, GLEnumShader type)

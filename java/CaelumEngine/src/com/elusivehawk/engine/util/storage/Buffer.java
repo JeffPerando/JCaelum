@@ -17,7 +17,7 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-public class Buffer<T> implements IDirty, Collection<T>, Iterator<T>
+public class Buffer<T> implements IDirty, Collection<T>, Iterator<T>, IGettable<T>
 {
 	protected final List<T> l;
 	protected final List<Boolean> dirt;
@@ -77,6 +77,7 @@ public class Buffer<T> implements IDirty, Collection<T>, Iterator<T>
 		return this.hasNext() ? (this.l.get(next ? this.pos++ : this.pos + 1)) : null;
 	}
 	
+	@Override
 	public T get()
 	{
 		return this.get(this.pos);

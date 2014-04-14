@@ -25,9 +25,9 @@ import java.util.List;
  * 
  * @author Elusivehawk
  */
-public final class TextParser
+public final class StringHelper
 {
-	private TextParser(){}
+	private StringHelper(){}
 	
 	public static List<String> read(String path)
 	{

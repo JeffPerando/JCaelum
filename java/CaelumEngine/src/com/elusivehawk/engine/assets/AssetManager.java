@@ -7,7 +7,7 @@ import java.util.Map;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.util.FileHelper;
-import com.elusivehawk.engine.util.TextParser;
+import com.elusivehawk.engine.util.StringHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -143,7 +143,7 @@ public class AssetManager
 	
 	public IAssetReader getReader(File file)
 	{
-		return this.readers.get(TextParser.splitOnce(file.getName(), ".")[1]);
+		return this.readers.get(StringHelper.splitOnce(file.getName(), ".")[1]);
 	}
 	
 	public List<File> getFiles()
