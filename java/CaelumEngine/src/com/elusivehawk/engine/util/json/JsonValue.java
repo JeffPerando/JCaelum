@@ -17,6 +17,11 @@ public class JsonValue
 	@SuppressWarnings("unqualified-field-access")
 	public JsonValue(EnumJsonType jtype, String name, String info)
 	{
+		if (jtype == null)
+		{
+			throw new NullPointerException();
+		}
+		
 		type = jtype;
 		key = name;
 		value = info;

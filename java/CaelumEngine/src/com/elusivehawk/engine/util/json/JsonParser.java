@@ -107,7 +107,7 @@ public final class JsonParser
 		
 		if (intType != null)
 		{
-			ret = new JsonValue(EnumJsonType.valueOf(intType), name, str);
+			ret = new JsonValue(EnumJsonType.valueOfSafe(intType), name, str);
 			
 		}
 		else switch (str)
