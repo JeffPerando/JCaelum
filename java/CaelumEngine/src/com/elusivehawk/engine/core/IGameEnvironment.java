@@ -2,8 +2,8 @@
 package com.elusivehawk.engine.core;
 
 import java.util.List;
-import com.eclipsesource.json.JsonObject;
 import com.elusivehawk.engine.render.IRenderEnvironment;
+import com.elusivehawk.engine.util.json.JsonObject;
 
 /**
  * 

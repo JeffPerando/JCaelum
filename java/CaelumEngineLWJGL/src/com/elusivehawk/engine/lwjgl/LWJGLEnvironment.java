@@ -2,8 +2,6 @@
 package com.elusivehawk.engine.lwjgl;
 
 import java.util.List;
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumOS;
 import com.elusivehawk.engine.core.IGameEnvironment;
@@ -11,6 +9,9 @@ import com.elusivehawk.engine.core.ILog;
 import com.elusivehawk.engine.core.Input;
 import com.elusivehawk.engine.render.IRenderEnvironment;
 import com.elusivehawk.engine.util.FileHelper;
+import com.elusivehawk.engine.util.json.EnumJsonType;
+import com.elusivehawk.engine.util.json.JsonObject;
+import com.elusivehawk.engine.util.json.JsonValue;
 
 /**
  * 
@@ -37,11 +38,11 @@ public class LWJGLEnvironment implements IGameEnvironment
 		
 		if (CaelumEngine.DEBUG && json != null)
 		{
-			JsonValue val = json.get("debugNativeLocation");
+			JsonValue val = json.getValue("debugNativeLocation");
 			
-			if (val.isString())
+			if (val.type == EnumJsonType.STRING)
 			{
-				lib = val.asString();
+				lib = val.value;
 				
 			}
 			

@@ -13,7 +13,7 @@ public final class MatrixHelper
 	
 	public static Matrix createHomogenousMatrix(Vector rot, Vector scl, Vector trans)
 	{
-		return createRotationMatrix(rot).mul(createScalingMatrix(scl), true).mul(createTranslationMatrix(trans), true);
+		return (Matrix)createRotationMatrix(rot).mul(createScalingMatrix(scl)).mul(createTranslationMatrix(trans));
 	}
 	
 	public static Matrix createIdentityMatrix()

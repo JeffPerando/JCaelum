@@ -152,6 +152,18 @@ public class Matrix implements IMathObject<Float>
 	}
 	
 	@Override
+	public boolean isImmutable()
+	{
+		return false;
+	}
+	
+	@Override
+	public Float[] multiget(int bitmask)
+	{
+		throw new UnsupportedOperationException("Matrices do not currently support multiget().");
+	}
+	
+	@Override
 	public void set(int pos, Float num)
 	{
 		this.data[pos] = num.floatValue();
@@ -179,96 +191,6 @@ public class Matrix implements IMathObject<Float>
 	}
 	
 	@Override
-	public Matrix add(IMathObject<Float> obj,  boolean local)
-	{
-		Buffer<Float> buf = new Buffer<Float>(obj);
-		Matrix ret = local ? this : new Matrix(this);
-		
-		for (int c = 0; c < this.getSize(); c++)
-		{
-			ret.set(c, this.get(c) + buf.next());
-			
-			if (!buf.hasNext())
-			{
-				buf.rewind();
-				
-			}
-			
-		}
-		
-		return ret;
-	}
-	
-	@Override
-	public Matrix div(IMathObject<Float> obj,  boolean local)
-	{
-		Buffer<Float> buf = new Buffer<Float>(obj);
-		Matrix ret = local ? this : new Matrix(this);
-		
-		for (int c = 0; c < this.getSize(); c++)
-		{
-			ret.set(c, this.get(c) / buf.next());
-			
-			if (!buf.hasNext())
-			{
-				buf.rewind();
-				
-			}
-			
-		}
-		
-		return ret;
-	}
-	
-	@Override
-	public Matrix sub(IMathObject<Float> obj,  boolean local)
-	{
-		Buffer<Float> buf = new Buffer<Float>(obj);
-		Matrix ret = local ? this : new Matrix(this);
-		
-		for (int c = 0; c < this.getSize(); c++)
-		{
-			ret.set(c, this.get(c) - buf.next());
-			
-			if (!buf.hasNext())
-			{
-				buf.rewind();
-				
-			}
-			
-		}
-		
-		return ret;
-	}
-	
-	@Override
-	public Matrix mul(IMathObject<Float> obj,  boolean local)
-	{
-		Buffer<Float> buf = new Buffer<Float>(obj);
-		Matrix ret = local ? this : new Matrix(this);
-		
-		for (int c = 0; c < this.getSize(); c++)
-		{
-			ret.set(c, this.get(c) * buf.next());
-			
-			if (!buf.hasNext())
-			{
-				buf.rewind();
-				
-			}
-			
-		}
-		
-		return ret;
-	}
-	
-	@Override
-	public Float[] multiget(int bitmask)
-	{
-		throw new UnsupportedOperationException("Matrices do not currently support multiget().");
-	}
-	
-	@Override
 	public void setAll(Float num)
 	{
 		for (int c = 0; c < this.getSize(); c++)
@@ -277,6 +199,116 @@ public class Matrix implements IMathObject<Float>
 			
 		}
 		
+	}
+	
+	@Override
+	public Float normalize()
+	{
+		throw new UnsupportedOperationException("Matrices do not normalize");
+	}
+	
+	@Override
+	public IMathObject<Float> add(IMathObject<Float> obj)
+	{
+		return this.add(obj, this);
+	}
+	
+	@Override
+	public IMathObject<Float> add(IMathObject<Float> obj, IMathObject<Float> dest)
+	{
+		Buffer<Float> buf = new Buffer<Float>(obj);
+		
+		for (int c = 0; c < this.getSize(); c++)
+		{
+			dest.set(c, this.get(c) + buf.next());
+			
+			if (!buf.hasNext())
+			{
+				buf.rewind();
+				
+			}
+			
+		}
+		
+		return dest;
+	}
+	
+	@Override
+	public IMathObject<Float> div(IMathObject<Float> obj)
+	{
+		return this.div(obj, this);
+	}
+	
+	@Override
+	public IMathObject<Float> div(IMathObject<Float> obj, IMathObject<Float> dest)
+	{
+		Buffer<Float> buf = new Buffer<Float>(obj);
+		
+		for (int c = 0; c < this.getSize(); c++)
+		{
+			dest.set(c, this.get(c) / buf.next());
+			
+			if (!buf.hasNext())
+			{
+				buf.rewind();
+				
+			}
+			
+		}
+		
+		return dest;
+	}
+	
+	@Override
+	public IMathObject<Float> sub(IMathObject<Float> obj)
+	{
+		return this.mul(obj, this);
+	}
+	
+	@Override
+	public IMathObject<Float> sub(IMathObject<Float> obj, IMathObject<Float> dest)
+	{
+		Buffer<Float> buf = new Buffer<Float>(obj);
+		
+		for (int c = 0; c < this.getSize(); c++)
+		{
+			dest.set(c, this.get(c) - buf.next());
+			
+			if (!buf.hasNext())
+			{
+				buf.rewind();
+				
+			}
+			
+		}
+		
+		return dest;
+	}
+	
+	@Override
+	public IMathObject<Float> mul(IMathObject<Float> obj)
+	{
+		return this.mul(obj, this);
+	}
+	
+	@Override
+	public IMathObject<Float> mul(IMathObject<Float> obj, IMathObject<Float> dest)
+	{
+		Buffer<Float> buf = new Buffer<Float>(obj);
+		
+		for (int c = 0; c < this.getSize(); c++)
+		{
+			dest.set(c, this.get(c) * buf.next());
+			
+			if (!buf.hasNext())
+			{
+				buf.rewind();
+				
+			}
+			
+		}
+		
+		return dest;
 	}
 	
 }

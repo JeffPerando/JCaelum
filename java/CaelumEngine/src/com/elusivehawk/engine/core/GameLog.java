@@ -35,7 +35,7 @@ public class GameLog implements ILog
 		b.append("[");
 		b.append(type.name());
 		b.append("] ");
-		b.append(StringHelper.parseDate(Calendar.getInstance()));
+		b.append(StringHelper.parseDate(Calendar.getInstance(), "-", ":"));
 		b.append(": ");
 		b.append(type.err && msg == null ? this.crashDialog.get(this.rng.nextInt(this.crashDialog.size())) : msg);
 		

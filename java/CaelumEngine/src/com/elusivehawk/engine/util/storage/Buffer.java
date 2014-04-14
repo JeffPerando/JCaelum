@@ -72,11 +72,6 @@ public class Buffer<T> implements IDirty, Collection<T>, Iterator<T>, IGettable<
 		return this.next(true);
 	}
 	
-	public T next(boolean next)
-	{
-		return this.hasNext() ? (this.l.get(next ? this.pos++ : this.pos + 1)) : null;
-	}
-	
 	@Override
 	public T get()
 	{
@@ -106,18 +101,6 @@ public class Buffer<T> implements IDirty, Collection<T>, Iterator<T>, IGettable<
 		return true;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public Buffer<T> add(T... objs)
-	{
-		for (T obj : objs)
-		{
-			this.add(obj);
-			
-		}
-		
-		return this;
-	}
-	
 	@Override
 	public boolean addAll(Collection<? extends T> col)
 	{
@@ -130,55 +113,10 @@ public class Buffer<T> implements IDirty, Collection<T>, Iterator<T>, IGettable<
 		return true;
 	}
 	
-	public int position()
-	{
-		return this.pos;
-	}
-	
-	public void position(int position)
-	{
-		this.pos = position;
-	}
-	
-	public void mark()
-	{
-		this.mark = this.pos;
-		
-	}
-	
-	public void norm()
-	{
-		this.mark = 0;
-		
-		for (int c = 0; c < this.dirt.size(); c++)
-		{
-			this.dirt.set(c, false);
-			
-		}
-		
-	}
-	
-	public int remaining()
-	{
-		return this.l.size() - this.pos;
-	}
-	
-	public void rewind()
-	{
-		this.pos = this.mark;
-		this.mark = 0;
-		
-	}
-	
 	@Override
 	public int size()
 	{
 		return this.l.size();
-	}
-	
-	public boolean isDirty(int i)
-	{
-		return this.dirt.get(i);
 	}
 	
 	@Override
@@ -259,6 +197,74 @@ public class Buffer<T> implements IDirty, Collection<T>, Iterator<T>, IGettable<
 	public <T> T[] toArray(T[] arg0)
 	{
 		return this.l.toArray(arg0);
+	}
+	
+	public T next(boolean next)
+	{
+		return this.hasNext() ? (this.l.get(next ? this.pos++ : this.pos + 1)) : null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Buffer<T> add(T... objs)
+	{
+		for (T obj : objs)
+		{
+			this.add(obj);
+			
+		}
+		
+		return this;
+	}
+	
+	public int position()
+	{
+		return this.pos;
+	}
+	
+	public void position(int position)
+	{
+		this.pos = position;
+	}
+	
+	public void mark()
+	{
+		this.mark = this.pos;
+		
+	}
+	
+	public void norm()
+	{
+		this.mark = 0;
+		
+		for (int c = 0; c < this.dirt.size(); c++)
+		{
+			this.dirt.set(c, false);
+			
+		}
+		
+	}
+	
+	public int remaining()
+	{
+		return this.l.size() - this.pos;
+	}
+	
+	public void rewind()
+	{
+		this.pos = this.mark;
+		this.mark = 0;
+		
+	}
+	
+	public boolean isDirty(int i)
+	{
+		return this.dirt.get(i);
+	}
+	
+	public void skip(int count)
+	{
+		this.pos += count;
+		
 	}
 	
 }

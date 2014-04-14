@@ -16,15 +16,15 @@ public class Tokenizer
 	
 	public Tokenizer(){}
 	
-	public Tokenizer(Character... tks)
+	public Tokenizer(char... tks)
 	{
 		addTokens(tks);
 		
 	}
 	
-	public void addTokens(Character... tks)
+	public void addTokens(char... tks)
 	{
-		for (Character tk : tks)
+		for (char tk : tks)
 		{
 			this.tokens.add(tk);
 			

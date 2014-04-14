@@ -52,7 +52,7 @@ public class Vector2f extends Vector
 	
 	public void scale(float f)
 	{
-		this.scale(f, true);
+		this.scale(f, this);
 		
 	}
 	
@@ -65,7 +65,7 @@ public class Vector2f extends Vector
 	
 	public void sub(Vector2f vec)
 	{
-		this.sub(vec, true);
+		this.sub(vec, this);
 		
 	}
 	

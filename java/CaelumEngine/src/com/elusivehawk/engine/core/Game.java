@@ -159,7 +159,6 @@ public abstract class Game implements IUpdatable
 	 * 
 	 * @return The physics simulator to use during the game's lifespan.
 	 */
-	@Deprecated
 	public IPhysicsSimulator getPhysicsSimulator()
 	{
 		return this.state == null ? null : this.state.getPhysicsSimulator();

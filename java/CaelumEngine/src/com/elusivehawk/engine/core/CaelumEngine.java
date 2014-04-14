@@ -1,15 +1,11 @@
 
 package com.elusivehawk.engine.core;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.lang.management.ManagementFactory;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
 import com.elusivehawk.engine.assets.AssetManager;
 import com.elusivehawk.engine.assets.ThreadAssetLoader;
 import com.elusivehawk.engine.render.IRenderEnvironment;
@@ -20,6 +16,10 @@ import com.elusivehawk.engine.util.FileHelper;
 import com.elusivehawk.engine.util.ReflectionHelper;
 import com.elusivehawk.engine.util.StringHelper;
 import com.elusivehawk.engine.util.ThreadStoppable;
+import com.elusivehawk.engine.util.json.EnumJsonType;
+import com.elusivehawk.engine.util.json.JsonObject;
+import com.elusivehawk.engine.util.json.JsonParser;
+import com.elusivehawk.engine.util.json.JsonValue;
 import com.elusivehawk.engine.util.storage.Tuple;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -221,6 +221,16 @@ public final class CaelumEngine
 		this.env = env;
 		this.renv = env.getRenderEnv();
 		
+		ILog l = this.env.getLog();
+		
+		if (l != null)
+		{
+			this.log = l;
+			
+			l.setEnableVerbosity(verbose);
+			
+		}
+		
 		List<Input> inputList = env.loadInputs();
 		
 		if (inputList == null || inputList.isEmpty())
@@ -234,17 +244,9 @@ public final class CaelumEngine
 			{
 				this.inputs.put(input.getType(), input);
 				
+				this.log.log(EnumLogType.VERBOSE, String.format("Loaded input of type %s, with class %s", input.getType().name(), input.getClass().getCanonicalName()));
+				
 			}
-			
-		}
-		
-		ILog l = this.env.getLog();
-		
-		if (l != null)
-		{
-			this.log = l;
-			
-			l.setEnableVerbosity(verbose);
 			
 		}
 		
@@ -328,47 +330,29 @@ public final class CaelumEngine
 	
 	private Class<?> loadEnvironmentFromJson()
 	{
-		FileReader fr = FileHelper.createReader(FileHelper.createFile(".", "/game.json"));
-		
-		if (fr == null)
-		{
-			return null;
-		}
-		
-		JsonObject j = null;
-		
-		try
-		{
-			j = JsonObject.readFrom(new BufferedReader(fr));
-			
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			
-		}
+		JsonObject j = JsonParser.parse(FileHelper.createFile(".", "/game.json"));
 		
 		if (j == null)
 		{
 			return null;
 		}
 		
-		JsonValue curEnv = j.get(EnumOS.getCurrentOS().toString());
+		JsonValue curEnv = j.getValue(EnumOS.getCurrentOS().toString());
 		
-		if (curEnv == null || !curEnv.isObject())
+		if (curEnv == null || curEnv.type != EnumJsonType.OBJECT)
 		{
 			return null;
 		}
 		
-		this.envConfig = curEnv.asObject();
-		JsonValue envLoc = this.envConfig.get("location");
+		this.envConfig = (JsonObject)curEnv;
+		JsonValue envLoc = this.envConfig.getValue("location");
 		
-		if (!envLoc.isString())
+		if (envLoc.type != EnumJsonType.STRING)
 		{
 			return null;
 		}
 		
-		File envLibFile = FileHelper.createFile(envLoc.asString());
+		File envLibFile = FileHelper.createFile(envLoc.value);
 		
 		if (!FileHelper.canReadFile(envLibFile) || !envLibFile.getName().endsWith(".jar"))
 		{

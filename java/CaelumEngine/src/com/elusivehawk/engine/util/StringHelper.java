@@ -4,13 +4,13 @@ package com.elusivehawk.engine.util;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.Reader;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import com.google.common.collect.Lists;
 
 /**
  * 
@@ -27,6 +27,9 @@ import java.util.List;
  */
 public final class StringHelper
 {
+	public static final String[] NUMBERS =	{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
+	public static final String[] HEX =		{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"};
+	
 	private StringHelper(){}
 	
 	public static List<String> read(String path)
@@ -36,29 +39,28 @@ public final class StringHelper
 	
 	public static List<String> read(File file)
 	{
-		List<String> text = new ArrayList<String>();
-		FileReader fr = FileHelper.createReader(file);
+		return read(FileHelper.createReader(file));
+	}
+	
+	public static List<String> read(Reader r)
+	{
+		List<String> text = Lists.newArrayList();
+		BufferedReader br = (r instanceof BufferedReader) ? (BufferedReader)r : new BufferedReader(r);
 		
-		if (fr != null)
+		try
 		{
-			try
+			for (String line = br.readLine(); line != null; line = br.readLine())
 			{
-				BufferedReader r = new BufferedReader(fr);
-				
-				for (String line = r.readLine(); line != null; line = r.readLine())
-				{
-					text.add(line);
-					
-				}
-				
-				r.close();
+				text.add(line);
 				
 			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-				
-			}
+			
+			br.close();
+			
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
 			
 		}
 		
@@ -237,28 +239,230 @@ public final class StringHelper
 		return null;
 	}
 	
-	public static String parseDate(Calendar cal)
+	public static String parseDate(Calendar cal, String dateSep, String timeSep)
 	{
-		StringBuilder b = new StringBuilder(15);
+		StringBuilder b = new StringBuilder(16);
 		
 		b.append(cal.get(Calendar.DATE));
-		b.append("-");
+		b.append(dateSep);
 		b.append(cal.get(Calendar.MONTH) + 1);
-		b.append("-");
+		b.append(dateSep);
 		b.append(cal.get(Calendar.YEAR));
 		b.append(" ");
+		
 		int minute = cal.get(Calendar.MINUTE);
+		
 		b.append(cal.get(Calendar.HOUR));
-		b.append(":");
-		b.append((minute < 10 ? "0" : "") + minute);
-		b.append(":");
+		b.append(timeSep);
+		b.append((minute < 10 ? "0" : ""));
+		b.append(minute);
+		b.append(timeSep);
 		b.append(cal.get(Calendar.SECOND));
-		b.append(":");
+		b.append(timeSep);
 		b.append(cal.get(Calendar.MILLISECOND));
 		b.append(" ");
 		b.append(cal.get(Calendar.AM_PM) == Calendar.PM ? "PM" : "AM");
 		
 		return b.toString();
+	}
+	
+	public static String valueOf(String str)
+	{
+		String ret = str;
+		
+		switch (str)
+		{
+			case "\\n": ret = "\n"; break;
+			case "\\t": ret = "\t"; break;
+			case "\\\'": ret = "\'"; break;
+			case "\\\"": ret = "\""; break;
+			case "\\b": ret = "\b"; break;
+			case "\\f": ret = "\f"; break;
+			case "\\r": ret = "\r"; break;
+			
+		}
+		
+		if (str.startsWith("\\u"))
+		{
+			ret = ((Character)((char)Short.parseShort(String.format("0x%s", str.substring(3))))).toString();
+			
+		}
+		
+		return ret;
+	}
+	
+	public static String sanitizeEscapeSequence(String str)
+	{
+		String ret = str;
+		
+		switch (str)
+		{
+			case "\n": ret = "\\n"; break;
+			case "\t": ret = "\\t"; break;
+			case "\'": ret = "\\\'"; break;
+			case "\"": ret = "\\\""; break;
+			case "\b": ret = "\\b"; break;
+			case "\f": ret = "\\f"; break;
+			case "\r": ret = "\\r"; break;
+			
+		}
+		
+		return ret;
+	}
+	
+	public static boolean isValidInt(String n) throws NumberFormatException
+	{
+		String num = n.toLowerCase();
+		boolean hex = false, isFloat = false;
+		
+		if (num.startsWith("0x"))
+		{
+			num = num.substring(2);
+			hex = true;
+			
+		}
+		
+		char ch = num.charAt(num.length() - 1);
+		
+		if (!isCharValidInt(ch, hex))
+		{
+			switch (ch)
+			{
+				case 'f': 
+				case 'd': isFloat = true;
+				case 'l': num = num.substring(0, num.length() - 1); break;
+				default: throw new NumberFormatException();
+			}
+			
+			if (hex && isFloat)
+			{
+				throw new NumberFormatException();
+			}
+			
+		}
+		
+		char chr;
+		
+		for (int c = 0; c < num.length(); c++)
+		{
+			chr = num.charAt(c);
+			
+			if (!isCharValidInt(chr, hex) && c != num.length() - 1)
+			{
+				if (isFloat && chr == '.' && isCharValidInt(num.charAt(c + 1), hex))
+				{
+					continue;
+				}
+				
+				return false;
+			}
+			
+		}
+		
+		return true;
+	}
+	
+	public static boolean isCharValidInt(char ch, boolean hex)
+	{
+		String chr = ((Character)ch).toString();
+		
+		if (hex)
+		{
+			for (String i : StringHelper.HEX)
+			{
+				if (i.equalsIgnoreCase(chr))
+				{
+					return true;
+				}
+				
+			}
+			
+		}
+		else
+		{
+			for (String i : StringHelper.NUMBERS)
+			{
+				if (i.equalsIgnoreCase(chr))
+				{
+					return true;
+				}
+				
+			}
+			
+		}
+		
+		return false;
+	}
+	
+	public static String getIntType(String n) throws NumberFormatException
+	{
+		boolean hex = n.startsWith("0x"), isFloat = n.indexOf(".") != -1;
+		
+		if (hex && isFloat)
+		{
+			throw new NumberFormatException();
+		}
+		
+		if (!isValidInt(n))
+		{
+			return null;
+		}
+		
+		if (isFloat)
+		{
+			if (n.endsWith("."))
+			{
+				throw new NumberFormatException();
+			}
+			
+			if (n.endsWith("f"))
+			{
+				return "float";
+			}
+			
+			return "double";
+		}
+		
+		if (hex)
+		{
+			int bits = (n.length() - 2) * 4;
+			
+			if (bits <= 8)
+			{
+				return "byte";
+			}
+			
+			if (bits <= 16)
+			{
+				return "short";
+			}
+			
+			if (bits <= 32)
+			{
+				return "int";
+			}
+			
+			return "long";
+		}
+		
+		long l = Long.parseLong(n);
+		
+		if ((l & 0xFF) == l)
+		{
+			return "byte";
+		}
+		
+		if ((l & 0xFFFF) == l)
+		{
+			return "short";
+		}
+		
+		if ((l & 0xFFFFFFFF) == l)
+		{
+			return "int";
+		}
+		
+		return "long";
 	}
 	
 }

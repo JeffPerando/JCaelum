@@ -24,7 +24,6 @@ public abstract class GameState
 		return null;
 	}
 	
-	@Deprecated
 	@SuppressWarnings("static-method")
 	public IPhysicsSimulator getPhysicsSimulator()
 	{

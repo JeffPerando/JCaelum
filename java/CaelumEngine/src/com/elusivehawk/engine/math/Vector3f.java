@@ -59,7 +59,7 @@ public class Vector3f extends Vector2f
 	
 	public void sub(Vector3f vec)
 	{
-		this.sub(vec, true);
+		this.sub(vec, this);
 		
 	}
 	

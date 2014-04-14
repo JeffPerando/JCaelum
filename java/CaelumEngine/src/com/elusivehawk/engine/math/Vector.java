@@ -92,6 +92,12 @@ public class Vector implements IMathObject<Float>
 	}
 	
 	@Override
+	public boolean isImmutable()
+	{
+		return false;
+	}
+	
+	@Override
 	public Float get(int pos)
 	{
 		return MathHelper.bounds(pos, 0, this.getSize() - 1) ? this.nums[pos] : 0f;
@@ -156,6 +162,21 @@ public class Vector implements IMathObject<Float>
 	}
 	
 	@Override
+	public Float normalize()
+	{
+		float f = 0f, f0 = 0f;
+		
+		for (int c = 0; c < this.getSize(); c++)
+		{
+			f0 = this.get(c);
+			f += (f0 * f0);
+			
+		}
+		
+		return (float)Math.sqrt(f);
+	}
+	
+	@Override
 	public Vector set(IMathObject<Float> obj)
 	{
 		int l = Math.min(this.getSize(), obj.getSize());
@@ -172,71 +193,83 @@ public class Vector implements IMathObject<Float>
 	}
 	
 	@Override
-	public Vector add(IMathObject<Float> obj, boolean local)
+	public IMathObject<Float> add(IMathObject<Float> obj)
 	{
-		int l = Math.min(this.getSize(), obj.getSize());
-		Vector ret = local ? this : new Vector(this);
-		
-		for (int c = 0; c < l; c++)
-		{
-			ret.set(c, this.get(c) + obj.get(c));
-			
-		}
-		
-		ret.onChanged();
-		
-		return ret;
+		return this.add(obj, this);
 	}
 	
 	@Override
-	public Vector div(IMathObject<Float> obj, boolean local)
+	public IMathObject<Float> add(IMathObject<Float> obj, IMathObject<Float> dest)
 	{
 		int l = Math.min(this.getSize(), obj.getSize());
-		Vector ret = local ? this : new Vector(this);
 		
 		for (int c = 0; c < l; c++)
 		{
-			ret.set(c, this.get(c) / obj.get(c));
+			dest.set(c, this.get(c) + obj.get(c));
 			
 		}
 		
-		ret.onChanged();
-		
-		return ret;
+		return dest;
 	}
 	
 	@Override
-	public Vector sub(IMathObject<Float> obj, boolean local)
+	public IMathObject<Float> div(IMathObject<Float> obj)
 	{
-		int l = Math.min(this.getSize(), obj.getSize());
-		Vector ret = local ? this : new Vector(this);
-		
-		for (int c = 0; c < l; c++)
-		{
-			ret.set(c, this.get(c) - obj.get(c));
-			
-		}
-		
-		ret.onChanged();
-		
-		return ret;
+		return this.div(obj, this);
 	}
 	
 	@Override
-	public Vector mul(IMathObject<Float> obj, boolean local)
+	public IMathObject<Float> div(IMathObject<Float> obj, IMathObject<Float> dest)
 	{
 		int l = Math.min(this.getSize(), obj.getSize());
-		Vector ret = local ? this : new Vector(this);
 		
 		for (int c = 0; c < l; c++)
 		{
-			ret.set(c, this.get(c) * obj.get(c));
+			dest.set(c, this.get(c) / obj.get(c));
 			
 		}
 		
-		ret.onChanged();
+		return dest;
+	}
+	
+	@Override
+	public IMathObject<Float> sub(IMathObject<Float> obj)
+	{
+		return this.sub(obj, this);
+	}
+	
+	@Override
+	public IMathObject<Float> sub(IMathObject<Float> obj, IMathObject<Float> dest)
+	{
+		int l = Math.min(this.getSize(), obj.getSize());
 		
-		return ret;
+		for (int c = 0; c < l; c++)
+		{
+			dest.set(c, this.get(c) - obj.get(c));
+			
+		}
+		
+		return dest;
+	}
+	
+	@Override
+	public IMathObject<Float> mul(IMathObject<Float> obj)
+	{
+		return this.mul(obj, this);
+	}
+	
+	@Override
+	public IMathObject<Float> mul(IMathObject<Float> obj, IMathObject<Float> dest)
+	{
+		int l = Math.min(this.getSize(), obj.getSize());
+		
+		for (int c = 0; c < l; c++)
+		{
+			dest.set(c, this.get(c) * obj.get(c));
+			
+		}
+		
+		return dest;
 	}
 	
 	@Override
@@ -362,17 +395,15 @@ public class Vector implements IMathObject<Float>
 		return MathHelper.length(this);
 	}
 	
-	public Vector scale(float f, boolean local)
+	public Vector scale(float f, Vector dest)
 	{
-		Vector ret = local ? this : new Vector(this);
-		
 		for (int c = 0; c < this.getSize(); c++)
 		{
-			ret.set(c, ret.get(c) * f);
+			dest.set(c, this.get(c) * f);
 			
 		}
 		
-		return ret;
+		return dest;
 	}
 	
 }
