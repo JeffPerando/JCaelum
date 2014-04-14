@@ -27,11 +27,6 @@ import com.google.common.collect.Maps;
  */
 public class ThreadNetwork extends ThreadStoppable
 {
-	public static final int HEADER_LENGTH = 3,
-			DATA_LENGTH = 8192,
-			TOTAL_PKT_LENGTH = HEADER_LENGTH + DATA_LENGTH,
-			PKT_LIMIT = 32;
-	
 	protected final IPacketHandler handler;
 	protected final Map<UUID, IConnection> connections;
 	
@@ -41,12 +36,12 @@ public class ThreadNetwork extends ThreadStoppable
 	
 	//Incoming
 	
-	protected final ByteBuffer head = ByteBuffer.allocate(HEADER_LENGTH),
-			bin = ByteBuffer.allocate(DATA_LENGTH);
+	protected final ByteBuffer head = ByteBuffer.allocate(NetworkConst.HEADER_LENGTH),
+			bin = ByteBuffer.allocate(NetworkConst.DATA_LENGTH);
 	
 	//Outgoing
 	
-	protected final ByteBuffer bout = ByteBuffer.allocate(TOTAL_PKT_LENGTH * PKT_LIMIT);
+	protected final ByteBuffer bout = ByteBuffer.allocate(NetworkConst.TOTAL_PKT_LENGTH * NetworkConst.PKT_LIMIT);
 	
 	@SuppressWarnings("unqualified-field-access")
 	public ThreadNetwork(IPacketHandler h, int playerCount)
@@ -116,7 +111,7 @@ public class ThreadNetwork extends ThreadStoppable
 						while (io.read(this.head) != -1)
 						{
 							s = this.head.get();
-							length = (short)MathHelper.clamp(this.head.getShort(), 1, DATA_LENGTH);//Get the remaining packet length
+							length = (short)MathHelper.clamp(this.head.getShort(), 1, NetworkConst.DATA_LENGTH);//Get the remaining packet length
 							
 							this.head.clear();//Clear the buffer for reuse
 							

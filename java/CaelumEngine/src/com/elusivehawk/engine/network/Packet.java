@@ -22,7 +22,7 @@ public final class Packet implements IByteWriter
 	
 	public Packet(Side s, int length)
 	{
-		this(s, new byte[MathHelper.clamp(length, 1, ThreadNetwork.DATA_LENGTH) + ThreadNetwork.HEADER_LENGTH]);
+		this(s, new byte[MathHelper.clamp(length, 1, NetworkConst.DATA_LENGTH) + NetworkConst.HEADER_LENGTH]);
 		
 	}
 	
@@ -30,7 +30,7 @@ public final class Packet implements IByteWriter
 	public Packet(Side s, byte[] b)
 	{
 		assert b != null;
-		assert MathHelper.bounds(b.length, 1, ThreadNetwork.TOTAL_PKT_LENGTH);
+		assert MathHelper.bounds(b.length, 1, NetworkConst.TOTAL_PKT_LENGTH);
 		
 		side = s;
 		data = b;
@@ -54,7 +54,7 @@ public final class Packet implements IByteWriter
 		
 		for (byte b : bytes)
 		{
-			this.data[this.pos++] = b;
+			this.data[(NetworkConst.HEADER_LENGTH + this.pos++)] = b;
 			
 		}
 		
