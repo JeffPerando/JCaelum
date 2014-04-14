@@ -17,8 +17,8 @@ import com.elusivehawk.engine.util.StringHelper;
  */
 public class GameLog implements ILog
 {
-	protected final List<String> crashDialog = StringHelper.read(FileHelper.createFile((CaelumEngine.DEBUG ? "src" : ".") + "/com/elusivehawk/engine/core/CrashReportDialog.txt"));
-	protected final Random rng = new Random();
+	protected final List<String> crashDialog = StringHelper.read(FileHelper.createFile(String.format("%s/com/elusivehawk/engine/core/CrashReportDialog.txt", (CaelumEngine.DEBUG ? "src" : "."))));
+	protected final Random rng = new Random("GameLogCrashesTM".hashCode());
 	
 	private boolean enableVerbosity = true;
 	

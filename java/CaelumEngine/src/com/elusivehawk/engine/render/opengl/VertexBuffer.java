@@ -177,11 +177,13 @@ public class VertexBuffer implements IGLBindable
 	@Override
 	public boolean bind(RenderContext context)
 	{
-		context.getGL1().glBindBuffer(this);
+		IGL1 gl1 = context.getGL1();
+		
+		gl1.glBindBuffer(this);
 		
 		try
 		{
-			RenderHelper.checkForGLError(context);
+			RenderHelper.checkForGLError(gl1);
 			
 		}
 		catch (Exception e)

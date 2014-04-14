@@ -9,6 +9,7 @@ import com.elusivehawk.engine.core.IContext;
 import com.elusivehawk.engine.core.IGameStateListener;
 import com.elusivehawk.engine.core.IThreadContext;
 import com.elusivehawk.engine.render.opengl.GLConst;
+import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.util.ThreadTimed;
 import com.elusivehawk.engine.util.storage.SemiFinalStorage;
 
@@ -97,6 +98,7 @@ public class ThreadGameRender extends ThreadTimed implements IGameStateListener,
 		}
 		
 		Collection<IRenderEngine> engines = this.hub.getRenderEngines();
+		IGL1 gl1 = this.context.getGL1();
 		
 		if (engines != null && !engines.isEmpty())
 		{
@@ -106,7 +108,7 @@ public class ThreadGameRender extends ThreadTimed implements IGameStateListener,
 			
 			this.context.setRenderStage(EnumRenderStage.RENDER);
 			
-			this.context.getGL1().glClear(GLConst.GL_COLOR_BUFFER_BIT | GLConst.GL_DEPTH_BUFFER_BIT);
+			gl1.glClear(GLConst.GL_COLOR_BUFFER_BIT | GLConst.GL_DEPTH_BUFFER_BIT);
 			
 			for (int p = 0; p < priorityCount && flag; p++)
 			{
@@ -133,15 +135,15 @@ public class ThreadGameRender extends ThreadTimed implements IGameStateListener,
 					engine.render(this.context, this.hub);
 					renderersUsed++;
 					
-					int tex = 0, texUnits = this.context.getGL1().glGetInteger(GLConst.GL_MAX_TEXTURE_UNITS);
+					int tex = 0, texUnits = gl1.glGetInteger(GLConst.GL_MAX_TEXTURE_UNITS);
 					
 					for (int c = 0; c < texUnits; c++)
 					{
-						tex = this.context.getGL1().glGetInteger(GLConst.GL_TEXTURE0 + c);
+						tex = gl1.glGetInteger(GLConst.GL_TEXTURE0 + c);
 						
 						if (tex != 0)
 						{
-							this.context.getGL1().glBindTexture(GLConst.GL_TEXTURE0 + c, 0);
+							gl1.glBindTexture(GLConst.GL_TEXTURE0 + c, 0);
 							
 						}
 						
@@ -149,7 +151,7 @@ public class ThreadGameRender extends ThreadTimed implements IGameStateListener,
 					
 					try
 					{
-						RenderHelper.checkForGLError(this.context);
+						RenderHelper.checkForGLError(gl1);
 						
 					}
 					catch (Exception e)

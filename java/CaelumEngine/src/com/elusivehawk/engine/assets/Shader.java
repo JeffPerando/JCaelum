@@ -25,7 +25,7 @@ public class Shader extends Asset
 		super(file.getName());
 		
 		gltype = type;
-		source = StringHelper.concat(StringHelper.read(file), "\n", "", null);
+		source = StringHelper.readToOneLine(file);
 		
 	}
 	

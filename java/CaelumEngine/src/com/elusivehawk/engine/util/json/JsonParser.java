@@ -45,12 +45,12 @@ public final class JsonParser
 	
 	public static JsonObject parse(File file)
 	{
-		return parse(StringHelper.read(file));
+		return parse(StringHelper.readToOneLine(file));
 	}
 	
 	public static JsonObject parse(Reader r)
 	{
-		return parse(StringHelper.read(r));
+		return parse(StringHelper.readToOneLine(r));
 	}
 	
 	public static JsonObject parse(List<String> strs)

@@ -6,7 +6,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.Reader;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -70,6 +69,42 @@ public final class StringHelper
 		return text;
 	}
 	
+	public static String readToOneLine(String path)
+	{
+		return readToOneLine(FileHelper.createFile(path));
+	}
+	
+	public static String readToOneLine(File file)
+	{
+		return readToOneLine(FileHelper.createReader(file));
+	}
+	
+	public static String readToOneLine(Reader r)
+	{
+		StringBuilder b = new StringBuilder();
+		BufferedReader br = (r instanceof BufferedReader) ? (BufferedReader)r : new BufferedReader(r);
+		
+		try
+		{
+			for (String line = br.readLine(); line != null; line = br.readLine())
+			{
+				b.append(line);
+				b.append("\n");
+				
+			}
+			
+			br.close();
+			
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			
+		}
+		
+		return replaceLast(b.toString(), "\n", "");
+	}
+	
 	public static boolean write(String path, boolean append, boolean makeFileIfNotFound, String... text)
 	{
 		return write(FileHelper.createFile(path), append, makeFileIfNotFound, text);
@@ -105,7 +140,7 @@ public final class StringHelper
 		
 		if (!file.canWrite())
 		{
-			System.err.println("File with path " + file.getPath() + " cannot be written to! This is a bug!");
+			System.err.println(String.format("File with path %s cannot be written to! This is a bug!", file.getPath()));
 			
 			return false;
 		}
@@ -140,7 +175,7 @@ public final class StringHelper
 		
 		if (lastIn == -1)
 		{
-			System.err.println("Failed to remove last instance of " + textToRemove + " from " + str + ".");
+			System.err.println(String.format("Failed to remove last instance of %s from %s", textToRemove, str));
 			
 			return str;
 		}
@@ -153,7 +188,21 @@ public final class StringHelper
 	
 	public static String concat(String separator, String endWith, String d, String... strs)
 	{
-		return concat(Arrays.asList(strs), separator, endWith, d);
+		if (strs == null || strs.length == 0)
+		{
+			return d;
+		}
+		
+		StringBuilder b = new StringBuilder(strs.length * 2);
+		
+		for (int c = 0; c < strs.length; ++c)
+		{
+			b.append(strs[c]);
+			b.append(c == strs.length - 1 ? endWith : separator);
+			
+		}
+		
+		return b.toString();
 	}
 	
 	public static String concat(List<String> strs, String separator, String endWith, String d)
@@ -168,56 +217,11 @@ public final class StringHelper
 		for (int c = 0; c < strs.size(); ++c)
 		{
 			b.append(strs.get(c));
-			b.append(c + 1 == strs.size() ? endWith : separator);
+			b.append(c == strs.size() - 1 ? endWith : separator);
 			
 		}
 		
 		return b.toString();
-	}
-	
-	public static String parseArguments(Method m, boolean includeClassNames, boolean bracket)
-	{
-		StringBuilder ret = new StringBuilder();
-		
-		try
-		{
-			Class<?>[] argsC = m.getParameterTypes();
-			
-			if (bracket) ret.append("(");
-			
-			if (argsC.length > 0)
-			{
-				for (int c = 0; c < argsC.length; c++)
-				{
-					if (includeClassNames)
-					{
-						ret.append(argsC[c].getSimpleName());
-						ret.append(" ");
-						
-					}
-					
-					ret.append("arg" + c);
-					
-					if (c != (argsC.length - 1))
-					{
-						ret.append(", ");
-						
-					}
-					
-				}
-				
-			}
-			
-			if (bracket) ret.append(")");
-			
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			
-		}
-		
-		return ret.toString();
 	}
 	
 	public static String[] splitOnce(String str, String out)
@@ -231,7 +235,7 @@ public final class StringHelper
 		
 		if (ind == -1)
 		{
-			return new String[]{null, str};
+			return new String[]{"", str};
 		}
 		
 		String[] ret = new String[2];

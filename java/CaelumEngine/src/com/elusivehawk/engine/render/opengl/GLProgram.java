@@ -54,20 +54,22 @@ public class GLProgram implements IGLBindable, IAssetReceiver
 		
 		if (this.relink)
 		{
+			IGL2 gl2 = context.getGL2();
+			
 			for (GLEnumShader stype : GLEnumShader.values())
 			{
 				Shader s = this.shaders[stype.ordinal()];
 				
 				if (s != null)
 				{
-					context.getGL2().glAttachShader(this, s);
+					gl2.glAttachShader(this, s);
 					
 				}
 				
 			}
 			
-			context.getGL2().glLinkProgram(this);
-			context.getGL2().glValidateProgram(this);
+			gl2.glLinkProgram(this);
+			gl2.glValidateProgram(this);
 			
 			try
 			{
@@ -176,6 +178,8 @@ public class GLProgram implements IGLBindable, IAssetReceiver
 			
 		}
 		
+		IGL2 gl2 = context.getGL2();
+		
 		context.getGL3().glDeleteVertexArrays(this.vba);
 		
 		for (Shader s : this.shaders)
@@ -185,12 +189,12 @@ public class GLProgram implements IGLBindable, IAssetReceiver
 				continue;
 			}
 			
-			context.getGL2().glDetachShader(this, s);
-			context.getGL2().glDeleteShader(s);
+			gl2.glDetachShader(this, s);
+			gl2.glDeleteShader(s);
 			
 		}
 		
-		context.getGL2().glDeleteProgram(this);
+		gl2.glDeleteProgram(this);
 		
 	}
 	

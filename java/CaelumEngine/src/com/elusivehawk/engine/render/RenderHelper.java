@@ -141,14 +141,14 @@ public final class RenderHelper
 	
 	public static int loadShader(File file, GLEnumShader type)
 	{
-		return loadShader(StringHelper.concat(StringHelper.read(file), "\n", "", null), type);
+		return loadShader(StringHelper.readToOneLine(file), type);
 	}
 	
 	public static int loadShader(String src, GLEnumShader type)
 	{
 		RenderContext context = CaelumEngine.renderContext();
-		
 		IGL2 gl2 = context.getGL2();
+		
 		int id = gl2.glCreateShader(type);
 		gl2.glShaderSource(id, src);
 		gl2.glCompileShader(type);

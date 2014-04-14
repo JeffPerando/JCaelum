@@ -88,7 +88,7 @@ public class RenderEngine3D implements IRenderEngine
 				
 				try
 				{
-					RenderHelper.checkForGLError(context);
+					RenderHelper.checkForGLError(gl1);
 					
 				}
 				catch (Exception e)
