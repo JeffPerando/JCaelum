@@ -13,7 +13,7 @@ public final class MathHelper
 {
 	public static final float PI = 3.141592653589793238f;
 	
-	public static final Random RNG = new Random("Elusivehawk".hashCode());
+	public static final Random RNG = new Random(((long)"CaelumEngine".hashCode()) << 32 | "Elusivehawk".hashCode());
 	
 	private MathHelper(){}
 	

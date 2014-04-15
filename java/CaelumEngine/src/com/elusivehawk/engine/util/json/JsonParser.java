@@ -43,22 +43,22 @@ public final class JsonParser
 		
 	}
 	
-	public static JsonObject parse(File file)
+	public static JsonObject parse(File file) throws JsonParseException
 	{
 		return parse(StringHelper.readToOneLine(file));
 	}
 	
-	public static JsonObject parse(Reader r)
+	public static JsonObject parse(Reader r) throws JsonParseException
 	{
 		return parse(StringHelper.readToOneLine(r));
 	}
 	
-	public static JsonObject parse(List<String> strs)
+	public static JsonObject parse(List<String> strs) throws JsonParseException
 	{
 		return parse(StringHelper.concat(strs, "\n", "", null));
 	}
 	
-	public static JsonObject parse(String str)
+	public static JsonObject parse(String str) throws JsonParseException
 	{
 		if (str == null)
 		{
@@ -66,17 +66,23 @@ public final class JsonParser
 		}
 		
 		Tokenizer t = new Tokenizer(SEPARATORS);
+		
+		t.addTokens(StringHelper.NUMBERS);
+		t.addTokens("e", "E", "+", "-");
+		
 		Buffer<String> buf = new Buffer<String>(t.tokenize(str));
 		
 		if (!buf.hasNext())
 		{
-			return null;
+			throw new JsonParseException("No tokens found");
 		}
+		
+		//TODO Auto-remove whitespace.
 		
 		return parseObj(buf);
 	}
 	
-	public static JsonValue parseKeypair(Buffer<String> buf)
+	public static JsonValue parseKeypair(Buffer<String> buf)  throws JsonParseException
 	{
 		skipWhitespace(buf);
 		
@@ -86,7 +92,7 @@ public final class JsonParser
 		
 		if (!":".equalsIgnoreCase(buf.next()))
 		{
-			return null;
+			throw new JsonParseException("Colon not found for keypair %s", name);
 		}
 		
 		skipWhitespace(buf);
@@ -94,47 +100,30 @@ public final class JsonParser
 		return parseContent(name, buf);
 	}
 	
-	public static JsonValue parseContent(String name, Buffer<String> buf)
+	public static JsonValue parseContent(String name, Buffer<String> buf) throws JsonParseException
 	{
 		String str = buf.next(false).toLowerCase();
-		JsonValue ret = null;
 		
 		switch (str)
 		{
-			case "\"": ret = new JsonValue(EnumJsonType.STRING, name, parseString(buf)); break;
-			case "{": ret = parseObj(name, buf); break;
-			case "[": ret = parseArray(name, buf); break;
-			case "null": ret = new JsonValue(EnumJsonType.STRING, name, null); break;
+			case "\"": return new JsonValue(EnumJsonType.STRING, name, parseString(buf));
+			case "{": return parseObj(name, buf);
+			case "[": return parseArray(name, buf);
+			case "null": return new JsonValue(EnumJsonType.STRING, name, null);
 			case "true":
-			case "false": ret = new JsonValue(EnumJsonType.BOOL, name, str); break;
+			case "false": return new JsonValue(EnumJsonType.BOOL, name, str);
 			
 		}
 		
-		if (ret == null)
-		{
-			String intType = null;
-			
-			try
-			{
-				intType = StringHelper.getIntType(str);
-				
-			}
-			catch (Exception e){}
-			
-			if (intType != null)
-			{
-				ret = new JsonValue(EnumJsonType.valueOfSafe(intType), name, str);
-				
-			}
-			
-		}
-		
-		return ret;
+		throw new JsonParseException("Invalid value for key %s", name);
 	}
 	
 	public static String parseString(Buffer<String> buf)
 	{
-		assert "\"".equalsIgnoreCase(buf.next());
+		if (!"\"".equalsIgnoreCase(buf.next()))
+		{
+			throw new JsonParseException("Not a string!");
+		}
 		
 		StringBuilder b = new StringBuilder();
 		String next;
@@ -148,27 +137,31 @@ public final class JsonParser
 		return b.toString();
 	}
 	
-	public static JsonObject parseObj(Buffer<String> buf)
+	public static JsonObject parseObj(Buffer<String> buf) throws JsonParseException
 	{
 		return parseObj("", buf);
 	}
 	
-	public static JsonObject parseObj(String name, Buffer<String> buf)
+	public static JsonObject parseObj(String name, Buffer<String> buf) throws JsonParseException
 	{
-		assert "{".equalsIgnoreCase(buf.next());
+		if (!"{".equalsIgnoreCase(buf.next()))
+		{
+			throw new JsonParseException("Not an object: %s", name);
+		}
 		
-		Map<String, JsonValue> map = Maps.newHashMap();
+		Map<String, JsonValue> m = Maps.newHashMap();
 		boolean kill = false;
 		
 		while (!"}".equalsIgnoreCase(buf.next(false)))
 		{
 			JsonValue v = parseKeypair(buf);
 			
-			if (v != null)
+			if (m.containsKey(v.key))
 			{
-				map.put(v.key, v);
-				
+				throw new JsonParseException("Duplicate key: %s", v.key);
 			}
+			
+			m.put(v.key, v);
 			
 			skipWhitespace(buf);
 			
@@ -176,7 +169,7 @@ public final class JsonParser
 			{
 				if (kill)
 				{
-					return null;
+					throw new JsonParseException("Missing comma found whilst scanning object %s", name);
 				}
 				
 				kill = true;
@@ -187,12 +180,15 @@ public final class JsonParser
 			
 		}
 		
-		return new JsonObject(name, map);
+		return new JsonObject(name, m);
 	}
 	
-	public static JsonArray parseArray(String name, Buffer<String> buf)
+	public static JsonArray parseArray(String name, Buffer<String> buf) throws JsonParseException
 	{
-		assert "[".equalsIgnoreCase(buf.next());
+		if (!"[".equalsIgnoreCase(buf.next()))
+		{
+			throw new JsonParseException("Not an array: %s", name);
+		}
 		
 		List<JsonValue> list = Lists.newArrayList();
 		boolean kill = false;
@@ -209,7 +205,7 @@ public final class JsonParser
 			{
 				if (kill)
 				{
-					return null;
+					throw new JsonParseException("Missing comma found whilst scanning array %s", name);
 				}
 				
 				kill = true;
@@ -221,6 +217,90 @@ public final class JsonParser
 		}
 		
 		return new JsonArray(name, list);
+	}
+	
+	public static JsonValue parseInt(String name, Buffer<String> buf) throws JsonParseException
+	{
+		String str = buf.next(false);
+		boolean neg = str.equalsIgnoreCase("-"), isFloat = false;
+		
+		if (neg)
+		{
+			buf.skip(1);
+			
+		}
+		
+		String i = gatherInts(buf);
+		
+		if ("".equalsIgnoreCase(i))
+		{
+			throw new JsonParseException("Invalid integer found on %s", name);
+		}
+		
+		StringBuilder b = StringHelper.newBuilder();
+		
+		b.append(i);
+		
+		str = buf.next();
+		
+		if (".".equalsIgnoreCase(str))
+		{
+			b.append(".");
+			
+			str = gatherInts(buf);
+			
+			if ("".equalsIgnoreCase(str))
+			{
+				throw new JsonParseException("Invalid floating point found on %s", name);
+			}
+			
+			b.append(str);
+			
+			str = buf.next();
+			
+			isFloat = true;
+			
+		}
+		
+		if ("e".equalsIgnoreCase(str))
+		{
+			b.append(str);
+			
+			str = buf.next();
+			
+			if ("+".equalsIgnoreCase(str) || "-".equalsIgnoreCase(str))
+			{
+				b.append(str);
+				
+			}
+			
+			str = gatherInts(buf);
+			
+			if ("".equalsIgnoreCase(str))
+			{
+				throw new JsonParseException("Invalid error code found on %s", name);
+			}
+			
+			b.append(str);
+			
+		}
+		
+		return new JsonValue(isFloat ? EnumJsonType.FLOAT : EnumJsonType.INT, name, b.toString());
+	}
+	
+	public static String gatherInts(Buffer<String> buf)
+	{
+		String str = buf.next();
+		StringBuilder b = StringHelper.newBuilder();
+		
+		while (StringHelper.isInt(str))
+		{
+			b.append(str);
+			str = buf.next();
+			
+		}
+		
+		return b.toString();
 	}
 	
 }

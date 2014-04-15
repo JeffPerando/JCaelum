@@ -18,7 +18,6 @@ import com.google.common.collect.Lists;
  * In particular:<br>
  * Reading/writing text files<br>
  * Concatenation (With arguments for how the text is spliced together)<br>
- * Parsing the arguments of a given method (Helpful for method sorting)<br>
  * Removing the last instance of a given String<br>
  * Splitting a string once
  * 
@@ -81,7 +80,7 @@ public final class StringHelper
 	
 	public static String readToOneLine(Reader r)
 	{
-		StringBuilder b = new StringBuilder();
+		StringBuilder b = newBuilder();
 		BufferedReader br = (r instanceof BufferedReader) ? (BufferedReader)r : new BufferedReader(r);
 		
 		try
@@ -180,7 +179,7 @@ public final class StringHelper
 			return str;
 		}
 		
-		StringBuilder b = new StringBuilder(str);
+		StringBuilder b = newBuilder(str);
 		b.replace(lastIn, lastIn + textToRemove.length(), replace);
 		
 		return b.toString();
@@ -193,7 +192,7 @@ public final class StringHelper
 			return d;
 		}
 		
-		StringBuilder b = new StringBuilder(strs.length * 2);
+		StringBuilder b = newBuilder(strs.length * 2);
 		
 		for (int c = 0; c < strs.length; ++c)
 		{
@@ -212,7 +211,7 @@ public final class StringHelper
 			return d;
 		}
 		
-		StringBuilder b = new StringBuilder(strs.size() * 2);
+		StringBuilder b = newBuilder(strs.size() * 2);
 		
 		for (int c = 0; c < strs.size(); ++c)
 		{
@@ -253,7 +252,7 @@ public final class StringHelper
 	
 	public static String parseDate(Calendar cal, String dateSep, String timeSep)
 	{
-		StringBuilder b = new StringBuilder(16);
+		StringBuilder b = newBuilder(16);
 		
 		b.append(cal.get(Calendar.DATE));
 		b.append(dateSep);
@@ -317,83 +316,33 @@ public final class StringHelper
 		return ret;
 	}
 	
-	public static boolean isValidInt(String n) throws NumberFormatException
+	public static StringBuilder newBuilder()
 	{
-		String num = n.toLowerCase();
-		boolean hex = false, isFloat = false;
-		
-		if (num.startsWith("0x"))
-		{
-			num = num.substring(2);
-			hex = true;
-			
-		}
-		
-		char ch = num.charAt(num.length() - 1);
-		
-		if (!isCharValidInt(ch, hex))
-		{
-			switch (ch)
-			{
-				case 'f': 
-				case 'd': isFloat = true;
-				case 'l': num = num.substring(0, num.length() - 1); break;
-				default: throw new NumberFormatException();
-			}
-			
-			if (hex && isFloat)
-			{
-				throw new NumberFormatException();
-			}
-			
-		}
-		
-		char chr;
-		
-		for (int c = 0; c < num.length(); c++)
-		{
-			chr = num.charAt(c);
-			
-			if (!isCharValidInt(chr, hex) && c != num.length() - 1)
-			{
-				if (isFloat && chr == '.' && isCharValidInt(num.charAt(c + 1), hex))
-				{
-					continue;
-				}
-				
-				return false;
-			}
-			
-		}
-		
-		return true;
+		return new StringBuilder();
 	}
 	
-	public static boolean isCharValidInt(char ch, boolean hex)
+	public static StringBuilder newBuilder(int size)
 	{
-		String chr = ((Character)ch).toString();
-		
-		if (hex)
+		return new StringBuilder(size);
+	}
+	
+	public static StringBuilder newBuilder(String str)
+	{
+		return new StringBuilder(str);
+	}
+	
+	public static boolean isInt(String str)
+	{
+		if (str == null || "".equalsIgnoreCase(str))
 		{
-			for (String i : StringHelper.HEX)
-			{
-				if (i.equalsIgnoreCase(chr))
-				{
-					return true;
-				}
-				
-			}
-			
+			return false;
 		}
-		else
+		
+		for (String n : NUMBERS)
 		{
-			for (String i : StringHelper.NUMBERS)
+			if (str.equalsIgnoreCase(n))
 			{
-				if (i.equalsIgnoreCase(chr))
-				{
-					return true;
-				}
-				
+				return true;
 			}
 			
 		}
@@ -401,75 +350,49 @@ public final class StringHelper
 		return false;
 	}
 	
-	public static String getIntType(String n) throws NumberFormatException
+	public static boolean isHexInt(String str)
 	{
-		boolean hex = n.startsWith("0x"), isFloat = n.indexOf(".") != -1;
-		
-		if (hex && isFloat)
+		if (str == null || "".equalsIgnoreCase(str))
 		{
-			throw new NumberFormatException();
+			return false;
 		}
 		
-		if (!isValidInt(n))
+		for (String n : HEX)
+		{
+			if (str.equalsIgnoreCase(n))
+			{
+				return true;
+			}
+			
+		}
+		
+		return false;
+	}
+	
+	public static List<String> gatherStrings(int strs, Iterable<String> itr)
+	{
+		if (strs <= 0)
 		{
 			return null;
 		}
 		
-		if (isFloat)
+		List<String> ret = Lists.newArrayListWithCapacity(strs);
+		
+		int c = 0;
+		
+		for (String str : itr)
 		{
-			if (n.endsWith("."))
+			c++;
+			ret.add(str);
+			
+			if (c == strs)
 			{
-				throw new NumberFormatException();
+				break;
 			}
 			
-			if (n.endsWith("f"))
-			{
-				return "float";
-			}
-			
-			return "double";
 		}
 		
-		if (hex)
-		{
-			int bits = (n.length() - 2) * 4;
-			
-			if (bits <= 8)
-			{
-				return "byte";
-			}
-			
-			if (bits <= 16)
-			{
-				return "short";
-			}
-			
-			if (bits <= 32)
-			{
-				return "int";
-			}
-			
-			return "long";
-		}
-		
-		long l = Long.parseLong(n);
-		
-		if ((l & 0xFF) == l)
-		{
-			return "byte";
-		}
-		
-		if ((l & 0xFFFF) == l)
-		{
-			return "short";
-		}
-		
-		if ((l & 0xFFFFFFFF) == l)
-		{
-			return "int";
-		}
-		
-		return "long";
+		return ret;
 	}
 	
 }
