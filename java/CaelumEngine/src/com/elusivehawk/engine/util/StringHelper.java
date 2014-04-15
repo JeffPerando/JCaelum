@@ -226,7 +226,12 @@ public final class StringHelper
 	
 	public static String[] splitOnce(String str, String out)
 	{
-		if (str == null)
+		if (str == null || "".equals(str))
+		{
+			return null;
+		}
+		
+		if (str.length() < out.length())
 		{
 			return null;
 		}
@@ -240,7 +245,7 @@ public final class StringHelper
 		
 		String[] ret = new String[2];
 		
-		ret[0] = str.substring(0, ind - 1);
+		ret[0] = ind == 0 ? "" : str.substring(0, ind - 1);
 		ret[1] = str.substring(ind + 1, out.length());
 		
 		return null;

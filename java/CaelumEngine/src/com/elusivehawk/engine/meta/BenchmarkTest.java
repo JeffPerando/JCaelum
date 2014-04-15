@@ -32,13 +32,22 @@ public class BenchmarkTest
 	{
 		System.out.println("Beginning bench testing...");
 		
-		Tokenizer t = new Tokenizer('{', '}');
-		
-		List<String> split = t.tokenize("Hello world!");
-		
-		for (String str : split)
+		try
 		{
-			System.out.println(String.format("\"%s\"", str));
+			Tokenizer t = new Tokenizer("L");
+			
+			List<String> split = t.tokenize("Trolololololololol");
+			
+			for (String str : split)
+			{
+				System.out.println(String.format("Test: \"%s\"", str));
+				
+			}
+			
+		}
+		catch (Throwable e)
+		{
+			e.printStackTrace();
 			
 		}
 		

@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.util;
 
 import java.util.List;
+import com.elusivehawk.engine.util.storage.Tuple;
 import com.google.common.collect.Lists;
 
 /**
@@ -12,19 +13,19 @@ import com.google.common.collect.Lists;
  */
 public class Tokenizer
 {
-	protected List<Character> tokens = Lists.newArrayList();
+	protected List<String> tokens = Lists.newArrayList();
 	
 	public Tokenizer(){}
 	
-	public Tokenizer(char... tks)
+	public Tokenizer(String... tks)
 	{
 		addTokens(tks);
 		
 	}
 	
-	public void addTokens(char... tks)
+	public void addTokens(String... tks)
 	{
-		for (char tk : tks)
+		for (String tk : tks)
 		{
 			this.tokens.add(tk);
 			
@@ -35,48 +36,79 @@ public class Tokenizer
 	public List<String> tokenize(String str)
 	{
 		List<String> ret = Lists.newArrayList();
-		
-		int start = 0;
+		String rem = str;
 		
 		if ((str != null && !"".equalsIgnoreCase(str)) && !this.tokens.isEmpty())
 		{
-			char ch;
+			Tuple<String, Integer> t = this.getNextTokenIndex(rem, 0);
+			int i;
 			
-			for (int c = 0; c < str.length(); c++)
+			while (t != null)
 			{
-				ch = str.charAt(c);
+				i = t.two;
 				
-				for (char token : this.tokens)
+				if (i >= 0)
 				{
-					if (ch == token)
+					if (i > 0)
 					{
-						String sub = str.substring(start, c);
-						
-						if (!"".equalsIgnoreCase(sub))
-						{
-							ret.add(sub);
-							
-						}
-						
-						ret.add(((Character)token).toString());
-						
-						start = c + 1;
+						ret.add(rem.substring(0, i));
 						
 					}
+					
+					if (rem.length() >= t.one.length())
+					{
+						ret.add(rem.substring(i, i + t.one.length()));
+						rem = rem.substring(i + (t.one.length()));
+						
+						t = this.getNextTokenIndex(rem, 0);
+						
+					}
+					
+				}
+				else
+				{
+					t = null;
 					
 				}
 				
 			}
 			
-		}
-		
-		if (start < str.length())
-		{
-			ret.add(str.substring(start, str.length()));
+			if (!"".equalsIgnoreCase(rem))
+			{
+				ret.add(rem);
+				
+			}
 			
 		}
 		
 		return ret;
+	}
+	
+	public Tuple<String, Integer> getNextTokenIndex(String str, int start)
+	{
+		String tkn = null;
+		int in = str.length();
+		
+		for (int c = 0; c < this.tokens.size(); c++)
+		{
+			int i = Math.min(in, str.indexOf(this.tokens.get(c), start));
+			
+			if (i == -1)
+			{
+				continue;
+			}
+			
+			if (i < in)
+			{
+				tkn = this.tokens.get(c);
+				
+			}
+			
+			in = i;
+			
+		}
+		
+		return tkn == null ? null : Tuple.create(tkn, in);
 	}
 	
 }

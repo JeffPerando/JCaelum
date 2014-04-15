@@ -19,7 +19,7 @@ import com.google.common.collect.Maps;
  */
 public final class JsonParser
 {
-	public static final char[] SEPARATORS = {' ', '\t', '\n', '\"', ':', ',', '{', '}', '[', ']'};
+	public static final String[] SEPARATORS = {" ", "\t", "\n", "\"", ":", ",", "{", "}", "[", "]"};
 	
 	private JsonParser(){}
 	
