@@ -27,6 +27,11 @@ public class Tokenizer
 	{
 		for (String tk : tks)
 		{
+			if (tk == null || "".equalsIgnoreCase(tk))
+			{
+				continue;
+			}
+			
 			this.tokens.add(tk);
 			
 		}
@@ -58,16 +63,11 @@ public class Tokenizer
 					if (rem.length() >= t.one.length())
 					{
 						ret.add(rem.substring(i, i + t.one.length()));
-						rem = rem.substring(i + (t.one.length()));
+						rem = rem.substring(i + t.one.length());
 						
 						t = this.getNextTokenIndex(rem, 0);
 						
 					}
-					
-				}
-				else
-				{
-					t = null;
 					
 				}
 				

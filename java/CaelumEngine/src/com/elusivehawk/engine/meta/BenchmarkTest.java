@@ -34,9 +34,11 @@ public class BenchmarkTest
 		
 		try
 		{
-			Tokenizer t = new Tokenizer("L");
+			Tokenizer t = new Tokenizer();
 			
-			List<String> split = t.tokenize("Trolololololololol");
+			t.addTokens("ha", "lo");
+			
+			List<String> split = t.tokenize("Trololololololololololo, hahahahaha");
 			
 			for (String str : split)
 			{
