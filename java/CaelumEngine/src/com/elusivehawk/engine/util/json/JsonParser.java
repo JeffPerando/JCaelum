@@ -101,11 +101,12 @@ public final class JsonParser
 		
 		switch (str)
 		{
-			case "true":
-			case "false": ret = new JsonValue(EnumJsonType.BOOL, name, str); break;
 			case "\"": ret = new JsonValue(EnumJsonType.STRING, name, parseString(buf)); break;
 			case "{": ret = parseObj(name, buf); break;
 			case "[": ret = parseArray(name, buf); break;
+			case "null": ret = new JsonValue(EnumJsonType.STRING, name, null); break;
+			case "true":
+			case "false": ret = new JsonValue(EnumJsonType.BOOL, name, str); break;
 			
 		}
 		

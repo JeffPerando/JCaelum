@@ -53,7 +53,7 @@ public class JsonValue
 			b.append(String.format("\"%s\": ", this.key));
 		}
 		
-		b.append(StringHelper.sanitizeEscapeSequence(this.type == EnumJsonType.STRING ? String.format("\"%s\"", this.value) : this.value));
+		b.append(StringHelper.sanitizeEscapeSequence(this.type == EnumJsonType.STRING && this.value != null ? String.format("\"%s\"", this.value) : this.value));
 		
 		return b.toString();
 	}
