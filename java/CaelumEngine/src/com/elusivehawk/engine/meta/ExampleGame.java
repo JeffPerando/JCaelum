@@ -3,6 +3,7 @@ package com.elusivehawk.engine.meta;
 
 import com.elusivehawk.engine.core.Game;
 import com.elusivehawk.engine.core.GameArguments;
+import com.elusivehawk.engine.util.Version;
 
 /**
  * 
@@ -12,6 +13,8 @@ import com.elusivehawk.engine.core.GameArguments;
  */
 public class ExampleGame extends Game
 {
+	protected final Version v = new Version(0, 0, 1);
+	
 	public ExampleGame()
 	{
 		super("Example Game");
@@ -19,14 +22,20 @@ public class ExampleGame extends Game
 	}
 	
 	@Override
-	protected boolean initiateGame(GameArguments args)
+	public Version getGameVersion()
+	{
+		return this.v;
+	}
+	
+	@Override
+	protected boolean gameInit(GameArguments args)
 	{
 		// TODO Auto-generated method stub
 		return false;
 	}
 	
 	@Override
-	protected void updateGame(double delta)
+	protected void gameTick(double delta)
 	{
 		// TODO Auto-generated method stub
 		

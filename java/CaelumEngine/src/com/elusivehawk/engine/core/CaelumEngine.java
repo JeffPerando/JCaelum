@@ -16,6 +16,7 @@ import com.elusivehawk.engine.util.FileHelper;
 import com.elusivehawk.engine.util.ReflectionHelper;
 import com.elusivehawk.engine.util.StringHelper;
 import com.elusivehawk.engine.util.ThreadStoppable;
+import com.elusivehawk.engine.util.Version;
 import com.elusivehawk.engine.util.json.EnumJsonType;
 import com.elusivehawk.engine.util.json.JsonObject;
 import com.elusivehawk.engine.util.json.JsonParser;
@@ -35,7 +36,7 @@ public final class CaelumEngine
 	private static final CaelumEngine INSTANCE = new CaelumEngine();
 	
 	public static final boolean DEBUG = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().contains("-agentlib:jdwp");
-	public static final String VERSION = "1.0.0";
+	public static final Version VERSION = new Version(1, 0, 0);
 	
 	private final Map<EnumEngineFeature, ThreadStoppable> threads = Maps.newEnumMap(EnumEngineFeature.class);
 	private final Map<EnumInputType, Input> inputs = Maps.newEnumMap(EnumInputType.class);
@@ -267,7 +268,17 @@ public final class CaelumEngine
 			
 		}
 		
-		this.log.log(EnumLogType.INFO, String.format("Loading game: %s", g.name));
+		g.preInit();
+		
+		Version v = g.getGameVersion();
+		
+		this.log.log(EnumLogType.INFO, String.format("Loading %s, version %s", g.name, v == null ? "MISSINGNO" : v));
+		
+		if (v == null)
+		{
+			this.log.log(EnumLogType.WARN, "The game is missing a Version object!");
+			
+		}
 		
 		if (!g.initiate(new GameArguments(gameargs)))
 		{
@@ -295,7 +306,7 @@ public final class CaelumEngine
 		
 		//this.threads.put(EnumEngineFeature.SOUND, new ThreadSoundPlayer());
 		
-		/*IPhysicsSimulator ph = this.game.getPhysicsScene();
+		/*IPhysicsSimulator ph = this.game.getPhysicsSimulator();
 		
 		if (ph != null)
 		{
@@ -345,9 +356,9 @@ public final class CaelumEngine
 		}
 		
 		this.envConfig = (JsonObject)curEnv;
-		JsonValue envLoc = this.envConfig.getValue("location");
+		JsonValue envLoc = this.envConfig.getValue("lib");
 		
-		if (envLoc.type != EnumJsonType.STRING)
+		if (envLoc == null || envLoc.type != EnumJsonType.STRING)
 		{
 			return null;
 		}
@@ -369,7 +380,7 @@ public final class CaelumEngine
 		
 		for (Class<?> c : set)
 		{
-			if (c.isAssignableFrom(IGameEnvironment.class))
+			if (IGameEnvironment.class.isAssignableFrom(c))
 			{
 				return c;
 			}

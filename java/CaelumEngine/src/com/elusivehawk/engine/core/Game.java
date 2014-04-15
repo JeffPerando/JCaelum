@@ -6,6 +6,7 @@ import com.elusivehawk.engine.assets.AssetManager;
 import com.elusivehawk.engine.physics.IPhysicsSimulator;
 import com.elusivehawk.engine.render.IRenderHUB;
 import com.elusivehawk.engine.util.IUpdatable;
+import com.elusivehawk.engine.util.Version;
 import com.google.common.collect.Lists;
 
 /**
@@ -30,52 +31,17 @@ public abstract class Game implements IUpdatable
 		
 	}
 	
-	public final boolean initiate(GameArguments args)
-	{
-		if (this.initiated)
-		{
-			return false;
-		}
-		
-		if (!this.initiateGame(args))
-		{
-			return false;
-		}
-		
-		this.initiated = true;
-		
-		if (this.nextState != null)
-		{
-			this.nextState.initiate();
-			
-			this.state = this.nextState;
-			this.nextState = null;
-			
-		}
-		
-		return true;
-	}
-	
-	public void loadAssets(AssetManager mgr){}
-	
-	public void onScreenFlipped(boolean flip){}
-	
-	public int getUpdateCount()
-	{
-		return 30;
-	}
-	
 	@Override
 	public final void update(double delta) throws Throwable
 	{
 		if (this.state == null)
 		{
-			this.updateGame(delta);
+			this.gameTick(delta);
 			
 		}
 		else
 		{
-			this.state.updateGameState(this, delta);
+			this.state.gsTick(this, delta);
 			
 		}
 		
@@ -106,6 +72,49 @@ public abstract class Game implements IUpdatable
 		
 	}
 	
+	@Override
+	public String toString()
+	{
+		return String.format("%s-v%s", this.name, this.getGameVersion());
+	}
+	
+	public final boolean initiate(GameArguments args)
+	{
+		if (this.initiated)
+		{
+			return false;
+		}
+		
+		if (!this.gameInit(args))
+		{
+			return false;
+		}
+		
+		this.initiated = true;
+		
+		if (this.nextState != null)
+		{
+			this.nextState.initiate();
+			
+			this.state = this.nextState;
+			this.nextState = null;
+			
+		}
+		
+		return true;
+	}
+	
+	public void loadAssets(AssetManager mgr){}
+	
+	public void onScreenFlipped(boolean flip){}
+	
+	public void preInit(){};
+	
+	public int getUpdateCount()
+	{
+		return 30;
+	}
+	
 	public final void onShutdown()
 	{
 		this.onGameShutdown();
@@ -130,7 +139,9 @@ public abstract class Game implements IUpdatable
 		
 	}
 	
-	protected abstract boolean initiateGame(GameArguments args);
+	public abstract Version getGameVersion();
+	
+	protected abstract boolean gameInit(GameArguments args);
 	
 	/**
 	 * 
@@ -138,7 +149,7 @@ public abstract class Game implements IUpdatable
 	 * 
 	 * @param delta
 	 */
-	protected abstract void updateGame(double delta);
+	protected abstract void gameTick(double delta);
 	
 	protected abstract void onGameShutdown();
 	
