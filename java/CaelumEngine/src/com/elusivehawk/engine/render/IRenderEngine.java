@@ -15,8 +15,9 @@ public interface IRenderEngine
 	 * 
 	 * @param context The current rendering context.
 	 * @param hub The current rendering HUB.
+	 * @throws RenderException
 	 */
-	public void render(RenderContext context, IRenderHUB hub);
+	public void render(RenderContext context, IRenderHUB hub) throws RenderException;
 	
 	/**
 	 * 

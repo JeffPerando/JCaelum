@@ -28,14 +28,14 @@ public class ExampleGame extends Game
 	}
 	
 	@Override
-	protected boolean gameInit(GameArguments args)
+	protected boolean initiate(GameArguments args)
 	{
 		// TODO Auto-generated method stub
 		return false;
 	}
 	
 	@Override
-	protected void gameTick(double delta)
+	protected void tick(double delta)
 	{
 		// TODO Auto-generated method stub
 		

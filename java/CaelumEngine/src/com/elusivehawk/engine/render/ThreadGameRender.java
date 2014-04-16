@@ -132,7 +132,17 @@ public class ThreadGameRender extends ThreadTimed implements IGameStateListener,
 						continue;
 					}
 					
-					engine.render(this.context, this.hub);
+					try
+					{
+						engine.render(this.context, this.hub);
+						
+					}
+					catch (RenderException e)
+					{
+						this.handleException(e);
+						
+					}
+					
 					renderersUsed++;
 					
 					int tex = 0, texUnits = gl1.glGetInteger(GLConst.GL_MAX_TEXTURE_UNITS);
@@ -149,16 +159,7 @@ public class ThreadGameRender extends ThreadTimed implements IGameStateListener,
 						
 					}
 					
-					try
-					{
-						RenderHelper.checkForGLError(gl1);
-						
-					}
-					catch (Exception e)
-					{
-						CaelumEngine.log().log(EnumLogType.ERROR, null, e);
-						
-					}
+					RenderHelper.checkForGLError(gl1);
 					
 				}
 				

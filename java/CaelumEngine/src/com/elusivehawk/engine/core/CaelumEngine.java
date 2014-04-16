@@ -268,8 +268,6 @@ public final class CaelumEngine
 			
 		}
 		
-		g.preInit();
-		
 		Version v = g.getGameVersion();
 		
 		this.log.log(EnumLogType.INFO, String.format("Loading %s, version %s", g.name, v == null ? "MISSINGNO" : v));
@@ -280,7 +278,7 @@ public final class CaelumEngine
 			
 		}
 		
-		if (!g.initiate(new GameArguments(gameargs)))
+		if (!g.initiateGame(new GameArguments(gameargs)))
 		{
 			return;
 		}

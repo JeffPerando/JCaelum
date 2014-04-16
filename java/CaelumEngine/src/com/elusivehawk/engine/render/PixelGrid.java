@@ -51,6 +51,30 @@ public class PixelGrid implements ILegibleImage
 		
 	}
 	
+	@Override
+	public int getPixel(int x, int y)
+	{
+		return this.pixels[x][y];
+	}
+	
+	@Override
+	public EnumColorFormat getFormat()
+	{
+		return this.f;
+	}
+	
+	@Override
+	public int getHeight()
+	{
+		return this.ySize;
+	}
+	
+	@Override
+	public int getWidth()
+	{
+		return this.xSize;
+	}
+	
 	public void setPixel(int x, int y, int col)
 	{
 		this.pixels[x][y] = col;
@@ -238,30 +262,6 @@ public class PixelGrid implements ILegibleImage
 		}
 		
 		return ret;
-	}
-	
-	@Override
-	public int getPixel(int x, int y)
-	{
-		return this.pixels[x][y];
-	}
-	
-	@Override
-	public EnumColorFormat getFormat()
-	{
-		return this.f;
-	}
-	
-	@Override
-	public int getHeight()
-	{
-		return this.ySize;
-	}
-	
-	@Override
-	public int getWidth()
-	{
-		return this.xSize;
 	}
 	
 }

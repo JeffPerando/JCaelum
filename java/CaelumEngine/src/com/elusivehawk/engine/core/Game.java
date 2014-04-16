@@ -36,7 +36,7 @@ public abstract class Game implements IUpdatable
 	{
 		if (this.state == null)
 		{
-			this.gameTick(delta);
+			this.tick(delta);
 			
 		}
 		else
@@ -78,14 +78,14 @@ public abstract class Game implements IUpdatable
 		return String.format("%s-v%s", this.name, this.getGameVersion());
 	}
 	
-	public final boolean initiate(GameArguments args)
+	public final boolean initiateGame(GameArguments args)
 	{
 		if (this.initiated)
 		{
 			return false;
 		}
 		
-		if (!this.gameInit(args))
+		if (!this.initiate(args))
 		{
 			return false;
 		}
@@ -107,8 +107,6 @@ public abstract class Game implements IUpdatable
 	public void loadAssets(AssetManager mgr){}
 	
 	public void onScreenFlipped(boolean flip){}
-	
-	public void preInit(){};
 	
 	public int getUpdateCount()
 	{
@@ -141,7 +139,7 @@ public abstract class Game implements IUpdatable
 	
 	public abstract Version getGameVersion();
 	
-	protected abstract boolean gameInit(GameArguments args);
+	protected abstract boolean initiate(GameArguments args);
 	
 	/**
 	 * 
@@ -149,7 +147,7 @@ public abstract class Game implements IUpdatable
 	 * 
 	 * @param delta
 	 */
-	protected abstract void gameTick(double delta);
+	protected abstract void tick(double delta);
 	
 	protected abstract void onGameShutdown();
 	

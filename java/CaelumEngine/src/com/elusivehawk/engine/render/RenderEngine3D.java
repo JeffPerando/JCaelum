@@ -73,6 +73,11 @@ public class RenderEngine3D implements IRenderEngine
 				m = tkt.getModel();
 				p = tkt.getProgram();
 				
+				if (m == null)
+				{
+					continue;
+				}
+				
 				if (!p.bind(context))
 				{
 					continue;
@@ -81,6 +86,7 @@ public class RenderEngine3D implements IRenderEngine
 				if (!tkt.updateBeforeUse())
 				{
 					p.unbind(context);
+					
 					continue;
 				}
 				
@@ -94,7 +100,8 @@ public class RenderEngine3D implements IRenderEngine
 				catch (Exception e)
 				{
 					p.unbind(context);
-					continue;
+					
+					throw e;
 				}
 				
 				tex = tkt.getTexture() == null ? context.getDefaultTexture() : tkt.getTexture().getTexId();

@@ -35,7 +35,7 @@ public class Model implements IAssetReceiver
 	}
 	
 	@Override
-	public synchronized void onAssetLoaded(Asset a)
+	public void onAssetLoaded(Asset a)
 	{
 		if (a instanceof Mesh)
 		{
@@ -47,46 +47,58 @@ public class Model implements IAssetReceiver
 	
 	public void startSection(String secname) throws RenderException
 	{
-		if (this.sec == null)
+		if (this.isFinished())
 		{
-			this.sec = new ModelSection(secname);
-			
-			return;
+			throw new RenderException("Model already finished: %s", this.name);
 		}
 		
-		throw new RenderException(String.format("Cannot start new model section! Model: %s, Section: %s", this.name, this.sec.name));
+		if (this.sec != null)
+		{
+			throw new RenderException("Cannot start new model section! Model: %s, Section: %s", this.name, this.sec.name);
+		}
+		
+		this.sec = new ModelSection(secname);
+		
 	}
 	
 	public void addMesh(Mesh mesh) throws RenderException
 	{
-		if (this.sec != null)
+		if (this.isFinished())
 		{
-			this.sec.addMesh(mesh);
-			
-			return;
+			throw new RenderException("Model already finished: %s", this.name);
 		}
 		
-		throw new RenderException(String.format("Cannot add mesh to model section! Model: %s", this.name));
+		if (this.sec == null)
+		{
+			throw new RenderException("Cannot add mesh to model section! Model: %s", this.name);
+		}
+		
+		this.sec.addMesh(mesh);
+		
 	}
 	
 	public void endSection() throws RenderException
 	{
-		if (this.sec != null && this.sec.hasMeshes())
+		if (this.isFinished())
 		{
-			this.sections.add(this.sec);
-			this.sec = null;
-			
-			return;
+			throw new RenderException("Model already finished: %s", this.name);
 		}
 		
-		throw new RenderException(String.format("Cannot end model section! Model: %s", this.name));
+		if (this.sec == null || this.sec.hasMeshes())
+		{
+			throw new RenderException("Cannot end model section for model %s", this.name);
+		}
+		
+		this.sections.add(this.sec);
+		this.sec = null;
+		
 	}
 	
 	public void finish() throws RenderException
 	{
 		if (this.sec != null)
 		{
-			throw new RenderException(String.format("Still working on model section %s!", this.sec.name));
+			throw new RenderException("Still working on model section %s!", this.sec.name);
 		}
 		
 		if (this.sections.isEmpty())
@@ -96,7 +108,7 @@ public class Model implements IAssetReceiver
 		
 		if (this.sections.size() > RenderHelper.MATERIAL_CAP)
 		{
-			throw new RenderException(String.format("Too many sections: %s, must be at or less than %s", this.sections.size(), RenderHelper.MATERIAL_CAP));
+			throw new RenderException("Too many sections: %s, must be at or less than %s", this.sections.size(), RenderHelper.MATERIAL_CAP);
 		}
 		
 		List<Integer> in = Lists.newArrayList(),

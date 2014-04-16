@@ -32,7 +32,7 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 	protected final VertexBuffer vbo;
 	protected final FloatBuffer buf;
 	
-	protected boolean dirty = false, zBuffer = true;//, animPause = false;
+	protected boolean dirty = true, zBuffer = true, initiated = false;//, animPause = false;
 	//protected int frame = 0;
 	//protected IModelAnimation anim = null, lastAnim = null;
 	protected Texture tex;
@@ -53,20 +53,12 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 		
 		p = program;
 		m = mdl;
-		buf = BufferHelper.createFloatBuffer(m.getTotalPointCount() * 7);
-		vbo = new VertexBuffer(GLConst.GL_ARRAY_BUFFER, buf, GLConst.GL_STREAM_DRAW);
-		
-		if (!m.isFinished())
-		{
-			m.finish();
-			
-		}
-		
-		p.attachRenderTicket(this);
+		buf = BufferHelper.createFloatBuffer(this.m.getTotalPointCount() * 7);
+		vbo = new VertexBuffer(GLConst.GL_ARRAY_BUFFER, this.buf, GLConst.GL_STREAM_DRAW);
 		
 		for (EnumVectorType type : EnumVectorType.values())
 		{
-			vecs.put(type, type.getDefault());
+			this.vecs.put(type, type.getDefault());
 			
 		}
 		
@@ -117,6 +109,20 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 			this.frame = (fin ? 0 : this.frame + 1);
 			
 		}*/
+		
+		if (!this.initiated)
+		{
+			if (!this.m.isFinished())
+			{
+				this.m.finish();
+				
+			}
+			
+			this.p.attachRenderTicket(this);
+			
+			this.initiated = true;
+			
+		}
 		
 		if (this.isDirty())
 		{

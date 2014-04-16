@@ -31,6 +31,12 @@ public class GLException extends RenderException
 		
 	}
 	
+	public GLException(String err, Object... args)
+	{
+		super(err, args);
+		
+	}
+	
 	public GLException(Throwable e)
 	{
 		super(e);
@@ -40,6 +46,12 @@ public class GLException extends RenderException
 	public GLException(String err, Throwable e)
 	{
 		super(err, e);
+		
+	}
+	
+	public GLException(String err, Throwable e, boolean arg2, boolean arg3)
+	{
+		super(err, e, arg2, arg3);
 		
 	}
 	

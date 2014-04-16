@@ -11,7 +11,7 @@ public abstract class Asset
 {
 	public final String name;
 	
-	protected boolean finished = false;
+	private boolean finished = false;
 	
 	@SuppressWarnings("unqualified-field-access")
 	protected Asset(String filename)
