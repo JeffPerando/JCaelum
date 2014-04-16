@@ -11,12 +11,12 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-public class JsonObject extends JsonValue
+public class JsonObject extends JsonKeypair
 {
-	protected final List<JsonValue> jsons;
+	protected final List<JsonKeypair> jsons;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public JsonObject(String name, Map<String, JsonValue> map)
+	public JsonObject(String name, Map<String, JsonKeypair> map)
 	{
 		super(EnumJsonType.OBJECT, name, "{");
 		jsons = Lists.newArrayList(map.values());
@@ -48,11 +48,11 @@ public class JsonObject extends JsonValue
 		return b.toString();
 	}
 	
-	public JsonValue getValue(String name)
+	public JsonKeypair getValue(String name)
 	{
 		if (name != null)
 		{
-			for (JsonValue json : this.jsons)
+			for (JsonKeypair json : this.jsons)
 			{
 				if (name.equalsIgnoreCase(json.key))
 				{

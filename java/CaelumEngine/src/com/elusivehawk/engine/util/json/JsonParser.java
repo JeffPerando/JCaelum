@@ -19,7 +19,7 @@ import com.google.common.collect.Maps;
  */
 public final class JsonParser
 {
-	public static final String[] SEPARATORS = {" ", "\t", "\n", "\"", ":", ",", "{", "}", "[", "]"};
+	public static final String[] SEPARATORS = {" ", "\t", "\n", "\"", ":", ",", "{", "}", "[", "]", "e", "E", "+", "-"};
 	
 	private JsonParser(){}
 	
@@ -65,10 +65,10 @@ public final class JsonParser
 			return null;
 		}
 		
-		Tokenizer t = new Tokenizer(SEPARATORS);
+		Tokenizer t = new Tokenizer();
 		
+		t.addTokens(SEPARATORS);
 		t.addTokens(StringHelper.NUMBERS);
-		t.addTokens("e", "E", "+", "-");
 		
 		Buffer<String> buf = new Buffer<String>(t.tokenize(str));
 		
@@ -79,10 +79,10 @@ public final class JsonParser
 		
 		//TODO Auto-remove whitespace.
 		
-		return parseObj(buf);
+		return parseObj("", buf);
 	}
 	
-	public static JsonValue parseKeypair(Buffer<String> buf)  throws JsonParseException
+	public static JsonKeypair parseKeypair(Buffer<String> buf)  throws JsonParseException
 	{
 		skipWhitespace(buf);
 		
@@ -100,19 +100,24 @@ public final class JsonParser
 		return parseContent(name, buf);
 	}
 	
-	public static JsonValue parseContent(String name, Buffer<String> buf) throws JsonParseException
+	public static JsonKeypair parseContent(String name, Buffer<String> buf) throws JsonParseException
 	{
 		String str = buf.next(false).toLowerCase();
 		
 		switch (str)
 		{
-			case "\"": return new JsonValue(EnumJsonType.STRING, name, parseString(buf));
+			case "\"": return new JsonKeypair(EnumJsonType.STRING, name, parseString(buf));
 			case "{": return parseObj(name, buf);
 			case "[": return parseArray(name, buf);
-			case "null": return new JsonValue(EnumJsonType.STRING, name, null);
+			case "null": return new JsonKeypair(EnumJsonType.STRING, name, null);
 			case "true":
-			case "false": return new JsonValue(EnumJsonType.BOOL, name, str);
+			case "false": return new JsonKeypair(EnumJsonType.BOOL, name, str);
 			
+		}
+		
+		if (StringHelper.isInt(str) || "-".equalsIgnoreCase(str))
+		{
+			return parseInt(name, buf);
 		}
 		
 		throw new JsonParseException("Invalid value for key %s", name);
@@ -137,11 +142,6 @@ public final class JsonParser
 		return b.toString();
 	}
 	
-	public static JsonObject parseObj(Buffer<String> buf) throws JsonParseException
-	{
-		return parseObj("", buf);
-	}
-	
 	public static JsonObject parseObj(String name, Buffer<String> buf) throws JsonParseException
 	{
 		if (!"{".equalsIgnoreCase(buf.next()))
@@ -149,12 +149,12 @@ public final class JsonParser
 			throw new JsonParseException("Not an object: %s", name);
 		}
 		
-		Map<String, JsonValue> m = Maps.newHashMap();
+		Map<String, JsonKeypair> m = Maps.newHashMap();
 		boolean kill = false;
 		
 		while (!"}".equalsIgnoreCase(buf.next(false)))
 		{
-			JsonValue v = parseKeypair(buf);
+			JsonKeypair v = parseKeypair(buf);
 			
 			if (m.containsKey(v.key))
 			{
@@ -190,7 +190,7 @@ public final class JsonParser
 			throw new JsonParseException("Not an array: %s", name);
 		}
 		
-		List<JsonValue> list = Lists.newArrayList();
+		List<JsonKeypair> list = Lists.newArrayList();
 		boolean kill = false;
 		
 		while (!"]".equalsIgnoreCase(buf.next(false)))
@@ -219,7 +219,7 @@ public final class JsonParser
 		return new JsonArray(name, list);
 	}
 	
-	public static JsonValue parseInt(String name, Buffer<String> buf) throws JsonParseException
+	public static JsonKeypair parseInt(String name, Buffer<String> buf) throws JsonParseException
 	{
 		String str = buf.next(false);
 		boolean neg = str.equalsIgnoreCase("-"), isFloat = false;
@@ -285,7 +285,7 @@ public final class JsonParser
 			
 		}
 		
-		return new JsonValue(isFloat ? EnumJsonType.FLOAT : EnumJsonType.INT, name, b.toString());
+		return new JsonKeypair(isFloat ? EnumJsonType.FLOAT : EnumJsonType.INT, name, b.toString());
 	}
 	
 	public static String gatherInts(Buffer<String> buf)

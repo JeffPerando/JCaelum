@@ -9,15 +9,15 @@ import java.util.List;
  * 
  * @author Elusivehawk
  */
-public class JsonArray extends JsonValue
+public class JsonArray extends JsonKeypair
 {
-	protected final JsonValue[] array;
+	protected final JsonKeypair[] array;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public JsonArray(String name, List<JsonValue> arr)
+	public JsonArray(String name, List<JsonKeypair> arr)
 	{
 		super(EnumJsonType.ARRAY, name, "[");
-		array = arr.toArray(new JsonValue[arr.size()]);
+		array = arr.toArray(new JsonKeypair[arr.size()]);
 		
 	}
 	
@@ -28,7 +28,7 @@ public class JsonArray extends JsonValue
 		
 		b.append(super.toString(tabs, format));
 		
-		JsonValue str;
+		JsonKeypair str;
 		
 		for (int c = 0; c < this.array.length; c++)
 		{
@@ -56,7 +56,7 @@ public class JsonArray extends JsonValue
 		return this.array.length;
 	}
 	
-	public JsonValue getValue(int i)
+	public JsonKeypair getValue(int i)
 	{
 		return this.array[i];
 	}

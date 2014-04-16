@@ -11,7 +11,7 @@ import com.elusivehawk.engine.render.IRenderEnvironment;
 import com.elusivehawk.engine.util.FileHelper;
 import com.elusivehawk.engine.util.json.EnumJsonType;
 import com.elusivehawk.engine.util.json.JsonObject;
-import com.elusivehawk.engine.util.json.JsonValue;
+import com.elusivehawk.engine.util.json.JsonKeypair;
 
 /**
  * 
@@ -38,7 +38,7 @@ public class LWJGLEnvironment implements IGameEnvironment
 		
 		if (CaelumEngine.DEBUG && json != null)
 		{
-			JsonValue val = json.getValue("debugNativeLocation");
+			JsonKeypair val = json.getValue("debugNativeLocation");
 			
 			if (val.type == EnumJsonType.STRING)
 			{

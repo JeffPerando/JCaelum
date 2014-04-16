@@ -9,13 +9,13 @@ import com.elusivehawk.engine.util.StringHelper;
  * 
  * @author Elusivehawk
  */
-public class JsonValue
+public class JsonKeypair
 {
 	public final EnumJsonType type;
 	public final String key, value;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public JsonValue(EnumJsonType jtype, String name, String info)
+	public JsonKeypair(EnumJsonType jtype, String name, String info)
 	{
 		if (jtype == null)
 		{

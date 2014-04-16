@@ -17,15 +17,15 @@ public class JsonParseException extends RuntimeException
 		
 	}
 	
-	public JsonParseException(String msg)
+	public JsonParseException(String err)
 	{
-		super(msg);
+		super(err);
 		
 	}
 	
-	public JsonParseException(String msg, Object... objs)
+	public JsonParseException(String err, Object... objs)
 	{
-		this(String.format(msg, objs));
+		this(String.format(err, objs));
 		
 	}
 	
@@ -35,15 +35,15 @@ public class JsonParseException extends RuntimeException
 		
 	}
 	
-	public JsonParseException(String msg, Throwable e)
+	public JsonParseException(String err, Throwable e)
 	{
-		super(msg, e);
+		super(err, e);
 		
 	}
 	
-	public JsonParseException(String msg, Throwable e, boolean arg2, boolean arg3)
+	public JsonParseException(String err, Throwable e, boolean arg2, boolean arg3)
 	{
-		super(msg, e, arg2, arg3);
+		super(err, e, arg2, arg3);
 		
 	}
 	

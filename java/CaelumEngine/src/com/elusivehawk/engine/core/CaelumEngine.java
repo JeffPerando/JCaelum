@@ -20,7 +20,7 @@ import com.elusivehawk.engine.util.Version;
 import com.elusivehawk.engine.util.json.EnumJsonType;
 import com.elusivehawk.engine.util.json.JsonObject;
 import com.elusivehawk.engine.util.json.JsonParser;
-import com.elusivehawk.engine.util.json.JsonValue;
+import com.elusivehawk.engine.util.json.JsonKeypair;
 import com.elusivehawk.engine.util.storage.Tuple;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -346,7 +346,7 @@ public final class CaelumEngine
 			return null;
 		}
 		
-		JsonValue curEnv = j.getValue(EnumOS.getCurrentOS().toString());
+		JsonKeypair curEnv = j.getValue(EnumOS.getCurrentOS().toString());
 		
 		if (curEnv == null || curEnv.type != EnumJsonType.OBJECT)
 		{
@@ -354,7 +354,7 @@ public final class CaelumEngine
 		}
 		
 		this.envConfig = (JsonObject)curEnv;
-		JsonValue envLoc = this.envConfig.getValue("lib");
+		JsonKeypair envLoc = this.envConfig.getValue("lib");
 		
 		if (envLoc == null || envLoc.type != EnumJsonType.STRING)
 		{
