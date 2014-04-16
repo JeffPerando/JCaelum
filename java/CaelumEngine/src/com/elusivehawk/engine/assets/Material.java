@@ -18,7 +18,7 @@ public class Material extends Asset implements IDirty
 	public final float shininess;
 	public final Color filter;
 	
-	private boolean dirty = true;
+	private boolean dirty = true, isStatic = true;
 	
 	public Material(String filename, Color overlay)
 	{
@@ -92,6 +92,18 @@ public class Material extends Asset implements IDirty
 	public Material clone()
 	{
 		return new Material(this);
+	}
+	
+	public boolean isStaticMat()
+	{
+		return this.isStatic;
+	}
+	
+	public Material flagAsNonStatic()
+	{
+		this.isStatic = false;
+		
+		return this;
 	}
 	
 	/*
