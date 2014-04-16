@@ -19,6 +19,12 @@ public class TriTuple<O, T, TH> extends Tuple<O, T>
 		
 	}
 	
+	@Override
+	public TriTuple<O, T, TH> clone()
+	{
+		return new TriTuple<O, T, TH>(this.one, this.two, this.three);
+	}
+	
 	public static <O, T, TH> TriTuple<O, T, TH> create(O one, T two, TH three)
 	{
 		return new TriTuple<O, T, TH>(one, two, three);

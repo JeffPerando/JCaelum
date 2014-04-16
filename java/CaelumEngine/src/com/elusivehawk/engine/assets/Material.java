@@ -4,6 +4,7 @@ package com.elusivehawk.engine.assets;
 import com.elusivehawk.engine.math.MathHelper;
 import com.elusivehawk.engine.render.Color;
 import com.elusivehawk.engine.render.EnumColorFormat;
+import com.elusivehawk.engine.util.IDirty;
 
 /**
  * 
@@ -11,11 +12,13 @@ import com.elusivehawk.engine.render.EnumColorFormat;
  * 
  * @author Elusivehawk
  */
-public class Material extends Asset
+public class Material extends Asset implements IDirty
 {
 	public final Texture tex;
 	public final float shininess;
 	public final Color filter;
+	
+	private boolean dirty = true;
 	
 	public Material(String filename, Color overlay)
 	{
@@ -37,6 +40,12 @@ public class Material extends Asset
 	public Material(String filename, Texture texture, float shine)
 	{
 		this(filename, texture, shine, new Color(EnumColorFormat.RGBA));
+		
+	}
+	
+	public Material(Material m)
+	{
+		this(m.name, m.tex, m.shininess, m.filter);
 		
 	}
 	
@@ -64,6 +73,25 @@ public class Material extends Asset
 		this.tex.finish();
 		
 		return this.tex.isFinished();
+	}
+	
+	@Override
+	public boolean isDirty()
+	{
+		return this.dirty;
+	}
+	
+	@Override
+	public void setIsDirty(boolean b)
+	{
+		this.dirty = b;
+		
+	}
+	
+	@Override
+	public Material clone()
+	{
+		return new Material(this);
 	}
 	
 	/*

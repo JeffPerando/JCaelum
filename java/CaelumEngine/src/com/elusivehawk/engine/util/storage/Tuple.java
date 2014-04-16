@@ -44,6 +44,12 @@ public class Tuple<O, T>
 		return true;
 	}
 	
+	@Override
+	public Tuple<O, T> clone()
+	{
+		return new Tuple<O, T>(this.one, this.two);
+	}
+	
 	public static <O, T> Tuple<O, T> create(O one, T two)
 	{
 		return new Tuple<O, T>(one, two);
