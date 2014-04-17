@@ -7,7 +7,7 @@ import java.util.List;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.util.ThreadStoppable;
-import com.elusivehawk.engine.util.storage.Tuple;
+import com.elusivehawk.engine.util.storage.TriTuple;
 import com.google.common.collect.Lists;
 
 /**
@@ -18,35 +18,35 @@ import com.google.common.collect.Lists;
  */
 public class ThreadAssetLoader extends ThreadStoppable
 {
-	private final List<Tuple<String, IAssetReceiver>> assets = Lists.newArrayList();
+	private final List<TriTuple<String, IAssetReceiver, IAssetReader>> assets = Lists.newArrayList();
 	private AssetManager assetMgr = null;
 	
 	@Override
 	public void rawUpdate() throws Throwable
 	{
-		if (this.assetMgr == null || this.assets.isEmpty())
+		if (this.assets.isEmpty())
 		{
 			Thread.sleep(1L);
 			
 			return;
 		}
 		
-		Iterator<Tuple<String, IAssetReceiver>> itr = this.assets.iterator();
-		Tuple<String, IAssetReceiver> tuple;
+		Iterator<TriTuple<String, IAssetReceiver, IAssetReader>> itr = this.assets.iterator();
+		TriTuple<String, IAssetReceiver, IAssetReader> t;
 		Asset a;
 		
 		while (itr.hasNext())
 		{
-			tuple = itr.next();
-			a = this.assetMgr.getExistingAsset(tuple.one);
+			t = itr.next();
+			a = this.assetMgr.getExistingAsset(t.one);
 			
 			if (a == null)
 			{
 				for (File file : this.assetMgr.getFiles())
 				{
-					if (file.getAbsolutePath().endsWith(tuple.one))
+					if (file.getAbsolutePath().endsWith(t.one))
 					{
-						a = this.assetMgr.readAsset(file);
+						a = t.three == null ? this.assetMgr.readAsset(file) : t.three.readAsset(this.assetMgr, file);
 						
 						if (a != null)
 						{
@@ -61,12 +61,12 @@ public class ThreadAssetLoader extends ThreadStoppable
 			
 			if (a == null)
 			{
-				CaelumEngine.log().log(EnumLogType.WARN, String.format("Asset %s failed to load", tuple.one));
+				CaelumEngine.log().log(EnumLogType.WARN, String.format("Asset %s failed to load", t.one));
 				
 			}
 			else
 			{
-				tuple.two.onAssetLoaded(a);
+				t.two.onAssetLoaded(a);
 				this.assetMgr.registerAsset(a);
 				
 				a = null;
@@ -81,13 +81,23 @@ public class ThreadAssetLoader extends ThreadStoppable
 	
 	public synchronized void setManager(AssetManager mgr)
 	{
-		this.assetMgr = mgr;
+		if (this.assetMgr == null)
+		{
+			this.assetMgr = mgr;
+			
+		}
 		
 	}
 	
 	public synchronized void loadAsset(String location, IAssetReceiver tkt)
 	{
-		this.assets.add(Tuple.create(location, tkt));
+		this.loadAsset(location, tkt, null);
+		
+	}
+	
+	public synchronized void loadAsset(String location, IAssetReceiver tkt, IAssetReader r)
+	{
+		this.assets.add(TriTuple.create(location, tkt, r));
 		
 	}
 	
