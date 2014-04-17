@@ -38,6 +38,12 @@ public class Vector implements IMathObject<Float>
 	protected List<IVectorListener> listeners = null;
 	protected String name = null;
 	
+	public Vector()
+	{
+		this(3);
+		
+	}
+	
 	public Vector(int length, Buffer<Float> buf)
 	{
 		this(length);
@@ -77,11 +83,7 @@ public class Vector implements IMathObject<Float>
 	{
 		nums = new float[MathHelper.clamp(length, 1, 4)];
 		
-		for (int c = 0; c < getSize(); c++)
-		{
-			nums[c] = 0f;
-			
-		}
+		setAll(0f);
 		
 	}
 	
