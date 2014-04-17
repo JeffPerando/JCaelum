@@ -24,7 +24,7 @@ import com.google.common.collect.Maps;
  */
 public final class RenderContext implements IContext
 {
-	private final ThreadGameRender thr;
+	private final RenderSystem sys;
 	
 	private IGL1 gl1;
 	private IGL2 gl2;
@@ -40,9 +40,9 @@ public final class RenderContext implements IContext
 	private boolean initiated = false, flipScreen = false;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public RenderContext(ThreadGameRender rThr)
+	public RenderContext(RenderSystem rsys)
 	{
-		thr = rThr;
+		sys = rsys;
 		
 	}
 	
@@ -54,9 +54,9 @@ public final class RenderContext implements IContext
 			return;
 		}
 		
-		this.gl1 = (IGL1)this.thr.getRenderEnv().getGL(IRenderEnvironment.GL_1);
-		this.gl2 = (IGL2)this.thr.getRenderEnv().getGL(IRenderEnvironment.GL_2);
-		this.gl3 = (IGL3)this.thr.getRenderEnv().getGL(IRenderEnvironment.GL_3);
+		this.gl1 = (IGL1)this.sys.getRenderEnv().getGL(IRenderEnvironment.GL_1);
+		this.gl2 = (IGL2)this.sys.getRenderEnv().getGL(IRenderEnvironment.GL_2);
+		this.gl3 = (IGL3)this.sys.getRenderEnv().getGL(IRenderEnvironment.GL_3);
 		
 		this.sVertex = RenderHelper.loadShader(FileHelper.createFile("/vertex.glsl"), GLEnumShader.VERTEX);
 		this.sFrag = RenderHelper.loadShader(FileHelper.createFile("/fragment.glsl"), GLEnumShader.FRAG);
@@ -79,9 +79,9 @@ public final class RenderContext implements IContext
 		
 	}
 	
-	public IRenderHUB getHub()
+	public IRenderHUB getHUB()
 	{
-		return this.thr.getRenderHUB();
+		return this.sys.getHUB();
 	}
 	
 	public IGL1 getGL1()
@@ -116,7 +116,7 @@ public final class RenderContext implements IContext
 	
 	public EnumRenderMode getRenderMode()
 	{
-		return this.getHub().getRenderMode();
+		return this.getHUB().getRenderMode();
 	}
 	
 	public EnumRenderStage getCurrentRenderingStage()

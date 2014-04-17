@@ -17,8 +17,9 @@ public class CaelumActivity extends Activity
 	protected void onCreate(Bundle b)
 	{
 		super.onCreate(b);
+		setContentView(new CaelumView(this));
 		
-		CaelumEngine.main("class:" + AndroidEnvironment.class.getCanonicalName());
+		CaelumEngine.main(String.format("env:%s", AndroidEnvironment.class.getCanonicalName()));
 		
 	}
 	

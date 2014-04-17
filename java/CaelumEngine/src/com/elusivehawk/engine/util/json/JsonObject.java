@@ -50,7 +50,7 @@ public class JsonObject extends JsonKeypair
 	
 	public JsonKeypair getValue(String name)
 	{
-		if (name != null)
+		if ((name != null && !"".equalsIgnoreCase(name)) && !this.jsons.isEmpty())
 		{
 			for (JsonKeypair json : this.jsons)
 			{

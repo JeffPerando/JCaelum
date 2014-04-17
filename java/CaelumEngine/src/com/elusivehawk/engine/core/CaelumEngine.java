@@ -11,16 +11,17 @@ import com.elusivehawk.engine.assets.ThreadAssetLoader;
 import com.elusivehawk.engine.render.IRenderEnvironment;
 import com.elusivehawk.engine.render.IRenderHUB;
 import com.elusivehawk.engine.render.RenderContext;
+import com.elusivehawk.engine.render.RenderSystem;
 import com.elusivehawk.engine.render.ThreadGameRender;
 import com.elusivehawk.engine.util.FileHelper;
+import com.elusivehawk.engine.util.IThreadStoppable;
 import com.elusivehawk.engine.util.ReflectionHelper;
 import com.elusivehawk.engine.util.StringHelper;
-import com.elusivehawk.engine.util.ThreadStoppable;
 import com.elusivehawk.engine.util.Version;
 import com.elusivehawk.engine.util.json.EnumJsonType;
+import com.elusivehawk.engine.util.json.JsonKeypair;
 import com.elusivehawk.engine.util.json.JsonObject;
 import com.elusivehawk.engine.util.json.JsonParser;
-import com.elusivehawk.engine.util.json.JsonKeypair;
 import com.elusivehawk.engine.util.storage.Tuple;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -38,7 +39,7 @@ public final class CaelumEngine
 	public static final boolean DEBUG = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().contains("-agentlib:jdwp");
 	public static final Version VERSION = new Version(1, 0, 0);
 	
-	private final Map<EnumEngineFeature, ThreadStoppable> threads = Maps.newEnumMap(EnumEngineFeature.class);
+	private final Map<EnumEngineFeature, IThreadStoppable> threads = Maps.newEnumMap(EnumEngineFeature.class);
 	private final Map<EnumInputType, Input> inputs = Maps.newEnumMap(EnumInputType.class);
 	
 	private ILog log = new GameLog();
@@ -298,7 +299,11 @@ public final class CaelumEngine
 		
 		if (hub != null)
 		{
-			this.threads.put(EnumEngineFeature.RENDER, new ThreadGameRender(this.renv, hub));
+			RenderSystem rsys = new RenderSystem(this.renv, hub);
+			
+			IThreadStoppable rt = this.renv.createRenderThread(rsys);
+			
+			this.threads.put(EnumEngineFeature.RENDER, rt == null ? new ThreadGameRender(rsys) : rt);
 			
 		}
 		
@@ -325,11 +330,11 @@ public final class CaelumEngine
 		
 		for (EnumEngineFeature fe : EnumEngineFeature.values())
 		{
-			ThreadStoppable t = this.threads.get(fe);
+			IThreadStoppable t = this.threads.get(fe);
 			
 			if (t != null)
 			{
-				t.start();
+				((Thread)t).start();
 				
 			}
 			
@@ -397,7 +402,7 @@ public final class CaelumEngine
 		
 		for (EnumEngineFeature fe : EnumEngineFeature.values())
 		{
-			ThreadStoppable t = this.threads.get(fe);
+			IThreadStoppable t = this.threads.get(fe);
 			
 			if (t != null)
 			{
@@ -425,7 +430,7 @@ public final class CaelumEngine
 	{
 		for (EnumEngineFeature fe : features)
 		{
-			ThreadStoppable t = this.threads.get(fe);
+			IThreadStoppable t = this.threads.get(fe);
 			
 			if (t != null)
 			{

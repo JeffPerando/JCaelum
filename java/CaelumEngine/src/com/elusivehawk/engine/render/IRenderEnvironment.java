@@ -1,6 +1,8 @@
 
 package com.elusivehawk.engine.render;
 
+import com.elusivehawk.engine.util.IThreadStoppable;
+
 /**
  * 
  * 
@@ -34,5 +36,7 @@ public interface IRenderEnvironment
 	 * @return The display created.
 	 */
 	public IDisplay createDisplay(String name, DisplaySettings settings);
+	
+	public IThreadStoppable createRenderThread(RenderSystem rsys);
 	
 }

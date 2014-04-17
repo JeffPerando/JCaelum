@@ -15,9 +15,9 @@ public enum EnumOS
 	
 	private static EnumOS determineOS()
 	{
-		if (System.getProperty("java.vendor") == "The Android Project")
+		if ("The Android Project".equalsIgnoreCase(System.getProperty("java.vendor")))
 		{
-			return ANDROID;//I feel terrible for this...
+			return ANDROID;//Still feel rather crummy for this...
 		}
 		
 		String os = System.getProperty("os.name").toLowerCase();
@@ -30,6 +30,8 @@ public enum EnumOS
 			}
 			
 		}
+		
+		System.err.println(String.format("Unknown OS: %s", os));
 		
 		return OTHER;
 	}

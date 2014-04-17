@@ -10,7 +10,7 @@ package com.elusivehawk.engine.util;
  * @author Elusivehawk
  */
 @SuppressWarnings("static-method")
-public abstract class ThreadStoppable extends Thread implements IPausable
+public abstract class ThreadStoppable extends Thread implements IThreadStoppable
 {
 	protected boolean running = true, paused = false;
 	
@@ -57,20 +57,35 @@ public abstract class ThreadStoppable extends Thread implements IPausable
 		
 	}
 	
-	protected boolean initiate()
+	@Override
+	public boolean isPaused()
 	{
-		return true;
+		return this.paused;
 	}
 	
+	@Override
+	public synchronized void setPaused(boolean pause)
+	{
+		this.paused = pause;
+		
+	}
+	
+	@Override
 	public final boolean isRunning()
 	{
 		return this.running;
 	}
 	
 	@Override
-	public boolean isPaused()
+	public synchronized final void stopThread()
 	{
-		return this.paused;
+		this.running = false;
+		
+	}
+	
+	protected boolean initiate()
+	{
+		return true;
 	}
 	
 	protected boolean canRun()
@@ -85,19 +100,6 @@ public abstract class ThreadStoppable extends Thread implements IPausable
 	public void handleException(Throwable e)
 	{
 		e.printStackTrace();
-		
-	}
-	
-	public synchronized final void stopThread()
-	{
-		this.running = false;
-		
-	}
-	
-	@Override
-	public synchronized void setPaused(boolean pause)
-	{
-		this.paused = pause;
 		
 	}
 	

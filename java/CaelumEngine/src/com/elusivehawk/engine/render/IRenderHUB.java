@@ -12,9 +12,20 @@ import java.util.Collection;
 public interface IRenderHUB
 {
 	/**
+	 * 
 	 * Called once during the startup phase.
+	 * 
+	 * @param d The current display.
 	 */
-	public void initiate();
+	public void initiate(IDisplay d);
+	
+	/**
+	 * 
+	 * Called when the display is resized.
+	 * 
+	 * @param d The current display.
+	 */
+	public void onResize(IDisplay d);
 	
 	/**
 	 * 
