@@ -48,11 +48,16 @@ public class DirtableStorage<T> implements IDirty, IGettable<T>, ISettable<T>
 			return false;
 		}
 		
-		this.obj = object;
+		if (object == null ? this.obj != object : !object.equals(this.obj))
+		{
+			this.obj = object;
+			
+			this.setIsDirty(true);
+			
+			return true;
+		}
 		
-		this.setIsDirty(true);
-		
-		return true;
+		return false;
 	}
 	
 	public DirtableStorage<T> setEnableNull(boolean b)
