@@ -13,7 +13,9 @@ import com.elusivehawk.engine.render.IRenderHUB;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderSystem;
 import com.elusivehawk.engine.render.ThreadGameRender;
+import com.elusivehawk.engine.util.EnumOS;
 import com.elusivehawk.engine.util.FileHelper;
+import com.elusivehawk.engine.util.IPausable;
 import com.elusivehawk.engine.util.IThreadStoppable;
 import com.elusivehawk.engine.util.ReflectionHelper;
 import com.elusivehawk.engine.util.StringHelper;
@@ -41,6 +43,7 @@ public final class CaelumEngine
 	
 	private final Map<EnumEngineFeature, IThreadStoppable> threads = Maps.newEnumMap(EnumEngineFeature.class);
 	private final Map<EnumInputType, Input> inputs = Maps.newEnumMap(EnumInputType.class);
+	private final Map<String, String> startargs = Maps.newHashMap();
 	
 	private ILog log = new GameLog();
 	private IGameEnvironment env = null;
@@ -48,6 +51,7 @@ public final class CaelumEngine
 	private JsonObject envConfig = null;
 	
 	private Game game = null;
+	private GameArguments gameargs = null;
 	private AssetManager assets = null;
 	
 	private CaelumEngine(){}
@@ -99,6 +103,23 @@ public final class CaelumEngine
 		return (RenderContext)getContext(safe);
 	}
 	
+	public static boolean isPaused()
+	{
+		return isPaused(true);
+	}
+	
+	public static boolean isPaused(boolean safe)
+	{
+		Thread t = Thread.currentThread();
+		
+		if (safe && !(t instanceof IPausable))
+		{
+			return false;
+		}
+		
+		return ((IPausable)t).isPaused();
+	}
+	
 	public static void flipScreen(boolean flip)
 	{
 		if (game() == null)
@@ -113,18 +134,22 @@ public final class CaelumEngine
 	
 	public static void main(String... args)
 	{
-		instance().start(args);
+		instance().createGameEnv(args);
+		instance().startGame();
+		instance().pauseGame(false);
 		
 	}
 	
-	private void start(String... args)
+	public void createGameEnv(String... args)
 	{
 		if (this.game != null)
 		{
 			return;
 		}
 		
-		List<String> gameargs = Lists.newArrayList();
+		//XXX Parsing the starting arguments
+		
+		List<String> gargs = Lists.newArrayList();
 		Map<String, String> strs = Maps.newHashMap();
 		String[] spl;
 		
@@ -132,7 +157,7 @@ public final class CaelumEngine
 		{
 			if (str.indexOf(":") == -1)
 			{
-				gameargs.add(str);
+				gargs.add(str);
 				
 			}
 			else
@@ -144,9 +169,12 @@ public final class CaelumEngine
 			
 		}
 		
+		this.startargs.putAll(strs);
+		this.gameargs = new GameArguments(gargs);
+		
 		this.log.log(EnumLogType.INFO, String.format("Starting Caelum Engine v%s on %s", VERSION, EnumOS.getCurrentOS()));
 		
-		boolean verbose = !"false".equalsIgnoreCase(strs.get("verbose"));
+		boolean verbose = !"false".equalsIgnoreCase(this.startargs.get("verbose"));
 		
 		this.log.setEnableVerbosity(verbose);
 		
@@ -156,9 +184,11 @@ public final class CaelumEngine
 			
 		}
 		
+		//XXX Game environment
+		
 		IGameEnvironment env = null;
 		Class<?> clazz = null;
-		String cl = strs.get("env");
+		String cl = this.startargs.get("env");
 		
 		if (cl == null)
 		{
@@ -252,9 +282,15 @@ public final class CaelumEngine
 			
 		}
 		
+	}
+	
+	public void startGame()
+	{
+		//XXX Game
+		
 		Game g = null;
 		
-		String game = strs.get("game");
+		String game = this.startargs.get("game");
 		
 		if (game != null)
 		{
@@ -277,17 +313,21 @@ public final class CaelumEngine
 			
 		}
 		
-		if (!g.initiateGame(new GameArguments(gameargs)))
+		//XXX Game initiation
+		
+		if (!g.initiateGame(this.gameargs))
 		{
 			return;
 		}
 		
 		this.game = g;
 		
+		//XXX Creating game threads
+		
 		ThreadAssetLoader al = new ThreadAssetLoader();
 		this.assets = new AssetManager(al);
 		
-		g.loadAssets(this.assets);
+		this.game.loadAssets(this.assets);
 		this.assets.initiate();
 		
 		this.threads.put(EnumEngineFeature.ASSET_LOADING, al);
@@ -315,16 +355,22 @@ public final class CaelumEngine
 			
 		}*/
 		
-		Runtime.getRuntime().addShutdownHook(new Thread(){
-			@SuppressWarnings("synthetic-access")
-			@Override
-			public void run()
-			{
-				CaelumEngine.instance().shutDownGame();
+		if (EnumOS.getCurrentOS() != EnumOS.ANDROID)
+		{
+			Runtime.getRuntime().addShutdownHook(new Thread(){
+				@Override
+				public void run()
+				{
+					CaelumEngine.instance().shutDownGame();
+					CaelumEngine.instance().clearGameEnv();
+					
+				}
 				
-			}
+			});
 			
-		});
+		}
+		
+		//XXX Starting the threads
 		
 		for (EnumEngineFeature fe : EnumEngineFeature.values())
 		{
@@ -332,6 +378,7 @@ public final class CaelumEngine
 			
 			if (t != null)
 			{
+				t.setPaused(true);
 				((Thread)t).start();
 				
 			}
@@ -340,9 +387,77 @@ public final class CaelumEngine
 		
 	}
 	
+	public void pauseGame(boolean pause)
+	{
+		this.pauseGame(pause, EnumEngineFeature.values());
+		
+	}
+	
+	public void pauseGame(boolean pause, EnumEngineFeature... features)
+	{
+		for (EnumEngineFeature fe : features)
+		{
+			IThreadStoppable t = this.threads.get(fe);
+			
+			if (t != null)
+			{
+				t.setPaused(pause);
+				
+			}
+			
+		}
+		
+	}
+	
+	public void shutDownGame()
+	{
+		if (this.game == null || !this.threads.isEmpty())
+		{
+			return;
+		}
+		
+		this.game.onShutdown();
+		
+		for (EnumEngineFeature fe : EnumEngineFeature.values())
+		{
+			IThreadStoppable t = this.threads.get(fe);
+			
+			if (t != null)
+			{
+				t.stopThread();
+				
+			}
+			
+		}
+		
+		this.threads.clear();
+		
+	}
+	
+	public void clearGameEnv()
+	{
+		if (this.game == null)
+		{
+			return;
+		}
+		
+		this.inputs.clear();
+		this.startargs.clear();
+		
+		this.env = null;
+		this.renv = null;
+		this.envConfig = null;
+		this.log = new GameLog();
+		
+		this.game = null;
+		this.gameargs = null;
+		this.assets = null;
+		
+	}
+	
 	private Class<?> loadEnvironmentFromJson()
 	{
-		JsonObject j = JsonParser.parse(FileHelper.createFile(".", "/game.json"));
+		JsonObject j = JsonParser.parse(FileHelper.createFile(".", "/gameEnv.json"));
 		
 		if (j == null)
 		{
@@ -389,55 +504,6 @@ public final class CaelumEngine
 		}
 		
 		return null;
-	}
-	
-	private void shutDownGame()
-	{
-		if (this.game == null)
-		{
-			return;
-		}
-		
-		for (EnumEngineFeature fe : EnumEngineFeature.values())
-		{
-			IThreadStoppable t = this.threads.get(fe);
-			
-			if (t != null)
-			{
-				t.stopThread();
-				
-			}
-			
-		}
-		
-		this.threads.clear();
-		this.inputs.clear();
-		
-		this.game.onShutdown();
-		this.game = null;
-		
-	}
-	
-	public void pauseGame(boolean pause)
-	{
-		this.pauseGame(pause, EnumEngineFeature.values());
-		
-	}
-	
-	public void pauseGame(boolean pause, EnumEngineFeature... features)
-	{
-		for (EnumEngineFeature fe : features)
-		{
-			IThreadStoppable t = this.threads.get(fe);
-			
-			if (t != null)
-			{
-				t.setPaused(pause);
-				
-			}
-			
-		}
-		
 	}
 	
 }

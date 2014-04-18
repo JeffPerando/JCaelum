@@ -69,4 +69,12 @@ public final class ThreadGameLoop extends ThreadTimed
 		return 0.5;
 	}
 	
+	@Override
+	public synchronized void setPaused(boolean pause)
+	{
+		super.setPaused(pause);
+		this.game.setPaused(pause);
+		
+	}
+	
 }

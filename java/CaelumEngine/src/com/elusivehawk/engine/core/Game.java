@@ -5,6 +5,7 @@ import java.util.List;
 import com.elusivehawk.engine.assets.AssetManager;
 import com.elusivehawk.engine.physics.IPhysicsSimulator;
 import com.elusivehawk.engine.render.IRenderHUB;
+import com.elusivehawk.engine.util.IPausable;
 import com.elusivehawk.engine.util.IUpdatable;
 import com.elusivehawk.engine.util.Version;
 import com.google.common.collect.Lists;
@@ -16,13 +17,13 @@ import com.google.common.collect.Lists;
  * @author Elusivehawk
  */
 @SuppressWarnings({"static-method", "unused"})
-public abstract class Game implements IUpdatable
+public abstract class Game implements IUpdatable, IPausable
 {
 	public final String name;
 	
 	private GameState state = null, nextState = null;
 	private List<IGameStateListener> listeners = Lists.newArrayList();
-	private boolean initiated = false;
+	private boolean initiated = false, paused = false;
 	
 	@SuppressWarnings("unqualified-field-access")
 	protected Game(String title)
@@ -69,6 +70,19 @@ public abstract class Game implements IUpdatable
 			}
 			
 		}
+		
+	}
+	
+	@Override
+	public boolean isPaused()
+	{
+		return this.paused;
+	}
+	
+	@Override
+	public void setPaused(boolean p)
+	{
+		this.paused = p;
 		
 	}
 	

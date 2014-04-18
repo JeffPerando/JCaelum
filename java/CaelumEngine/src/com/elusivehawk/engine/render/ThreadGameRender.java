@@ -5,6 +5,7 @@ import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.core.IContext;
 import com.elusivehawk.engine.core.IThreadContext;
+import com.elusivehawk.engine.util.ShutdownHelper;
 import com.elusivehawk.engine.util.ThreadTimed;
 
 /**
@@ -48,7 +49,7 @@ public class ThreadGameRender extends ThreadTimed implements IThreadContext
 		{
 			this.sys.onDisplayClosed(this.display);
 			
-			System.exit(0);
+			ShutdownHelper.exit(0);
 			
 		}
 		
@@ -64,6 +65,14 @@ public class ThreadGameRender extends ThreadTimed implements IThreadContext
 	public void handleException(Throwable e)
 	{
 		CaelumEngine.log().log(EnumLogType.ERROR, "Error caught during rendering: ", e);
+		
+	}
+	
+	@Override
+	public synchronized void setPaused(boolean pause)
+	{
+		super.setPaused(pause);
+		this.sys.setPaused(pause);
 		
 	}
 	

@@ -19,7 +19,7 @@ public class CaelumActivity extends Activity
 		super.onCreate(b);
 		setContentView(new CaelumView(this));
 		
-		CaelumEngine.main(String.format("env:%s", AndroidEnvironment.class.getCanonicalName()));
+		CaelumEngine.instance().createGameEnv(String.format("env:%s", AndroidEnvironment.class.getCanonicalName()));
 		
 	}
 	
@@ -28,12 +28,16 @@ public class CaelumActivity extends Activity
 	{
 		super.onStart();
 		
+		CaelumEngine.instance().startGame();
+		
 	}
 	
 	@Override
 	public void onResume()
 	{
 		super.onResume();
+		
+		CaelumEngine.instance().pauseGame(false);
 		
 	}
 	
@@ -42,6 +46,8 @@ public class CaelumActivity extends Activity
 	{
 		super.onPause();
 		
+		CaelumEngine.instance().pauseGame(true);
+		
 	}
 	
 	@Override
@@ -49,12 +55,16 @@ public class CaelumActivity extends Activity
 	{
 		super.onStop();
 		
+		CaelumEngine.instance().shutDownGame();
+		
 	}
 	
 	@Override
 	public void onDestroy()
 	{
 		super.onDestroy();
+		
+		CaelumEngine.instance().clearGameEnv();
 		
 	}
 	
