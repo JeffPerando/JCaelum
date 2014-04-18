@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.android;
 
 import com.elusivehawk.engine.core.CaelumEngine;
+import com.elusivehawk.engine.util.ShutdownHelper;
 import android.app.Activity;
 import android.os.Bundle;
 
@@ -18,6 +19,7 @@ public class CaelumActivity extends Activity
 	{
 		super.onCreate(b);
 		setContentView(new CaelumView(this));
+		ShutdownHelper.instance().setShutdownMech(new AndroidShutdown(this));
 		
 		CaelumEngine.instance().createGameEnv(String.format("env:%s", AndroidEnvironment.class.getCanonicalName()));
 		
