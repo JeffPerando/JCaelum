@@ -4,7 +4,6 @@ package com.elusivehawk.engine.lwjgl;
 import org.lwjgl.input.Mouse;
 import com.elusivehawk.engine.core.EnumInputType;
 import com.elusivehawk.engine.core.Input;
-import com.elusivehawk.engine.core.InputConst;
 import com.elusivehawk.engine.util.storage.DirtableStorage;
 
 /**
@@ -50,7 +49,7 @@ public class LWJGLMouse extends Input
 		
 		int buttons = Mouse.getButtonCount();
 		
-		for (int c = 0; c < buttons; c++)
+		/*for (int c = 0; c < buttons; c++)
 		{
 			this.bools.put(InputConst.MOUSE_CLICK | ((c + 1) << 16), Mouse.isButtonDown(c));
 			
@@ -66,9 +65,9 @@ public class LWJGLMouse extends Input
 		if (Mouse.hasWheel())
 		{
 			this.integers.put(InputConst.MOUSE_DWHEEL, Mouse.getDWheel());
-			this.bools.put(InputConst.MOUSE_CWHEEL, /*FIXME*/false);
+			this.bools.put(InputConst.MOUSE_CWHEEL, false);//FIXME
 			
-		}
+		}*/
 		
 	}
 	
@@ -80,9 +79,9 @@ public class LWJGLMouse extends Input
 	}
 	
 	@Override
-	public void setFlag(int name, boolean value)
+	public void setFlag(String name, boolean value)
 	{
-		if (name == InputConst.MOUSE_LOCK)
+		if ("lock".equalsIgnoreCase(name))
 		{
 			this.grabMouse.set(value);
 			

@@ -269,11 +269,9 @@ public final class CaelumEngine
 			
 		}
 		
-		Version v = g.getGameVersion();
+		this.log.log(EnumLogType.INFO, String.format("Loading %s", g.name));
 		
-		this.log.log(EnumLogType.INFO, String.format("Loading %s, version %s", g.name, v == null ? "MISSINGNO" : v));
-		
-		if (v == null)
+		if (g.getGameVersion() == null)
 		{
 			this.log.log(EnumLogType.WARN, "The game is missing a Version object!");
 			

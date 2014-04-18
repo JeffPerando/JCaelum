@@ -25,6 +25,7 @@ public class AndroidEnvironment implements IGameEnvironment
 		return os == EnumOS.ANDROID;
 	}
 	
+	@SuppressWarnings("unused")
 	@Override
 	public void initiate(JsonObject json, String... args)
 	{

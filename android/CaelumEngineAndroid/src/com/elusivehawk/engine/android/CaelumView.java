@@ -21,6 +21,7 @@ public class CaelumView extends GLSurfaceView
 		
 	}
 	
+	@SuppressWarnings("unused")
 	public static class CaelumGLR implements GLSurfaceView.Renderer
 	{
 		public CaelumGLR(RenderSystem rsys)
@@ -29,21 +30,21 @@ public class CaelumView extends GLSurfaceView
 		}
 		
 		@Override
-		public void onSurfaceCreated(GL10 gl, EGLConfig config)
+		public void onSurfaceCreated(GL10 unused, EGLConfig config)
 		{
 			// TODO Auto-generated method stub
 			
 		}
 		
 		@Override
-		public void onSurfaceChanged(GL10 gl, int width, int height)
+		public void onSurfaceChanged(GL10 unused, int width, int height)
 		{
 			// TODO Auto-generated method stub
 			
 		}
 		
 		@Override
-		public void onDrawFrame(GL10 gl)
+		public void onDrawFrame(GL10 unused)
 		{
 			// TODO Auto-generated method stub
 			

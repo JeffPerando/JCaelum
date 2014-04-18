@@ -75,7 +75,7 @@ public abstract class Game implements IUpdatable
 	@Override
 	public String toString()
 	{
-		return String.format("%s-v%s", this.name, this.getGameVersion());
+		return this.getGameVersion() == null ? this.name : String.format("%s v%s", this.name, this.getGameVersion());
 	}
 	
 	public final boolean initiateGame(GameArguments args)
@@ -125,7 +125,7 @@ public abstract class Game implements IUpdatable
 		
 	}
 	
-	public void swapGameStates(GameState gs)
+	public void setGameState(GameState gs)
 	{
 		this.nextState = gs;
 		
@@ -143,12 +143,15 @@ public abstract class Game implements IUpdatable
 	
 	/**
 	 * 
-	 * Called if there is no current game state.
+	 * Called on every update, if there is no current game state.
 	 * 
 	 * @param delta
 	 */
 	protected abstract void tick(double delta);
 	
+	/**
+	 * Called during shutdown.
+	 */
 	protected abstract void onGameShutdown();
 	
 	/**

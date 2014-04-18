@@ -20,6 +20,7 @@ import com.elusivehawk.engine.util.BufferHelper;
  * 
  * @author Elusivehawk
  */
+@SuppressWarnings("unused")
 public class GLES2 implements IGL2
 {
 	@Override

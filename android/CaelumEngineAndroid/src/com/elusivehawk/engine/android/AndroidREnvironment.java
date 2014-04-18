@@ -16,6 +16,7 @@ import com.elusivehawk.engine.util.IThreadStoppable;
  * 
  * @author Elusivehawk
  */
+@SuppressWarnings("unused")
 public class AndroidREnvironment implements IRenderEnvironment
 {
 	protected final IGL1 GL_1 = new GLES1();
