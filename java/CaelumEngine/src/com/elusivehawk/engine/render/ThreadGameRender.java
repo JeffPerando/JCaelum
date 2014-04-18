@@ -1,12 +1,10 @@
 
 package com.elusivehawk.engine.render;
 
-import com.elusivehawk.engine.core.CaelumEngine;
-import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.core.IContext;
 import com.elusivehawk.engine.core.IThreadContext;
+import com.elusivehawk.engine.core.ThreadCaelum;
 import com.elusivehawk.engine.util.ShutdownHelper;
-import com.elusivehawk.engine.util.ThreadTimed;
 
 /**
  * 
@@ -14,7 +12,7 @@ import com.elusivehawk.engine.util.ThreadTimed;
  * 
  * @author Elusivehawk
  */
-public class ThreadGameRender extends ThreadTimed implements IThreadContext
+public class ThreadGameRender extends ThreadCaelum implements IThreadContext
 {
 	protected final RenderSystem sys;
 	
@@ -31,6 +29,8 @@ public class ThreadGameRender extends ThreadTimed implements IThreadContext
 	@Override
 	public boolean initiate()
 	{
+		super.initiate();
+		
 		if (this.sys.initiate())
 		{
 			this.fps = this.sys.getFPS();
@@ -62,13 +62,6 @@ public class ThreadGameRender extends ThreadTimed implements IThreadContext
 	}
 	
 	@Override
-	public void handleException(Throwable e)
-	{
-		CaelumEngine.log().log(EnumLogType.ERROR, "Error caught during rendering: ", e);
-		
-	}
-	
-	@Override
 	public synchronized void setPaused(boolean pause)
 	{
 		super.setPaused(pause);
@@ -80,12 +73,6 @@ public class ThreadGameRender extends ThreadTimed implements IThreadContext
 	public int getTargetUpdateCount()
 	{
 		return this.fps;
-	}
-	
-	@Override
-	public double getMaxDelta()
-	{
-		return 0.5;
 	}
 	
 	@Override

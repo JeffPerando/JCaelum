@@ -9,18 +9,18 @@ import java.nio.ByteBuffer;
  * 
  * @author Elusivehawk
  */
-public class ByteBuf implements IByteReader, IByteWriter
+public class ByteBuffers implements IByteReader, IByteWriter
 {
 	protected final ByteBuffer in, out;
 	
-	public ByteBuf(ByteBuffer b)
+	public ByteBuffers(ByteBuffer b)
 	{
 		this(b, b);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public ByteBuf(ByteBuffer i, ByteBuffer o)
+	public ByteBuffers(ByteBuffer i, ByteBuffer o)
 	{
 		in = i;
 		out = o;

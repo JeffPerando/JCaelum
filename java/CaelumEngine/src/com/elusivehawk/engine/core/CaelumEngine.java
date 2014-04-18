@@ -18,6 +18,7 @@ import com.elusivehawk.engine.util.FileHelper;
 import com.elusivehawk.engine.util.IPausable;
 import com.elusivehawk.engine.util.IThreadStoppable;
 import com.elusivehawk.engine.util.ReflectionHelper;
+import com.elusivehawk.engine.util.ShutdownHelper;
 import com.elusivehawk.engine.util.StringHelper;
 import com.elusivehawk.engine.util.Version;
 import com.elusivehawk.engine.util.json.EnumJsonType;
@@ -237,14 +238,14 @@ public final class CaelumEngine
 		if (env == null)
 		{
 			this.log.log(EnumLogType.ERROR, String.format("Unable to load environment: Instance couldn't be created. Class: %s", clazz == null ? "NULL" : clazz.getCanonicalName()));
-			System.exit("NO-ENVIRONMENT-FOUND".hashCode());
+			ShutdownHelper.exit("NO-ENVIRONMENT-FOUND".hashCode());
 			
 		}
 		
 		if (!env.isCompatible(EnumOS.getCurrentOS()))
 		{
 			this.log.log(EnumLogType.ERROR, String.format("Unable to load environment: Current OS is incompatible. Class: %s; OS: %s", clazz == null ? "NULL" : clazz.getCanonicalName(), EnumOS.getCurrentOS()));
-			System.exit("NO-ENVIRONMENT-FOUND".hashCode());
+			ShutdownHelper.exit("NO-ENVIRONMENT-FOUND".hashCode());
 			
 		}
 		
@@ -301,23 +302,21 @@ public final class CaelumEngine
 		if (g == null)
 		{
 			this.log.log(EnumLogType.ERROR, "Could not load game");
-			System.exit("NO-GAME-FOUND".hashCode());
+			ShutdownHelper.exit("NO-GAME-FOUND".hashCode());
+			
+		}
+		else
+		{
+			g.preInit();
 			
 		}
 		
-		this.log.log(EnumLogType.INFO, String.format("Loading %s", g.name));
+		this.log.log(EnumLogType.INFO, String.format("Loading %s", g));
 		
 		if (g.getGameVersion() == null)
 		{
 			this.log.log(EnumLogType.WARN, "The game is missing a Version object!");
 			
-		}
-		
-		//XXX Game initiation
-		
-		if (!g.initiateGame(this.gameargs))
-		{
-			return;
 		}
 		
 		this.game = g;
@@ -331,7 +330,7 @@ public final class CaelumEngine
 		this.assets.initiate();
 		
 		this.threads.put(EnumEngineFeature.ASSET_LOADING, al);
-		this.threads.put(EnumEngineFeature.LOGIC, new ThreadGameLoop(this.inputs, this.game));
+		this.threads.put(EnumEngineFeature.LOGIC, new ThreadGameLoop(this.inputs, this.game, this.gameargs));
 		
 		IRenderHUB hub = this.game.getRenderHUB();
 		

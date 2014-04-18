@@ -18,7 +18,7 @@ import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
 import com.elusivehawk.engine.util.BufferHelper;
 import com.elusivehawk.engine.util.StringHelper;
-import com.elusivehawk.engine.util.io.ByteBuf;
+import com.elusivehawk.engine.util.io.ByteBuffers;
 import com.elusivehawk.engine.util.storage.Buffer;
 
 /**
@@ -176,7 +176,7 @@ public final class RenderHelper
 		gl1().glReadPixels(0, 0, win.getWidth(), win.getHeight(), GLConst.GL_RGBA, GLConst.GL_BYTE, buf);
 		
 		BufferedImage ret = new BufferedImage(win.getWidth(), win.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		ByteBuf io = new ByteBuf(buf, null);
+		ByteBuffers io = new ByteBuffers(buf, null);
 		
 		for (int x = 0; x < ret.getWidth(); x++)
 		{

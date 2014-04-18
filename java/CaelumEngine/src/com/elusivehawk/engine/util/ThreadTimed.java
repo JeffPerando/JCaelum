@@ -93,6 +93,11 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 		
 	}
 	
+	public final boolean isInitiated()
+	{
+		return this.initiated;
+	}
+	
 	public abstract int getTargetUpdateCount();
 	
 	public abstract double getMaxDelta();

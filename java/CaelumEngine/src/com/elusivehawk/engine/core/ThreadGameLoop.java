@@ -2,7 +2,6 @@
 package com.elusivehawk.engine.core;
 
 import java.util.Map;
-import com.elusivehawk.engine.util.ThreadTimed;
 import com.google.common.collect.Maps;
 
 /**
@@ -11,15 +10,17 @@ import com.google.common.collect.Maps;
  * 
  * @author Elusivehawk
  */
-public final class ThreadGameLoop extends ThreadTimed
+public final class ThreadGameLoop extends ThreadCaelum
 {
 	private final Map<EnumInputType, Input> input = Maps.newHashMap();
 	private final Game game;
+	private final GameArguments args;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public ThreadGameLoop(Map<EnumInputType, Input> inputMap, Game g)
+	public ThreadGameLoop(Map<EnumInputType, Input> inputMap, Game g, GameArguments gargs)
 	{
 		game = g;
+		args = gargs;
 		
 		if (inputMap != null)
 		{
@@ -32,7 +33,9 @@ public final class ThreadGameLoop extends ThreadTimed
 	@Override
 	public boolean initiate()
 	{
-		return true;
+		super.initiate();
+		
+		return this.game.initiateGame(this.args);
 	}
 	
 	@Override
@@ -61,12 +64,6 @@ public final class ThreadGameLoop extends ThreadTimed
 	public int getTargetUpdateCount()
 	{
 		return this.game.getUpdateCount();
-	}
-	
-	@Override
-	public double getMaxDelta()
-	{
-		return 0.5;
 	}
 	
 	@Override

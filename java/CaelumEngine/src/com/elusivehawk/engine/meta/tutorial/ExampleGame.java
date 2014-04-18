@@ -43,7 +43,7 @@ public class ExampleGame extends Game
 	 * @see com.elusivehawk.engine.core.Game#tick(double)
 	 */
 	@Override
-	protected void tick(double delta)
+	protected void tick(double delta) throws Throwable
 	{
 		// TODO Auto-generated method stub
 		

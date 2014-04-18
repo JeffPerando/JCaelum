@@ -33,17 +33,25 @@ public abstract class Game implements IUpdatable, IPausable
 	}
 	
 	@Override
-	public final void update(double delta) throws Throwable
+	public final void update(double delta) throws GameTickException
 	{
-		if (this.state == null)
+		try
 		{
-			this.tick(delta);
+			if (this.state == null)
+			{
+				this.tick(delta);
+				
+			}
+			else
+			{
+				this.state.gsTick(this, delta);
+				
+			}
 			
 		}
-		else
+		catch (Throwable e)
 		{
-			this.state.gsTick(this, delta);
-			
+			throw new GameTickException(e);
 		}
 		
 		if (this.nextState != null)
@@ -94,17 +102,10 @@ public abstract class Game implements IUpdatable, IPausable
 	
 	public final boolean initiateGame(GameArguments args)
 	{
-		if (this.initiated)
-		{
-			return false;
-		}
-		
 		if (!this.initiate(args))
 		{
 			return false;
 		}
-		
-		this.initiated = true;
 		
 		if (this.nextState != null)
 		{
@@ -117,6 +118,8 @@ public abstract class Game implements IUpdatable, IPausable
 		
 		return true;
 	}
+	
+	public void preInit(){}
 	
 	public void loadAssets(AssetManager mgr){}
 	
@@ -160,8 +163,9 @@ public abstract class Game implements IUpdatable, IPausable
 	 * Called on every update, if there is no current game state.
 	 * 
 	 * @param delta
+	 * @throws Throwable
 	 */
-	protected abstract void tick(double delta);
+	protected abstract void tick(double delta) throws Throwable;
 	
 	/**
 	 * Called during shutdown.
