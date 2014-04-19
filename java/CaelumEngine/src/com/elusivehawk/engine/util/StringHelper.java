@@ -369,30 +369,9 @@ public final class StringHelper
 		return false;
 	}
 	
-	public static List<String> gatherStrings(int strs, Iterable<String> itr)
+	public static String[] asArray(List<String> strs)
 	{
-		if (strs <= 0)
-		{
-			return null;
-		}
-		
-		List<String> ret = Lists.newArrayListWithCapacity(strs);
-		
-		int c = 0;
-		
-		for (String str : itr)
-		{
-			c++;
-			ret.add(str);
-			
-			if (c == strs)
-			{
-				break;
-			}
-			
-		}
-		
-		return ret;
+		return strs.toArray(new String[strs.size()]);
 	}
 	
 }

@@ -187,97 +187,105 @@ public final class CaelumEngine
 		
 		//XXX Game environment
 		
-		IGameEnvironment env = null;
-		Class<?> clazz = null;
-		String cl = this.startargs.get("env");
-		
-		if (cl == null)
+		if (this.env == null)
 		{
-			clazz = this.loadEnvironmentFromJson();
+			IGameEnvironment env = null;
+			Class<?> clazz = null;
+			String cl = this.startargs.get("env");
 			
-		}
-		else
-		{
-			try
+			if (cl == null)
 			{
-				clazz = Class.forName(cl);
+				clazz = this.loadEnvironmentFromJson();
 				
 			}
-			catch (Exception e){}
-			
-		}
-		
-		if (clazz == null)
-		{
-			this.log.log(EnumLogType.VERBOSE, "Loading default game environment");
-			
-			try
+			else
 			{
-				switch (EnumOS.getCurrentOS())
+				try
 				{
-					case WINDOWS:
-					case MAC:
-					case LINUX: clazz = Class.forName("com.elusivehawk.engine.lwjgl.LWJGLEnvironment"); break;
-					case ANDROID: clazz = Class.forName("com.elusivehawk.engine.android.AndroidEnvironment"); break;
-					default: this.log.log(EnumLogType.WTF, String.format("Unsupported OS! Enum: %s; OS: %s", EnumOS.getCurrentOS(), System.getProperty("os.name")));
+					clazz = Class.forName(cl);
 					
 				}
+				catch (Exception e){}
 				
 			}
-			catch (Exception e){}
 			
-		}
-		else
-		{
-			this.log.log(EnumLogType.WARN, "Loading custom game environment, this is gonna suck...");
-			
-		}
-		
-		env = (IGameEnvironment)ReflectionHelper.newInstance(clazz, new Class[]{IGameEnvironment.class}, null);
-		
-		if (env == null)
-		{
-			this.log.log(EnumLogType.ERROR, String.format("Unable to load environment: Instance couldn't be created. Class: %s", clazz == null ? "NULL" : clazz.getCanonicalName()));
-			ShutdownHelper.exit("NO-ENVIRONMENT-FOUND".hashCode());
-			
-		}
-		
-		if (!env.isCompatible(EnumOS.getCurrentOS()))
-		{
-			this.log.log(EnumLogType.ERROR, String.format("Unable to load environment: Current OS is incompatible. Class: %s; OS: %s", clazz == null ? "NULL" : clazz.getCanonicalName(), EnumOS.getCurrentOS()));
-			ShutdownHelper.exit("NO-ENVIRONMENT-FOUND".hashCode());
-			
-		}
-		
-		env.initiate(this.envConfig, args);
-		
-		this.env = env;
-		this.renv = env.getRenderEnv();
-		
-		ILog l = this.env.getLog();
-		
-		if (l != null)
-		{
-			this.log = l;
-			
-			l.setEnableVerbosity(verbose);
-			
-		}
-		
-		List<Input> inputList = env.loadInputs();
-		
-		if (inputList == null || inputList.isEmpty())
-		{
-			this.log.log(EnumLogType.WARN, "Unable to load input");
-			
-		}
-		else
-		{
-			for (Input input : inputList)
+			if (clazz == null)
 			{
-				this.inputs.put(input.getType(), input);
+				this.log.log(EnumLogType.VERBOSE, "Loading default game environment");
 				
-				this.log.log(EnumLogType.VERBOSE, String.format("Loaded input of type %s, with class %s", input.getType().name(), input.getClass().getCanonicalName()));
+				try
+				{
+					switch (EnumOS.getCurrentOS())
+					{
+						case WINDOWS:
+						case MAC:
+						case LINUX: clazz = Class.forName("com.elusivehawk.engine.lwjgl.LWJGLEnvironment"); break;
+						case ANDROID: clazz = Class.forName("com.elusivehawk.engine.android.AndroidEnvironment"); break;
+						default: this.log.log(EnumLogType.WTF, String.format("Unsupported OS! Enum: %s; OS: %s", EnumOS.getCurrentOS(), System.getProperty("os.name")));
+						
+					}
+					
+				}
+				catch (Exception e){}
+				
+			}
+			else
+			{
+				this.log.log(EnumLogType.WARN, "Loading custom game environment, this is gonna suck...");
+				
+			}
+			
+			env = (IGameEnvironment)ReflectionHelper.newInstance(clazz, new Class[]{IGameEnvironment.class}, null);
+			
+			if (env == null)
+			{
+				this.log.log(EnumLogType.ERROR, String.format("Unable to load environment: Instance couldn't be created. Class: %s", clazz == null ? "NULL" : clazz.getCanonicalName()));
+				ShutdownHelper.exit("NO-ENVIRONMENT-FOUND".hashCode());
+				
+			}
+			
+			if (!env.isCompatible(EnumOS.getCurrentOS()))
+			{
+				this.log.log(EnumLogType.ERROR, String.format("Unable to load environment: Current OS is incompatible. Class: %s; OS: %s", clazz == null ? "NULL" : clazz.getCanonicalName(), EnumOS.getCurrentOS()));
+				ShutdownHelper.exit("NO-ENVIRONMENT-FOUND".hashCode());
+				
+			}
+			
+			env.initiate(this.envConfig, args);
+			
+			this.env = env;
+			this.renv = env.getRenderEnv();
+			
+			ILog l = this.env.getLog();
+			
+			if (l != null)
+			{
+				this.log = l;
+				
+				l.setEnableVerbosity(verbose);
+				
+			}
+			
+		}
+		
+		if (this.inputs.isEmpty())
+		{
+			List<Input> inputList = this.env.loadInputs();
+			
+			if (inputList == null || inputList.isEmpty())
+			{
+				this.log.log(EnumLogType.WARN, "Unable to load input");
+				
+			}
+			else
+			{
+				for (Input input : inputList)
+				{
+					this.inputs.put(input.getType(), input);
+					
+					this.log.log(EnumLogType.VERBOSE, String.format("Loaded input of type %s, with class %s", input.getType().name(), input.getClass().getCanonicalName()));
+					
+				}
 				
 			}
 			
@@ -416,6 +424,7 @@ public final class CaelumEngine
 		}
 		
 		this.game.onShutdown();
+		this.game = null;
 		
 		for (EnumEngineFeature fe : EnumEngineFeature.values())
 		{
@@ -435,7 +444,7 @@ public final class CaelumEngine
 	
 	public void clearGameEnv()
 	{
-		if (this.game == null)
+		if (this.game != null)
 		{
 			return;
 		}
@@ -448,7 +457,6 @@ public final class CaelumEngine
 		this.envConfig = null;
 		this.log = new GameLog();
 		
-		this.game = null;
 		this.gameargs = null;
 		this.assets = null;
 		

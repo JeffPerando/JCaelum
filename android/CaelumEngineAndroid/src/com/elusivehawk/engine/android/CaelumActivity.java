@@ -1,10 +1,11 @@
 
 package com.elusivehawk.engine.android;
 
-import com.elusivehawk.engine.core.CaelumEngine;
-import com.elusivehawk.engine.util.ShutdownHelper;
 import android.app.Activity;
 import android.os.Bundle;
+import com.elusivehawk.engine.core.CaelumEngine;
+import com.elusivehawk.engine.util.ShutdownHelper;
+import com.elusivehawk.engine.util.StringHelper;
 
 /**
  * 
@@ -18,15 +19,30 @@ public class CaelumActivity extends Activity
 	protected void onCreate(Bundle b)
 	{
 		super.onCreate(b);
+		
 		setContentView(new CaelumView(this));
 		ShutdownHelper.instance().setShutdownMech(new AndroidShutdown(this));
 		
-		CaelumEngine.instance().createGameEnv(String.format("env:%s", AndroidEnvironment.class.getCanonicalName()));
+		CaelumEngine.instance().createGameEnv(StringHelper.asArray(StringHelper.read("/androidArgs.txt")));
 		
 	}
 	
 	@Override
-	public void onStart()
+	protected void onSaveInstanceState(Bundle b)
+	{
+		super.onSaveInstanceState(b);
+		
+	}
+	
+	@Override
+	protected void onRestoreInstanceState(Bundle b)
+	{
+		super.onRestoreInstanceState(b);
+		
+	}
+	
+	@Override
+	protected void onStart()
 	{
 		super.onStart();
 		
@@ -35,7 +51,7 @@ public class CaelumActivity extends Activity
 	}
 	
 	@Override
-	public void onResume()
+	protected void onResume()
 	{
 		super.onResume();
 		
@@ -44,7 +60,7 @@ public class CaelumActivity extends Activity
 	}
 	
 	@Override
-	public void onPause()
+	protected void onPause()
 	{
 		super.onPause();
 		
@@ -53,7 +69,7 @@ public class CaelumActivity extends Activity
 	}
 	
 	@Override
-	public void onStop()
+	protected void onStop()
 	{
 		super.onStop();
 		
@@ -62,7 +78,7 @@ public class CaelumActivity extends Activity
 	}
 	
 	@Override
-	public void onDestroy()
+	protected void onDestroy()
 	{
 		super.onDestroy();
 		
