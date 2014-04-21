@@ -30,6 +30,8 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 	{
 		if (!this.initiated)
 		{
+			System.err.println(String.format("Thread %s failed to initiate, remember to call super.initiate()!", this));
+			
 			this.stopThread();
 			
 			return;
