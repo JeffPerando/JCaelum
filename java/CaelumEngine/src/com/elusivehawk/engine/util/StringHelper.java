@@ -309,7 +309,7 @@ public final class StringHelper
 		
 		for (int c = 0; c < ESCAPES.length; c++)
 		{
-			ret = ret.replaceAll(ESCAPES[c], S_ESCAPES[c]);
+			ret = ret.replace(ESCAPES[c], S_ESCAPES[c]);
 			
 		}
 		
