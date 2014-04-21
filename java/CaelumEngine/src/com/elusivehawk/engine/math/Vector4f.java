@@ -35,7 +35,7 @@ public class Vector4f extends Vector3f
 	}
 	
 	@Override
-	protected void onChanged()
+	public void onChanged()
 	{
 		this.w = this.get(W);
 		

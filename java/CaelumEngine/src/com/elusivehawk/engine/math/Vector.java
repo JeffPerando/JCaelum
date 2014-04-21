@@ -144,9 +144,20 @@ public class Vector implements IMathObject<Float>
 	@Override
 	public void set(int pos, Float num)
 	{
+		this.set(pos, num, true);
+		
+	}
+	
+	@Override
+	public void set(int pos, Float num, boolean notify)
+	{
 		this.nums[pos] = num.floatValue();
 		
-		this.onChanged();
+		if (notify)
+		{
+			this.onChanged();
+			
+		}
 		
 	}
 	
@@ -355,7 +366,7 @@ public class Vector implements IMathObject<Float>
 		
 	}
 	
-	protected void onChanged()
+	public void onChanged()
 	{
 		if (this.listeners == null || this.listeners.isEmpty())
 		{
@@ -384,7 +395,15 @@ public class Vector implements IMathObject<Float>
 	
 	public Vector cross(Vector other)
 	{
-		return MathHelper.cross(this, other);
+		this.cross(other, this);
+		
+		return this;
+	}
+	
+	public void cross(Vector other, Vector dest)
+	{
+		dest.set(MathHelper.cross(this, other));
+		
 	}
 	
 	public float dot(Vector other)
@@ -401,11 +420,33 @@ public class Vector implements IMathObject<Float>
 	{
 		for (int c = 0; c < this.getSize(); c++)
 		{
-			dest.set(c, this.get(c) * f);
+			dest.set(c, this.get(c) * f, false);
 			
 		}
 		
+		this.onChanged();
+		
 		return dest;
+	}
+	
+	public void absolute()
+	{
+		this.absolute(this);
+		
+	}
+	
+	public void absolute(Vector dest)
+	{
+		int i = Math.min(this.getSize(), dest.getSize());
+		
+		for (int c = 0; c < i; c++)
+		{
+			dest.set(c, Math.abs(this.get(c)), false);
+			
+		}
+		
+		dest.onChanged();
+		
 	}
 	
 }

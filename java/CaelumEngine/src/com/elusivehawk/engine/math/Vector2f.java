@@ -41,7 +41,7 @@ public class Vector2f extends Vector
 	}
 	
 	@Override
-	protected void onChanged()
+	public void onChanged()
 	{
 		this.x = this.get(X);
 		this.y = this.get(Y);

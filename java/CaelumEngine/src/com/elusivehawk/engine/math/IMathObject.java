@@ -21,6 +21,8 @@ public interface IMathObject<T extends Number> extends IStorable<T>
 	
 	public void set(int pos, T num);
 	
+	public void set(int pos, T num, boolean notify);
+	
 	public void setAll(T num);
 	
 	public T normalize();

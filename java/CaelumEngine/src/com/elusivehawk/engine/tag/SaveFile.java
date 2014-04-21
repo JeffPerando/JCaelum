@@ -9,8 +9,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import com.elusivehawk.engine.util.FileHelper;
-import com.elusivehawk.engine.util.io.IByteReader;
 import com.elusivehawk.engine.util.io.ByteStreams;
+import com.elusivehawk.engine.util.io.IByteReader;
 import com.elusivehawk.engine.util.io.IByteWriter;
 
 /**

@@ -105,7 +105,7 @@ public class Matrix implements IMathObject<Float>
 			
 			for (int x = 0; x < this.w; x++)
 			{
-				b.append(this.data[x + (y * this.h)]);
+				b.append(this.get(x, y));
 				
 				if (x != (this.w - 1))
 				{
@@ -165,6 +165,13 @@ public class Matrix implements IMathObject<Float>
 	
 	@Override
 	public void set(int pos, Float num)
+	{
+		this.set(pos, num, true);
+		
+	}
+	
+	@Override
+	public void set(int pos, Float num, boolean notify)
 	{
 		this.data[pos] = num.floatValue();
 		
@@ -309,6 +316,78 @@ public class Matrix implements IMathObject<Float>
 		}
 		
 		return dest;
+	}
+	
+	public float get(int x, int y)
+	{
+		return this.get(x + (y * this.h));
+	}
+	
+	public void set(int x, int y, float f)
+	{
+		this.set(x, y, f, true);
+		
+	}
+	
+	public void set(int x, int y, float f, boolean notify)
+	{
+		this.data[x + (y * this.h)] = f;
+		
+		if (notify)
+		{
+			
+		}
+		
+	}
+	
+	public void setRow(int r, float... fs)
+	{
+		int i = Math.min(this.h, fs.length);
+		
+		for (int c = 0; c < i; c++)
+		{
+			this.set(r, c, fs[c], false);
+			
+		}
+		
+	}
+	
+	@SuppressWarnings("deprecation")
+	public void setRow(int r, Vector vec)
+	{
+		if (vec instanceof Vector3f)
+		{
+			Vector3f vec3f = (Vector3f)vec;
+			
+			this.set(r, 0, vec3f.x, false);
+			this.set(r, 1, vec3f.y, false);
+			this.set(r, 2, vec3f.z, false);
+			
+			return;
+		}
+		
+		int i = Math.min(this.w, vec.getSize());
+		
+		for (int c = 0; c < i; c++)
+		{
+			this.set(r, c, vec.get(c), false);
+			
+		}
+		
+	}
+	
+	public void getRow(int r, Vector row)
+	{
+		int i = Math.min(this.w, row.getSize());
+		
+		for (int c = 0; c < i; c++)
+		{
+			row.set(c, this.get(r, c), false);
+			
+		}
+		
+		row.onChanged();
+		
 	}
 	
 }

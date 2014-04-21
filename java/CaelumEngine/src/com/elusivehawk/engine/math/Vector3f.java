@@ -41,7 +41,7 @@ public class Vector3f extends Vector2f
 	}
 	
 	@Override
-	protected void onChanged()
+	public void onChanged()
 	{
 		this.z = this.get(Z);
 		
@@ -61,6 +61,11 @@ public class Vector3f extends Vector2f
 	{
 		this.sub(vec, this);
 		
+	}
+	
+	public float lengthSquared()
+	{
+		return MathHelper.length(this);
 	}
 	
 }
