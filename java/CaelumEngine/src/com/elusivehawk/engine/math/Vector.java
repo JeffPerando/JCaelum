@@ -535,4 +535,32 @@ public class Vector implements IMathObject<Float>
 		return this;
 	}
 	
+	public Vector add(int pos, float f, boolean notify)
+	{
+		this.set(pos, this.nums[pos] + f, notify);
+		
+		return this;
+	}
+	
+	public Vector div(int pos, float f, boolean notify)
+	{
+		this.set(pos, this.nums[pos] / f, notify);
+		
+		return this;
+	}
+	
+	public Vector mul(int pos, float f, boolean notify)
+	{
+		this.set(pos, this.nums[pos] * f, notify);
+		
+		return this;
+	}
+	
+	public Vector sub(int pos, float f, boolean notify)
+	{
+		this.set(pos, this.nums[pos] - f, notify);
+		
+		return this;
+	}
+	
 }

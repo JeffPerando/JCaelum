@@ -113,18 +113,23 @@ public class VectorUtil
 				throw new InternalError();
 		}
 		
-	}
+	}*/
 	
-	public static void setInterpolate3(Vector3f dest, Vector3f v0, Vector3f v1, float rt)
+	public static void setInterpolate(Vector dest, Vector v0, Vector v1, float rt)
 	{
 		float s = 1f - rt;
-		dest.x = s * v0.x + rt * v1.x;
+		for (int c = 0; c < 3; c++)
+		{
+			dest.set(c, s * v0.get(c) + rt * v1.get(c), c == 2);
+			
+		}
+		/*dest.x = s * v0.x + rt * v1.x;
 		dest.y = s * v0.y + rt * v1.y;
-		dest.z = s * v0.z + rt * v1.z;
+		dest.z = s * v0.z + rt * v1.z;*/
 		// don't do the unused w component
 		// m_co[3] = s * v0[3] + rt * v1[3];
 		
-	}*/
+	}
 	
 	public static void add(Vector dest, Vector v1, Vector v2)
 	{

@@ -25,6 +25,7 @@ package com.elusivehawk.engine.physics.jbullet.collision.dispatch;
 
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.Quaternion;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.math.Vector3f;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
 import com.elusivehawk.engine.physics.jbullet.BulletStats;
@@ -58,6 +59,9 @@ import com.elusivehawk.engine.physics.jbullet.linearmath.VectorUtil;
 import com.elusivehawk.engine.physics.jbullet.util.ObjectArrayList;
 import cz.advel.stack.Stack;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * CollisionWorld is interface and container for the collision detection.
  * 
@@ -319,9 +323,9 @@ public class CollisionWorld {
 					BvhTriangleMeshShape triangleMesh = (BvhTriangleMeshShape)collisionShape;
 					Transform worldTocollisionObject = Stack.alloc(Transform.class);
 					worldTocollisionObject.inverse(colObjWorldTransform);
-					Vector3f rayFromLocal = Stack.alloc(rayFromTrans.origin);
+					Vector rayFromLocal = Stack.alloc(rayFromTrans.origin);
 					worldTocollisionObject.transform(rayFromLocal);
-					Vector3f rayToLocal = Stack.alloc(rayToTrans.origin);
+					Vector rayToLocal = Stack.alloc(rayToTrans.origin);
 					worldTocollisionObject.transform(rayToLocal);
 
 					BridgeTriangleRaycastCallback rcb = new BridgeTriangleRaycastCallback(rayFromLocal, rayToLocal, resultCallback, collisionObject, triangleMesh);
@@ -334,17 +338,17 @@ public class CollisionWorld {
 					Transform worldTocollisionObject = Stack.alloc(Transform.class);
 					worldTocollisionObject.inverse(colObjWorldTransform);
 
-					Vector3f rayFromLocal = Stack.alloc(rayFromTrans.origin);
+					Vector rayFromLocal = Stack.alloc(rayFromTrans.origin);
 					worldTocollisionObject.transform(rayFromLocal);
-					Vector3f rayToLocal = Stack.alloc(rayToTrans.origin);
+					Vector rayToLocal = Stack.alloc(rayToTrans.origin);
 					worldTocollisionObject.transform(rayToLocal);
 
 					BridgeTriangleRaycastCallback rcb = new BridgeTriangleRaycastCallback(rayFromLocal, rayToLocal, resultCallback, collisionObject, triangleMesh);
 					rcb.hitFraction = resultCallback.closestHitFraction;
 
-					Vector3f rayAabbMinLocal = Stack.alloc(rayFromLocal);
+					Vector rayAabbMinLocal = Stack.alloc(rayFromLocal);
 					VectorUtil.setMin(rayAabbMinLocal, rayToLocal);
-					Vector3f rayAabbMaxLocal = Stack.alloc(rayFromLocal);
+					Vector rayAabbMaxLocal = Stack.alloc(rayFromLocal);
 					VectorUtil.setMax(rayAabbMaxLocal, rayToLocal);
 
 					triangleMesh.processAllTriangles(rcb, rayAabbMinLocal, rayAabbMaxLocal);
@@ -706,7 +710,7 @@ public class CollisionWorld {
 				collisionObject.getWorldTransform(Stack.alloc(Transform.class)).basis.transform(hitNormalWorld);
 			}
 
-			VectorUtil.setInterpolate3(hitPointWorld, rayFromWorld, rayToWorld, rayResult.hitFraction);
+			VectorUtil.setInterpolate(hitPointWorld, rayFromWorld, rayToWorld, rayResult.hitFraction);
 			return rayResult.hitFraction;
 		}
 	}
@@ -790,7 +794,7 @@ public class CollisionWorld {
 		public CollisionObject collisionObject;
 		public ConcaveShape triangleMesh;
 
-		public BridgeTriangleRaycastCallback(Vector3f from, Vector3f to, RayResultCallback resultCallback, CollisionObject collisionObject, ConcaveShape triangleMesh) {
+		public BridgeTriangleRaycastCallback(Vector from, Vector to, RayResultCallback resultCallback, CollisionObject collisionObject, ConcaveShape triangleMesh) {
 			super(from, to);
 			this.resultCallback = resultCallback;
 			this.collisionObject = collisionObject;

@@ -23,10 +23,14 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.shapes;
 
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.math.Vector3f;
 import com.elusivehawk.engine.physics.jbullet.linearmath.VectorUtil;
 import cz.advel.stack.Stack;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * StridingMeshInterface is the abstract class for high performance access to
  * triangle meshes. It allows for sharing graphics and collision meshes. Also
@@ -36,13 +40,13 @@ import cz.advel.stack.Stack;
  */
 public abstract class StridingMeshInterface {
 
-	protected final Vector3f scaling = new Vector3f(1f, 1f, 1f);
+	protected final Vector scaling = new Vector(1f, 1f, 1f);
 	
-	public void internalProcessAllTriangles(InternalTriangleIndexCallback callback, Vector3f aabbMin, Vector3f aabbMax) {
+	public void internalProcessAllTriangles(InternalTriangleIndexCallback callback, Vector aabbMin, Vector aabbMax) {
 		int graphicssubparts = getNumSubParts();
-		Vector3f[] triangle/*[3]*/ = new Vector3f[]{ Stack.alloc(Vector3f.class), Stack.alloc(Vector3f.class), Stack.alloc(Vector3f.class) };
+		Vector[] triangle/*[3]*/ = new Vector[]{Stack.alloc(new Vector(3)), Stack.alloc(new Vector(3)), Stack.alloc(new Vector(3))};
 
-		Vector3f meshScaling = getScaling(Stack.alloc(Vector3f.class));
+		Vector meshScaling = getScaling(Stack.alloc(new Vector(3)));
 
 		for (int part=0; part<graphicssubparts; part++) {
 			VertexData data = getLockedReadOnlyVertexIndexBase(part);
@@ -57,10 +61,10 @@ public abstract class StridingMeshInterface {
 	}
 
 	private static class AabbCalculationCallback extends InternalTriangleIndexCallback {
-		public final Vector3f aabbMin = new Vector3f(1e30f, 1e30f, 1e30f);
-		public final Vector3f aabbMax = new Vector3f(-1e30f, -1e30f, -1e30f);
+		public final Vector aabbMin = new Vector(1e30f, 1e30f, 1e30f);
+		public final Vector aabbMax = new Vector(-1e30f, -1e30f, -1e30f);
 
-		public void internalProcessTriangleIndex(Vector3f[] triangle, int partId, int triangleIndex) {
+		public void internalProcessTriangleIndex(Vector[] triangle, int partId, int triangleIndex) {
 			VectorUtil.setMin(aabbMin, triangle[0]);
 			VectorUtil.setMax(aabbMax, triangle[0]);
 			VectorUtil.setMin(aabbMin, triangle[1]);
@@ -70,7 +74,7 @@ public abstract class StridingMeshInterface {
 		}
 	}
 	
-	public void calculateAabbBruteForce(Vector3f aabbMin, Vector3f aabbMax) {
+	public void calculateAabbBruteForce(Vector aabbMin, Vector aabbMax) {
 		// first calculate the total aabb for all triangles
 		AabbCalculationCallback aabbCallback = new AabbCalculationCallback();
 		aabbMin.set(-1e30f, -1e30f, -1e30f);
@@ -109,12 +113,12 @@ public abstract class StridingMeshInterface {
 	public abstract void preallocateVertices(int numverts);
 	public abstract void preallocateIndices(int numindices);
 
-	public Vector3f getScaling(Vector3f out) {
+	public Vector getScaling(Vector out) {
 		out.set(scaling);
 		return out;
 	}
 	
-	public void setScaling(Vector3f scaling) {
+	public void setScaling(Vector scaling) {
 		this.scaling.set(scaling);
 	}
 	

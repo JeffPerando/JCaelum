@@ -23,8 +23,9 @@
 
 package com.elusivehawk.engine.physics.jbullet.linearmath;
 
+import static com.elusivehawk.engine.math.MathConst.*;
 import com.elusivehawk.engine.math.Matrix;
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import cz.advel.stack.Stack;
 
 /*
@@ -35,29 +36,32 @@ import cz.advel.stack.Stack;
  * 
  * @author jezek2
  */
-public class AabbUtil2 {
-
-	public static void aabbExpand(Vector3f aabbMin, Vector3f aabbMax, Vector3f expansionMin, Vector3f expansionMax) {
+public class AabbUtil2
+{
+	public static void aabbExpand(Vector aabbMin, Vector aabbMax, Vector expansionMin, Vector expansionMax)
+	{
 		aabbMin.add(expansionMin);
 		aabbMax.add(expansionMax);
 	}
 
-	public static int outcode(Vector3f p, Vector3f halfExtent) {
-		return (p.x < -halfExtent.x ? 0x01 : 0x0) |
-				(p.x > halfExtent.x ? 0x08 : 0x0) |
-				(p.y < -halfExtent.y ? 0x02 : 0x0) |
-				(p.y > halfExtent.y ? 0x10 : 0x0) |
-				(p.z < -halfExtent.z ? 0x4 : 0x0) |
-				(p.z > halfExtent.z ? 0x20 : 0x0);
+	public static int outcode(Vector p, Vector halfExtent)
+	{
+		return (p.get(X) < -halfExtent.get(X) ? 0x01 : 0x0) |
+				(p.get(X) > halfExtent.get(X) ? 0x08 : 0x0) |
+				(p.get(Y) < -halfExtent.get(Y) ? 0x02 : 0x0) |
+				(p.get(Y) > halfExtent.get(Y) ? 0x10 : 0x0) |
+				(p.get(Z) < -halfExtent.get(Z) ? 0x4 : 0x0) |
+				(p.get(Z) > halfExtent.get(Z) ? 0x20 : 0x0);
 	}
 	
-	public static boolean rayAabb(Vector3f rayFrom, Vector3f rayTo, Vector3f aabbMin, Vector3f aabbMax, float[] param, Vector3f normal) {
-		Vector3f aabbHalfExtent = Stack.alloc(Vector3f.class);
-		Vector3f aabbCenter = Stack.alloc(Vector3f.class);
-		Vector3f source = Stack.alloc(Vector3f.class);
-		Vector3f target = Stack.alloc(Vector3f.class);
-		Vector3f r = Stack.alloc(Vector3f.class);
-		Vector3f hitNormal = Stack.alloc(Vector3f.class);
+	public static boolean rayAabb(Vector rayFrom, Vector rayTo, Vector aabbMin, Vector aabbMax, float[] param, Vector normal)
+	{
+		Vector aabbHalfExtent = Stack.alloc(new Vector(3)),
+				aabbCenter = Stack.alloc(new Vector(3)),
+				source = Stack.alloc(new Vector(3)),
+				target = Stack.alloc(new Vector(3)),
+				r = Stack.alloc(new Vector(3)),
+				hitNormal = Stack.alloc(new Vector(3));
 
 		aabbHalfExtent.sub(aabbMax, aabbMin);
 		aabbHalfExtent.scale(0.5f);
@@ -110,90 +114,95 @@ public class AabbUtil2 {
 	/**
 	 * Conservative test for overlap between two AABBs.
 	 */
-	public static boolean testAabbAgainstAabb2(Vector3f aabbMin1, Vector3f aabbMax1, Vector3f aabbMin2, Vector3f aabbMax2) {
+	public static boolean testAabbAgainstAabb2(Vector aabbMin1, Vector aabbMax1, Vector aabbMin2, Vector aabbMax2)
+	{
 		boolean overlap = true;
-		overlap = (aabbMin1.x > aabbMax2.x || aabbMax1.x < aabbMin2.x) ? false : overlap;
-		overlap = (aabbMin1.z > aabbMax2.z || aabbMax1.z < aabbMin2.z) ? false : overlap;
-		overlap = (aabbMin1.y > aabbMax2.y || aabbMax1.y < aabbMin2.y) ? false : overlap;
+		overlap = (aabbMin1.get(X) > aabbMax2.get(X) || aabbMax1.get(X) < aabbMin2.get(X)) ? false : overlap;
+		overlap = (aabbMin1.get(Z) > aabbMax2.get(Z) || aabbMax1.get(Z) < aabbMin2.get(Z)) ? false : overlap;
+		overlap = (aabbMin1.get(Y) > aabbMax2.get(Y) || aabbMax1.get(Y) < aabbMin2.get(Y)) ? false : overlap;
 		return overlap;
 	}
 	
 	/**
 	 * Conservative test for overlap between triangle and AABB.
 	 */
-	public static boolean testTriangleAgainstAabb2(Vector3f[] vertices, Vector3f aabbMin, Vector3f aabbMax) {
-		Vector3f p1 = vertices[0];
-		Vector3f p2 = vertices[1];
-		Vector3f p3 = vertices[2];
+	public static boolean testTriangleAgainstAabb2(Vector[] vertices, Vector aabbMin, Vector aabbMax)
+	{
+		Vector p1 = vertices[0];
+		Vector p2 = vertices[1];
+		Vector p3 = vertices[2];
 
-		if (Math.min(Math.min(p1.x, p2.x), p3.x) > aabbMax.x) return false;
-		if (Math.max(Math.max(p1.x, p2.x), p3.x) < aabbMin.x) return false;
+		if (Math.min(Math.min(p1.get(X), p2.get(X)), p3.get(X)) > aabbMax.get(X)) return false;
+		if (Math.max(Math.max(p1.get(X), p2.get(X)), p3.get(X)) < aabbMin.get(X)) return false;
 
-		if (Math.min(Math.min(p1.z, p2.z), p3.z) > aabbMax.z) return false;
-		if (Math.max(Math.max(p1.z, p2.z), p3.z) < aabbMin.z) return false;
+		if (Math.min(Math.min(p1.get(Z), p2.get(Z)), p3.get(Z)) > aabbMax.get(Z)) return false;
+		if (Math.max(Math.max(p1.get(Z), p2.get(Z)), p3.get(Z)) < aabbMin.get(Z)) return false;
 
-		if (Math.min(Math.min(p1.y, p2.y), p3.y) > aabbMax.y) return false;
-		if (Math.max(Math.max(p1.y, p2.y), p3.y) < aabbMin.y) return false;
+		if (Math.min(Math.min(p1.get(Y), p2.get(Y)), p3.get(Y)) > aabbMax.get(Y)) return false;
+		if (Math.max(Math.max(p1.get(Y), p2.get(Y)), p3.get(Y)) < aabbMin.get(Y)) return false;
 		
 		return true;
 	}
 
-	public static void transformAabb(Vector3f halfExtents, float margin, Transform t, Vector3f aabbMinOut, Vector3f aabbMaxOut) {
-		Vector3f halfExtentsWithMargin = Stack.alloc(Vector3f.class);
-		halfExtentsWithMargin.x = halfExtents.x + margin;
-		halfExtentsWithMargin.y = halfExtents.y + margin;
-		halfExtentsWithMargin.z = halfExtents.z + margin;
+	public static void transformAabb(Vector halfExtents, float margin, Transform t, Vector aabbMinOut, Vector aabbMaxOut)
+	{
+		Vector halfExtentsWithMargin = Stack.alloc(new Vector(3));
+		halfExtentsWithMargin.set(X, halfExtents.get(X) + margin, false);
+		halfExtentsWithMargin.set(Y, halfExtents.get(Y) + margin, false);
+		halfExtentsWithMargin.set(Z, halfExtents.get(Z) + margin, true);
 
 		Matrix abs_b = Stack.alloc(t.basis);
 		MatrixUtil.absolute(abs_b);
 
-		Vector3f tmp = Stack.alloc(Vector3f.class);
+		Vector tmp = Stack.alloc(new Vector(3));
 
-		Vector3f center = Stack.alloc(t.origin);
-		Vector3f extent = Stack.alloc(Vector3f.class);
+		Vector center = Stack.alloc(t.origin);
+		Vector extent = Stack.alloc(new Vector(3));
 		abs_b.getRow(0, tmp);
-		extent.x = tmp.dot(halfExtentsWithMargin);
+		extent.set(X, tmp.dot(halfExtentsWithMargin));
 		abs_b.getRow(1, tmp);
-		extent.y = tmp.dot(halfExtentsWithMargin);
+		extent.set(Y, tmp.dot(halfExtentsWithMargin));
 		abs_b.getRow(2, tmp);
-		extent.z = tmp.dot(halfExtentsWithMargin);
+		extent.set(Z, tmp.dot(halfExtentsWithMargin));
 
 		aabbMinOut.sub(center, extent);
 		aabbMaxOut.add(center, extent);
 	}
 
-	public static void transformAabb(Vector3f localAabbMin, Vector3f localAabbMax, float margin, Transform trans, Vector3f aabbMinOut, Vector3f aabbMaxOut) {
-		assert (localAabbMin.x <= localAabbMax.x);
-		assert (localAabbMin.y <= localAabbMax.y);
-		assert (localAabbMin.z <= localAabbMax.z);
+	public static void transformAabb(Vector localAabbMin, Vector localAabbMax, float margin, Transform trans, Vector aabbMinOut, Vector aabbMaxOut) {
+		assert (localAabbMin.get(X) <= localAabbMax.get(X));
+		assert (localAabbMin.get(Y) <= localAabbMax.get(Y));
+		assert (localAabbMin.get(Z) <= localAabbMax.get(Z));
 
-		Vector3f localHalfExtents = Stack.alloc(Vector3f.class);
+		Vector localHalfExtents = Stack.alloc(new Vector(3));
 		localHalfExtents.sub(localAabbMax, localAabbMin);
 		localHalfExtents.scale(0.5f);
-
-		localHalfExtents.x += margin;
-		localHalfExtents.y += margin;
-		localHalfExtents.z += margin;
-
-		Vector3f localCenter = Stack.alloc(Vector3f.class);
+		
+		for (int c = 0; c < 3; c++)
+		{
+			localHalfExtents.addAll(margin);
+			
+		}
+		
+		Vector localCenter = Stack.alloc(new Vector(3));
 		localCenter.add(localAabbMax, localAabbMin);
 		localCenter.scale(0.5f);
 
 		Matrix abs_b = Stack.alloc(trans.basis);
 		MatrixUtil.absolute(abs_b);
 
-		Vector3f center = Stack.alloc(localCenter);
+		Vector center = Stack.alloc(localCenter);
 		trans.transform(center);
 
-		Vector3f extent = Stack.alloc(Vector3f.class);
-		Vector3f tmp = Stack.alloc(Vector3f.class);
+		Vector extent = Stack.alloc(new Vector(3));
+		Vector tmp = Stack.alloc(new Vector(3));
 
 		abs_b.getRow(0, tmp);
-		extent.x = tmp.dot(localHalfExtents);
+		extent.set(X, tmp.dot(localHalfExtents));
 		abs_b.getRow(1, tmp);
-		extent.y = tmp.dot(localHalfExtents);
+		extent.set(Y, tmp.dot(localHalfExtents));
 		abs_b.getRow(2, tmp);
-		extent.z = tmp.dot(localHalfExtents);
+		extent.set(Z, tmp.dot(localHalfExtents));
 
 		aabbMinOut.sub(center, extent);
 		aabbMaxOut.add(center, extent);

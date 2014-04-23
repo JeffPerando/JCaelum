@@ -23,6 +23,7 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.narrowphase;
 
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.math.Vector3f;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.TriangleCallback;
 import com.elusivehawk.engine.physics.jbullet.linearmath.VectorUtil;
@@ -36,14 +37,14 @@ public abstract class TriangleRaycastCallback extends TriangleCallback {
 	
 	//protected final BulletStack stack = BulletStack.get();
 
-	public final Vector3f from = new Vector3f();
-	public final Vector3f to = new Vector3f();
+	public final Vector from = new Vector();
+	public final Vector to = new Vector();
 
 	public float hitFraction;
 
-	public TriangleRaycastCallback(Vector3f from, Vector3f to) {
-		this.from.set(from);
-		this.to.set(to);
+	public TriangleRaycastCallback(Vector from2, Vector to2) {
+		this.from.set(from2);
+		this.to.set(to2);
 		this.hitFraction = 1f;
 	}
 	
@@ -82,7 +83,7 @@ public abstract class TriangleRaycastCallback extends TriangleCallback {
 			float edge_tolerance = triangleNormal.lengthSquared();
 			edge_tolerance *= -0.0001f;
 			Vector3f point = new Vector3f();
-			VectorUtil.setInterpolate3(point, from, to, distance);
+			VectorUtil.setInterpolate(point, from, to, distance);
 			{
 				Vector3f v0p = Stack.alloc(Vector3f.class);
 				v0p.sub(vert0, point);

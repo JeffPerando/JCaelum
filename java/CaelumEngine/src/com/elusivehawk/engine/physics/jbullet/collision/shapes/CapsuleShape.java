@@ -24,6 +24,7 @@
 package com.elusivehawk.engine.physics.jbullet.collision.shapes;
 
 import static com.elusivehawk.engine.math.MathConst.*;
+import com.elusivehawk.engine.math.MathHelper;
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
@@ -72,7 +73,7 @@ public class CapsuleShape extends ConvexInternalShape {
 		float maxDot = -1e30f;
 
 		Vector vec = Stack.alloc(vec0);
-		float lenSqr = vec.length();
+		float lenSqr = MathHelper.lengthSquared(vec);
 		if (lenSqr < 0.0001f) {
 			vec.setAll(0f);
 			vec.set(0, 1f);

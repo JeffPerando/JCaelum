@@ -23,8 +23,11 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.shapes;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * TriangleCallback provides a callback for each overlapping triangle when calling
  * processAllTriangles.<p>
@@ -37,6 +40,6 @@ import com.elusivehawk.engine.math.Vector3f;
  */
 public abstract class TriangleCallback {
 
-	public abstract void processTriangle(Vector3f[] triangle, int partId, int triangleIndex);
+	public abstract void processTriangle(Vector[] triangle, int partId, int triangleIndex);
 	
 }

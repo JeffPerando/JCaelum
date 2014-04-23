@@ -23,8 +23,11 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.shapes;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * ConcaveShape class provides an interface for non-moving (static) concave shapes.
  * 
@@ -34,7 +37,7 @@ public abstract class ConcaveShape extends CollisionShape {
 
 	protected float collisionMargin = 0f;
 
-	public abstract void processAllTriangles(TriangleCallback callback, Vector3f aabbMin, Vector3f aabbMax);
+	public abstract void processAllTriangles(TriangleCallback callback, Vector aabbMin, Vector aabbMax);
 
 	public float getMargin() {
 		return collisionMargin;

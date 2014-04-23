@@ -23,9 +23,13 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.shapes;
 
-import com.elusivehawk.engine.math.Vector3f;
+import static com.elusivehawk.engine.math.MathConst.*;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.linearmath.VectorUtil;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * Allows accessing vertex data.
  * 
@@ -37,17 +41,17 @@ public abstract class VertexData {
 
 	public abstract int getIndexCount();
 
-	public abstract <T extends Vector3f> T getVertex(int idx, T out);
+	public abstract <T extends Vector> T getVertex(int idx, T out);
 
 	public abstract void setVertex(int idx, float x, float y, float z);
 
-	public void setVertex(int idx, Vector3f t) {
-		setVertex(idx, t.x, t.y, t.z);
+	public void setVertex(int idx, Vector t) {
+		setVertex(idx, t.get(X), t.get(Y), t.get(Z));
 	}
 
 	public abstract int getIndex(int idx);
 
-	public void getTriangle(int firstIndex, Vector3f scale, Vector3f[] triangle) {
+	public void getTriangle(int firstIndex, Vector scale, Vector[] triangle) {
 		for (int i=0; i<3; i++) {
 			getVertex(getIndex(firstIndex+i), triangle[i]);
 			VectorUtil.mul(triangle[i], triangle[i], scale);

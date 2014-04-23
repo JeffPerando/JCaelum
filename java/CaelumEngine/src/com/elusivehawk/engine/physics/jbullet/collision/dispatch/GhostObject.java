@@ -34,6 +34,9 @@ import com.elusivehawk.engine.physics.jbullet.linearmath.TransformUtil;
 import com.elusivehawk.engine.physics.jbullet.util.ObjectArrayList;
 import cz.advel.stack.Stack;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * GhostObject can keep track of all objects that are overlapping. By default, this
  * overlap is based on the AABB. This is useful for creating a character controller,

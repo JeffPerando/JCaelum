@@ -142,8 +142,8 @@ public class SubsimplexConvexCast extends ConvexCast {
 					
 					// interpolate to next lambda
 					//	x = s + lambda * r;
-					VectorUtil.setInterpolate3(interpolatedTransA.origin, fromA.origin, toA.origin, lambda);
-					VectorUtil.setInterpolate3(interpolatedTransB.origin, fromB.origin, toB.origin, lambda);
+					VectorUtil.setInterpolate(interpolatedTransA.origin, fromA.origin, toA.origin, lambda);
+					VectorUtil.setInterpolate(interpolatedTransB.origin, fromB.origin, toB.origin, lambda);
 					//m_simplexSolver->reset();
 					// check next line
 					w.sub(supVertexA, supVertexB);

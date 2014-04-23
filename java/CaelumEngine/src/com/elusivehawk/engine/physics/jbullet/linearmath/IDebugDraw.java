@@ -23,7 +23,8 @@
 
 package com.elusivehawk.engine.physics.jbullet.linearmath;
 
-import com.elusivehawk.engine.math.Vector3f;
+import static com.elusivehawk.engine.math.MathConst.*;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.dispatch.CollisionWorld;
 import com.elusivehawk.engine.physics.jbullet.dynamics.DynamicsWorld;
 import cz.advel.stack.Stack;
@@ -44,58 +45,58 @@ public abstract class IDebugDraw {
 	
 	//protected final BulletStack stack = BulletStack.get();
 
-	public abstract void drawLine(Vector3f from, Vector3f to, Vector3f color);
+	public abstract void drawLine(Vector from, Vector to, Vector color);
 	
-	public void drawTriangle(Vector3f v0, Vector3f v1, Vector3f v2, Vector3f n0, Vector3f n1, Vector3f n2, Vector3f color, float alpha) {
+	public void drawTriangle(Vector v0, Vector v1, Vector v2, Vector n0, Vector n1, Vector n2, Vector color, float alpha) {
 		drawTriangle(v0, v1, v2, color, alpha);
 	}
 	
-	public void drawTriangle(Vector3f v0, Vector3f v1, Vector3f v2, Vector3f color, float alpha) {
+	public void drawTriangle(Vector v0, Vector v1, Vector v2, Vector color, float alpha) {
 		drawLine(v0, v1, color);
 		drawLine(v1, v2, color);
 		drawLine(v2, v0, color);
 	}
 
-	public abstract void drawContactPoint(Vector3f PointOnB, Vector3f normalOnB, float distance, int lifeTime, Vector3f color);
+	public abstract void drawContactPoint(Vector PointOnB, Vector normalOnB, float distance, int lifeTime, Vector color);
 
 	public abstract void reportErrorWarning(String warningString);
 
-	public abstract void draw3dText(Vector3f location, String textString);
+	public abstract void draw3dText(Vector location, String textString);
 
 	public abstract void setDebugMode(int debugMode);
 
 	public abstract int getDebugMode();
 
-	public void drawAabb(Vector3f from, Vector3f to, Vector3f color) {
-		Vector3f halfExtents = Stack.alloc(to);
+	public void drawAabb(Vector from, Vector to, Vector color) {
+		Vector halfExtents = Stack.alloc(to);
 		halfExtents.sub(from);
 		halfExtents.scale(0.5f);
 
-		Vector3f center = Stack.alloc(to);
+		Vector center = Stack.alloc(to);
 		center.add(from);
 		center.scale(0.5f);
 
 		int i, j;
 
-		Vector3f edgecoord = Stack.alloc(Vector3f.class);
+		Vector edgecoord = Stack.alloc(new Vector(3));
 		edgecoord.set(1f, 1f, 1f);
-		Vector3f pa = Stack.alloc(Vector3f.class), pb = Stack.alloc(Vector3f.class);
+		Vector pa = Stack.alloc(new Vector(3)), pb = Stack.alloc(new Vector(3));
 		for (i = 0; i < 4; i++) {
 			for (j = 0; j < 3; j++) {
-				pa.set(edgecoord.x * halfExtents.x, edgecoord.y * halfExtents.y, edgecoord.z * halfExtents.z);
+				pa.set(edgecoord.get(X) * halfExtents.get(X), edgecoord.get(Y) * halfExtents.get(Y), edgecoord.get(Z) * halfExtents.get(Z));
 				pa.add(center);
 
 				int othercoord = j % 3;
 
-				VectorUtil.mulCoord(edgecoord, othercoord, -1f);
-				pb.set(edgecoord.x * halfExtents.x, edgecoord.y * halfExtents.y, edgecoord.z * halfExtents.z);
+				edgecoord.mul(othercoord, -1f, false);
+				pb.set(edgecoord.get(X) * halfExtents.get(X), edgecoord.get(Y) * halfExtents.get(Y), edgecoord.get(Z) * halfExtents.get(Z));
 				pb.add(center);
 
 				drawLine(pa, pb, color);
 			}
 			edgecoord.set(-1f, -1f, -1f);
 			if (i < 3) {
-				VectorUtil.mulCoord(edgecoord, i, -1f);
+				edgecoord.mul(i, -1f, false);
 			}
 		}
 	}

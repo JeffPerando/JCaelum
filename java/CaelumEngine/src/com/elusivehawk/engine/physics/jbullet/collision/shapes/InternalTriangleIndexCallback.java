@@ -23,7 +23,7 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.shapes;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 
 /**
  * Callback for internal processing of triangles.
@@ -33,6 +33,6 @@ import com.elusivehawk.engine.math.Vector3f;
  */
 public abstract class InternalTriangleIndexCallback {
 
-	public abstract void internalProcessTriangleIndex(Vector3f[] triangle, int partId, int triangleIndex);
+	public abstract void internalProcessTriangleIndex(Vector[] triangle, int partId, int triangleIndex);
 	
 }
