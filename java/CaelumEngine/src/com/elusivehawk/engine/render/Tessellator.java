@@ -6,6 +6,7 @@ import java.nio.IntBuffer;
 import java.util.List;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
+import com.elusivehawk.engine.math.MathConst;
 import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.util.BufferHelper;
 import com.elusivehawk.engine.util.storage.Buffer;
@@ -150,9 +151,9 @@ public final class Tessellator
 				continue;
 			}
 			
-			temp.add(p.v.multiget(Vector.XYZ));
-			temp.add(p.t.multiget(Vector.XY));
-			temp.add(p.n.multiget(Vector.XYZ));
+			temp.add(p.v.multiget(MathConst.XYZ));
+			temp.add(p.t.multiget(MathConst.XY));
+			temp.add(p.n.multiget(MathConst.XYZ));
 			
 		}
 		

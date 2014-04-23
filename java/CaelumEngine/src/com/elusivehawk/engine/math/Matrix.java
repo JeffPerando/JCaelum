@@ -200,6 +200,17 @@ public class Matrix implements IMathObject<Float>
 	@Override
 	public void setAll(Float num)
 	{
+		for (int c = 0; c < this.data.length; c++)
+		{
+			this.data[c] = num.floatValue();
+			
+		}
+		
+	}
+	
+	@Override
+	public void setAll(Float num, boolean notify)
+	{
 		for (int c = 0; c < this.getSize(); c++)
 		{
 			this.set(c, num);
@@ -209,9 +220,23 @@ public class Matrix implements IMathObject<Float>
 	}
 	
 	@Override
-	public Float normalize()
+	public void normalize()
 	{
-		throw new UnsupportedOperationException("Matrices do not normalize");
+		this.normalize(this);
+		
+	}
+	
+	@Override
+	public void normalize(IMathObject<Float> dest)
+	{
+		assert !dest.isImmutable();
+		
+		for (int c = 0; c < this.getSize(); c++)
+		{
+			dest.set(c, (float)Math.sqrt(MathHelper.square(this.get(c))), false);
+			
+		}
+		
 	}
 	
 	@Override
@@ -318,6 +343,9 @@ public class Matrix implements IMathObject<Float>
 		return dest;
 	}
 	
+	@Override
+	public void onChanged(){}
+	
 	public float get(int x, int y)
 	{
 		return this.get(x + (y * this.h));
@@ -325,28 +353,17 @@ public class Matrix implements IMathObject<Float>
 	
 	public void set(int x, int y, float f)
 	{
-		this.set(x, y, f, true);
-		
-	}
-	
-	public void set(int x, int y, float f, boolean notify)
-	{
 		this.data[x + (y * this.h)] = f;
-		
-		if (notify)
-		{
-			
-		}
 		
 	}
 	
 	public void setRow(int r, float... fs)
 	{
-		int i = Math.min(this.h, fs.length);
+		int i = Math.min(this.w, fs.length);
 		
 		for (int c = 0; c < i; c++)
 		{
-			this.set(r, c, fs[c], false);
+			this.set(c, r, fs[c]);
 			
 		}
 		
@@ -359,9 +376,9 @@ public class Matrix implements IMathObject<Float>
 		{
 			Vector3f vec3f = (Vector3f)vec;
 			
-			this.set(r, 0, vec3f.x, false);
-			this.set(r, 1, vec3f.y, false);
-			this.set(r, 2, vec3f.z, false);
+			this.set(r, 0, vec3f.x);
+			this.set(r, 1, vec3f.y);
+			this.set(r, 2, vec3f.z);
 			
 			return;
 		}
@@ -370,9 +387,23 @@ public class Matrix implements IMathObject<Float>
 		
 		for (int c = 0; c < i; c++)
 		{
-			this.set(r, c, vec.get(c), false);
+			this.set(c, r, vec.get(c));
 			
 		}
+		
+	}
+	
+	public void getColumn(int c, Vector col)
+	{
+		int l = Math.min(this.h, col.getSize());
+		
+		for (int i = 0; i < l; i++)
+		{
+			col.set(c, this.get(c, i), false);
+			
+		}
+		
+		col.onChanged();
 		
 	}
 	
@@ -382,12 +413,105 @@ public class Matrix implements IMathObject<Float>
 		
 		for (int c = 0; c < i; c++)
 		{
-			row.set(c, this.get(r, c), false);
+			row.set(c, this.get(c, r), false);
 			
 		}
 		
 		row.onChanged();
 		
+	}
+	
+	public void setIdentity()
+	{
+		for (int x = 0; x < this.w; x++)
+		{
+			for (int y = 0; y < this.h; y++)
+			{
+				this.set(x, y, x == y ? 1 : 0);
+				
+			}
+			
+		}
+		
+	}
+	
+	public Matrix add(int x, int y, float f)
+	{
+		return this.add(x, y, f, this);
+	}
+	
+	public Matrix add(int x, int y, float f, Matrix dest)
+	{
+		dest.set(x, y, this.get(x, y) + f);
+		
+		return dest;
+	}
+	
+	public Matrix sub(int x, int y, float f)
+	{
+		return this.sub(x, y, f, this);
+	}
+	
+	public Matrix sub(int x, int y, float f, Matrix dest)
+	{
+		dest.set(x, y, this.get(x, y) - f);
+		
+		return dest;
+	}
+	
+	public Matrix div(int x, int y, float f)
+	{
+		return this.div(x, y, f, this);
+	}
+	
+	public Matrix div(int x, int y, float f, Matrix dest)
+	{
+		dest.set(x, y, this.get(x, y) / f);
+		
+		return dest;
+	}
+	
+	public Matrix mul(int x, int y, float f)
+	{
+		return this.mul(x, y, f, this);
+	}
+	
+	public Matrix mul(int x, int y, float f, Matrix dest)
+	{
+		dest.set(x, y, this.get(x, y) * f);
+		
+		return dest;
+	}
+	
+	public Matrix invert()
+	{
+		return this.invert(this);
+		
+	}
+	
+	public Matrix invert(Matrix m)//FIXME
+	{
+		return m;
+	}
+	
+	public Matrix transpose()//FIXME
+	{
+		return this.transpose(this);
+	}
+	
+	public Matrix transpose(Matrix m)//FIXME
+	{
+		return m;
+	}
+	
+	public Matrix transform(Vector vec)//FIXME
+	{
+		return this.transform(vec, vec);
+	}
+	
+	public Matrix transform(Vector vec, Vector vec0)//FIXME
+	{
+		return this;
 	}
 	
 }

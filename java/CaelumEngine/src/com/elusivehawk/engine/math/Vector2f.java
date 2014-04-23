@@ -41,12 +41,26 @@ public class Vector2f extends Vector
 	}
 	
 	@Override
-	public void onChanged()
+	public Float get(int pos)
 	{
-		this.x = this.get(X);
-		this.y = this.get(Y);
+		switch (pos)
+		{
+			case 0: return this.x;
+			case 1: return this.y;
+			default: return 0f;
+		}
 		
-		super.onChanged();
+	}
+	
+	@Override
+	public void set(int pos, Float f)
+	{
+		switch (pos)
+		{
+			case 0: this.x = f.floatValue();
+			case 1: this.y = f.floatValue();
+			
+		}
 		
 	}
 	

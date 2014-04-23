@@ -49,13 +49,13 @@ public final class MathHelper
 	
 	public static Vector cross(Vector one, Vector two)
 	{
-		float ax = one.get(Vector.X);
-		float ay = one.get(Vector.Y);
-		float az = one.get(Vector.Z);
+		float ax = one.get(MathConst.X);
+		float ay = one.get(MathConst.Y);
+		float az = one.get(MathConst.Z);
 		
-		float bx = two.get(Vector.X);
-		float by = two.get(Vector.Y);
-		float bz = two.get(Vector.Z);
+		float bx = two.get(MathConst.X);
+		float by = two.get(MathConst.Y);
+		float bz = two.get(MathConst.Z);
 		
 		return new Vector((ay * bz) - (az * by),
 				(az * bx) - (ax * bz),
@@ -69,12 +69,12 @@ public final class MathHelper
 	
 	public static float distSquare(Vector from, Vector to)
 	{
-		return length(to.get(Vector.X) - from.get(Vector.X), to.get(Vector.Y) - from.get(Vector.Y), to.get(Vector.Z) - from.get(Vector.Z));
+		return lengthSquared(to.get(MathConst.X) - from.get(MathConst.X), to.get(MathConst.Y) - from.get(MathConst.Y), to.get(MathConst.Z) - from.get(MathConst.Z));
 	}
 	
 	public static float dot(Vector one, Vector two)
 	{
-		return (one.get(Vector.X) * two.get(Vector.X)) + (one.get(Vector.Y) * two.get(Vector.Y)) + (one.get(Vector.Z) * two.get(Vector.Z));
+		return (one.get(MathConst.X) * two.get(MathConst.X)) + (one.get(MathConst.Y) * two.get(MathConst.Y)) + (one.get(MathConst.Z) * two.get(MathConst.Z));
 	}
 	
 	public static float interpolate(float one, float two, float factor)
@@ -104,10 +104,15 @@ public final class MathHelper
 	
 	public static float length(Vector vec)
 	{
-		return length(vec.get(Vector.X), vec.get(Vector.Y), vec.get(Vector.Z));
+		return (float)Math.sqrt(lengthSquared(vec));
 	}
 	
-	public static float length(float x, float y, float z)
+	public static float lengthSquared(Vector vec)
+	{
+		return lengthSquared(vec.get(MathConst.X), vec.get(MathConst.Y), vec.get(MathConst.Z));
+	}
+	
+	public static float lengthSquared(float x, float y, float z)
 	{
 		return square(x) + square(y) + square(z);
 	}
@@ -172,11 +177,24 @@ public final class MathHelper
 	{
 		Vector ret = new Vector(vec);
 		
-		ret.set(Vector.X, toRadians(ret.get(Vector.X)));
-		ret.set(Vector.Y, toRadians(ret.get(Vector.Y)));
-		ret.set(Vector.Z, toRadians(ret.get(Vector.Z)));
+		ret.set(MathConst.X, toRadians(ret.get(MathConst.X)));
+		ret.set(MathConst.Y, toRadians(ret.get(MathConst.Y)));
+		ret.set(MathConst.Z, toRadians(ret.get(MathConst.Z)));
 		
 		return ret;
+	}
+	
+	public static int min(int... is)
+	{
+		int min = Integer.MAX_VALUE;
+		
+		for (int i : is)
+		{
+			min = Math.min(min, i);
+			
+		}
+		
+		return min;
 	}
 	
 }

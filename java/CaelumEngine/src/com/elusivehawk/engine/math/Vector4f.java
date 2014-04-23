@@ -35,11 +35,29 @@ public class Vector4f extends Vector3f
 	}
 	
 	@Override
-	public void onChanged()
+	public Float get(int pos)
 	{
-		this.w = this.get(W);
+		if (pos == 3)
+		{
+			return this.w;
+		}
 		
-		super.onChanged();
+		return super.get(pos);
+	}
+	
+	@Override
+	public void set(int pos, Float f)
+	{
+		if (pos == 3)
+		{
+			this.w = f.floatValue();
+			
+		}
+		else
+		{
+			super.set(pos, f);
+			
+		}
 		
 	}
 	

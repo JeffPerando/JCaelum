@@ -41,11 +41,29 @@ public class Vector3f extends Vector2f
 	}
 	
 	@Override
-	public void onChanged()
+	public Float get(int pos)
 	{
-		this.z = this.get(Z);
+		if (pos == 2)
+		{
+			return this.z;
+		}
 		
-		super.onChanged();
+		return super.get(pos);
+	}
+	
+	@Override
+	public void set(int pos, Float f)
+	{
+		if (pos == 2)
+		{
+			this.z = f.floatValue();
+			
+		}
+		else
+		{
+			super.set(pos, f);
+			
+		}
 		
 	}
 	
@@ -66,6 +84,24 @@ public class Vector3f extends Vector2f
 	public float lengthSquared()
 	{
 		return MathHelper.length(this);
+	}
+	
+	public void interpolate(Vector3f one, Vector3f two, float p)
+	{
+		this.set(MathHelper.interpolate(one, two, p));
+		
+	}
+	
+	public void normalize(Vector v)//FIXME
+	{
+		int length = Math.min(this.getSize(), v.getSize());
+		
+		for (int c = 0; c < length; c++)
+		{
+			v.set(c, (float)Math.sqrt(MathHelper.square(this.get(c))), c == (length - 1));
+			
+		}
+		
 	}
 	
 }

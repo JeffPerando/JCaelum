@@ -1,6 +1,8 @@
 
 package com.elusivehawk.engine.math;
 
+import static com.elusivehawk.engine.math.MathConst.*;
+
 /**
  * 
  * Just a small class I wrote to help with making matrices.
@@ -49,14 +51,14 @@ public final class MatrixHelper
 	
 	public static Matrix createRotationMatrix(Vector vec)
 	{
-		return createRotationMatrix(vec.get(Vector.X), vec.get(Vector.Y), vec.get(Vector.Z));
+		return createRotationMatrix(vec.get(X), vec.get(Y), vec.get(Z));
 	}
 	
 	public static Matrix createRotationMatrix(float x, float y, float z)
 	{
 		//Hold on to your butts...
 		
-		return rotate(z, Vector.Z_AXIS, rotate(y, Vector.Y_AXIS, rotate(x, Vector.X_AXIS, createIdentityMatrix())));
+		return rotate(z, Z_AXIS, rotate(y, Y_AXIS, rotate(x, X_AXIS, createIdentityMatrix())));
 		
 		/* Old code:
 		float a = (float)Math.cos(x);
@@ -85,7 +87,7 @@ public final class MatrixHelper
 	
 	public static Matrix createScalingMatrix(Vector vec)
 	{
-		return createScalingMatrix(vec.get(Vector.X), vec.get(Vector.Y), vec.get(Vector.Z));
+		return createScalingMatrix(vec.get(X), vec.get(Y), vec.get(Z));
 	}
 	
 	public static Matrix createScalingMatrix(float x, float y, float z)
@@ -110,7 +112,7 @@ public final class MatrixHelper
 	
 	public static Matrix createTranslationMatrix(Vector vec)
 	{
-		return createTranslationMatrix(vec.get(Vector.X), vec.get(Vector.Y), vec.get(Vector.Z));
+		return createTranslationMatrix(vec.get(X), vec.get(Y), vec.get(Z));
 	}
 	
 	public static Matrix createTranslationMatrix(float x, float y, float z)
@@ -137,9 +139,9 @@ public final class MatrixHelper
 	{
 		Matrix ret = createIdentityMatrix();
 		
-		float x = axis.get(Vector.X);
-		float y = axis.get(Vector.Y);
-		float z = axis.get(Vector.Z);
+		float x = axis.get(X);
+		float y = axis.get(Y);
+		float z = axis.get(Z);
 		
 		float c = (float)Math.cos(angle);
 		float s = (float)Math.sin(angle);

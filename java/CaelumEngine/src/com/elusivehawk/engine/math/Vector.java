@@ -13,27 +13,6 @@ import com.google.common.collect.Lists;
  */
 public class Vector implements IMathObject<Float>
 {
-	public static final int X = 0;
-	public static final int Y = 1;
-	public static final int Z = 2;
-	public static final int W = 3;
-	
-	public static final int X_BITMASK = 0b0001;
-	public static final int Y_BITMASK = 0b0010;
-	public static final int Z_BITMASK = 0b0100;
-	public static final int W_BITMASK = 0b1000;
-	
-	public static final int[] BITMASKS = {X_BITMASK, Y_BITMASK, Z_BITMASK, W_BITMASK};
-	
-	public static final int XY =	X_BITMASK | Y_BITMASK;
-	public static final int XZ =	X_BITMASK | Z_BITMASK;
-	public static final int XYZ =	X_BITMASK | Y_BITMASK | Z_BITMASK;
-	public static final int XYZW =	X_BITMASK | Y_BITMASK | Z_BITMASK | W_BITMASK;
-	
-	public static final Vector X_AXIS = new Vector(1f, 0f, 0f);
-	public static final Vector Y_AXIS = new Vector(0f, 1f, 0f);
-	public static final Vector Z_AXIS = new Vector(0f, 0f, 1f);
-	
 	protected final float[] nums;
 	protected List<IVectorListener> listeners = null;
 	protected String name = null;
@@ -57,9 +36,15 @@ public class Vector implements IMathObject<Float>
 	}
 	
 	@SafeVarargs
-	public Vector(Float... info)
+	public Vector(float... info)
 	{
-		this(info.length, new Buffer<Float>(info));
+		this(info.length);
+		
+		for (int c = 0; c < getSize(); c++)
+		{
+			set(c, info[c], false);
+			
+		}
 		
 	}
 	
@@ -110,7 +95,7 @@ public class Vector implements IMathObject<Float>
 	{
 		int count = 0;
 		
-		for (int bits : BITMASKS)
+		for (int bits : MathConst.BITMASKS)
 		{
 			if ((bitmask & bits) != 0)
 			{
@@ -128,9 +113,9 @@ public class Vector implements IMathObject<Float>
 		count = 0;
 		Float[] ret = new Float[count];
 		
-		for (int c = 0; c < BITMASKS.length; c++)
+		for (int c = 0; c < MathConst.BITMASKS.length; c++)
 		{
-			if ((bitmask & BITMASKS[c]) != 0)
+			if ((bitmask & MathConst.BITMASKS[c]) != 0)
 			{
 				ret[count++] = this.get(c);
 				
@@ -164,29 +149,55 @@ public class Vector implements IMathObject<Float>
 	@Override
 	public void setAll(Float num)
 	{
+		this.setAll(num, true);
+		
+	}
+	
+	@Override
+	public void setAll(Float num, boolean notify)
+	{
 		for (int c = 0; c < this.getSize(); c++)
 		{
 			this.nums[c] = num.floatValue();
 			
 		}
 		
-		this.onChanged();
+		if (notify)
+		{
+			this.onChanged();
+			
+		}
 		
 	}
 	
 	@Override
-	public Float normalize()
+	public void normalize()
 	{
-		float f = 0f, f0 = 0f;
+		this.normalize(this);
+		
+	}
+	
+	@Override
+	public void normalize(IMathObject<Float> dest)
+	{
+		float f = 0f;
 		
 		for (int c = 0; c < this.getSize(); c++)
 		{
-			f0 = this.get(c);
-			f += (f0 * f0);
+			f += MathHelper.square(this.get(c));
 			
 		}
 		
-		return (float)Math.sqrt(f);
+		f = (float)(1.0 / Math.sqrt(f));
+		
+		int length = Math.min(this.getSize(), dest.getSize());
+		
+		for (int c = 0; c < length; c++)
+		{
+			dest.set(c, dest.get(c) * f, c == (length - 1));
+			
+		}
+		
 	}
 	
 	@Override
@@ -297,6 +308,22 @@ public class Vector implements IMathObject<Float>
 	}
 	
 	@Override
+	public void onChanged()
+	{
+		if (this.listeners == null || this.listeners.isEmpty())
+		{
+			return;
+		}
+		
+		for (IVectorListener lis : this.listeners)
+		{
+			lis.onVectorChanged(this);
+			
+		}
+		
+	}
+	
+	@Override
 	public String toString()
 	{
 		StringBuilder b = new StringBuilder(10);
@@ -366,21 +393,6 @@ public class Vector implements IMathObject<Float>
 		
 	}
 	
-	public void onChanged()
-	{
-		if (this.listeners == null || this.listeners.isEmpty())
-		{
-			return;
-		}
-		
-		for (IVectorListener lis : this.listeners)
-		{
-			lis.onVectorChanged(this);
-			
-		}
-		
-	}
-	
 	public Vector name(String str)
 	{
 		this.name = str;
@@ -429,13 +441,12 @@ public class Vector implements IMathObject<Float>
 		return dest;
 	}
 	
-	public void absolute()
+	public Vector absolute()
 	{
-		this.absolute(this);
-		
+		return this.absolute(this);
 	}
 	
-	public void absolute(Vector dest)
+	public Vector absolute(Vector dest)
 	{
 		int i = Math.min(this.getSize(), dest.getSize());
 		
@@ -447,6 +458,81 @@ public class Vector implements IMathObject<Float>
 		
 		dest.onChanged();
 		
+		return dest;
+	}
+	
+	public Vector negate()
+	{
+		return this.negate(this);
+	}
+	
+	public Vector negate(Vector v)//FIXME
+	{
+		return v;
+	}
+	
+	public Vector scaleAdd(float f, Vector vec, Vector dest)//FIXME
+	{
+		return dest;
+	}
+	
+	public Vector addAll(float f)
+	{
+		for (int c = 0; c < this.getSize(); c++)
+		{
+			this.nums[c] += f;
+			
+		}
+		
+		return this;
+	}
+	
+	public Vector divAll(float f)
+	{
+		for (int c = 0; c < this.getSize(); c++)
+		{
+			this.nums[c] /= f;
+			
+		}
+		
+		return this;
+	}
+	
+	public Vector mulAll(float f)
+	{
+		for (int c = 0; c < this.getSize(); c++)
+		{
+			this.nums[c] *= f;
+			
+		}
+		
+		return this;
+	}
+	
+	public Vector subAll(float f)
+	{
+		for (int c = 0; c < this.getSize(); c++)
+		{
+			this.nums[c] -= f;
+			
+		}
+		
+		return this;
+	}
+	
+	public Vector set(float... fs)
+	{
+		int length = Math.min(this.getSize(), fs.length);
+		
+		for (int c = 0; c < length; c++)
+		{
+			this.set(c, fs[c], false);
+			
+		}
+		
+		this.onChanged();
+		
+		return this;
 	}
 	
 }

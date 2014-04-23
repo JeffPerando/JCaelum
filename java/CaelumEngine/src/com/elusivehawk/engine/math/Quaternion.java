@@ -11,18 +11,44 @@ import com.elusivehawk.engine.util.storage.Buffer;
  */
 public class Quaternion implements IMathObject<Float>
 {
+	protected final float[] data;
+	
+	public Quaternion()
+	{
+		this(4);
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public Quaternion(int size)
+	{
+		data = new float[MathHelper.clamp(size, 1, 4)];
+		setAll(0f);
+		
+	}
+	
+	public Quaternion(Quaternion q)
+	{
+		this(q.getSize());
+		set(q);
+		
+	}
+	
 	@Override
 	public void store(Buffer<Float> buf)
 	{
-		// TODO Auto-generated method stub
+		for (int c = 0; c < this.getSize(); c++)
+		{
+			buf.add(this.get(c));
+			
+		}
 		
 	}
 	
 	@Override
 	public int getSize()
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return this.data.length;
 	}
 	
 	@Override
@@ -35,8 +61,7 @@ public class Quaternion implements IMathObject<Float>
 	@Override
 	public Float get(int pos)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return MathHelper.bounds(pos, 0, this.getSize()) ? this.data[pos] : 0f;
 	}
 	
 	@Override
@@ -49,36 +74,71 @@ public class Quaternion implements IMathObject<Float>
 	@Override
 	public void set(int pos, Float num)
 	{
-		// TODO Auto-generated method stub
+		this.set(pos, num, false);
 		
 	}
 	
 	@Override
 	public void set(int pos, Float num, boolean notify)
 	{
-		// TODO Auto-generated method stub
+		if (MathHelper.bounds(pos, 0, this.getSize()))
+		{
+			this.data[pos] = num.floatValue();
+			
+		}
 		
 	}
 	
 	@Override
 	public void setAll(Float num)
 	{
-		// TODO Auto-generated method stub
+		this.setAll(num, true);
 		
 	}
 	
 	@Override
-	public Float normalize()
+	public void setAll(Float num, boolean notify)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		for (int c = 0; c < this.getSize(); c++)
+		{
+			this.set(c, num, false);
+			
+		}
+		
+	}
+	
+	@Override
+	public void normalize()
+	{
+		this.normalize(this);
+		
+	}
+	
+	@Override
+	public void normalize(IMathObject<Float> dest)
+	{
+		assert !dest.isImmutable();
+		
+		for (int c = 0; c < this.getSize(); c++)
+		{
+			dest.set(c, (float)Math.sqrt(MathHelper.square(this.get(c))), false);
+			
+		}
+		
 	}
 	
 	@Override
 	public IMathObject<Float> set(IMathObject<Float> obj)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		int length = Math.min(this.getSize(), obj.getSize());
+		
+		for (int c = 0; c < length; c++)
+		{
+			this.data[c] = obj.get(c);
+			
+		}
+		
+		return this;
 	}
 	
 	@Override
@@ -136,5 +196,8 @@ public class Quaternion implements IMathObject<Float>
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public void onChanged(){}
 	
 }
