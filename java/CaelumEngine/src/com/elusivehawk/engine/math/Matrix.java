@@ -493,24 +493,53 @@ public class Matrix implements IMathObject<Float>
 		return m;
 	}
 	
-	public Matrix transpose()//FIXME
+	public Matrix transpose()
 	{
 		return this.transpose(this);
 	}
 	
-	public Matrix transpose(Matrix m)//FIXME
+	public Matrix transpose(Matrix m)
 	{
+		int x = Math.min(m.w, this.w);
+		int y = Math.min(m.h, this.h);
+		
+		Matrix tmp = new Matrix(m);
+		
+		for (int a = 0; a < x; a++)
+		{
+			for (int b = 0; b < y; b++)
+			{
+				m.set(a, b, tmp.get(b, a));
+				
+			}
+			
+		}
+		
 		return m;
 	}
 	
-	public Matrix transform(Vector vec)//FIXME
+	public Vector transform(Vector vec)
 	{
 		return this.transform(vec, vec);
 	}
 	
-	public Matrix transform(Vector vec, Vector vec0)//FIXME
+	public Vector transform(Vector vec, Vector dest)
 	{
-		return this;
+		float[] fl = new float[dest.getSize()];
+		
+		for (int x = 0; x < this.w; x++)
+		{
+			for (int y = 0; y < this.h; y++)
+			{
+				fl[y] += (this.get(x, y) * vec.get(x));
+				
+			}
+			
+		}
+		
+		dest.set(fl);
+		
+		return dest;
 	}
 	
 }
