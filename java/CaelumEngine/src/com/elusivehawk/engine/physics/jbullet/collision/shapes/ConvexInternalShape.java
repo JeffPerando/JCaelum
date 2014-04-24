@@ -27,7 +27,6 @@ import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
 import com.elusivehawk.engine.physics.jbullet.linearmath.MatrixUtil;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
-import com.elusivehawk.engine.physics.jbullet.linearmath.VectorUtil;
 import cz.advel.stack.Stack;
 
 /*

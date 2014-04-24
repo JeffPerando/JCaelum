@@ -23,16 +23,19 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.narrowphase;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  *
  * @author jezek2
  */
 public class PointCollector extends DiscreteCollisionDetectorInterface.Result {
 
-	public final Vector3f normalOnBInWorld = new Vector3f();
-	public final Vector3f pointInWorld = new Vector3f();
+	public final Vector normalOnBInWorld = new Vector();
+	public final Vector pointInWorld = new Vector();
 	public float distance = 1e30f; // negative means penetration
 
 	public boolean hasResult = false;
@@ -41,7 +44,7 @@ public class PointCollector extends DiscreteCollisionDetectorInterface.Result {
 		// ??
 	}
 
-	public void addContactPoint(Vector3f normalOnBInWorld, Vector3f pointInWorld, float depth) {
+	public void addContactPoint(Vector normalOnBInWorld, Vector pointInWorld, float depth) {
 		if (depth < distance) {
 			hasResult = true;
 			this.normalOnBInWorld.set(normalOnBInWorld);

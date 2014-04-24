@@ -81,11 +81,6 @@ public class Vector3f extends Vector2f
 		
 	}
 	
-	public float lengthSquared()
-	{
-		return MathHelper.length(this);
-	}
-	
 	public void interpolate(Vector3f one, Vector3f two, float p)
 	{
 		this.set(MathHelper.interpolate(one, two, p));

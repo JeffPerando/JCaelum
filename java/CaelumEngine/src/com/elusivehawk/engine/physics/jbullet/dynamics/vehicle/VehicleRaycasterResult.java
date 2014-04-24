@@ -23,8 +23,11 @@
 
 package com.elusivehawk.engine.physics.jbullet.dynamics.vehicle;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * Vehicle raycaster result.
  * 
@@ -32,8 +35,8 @@ import com.elusivehawk.engine.math.Vector3f;
  */
 public class VehicleRaycasterResult {
 	
-	public final Vector3f hitPointInWorld  = new Vector3f();
-	public final Vector3f hitNormalInWorld  = new Vector3f();
+	public final Vector hitPointInWorld  = new Vector();
+	public final Vector hitNormalInWorld  = new Vector();
 	public float distFraction = -1f;
 
 }

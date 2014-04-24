@@ -23,8 +23,11 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.narrowphase;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * SimplexSolverInterface can incrementally calculate distance between origin and
  * up to 4 vertices. Used by GJK or Linear Casting. Can be implemented by the
@@ -37,23 +40,23 @@ public abstract class SimplexSolverInterface {
 
 	public abstract void reset();
 
-	public abstract void addVertex(Vector3f w, Vector3f p, Vector3f q);
+	public abstract void addVertex(Vector w, Vector p, Vector q);
 	
-	public abstract boolean closest(Vector3f v);
+	public abstract boolean closest(Vector v);
 
 	public abstract float maxVertex();
 
 	public abstract boolean fullSimplex();
 
-	public abstract int getSimplex(Vector3f[] pBuf, Vector3f[] qBuf, Vector3f[] yBuf);
+	public abstract int getSimplex(Vector[] pBuf, Vector[] qBuf, Vector[] yBuf);
 
-	public abstract boolean inSimplex(Vector3f w);
+	public abstract boolean inSimplex(Vector w);
 	
-	public abstract void backup_closest(Vector3f v);
+	public abstract void backup_closest(Vector v);
 
 	public abstract boolean emptySimplex();
 
-	public abstract void compute_points(Vector3f p1, Vector3f p2);
+	public abstract void compute_points(Vector p1, Vector p2);
 
 	public abstract int numVertices();
 	

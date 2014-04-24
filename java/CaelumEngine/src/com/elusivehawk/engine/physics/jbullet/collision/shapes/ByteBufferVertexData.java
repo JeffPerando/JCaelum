@@ -24,8 +24,12 @@
 package com.elusivehawk.engine.physics.jbullet.collision.shapes;
 
 import java.nio.ByteBuffer;
-import com.elusivehawk.engine.math.Vector3f;
+import static com.elusivehawk.engine.math.MathConst.*;
+import com.elusivehawk.engine.math.Vector;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  *
  * @author jezek2
@@ -44,38 +48,39 @@ public class ByteBufferVertexData extends VertexData {
 
 	@Override
 	public int getVertexCount() {
-		return vertexCount;
+		return this.vertexCount;
 	}
 
 	@Override
 	public int getIndexCount() {
-		return indexCount;
+		return this.indexCount;
 	}
 
 	@Override
-	public <T extends Vector3f> T getVertex(int idx, T out) {
-		int off = idx*vertexStride;
-		out.x = vertexData.getFloat(off+4*0);
-		out.y = vertexData.getFloat(off+4*1);
-		out.z = vertexData.getFloat(off+4*2);
+	public <T extends Vector> T getVertex(int idx, T out)
+	{
+		int off = idx*this.vertexStride;
+		out.set(X, this.vertexData.getFloat(off+4*0));
+		out.set(Y, this.vertexData.getFloat(off+4*1));
+		out.set(Z, this.vertexData.getFloat(off+4*2));
 		return out;
 	}
 
 	@Override
 	public void setVertex(int idx, float x, float y, float z) {
-		int off = idx*vertexStride;
-		vertexData.putFloat(off+4*0, x);
-		vertexData.putFloat(off+4*1, y);
-		vertexData.putFloat(off+4*2, z);
+		int off = idx*this.vertexStride;
+		this.vertexData.putFloat(off+4*0, x);
+		this.vertexData.putFloat(off+4*1, y);
+		this.vertexData.putFloat(off+4*2, z);
 	}
 
 	@Override
 	public int getIndex(int idx) {
-		if (indexType == ScalarType.SHORT) {
-			return indexData.getShort(idx*indexStride) & 0xFFFF;
+		if (this.indexType == ScalarType.SHORT) {
+			return this.indexData.getShort(idx*this.indexStride) & 0xFFFF;
 		}
-		else if (indexType == ScalarType.INTEGER) {
-			return indexData.getInt(idx*indexStride);
+		else if (this.indexType == ScalarType.INTEGER) {
+			return this.indexData.getInt(idx*this.indexStride);
 		}
 		else {
 			throw new IllegalStateException("indicies type must be short or integer");

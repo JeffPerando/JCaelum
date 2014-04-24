@@ -23,8 +23,9 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.shapes;
 
-import static com.elusivehawk.engine.math.MathConst.*;
-import com.elusivehawk.engine.math.MathHelper;
+import static com.elusivehawk.engine.math.MathConst.X;
+import static com.elusivehawk.engine.math.MathConst.Y;
+import static com.elusivehawk.engine.math.MathConst.Z;
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
@@ -73,7 +74,7 @@ public class CapsuleShape extends ConvexInternalShape {
 		float maxDot = -1e30f;
 
 		Vector vec = Stack.alloc(vec0);
-		float lenSqr = MathHelper.lengthSquared(vec);
+		float lenSqr = vec.lengthSquared();
 		if (lenSqr < 0.0001f) {
 			vec.setAll(0f);
 			vec.set(0, 1f);
@@ -190,11 +191,11 @@ public class CapsuleShape extends ConvexInternalShape {
 			
 		}
 		/*abs_b.getRow(0, tmp);
-		extent.x = tmp.dot(halfExtents);
+		extent.set(X, tmp.dot(halfExtents);
 		abs_b.getRow(1, tmp);
-		extent.y = tmp.dot(halfExtents);
+		extent.set(Y, tmp.dot(halfExtents);
 		abs_b.getRow(2, tmp);
-		extent.z = tmp.dot(halfExtents);*/
+		extent.get(Z)= tmp.dot(halfExtents);*/
 
 		aabbMin.sub(center, extent);
 		aabbMax.add(center, extent);

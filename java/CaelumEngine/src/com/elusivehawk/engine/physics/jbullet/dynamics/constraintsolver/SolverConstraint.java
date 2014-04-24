@@ -23,8 +23,11 @@
 
 package com.elusivehawk.engine.physics.jbullet.dynamics.constraintsolver;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * 1D constraint along a normal axis between bodyA and bodyB. It can be combined
  * to solve contact and friction constraints.
@@ -33,13 +36,13 @@ import com.elusivehawk.engine.math.Vector3f;
  */
 public class SolverConstraint {
 
-	public final Vector3f relpos1CrossNormal = new Vector3f();
-	public final Vector3f contactNormal = new Vector3f();
+	public final Vector relpos1CrossNormal = new Vector();
+	public final Vector contactNormal = new Vector();
 
-	public final Vector3f relpos2CrossNormal = new Vector3f();
-	public final Vector3f angularComponentA = new Vector3f();
+	public final Vector relpos2CrossNormal = new Vector();
+	public final Vector angularComponentA = new Vector();
 
-	public final Vector3f angularComponentB = new Vector3f();
+	public final Vector angularComponentB = new Vector();
 	
 	public float appliedPushImpulse;
 	

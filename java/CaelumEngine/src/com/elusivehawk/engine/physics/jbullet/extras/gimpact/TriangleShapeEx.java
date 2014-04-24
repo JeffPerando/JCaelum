@@ -27,8 +27,8 @@
 
 package com.elusivehawk.engine.physics.jbullet.extras.gimpact;
 
-import com.elusivehawk.engine.math.Vector3f;
-import com.elusivehawk.engine.math.Vector4f;
+import static com.elusivehawk.engine.math.MathConst.*;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.TriangleShape;
 import com.elusivehawk.engine.physics.jbullet.extras.gimpact.BoxCollision.AABB;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
@@ -44,51 +44,51 @@ public class TriangleShapeEx extends TriangleShape {
 		super();
 	}
 
-	public TriangleShapeEx(Vector3f p0, Vector3f p1, Vector3f p2) {
+	public TriangleShapeEx(Vector p0, Vector p1, Vector p2) {
 		super(p0, p1, p2);
 	}
 
 	@Override
-	public void getAabb(Transform t, Vector3f aabbMin, Vector3f aabbMax) {
-		Vector3f tv0 = Stack.alloc(vertices1[0]);
+	public void getAabb(Transform t, Vector aabbMin, Vector aabbMax) {
+		Vector tv0 = Stack.alloc(this.vertices1[0]);
 		t.transform(tv0);
-		Vector3f tv1 = Stack.alloc(vertices1[1]);
+		Vector tv1 = Stack.alloc(this.vertices1[1]);
 		t.transform(tv1);
-		Vector3f tv2 = Stack.alloc(vertices1[2]);
+		Vector tv2 = Stack.alloc(this.vertices1[2]);
 		t.transform(tv2);
 
 		AABB trianglebox = Stack.alloc(AABB.class);
-		trianglebox.init(tv0,tv1,tv2,collisionMargin);
+		trianglebox.init(tv0,tv1,tv2,this.collisionMargin);
 		
 		aabbMin.set(trianglebox.min);
 		aabbMax.set(trianglebox.max);
 	}
 
 	public void applyTransform(Transform t) {
-		t.transform(vertices1[0]);
-		t.transform(vertices1[1]);
-		t.transform(vertices1[2]);
+		t.transform(this.vertices1[0]);
+		t.transform(this.vertices1[1]);
+		t.transform(this.vertices1[2]);
 	}
 
-	public void buildTriPlane(Vector4f plane) {
-		Vector3f tmp1 = Stack.alloc(Vector3f.class);
-		Vector3f tmp2 = Stack.alloc(Vector3f.class);
+	public void buildTriPlane(Vector plane) {
+		Vector tmp1 = Stack.alloc(new Vector(3));
+		Vector tmp2 = Stack.alloc(new Vector(3));
 
-		Vector3f normal = Stack.alloc(Vector3f.class);
-		tmp1.sub(vertices1[1], vertices1[0]);
-		tmp2.sub(vertices1[2], vertices1[0]);
+		Vector normal = Stack.alloc(new Vector(3));
+		tmp1.sub(this.vertices1[1], this.vertices1[0]);
+		tmp2.sub(this.vertices1[2], this.vertices1[0]);
 		normal.cross(tmp1, tmp2);
 		normal.normalize();
 
-		plane.set(normal.x, normal.y, normal.z, vertices1[0].dot(normal));
+		plane.set(normal.get(X), normal.get(Y), normal.get(Z), this.vertices1[0].dot(normal));
 	}
 
 	public boolean overlap_test_conservative(TriangleShapeEx other) {
 		float total_margin = getMargin() + other.getMargin();
 
-		Vector4f plane0 = Stack.alloc(Vector4f.class);
+		Vector plane0 = Stack.alloc(new Vector(4));
 		buildTriPlane(plane0);
-		Vector4f plane1 = Stack.alloc(Vector4f.class);
+		Vector plane1 = Stack.alloc(new Vector(4));
 		other.buildTriPlane(plane1);
 
 		// classify points on other triangle
@@ -101,11 +101,11 @@ public class TriangleShapeEx extends TriangleShape {
 		if (dis0 > 0.0f && dis1 > 0.0f && dis2 > 0.0f) {
 			return false; // classify points on this triangle
 		}
-		dis0 = ClipPolygon.distance_point_plane(plane1, vertices1[0]) - total_margin;
+		dis0 = ClipPolygon.distance_point_plane(plane1, this.vertices1[0]) - total_margin;
 
-		dis1 = ClipPolygon.distance_point_plane(plane1, vertices1[1]) - total_margin;
+		dis1 = ClipPolygon.distance_point_plane(plane1, this.vertices1[1]) - total_margin;
 
-		dis2 = ClipPolygon.distance_point_plane(plane1, vertices1[2]) - total_margin;
+		dis2 = ClipPolygon.distance_point_plane(plane1, this.vertices1[2]) - total_margin;
 
 		if (dis0 > 0.0f && dis1 > 0.0f && dis2 > 0.0f) {
 			return false;

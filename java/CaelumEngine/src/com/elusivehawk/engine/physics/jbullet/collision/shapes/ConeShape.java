@@ -23,12 +23,11 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.shapes;
 
+import static com.elusivehawk.engine.math.MathConst.*;
 import com.elusivehawk.engine.math.Vector;
-import com.elusivehawk.engine.math.Vector3f;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.BroadphaseNativeType;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
-import com.elusivehawk.engine.physics.jbullet.linearmath.VectorUtil;
 import cz.advel.stack.Stack;
 
 /*
@@ -72,43 +71,43 @@ public class ConeShape extends ConvexInternalShape {
 			out.set(coneIndices[2], 0f, true);
 			return out;
 		}
-		else {
-			float v0 = v.get(coneIndices[0]);
-			float v2 = v.get(coneIndices[2]);
-			float s = (float)Math.sqrt(v0 * v0 + v2 * v2);
-			if (s > BulletGlobals.FLT_EPSILON) {
-				float d = radius / s;
-				VectorUtil.setCoord(out, coneIndices[0], VectorUtil.getCoord(v, coneIndices[0]) * d);
-				VectorUtil.setCoord(out, coneIndices[1], -halfHeight);
-				VectorUtil.setCoord(out, coneIndices[2], VectorUtil.getCoord(v, coneIndices[2]) * d);
-				return out;
-			} else {
-				VectorUtil.setCoord(out, coneIndices[0], 0f);
-				VectorUtil.setCoord(out, coneIndices[1], -halfHeight);
-				VectorUtil.setCoord(out, coneIndices[2], 0f);
-				return out;
-			}
+		
+		float v0 = v.get(coneIndices[0]);
+		float v2 = v.get(coneIndices[2]);
+		float s = (float)Math.sqrt(v0 * v0 + v2 * v2);
+		
+		if (s > BulletGlobals.FLT_EPSILON) {
+			float d = radius / s;
+			out.set(coneIndices[0], v.get(coneIndices[0]) * d);
+			out.set(coneIndices[1], -halfHeight);
+			out.set(coneIndices[2], v.get(coneIndices[2]) * d);
+			return out;
 		}
+		
+		out.set(coneIndices[0], 0f);
+		out.set(coneIndices[1], -halfHeight);
+		out.set(coneIndices[2], 0f);
+		return out;
 	}
 
 	@Override
-	public Vector localGetSupportingVertexWithoutMargin(Vector3f vec, Vector3f out) {
+	public Vector localGetSupportingVertexWithoutMargin(Vector vec, Vector out) {
 		return coneLocalSupport(vec, out);
 	}
 
 	@Override
-	public void batchedUnitVectorGetSupportingVertexWithoutMargin(Vector3f[] vectors, Vector3f[] supportVerticesOut, int numVectors) {
+	public void batchedUnitVectorGetSupportingVertexWithoutMargin(Vector[] vectors, Vector[] supportVerticesOut, int numVectors) {
 		for (int i=0; i<numVectors; i++) {
-			Vector3f vec = vectors[i];
+			Vector vec = vectors[i];
 			coneLocalSupport(vec, supportVerticesOut[i]);
 		}
 	}
 
 	@Override
-	public Vector3f localGetSupportingVertex(Vector3f vec, Vector3f out) {
-		Vector3f supVertex = coneLocalSupport(vec, out);
+	public Vector localGetSupportingVertex(Vector vec, Vector out) {
+		Vector supVertex = coneLocalSupport(vec, out);
 		if (getMargin() != 0f) {
-			Vector3f vecnorm = Stack.alloc(vec);
+			Vector vecnorm = Stack.alloc(vec);
 			if (vecnorm.lengthSquared() < (BulletGlobals.FLT_EPSILON * BulletGlobals.FLT_EPSILON)) {
 				vecnorm.set(-1f, -1f, -1f);
 			}
@@ -124,21 +123,21 @@ public class ConeShape extends ConvexInternalShape {
 	}
 
 	@Override
-	public void calculateLocalInertia(float mass, Vector3f inertia) {
+	public void calculateLocalInertia(float mass, Vector inertia) {
 		Transform identity = Stack.alloc(Transform.class);
 		identity.setIdentity();
-		Vector3f aabbMin = Stack.alloc(Vector3f.class), aabbMax = Stack.alloc(Vector3f.class);
+		Vector aabbMin = Stack.alloc(new Vector(3)), aabbMax = Stack.alloc(new Vector(3));
 		getAabb(identity, aabbMin, aabbMax);
 
-		Vector3f halfExtents = Stack.alloc(Vector3f.class);
+		Vector halfExtents = Stack.alloc(new Vector(3));
 		halfExtents.sub(aabbMax, aabbMin);
 		halfExtents.scale(0.5f);
 
 		float margin = getMargin();
 
-		float lx = 2f * (halfExtents.x + margin);
-		float ly = 2f * (halfExtents.y + margin);
-		float lz = 2f * (halfExtents.z + margin);
+		float lx = 2f * (halfExtents.get(X) + margin);
+		float ly = 2f * (halfExtents.get(Y) + margin);
+		float lz = 2f * (halfExtents.get(Z) + margin);
 		float x2 = lx * lx;
 		float y2 = ly * ly;
 		float z2 = lz * lz;

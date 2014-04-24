@@ -23,14 +23,14 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.dispatch;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.CollisionAlgorithm;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.CollisionAlgorithmConstructionInfo;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.DispatcherInfo;
+import com.elusivehawk.engine.physics.jbullet.collision.narrowphase.ConvexCast.CastResult;
 import com.elusivehawk.engine.physics.jbullet.collision.narrowphase.PersistentManifold;
 import com.elusivehawk.engine.physics.jbullet.collision.narrowphase.SubsimplexConvexCast;
 import com.elusivehawk.engine.physics.jbullet.collision.narrowphase.VoronoiSimplexSolver;
-import com.elusivehawk.engine.physics.jbullet.collision.narrowphase.ConvexCast.CastResult;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.ConcaveShape;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.SphereShape;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.TriangleCallback;
@@ -41,6 +41,9 @@ import com.elusivehawk.engine.physics.jbullet.util.ObjectArrayList;
 import com.elusivehawk.engine.physics.jbullet.util.ObjectPool;
 import cz.advel.stack.Stack;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * ConvexConcaveCollisionAlgorithm supports collision between convex shapes
  * and (concave) trianges meshes.
@@ -85,8 +88,8 @@ public class ConvexConcaveCollisionAlgorithm extends CollisionAlgorithm {
 
 				concaveShape.processAllTriangles(
 						btConvexTriangleCallback,
-						btConvexTriangleCallback.getAabbMin(Stack.alloc(Vector3f.class)),
-						btConvexTriangleCallback.getAabbMax(Stack.alloc(Vector3f.class)));
+						btConvexTriangleCallback.getAabbMin(Stack.alloc(new Vector(3))),
+						btConvexTriangleCallback.getAabbMax(Stack.alloc(new Vector(3))));
 
 				resultOut.refreshContactPoints();
 			}
@@ -95,7 +98,7 @@ public class ConvexConcaveCollisionAlgorithm extends CollisionAlgorithm {
 
 	@Override
 	public float calculateTimeOfImpact(CollisionObject body0, CollisionObject body1, DispatcherInfo dispatchInfo, ManifoldResult resultOut) {
-		Vector3f tmp = Stack.alloc(Vector3f.class);
+		Vector tmp = Stack.alloc(new Vector(3));
 
 		CollisionObject convexbody = isSwapped ? body1 : body0;
 		CollisionObject triBody = isSwapped ? body0 : body1;
@@ -126,10 +129,10 @@ public class ConvexConcaveCollisionAlgorithm extends CollisionAlgorithm {
 		convexToLocal.mul(triInv, convexbody.getInterpolationWorldTransform(tmpTrans));
 
 		if (triBody.getCollisionShape().isConcave()) {
-			Vector3f rayAabbMin = Stack.alloc(convexFromLocal.origin);
+			Vector rayAabbMin = Stack.alloc(convexFromLocal.origin);
 			VectorUtil.setMin(rayAabbMin, convexToLocal.origin);
 
-			Vector3f rayAabbMax = Stack.alloc(convexFromLocal.origin);
+			Vector rayAabbMax = Stack.alloc(convexFromLocal.origin);
 			VectorUtil.setMax(rayAabbMax, convexToLocal.origin);
 
 			float ccdRadius0 = convexbody.getCcdSweptSphereRadius();
@@ -193,7 +196,7 @@ public class ConvexConcaveCollisionAlgorithm extends CollisionAlgorithm {
 			ident.setIdentity();
 		}
 		
-		public void processTriangle(Vector3f[] triangle, int partId, int triangleIndex) {
+		public void processTriangle(Vector[] triangle, int partId, int triangleIndex) {
 			// do a swept sphere for now
 			
 			//btTransform ident;

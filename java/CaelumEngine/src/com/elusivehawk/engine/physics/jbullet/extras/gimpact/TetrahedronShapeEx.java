@@ -27,9 +27,12 @@
 
 package com.elusivehawk.engine.physics.jbullet.extras.gimpact;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.BU_Simplex1to4;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * Helper class for tetrahedrons.
  * 
@@ -37,18 +40,19 @@ import com.elusivehawk.engine.physics.jbullet.collision.shapes.BU_Simplex1to4;
  */
 class TetrahedronShapeEx extends BU_Simplex1to4 {
 
+	@SuppressWarnings("unqualified-field-access")
 	public TetrahedronShapeEx() {
 		numVertices = 4;
 		for (int i = 0; i < numVertices; i++) {
-			vertices[i] = new Vector3f();
+			vertices[i] = new Vector();
 		}
 	}
 
-	public void setVertices(Vector3f v0, Vector3f v1, Vector3f v2, Vector3f v3) {
-		vertices[0].set(v0);
-		vertices[1].set(v1);
-		vertices[2].set(v2);
-		vertices[3].set(v3);
+	public void setVertices(Vector v0, Vector v1, Vector v2, Vector v3) {
+		this.vertices[0].set(v0);
+		this.vertices[1].set(v1);
+		this.vertices[2].set(v2);
+		this.vertices[3].set(v3);
 		recalcLocalAabb();
 	}
 	

@@ -23,11 +23,14 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.narrowphase;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.ConvexShape;
 import com.elusivehawk.engine.physics.jbullet.linearmath.IDebugDraw;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * ConvexPenetrationDepthSolver provides an interface for penetration depth calculation.
  * 
@@ -38,7 +41,7 @@ public abstract class ConvexPenetrationDepthSolver {
 	public abstract boolean calcPenDepth(SimplexSolverInterface simplexSolver,
 			ConvexShape convexA, ConvexShape convexB,
 			Transform transA, Transform transB,
-			Vector3f v, Vector3f pa, Vector3f pb,
+			Vector v, Vector pa, Vector pb,
 			IDebugDraw debugDraw/*, btStackAlloc* stackAlloc*/);
 	
 }

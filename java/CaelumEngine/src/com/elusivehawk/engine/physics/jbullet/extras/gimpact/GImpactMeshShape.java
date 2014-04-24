@@ -27,7 +27,7 @@
 
 package com.elusivehawk.engine.physics.jbullet.extras.gimpact;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.dispatch.CollisionWorld.RayResultCallback;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.CollisionShape;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.StridingMeshInterface;
@@ -37,6 +37,9 @@ import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 import com.elusivehawk.engine.physics.jbullet.util.ObjectArrayList;
 import cz.advel.stack.Stack;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  *
  * @author jezek2
@@ -50,59 +53,59 @@ public class GImpactMeshShape extends GImpactShapeInterface {
 	}
 	
 	public int getMeshPartCount() {
-		return mesh_parts.size();
+		return this.mesh_parts.size();
 	}
 
 	public GImpactMeshShapePart getMeshPart(int index) {
-		return mesh_parts.getQuick(index);
+		return this.mesh_parts.getQuick(index);
 	}
 
 	@Override
-	public void setLocalScaling(Vector3f scaling) {
-		localScaling.set(scaling);
+	public void setLocalScaling(Vector scaling) {
+		this.localScaling.set(scaling);
 
-		int i = mesh_parts.size();
+		int i = this.mesh_parts.size();
 		while ((i--) != 0) {
-			GImpactMeshShapePart part = mesh_parts.getQuick(i);
+			GImpactMeshShapePart part = this.mesh_parts.getQuick(i);
 			part.setLocalScaling(scaling);
 		}
 
-		needs_update = true;
+		this.needs_update = true;
 	}
 
 	@Override
 	public void setMargin(float margin) {
-		collisionMargin = margin;
+		this.collisionMargin = margin;
 
-		int i = mesh_parts.size();
+		int i = this.mesh_parts.size();
 		while ((i--) != 0) {
-			GImpactMeshShapePart part = mesh_parts.getQuick(i);
+			GImpactMeshShapePart part = this.mesh_parts.getQuick(i);
 			part.setMargin(margin);
 		}
 
-		needs_update = true;
+		this.needs_update = true;
 	}
 
 	@Override
 	public void postUpdate() {
-		int i = mesh_parts.size();
+		int i = this.mesh_parts.size();
 		while ((i--) != 0) {
-			GImpactMeshShapePart part = mesh_parts.getQuick(i);
+			GImpactMeshShapePart part = this.mesh_parts.getQuick(i);
 			part.postUpdate();
 		}
 
-		needs_update = true;
+		this.needs_update = true;
 	}
 
 	@Override
-	public void calculateLocalInertia(float mass, Vector3f inertia) {
+	public void calculateLocalInertia(float mass, Vector inertia) {
 		//#ifdef CALC_EXACT_INERTIA
 		inertia.set(0f, 0f, 0f);
 
 		int i = getMeshPartCount();
-		float partmass = mass / (float) i;
+		float partmass = mass / i;
 
-		Vector3f partinertia = Stack.alloc(Vector3f.class);
+		Vector partinertia = Stack.alloc(new Vector(3));
 
 		while ((i--) != 0) {
 			getMeshPart(i).calculateLocalInertia(partmass, partinertia);
@@ -176,7 +179,7 @@ public class GImpactMeshShape extends GImpactShapeInterface {
 	}
 
 	@Override
-	public void getChildAabb(int child_index, Transform t, Vector3f aabbMin, Vector3f aabbMax) {
+	public void getChildAabb(int child_index, Transform t, Vector aabbMin, Vector aabbMax) {
 		assert (false);
 	}
 
@@ -208,21 +211,21 @@ public class GImpactMeshShape extends GImpactShapeInterface {
 	}
 
 	@Override
-	public void rayTest(Vector3f rayFrom, Vector3f rayTo, RayResultCallback resultCallback) {
+	public void rayTest(Vector rayFrom, Vector rayTo, RayResultCallback resultCallback) {
 	}
 
 	@Override
-	public void processAllTriangles(TriangleCallback callback, Vector3f aabbMin, Vector3f aabbMax) {
-		int i = mesh_parts.size();
+	public void processAllTriangles(TriangleCallback callback, Vector aabbMin, Vector aabbMax) {
+		int i = this.mesh_parts.size();
 		while ((i--) != 0) {
-			mesh_parts.getQuick(i).processAllTriangles(callback, aabbMin, aabbMax);
+			this.mesh_parts.getQuick(i).processAllTriangles(callback, aabbMin, aabbMax);
 		}
 	}
 	
 	protected void buildMeshParts(StridingMeshInterface meshInterface) {
 		for (int i=0; i<meshInterface.getNumSubParts(); i++) {
 			GImpactMeshShapePart newpart = new GImpactMeshShapePart(meshInterface, i);
-			mesh_parts.add(newpart);
+			this.mesh_parts.add(newpart);
 		}
 	}
 
@@ -230,11 +233,11 @@ public class GImpactMeshShape extends GImpactShapeInterface {
 	protected void calcLocalAABB() {
 		AABB tmpAABB = Stack.alloc(AABB.class);
 
-		localAABB.invalidate();
-		int i = mesh_parts.size();
+		this.localAABB.invalidate();
+		int i = this.mesh_parts.size();
 		while ((i--) != 0) {
-			mesh_parts.getQuick(i).updateBound();
-			localAABB.merge(mesh_parts.getQuick(i).getLocalBox(tmpAABB));
+			this.mesh_parts.getQuick(i).updateBound();
+			this.localAABB.merge(this.mesh_parts.getQuick(i).getLocalBox(tmpAABB));
 		}
 	}
 

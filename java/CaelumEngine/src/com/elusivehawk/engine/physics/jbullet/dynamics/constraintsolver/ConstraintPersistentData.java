@@ -23,8 +23,11 @@
 
 package com.elusivehawk.engine.physics.jbullet.dynamics.constraintsolver;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * Stores some extra information to each contact point. It is not in the contact
  * point, because that want to keep the collision detection independent from the
@@ -47,47 +50,47 @@ public class ConstraintPersistentData {
 	public float restitution = 0f;
 	public float friction = 0f;
 	public float penetration = 0f;
-	public final Vector3f frictionWorldTangential0 = new Vector3f();
-	public final Vector3f frictionWorldTangential1 = new Vector3f();
+	public final Vector frictionWorldTangential0 = new Vector();
+	public final Vector frictionWorldTangential1 = new Vector();
 
-	public final Vector3f frictionAngularComponent0A = new Vector3f();
-	public final Vector3f frictionAngularComponent0B = new Vector3f();
-	public final Vector3f frictionAngularComponent1A = new Vector3f();
-	public final Vector3f frictionAngularComponent1B = new Vector3f();
+	public final Vector frictionAngularComponent0A = new Vector();
+	public final Vector frictionAngularComponent0B = new Vector();
+	public final Vector frictionAngularComponent1A = new Vector();
+	public final Vector frictionAngularComponent1B = new Vector();
 
 	//some data doesn't need to be persistent over frames: todo: clean/reuse this
-	public final Vector3f angularComponentA = new Vector3f();
-	public final Vector3f angularComponentB = new Vector3f();
+	public final Vector angularComponentA = new Vector();
+	public final Vector angularComponentB = new Vector();
 
 	public ContactSolverFunc contactSolverFunc = null;
 	public ContactSolverFunc frictionSolverFunc = null;
 	
 	public void reset() {
-		appliedImpulse = 0f;
-		prevAppliedImpulse = 0f;
-		accumulatedTangentImpulse0 = 0f;
-		accumulatedTangentImpulse1 = 0f;
+		this.appliedImpulse = 0f;
+		this.prevAppliedImpulse = 0f;
+		this.accumulatedTangentImpulse0 = 0f;
+		this.accumulatedTangentImpulse1 = 0f;
 
-		jacDiagABInv = 0f;
-		jacDiagABInvTangent0 = 0f;
-		jacDiagABInvTangent1 = 0f;
-		persistentLifeTime = 0;
-		restitution = 0f;
-		friction = 0f;
-		penetration = 0f;
-		frictionWorldTangential0.set(0f, 0f, 0f);
-		frictionWorldTangential1.set(0f, 0f, 0f);
+		this.jacDiagABInv = 0f;
+		this.jacDiagABInvTangent0 = 0f;
+		this.jacDiagABInvTangent1 = 0f;
+		this.persistentLifeTime = 0;
+		this.restitution = 0f;
+		this.friction = 0f;
+		this.penetration = 0f;
+		this.frictionWorldTangential0.set(0f, 0f, 0f);
+		this.frictionWorldTangential1.set(0f, 0f, 0f);
 
-		frictionAngularComponent0A.set(0f, 0f, 0f);
-		frictionAngularComponent0B.set(0f, 0f, 0f);
-		frictionAngularComponent1A.set(0f, 0f, 0f);
-		frictionAngularComponent1B.set(0f, 0f, 0f);
+		this.frictionAngularComponent0A.set(0f, 0f, 0f);
+		this.frictionAngularComponent0B.set(0f, 0f, 0f);
+		this.frictionAngularComponent1A.set(0f, 0f, 0f);
+		this.frictionAngularComponent1B.set(0f, 0f, 0f);
 
-		angularComponentA.set(0f, 0f, 0f);
-		angularComponentB.set(0f, 0f, 0f);
+		this.angularComponentA.set(0f, 0f, 0f);
+		this.angularComponentB.set(0f, 0f, 0f);
 
-		contactSolverFunc = null;
-		frictionSolverFunc = null;
+		this.contactSolverFunc = null;
+		this.frictionSolverFunc = null;
 	}
 	
 }

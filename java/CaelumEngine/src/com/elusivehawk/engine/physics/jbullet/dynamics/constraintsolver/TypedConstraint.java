@@ -23,9 +23,12 @@
 
 package com.elusivehawk.engine.physics.jbullet.dynamics.constraintsolver;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.dynamics.RigidBody;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * TypedConstraint is the base class for Bullet constraints and vehicles.
  * 
@@ -66,7 +69,7 @@ public abstract class TypedConstraint {
 		this.constraintType = type;
 		this.rbA = rbA;
 		this.rbB = rbB;
-		getFixed().setMassProps(0f, new Vector3f(0f, 0f, 0f));
+		getFixed().setMassProps(0f, new Vector(0f, 0f, 0f));
 	}
 	
 	public abstract void buildJacobian();
@@ -74,15 +77,15 @@ public abstract class TypedConstraint {
 	public abstract void solveConstraint(float timeStep);
 	
 	public RigidBody getRigidBodyA() {
-		return rbA;
+		return this.rbA;
 	}
 
 	public RigidBody getRigidBodyB() {
-		return rbB;
+		return this.rbB;
 	}
 
 	public int getUserConstraintType() {
-		return userConstraintType;
+		return this.userConstraintType;
 	}
 	
 	public void setUserConstraintType(int userConstraintType) {
@@ -90,11 +93,11 @@ public abstract class TypedConstraint {
 	}
 
 	public int getUserConstraintId() {
-		return userConstraintId;
+		return this.userConstraintId;
 	}
 
 	public int getUid() {
-		return userConstraintId;
+		return this.userConstraintId;
 	}
 
 	public void setUserConstraintId(int userConstraintId) {
@@ -102,11 +105,11 @@ public abstract class TypedConstraint {
 	}
 
 	public float getAppliedImpulse() {
-		return appliedImpulse;
+		return this.appliedImpulse;
 	}
 
 	public TypedConstraintType getConstraintType() {
-		return constraintType;
+		return this.constraintType;
 	}
 	
 }

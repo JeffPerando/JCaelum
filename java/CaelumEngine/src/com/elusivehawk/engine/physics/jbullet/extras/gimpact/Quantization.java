@@ -27,46 +27,50 @@
 
 package com.elusivehawk.engine.physics.jbullet.extras.gimpact;
 
-import com.elusivehawk.engine.math.Vector3f;
+import static com.elusivehawk.engine.math.MathConst.*;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.linearmath.VectorUtil;
 import cz.advel.stack.Stack;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  *
  * @author jezek2
  */
 class Quantization {
 
-	public static void bt_calc_quantization_parameters(Vector3f outMinBound, Vector3f outMaxBound, Vector3f bvhQuantization, Vector3f srcMinBound, Vector3f srcMaxBound, float quantizationMargin) {
+	public static void bt_calc_quantization_parameters(Vector outMinBound, Vector outMaxBound, Vector bvhQuantization, Vector srcMinBound, Vector srcMaxBound, float quantizationMargin) {
 		// enlarge the AABB to avoid division by zero when initializing the quantization values
-		Vector3f clampValue = Stack.alloc(Vector3f.class);
+		Vector clampValue = Stack.alloc(new Vector(3));
 		clampValue.set(quantizationMargin, quantizationMargin, quantizationMargin);
 		outMinBound.sub(srcMinBound, clampValue);
 		outMaxBound.add(srcMaxBound, clampValue);
-		Vector3f aabbSize = Stack.alloc(Vector3f.class);
+		Vector aabbSize = Stack.alloc(new Vector(3));
 		aabbSize.sub(outMaxBound, outMinBound);
 		bvhQuantization.set(65535.0f, 65535.0f, 65535.0f);
 		VectorUtil.div(bvhQuantization, bvhQuantization, aabbSize);
 	}
 
-	public static void bt_quantize_clamp(short[] out, Vector3f point, Vector3f min_bound, Vector3f max_bound, Vector3f bvhQuantization) {
-		Vector3f clampedPoint = Stack.alloc(point);
+	public static void bt_quantize_clamp(short[] out, Vector point, Vector min_bound, Vector max_bound, Vector bvhQuantization) {
+		Vector clampedPoint = Stack.alloc(point);
 		VectorUtil.setMax(clampedPoint, min_bound);
 		VectorUtil.setMin(clampedPoint, max_bound);
 
-		Vector3f v = Stack.alloc(Vector3f.class);
+		Vector v = Stack.alloc(new Vector(3));
 		v.sub(clampedPoint, min_bound);
 		VectorUtil.mul(v, v, bvhQuantization);
 
-		out[0] = (short) (v.x + 0.5f);
-		out[1] = (short) (v.y + 0.5f);
-		out[2] = (short) (v.z + 0.5f);
+		out[0] = (short) (v.get(X)+ 0.5f);
+		out[1] = (short) (v.get(Y)+ 0.5f);
+		out[2] = (short) (v.get(Z)+ 0.5f);
 	}
 
-	public static Vector3f bt_unquantize(short[] vecIn, Vector3f offset, Vector3f bvhQuantization, Vector3f out) {
-		out.set((float)(vecIn[0] & 0xFFFF) / (bvhQuantization.x),
-		        (float)(vecIn[1] & 0xFFFF) / (bvhQuantization.y),
-		        (float)(vecIn[2] & 0xFFFF) / (bvhQuantization.z));
+	public static Vector bt_unquantize(short[] vecIn, Vector offset, Vector bvhQuantization, Vector out) {
+		out.set((vecIn[0] & 0xFFFF) / (bvhQuantization.get(X)),
+		        (vecIn[1] & 0xFFFF) / (bvhQuantization.get(Y)),
+		        (vecIn[2] & 0xFFFF) / (bvhQuantization.get(Z)));
 		out.add(offset);
 		return out;
 	}

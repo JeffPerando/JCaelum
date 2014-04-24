@@ -23,7 +23,9 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.shapes;
 
-import static com.elusivehawk.engine.math.MathConst.*;
+import static com.elusivehawk.engine.math.MathConst.X;
+import static com.elusivehawk.engine.math.MathConst.Y;
+import static com.elusivehawk.engine.math.MathConst.Z;
 import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.BroadphaseNativeType;
 import com.elusivehawk.engine.physics.jbullet.collision.dispatch.CollisionObject;
@@ -109,19 +111,19 @@ public abstract class CollisionShape
 			}
 			
 		}
-		/*if (linMotion.x > 0f) {
+		/*if (linMotion.get(X)> 0f) {
 			temporalAabbMaxx += linMotion.x;
 		}
 		else {
 			temporalAabbMinx += linMotion.x;
 		}
-		if (linMotion.y > 0f) {
+		if (linMotion.get(Y)> 0f) {
 			temporalAabbMaxy += linMotion.y;
 		}
 		else {
 			temporalAabbMiny += linMotion.y;
 		}
-		if (linMotion.z > 0f) {
+		if (linMotion.get(Z)> 0f) {
 			temporalAabbMaxz += linMotion.z;
 		}
 		else {

@@ -72,11 +72,6 @@ public class FileHelper
 			return null;
 		}
 		
-		if (!file.isFile())
-		{
-			return null;
-		}
-		
 		if (!file.exists() && create)
 		{
 			try
@@ -92,6 +87,11 @@ public class FileHelper
 				return null;
 			}
 			
+		}
+		
+		if (!file.isFile())
+		{
+			return null;
 		}
 		
 		if (!file.canWrite())

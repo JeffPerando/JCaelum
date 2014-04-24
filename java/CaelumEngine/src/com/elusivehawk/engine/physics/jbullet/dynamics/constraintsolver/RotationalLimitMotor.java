@@ -30,12 +30,15 @@ http://gimpact.sf.net
 
 package com.elusivehawk.engine.physics.jbullet.dynamics.constraintsolver;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
 import com.elusivehawk.engine.physics.jbullet.dynamics.RigidBody;
 import cz.advel.stack.Stack;
 import cz.advel.stack.StaticAlloc;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * Rotation limit structure for generic joints.
  * 
@@ -60,6 +63,7 @@ public class RotationalLimitMotor {
 	public int currentLimit;//!< 0=free, 1=at lo limit, 2=at hi limit
 	public float accumulatedImpulse;
 
+	@SuppressWarnings("unqualified-field-access")
 	public RotationalLimitMotor() {
     	accumulatedImpulse = 0.f;
         targetVelocity = 0;
@@ -76,6 +80,7 @@ public class RotationalLimitMotor {
         enableMotor = false;
 	}
 	
+	@SuppressWarnings("unqualified-field-access")
 	public RotationalLimitMotor(RotationalLimitMotor limot) {
 		targetVelocity = limot.targetVelocity;
 		maxMotorForce = limot.maxMotorForce;
@@ -94,8 +99,7 @@ public class RotationalLimitMotor {
 	 */
     public boolean isLimited()
     {
-    	if(loLimit>=hiLimit) return false;
-    	return true;
+    	return (loLimit<hiLimit);
     }
 
 	/**
@@ -135,7 +139,7 @@ public class RotationalLimitMotor {
 	 * Apply the correction impulses for two bodies.
 	 */
 	@StaticAlloc
-	public float solveAngularLimits(float timeStep, Vector3f axis, float jacDiagABInv, RigidBody body0, RigidBody body1) {
+	public float solveAngularLimits(float timeStep, Vector axis, float jacDiagABInv, RigidBody body0, RigidBody body1) {
 		if (needApplyTorques() == false) {
 			return 0.0f;
 		}
@@ -152,9 +156,9 @@ public class RotationalLimitMotor {
 		maxMotorForce *= timeStep;
 
 		// current velocity difference
-		Vector3f vel_diff = body0.getAngularVelocity(Stack.alloc(Vector3f.class));
+		Vector vel_diff = body0.getAngularVelocity(Stack.alloc(new Vector(3)));
 		if (body1 != null) {
-			vel_diff.sub(body1.getAngularVelocity(Stack.alloc(Vector3f.class)));
+			vel_diff.sub(body1.getAngularVelocity(Stack.alloc(new Vector(3))));
 		}
 
 		float rel_vel = axis.dot(vel_diff);
@@ -190,7 +194,7 @@ public class RotationalLimitMotor {
 
 		clippedMotorImpulse = accumulatedImpulse - oldaccumImpulse;
 
-		Vector3f motorImp = Stack.alloc(Vector3f.class);
+		Vector motorImp = Stack.alloc(new Vector(3));
 		motorImp.scale(clippedMotorImpulse, axis);
 
 		body0.applyTorqueImpulse(motorImp);

@@ -26,6 +26,9 @@ package com.elusivehawk.engine.physics.jbullet.util;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * Object pool.
  * 
@@ -42,7 +45,7 @@ public class ObjectPool<T> {
 
 	private T create() {
 		try {
-			return cls.newInstance();
+			return this.cls.newInstance();
 		}
 		catch (InstantiationException e) {
 			throw new IllegalStateException(e);
@@ -58,12 +61,11 @@ public class ObjectPool<T> {
 	 * @return instance
 	 */
 	public T get() {
-		if (list.size() > 0) {
-			return list.remove(list.size() - 1);
+		if (this.list.size() > 0) {
+			return this.list.remove(this.list.size() - 1);
 		}
-		else {
-			return create();
-		}
+		
+		return create();
 	}
 	
 	/**
@@ -72,11 +74,12 @@ public class ObjectPool<T> {
 	 * @param obj previously obtained instance from pool
 	 */
 	public void release(T obj) {
-		list.add(obj);
+		this.list.add(obj);
 	}
 	
 	////////////////////////////////////////////////////////////////////////////
 	
+	@SuppressWarnings("rawtypes")
 	private static ThreadLocal<Map> threadLocal = new ThreadLocal<Map>() {
 		@Override
 		protected Map initialValue() {
@@ -90,7 +93,7 @@ public class ObjectPool<T> {
 	 * @param cls type
 	 * @return object pool
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	public static <T> ObjectPool<T> get(Class<T> cls) {
 		Map map = threadLocal.get();
 		

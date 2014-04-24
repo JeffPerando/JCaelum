@@ -23,21 +23,23 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.broadphase;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
- *
+ * 
  * @author jezek2
  */
-class SimpleBroadphaseProxy extends BroadphaseProxy {
-
-	protected final Vector3f min = new Vector3f();
-	protected final Vector3f max = new Vector3f();
+class SimpleBroadphaseProxy extends BroadphaseProxy
+{
+	protected final Vector min = new Vector(3), max = new Vector(3);
 	
-	public SimpleBroadphaseProxy() {
-	}
-
-	public SimpleBroadphaseProxy(Vector3f minpt, Vector3f maxpt, BroadphaseNativeType shapeType, Object userPtr, short collisionFilterGroup, short collisionFilterMask, Object multiSapProxy) {
+	public SimpleBroadphaseProxy(){}
+	
+	public SimpleBroadphaseProxy(Vector minpt, Vector maxpt, BroadphaseNativeType shapeType, Object userPtr, short collisionFilterGroup, short collisionFilterMask, Object multiSapProxy)
+	{
 		super(userPtr, collisionFilterGroup, collisionFilterMask, multiSapProxy);
 		this.min.set(minpt);
 		this.max.set(maxpt);

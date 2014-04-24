@@ -23,11 +23,14 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.dispatch;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.BroadphaseProxy;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.CollisionShape;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * CollisionObject can be used to manage collision detection objects.
  * It maintains all information that is needed for a collision detection: {@link CollisionShape},
@@ -52,8 +55,8 @@ public class CollisionObject {
 	protected final Transform interpolationWorldTransform = new Transform();
 	//those two are experimental: just added for bullet time effect, so you can still apply impulses (directly modifying velocities) 
 	//without destroying the continuous interpolated motion (which uses this interpolation velocities)
-	protected final Vector3f interpolationLinearVelocity = new Vector3f();
-	protected final Vector3f interpolationAngularVelocity = new Vector3f();
+	protected final Vector interpolationLinearVelocity = new Vector();
+	protected final Vector interpolationAngularVelocity = new Vector();
 	protected BroadphaseProxy broadphaseHandle;
 	protected CollisionShape collisionShape;
 	
@@ -226,20 +229,20 @@ public class CollisionObject {
 		this.interpolationWorldTransform.set(interpolationWorldTransform);
 	}
 
-	public void setInterpolationLinearVelocity(Vector3f linvel) {
+	public void setInterpolationLinearVelocity(Vector linvel) {
 		interpolationLinearVelocity.set(linvel);
 	}
 
-	public void setInterpolationAngularVelocity(Vector3f angvel) {
+	public void setInterpolationAngularVelocity(Vector angvel) {
 		interpolationAngularVelocity.set(angvel);
 	}
 
-	public Vector3f getInterpolationLinearVelocity(Vector3f out) {
+	public Vector getInterpolationLinearVelocity(Vector out) {
 		out.set(interpolationLinearVelocity);
 		return out;
 	}
 
-	public Vector3f getInterpolationAngularVelocity(Vector3f out) {
+	public Vector getInterpolationAngularVelocity(Vector out) {
 		out.set(interpolationAngularVelocity);
 		return out;
 	}

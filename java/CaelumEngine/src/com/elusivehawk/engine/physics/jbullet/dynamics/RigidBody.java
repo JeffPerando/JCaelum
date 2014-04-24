@@ -23,9 +23,12 @@
 
 package com.elusivehawk.engine.physics.jbullet.dynamics;
 
+import static com.elusivehawk.engine.math.MathConst.X;
+import static com.elusivehawk.engine.math.MathConst.Y;
+import static com.elusivehawk.engine.math.MathConst.Z;
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.Quaternion;
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.BroadphaseProxy;
 import com.elusivehawk.engine.physics.jbullet.collision.dispatch.CollisionFlags;
@@ -72,15 +75,15 @@ public class RigidBody extends CollisionObject {
 	private static final float MAX_ANGVEL = BulletGlobals.SIMD_HALF_PI;
 	
 	private final Matrix invInertiaTensorWorld = new Matrix(3, 3);
-	private final Vector3f linearVelocity = new Vector3f();
-	private final Vector3f angularVelocity = new Vector3f();
+	private final Vector linearVelocity = new Vector(3);
+	private final Vector angularVelocity = new Vector(3);
 	private float inverseMass;
 	private float angularFactor;
 
-	private final Vector3f gravity = new Vector3f();
-	private final Vector3f invInertiaLocal = new Vector3f();
-	private final Vector3f totalForce = new Vector3f();
-	private final Vector3f totalTorque = new Vector3f();
+	private final Vector gravity = new Vector(3);
+	private final Vector invInertiaLocal = new Vector(3);
+	private final Vector totalForce = new Vector(3);
+	private final Vector totalTorque = new Vector(3);
 	
 	private float linearDamping;
 	private float angularDamping;
@@ -112,10 +115,10 @@ public class RigidBody extends CollisionObject {
 	}
 
 	public RigidBody(float mass, MotionState motionState, CollisionShape collisionShape) {
-		this(mass, motionState, collisionShape, new Vector3f(0f, 0f, 0f));
+		this(mass, motionState, collisionShape, new Vector(0f, 0f, 0f));
 	}
 	
-	public RigidBody(float mass, MotionState motionState, CollisionShape collisionShape, Vector3f localInertia) {
+	public RigidBody(float mass, MotionState motionState, CollisionShape collisionShape, Vector localInertia) {
 		RigidBodyConstructionInfo cinfo = new RigidBodyConstructionInfo(mass, motionState, collisionShape, localInertia);
 		setupRigidBody(cinfo);
 	}
@@ -201,7 +204,7 @@ public class RigidBody extends CollisionObject {
 			if (getMotionState() != null) {
 				getMotionState().getWorldTransform(worldTransform);
 			}
-			//Vector3f linVel = new Vector3f(), angVel = new Vector3f();
+			//Vector linVel = new Vector(3), angVel = new Vector(3);
 
 			TransformUtil.calculateVelocity(interpolationWorldTransform, worldTransform, timeStep, linearVelocity, angularVelocity);
 			interpolationLinearVelocity.set(linearVelocity);
@@ -218,13 +221,13 @@ public class RigidBody extends CollisionObject {
 		applyCentralForce(gravity);
 	}
 	
-	public void setGravity(Vector3f acceleration) {
+	public void setGravity(Vector acceleration) {
 		if (inverseMass != 0f) {
 			gravity.scale(1f / inverseMass, acceleration);
 		}
 	}
 
-	public Vector3f getGravity(Vector3f out) {
+	public Vector getGravity(Vector out) {
 		out.set(gravity);
 		return out;
 	}
@@ -279,7 +282,7 @@ public class RigidBody extends CollisionObject {
 			if (speed < linearDamping) {
 				float dampVel = 0.005f;
 				if (speed > dampVel) {
-					Vector3f dir = Stack.alloc(linearVelocity);
+					Vector dir = Stack.alloc(linearVelocity);
 					dir.normalize();
 					dir.scale(dampVel);
 					linearVelocity.sub(dir);
@@ -293,7 +296,7 @@ public class RigidBody extends CollisionObject {
 			if (angSpeed < angularDamping) {
 				float angDampVel = 0.005f;
 				if (angSpeed > angDampVel) {
-					Vector3f dir = Stack.alloc(angularVelocity);
+					Vector dir = Stack.alloc(angularVelocity);
 					dir.normalize();
 					dir.scale(angDampVel);
 					angularVelocity.sub(dir);
@@ -305,7 +308,7 @@ public class RigidBody extends CollisionObject {
 		}
 	}
 
-	public void setMassProps(float mass, Vector3f inertia) {
+	public void setMassProps(float mass, Vector inertia) {
 		if (mass == 0f) {
 			collisionFlags |= CollisionFlags.STATIC_OBJECT;
 			inverseMass = 0f;
@@ -315,9 +318,9 @@ public class RigidBody extends CollisionObject {
 			inverseMass = 1f / mass;
 		}
 
-		invInertiaLocal.set(inertia.x != 0f ? 1f / inertia.x : 0f,
-				inertia.y != 0f ? 1f / inertia.y : 0f,
-				inertia.z != 0f ? 1f / inertia.z : 0f);
+		invInertiaLocal.set(inertia.get(X) != 0f ? 1f / inertia.get(X) : 0f,
+				inertia.get(Y) != 0f ? 1f / inertia.get(Y) : 0f,
+				inertia.get(Z) != 0f ? 1f / inertia.get(Z) : 0f);
 	}
 
 	public float getInvMass() {
@@ -335,7 +338,7 @@ public class RigidBody extends CollisionObject {
 		}
 
 		linearVelocity.scaleAdd(inverseMass * step, totalForce, linearVelocity);
-		Vector3f tmp = Stack.alloc(totalTorque);
+		Vector tmp = Stack.alloc(totalTorque);
 		invInertiaTensorWorld.transform(tmp);
 		angularVelocity.scaleAdd(step, tmp, angularVelocity);
 
@@ -359,16 +362,16 @@ public class RigidBody extends CollisionObject {
 		updateInertiaTensor();
 	}
 
-	public void applyCentralForce(Vector3f force) {
+	public void applyCentralForce(Vector force) {
 		totalForce.add(force);
 	}
 	
-	public Vector3f getInvInertiaDiagLocal(Vector3f out) {
+	public Vector getInvInertiaDiagLocal(Vector out) {
 		out.set(invInertiaLocal);
 		return out;
 	}
 
-	public void setInvInertiaDiagLocal(Vector3f diagInvInertia) {
+	public void setInvInertiaDiagLocal(Vector diagInvInertia) {
 		invInertiaLocal.set(diagInvInertia);
 	}
 
@@ -377,36 +380,36 @@ public class RigidBody extends CollisionObject {
 		angularSleepingThreshold = angular;
 	}
 
-	public void applyTorque(Vector3f torque) {
+	public void applyTorque(Vector torque) {
 		totalTorque.add(torque);
 	}
 
-	public void applyForce(Vector3f force, Vector3f rel_pos) {
+	public void applyForce(Vector force, Vector rel_pos) {
 		applyCentralForce(force);
 		
-		Vector3f tmp = Stack.alloc(Vector3f.class);
+		Vector tmp = Stack.alloc(new Vector(3));
 		tmp.cross(rel_pos, force);
 		tmp.scale(angularFactor);
 		applyTorque(tmp);
 	}
 
-	public void applyCentralImpulse(Vector3f impulse) {
+	public void applyCentralImpulse(Vector impulse) {
 		linearVelocity.scaleAdd(inverseMass, impulse, linearVelocity);
 	}
 	
 	@StaticAlloc
-	public void applyTorqueImpulse(Vector3f torque) {
-		Vector3f tmp = Stack.alloc(torque);
+	public void applyTorqueImpulse(Vector torque) {
+		Vector tmp = Stack.alloc(torque);
 		invInertiaTensorWorld.transform(tmp);
 		angularVelocity.add(tmp);
 	}
 
 	@StaticAlloc
-	public void applyImpulse(Vector3f impulse, Vector3f rel_pos) {
+	public void applyImpulse(Vector impulse, Vector rel_pos) {
 		if (inverseMass != 0f) {
 			applyCentralImpulse(impulse);
 			if (angularFactor != 0f) {
-				Vector3f tmp = Stack.alloc(Vector3f.class);
+				Vector tmp = Stack.alloc(new Vector(3));
 				tmp.cross(rel_pos, impulse);
 				tmp.scale(angularFactor);
 				applyTorqueImpulse(tmp);
@@ -417,7 +420,7 @@ public class RigidBody extends CollisionObject {
 	/**
 	 * Optimization for the iterative solver: avoid calculating constant terms involving inertia, normal, relative position.
 	 */
-	public void internalApplyImpulse(Vector3f linearComponent, Vector3f angularComponent, float impulseMagnitude) {
+	public void internalApplyImpulse(Vector linearComponent, Vector angularComponent, float impulseMagnitude) {
 		if (inverseMass != 0f) {
 			linearVelocity.scaleAdd(impulseMagnitude, linearComponent, linearVelocity);
 			if (angularFactor != 0f) {
@@ -441,7 +444,7 @@ public class RigidBody extends CollisionObject {
 		invInertiaTensorWorld.mul(mat1, mat2);
 	}
 	
-	public Vector3f getCenterOfMassPosition(Vector3f out) {
+	public Vector getCenterOfMassPosition(Vector out) {
 		out.set(worldTransform.origin);
 		return out;
 	}
@@ -456,29 +459,29 @@ public class RigidBody extends CollisionObject {
 		return out;
 	}
 
-	public Vector3f getLinearVelocity(Vector3f out) {
+	public Vector getLinearVelocity(Vector out) {
 		out.set(linearVelocity);
 		return out;
 	}
 
-	public Vector3f getAngularVelocity(Vector3f out) {
+	public Vector getAngularVelocity(Vector out) {
 		out.set(angularVelocity);
 		return out;
 	}
 
-	public void setLinearVelocity(Vector3f lin_vel) {
+	public void setLinearVelocity(Vector lin_vel) {
 		assert (collisionFlags != CollisionFlags.STATIC_OBJECT);
 		linearVelocity.set(lin_vel);
 	}
 
-	public void setAngularVelocity(Vector3f ang_vel) {
+	public void setAngularVelocity(Vector ang_vel) {
 		assert (collisionFlags != CollisionFlags.STATIC_OBJECT);
 		angularVelocity.set(ang_vel);
 	}
 
-	public Vector3f getVelocityInLocalPoint(Vector3f rel_pos, Vector3f out) {
+	public Vector getVelocityInLocalPoint(Vector rel_pos, Vector out) {
 		// we also calculate lin/ang velocity for kinematic objects
-		Vector3f vec = out;
+		Vector vec = out;
 		vec.cross(angularVelocity, rel_pos);
 		vec.add(linearVelocity);
 		return out;
@@ -487,32 +490,32 @@ public class RigidBody extends CollisionObject {
 		//		return 	(m_worldTransform(rel_pos) - m_interpolationWorldTransform(rel_pos)) / m_kinematicTimeStep;
 	}
 
-	public void translate(Vector3f v) {
+	public void translate(Vector v) {
 		worldTransform.origin.add(v);
 	}
 	
-	public void getAabb(Vector3f aabbMin, Vector3f aabbMax) {
+	public void getAabb(Vector aabbMin, Vector aabbMax) {
 		getCollisionShape().getAabb(worldTransform, aabbMin, aabbMax);
 	}
 
-	public float computeImpulseDenominator(Vector3f pos, Vector3f normal) {
-		Vector3f r0 = Stack.alloc(Vector3f.class);
-		r0.sub(pos, getCenterOfMassPosition(Stack.alloc(Vector3f.class)));
+	public float computeImpulseDenominator(Vector pos, Vector normal) {
+		Vector r0 = Stack.alloc(new Vector(3));
+		r0.sub(pos, getCenterOfMassPosition(Stack.alloc(new Vector(3))));
 
-		Vector3f c0 = Stack.alloc(Vector3f.class);
+		Vector c0 = Stack.alloc(new Vector(3));
 		c0.cross(r0, normal);
 
-		Vector3f tmp = Stack.alloc(Vector3f.class);
+		Vector tmp = Stack.alloc(new Vector(3));
 		MatrixUtil.transposeTransform(tmp, c0, getInvInertiaTensorWorld(Stack.alloc(new Matrix(3, 3))));
 
-		Vector3f vec = Stack.alloc(Vector3f.class);
+		Vector vec = Stack.alloc(new Vector(3));
 		vec.cross(tmp, r0);
 
 		return inverseMass + normal.dot(vec);
 	}
 
-	public float computeAngularImpulseDenominator(Vector3f axis) {
-		Vector3f vec = Stack.alloc(Vector3f.class);
+	public float computeAngularImpulseDenominator(Vector axis) {
+		Vector vec = Stack.alloc(new Vector(3));
 		MatrixUtil.transposeTransform(vec, axis, getInvInertiaTensorWorld(Stack.alloc(new Matrix(3, 3))));
 		return axis.dot(vec);
 	}
@@ -522,8 +525,8 @@ public class RigidBody extends CollisionObject {
 			return;
 		}
 
-		if ((getLinearVelocity(Stack.alloc(Vector3f.class)).lengthSquared() < linearSleepingThreshold * linearSleepingThreshold) &&
-				(getAngularVelocity(Stack.alloc(Vector3f.class)).lengthSquared() < angularSleepingThreshold * angularSleepingThreshold)) {
+		if ((getLinearVelocity(Stack.alloc(new Vector(3))).lengthSquared() < linearSleepingThreshold * linearSleepingThreshold) &&
+				(getAngularVelocity(Stack.alloc(new Vector(3))).lengthSquared() < angularSleepingThreshold * angularSleepingThreshold)) {
 			deactivationTime += timeStep;
 		}
 		else {

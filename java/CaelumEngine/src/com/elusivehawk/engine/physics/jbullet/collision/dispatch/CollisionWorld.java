@@ -26,7 +26,6 @@ package com.elusivehawk.engine.physics.jbullet.collision.dispatch;
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.Quaternion;
 import com.elusivehawk.engine.math.Vector;
-import com.elusivehawk.engine.math.Vector3f;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
 import com.elusivehawk.engine.physics.jbullet.BulletStats;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.BroadphaseInterface;
@@ -116,8 +115,8 @@ public class CollisionWorld {
 		// TODO: check if it's overwritten or not
 		Transform trans = collisionObject.getWorldTransform(Stack.alloc(Transform.class));
 
-		Vector3f minAabb = Stack.alloc(Vector3f.class);
-		Vector3f maxAabb = Stack.alloc(Vector3f.class);
+		Vector minAabb = Stack.alloc(new Vector(3));
+		Vector maxAabb = Stack.alloc(new Vector(3));
 		collisionObject.getCollisionShape().getAabb(trans, minAabb, maxAabb);
 
 		BroadphaseNativeType type = collisionObject.getCollisionShape().getShapeType();
@@ -207,13 +206,13 @@ public class CollisionWorld {
 
 	// JAVA NOTE: ported from 2.74, missing contact threshold stuff
 	public void updateSingleAabb(CollisionObject colObj) {
-		Vector3f minAabb = Stack.alloc(Vector3f.class), maxAabb = Stack.alloc(Vector3f.class);
-		Vector3f tmp = Stack.alloc(Vector3f.class);
+		Vector minAabb = Stack.alloc(new Vector(3)), maxAabb = Stack.alloc(new Vector(3));
+		Vector tmp = Stack.alloc(new Vector(3));
 		Transform tmpTrans = Stack.alloc(Transform.class);
 
 		colObj.getCollisionShape().getAabb(colObj.getWorldTransform(tmpTrans), minAabb, maxAabb);
 		// need to increase the aabb for contact thresholds
-		Vector3f contactThreshold = Stack.alloc(Vector3f.class);
+		Vector contactThreshold = Stack.alloc(new Vector(3));
 		contactThreshold.set(BulletGlobals.getContactBreakingThreshold(), BulletGlobals.getContactBreakingThreshold(), BulletGlobals.getContactBreakingThreshold());
 		minAabb.sub(contactThreshold);
 		maxAabb.add(contactThreshold);
@@ -395,7 +394,8 @@ public class CollisionWorld {
 		}
 
 		@Override
-		public float reportHit(Vector3f hitNormalLocal, Vector3f hitPointLocal, float hitFraction, int partId, int triangleIndex) {
+		public float reportHit(Vector hitNormalLocal, Vector hitPointLocal, float hitFraction, int partId, int triangleIndex)
+		{
 			LocalShapeInfo shapeInfo = new LocalShapeInfo();
 			shapeInfo.shapePart = partId;
 			shapeInfo.triangleIndex = triangleIndex;
@@ -447,11 +447,11 @@ public class CollisionWorld {
 					Transform worldTocollisionObject = Stack.alloc(Transform.class);
 					worldTocollisionObject.inverse(colObjWorldTransform);
 
-					Vector3f convexFromLocal = Stack.alloc(Vector3f.class);
+					Vector convexFromLocal = Stack.alloc(new Vector(3));
 					convexFromLocal.set(convexFromTrans.origin);
 					worldTocollisionObject.transform(convexFromLocal);
 
-					Vector3f convexToLocal = Stack.alloc(Vector3f.class);
+					Vector convexToLocal = Stack.alloc(new Vector(3));
 					convexToLocal.set(convexToTrans.origin);
 					worldTocollisionObject.transform(convexToLocal);
 
@@ -465,8 +465,8 @@ public class CollisionWorld {
 					tccb.hitFraction = resultCallback.closestHitFraction;
 					tccb.normalInWorldSpace = true;
 					
-					Vector3f boxMinLocal = Stack.alloc(Vector3f.class);
-					Vector3f boxMaxLocal = Stack.alloc(Vector3f.class);
+					Vector boxMinLocal = Stack.alloc(new Vector(3));
+					Vector boxMaxLocal = Stack.alloc(new Vector(3));
 					castShape.getAabb(rotationXform, boxMinLocal, boxMaxLocal);
 					triangleMesh.performConvexcast(tccb, convexFromLocal, convexToLocal, boxMinLocal, boxMaxLocal);
 				}
@@ -475,11 +475,11 @@ public class CollisionWorld {
 					Transform worldTocollisionObject = Stack.alloc(Transform.class);
 					worldTocollisionObject.inverse(colObjWorldTransform);
 
-					Vector3f convexFromLocal = Stack.alloc(Vector3f.class);
+					Vector convexFromLocal = Stack.alloc(new Vector(3));
 					convexFromLocal.set(convexFromTrans.origin);
 					worldTocollisionObject.transform(convexFromLocal);
 
-					Vector3f convexToLocal = Stack.alloc(Vector3f.class);
+					Vector convexToLocal = Stack.alloc(new Vector(3));
 					convexToLocal.set(convexToTrans.origin);
 					worldTocollisionObject.transform(convexToLocal);
 
@@ -492,13 +492,13 @@ public class CollisionWorld {
 					BridgeTriangleConvexcastCallback tccb = new BridgeTriangleConvexcastCallback(castShape, convexFromTrans, convexToTrans, resultCallback, collisionObject, triangleMesh, colObjWorldTransform);
 					tccb.hitFraction = resultCallback.closestHitFraction;
 					tccb.normalInWorldSpace = false;
-					Vector3f boxMinLocal = Stack.alloc(Vector3f.class);
-					Vector3f boxMaxLocal = Stack.alloc(Vector3f.class);
+					Vector boxMinLocal = Stack.alloc(new Vector(3));
+					Vector boxMaxLocal = Stack.alloc(new Vector(3));
 					castShape.getAabb(rotationXform, boxMinLocal, boxMaxLocal);
 
-					Vector3f rayAabbMinLocal = Stack.alloc(convexFromLocal);
+					Vector rayAabbMinLocal = Stack.alloc(convexFromLocal);
 					VectorUtil.setMin(rayAabbMinLocal, convexToLocal);
-					Vector3f rayAabbMaxLocal = Stack.alloc(convexFromLocal);
+					Vector rayAabbMaxLocal = Stack.alloc(convexFromLocal);
 					VectorUtil.setMax(rayAabbMaxLocal, convexToLocal);
 					rayAabbMinLocal.add(boxMinLocal);
 					rayAabbMaxLocal.add(boxMaxLocal);
@@ -534,7 +534,7 @@ public class CollisionWorld {
 	 * rayTest performs a raycast on all objects in the CollisionWorld, and calls the resultCallback.
 	 * This allows for several queries: first hit, all hits, any hit, dependent on the value returned by the callback.
 	 */
-	public void rayTest(Vector3f rayFromWorld, Vector3f rayToWorld, RayResultCallback resultCallback) {
+	public void rayTest(Vector rayFromWorld, Vector rayToWorld, RayResultCallback resultCallback) {
 		Transform rayFromTrans = Stack.alloc(Transform.class), rayToTrans = Stack.alloc(Transform.class);
 		rayFromTrans.setIdentity();
 		rayFromTrans.origin.set(rayFromWorld);
@@ -543,7 +543,7 @@ public class CollisionWorld {
 		rayToTrans.origin.set(rayToWorld);
 
 		// go over all objects, and if the ray intersects their aabb, do a ray-shape query using convexCaster (CCD)
-		Vector3f collisionObjectAabbMin = Stack.alloc(Vector3f.class), collisionObjectAabbMax = Stack.alloc(Vector3f.class);
+		Vector collisionObjectAabbMin = Stack.alloc(new Vector(3)), collisionObjectAabbMax = Stack.alloc(new Vector(3));
 		float[] hitLambda = new float[1];
 
 		Transform tmpTrans = Stack.alloc(Transform.class);
@@ -561,7 +561,7 @@ public class CollisionWorld {
 				collisionObject.getCollisionShape().getAabb(collisionObject.getWorldTransform(tmpTrans), collisionObjectAabbMin, collisionObjectAabbMax);
 
 				hitLambda[0] = resultCallback.closestHitFraction;
-				Vector3f hitNormal = Stack.alloc(Vector3f.class);
+				Vector hitNormal = Stack.alloc(new Vector(3));
 				if (AabbUtil2.rayAabb(rayFromWorld, rayToWorld, collisionObjectAabbMin, collisionObjectAabbMax, hitLambda, hitNormal)) {
 					rayTestSingle(rayFromTrans, rayToTrans,
 							collisionObject,
@@ -585,13 +585,13 @@ public class CollisionWorld {
 		convexFromTrans.set(convexFromWorld);
 		convexToTrans.set(convexToWorld);
 
-		Vector3f castShapeAabbMin = Stack.alloc(Vector3f.class);
-		Vector3f castShapeAabbMax = Stack.alloc(Vector3f.class);
+		Vector castShapeAabbMin = Stack.alloc(new Vector(3));
+		Vector castShapeAabbMax = Stack.alloc(new Vector(3));
 
 		// Compute AABB that encompasses angular movement
 		{
-			Vector3f linVel = Stack.alloc(Vector3f.class);
-			Vector3f angVel = Stack.alloc(Vector3f.class);
+			Vector linVel = Stack.alloc(new Vector(3));
+			Vector angVel = Stack.alloc(new Vector(3));
 			TransformUtil.calculateVelocity(convexFromTrans, convexToTrans, 1f, linVel, angVel);
 			Transform R = Stack.alloc(Transform.class);
 			R.setIdentity();
@@ -600,8 +600,8 @@ public class CollisionWorld {
 		}
 
 		Transform tmpTrans = Stack.alloc(Transform.class);
-		Vector3f collisionObjectAabbMin = Stack.alloc(Vector3f.class);
-		Vector3f collisionObjectAabbMax = Stack.alloc(Vector3f.class);
+		Vector collisionObjectAabbMin = Stack.alloc(new Vector(3));
+		Vector collisionObjectAabbMax = Stack.alloc(new Vector(3));
 		float[] hitLambda = new float[1];
 
 		// go over all objects, and if the ray intersects their aabb + cast shape aabb,
@@ -616,7 +616,7 @@ public class CollisionWorld {
 				collisionObject.getCollisionShape().getAabb(tmpTrans, collisionObjectAabbMin, collisionObjectAabbMax);
 				AabbUtil2.aabbExpand(collisionObjectAabbMin, collisionObjectAabbMax, castShapeAabbMin, castShapeAabbMax);
 				hitLambda[0] = 1f; // could use resultCallback.closestHitFraction, but needs testing
-				Vector3f hitNormal = Stack.alloc(Vector3f.class);
+				Vector hitNormal = Stack.alloc(new Vector(3));
 				if (AabbUtil2.rayAabb(convexFromWorld.origin, convexToWorld.origin, collisionObjectAabbMin, collisionObjectAabbMax, hitLambda, hitNormal)) {
 					objectQuerySingle(castShape, convexFromTrans, convexToTrans,
 					                  collisionObject,
@@ -649,10 +649,10 @@ public class CollisionWorld {
 	public static class LocalRayResult {
 		public CollisionObject collisionObject;
 		public LocalShapeInfo localShapeInfo;
-		public final Vector3f hitNormalLocal = new Vector3f();
+		public final Vector hitNormalLocal = new Vector(3);
 		public float hitFraction;
 
-		public LocalRayResult(CollisionObject collisionObject, LocalShapeInfo localShapeInfo, Vector3f hitNormalLocal, float hitFraction) {
+		public LocalRayResult(CollisionObject collisionObject, LocalShapeInfo localShapeInfo, Vector hitNormalLocal, float hitFraction) {
 			this.collisionObject = collisionObject;
 			this.localShapeInfo = localShapeInfo;
 			this.hitNormalLocal.set(hitNormalLocal);
@@ -683,13 +683,13 @@ public class CollisionWorld {
 	}
 	
 	public static class ClosestRayResultCallback extends RayResultCallback {
-		public final Vector3f rayFromWorld = new Vector3f(); //used to calculate hitPointWorld from hitFraction
-		public final Vector3f rayToWorld = new Vector3f();
+		public final Vector rayFromWorld = new Vector(3); //used to calculate hitPointWorld from hitFraction
+		public final Vector rayToWorld = new Vector(3);
 
-		public final Vector3f hitNormalWorld = new Vector3f();
-		public final Vector3f hitPointWorld = new Vector3f();
+		public final Vector hitNormalWorld = new Vector(3);
+		public final Vector hitPointWorld = new Vector(3);
 		
-		public ClosestRayResultCallback(Vector3f rayFromWorld, Vector3f rayToWorld) {
+		public ClosestRayResultCallback(Vector rayFromWorld, Vector rayToWorld) {
 			this.rayFromWorld.set(rayFromWorld);
 			this.rayToWorld.set(rayToWorld);
 		}
@@ -718,11 +718,11 @@ public class CollisionWorld {
 	public static class LocalConvexResult {
 		public CollisionObject hitCollisionObject;
 		public LocalShapeInfo localShapeInfo;
-		public final Vector3f hitNormalLocal = new Vector3f();
-		public final Vector3f hitPointLocal = new Vector3f();
+		public final Vector hitNormalLocal = new Vector(3);
+		public final Vector hitPointLocal = new Vector(3);
 		public float hitFraction;
 
-		public LocalConvexResult(CollisionObject hitCollisionObject, LocalShapeInfo localShapeInfo, Vector3f hitNormalLocal, Vector3f hitPointLocal, float hitFraction) {
+		public LocalConvexResult(CollisionObject hitCollisionObject, LocalShapeInfo localShapeInfo, Vector hitNormalLocal, Vector hitPointLocal, float hitFraction) {
 			this.hitCollisionObject = hitCollisionObject;
 			this.localShapeInfo = localShapeInfo;
 			this.hitNormalLocal.set(hitNormalLocal);
@@ -750,13 +750,13 @@ public class CollisionWorld {
 	}
 	
 	public static class ClosestConvexResultCallback extends ConvexResultCallback {
-		public final Vector3f convexFromWorld = new Vector3f(); // used to calculate hitPointWorld from hitFraction
-		public final Vector3f convexToWorld = new Vector3f();
-		public final Vector3f hitNormalWorld = new Vector3f();
-		public final Vector3f hitPointWorld = new Vector3f();
+		public final Vector convexFromWorld = new Vector(3); // used to calculate hitPointWorld from hitFraction
+		public final Vector convexToWorld = new Vector(3);
+		public final Vector hitNormalWorld = new Vector(3);
+		public final Vector hitPointWorld = new Vector(3);
 		public CollisionObject hitCollisionObject;
 
-		public ClosestConvexResultCallback(Vector3f convexFromWorld, Vector3f convexToWorld) {
+		public ClosestConvexResultCallback(Vector convexFromWorld, Vector convexToWorld) {
 			this.convexFromWorld.set(convexFromWorld);
 			this.convexToWorld.set(convexToWorld);
 			this.hitCollisionObject = null;
@@ -801,7 +801,7 @@ public class CollisionWorld {
 			this.triangleMesh = triangleMesh;
 		}
 	
-		public float reportHit(Vector3f hitNormalLocal, float hitFraction, int partId, int triangleIndex) {
+		public float reportHit(Vector hitNormalLocal, float hitFraction, int partId, int triangleIndex) {
 			LocalShapeInfo shapeInfo = new LocalShapeInfo();
 			shapeInfo.shapePart = partId;
 			shapeInfo.triangleIndex = triangleIndex;

@@ -23,8 +23,10 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.shapes;
 
+import static com.elusivehawk.engine.math.MathConst.X;
+import static com.elusivehawk.engine.math.MathConst.Y;
+import static com.elusivehawk.engine.math.MathConst.Z;
 import java.io.Serializable;
-import static com.elusivehawk.engine.math.MathConst.*;
 import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.linearmath.AabbUtil2;
 import com.elusivehawk.engine.physics.jbullet.linearmath.MiscUtil;

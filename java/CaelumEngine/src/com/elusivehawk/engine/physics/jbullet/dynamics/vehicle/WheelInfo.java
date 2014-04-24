@@ -23,11 +23,14 @@
 
 package com.elusivehawk.engine.physics.jbullet.dynamics.vehicle;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.dynamics.RigidBody;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 import cz.advel.stack.Stack;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * WheelInfo contains information per wheel about friction and suspension.
  * 
@@ -41,9 +44,9 @@ public class WheelInfo {
 
 	public final Transform worldTransform = new Transform();
 	
-	public final Vector3f chassisConnectionPointCS = new Vector3f(); // const
-	public final Vector3f wheelDirectionCS = new Vector3f(); // const
-	public final Vector3f wheelAxleCS = new Vector3f(); // const or modified by steering
+	public final Vector chassisConnectionPointCS = new Vector(); // const
+	public final Vector wheelDirectionCS = new Vector(); // const
+	public final Vector wheelAxleCS = new Vector(); // const or modified by steering
 	public float suspensionRestLength1; // const
 	public float maxSuspensionTravelCm;
 	public float wheelsRadius; // const
@@ -98,9 +101,9 @@ public class WheelInfo {
 	public void updateWheel(RigidBody chassis, RaycastInfo raycastInfo) {
 		if (raycastInfo.isInContact) {
 			float project = raycastInfo.contactNormalWS.dot(raycastInfo.wheelDirectionWS);
-			Vector3f chassis_velocity_at_contactPoint = Stack.alloc(Vector3f.class);
-			Vector3f relpos = Stack.alloc(Vector3f.class);
-			relpos.sub(raycastInfo.contactPointWS, chassis.getCenterOfMassPosition(Stack.alloc(Vector3f.class)));
+			Vector chassis_velocity_at_contactPoint = Stack.alloc(new Vector(3));
+			Vector relpos = Stack.alloc(new Vector(3));
+			relpos.sub(raycastInfo.contactPointWS, chassis.getCenterOfMassPosition(Stack.alloc(new Vector(3))));
 			chassis.getVelocityInLocalPoint(relpos, chassis_velocity_at_contactPoint);
 			float projVel = raycastInfo.contactNormalWS.dot(chassis_velocity_at_contactPoint);
 			if (project >= -0.1f) {
@@ -126,12 +129,12 @@ public class WheelInfo {
 	
 	public static class RaycastInfo {
 		// set by raycaster
-		public final Vector3f contactNormalWS = new Vector3f(); // contactnormal
-		public final Vector3f contactPointWS = new Vector3f(); // raycast hitpoint
+		public final Vector contactNormalWS = new Vector(); // contactnormal
+		public final Vector contactPointWS = new Vector(); // raycast hitpoint
 		public float suspensionLength;
-		public final Vector3f hardPointWS = new Vector3f(); // raycast starting point
-		public final Vector3f wheelDirectionWS = new Vector3f(); // direction in worldspace
-		public final Vector3f wheelAxleWS = new Vector3f(); // axle in worldspace
+		public final Vector hardPointWS = new Vector(); // raycast starting point
+		public final Vector wheelDirectionWS = new Vector(); // direction in worldspace
+		public final Vector wheelAxleWS = new Vector(); // axle in worldspace
 		public boolean isInContact;
 		public Object groundObject; // could be general void* ptr
 	}

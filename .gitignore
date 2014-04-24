@@ -14,3 +14,6 @@
 
 /java/CaelumEngine/bin/*
 /java/cCaelumEngine/*
+/java/CaelumEngine/test/*
+/java/CaelumEngine/log.txt
+/java/CaelumEngine/replacements.txt

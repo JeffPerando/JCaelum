@@ -201,7 +201,7 @@ public class Buffer<T> implements IDirty, Collection<T>, Iterator<T>, IGettable<
 	
 	public T next(boolean next)
 	{
-		return this.hasNext() ? (this.l.get(next ? this.pos++ : this.pos + 1)) : null;
+		return this.hasNext() ? (this.l.get(next ? this.pos++ : this.pos)) : null;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -264,6 +264,12 @@ public class Buffer<T> implements IDirty, Collection<T>, Iterator<T>, IGettable<
 	public void skip(int count)
 	{
 		this.pos += count;
+		
+	}
+	
+	public void rewind(int count)
+	{
+		this.pos -= count;
 		
 	}
 	

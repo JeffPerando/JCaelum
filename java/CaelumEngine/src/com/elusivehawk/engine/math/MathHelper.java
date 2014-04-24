@@ -86,15 +86,18 @@ public final class MathHelper
 	
 	public static Vector interpolate(Vector one, Vector two, float factor)
 	{
-		Vector ret = new Vector(Math.min(one.getSize(), two.getSize()));
-		
-		for (int c = 0; c < ret.getSize(); c++)
+		return interpolate(one, two, factor, new Vector(Math.min(one.getSize(), two.getSize())));
+	}
+	
+	public static Vector interpolate(Vector one, Vector two, float factor, Vector dest)
+	{
+		for (int c = 0; c < dest.getSize(); c++)
 		{
-			ret.set(c, interpolate(one.get(c), two.get(c), factor));
+			dest.set(c, interpolate(one.get(c), two.get(c), factor), false);
 			
 		}
 		
-		return ret;
+		return dest;
 	}
 	
 	public static boolean isOdd(int i)

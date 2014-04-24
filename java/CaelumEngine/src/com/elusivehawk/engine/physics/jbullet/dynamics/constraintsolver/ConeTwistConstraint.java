@@ -27,7 +27,7 @@ package com.elusivehawk.engine.physics.jbullet.dynamics.constraintsolver;
 
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.Quaternion;
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
 import com.elusivehawk.engine.physics.jbullet.dynamics.RigidBody;
 import com.elusivehawk.engine.physics.jbullet.linearmath.QuaternionUtil;
@@ -36,6 +36,9 @@ import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 import com.elusivehawk.engine.physics.jbullet.linearmath.TransformUtil;
 import cz.advel.stack.Stack;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * ConeTwistConstraint can be used to simulate ragdoll joints (upper arm, leg etc).
  * 
@@ -56,8 +59,8 @@ public class ConeTwistConstraint extends TypedConstraint {
 	private float swingSpan2;
 	private float twistSpan;
 
-	private final Vector3f swingAxis = new Vector3f();
-	private final Vector3f twistAxis = new Vector3f();
+	private final Vector swingAxis = new Vector();
+	private final Vector twistAxis = new Vector();
 
 	private float kSwing;
 	private float kTwist;
@@ -113,9 +116,9 @@ public class ConeTwistConstraint extends TypedConstraint {
 	
 	@Override
 	public void buildJacobian() {
-		Vector3f tmp = Stack.alloc(Vector3f.class);
-		Vector3f tmp1 = Stack.alloc(Vector3f.class);
-		Vector3f tmp2 = Stack.alloc(Vector3f.class);
+		Vector tmp = Stack.alloc(new Vector(3));
+		Vector tmp1 = Stack.alloc(new Vector(3));
+		Vector tmp2 = Stack.alloc(new Vector(3));
 
 		Transform tmpTrans = Stack.alloc(Transform.class);
 
@@ -130,17 +133,17 @@ public class ConeTwistConstraint extends TypedConstraint {
 		this.accSwingLimitImpulse = 0f;
 
 		if (!this.angularOnly) {
-			Vector3f pivotAInW = Stack.alloc(this.rbAFrame.origin);
+			Vector pivotAInW = Stack.alloc(this.rbAFrame.origin);
 			this.rbA.getCenterOfMassTransform(tmpTrans).transform(pivotAInW);
 
-			Vector3f pivotBInW = Stack.alloc(this.rbBFrame.origin);
+			Vector pivotBInW = Stack.alloc(this.rbBFrame.origin);
 			this.rbB.getCenterOfMassTransform(tmpTrans).transform(pivotBInW);
 
-			Vector3f relPos = Stack.alloc(Vector3f.class);
+			Vector relPos = Stack.alloc(new Vector(3));
 			relPos.sub(pivotBInW, pivotAInW);
 
 			// TODO: stack
-			Vector3f[] normal/*[3]*/ = new Vector3f[]{Stack.alloc(Vector3f.class), Stack.alloc(Vector3f.class), Stack.alloc(Vector3f.class)};
+			Vector[] normal/*[3]*/ = new Vector[]{Stack.alloc(new Vector(3)), Stack.alloc(new Vector(3)), Stack.alloc(new Vector(3))};
 			if (relPos.lengthSquared() > BulletGlobals.FLT_EPSILON) {
 				normal[0].normalize(relPos);
 			}
@@ -166,15 +169,15 @@ public class ConeTwistConstraint extends TypedConstraint {
 						tmp1,
 						tmp2,
 						normal[i],
-						this.rbA.getInvInertiaDiagLocal(Stack.alloc(Vector3f.class)),
+						this.rbA.getInvInertiaDiagLocal(Stack.alloc(new Vector(3))),
 						this.rbA.getInvMass(),
-						this.rbB.getInvInertiaDiagLocal(Stack.alloc(Vector3f.class)),
+						this.rbB.getInvInertiaDiagLocal(Stack.alloc(new Vector(3))),
 						this.rbB.getInvMass());
 			}
 		}
 
-		Vector3f b1Axis1 = Stack.alloc(Vector3f.class), b1Axis2 = Stack.alloc(Vector3f.class), b1Axis3 = Stack.alloc(Vector3f.class);
-		Vector3f b2Axis1 = Stack.alloc(Vector3f.class), b2Axis2 = Stack.alloc(Vector3f.class);
+		Vector b1Axis1 = Stack.alloc(new Vector(3)), b1Axis2 = Stack.alloc(new Vector(3)), b1Axis3 = Stack.alloc(new Vector(3));
+		Vector b2Axis1 = Stack.alloc(new Vector(3)), b2Axis2 = Stack.alloc(new Vector(3));
 
 		this.rbAFrame.basis.getColumn(0, b1Axis1);
 		getRigidBodyA().getCenterOfMassTransform(tmpTrans).basis.transform(b1Axis1);
@@ -238,12 +241,12 @@ public class ConeTwistConstraint extends TypedConstraint {
 
 		// Twist limits
 		if (this.twistSpan >= 0f) {
-			//Vector3f b2Axis2 = Stack.alloc(Vector3f.class);
+			//Vector b2Axis2 = Stack.alloc(new Vector(3));
 			this.rbBFrame.basis.getColumn(1, b2Axis2);
 			getRigidBodyB().getCenterOfMassTransform(tmpTrans).basis.transform(b2Axis2);
 
 			Quaternion rotationArc = QuaternionUtil.shortestArcQuat(b2Axis1, b1Axis1, Stack.alloc(Quaternion.class));
-			Vector3f TwistRef = QuaternionUtil.quatRotate(rotationArc, b2Axis2, Stack.alloc(Vector3f.class));
+			Vector TwistRef = QuaternionUtil.quatRotate(rotationArc, b2Axis2, Stack.alloc(new Vector(3)));
 			float twist = ScalarUtil.atan2Fast(TwistRef.dot(b1Axis3), TwistRef.dot(b1Axis2));
 
 			float lockedFreeFactor = (this.twistSpan > 0.05f) ? this.limitSoftness : 0f;
@@ -276,35 +279,35 @@ public class ConeTwistConstraint extends TypedConstraint {
 
 	@Override
 	public void solveConstraint(float timeStep) {
-		Vector3f tmp = Stack.alloc(Vector3f.class);
-		Vector3f tmp2 = Stack.alloc(Vector3f.class);
+		Vector tmp = Stack.alloc(new Vector(3));
+		Vector tmp2 = Stack.alloc(new Vector(3));
 
-		Vector3f tmpVec = Stack.alloc(Vector3f.class);
+		Vector tmpVec = Stack.alloc(new Vector(3));
 		Transform tmpTrans = Stack.alloc(Transform.class);
 
-		Vector3f pivotAInW = Stack.alloc(this.rbAFrame.origin);
+		Vector pivotAInW = Stack.alloc(this.rbAFrame.origin);
 		this.rbA.getCenterOfMassTransform(tmpTrans).transform(pivotAInW);
 
-		Vector3f pivotBInW = Stack.alloc(this.rbBFrame.origin);
+		Vector pivotBInW = Stack.alloc(this.rbBFrame.origin);
 		this.rbB.getCenterOfMassTransform(tmpTrans).transform(pivotBInW);
 
 		float tau = 0.3f;
 
 		// linear part
 		if (!this.angularOnly) {
-			Vector3f rel_pos1 = Stack.alloc(Vector3f.class);
+			Vector rel_pos1 = Stack.alloc(new Vector(3));
 			rel_pos1.sub(pivotAInW, this.rbA.getCenterOfMassPosition(tmpVec));
 
-			Vector3f rel_pos2 = Stack.alloc(Vector3f.class);
+			Vector rel_pos2 = Stack.alloc(new Vector(3));
 			rel_pos2.sub(pivotBInW, this.rbB.getCenterOfMassPosition(tmpVec));
 
-			Vector3f vel1 = this.rbA.getVelocityInLocalPoint(rel_pos1, Stack.alloc(Vector3f.class));
-			Vector3f vel2 = this.rbB.getVelocityInLocalPoint(rel_pos2, Stack.alloc(Vector3f.class));
-			Vector3f vel = Stack.alloc(Vector3f.class);
+			Vector vel1 = this.rbA.getVelocityInLocalPoint(rel_pos1, Stack.alloc(new Vector(3)));
+			Vector vel2 = this.rbB.getVelocityInLocalPoint(rel_pos2, Stack.alloc(new Vector(3)));
+			Vector vel = Stack.alloc(new Vector(3));
 			vel.sub(vel1, vel2);
 
 			for (int i = 0; i < 3; i++) {
-				Vector3f normal = this.jac[i].linearJointAxis;
+				Vector normal = this.jac[i].linearJointAxis;
 				float jacDiagABInv = 1f / this.jac[i].getDiagonal();
 
 				float rel_vel;
@@ -314,7 +317,7 @@ public class ConeTwistConstraint extends TypedConstraint {
 				float depth = -(tmp).dot(normal); // this is the error projected on the normal
 				float impulse = depth * tau / timeStep * jacDiagABInv - rel_vel * jacDiagABInv;
 				this.appliedImpulse += impulse;
-				Vector3f impulse_vector = Stack.alloc(Vector3f.class);
+				Vector impulse_vector = Stack.alloc(new Vector(3));
 				impulse_vector.scale(impulse, normal);
 
 				tmp.sub(pivotAInW, this.rbA.getCenterOfMassPosition(tmpVec));
@@ -328,8 +331,8 @@ public class ConeTwistConstraint extends TypedConstraint {
 
 		{
 			// solve angular part
-			Vector3f angVelA = getRigidBodyA().getAngularVelocity(Stack.alloc(Vector3f.class));
-			Vector3f angVelB = getRigidBodyB().getAngularVelocity(Stack.alloc(Vector3f.class));
+			Vector angVelA = getRigidBodyA().getAngularVelocity(Stack.alloc(new Vector(3)));
+			Vector angVelB = getRigidBodyB().getAngularVelocity(Stack.alloc(new Vector(3)));
 
 			// solve swing limit
 			if (this.solveSwingLimit) {
@@ -342,7 +345,7 @@ public class ConeTwistConstraint extends TypedConstraint {
 				this.accSwingLimitImpulse = Math.max(this.accSwingLimitImpulse + impulseMag, 0.0f);
 				impulseMag = this.accSwingLimitImpulse - temp;
 
-				Vector3f impulse = Stack.alloc(Vector3f.class);
+				Vector impulse = Stack.alloc(new Vector(3));
 				impulse.scale(impulseMag, this.swingAxis);
 
 				this.rbA.applyTorqueImpulse(impulse);
@@ -362,7 +365,7 @@ public class ConeTwistConstraint extends TypedConstraint {
 				this.accTwistLimitImpulse = Math.max(this.accTwistLimitImpulse + impulseMag, 0.0f);
 				impulseMag = this.accTwistLimitImpulse - temp;
 
-				Vector3f impulse = Stack.alloc(Vector3f.class);
+				Vector impulse = Stack.alloc(new Vector(3));
 				impulse.scale(impulseMag, this.twistAxis);
 
 				this.rbA.applyTorqueImpulse(impulse);

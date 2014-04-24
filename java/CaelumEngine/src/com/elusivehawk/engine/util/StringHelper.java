@@ -28,6 +28,7 @@ public final class StringHelper
 	public static final String[] NUMBERS =	{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
 	public static final String[] HEX =		{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"};
 	
+	public static final String[] WHITESPACE=	{" ", "\t", "\n"};
 	public static final String[] ESCAPES =		{"\b", "\t", "\n", "\f", "\r", "\"", "\'", "\\"};
 	public static final String[] S_ESCAPES =	{"\\b", "\\t", "\\n", "\\f", "\\r", "\\\"", "\\\'", "\\\\"};
 	
@@ -139,7 +140,7 @@ public final class StringHelper
 		
 		if (!file.canWrite())
 		{
-			System.err.println(String.format("File with path %s cannot be written to! This is a bug!", file.getPath()));
+			System.err.println(String.format("File with path %s cannot be written to! This is a bug!", file));
 			
 			return false;
 		}
@@ -372,6 +373,20 @@ public final class StringHelper
 	public static String[] asArray(List<String> strs)
 	{
 		return strs.toArray(new String[strs.size()]);
+	}
+	
+	public static boolean isWhitespace(String str)
+	{
+		for (int c = 0; c < WHITESPACE.length; c++)
+		{
+			if (WHITESPACE[c].equals(str))
+			{
+				return true;
+			}
+			
+		}
+		
+		return false;
 	}
 	
 }

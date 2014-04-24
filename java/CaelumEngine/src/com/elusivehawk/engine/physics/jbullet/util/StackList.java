@@ -35,7 +35,7 @@ package com.elusivehawk.engine.physics.jbullet.util;
  * 
  * vectors.push();
  * try {
- *     Vector3f vec = vectors.get();
+ *     Vector vec = vectors.get();
  *     ...
  *     return vectors.returning(vec);
  * }

@@ -23,12 +23,15 @@
 
 package com.elusivehawk.engine.physics.jbullet.dynamics.constraintsolver;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.dynamics.RigidBody;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 import com.elusivehawk.engine.physics.jbullet.linearmath.TransformUtil;
 import cz.advel.stack.Stack;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * SolverBody is an internal data structure for the constraint solver. Only necessary
  * data is packed to increase cache coherence/performance.
@@ -39,67 +42,67 @@ public class SolverBody {
 	
 	//protected final BulletStack stack = BulletStack.get();
 
-	public final Vector3f angularVelocity = new Vector3f();
+	public final Vector angularVelocity = new Vector();
 	public float angularFactor;
 	public float invMass;
 	public float friction;
 	public RigidBody originalBody;
-	public final Vector3f linearVelocity = new Vector3f();
-	public final Vector3f centerOfMassPosition = new Vector3f();
+	public final Vector linearVelocity = new Vector();
+	public final Vector centerOfMassPosition = new Vector();
 
-	public final Vector3f pushVelocity = new Vector3f();
-	public final Vector3f turnVelocity = new Vector3f();
+	public final Vector pushVelocity = new Vector();
+	public final Vector turnVelocity = new Vector();
 	
-	public void getVelocityInLocalPoint(Vector3f rel_pos, Vector3f velocity) {
-		Vector3f tmp = Stack.alloc(Vector3f.class);
-		tmp.cross(angularVelocity, rel_pos);
-		velocity.add(linearVelocity, tmp);
+	public void getVelocityInLocalPoint(Vector rel_pos, Vector velocity) {
+		Vector tmp = Stack.alloc(new Vector(3));
+		tmp.cross(this.angularVelocity, rel_pos);
+		velocity.add(this.linearVelocity, tmp);
 	}
 
 	/**
 	 * Optimization for the iterative solver: avoid calculating constant terms involving inertia, normal, relative position.
 	 */
-	public void internalApplyImpulse(Vector3f linearComponent, Vector3f angularComponent, float impulseMagnitude) {
-		if (invMass != 0f) {
-			linearVelocity.scaleAdd(impulseMagnitude, linearComponent, linearVelocity);
-			angularVelocity.scaleAdd(impulseMagnitude * angularFactor, angularComponent, angularVelocity);
+	public void internalApplyImpulse(Vector linearComponent, Vector angularComponent, float impulseMagnitude) {
+		if (this.invMass != 0f) {
+			this.linearVelocity.scaleAdd(impulseMagnitude, linearComponent, this.linearVelocity);
+			this.angularVelocity.scaleAdd(impulseMagnitude * this.angularFactor, angularComponent, this.angularVelocity);
 		}
 	}
 
-	public void internalApplyPushImpulse(Vector3f linearComponent, Vector3f angularComponent, float impulseMagnitude) {
-		if (invMass != 0f) {
-			pushVelocity.scaleAdd(impulseMagnitude, linearComponent, pushVelocity);
-			turnVelocity.scaleAdd(impulseMagnitude * angularFactor, angularComponent, turnVelocity);
+	public void internalApplyPushImpulse(Vector linearComponent, Vector angularComponent, float impulseMagnitude) {
+		if (this.invMass != 0f) {
+			this.pushVelocity.scaleAdd(impulseMagnitude, linearComponent, this.pushVelocity);
+			this.turnVelocity.scaleAdd(impulseMagnitude * this.angularFactor, angularComponent, this.turnVelocity);
 		}
 	}
 	
 	public void writebackVelocity() {
-		if (invMass != 0f) {
-			originalBody.setLinearVelocity(linearVelocity);
-			originalBody.setAngularVelocity(angularVelocity);
+		if (this.invMass != 0f) {
+			this.originalBody.setLinearVelocity(this.linearVelocity);
+			this.originalBody.setAngularVelocity(this.angularVelocity);
 			//m_originalBody->setCompanionId(-1);
 		}
 	}
 
 	public void writebackVelocity(float timeStep) {
-		if (invMass != 0f) {
-			originalBody.setLinearVelocity(linearVelocity);
-			originalBody.setAngularVelocity(angularVelocity);
+		if (this.invMass != 0f) {
+			this.originalBody.setLinearVelocity(this.linearVelocity);
+			this.originalBody.setAngularVelocity(this.angularVelocity);
 
 			// correct the position/orientation based on push/turn recovery
 			Transform newTransform = Stack.alloc(Transform.class);
-			Transform curTrans = originalBody.getWorldTransform(Stack.alloc(Transform.class));
-			TransformUtil.integrateTransform(curTrans, pushVelocity, turnVelocity, timeStep, newTransform);
-			originalBody.setWorldTransform(newTransform);
+			Transform curTrans = this.originalBody.getWorldTransform(Stack.alloc(Transform.class));
+			TransformUtil.integrateTransform(curTrans, this.pushVelocity, this.turnVelocity, timeStep, newTransform);
+			this.originalBody.setWorldTransform(newTransform);
 
 			//m_originalBody->setCompanionId(-1);
 		}
 	}
 	
 	public void readVelocity() {
-		if (invMass != 0f) {
-			originalBody.getLinearVelocity(linearVelocity);
-			originalBody.getAngularVelocity(angularVelocity);
+		if (this.invMass != 0f) {
+			this.originalBody.getLinearVelocity(this.linearVelocity);
+			this.originalBody.getAngularVelocity(this.angularVelocity);
 		}
 	}
 	

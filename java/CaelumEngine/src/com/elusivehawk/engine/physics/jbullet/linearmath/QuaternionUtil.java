@@ -23,13 +23,18 @@
 
 package com.elusivehawk.engine.physics.jbullet.linearmath;
 
-import static com.elusivehawk.engine.math.MathConst.*;
+import static com.elusivehawk.engine.math.MathConst.W;
+import static com.elusivehawk.engine.math.MathConst.X;
+import static com.elusivehawk.engine.math.MathConst.Y;
+import static com.elusivehawk.engine.math.MathConst.Z;
 import com.elusivehawk.engine.math.Quaternion;
 import com.elusivehawk.engine.math.Vector;
-import com.elusivehawk.engine.math.Vector3f;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
 import cz.advel.stack.Stack;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * Utility functions for quaternions.
  * 
@@ -42,7 +47,7 @@ public class QuaternionUtil {
 		return s;
 	}
 	
-	public static void setRotation(Quaternion q, Vector3f axis, float angle) {
+	public static void setRotation(Quaternion q, Vector axis, float angle) {
 		float d = axis.length();
 		assert (d != 0f);
 		float s = (float)Math.sin(angle * 0.5f) / d;
@@ -56,8 +61,8 @@ public class QuaternionUtil {
 	}
 	
 	// Game Programming Gems 2.10. make sure v0,v1 are normalized
-	public static Quaternion shortestArcQuat(Vector3f v0, Vector3f v1, Quaternion out) {
-		Vector3f c = Stack.alloc(Vector3f.class);
+	public static Quaternion shortestArcQuat(Vector v0, Vector v1, Quaternion out) {
+		Vector c = Stack.alloc(new Vector(3));
 		c.cross(v0, v1);
 		float d = v0.dot(v1);
 
@@ -79,16 +84,16 @@ public class QuaternionUtil {
 		return out;
 	}
 	
-	public static void mul(Quaternion q, Vector3f v) {
+	public static void mul(Quaternion q, Vector v) {
 		float x = q.get(X),
 				y = q.get(Y),
 				z = q.get(Z),
 				w = q.get(W);
 		
-		float rx = w * v.x + y * v.z - z * v.y;
-		float ry = w * v.y + z * v.x - x * v.z;
-		float rz = w * v.z + x * v.y - y * v.x;
-		float rw = -x * v.x - y * v.y - z * v.z;
+		float rx = w * v.get(X)+ y * v.get(Z)- z * v.get(Y);
+		float ry = w * v.get(Y)+ z * v.get(X)- x * v.get(Z);
+		float rz = w * v.get(Z)+ x * v.get(Y)- y * v.get(X);
+		float rw = -x * v.get(X)- y * v.get(Y)- z * v.get(Z);
 		
 		q.set(0, rx, false);
 		q.set(1, ry, false);
@@ -97,7 +102,7 @@ public class QuaternionUtil {
 		
 	}
 	
-	public static Vector3f quatRotate(Quaternion rotation, Vector3f v, Vector3f out) {
+	public static Vector quatRotate(Quaternion rotation, Vector v, Vector out) {
 		Quaternion q = Stack.alloc(rotation);
 		mul(q, v);
 
@@ -136,10 +141,10 @@ public class QuaternionUtil {
 		}
 		
 		q.onChanged();
-		/*q.x = -src.x;
-		q.y = -src.y;
-		q.z = -src.z;
-		q.w = src.w;*/
+		/*q.set(X, -src.x;
+		q.set(Y, -src.y;
+		q.get(Z)= -src.z;
+		q.get(W)= src.w;*/
 	}
 
 	public static void setEuler(Quaternion q, float yaw, float pitch, float roll) {

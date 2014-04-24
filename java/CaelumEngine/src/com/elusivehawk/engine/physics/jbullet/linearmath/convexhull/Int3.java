@@ -37,9 +37,10 @@ class Int3 {
 	public Int3(int x, int y, int z) {
 		this.x = x;
 		this.y = y;
-		this.z = z;
+		this.z= z;
 	}
 	
+	@SuppressWarnings("unqualified-field-access")
 	public Int3(Int3 i) {
 		x = i.x;
 		y = i.y;
@@ -53,29 +54,29 @@ class Int3 {
 	}
 
 	public void set(Int3 i) {
-		x = i.x;
-		y = i.y;
-		z = i.z;
+		this.x = i.x;
+		this.y = i.y;
+		this.z = i.z;
 	}
 	
 	public int getCoord(int coord) {
 		switch (coord) {
-			case 0: return x;
-			case 1: return y;
-			default: return z;
+			case 0: return this.x;
+			case 1: return this.y;
+			default: return this.z;
 		}
 	}
 
 	public void setCoord(int coord, int value) {
 		switch (coord) {
-			case 0: x = value; break;
-			case 1: y = value; break;
-			case 2: z = value; break;
+			case 0: this.x = value; break;
+			case 1: this.y = value; break;
+			case 2: this.z = value; break;
 		}
 	}
 	
 	public boolean equals(Int3 i) {
-		return (x == i.x && y == i.y && z == i.z);
+		return (this.x == i.x& this.y == i.y&& this.z == i.z);
 	}
 	
 	public IntRef getRef(final int coord) {

@@ -27,101 +27,124 @@
 
 package com.elusivehawk.engine.physics.jbullet.extras.gimpact;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.extras.gimpact.BoxCollision.AABB;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
- *
+ * 
  * @author jezek2
  */
-class BvhDataArray {
-
+class BvhDataArray
+{
 	private int size = 0;
 	
 	float[] bound = new float[0];
 	int[] data = new int[0];
-
-	public int size() {
-		return size;
+	
+	public int size()
+	{
+		return this.size;
 	}
-
-	public void resize(int newSize) {
-		float[] newBound = new float[newSize*6];
+	
+	public void resize(int newSize)
+	{
+		float[] newBound = new float[newSize * 6];
 		int[] newData = new int[newSize];
 		
-		System.arraycopy(bound, 0, newBound, 0, size*6);
-		System.arraycopy(data, 0, newData, 0, size);
+		System.arraycopy(this.bound, 0, newBound, 0, this.size * 6);
+		System.arraycopy(this.data, 0, newData, 0, this.size);
 		
-		bound = newBound;
-		data = newData;
+		this.bound = newBound;
+		this.data = newData;
 		
-		size = newSize;
+		this.size = newSize;
 	}
 	
-	public void swap(int idx1, int idx2) {
-		int pos1 = idx1*6;
-		int pos2 = idx2*6;
+	public void swap(int idx1, int idx2)
+	{
+		int pos1 = idx1 * 6;
+		int pos2 = idx2 * 6;
 		
-		float b0 = bound[pos1+0];
-		float b1 = bound[pos1+1];
-		float b2 = bound[pos1+2];
-		float b3 = bound[pos1+3];
-		float b4 = bound[pos1+4];
-		float b5 = bound[pos1+5];
-		int d = data[idx1];
+		float b0 = this.bound[pos1 + 0];
+		float b1 = this.bound[pos1 + 1];
+		float b2 = this.bound[pos1 + 2];
+		float b3 = this.bound[pos1 + 3];
+		float b4 = this.bound[pos1 + 4];
+		float b5 = this.bound[pos1 + 5];
+		int d = this.data[idx1];
 		
-		bound[pos1+0] = bound[pos2+0];
-		bound[pos1+1] = bound[pos2+1];
-		bound[pos1+2] = bound[pos2+2];
-		bound[pos1+3] = bound[pos2+3];
-		bound[pos1+4] = bound[pos2+4];
-		bound[pos1+5] = bound[pos2+5];
-		data[idx1] = data[idx2];
-
-		bound[pos2+0] = b0;
-		bound[pos2+1] = b1;
-		bound[pos2+2] = b2;
-		bound[pos2+3] = b3;
-		bound[pos2+4] = b4;
-		bound[pos2+5] = b5;
-		data[idx2] = d;
+		this.bound[pos1 + 0] = this.bound[pos2 + 0];
+		this.bound[pos1 + 1] = this.bound[pos2 + 1];
+		this.bound[pos1 + 2] = this.bound[pos2 + 2];
+		this.bound[pos1 + 3] = this.bound[pos2 + 3];
+		this.bound[pos1 + 4] = this.bound[pos2 + 4];
+		this.bound[pos1 + 5] = this.bound[pos2 + 5];
+		this.data[idx1] = this.data[idx2];
+		
+		this.bound[pos2 + 0] = b0;
+		this.bound[pos2 + 1] = b1;
+		this.bound[pos2 + 2] = b2;
+		this.bound[pos2 + 3] = b3;
+		this.bound[pos2 + 4] = b4;
+		this.bound[pos2 + 5] = b5;
+		this.data[idx2] = d;
 	}
 	
-	public AABB getBound(int idx, AABB out) {
-		int pos = idx*6;
-		out.min.set(bound[pos+0], bound[pos+1], bound[pos+2]);
-		out.max.set(bound[pos+3], bound[pos+4], bound[pos+5]);
-		return out;
-	}
-
-	public Vector3f getBoundMin(int idx, Vector3f out) {
-		int pos = idx*6;
-		out.set(bound[pos+0], bound[pos+1], bound[pos+2]);
-		return out;
-	}
-
-	public Vector3f getBoundMax(int idx, Vector3f out) {
-		int pos = idx*6;
-		out.set(bound[pos+3], bound[pos+4], bound[pos+5]);
+	public AABB getBound(int idx, AABB out)
+	{
+		int pos = idx * 6;
+		out.min.set(this.bound[pos + 0], this.bound[pos + 1],
+				this.bound[pos + 2]);
+		out.max.set(this.bound[pos + 3], this.bound[pos + 4],
+				this.bound[pos + 5]);
 		return out;
 	}
 	
-	public void setBound(int idx, AABB aabb) {
-		int pos = idx*6;
-		bound[pos+0] = aabb.min.x;
-		bound[pos+1] = aabb.min.y;
-		bound[pos+2] = aabb.min.z;
-		bound[pos+3] = aabb.max.x;
-		bound[pos+4] = aabb.max.y;
-		bound[pos+5] = aabb.max.z;
+	public Vector getBoundMin(int idx, Vector out)
+	{
+		int pos = idx * 6;
+		out.set(this.bound[pos + 0], this.bound[pos + 1], this.bound[pos + 2]);
+		return out;
 	}
 	
-	public int getData(int idx) {
-		return data[idx];
+	public Vector getBoundMax(int idx, Vector out)
+	{
+		int pos = idx * 6;
+		out.set(this.bound[pos + 3], this.bound[pos + 4], this.bound[pos + 5]);
+		return out;
 	}
 	
-	public void setData(int idx, int value) {
-		data[idx] = value;
+	public void setBound(int idx, AABB aabb)
+	{
+		int pos = idx * 6;
+		
+		for (int c = 0; c < 3; c++)
+		{
+			this.bound[pos + c] = aabb.min.get(c);
+			this.bound[pos + (c + 3)] = aabb.max.get(c);
+			
+		}
+		/*
+		 * bound[pos+0] = aabb.min.x;
+		 * bound[pos+1] = aabb.min.y;
+		 * bound[pos+2] = aabb.min.z;
+		 * bound[pos+3] = aabb.max.x;
+		 * bound[pos+4] = aabb.max.y;
+		 * bound[pos+5] = aabb.max.z;
+		 */
+	}
+	
+	public int getData(int idx)
+	{
+		return this.data[idx];
+	}
+	
+	public void setData(int idx, int value)
+	{
+		this.data[idx] = value;
 	}
 	
 }

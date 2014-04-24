@@ -23,9 +23,12 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.shapes;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.BroadphaseNativeType;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * BU_Simplex1to4 implements feature based and implicit simplex of up to 4 vertices
  * (tetrahedron, triangle, line, vertex).
@@ -35,27 +38,27 @@ import com.elusivehawk.engine.physics.jbullet.collision.broadphase.BroadphaseNat
 public class BU_Simplex1to4 extends PolyhedralConvexShape {
 
 	protected int numVertices = 0;
-	protected Vector3f[] vertices = new Vector3f[4];
+	protected Vector[] vertices = new Vector[4];
 
 	public BU_Simplex1to4() {
 	}
 
-	public BU_Simplex1to4(Vector3f pt0) {
+	public BU_Simplex1to4(Vector pt0) {
 		addVertex(pt0);
 	}
 
-	public BU_Simplex1to4(Vector3f pt0, Vector3f pt1) {
+	public BU_Simplex1to4(Vector pt0, Vector pt1) {
 		addVertex(pt0);
 		addVertex(pt1);
 	}
 
-	public BU_Simplex1to4(Vector3f pt0, Vector3f pt1, Vector3f pt2) {
+	public BU_Simplex1to4(Vector pt0, Vector pt1, Vector pt2) {
 		addVertex(pt0);
 		addVertex(pt1);
 		addVertex(pt2);
 	}
 
-	public BU_Simplex1to4(Vector3f pt0, Vector3f pt1, Vector3f pt2, Vector3f pt3) {
+	public BU_Simplex1to4(Vector pt0, Vector pt1, Vector pt2, Vector pt3) {
 		addVertex(pt0);
 		addVertex(pt1);
 		addVertex(pt2);
@@ -71,9 +74,9 @@ public class BU_Simplex1to4 extends PolyhedralConvexShape {
 		return BroadphaseNativeType.TETRAHEDRAL_SHAPE_PROXYTYPE;
 	}
 	
-	public void addVertex(Vector3f pt) {
+	public void addVertex(Vector pt) {
 		if (vertices[numVertices] == null) {
-			vertices[numVertices] = new Vector3f();
+			vertices[numVertices] = new Vector();
 		}
 		
 		vertices[numVertices++] = pt;
@@ -103,7 +106,7 @@ public class BU_Simplex1to4 extends PolyhedralConvexShape {
 	}
 
 	@Override
-	public void getEdge(int i, Vector3f pa, Vector3f pb) {
+	public void getEdge(int i, Vector pa, Vector pb) {
 		switch (numVertices) {
 			case 2:
 				pa.set(vertices[0]);
@@ -156,7 +159,7 @@ public class BU_Simplex1to4 extends PolyhedralConvexShape {
 	}
 
 	@Override
-	public void getVertex(int i, Vector3f vtx) {
+	public void getVertex(int i, Vector vtx) {
 		vtx.set(vertices[i]);
 	}
 
@@ -173,7 +176,7 @@ public class BU_Simplex1to4 extends PolyhedralConvexShape {
 	}
 
 	@Override
-	public void getPlane(Vector3f planeNormal, Vector3f planeSupport, int i) {
+	public void getPlane(Vector planeNormal, Vector planeSupport, int i) {
 	}
 	
 	public int getIndex(int i) {
@@ -181,7 +184,7 @@ public class BU_Simplex1to4 extends PolyhedralConvexShape {
 	}
 
 	@Override
-	public boolean isInside(Vector3f pt, float tolerance) {
+	public boolean isInside(Vector pt, float tolerance) {
 		return false;
 	}
 

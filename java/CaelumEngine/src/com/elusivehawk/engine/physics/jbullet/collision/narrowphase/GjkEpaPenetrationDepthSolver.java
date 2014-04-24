@@ -23,11 +23,14 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.narrowphase;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.ConvexShape;
 import com.elusivehawk.engine.physics.jbullet.linearmath.IDebugDraw;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * GjkEpaPenetrationDepthSolver uses the Expanding Polytope Algorithm to calculate
  * the penetration depth between two convex shapes.
@@ -38,10 +41,11 @@ public class GjkEpaPenetrationDepthSolver extends ConvexPenetrationDepthSolver {
 
 	private GjkEpaSolver gjkEpaSolver = new GjkEpaSolver();
 
+	@Override
 	public boolean calcPenDepth(SimplexSolverInterface simplexSolver,
 												  ConvexShape pConvexA, ConvexShape pConvexB,
 												  Transform transformA, Transform transformB,
-												  Vector3f v, Vector3f wWitnessOnA, Vector3f wWitnessOnB,
+												  Vector v, Vector wWitnessOnA, Vector wWitnessOnB,
 												  IDebugDraw debugDraw/*, btStackAlloc* stackAlloc*/)
 	{
 		float radialmargin = 0f;
@@ -49,7 +53,7 @@ public class GjkEpaPenetrationDepthSolver extends ConvexPenetrationDepthSolver {
 		// JAVA NOTE: 2.70b1: update when GjkEpaSolver2 is ported
 		
 		GjkEpaSolver.Results results = new GjkEpaSolver.Results();
-		if (gjkEpaSolver.collide(pConvexA, transformA,
+		if (this.gjkEpaSolver.collide(pConvexA, transformA,
 				pConvexB, transformB,
 				radialmargin/*,stackAlloc*/, results)) {
 			//debugDraw->drawLine(results.witnesses[1],results.witnesses[1]+results.normal,btVector3(255,0,0));

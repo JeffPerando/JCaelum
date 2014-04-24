@@ -23,7 +23,7 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.narrowphase;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.narrowphase.DiscreteCollisionDetectorInterface.ClosestPointInput;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.ConvexShape;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
@@ -31,6 +31,9 @@ import com.elusivehawk.engine.physics.jbullet.linearmath.VectorUtil;
 import com.elusivehawk.engine.physics.jbullet.util.ObjectPool;
 import cz.advel.stack.Stack;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * GjkConvexCast performs a raycast on a convex object using support mapping.
  * 
@@ -64,24 +67,24 @@ public class GjkConvexCast extends ConvexCast {
 
 		// compute linear velocity for this interval, to interpolate
 		// assume no rotation/angular velocity, assert here?
-		Vector3f linVelA = Stack.alloc(Vector3f.class);
-		Vector3f linVelB = Stack.alloc(Vector3f.class);
+		Vector linVelA = Stack.alloc(new Vector(3));
+		Vector linVelB = Stack.alloc(new Vector(3));
 
 		linVelA.sub(toA.origin, fromA.origin);
 		linVelB.sub(toB.origin, fromB.origin);
 
 		float radius = 0.001f;
 		float lambda = 0f;
-		Vector3f v = Stack.alloc(Vector3f.class);
+		Vector v = Stack.alloc(new Vector(3));
 		v.set(1f, 0f, 0f);
 
 		int maxIter = MAX_ITERATIONS;
 
-		Vector3f n = Stack.alloc(Vector3f.class);
+		Vector n = Stack.alloc(new Vector(3));
 		n.set(0f, 0f, 0f);
 		boolean hasResult = false;
-		Vector3f c = Stack.alloc(Vector3f.class);
-		Vector3f r = Stack.alloc(Vector3f.class);
+		Vector c = Stack.alloc(new Vector(3));
+		Vector r = Stack.alloc(new Vector(3));
 		r.sub(linVelA, linVelB);
 
 		float lastLambda = lambda;

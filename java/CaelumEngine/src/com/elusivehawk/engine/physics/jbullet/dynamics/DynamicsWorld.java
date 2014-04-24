@@ -23,7 +23,7 @@
 
 package com.elusivehawk.engine.physics.jbullet.dynamics;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.BroadphaseInterface;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.Dispatcher;
 import com.elusivehawk.engine.physics.jbullet.collision.dispatch.CollisionConfiguration;
@@ -33,6 +33,9 @@ import com.elusivehawk.engine.physics.jbullet.dynamics.constraintsolver.ContactS
 import com.elusivehawk.engine.physics.jbullet.dynamics.constraintsolver.TypedConstraint;
 import com.elusivehawk.engine.physics.jbullet.dynamics.vehicle.RaycastVehicle;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * DynamicsWorld is the interface class for several dynamics implementation,
  * basic, discrete, parallel, and continuous etc.
@@ -101,9 +104,9 @@ public abstract class DynamicsWorld extends CollisionWorld {
 	 * Once a rigidbody is added to the dynamics world, it will get this gravity assigned.
 	 * Existing rigidbodies in the world get gravity assigned too, during this method.
 	 */
-	public abstract void setGravity(Vector3f gravity);
+	public abstract void setGravity(Vector gravity);
 	
-	public abstract Vector3f getGravity(Vector3f out);
+	public abstract Vector getGravity(Vector out);
 
 	public abstract void addRigidBody(RigidBody body);
 

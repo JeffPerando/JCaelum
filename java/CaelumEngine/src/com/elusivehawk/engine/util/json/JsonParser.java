@@ -19,7 +19,7 @@ import com.google.common.collect.Maps;
  */
 public final class JsonParser
 {
-	public static final String[] SEPARATORS = {" ", "\t", "\n", "\"", ":", ",", "{", "}", "[", "]", "e", "E", "+", "-"};
+	public static final String[] SEPARATORS = {"\"", ":", ",", "{", "}", "[", "]", "e", "E", "+", "-"};
 	
 	private JsonParser(){}
 	
@@ -29,14 +29,13 @@ public final class JsonParser
 		
 		while (buf.hasNext())
 		{
-			str = buf.next(false);
+			str = buf.next();
 			
-			switch (str)
+			if (!StringHelper.isWhitespace(str))
 			{
-				case " ":
-				case "\t":
-				case "\n": buf.skip(1); continue;
-				default: return;
+				buf.rewind(1);
+				
+				return;
 			}
 			
 		}
@@ -69,15 +68,9 @@ public final class JsonParser
 		
 		t.addTokens(SEPARATORS);
 		t.addTokens(StringHelper.NUMBERS);
+		t.addTokens(StringHelper.WHITESPACE);
 		
 		Buffer<String> buf = new Buffer<String>(t.tokenize(str));
-		
-		if (!buf.hasNext())
-		{
-			throw new JsonParseException("No tokens found");
-		}
-		
-		//TODO Auto-remove whitespace.
 		
 		return parseObj("", buf);
 	}
@@ -120,18 +113,19 @@ public final class JsonParser
 			return parseInt(name, buf);
 		}
 		
-		throw new JsonParseException("Invalid value for key %s", name);
+		throw new JsonParseException("Invalid value for key \"%s\": \"%s\"", name, StringHelper.sanitizeEscapeSequence(str));
 	}
 	
 	public static String parseString(Buffer<String> buf)
 	{
-		if (!"\"".equalsIgnoreCase(buf.next()))
+		String next = buf.next();
+		
+		if (!"\"".equalsIgnoreCase(next))
 		{
-			throw new JsonParseException("Not a string!");
+			throw new JsonParseException("Not a string: \"%s\"", next);
 		}
 		
 		StringBuilder b = new StringBuilder();
-		String next;
 		
 		while (!"\"".equalsIgnoreCase((next = buf.next())))
 		{

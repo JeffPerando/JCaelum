@@ -23,7 +23,7 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.dispatch;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.CollisionAlgorithm;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.CollisionAlgorithmConstructionInfo;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.Dispatcher;
@@ -35,6 +35,9 @@ import com.elusivehawk.engine.physics.jbullet.collision.shapes.TriangleShape;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 import cz.advel.stack.Stack;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * For each triangle in the concave mesh that overlaps with the AABB of a convex
  * (see {@link #convexBody} field), processTriangle is called.
@@ -48,8 +51,8 @@ class ConvexTriangleCallback extends TriangleCallback {
 	private CollisionObject convexBody;
 	private CollisionObject triBody;
 
-	private final Vector3f aabbMin = new Vector3f();
-	private final Vector3f aabbMax = new Vector3f();
+	private final Vector aabbMin = new Vector();
+	private final Vector aabbMax = new Vector();
 
 	private ManifoldResult resultOut;
 
@@ -96,7 +99,7 @@ class ConvexTriangleCallback extends TriangleCallback {
 		//CollisionShape* triangleShape = static_cast<btCollisionShape*>(triBody->m_collisionShape);
 		convexShape.getAabb(convexInTriangleSpace, aabbMin, aabbMax);
 		float extraMargin = collisionMarginTriangle;
-		Vector3f extra = Stack.alloc(Vector3f.class);
+		Vector extra = Stack.alloc(new Vector(3));
 		extra.set(extraMargin, extraMargin, extraMargin);
 
 		aabbMax.add(extra);
@@ -106,7 +109,7 @@ class ConvexTriangleCallback extends TriangleCallback {
 	private CollisionAlgorithmConstructionInfo ci = new CollisionAlgorithmConstructionInfo();
 	private TriangleShape tm = new TriangleShape();
 	
-	public void processTriangle(Vector3f[] triangle, int partId, int triangleIndex) {
+	public void processTriangle(Vector[] triangle, int partId, int triangleIndex) {
 		// just for debugging purposes
 		//printf("triangle %d",m_triangleCount++);
 
@@ -118,12 +121,12 @@ class ConvexTriangleCallback extends TriangleCallback {
 
 		// debug drawing of the overlapping triangles
 		if (dispatchInfoPtr != null && dispatchInfoPtr.debugDraw != null && dispatchInfoPtr.debugDraw.getDebugMode() > 0) {
-			Vector3f color = Stack.alloc(Vector3f.class);
+			Vector color = Stack.alloc(new Vector(3));
 			color.set(255, 255, 0);
 			Transform tr = ob.getWorldTransform(Stack.alloc(Transform.class));
 
-			Vector3f tmp1 = Stack.alloc(Vector3f.class);
-			Vector3f tmp2 = Stack.alloc(Vector3f.class);
+			Vector tmp1 = Stack.alloc(new Vector(3));
+			Vector tmp2 = Stack.alloc(new Vector(3));
 
 			tmp1.set(triangle[0]); tr.transform(tmp1);
 			tmp2.set(triangle[1]); tr.transform(tmp2);
@@ -171,12 +174,12 @@ class ConvexTriangleCallback extends TriangleCallback {
 		dispatcher.clearManifold(manifoldPtr);
 	}
 
-	public Vector3f getAabbMin(Vector3f out) {
+	public Vector getAabbMin(Vector out) {
 		out.set(aabbMin);
 		return out;
 	}
 
-	public Vector3f getAabbMax(Vector3f out) {
+	public Vector getAabbMax(Vector out) {
 		out.set(aabbMax);
 		return out;
 	}

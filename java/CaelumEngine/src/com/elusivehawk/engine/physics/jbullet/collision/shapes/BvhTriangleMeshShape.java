@@ -23,7 +23,6 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.shapes;
 
-import com.elusivehawk.engine.math.MathHelper;
 import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.BroadphaseNativeType;
@@ -201,7 +200,7 @@ public class BvhTriangleMeshShape extends TriangleMeshShape {
 		Vector tmp = Stack.alloc(new Vector(3));
 		tmp.sub(getLocalScaling(Stack.alloc(new Vector(3))), scaling);
 
-		if (MathHelper.lengthSquared(tmp) > BulletGlobals.SIMD_EPSILON) {
+		if (tmp.lengthSquared() > BulletGlobals.SIMD_EPSILON) {
 			super.setLocalScaling(scaling);
 			/*
 			if (ownsBvh)
@@ -240,7 +239,7 @@ public class BvhTriangleMeshShape extends TriangleMeshShape {
 		Vector tmp = Stack.alloc(new Vector(3));
 		tmp.sub(getLocalScaling(Stack.alloc(new Vector(3))), scaling);
 
-		if (MathHelper.lengthSquared(tmp) > BulletGlobals.SIMD_EPSILON) {
+		if (tmp.lengthSquared() > BulletGlobals.SIMD_EPSILON) {
 			super.setLocalScaling(scaling);
 		}
 	}

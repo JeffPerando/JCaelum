@@ -29,6 +29,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * Object pool for arrays.
  * 
@@ -46,8 +49,9 @@ public class ArrayPool<T> {
 	 * 
 	 * @param componentType
 	 */
-	public ArrayPool(Class componentType) {
-		this.componentType = componentType;
+	@SuppressWarnings("unqualified-field-access")
+	public ArrayPool(Class<?> componentType) {
+		componentType = componentType;
 		
 		if (componentType == float.class) {
 			comparator = floatComparator;
@@ -65,7 +69,7 @@ public class ArrayPool<T> {
 	
 	@SuppressWarnings("unchecked")
 	private T create(int length) {
-		return (T)Array.newInstance(componentType, length);
+		return (T)Array.newInstance(this.componentType, length);
 	}
 	
 	/**
@@ -77,12 +81,12 @@ public class ArrayPool<T> {
 	 */
 	@SuppressWarnings("unchecked")
 	public T getFixed(int length) {
-		key.value = length;
-		int index = Collections.binarySearch(list, key, comparator);
+		this.key.value = length;
+		int index = Collections.binarySearch(this.list, this.key, this.comparator);
 		if (index < 0) {
 			return create(length);
 		}
-		return (T)list.remove(index);
+		return (T)this.list.remove(index);
 	}
 
 	/**
@@ -94,18 +98,17 @@ public class ArrayPool<T> {
 	 */
 	@SuppressWarnings("unchecked")
 	public T getAtLeast(int length) {
-		key.value = length;
-		int index = Collections.binarySearch(list, key, comparator);
+		this.key.value = length;
+		int index = Collections.binarySearch(this.list, this.key, this.comparator);
 		if (index < 0) {
 			index = -index - 1;
-			if (index < list.size()) {
-				return (T)list.remove(index);
+			if (index < this.list.size()) {
+				return (T)this.list.remove(index);
 			}
-			else {
-				return create(length);
-			}
+			
+			return create(length);
 		}
-		return (T)list.remove(index);
+		return (T)this.list.remove(index);
 	}
 	
 	/**
@@ -115,12 +118,12 @@ public class ArrayPool<T> {
 	 */
 	@SuppressWarnings("unchecked")
 	public void release(T array) {
-		int index = Collections.binarySearch(list, array, comparator);
+		int index = Collections.binarySearch(this.list, array, this.comparator);
 		if (index < 0) index = -index - 1;
-		list.add(index, array);
+		this.list.add(index, array);
 		
 		// remove references from object arrays:
-		if (comparator == objectComparator) {
+		if (this.comparator == objectComparator) {
 			Object[] objArray = (Object[])array;
 			for (int i=0; i<objArray.length; i++) {
 				objArray[i] = null;

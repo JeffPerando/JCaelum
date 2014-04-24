@@ -23,7 +23,7 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.broadphase;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 
 /**
  * BroadphaseInterface for AABB overlapping object pairs.
@@ -32,11 +32,11 @@ import com.elusivehawk.engine.math.Vector3f;
  */
 public abstract class BroadphaseInterface {
 
-	public abstract BroadphaseProxy createProxy(Vector3f aabbMin, Vector3f aabbMax, BroadphaseNativeType shapeType, Object userPtr, short collisionFilterGroup, short collisionFilterMask, Dispatcher dispatcher, Object multiSapProxy);
+	public abstract BroadphaseProxy createProxy(Vector aabbMin, Vector aabbMax, BroadphaseNativeType shapeType, Object userPtr, short collisionFilterGroup, short collisionFilterMask, Dispatcher dispatcher, Object multiSapProxy);
 
 	public abstract void destroyProxy(BroadphaseProxy proxy, Dispatcher dispatcher);
 
-	public abstract void setAabb(BroadphaseProxy proxy, Vector3f aabbMin, Vector3f aabbMax, Dispatcher dispatcher);
+	public abstract void setAabb(BroadphaseProxy proxy, Vector aabbMin, Vector aabbMax, Dispatcher dispatcher);
 
 	///calculateOverlappingPairs is optional: incremental algorithms (sweep and prune) might do it during the set aabb
 	public abstract void calculateOverlappingPairs(Dispatcher dispatcher);
@@ -45,7 +45,7 @@ public abstract class BroadphaseInterface {
 	
 	///getAabb returns the axis aligned bounding box in the 'global' coordinate frame
 	///will add some transform later
-	public abstract void getBroadphaseAabb(Vector3f aabbMin, Vector3f aabbMax);
+	public abstract void getBroadphaseAabb(Vector aabbMin, Vector aabbMax);
 
 	public abstract void printStats();
 	

@@ -23,17 +23,20 @@
 
 package com.elusivehawk.engine.physics.jbullet.dynamics.vehicle;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * 
  * @author jezek2
  */
 public class WheelInfoConstructionInfo {
 
-	public final Vector3f chassisConnectionCS = new Vector3f();
-	public final Vector3f wheelDirectionCS = new Vector3f();
-	public final Vector3f wheelAxleCS = new Vector3f();
+	public final Vector chassisConnectionCS = new Vector();
+	public final Vector wheelDirectionCS = new Vector();
+	public final Vector wheelAxleCS = new Vector();
 	public float suspensionRestLength;
 	public float maxSuspensionTravelCm;
 	public float wheelRadius;

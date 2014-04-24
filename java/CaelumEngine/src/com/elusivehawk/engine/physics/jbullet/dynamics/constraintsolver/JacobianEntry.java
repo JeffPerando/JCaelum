@@ -23,12 +23,16 @@
 
 package com.elusivehawk.engine.physics.jbullet.dynamics.constraintsolver;
 
+import static com.elusivehawk.engine.math.MathConst.*;
 import com.elusivehawk.engine.math.Matrix;
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
 import com.elusivehawk.engine.physics.jbullet.linearmath.VectorUtil;
 import cz.advel.stack.Stack;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 //notes:
 // Another memory optimization would be to store m_1MinvJt in the remaining 3 w components
 // which makes the btJacobianEntry memory layout 16 bytes
@@ -45,11 +49,11 @@ public class JacobianEntry {
 	
 	//protected final BulletStack stack = BulletStack.get();
 	
-	public final Vector3f linearJointAxis = new Vector3f();
-	public final Vector3f aJ = new Vector3f();
-	public final Vector3f bJ = new Vector3f();
-	public final Vector3f m_0MinvJt = new Vector3f();
-	public final Vector3f m_1MinvJt = new Vector3f();
+	public final Vector linearJointAxis = new Vector();
+	public final Vector aJ = new Vector();
+	public final Vector bJ = new Vector();
+	public final Vector m_0MinvJt = new Vector();
+	public final Vector m_1MinvJt = new Vector();
 	// Optimization: can be stored in the w/last component of one of the vectors
 	public float Adiag;
 
@@ -61,11 +65,11 @@ public class JacobianEntry {
 	 */
 	public void init(Matrix world2A,
 			Matrix world2B,
-			Vector3f rel_pos1, Vector3f rel_pos2,
-			Vector3f jointAxis,
-			Vector3f inertiaInvA,
+			Vector rel_pos1, Vector rel_pos2,
+			Vector jointAxis,
+			Vector inertiaInvA,
 			float massInvA,
-			Vector3f inertiaInvB,
+			Vector inertiaInvB,
 			float massInvB)
 	{
 		linearJointAxis.set(jointAxis);
@@ -88,11 +92,11 @@ public class JacobianEntry {
 	/**
 	 * Angular constraint between two different rigidbodies.
 	 */
-	public void init(Vector3f jointAxis,
+	public void init(Vector jointAxis,
 		Matrix world2A,
 		Matrix world2B,
-		Vector3f inertiaInvA,
-		Vector3f inertiaInvB)
+		Vector inertiaInvA,
+		Vector inertiaInvB)
 	{
 		linearJointAxis.set(0f, 0f, 0f);
 
@@ -113,10 +117,10 @@ public class JacobianEntry {
 	/**
 	 * Angular constraint between two different rigidbodies.
 	 */
-	public void init(Vector3f axisInA,
-		Vector3f axisInB,
-		Vector3f inertiaInvA,
-		Vector3f inertiaInvB)
+	public void init(Vector axisInA,
+		Vector axisInB,
+		Vector inertiaInvA,
+		Vector inertiaInvB)
 	{
 		linearJointAxis.set(0f, 0f, 0f);
 		aJ.set(axisInA);
@@ -136,9 +140,9 @@ public class JacobianEntry {
 	 */
 	public void init(
 		Matrix world2A,
-		Vector3f rel_pos1, Vector3f rel_pos2,
-		Vector3f jointAxis,
-		Vector3f inertiaInvA, 
+		Vector rel_pos1, Vector rel_pos2,
+		Vector jointAxis,
+		Vector inertiaInvA, 
 		float massInvA)
 	{
 		linearJointAxis.set(jointAxis);
@@ -176,35 +180,35 @@ public class JacobianEntry {
 	public float getNonDiagonal(JacobianEntry jacB, float massInvA, float massInvB) {
 		JacobianEntry jacA = this;
 
-		Vector3f lin = Stack.alloc(Vector3f.class);
+		Vector lin = Stack.alloc(new Vector(3));
 		VectorUtil.mul(lin, jacA.linearJointAxis, jacB.linearJointAxis);
 
-		Vector3f ang0 = Stack.alloc(Vector3f.class);
+		Vector ang0 = Stack.alloc(new Vector(3));
 		VectorUtil.mul(ang0, jacA.m_0MinvJt, jacB.aJ);
 
-		Vector3f ang1 = Stack.alloc(Vector3f.class);
+		Vector ang1 = Stack.alloc(new Vector(3));
 		VectorUtil.mul(ang1, jacA.m_1MinvJt, jacB.bJ);
 
-		Vector3f lin0 = Stack.alloc(Vector3f.class);
+		Vector lin0 = Stack.alloc(new Vector(3));
 		lin0.scale(massInvA, lin);
 
-		Vector3f lin1 = Stack.alloc(Vector3f.class);
+		Vector lin1 = Stack.alloc(new Vector(3));
 		lin1.scale(massInvB, lin);
 
-		Vector3f sum = Stack.alloc(Vector3f.class);
+		Vector sum = Stack.alloc(new Vector(3));
 		VectorUtil.add(sum, ang0, ang1, lin0, lin1);
 
-		return sum.x + sum.y + sum.z;
+		return sum.get(X)+ sum.get(Y)+ sum.get(Z);
 	}
 
-	public float getRelativeVelocity(Vector3f linvelA, Vector3f angvelA, Vector3f linvelB, Vector3f angvelB) {
-		Vector3f linrel = Stack.alloc(Vector3f.class);
+	public float getRelativeVelocity(Vector linvelA, Vector angvelA, Vector linvelB, Vector angvelB) {
+		Vector linrel = Stack.alloc(new Vector(3));
 		linrel.sub(linvelA, linvelB);
 
-		Vector3f angvela = Stack.alloc(Vector3f.class);
+		Vector angvela = Stack.alloc(new Vector(3));
 		VectorUtil.mul(angvela, angvelA, aJ);
 
-		Vector3f angvelb = Stack.alloc(Vector3f.class);
+		Vector angvelb = Stack.alloc(new Vector(3));
 		VectorUtil.mul(angvelb, angvelB, bJ);
 
 		VectorUtil.mul(linrel, linrel, linearJointAxis);
@@ -212,7 +216,7 @@ public class JacobianEntry {
 		angvela.add(angvelb);
 		angvela.add(linrel);
 
-		float rel_vel2 = angvela.x + angvela.y + angvela.z;
+		float rel_vel2 = angvela.get(X)+ angvela.get(Y)+ angvela.get(Z);
 		return rel_vel2 + BulletGlobals.FLT_EPSILON;
 	}
 	

@@ -27,12 +27,15 @@
 
 package com.elusivehawk.engine.physics.jbullet.extras.gimpact;
 
-import com.elusivehawk.engine.math.Vector3f;
-import com.elusivehawk.engine.math.Vector4f;
+import static com.elusivehawk.engine.math.MathConst.*;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
 import com.elusivehawk.engine.physics.jbullet.linearmath.VectorUtil;
 import cz.advel.stack.Stack;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  *
  * @author jezek2
@@ -49,21 +52,21 @@ class GeometryOperations {
 	/**
 	 * Calc a plane from a triangle edge an a normal.
 	 */
-	public static void edge_plane(Vector3f e1, Vector3f e2, Vector3f normal, Vector4f plane) {
-		Vector3f planenormal = Stack.alloc(Vector3f.class);
+	public static void edge_plane(Vector e1, Vector e2, Vector normal, Vector plane) {
+		Vector planenormal = Stack.alloc(new Vector(3));
 		planenormal.sub(e2, e1);
 		planenormal.cross(planenormal, normal);
 		planenormal.normalize();
 
 		plane.set(planenormal);
-		plane.w = e2.dot(planenormal);
+		plane.set(W, e2.dot(planenormal));
 	}
 	
 	/**
 	 * Finds the closest point(cp) to (v) on a segment (e1,e2).
 	 */
-	public static void closest_point_on_segment(Vector3f cp, Vector3f v, Vector3f e1, Vector3f e2) {
-		Vector3f n = Stack.alloc(Vector3f.class);
+	public static void closest_point_on_segment(Vector cp, Vector v, Vector e1, Vector e2) {
+		Vector n = Stack.alloc(new Vector(3));
 		n.sub(e2, e1);
 		cp.sub(v, e1);
 		float _scalar = cp.dot(n) / n.dot(n);
@@ -83,7 +86,7 @@ class GeometryOperations {
 	 * 
 	 * @return -0 if the ray never intersects, -1 if the ray collides in front, -2 if the ray collides in back
 	 */
-	public static int line_plane_collision(Vector4f plane, Vector3f vDir, Vector3f vPoint, Vector3f pout, float[] tparam, float tmin, float tmax) {
+	public static int line_plane_collision(Vector plane, Vector vDir, Vector vPoint, Vector pout, float[] tparam, float tmin, float tmax) {
 		float _dotdir = VectorUtil.dot3(vDir, plane);
 
 		if (Math.abs(_dotdir) < PLANEDIREPSILON) {
@@ -110,45 +113,45 @@ class GeometryOperations {
 	/**
 	 * Find closest points on segments.
 	 */
-	public static void segment_collision(Vector3f vA1, Vector3f vA2, Vector3f vB1, Vector3f vB2, Vector3f vPointA, Vector3f vPointB) {
-		Vector3f AD = Stack.alloc(Vector3f.class);
+	public static void segment_collision(Vector vA1, Vector vA2, Vector vB1, Vector vB2, Vector vPointA, Vector vPointB) {
+		Vector AD = Stack.alloc(new Vector(3));
 		AD.sub(vA2, vA1);
 
-		Vector3f BD = Stack.alloc(Vector3f.class);
+		Vector BD = Stack.alloc(new Vector(3));
 		BD.sub(vB2, vB1);
 
-		Vector3f N = Stack.alloc(Vector3f.class);
+		Vector N = Stack.alloc(new Vector(3));
 		N.cross(AD, BD);
 		float[] tp = new float[] { N.lengthSquared() };
 
-		Vector4f _M = Stack.alloc(Vector4f.class);//plane
+		Vector _M = Stack.alloc(new Vector(4));//plane
 
 		if (tp[0] < BulletGlobals.SIMD_EPSILON)//ARE PARALELE
 		{
 			// project B over A
 			boolean invert_b_order = false;
-			_M.x = vB1.dot(AD);
-			_M.y = vB2.dot(AD);
+			_M.set(X, vB1.dot(AD), false);
+			_M.set(Y, vB2.dot(AD), false);
 
-			if (_M.x > _M.y) {
+			if (_M.get(X)> _M.get(Y)) {
 				invert_b_order = true;
 				//BT_SWAP_NUMBERS(_M[0],_M[1]);
-				_M.x = _M.x + _M.y;
-				_M.y = _M.x - _M.y;
-				_M.x = _M.x - _M.y;
+				_M.set(X, _M.get(X)+ _M.get(Y));
+				_M.set(Y, _M.get(X)- _M.get(Y));
+				_M.set(X, _M.get(X)- _M.get(Y));
 			}
-			_M.z = vA1.dot(AD);
-			_M.w = vA2.dot(AD);
+			_M.set(Z, vA1.dot(AD));
+			_M.set(W, vA2.dot(AD));
 			// mid points
-			N.x = (_M.x + _M.y) * 0.5f;
-			N.y = (_M.z + _M.w) * 0.5f;
+			N.set(X, (_M.get(X)+ _M.get(Y)) * 0.5f);
+			N.set(Y, (_M.get(Z)+ _M.get(W)) * 0.5f);
 
-			if (N.x < N.y) {
-				if (_M.y < _M.z) {
+			if (N.get(X)< N.get(Y)) {
+				if (_M.get(Y)< _M.get(Z)) {
 					vPointB = invert_b_order ? vB1 : vB2;
 					vPointA = vA1;
 				}
-				else if (_M.y < _M.w) {
+				else if (_M.get(Y)< _M.get(W)) {
 					vPointB = invert_b_order ? vB1 : vB2;
 					closest_point_on_segment(vPointA, vPointB, vA1, vA2);
 				}
@@ -158,11 +161,11 @@ class GeometryOperations {
 				}
 			}
 			else {
-				if (_M.w < _M.x) {
+				if (_M.get(W)< _M.get(X)) {
 					vPointB = invert_b_order ? vB2 : vB1;
 					vPointA = vA2;
 				}
-				else if (_M.w < _M.y) {
+				else if (_M.get(W)< _M.get(Y)) {
 					vPointA = vA2;
 					closest_point_on_segment(vPointB, vPointA, vB1, vB2);
 				}
@@ -175,7 +178,7 @@ class GeometryOperations {
 		}
 
 		N.cross(N, BD);
-		_M.set(N.x, N.y, N.z, vB1.dot(N));
+		_M.set(N.get(X), N.get(Y), N.get(Z), vB1.dot(N));
 
 		// get point A as the plane collision point
 		line_plane_collision(_M, AD, vA1, vPointA, tp, 0f, 1f);

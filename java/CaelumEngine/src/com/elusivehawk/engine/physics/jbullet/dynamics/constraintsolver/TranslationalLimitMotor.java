@@ -30,12 +30,14 @@ http://gimpact.sf.net
 
 package com.elusivehawk.engine.physics.jbullet.dynamics.constraintsolver;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.dynamics.RigidBody;
-import com.elusivehawk.engine.physics.jbullet.linearmath.VectorUtil;
 import cz.advel.stack.Stack;
 import cz.advel.stack.StaticAlloc;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  *
  * @author jezek2
@@ -44,14 +46,15 @@ public class TranslationalLimitMotor {
 	
 	//protected final BulletStack stack = BulletStack.get();
 	
-	public final Vector3f lowerLimit = new Vector3f(); //!< the constraint lower limits
-	public final Vector3f upperLimit = new Vector3f(); //!< the constraint upper limits
-	public final Vector3f accumulatedImpulse = new Vector3f();
+	public final Vector lowerLimit = new Vector(); //!< the constraint lower limits
+	public final Vector upperLimit = new Vector(); //!< the constraint upper limits
+	public final Vector accumulatedImpulse = new Vector();
 	
 	public float limitSoftness; //!< Softness for linear limit
 	public float damping; //!< Damping for linear limit
 	public float restitution; //! Bounce parameter for linear limit
 
+	@SuppressWarnings("unqualified-field-access")
 	public TranslationalLimitMotor() {
 		lowerLimit.set(0f, 0f, 0f);
 		upperLimit.set(0f, 0f, 0f);
@@ -62,6 +65,7 @@ public class TranslationalLimitMotor {
 		restitution = 0.5f;
 	}
 
+	@SuppressWarnings("unqualified-field-access")
 	public TranslationalLimitMotor(TranslationalLimitMotor other) {
 		lowerLimit.set(other.lowerLimit);
 		upperLimit.set(other.upperLimit);
@@ -80,26 +84,26 @@ public class TranslationalLimitMotor {
 	 * - limitIndex: first 3 are linear, next 3 are angular
 	 */
 	public boolean isLimited(int limitIndex) {
-		return (VectorUtil.getCoord(upperLimit, limitIndex) >= VectorUtil.getCoord(lowerLimit, limitIndex));
+		return (this.upperLimit.get(limitIndex) >= this.lowerLimit.get(limitIndex));
 	}
 
 	@StaticAlloc
-	public float solveLinearAxis(float timeStep, float jacDiagABInv, RigidBody body1, Vector3f pointInA, RigidBody body2, Vector3f pointInB, int limit_index, Vector3f axis_normal_on_a, Vector3f anchorPos) {
-		Vector3f tmp = Stack.alloc(Vector3f.class);
-		Vector3f tmpVec = Stack.alloc(Vector3f.class);
+	public float solveLinearAxis(float timeStep, float jacDiagABInv, RigidBody body1, Vector pointInA, RigidBody body2, Vector pointInB, int limit_index, Vector axis_normal_on_a, Vector anchorPos) {
+		Vector tmp = Stack.alloc(new Vector(3));
+		Vector tmpVec = Stack.alloc(new Vector(3));
 		
 		// find relative velocity
-		Vector3f rel_pos1 = Stack.alloc(Vector3f.class);
+		Vector rel_pos1 = Stack.alloc(new Vector(3));
 		//rel_pos1.sub(pointInA, body1.getCenterOfMassPosition(tmpVec));
 		rel_pos1.sub(anchorPos, body1.getCenterOfMassPosition(tmpVec));
 
-		Vector3f rel_pos2 = Stack.alloc(Vector3f.class);
+		Vector rel_pos2 = Stack.alloc(new Vector(3));
 		//rel_pos2.sub(pointInB, body2.getCenterOfMassPosition(tmpVec));
 		rel_pos2.sub(anchorPos, body2.getCenterOfMassPosition(tmpVec));
 
-		Vector3f vel1 = body1.getVelocityInLocalPoint(rel_pos1, Stack.alloc(Vector3f.class));
-		Vector3f vel2 = body2.getVelocityInLocalPoint(rel_pos2, Stack.alloc(Vector3f.class));
-		Vector3f vel = Stack.alloc(Vector3f.class);
+		Vector vel1 = body1.getVelocityInLocalPoint(rel_pos1, Stack.alloc(new Vector(3)));
+		Vector vel2 = body2.getVelocityInLocalPoint(rel_pos2, Stack.alloc(new Vector(3)));
+		Vector vel = Stack.alloc(new Vector(3));
 		vel.sub(vel1, vel2);
 
 		float rel_vel = axis_normal_on_a.dot(vel);
@@ -112,8 +116,8 @@ public class TranslationalLimitMotor {
 		float lo = -1e30f;
 		float hi = 1e30f;
 
-		float minLimit = VectorUtil.getCoord(lowerLimit, limit_index);
-		float maxLimit = VectorUtil.getCoord(upperLimit, limit_index);
+		float minLimit = this.lowerLimit.get(limit_index);
+		float maxLimit = this.upperLimit.get(limit_index);
 
 		// handle the limits
 		if (minLimit < maxLimit) {
@@ -135,14 +139,14 @@ public class TranslationalLimitMotor {
 			}
 		}
 
-		float normalImpulse = limitSoftness * (restitution * depth / timeStep - damping * rel_vel) * jacDiagABInv;
+		float normalImpulse = this.limitSoftness * (this.restitution * depth / timeStep - this.damping * rel_vel) * jacDiagABInv;
 
-		float oldNormalImpulse = VectorUtil.getCoord(accumulatedImpulse, limit_index);
+		float oldNormalImpulse = this.accumulatedImpulse.get(limit_index);
 		float sum = oldNormalImpulse + normalImpulse;
-		VectorUtil.setCoord(accumulatedImpulse, limit_index, sum > hi ? 0f : sum < lo ? 0f : sum);
-		normalImpulse = VectorUtil.getCoord(accumulatedImpulse, limit_index) - oldNormalImpulse;
+		this.accumulatedImpulse.set(limit_index, sum > hi ? 0f : sum < lo ? 0f : sum);
+		normalImpulse = this.accumulatedImpulse.get(limit_index) - oldNormalImpulse;
 
-		Vector3f impulse_vector = Stack.alloc(Vector3f.class);
+		Vector impulse_vector = Stack.alloc(new Vector(3));
 		impulse_vector.scale(normalImpulse, axis_normal_on_a);
 		body1.applyImpulse(impulse_vector, rel_pos1);
 

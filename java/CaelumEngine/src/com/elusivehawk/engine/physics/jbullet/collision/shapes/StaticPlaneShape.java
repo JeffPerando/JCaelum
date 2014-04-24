@@ -23,13 +23,16 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.shapes;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.BroadphaseNativeType;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 import com.elusivehawk.engine.physics.jbullet.linearmath.TransformUtil;
 import com.elusivehawk.engine.physics.jbullet.linearmath.VectorUtil;
 import cz.advel.stack.Stack;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * StaticPlaneShape simulates an infinite non-moving (static) collision plane.
  * 
@@ -37,19 +40,19 @@ import cz.advel.stack.Stack;
  */
 public class StaticPlaneShape extends ConcaveShape {
 
-	protected final Vector3f localAabbMin = new Vector3f();
-	protected final Vector3f localAabbMax = new Vector3f();
+	protected final Vector localAabbMin = new Vector();
+	protected final Vector localAabbMax = new Vector();
 	
-	protected final Vector3f planeNormal = new Vector3f();
+	protected final Vector planeNormal = new Vector();
 	protected float planeConstant;
-	protected final Vector3f localScaling = new Vector3f(0f, 0f, 0f);
+	protected final Vector localScaling = new Vector(0f, 0f, 0f);
 
-	public StaticPlaneShape(Vector3f planeNormal, float planeConstant) {
+	public StaticPlaneShape(Vector planeNormal, float planeConstant) {
 		this.planeNormal.normalize(planeNormal);
 		this.planeConstant = planeConstant;
 	}
 
-	public Vector3f getPlaneNormal(Vector3f out) {
+	public Vector getPlaneNormal(Vector out) {
 		out.set(planeNormal);
 		return out;
 	}
@@ -59,34 +62,34 @@ public class StaticPlaneShape extends ConcaveShape {
 	}
 	
 	@Override
-	public void processAllTriangles(TriangleCallback callback, Vector3f aabbMin, Vector3f aabbMax) {
-		Vector3f tmp = Stack.alloc(Vector3f.class);
-		Vector3f tmp1 = Stack.alloc(Vector3f.class);
-		Vector3f tmp2 = Stack.alloc(Vector3f.class);
+	public void processAllTriangles(TriangleCallback callback, Vector aabbMin, Vector aabbMax) {
+		Vector tmp = Stack.alloc(new Vector(3));
+		Vector tmp1 = Stack.alloc(new Vector(3));
+		Vector tmp2 = Stack.alloc(new Vector(3));
 
-		Vector3f halfExtents = Stack.alloc(Vector3f.class);
+		Vector halfExtents = Stack.alloc(new Vector(3));
 		halfExtents.sub(aabbMax, aabbMin);
 		halfExtents.scale(0.5f);
 
 		float radius = halfExtents.length();
-		Vector3f center = Stack.alloc(Vector3f.class);
+		Vector center = Stack.alloc(new Vector(3));
 		center.add(aabbMax, aabbMin);
 		center.scale(0.5f);
 
 		// this is where the triangles are generated, given AABB and plane equation (normal/constant)
 
-		Vector3f tangentDir0 = Stack.alloc(Vector3f.class), tangentDir1 = Stack.alloc(Vector3f.class);
+		Vector tangentDir0 = Stack.alloc(new Vector(3)), tangentDir1 = Stack.alloc(new Vector(3));
 
 		// tangentDir0/tangentDir1 can be precalculated
 		TransformUtil.planeSpace1(planeNormal, tangentDir0, tangentDir1);
 
-		Vector3f supVertex0 = Stack.alloc(Vector3f.class), supVertex1 = Stack.alloc(Vector3f.class);
+		Vector supVertex0 = Stack.alloc(new Vector(3)), supVertex1 = Stack.alloc(new Vector(3));
 
-		Vector3f projectedCenter = Stack.alloc(Vector3f.class);
+		Vector projectedCenter = Stack.alloc(new Vector(3));
 		tmp.scale(planeNormal.dot(center) - planeConstant, planeNormal);
 		projectedCenter.sub(center, tmp);
 
-		Vector3f[] triangle = new Vector3f[] { Stack.alloc(Vector3f.class), Stack.alloc(Vector3f.class), Stack.alloc(Vector3f.class) };
+		Vector[] triangle = new Vector[] { Stack.alloc(new Vector(3)), Stack.alloc(new Vector(3)), Stack.alloc(new Vector(3)) };
 
 		tmp1.scale(radius, tangentDir0);
 		tmp2.scale(radius, tangentDir1);
@@ -122,7 +125,7 @@ public class StaticPlaneShape extends ConcaveShape {
 	}
 
 	@Override
-	public void getAabb(Transform t, Vector3f aabbMin, Vector3f aabbMax) {
+	public void getAabb(Transform t, Vector aabbMin, Vector aabbMax) {
 		aabbMin.set(-1e30f, -1e30f, -1e30f);
 		aabbMax.set(1e30f, 1e30f, 1e30f);
 	}
@@ -133,18 +136,18 @@ public class StaticPlaneShape extends ConcaveShape {
 	}
 
 	@Override
-	public void setLocalScaling(Vector3f scaling) {
+	public void setLocalScaling(Vector scaling) {
 		localScaling.set(scaling);
 	}
 
 	@Override
-	public Vector3f getLocalScaling(Vector3f out) {
+	public Vector getLocalScaling(Vector out) {
 		out.set(localScaling);
 		return out;
 	}
 
 	@Override
-	public void calculateLocalInertia(float mass, Vector3f inertia) {
+	public void calculateLocalInertia(float mass, Vector inertia) {
 		//moving concave objects not supported
 		inertia.set(0f, 0f, 0f);
 	}

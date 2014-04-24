@@ -23,7 +23,7 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.narrowphase;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.ConvexShape;
 import com.elusivehawk.engine.physics.jbullet.linearmath.MatrixUtil;
@@ -31,6 +31,9 @@ import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 import com.elusivehawk.engine.physics.jbullet.linearmath.VectorUtil;
 import cz.advel.stack.Stack;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * SubsimplexConvexCast implements Gino van den Bergens' paper
  * "Ray Casting against bteral Convex Objects with Application to Continuous Collision Detection"
@@ -64,12 +67,12 @@ public class SubsimplexConvexCast extends ConvexCast {
 	}
 	
 	public boolean calcTimeOfImpact(Transform fromA, Transform toA, Transform fromB, Transform toB, CastResult result) {
-		Vector3f tmp = Stack.alloc(Vector3f.class);
+		Vector tmp = Stack.alloc(new Vector(3));
 		
 		simplexSolver.reset();
 
-		Vector3f linVelA = Stack.alloc(Vector3f.class);
-		Vector3f linVelB = Stack.alloc(Vector3f.class);
+		Vector linVelA = Stack.alloc(new Vector(3));
+		Vector linVelB = Stack.alloc(new Vector(3));
 		linVelA.sub(toA.origin, fromA.origin);
 		linVelB.sub(toB.origin, fromB.origin);
 		
@@ -79,28 +82,28 @@ public class SubsimplexConvexCast extends ConvexCast {
 		Transform interpolatedTransB = Stack.alloc(fromB);
 
 		// take relative motion
-		Vector3f r = Stack.alloc(Vector3f.class);
+		Vector r = Stack.alloc(new Vector(3));
 		r.sub(linVelA, linVelB);
 		
-		Vector3f v = Stack.alloc(Vector3f.class);
+		Vector v = Stack.alloc(new Vector(3));
 
 		tmp.negate(r);
 		MatrixUtil.transposeTransform(tmp, tmp, fromA.basis);
-		Vector3f supVertexA = convexA.localGetSupportingVertex(tmp, Stack.alloc(Vector3f.class));
+		Vector supVertexA = convexA.localGetSupportingVertex(tmp, Stack.alloc(new Vector(3)));
 		fromA.transform(supVertexA);
 		
 		MatrixUtil.transposeTransform(tmp, r, fromB.basis);
-		Vector3f supVertexB = convexB.localGetSupportingVertex(tmp, Stack.alloc(Vector3f.class));
+		Vector supVertexB = convexB.localGetSupportingVertex(tmp, Stack.alloc(new Vector(3)));
 		fromB.transform(supVertexB);
 		
 		v.sub(supVertexA, supVertexB);
 		
 		int maxIter = MAX_ITERATIONS;
 
-		Vector3f n = Stack.alloc(Vector3f.class);
+		Vector n = Stack.alloc(new Vector(3));
 		n.set(0f, 0f, 0f);
 		boolean hasResult = false;
-		Vector3f c = Stack.alloc(Vector3f.class);
+		Vector c = Stack.alloc(new Vector(3));
 
 		float lastLambda = lambda;
 
@@ -110,7 +113,7 @@ public class SubsimplexConvexCast extends ConvexCast {
 		//#else
 		float epsilon = 0.0001f;
 		//#endif
-		Vector3f w = Stack.alloc(Vector3f.class), p = Stack.alloc(Vector3f.class);
+		Vector w = Stack.alloc(new Vector(3)), p = Stack.alloc(new Vector(3));
 		float VdotR;
 
 		while ((dist2 > epsilon) && (maxIter--) != 0) {
@@ -184,8 +187,8 @@ public class SubsimplexConvexCast extends ConvexCast {
 		if (result.normal.dot(r) >= -result.allowedPenetration)
 			return false;
 
-		Vector3f hitA = Stack.alloc(Vector3f.class);
-		Vector3f hitB = Stack.alloc(Vector3f.class);
+		Vector hitA = Stack.alloc(new Vector(3));
+		Vector hitB = Stack.alloc(new Vector(3));
 		simplexSolver.compute_points(hitA,hitB);
 		result.hitPoint.set(hitB);
 		return true;

@@ -23,18 +23,18 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.dispatch;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.CollisionAlgorithm;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.CollisionAlgorithmConstructionInfo;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.DispatcherInfo;
 import com.elusivehawk.engine.physics.jbullet.collision.narrowphase.ConvexCast;
 import com.elusivehawk.engine.physics.jbullet.collision.narrowphase.ConvexPenetrationDepthSolver;
+import com.elusivehawk.engine.physics.jbullet.collision.narrowphase.DiscreteCollisionDetectorInterface.ClosestPointInput;
 import com.elusivehawk.engine.physics.jbullet.collision.narrowphase.GjkConvexCast;
 import com.elusivehawk.engine.physics.jbullet.collision.narrowphase.GjkPairDetector;
 import com.elusivehawk.engine.physics.jbullet.collision.narrowphase.PersistentManifold;
 import com.elusivehawk.engine.physics.jbullet.collision.narrowphase.SimplexSolverInterface;
 import com.elusivehawk.engine.physics.jbullet.collision.narrowphase.VoronoiSimplexSolver;
-import com.elusivehawk.engine.physics.jbullet.collision.narrowphase.DiscreteCollisionDetectorInterface.ClosestPointInput;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.ConvexShape;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.SphereShape;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
@@ -42,6 +42,9 @@ import com.elusivehawk.engine.physics.jbullet.util.ObjectArrayList;
 import com.elusivehawk.engine.physics.jbullet.util.ObjectPool;
 import cz.advel.stack.Stack;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * ConvexConvexAlgorithm collision algorithm implements time of impact, convex
  * closest points and penetration depth calculations.
@@ -138,7 +141,7 @@ public class ConvexConvexAlgorithm extends CollisionAlgorithm {
 	
 	@Override
 	public float calculateTimeOfImpact(CollisionObject col0, CollisionObject col1, DispatcherInfo dispatchInfo, ManifoldResult resultOut) {
-		Vector3f tmp = Stack.alloc(Vector3f.class);
+		Vector tmp = Stack.alloc(new Vector(3));
 		
 		Transform tmpTrans1 = Stack.alloc(Transform.class);
 		Transform tmpTrans2 = Stack.alloc(Transform.class);

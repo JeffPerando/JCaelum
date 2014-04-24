@@ -23,13 +23,19 @@
 
 package com.elusivehawk.engine.physics.jbullet.linearmath;
 
+import static com.elusivehawk.engine.math.MathConst.X;
+import static com.elusivehawk.engine.math.MathConst.Y;
+import static com.elusivehawk.engine.math.MathConst.Z;
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.Quaternion;
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
 import cz.advel.stack.Stack;
 import cz.advel.stack.StaticAlloc;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * Utility functions for transforms.
  * 
@@ -44,27 +50,27 @@ public class TransformUtil {
 		return 1f / (float)Math.sqrt(x);  /* reciprocal square root */
 	}
 
-	public static void planeSpace1(Vector3f n, Vector3f p, Vector3f q) {
-		if (Math.abs(n.z) > SIMDSQRT12) {
+	public static void planeSpace1(Vector n, Vector p, Vector q) {
+		if (Math.abs(n.get(Z)) > SIMDSQRT12) {
 			// choose p in y-z plane
-			float a = n.y * n.y + n.z * n.z;
+			float a = n.get(Y) * n.get(Y) + n.get(Z) * n.get(Z);
 			float k = recipSqrt(a);
-			p.set(0, -n.z * k, n.y * k);
+			p.set(0, -n.get(Z) * k, n.get(Y) * k);
 			// set q = n x p
-			q.set(a * k, -n.x * p.z, n.x * p.y);
+			q.set(a * k, -n.get(X) * p.get(Z), n.get(X) * p.get(Y));
 		}
 		else {
 			// choose p in x-y plane
-			float a = n.x * n.x + n.y * n.y;
+			float a = n.get(X) * n.get(X) + n.get(Y) * n.get(Y);
 			float k = recipSqrt(a);
-			p.set(-n.y * k, n.x * k, 0);
+			p.set(-n.get(Y) * k, n.get(X) * k, 0);
 			// set q = n x p
-			q.set(-n.z * p.y, n.z * p.x, a * k);
+			q.set(-n.get(Z) * p.get(Y), n.get(Z) * p.get(X), a * k);
 		}
 	}
 	
 	@StaticAlloc
-	public static void integrateTransform(Transform curTrans, Vector3f linvel, Vector3f angvel, float timeStep, Transform predictedTransform) {
+	public static void integrateTransform(Transform curTrans, Vector linvel, Vector angvel, float timeStep, Transform predictedTransform) {
 		predictedTransform.origin.scaleAdd(timeStep, linvel, curTrans.origin);
 //	//#define QUATERNION_DERIVATIVE
 //	#ifdef QUATERNION_DERIVATIVE
@@ -75,7 +81,7 @@ public class TransformUtil {
 		// Exponential map
 		// google for "Practical Parameterization of Rotations Using the Exponential Map", F. Sebastian Grassia
 		
-		Vector3f axis = Stack.alloc(Vector3f.class);
+		Vector axis = Stack.alloc(new Vector(3));
 		float fAngle = angvel.length();
 
 		// limit the angular motion
@@ -97,7 +103,7 @@ public class TransformUtil {
 			dorn.set(c, axis.get(c), false);
 		}
 		dorn.set(3, (float)Math.cos(fAngle * timeStep * 0.5f));
-		//dorn.set(axis.x, axis.y, axis.z, (float) Math.cos(fAngle * timeStep * 0.5f));
+		//dorn.set(axis.get(X), axis.get(Y), axis.get(Z), (float) Math.cos(fAngle * timeStep * 0.5f));
 		Quaternion orn0 = curTrans.getRotation(Stack.alloc(Quaternion.class));
 
 		Quaternion predictedOrn = Stack.alloc(Quaternion.class);
@@ -107,17 +113,17 @@ public class TransformUtil {
 		predictedTransform.setRotation(predictedOrn);
 	}
 
-	public static void calculateVelocity(Transform transform0, Transform transform1, float timeStep, Vector3f linVel, Vector3f angVel) {
+	public static void calculateVelocity(Transform transform0, Transform transform1, float timeStep, Vector linVel, Vector angVel) {
 		linVel.sub(transform1.origin, transform0.origin);
 		linVel.scale(1f / timeStep);
 
-		Vector3f axis = Stack.alloc(Vector3f.class);
+		Vector axis = Stack.alloc(new Vector(3));
 		float[] angle = new float[1];
 		calculateDiffAxisAngle(transform0, transform1, axis, angle);
 		angVel.scale(angle[0] / timeStep, axis);
 	}
 	
-	public static void calculateDiffAxisAngle(Transform transform0, Transform transform1, Vector3f axis, float[] angle) {
+	public static void calculateDiffAxisAngle(Transform transform0, Transform transform1, Vector axis, float[] angle) {
 // #ifdef USE_QUATERNION_DIFF
 //		btQuaternion orn0 = transform0.getRotation();
 //		btQuaternion orn1a = transform1.getRotation();

@@ -27,7 +27,7 @@
 
 package com.elusivehawk.engine.physics.jbullet.extras.gimpact;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.CollisionShape;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.StridingMeshInterface;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.TriangleCallback;
@@ -36,6 +36,9 @@ import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 import com.elusivehawk.engine.physics.jbullet.util.IntArrayList;
 import cz.advel.stack.Stack;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * This class manages a sub part of a mesh supplied by the StridingMeshInterface interface.<p>
  * 
@@ -113,7 +116,7 @@ public class GImpactMeshShapePart extends GImpactShapeInterface {
 	}
 
 	@Override
-	public void calculateLocalInertia(float mass, Vector3f inertia) {
+	public void calculateLocalInertia(float mass, Vector inertia) {
 		lockChildShapes();
 		
 		//#define CALC_EXACT_INERTIA 1
@@ -123,7 +126,7 @@ public class GImpactMeshShapePart extends GImpactShapeInterface {
 		int i = getVertexCount();
 		float pointmass = mass / (float)i;
 
-		Vector3f pointintertia = Stack.alloc(Vector3f.class);
+		Vector pointintertia = Stack.alloc(new Vector(3));
 
 		while ((i--) != 0) {
 			getVertex(i, pointintertia);
@@ -135,9 +138,9 @@ public class GImpactMeshShapePart extends GImpactShapeInterface {
 		//
 		//// Calc box inertia
 		//
-		//float lx= localAABB.max.x - localAABB.min.x;
-		//float ly= localAABB.max.y - localAABB.min.y;
-		//float lz= localAABB.max.z - localAABB.min.z;
+		//float lx= localAABB.max.get(X)- localAABB.min.x;
+		//float ly= localAABB.max.get(Y)- localAABB.min.y;
+		//float lz= localAABB.max.get(Z)- localAABB.min.z;
 		//float x2 = lx*lx;
 		//float y2 = ly*ly;
 		//float z2 = lz*lz;
@@ -184,7 +187,7 @@ public class GImpactMeshShapePart extends GImpactShapeInterface {
 		return primitive_manager.get_vertex_count();
 	}
 
-	public void getVertex(int vertex_index, Vector3f vertex) {
+	public void getVertex(int vertex_index, Vector vertex) {
 		primitive_manager.get_vertex(vertex_index, vertex);
 	}
 
@@ -200,13 +203,13 @@ public class GImpactMeshShapePart extends GImpactShapeInterface {
 	}
 
 	@Override
-	public void setLocalScaling(Vector3f scaling) {
+	public void setLocalScaling(Vector scaling) {
 		primitive_manager.scale.set(scaling);
 		postUpdate();
 	}
 
 	@Override
-	public Vector3f getLocalScaling(Vector3f out) {
+	public Vector getLocalScaling(Vector out) {
 		out.set(primitive_manager.scale);
 		return out;
 	}
@@ -216,7 +219,7 @@ public class GImpactMeshShapePart extends GImpactShapeInterface {
 	}
 
 	@Override
-	public void processAllTriangles(TriangleCallback callback, Vector3f aabbMin, Vector3f aabbMax) {
+	public void processAllTriangles(TriangleCallback callback, Vector aabbMin, Vector aabbMax) {
 		lockChildShapes();
 		AABB box = Stack.alloc(AABB.class);
 		box.min.set(aabbMin);

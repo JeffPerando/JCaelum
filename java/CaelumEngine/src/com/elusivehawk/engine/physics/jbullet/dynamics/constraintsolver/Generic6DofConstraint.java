@@ -30,18 +30,18 @@ http://gimpact.sf.net
 
 package com.elusivehawk.engine.physics.jbullet.dynamics.constraintsolver;
 
-/// 
+import static com.elusivehawk.engine.math.MathConst.*;
 import com.elusivehawk.engine.math.Matrix;
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
 import com.elusivehawk.engine.physics.jbullet.dynamics.RigidBody;
 import com.elusivehawk.engine.physics.jbullet.linearmath.MatrixUtil;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
-import com.elusivehawk.engine.physics.jbullet.linearmath.VectorUtil;
 import cz.advel.stack.Stack;
-/*!
 
-*/
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * Generic6DofConstraint between two rigidbodies each with a pivot point that descibes
  * the axis location in local space.<p>
@@ -99,13 +99,14 @@ public class Generic6DofConstraint extends TypedConstraint {
 	protected float timeStep;
     protected final Transform calculatedTransformA = new Transform();
     protected final Transform calculatedTransformB = new Transform();
-    protected final Vector3f calculatedAxisAngleDiff = new Vector3f();
-    protected final Vector3f[] calculatedAxis/*[3]*/ = new Vector3f[] { new Vector3f(), new Vector3f(), new Vector3f() };
+    protected final Vector calculatedAxisAngleDiff = new Vector();
+    protected final Vector[] calculatedAxis/*[3]*/ = new Vector[] { new Vector(), new Vector(), new Vector() };
 	
-	protected final Vector3f anchorPos = new Vector3f(); // point betwen pivots of bodies A and B to solve linear axes
+	protected final Vector anchorPos = new Vector(); // point betwen pivots of bodies A and B to solve linear axes
     
     protected boolean useLinearReferenceFrameA;
 
+	@SuppressWarnings("unqualified-field-access")
 	public Generic6DofConstraint() {
 		super(TypedConstraintType.D6_CONSTRAINT_TYPE);
 		useLinearReferenceFrameA = true;
@@ -127,7 +128,7 @@ public class Generic6DofConstraint extends TypedConstraint {
 	/**
 	 * MatrixToEulerXYZ from http://www.geometrictools.com/LibFoundation/Mathematics/Wm4Matrix3.inl.html
 	 */
-	private static boolean matrixToEulerXYZ(Matrix mat, Vector3f xyz) {
+	private static boolean matrixToEulerXYZ(Matrix mat, Vector xyz) {
 		//	// rot =  cy*cz          -cy*sz           sy
 		//	//        cz*sx*sy+cx*sz  cx*cz-sx*sy*sz -cy*sx
 		//	//       -cx*cz*sy+sx*sz  cz*sx+cx*sy*sz  cx*cy
@@ -135,23 +136,23 @@ public class Generic6DofConstraint extends TypedConstraint {
 
 		if (getMatrixElem(mat, 2) < 1.0f) {
 			if (getMatrixElem(mat, 2) > -1.0f) {
-				xyz.x = (float) Math.atan2(-getMatrixElem(mat, 5), getMatrixElem(mat, 8));
-				xyz.y = (float) Math.asin(getMatrixElem(mat, 2));
-				xyz.z = (float) Math.atan2(-getMatrixElem(mat, 1), getMatrixElem(mat, 0));
+				xyz.set(X, (float) Math.atan2(-getMatrixElem(mat, 5), getMatrixElem(mat, 8)));
+				xyz.set(Y, (float) Math.asin(getMatrixElem(mat, 2)));
+				xyz.set(Z, (float) Math.atan2(-getMatrixElem(mat, 1), getMatrixElem(mat, 0)));
 				return true;
 			}
 			
 			// WARNING.  Not unique.  XA - ZA = -atan2(r10,r11)
-			xyz.x = -(float) Math.atan2(getMatrixElem(mat, 3), getMatrixElem(mat, 4));
-			xyz.y = -BulletGlobals.SIMD_HALF_PI;
-			xyz.z = 0.0f;
+			xyz.set(X, -(float) Math.atan2(getMatrixElem(mat, 3), getMatrixElem(mat, 4)));
+			xyz.set(Y, -BulletGlobals.SIMD_HALF_PI);
+			xyz.set(Z, 0.0f);
 			return false;
 		}
 		
 		// WARNING.  Not unique.  XAngle + ZAngle = atan2(r10,r11)
-		xyz.x = (float) Math.atan2(getMatrixElem(mat, 3), getMatrixElem(mat, 4));
-		xyz.y = BulletGlobals.SIMD_HALF_PI;
-		xyz.z = 0.0f;
+		xyz.set(X, (float) Math.atan2(getMatrixElem(mat, 3), getMatrixElem(mat, 4)));
+		xyz.set(Y, BulletGlobals.SIMD_HALF_PI);
+		xyz.set(Z, 0.0f);
 
 		return false;
 	}
@@ -163,11 +164,11 @@ public class Generic6DofConstraint extends TypedConstraint {
 		Matrix mat = Stack.alloc(new Matrix(3, 3));
 
 		Matrix relative_frame = Stack.alloc(new Matrix(3, 3));
-		mat.set(calculatedTransformA.basis);
+		mat.set(this.calculatedTransformA.basis);
 		MatrixUtil.invert(mat);
-		relative_frame.mul(mat, calculatedTransformB.basis);
+		relative_frame.mul(mat, this.calculatedTransformB.basis);
 
-		matrixToEulerXYZ(relative_frame, calculatedAxisAngleDiff);
+		matrixToEulerXYZ(relative_frame, this.calculatedAxisAngleDiff);
 
 		// in euler angle mode we do not actually constrain the angular velocity
 		// along the axes axis[0] and axis[2] (although we do use axis[1]) :
@@ -184,15 +185,15 @@ public class Generic6DofConstraint extends TypedConstraint {
 		// easier to take the euler rate expression for d(angle[2])/dt with respect
 		// to the components of w and set that to 0.
 
-		Vector3f axis0 = Stack.alloc(Vector3f.class);
-		calculatedTransformB.basis.getColumn(0, axis0);
+		Vector axis0 = Stack.alloc(new Vector(3));
+		this.calculatedTransformB.basis.getColumn(0, axis0);
 
-		Vector3f axis2 = Stack.alloc(Vector3f.class);
-		calculatedTransformA.basis.getColumn(2, axis2);
+		Vector axis2 = Stack.alloc(new Vector(3));
+		this.calculatedTransformA.basis.getColumn(2, axis2);
 
-		calculatedAxis[1].cross(axis2, axis0);
-		calculatedAxis[0].cross(calculatedAxis[1], axis2);
-		calculatedAxis[2].cross(axis0, calculatedAxis[1]);
+		this.calculatedAxis[1].cross(axis2, axis0);
+		this.calculatedAxis[0].cross(this.calculatedAxis[1], axis2);
+		this.calculatedAxis[2].cross(axis0, this.calculatedAxis[1]);
 
 		//    if(m_debugDrawer)
 		//    {
@@ -213,54 +214,54 @@ public class Generic6DofConstraint extends TypedConstraint {
 	 * See also: Generic6DofConstraint.getCalculatedTransformA, Generic6DofConstraint.getCalculatedTransformB, Generic6DofConstraint.calculateAngleInfo
 	 */
 	public void calculateTransforms() {
-		rbA.getCenterOfMassTransform(calculatedTransformA);
-		calculatedTransformA.mul(frameInA);
+		this.rbA.getCenterOfMassTransform(this.calculatedTransformA);
+		this.calculatedTransformA.mul(this.frameInA);
 
-		rbB.getCenterOfMassTransform(calculatedTransformB);
-		calculatedTransformB.mul(frameInB);
+		this.rbB.getCenterOfMassTransform(this.calculatedTransformB);
+		this.calculatedTransformB.mul(this.frameInB);
 
 		calculateAngleInfo();
 	}
 	
-	protected void buildLinearJacobian(/*JacobianEntry jacLinear*/int jacLinear_index, Vector3f normalWorld, Vector3f pivotAInW, Vector3f pivotBInW) {
-		Matrix mat1 = rbA.getCenterOfMassTransform(Stack.alloc(Transform.class)).basis;
+	protected void buildLinearJacobian(/*JacobianEntry jacLinear*/int jacLinear_index, Vector normalWorld, Vector pivotAInW, Vector pivotBInW) {
+		Matrix mat1 = this.rbA.getCenterOfMassTransform(Stack.alloc(Transform.class)).basis;
 		mat1.transpose();
 
-		Matrix mat2 = rbB.getCenterOfMassTransform(Stack.alloc(Transform.class)).basis;
+		Matrix mat2 = this.rbB.getCenterOfMassTransform(Stack.alloc(Transform.class)).basis;
 		mat2.transpose();
 
-		Vector3f tmpVec = Stack.alloc(Vector3f.class);
+		Vector tmpVec = Stack.alloc(new Vector(3));
 		
-		Vector3f tmp1 = Stack.alloc(Vector3f.class);
-		tmp1.sub(pivotAInW, rbA.getCenterOfMassPosition(tmpVec));
+		Vector tmp1 = Stack.alloc(new Vector(3));
+		tmp1.sub(pivotAInW, this.rbA.getCenterOfMassPosition(tmpVec));
 
-		Vector3f tmp2 = Stack.alloc(Vector3f.class);
-		tmp2.sub(pivotBInW, rbB.getCenterOfMassPosition(tmpVec));
+		Vector tmp2 = Stack.alloc(new Vector(3));
+		tmp2.sub(pivotBInW, this.rbB.getCenterOfMassPosition(tmpVec));
 
-		jacLinear[jacLinear_index].init(
+		this.jacLinear[jacLinear_index].init(
 				mat1,
 				mat2,
 				tmp1,
 				tmp2,
 				normalWorld,
-				rbA.getInvInertiaDiagLocal(Stack.alloc(Vector3f.class)),
-				rbA.getInvMass(),
-				rbB.getInvInertiaDiagLocal(Stack.alloc(Vector3f.class)),
-				rbB.getInvMass());
+				this.rbA.getInvInertiaDiagLocal(Stack.alloc(new Vector(3))),
+				this.rbA.getInvMass(),
+				this.rbB.getInvInertiaDiagLocal(Stack.alloc(new Vector(3))),
+				this.rbB.getInvMass());
 	}
 
-	protected void buildAngularJacobian(/*JacobianEntry jacAngular*/int jacAngular_index, Vector3f jointAxisW) {
-		Matrix mat1 = rbA.getCenterOfMassTransform(Stack.alloc(Transform.class)).basis;
+	protected void buildAngularJacobian(/*JacobianEntry jacAngular*/int jacAngular_index, Vector jointAxisW) {
+		Matrix mat1 = this.rbA.getCenterOfMassTransform(Stack.alloc(Transform.class)).basis;
 		mat1.transpose();
 
-		Matrix mat2 = rbB.getCenterOfMassTransform(Stack.alloc(Transform.class)).basis;
+		Matrix mat2 = this.rbB.getCenterOfMassTransform(Stack.alloc(Transform.class)).basis;
 		mat2.transpose();
 
-		jacAng[jacAngular_index].init(jointAxisW,
+		this.jacAng[jacAngular_index].init(jointAxisW,
 				mat1,
 				mat2,
-				rbA.getInvInertiaDiagLocal(Stack.alloc(Vector3f.class)),
-				rbB.getInvInertiaDiagLocal(Stack.alloc(Vector3f.class)));
+				this.rbA.getInvInertiaDiagLocal(Stack.alloc(new Vector(3))),
+				this.rbB.getInvInertiaDiagLocal(Stack.alloc(new Vector(3))));
 	}
 
 	/**
@@ -269,45 +270,45 @@ public class Generic6DofConstraint extends TypedConstraint {
 	 * Generic6DofConstraint.buildJacobian must be called previously.
 	 */
 	public boolean testAngularLimitMotor(int axis_index) {
-		float angle = VectorUtil.getCoord(calculatedAxisAngleDiff, axis_index);
+		float angle = this.calculatedAxisAngleDiff.get(axis_index);
 
 		// test limits
-		angularLimits[axis_index].testLimitValue(angle);
-		return angularLimits[axis_index].needApplyTorques();
+		this.angularLimits[axis_index].testLimitValue(angle);
+		return this.angularLimits[axis_index].needApplyTorques();
 	}
 	
 	@Override
 	public void buildJacobian() {
 		// Clear accumulated impulses for the next simulation step
-		linearLimits.accumulatedImpulse.set(0f, 0f, 0f);
+		this.linearLimits.accumulatedImpulse.set(0f, 0f, 0f);
 		for (int i=0; i<3; i++) {
-			angularLimits[i].accumulatedImpulse = 0f;
+			this.angularLimits[i].accumulatedImpulse = 0f;
 		}
 		
 		// calculates transform
 		calculateTransforms();
 		
-		Vector3f tmpVec = Stack.alloc(Vector3f.class);
+		Vector tmpVec = Stack.alloc(new Vector(3));
 
 		//  const btVector3& pivotAInW = m_calculatedTransformA.getOrigin();
 		//  const btVector3& pivotBInW = m_calculatedTransformB.getOrigin();
 		calcAnchorPos();
-		Vector3f pivotAInW = Stack.alloc(anchorPos);
-		Vector3f pivotBInW = Stack.alloc(anchorPos);
+		Vector pivotAInW = Stack.alloc(this.anchorPos);
+		Vector pivotBInW = Stack.alloc(this.anchorPos);
 		
 		// not used here
 		//    btVector3 rel_pos1 = pivotAInW - m_rbA.getCenterOfMassPosition();
 		//    btVector3 rel_pos2 = pivotBInW - m_rbB.getCenterOfMassPosition();
 
-		Vector3f normalWorld = Stack.alloc(Vector3f.class);
+		Vector normalWorld = Stack.alloc(new Vector(3));
 		// linear part
 		for (int i=0; i<3; i++) {
-			if (linearLimits.isLimited(i)) {
-				if (useLinearReferenceFrameA) {
-					calculatedTransformA.basis.getColumn(i, normalWorld);
+			if (this.linearLimits.isLimited(i)) {
+				if (this.useLinearReferenceFrameA) {
+					this.calculatedTransformA.basis.getColumn(i, normalWorld);
 				}
 				else {
-					calculatedTransformB.basis.getColumn(i, normalWorld);
+					this.calculatedTransformB.basis.getColumn(i, normalWorld);
 				}
 
 				buildLinearJacobian(
@@ -338,43 +339,43 @@ public class Generic6DofConstraint extends TypedConstraint {
 
 		// linear
 
-		Vector3f pointInA = Stack.alloc(calculatedTransformA.origin);
-		Vector3f pointInB = Stack.alloc(calculatedTransformB.origin);
+		Vector pointInA = Stack.alloc(this.calculatedTransformA.origin);
+		Vector pointInB = Stack.alloc(this.calculatedTransformB.origin);
 
 		float jacDiagABInv;
-		Vector3f linear_axis = Stack.alloc(Vector3f.class);
+		Vector linear_axis = Stack.alloc(new Vector(3));
 		for (i = 0; i < 3; i++) {
-			if (linearLimits.isLimited(i)) {
-				jacDiagABInv = 1f / jacLinear[i].getDiagonal();
+			if (this.linearLimits.isLimited(i)) {
+				jacDiagABInv = 1f / this.jacLinear[i].getDiagonal();
 
-				if (useLinearReferenceFrameA) {
-					calculatedTransformA.basis.getColumn(i, linear_axis);
+				if (this.useLinearReferenceFrameA) {
+					this.calculatedTransformA.basis.getColumn(i, linear_axis);
 				}
 				else {
-					calculatedTransformB.basis.getColumn(i, linear_axis);
+					this.calculatedTransformB.basis.getColumn(i, linear_axis);
 				}
 
-				linearLimits.solveLinearAxis(
+				this.linearLimits.solveLinearAxis(
 						this.timeStep,
 						jacDiagABInv,
-						rbA, pointInA,
-						rbB, pointInB,
-						i, linear_axis, anchorPos);
+						this.rbA, pointInA,
+						this.rbB, pointInB,
+						i, linear_axis, this.anchorPos);
 
 			}
 		}
 
 		// angular
-		Vector3f angular_axis = Stack.alloc(Vector3f.class);
+		Vector angular_axis = Stack.alloc(new Vector(3));
 		float angularJacDiagABInv;
 		for (i = 0; i < 3; i++) {
-			if (angularLimits[i].needApplyTorques()) {
+			if (this.angularLimits[i].needApplyTorques()) {
 				// get axis
 				getAxis(i, angular_axis);
 
-				angularJacDiagABInv = 1f / jacAng[i].getDiagonal();
+				angularJacDiagABInv = 1f / this.jacAng[i].getDiagonal();
 
-				angularLimits[i].solveAngularLimits(this.timeStep, angular_axis, angularJacDiagABInv, rbA, rbB);
+				this.angularLimits[i].solveAngularLimits(this.timeStep, angular_axis, angularJacDiagABInv, this.rbA, this.rbB);
 			}
 		}
 	}
@@ -387,8 +388,8 @@ public class Generic6DofConstraint extends TypedConstraint {
 	 * Get the rotation axis in global coordinates.
 	 * Generic6DofConstraint.buildJacobian must be called previously.
 	 */
-	public Vector3f getAxis(int axis_index, Vector3f out) {
-		out.set(calculatedAxis[axis_index]);
+	public Vector getAxis(int axis_index, Vector out) {
+		out.set(this.calculatedAxis[axis_index]);
 		return out;
 	}
 
@@ -397,7 +398,7 @@ public class Generic6DofConstraint extends TypedConstraint {
 	 * Generic6DofConstraint.buildJacobian must be called previously.
 	 */
 	public float getAngle(int axis_index) {
-		return VectorUtil.getCoord(calculatedAxisAngleDiff, axis_index);
+		return this.calculatedAxisAngleDiff.get(axis_index);
 	}
 
 	/**
@@ -405,7 +406,7 @@ public class Generic6DofConstraint extends TypedConstraint {
 	 * See also: Generic6DofConstraint.getFrameOffsetA, Generic6DofConstraint.getFrameOffsetB, Generic6DofConstraint.calculateAngleInfo.
 	 */
 	public Transform getCalculatedTransformA(Transform out) {
-		out.set(calculatedTransformA);
+		out.set(this.calculatedTransformA);
 		return out;
 	}
 
@@ -414,52 +415,52 @@ public class Generic6DofConstraint extends TypedConstraint {
 	 * See also: Generic6DofConstraint.getFrameOffsetA, Generic6DofConstraint.getFrameOffsetB, Generic6DofConstraint.calculateAngleInfo.
 	 */
 	public Transform getCalculatedTransformB(Transform out) {
-		out.set(calculatedTransformB);
+		out.set(this.calculatedTransformB);
 		return out;
 	}
 
 	public Transform getFrameOffsetA(Transform out) {
-		out.set(frameInA);
+		out.set(this.frameInA);
 		return out;
 	}
 
 	public Transform getFrameOffsetB(Transform out) {
-		out.set(frameInB);
+		out.set(this.frameInB);
 		return out;
 	}
 	
-	public void setLinearLowerLimit(Vector3f linearLower) {
-		linearLimits.lowerLimit.set(linearLower);
+	public void setLinearLowerLimit(Vector linearLower) {
+		this.linearLimits.lowerLimit.set(linearLower);
 	}
 
-	public void setLinearUpperLimit(Vector3f linearUpper) {
-		linearLimits.upperLimit.set(linearUpper);
+	public void setLinearUpperLimit(Vector linearUpper) {
+		this.linearLimits.upperLimit.set(linearUpper);
 	}
 
-	public void setAngularLowerLimit(Vector3f angularLower) {
-		angularLimits[0].loLimit = angularLower.x;
-		angularLimits[1].loLimit = angularLower.y;
-		angularLimits[2].loLimit = angularLower.z;
+	public void setAngularLowerLimit(Vector angularLower) {
+		this.angularLimits[0].loLimit = angularLower.get(X);
+		this.angularLimits[1].loLimit = angularLower.get(Y);
+		this.angularLimits[2].loLimit = angularLower.get(Z);
 	}
 
-	public void setAngularUpperLimit(Vector3f angularUpper) {
-		angularLimits[0].hiLimit = angularUpper.x;
-		angularLimits[1].hiLimit = angularUpper.y;
-		angularLimits[2].hiLimit = angularUpper.z;
+	public void setAngularUpperLimit(Vector angularUpper) {
+		this.angularLimits[0].hiLimit = angularUpper.get(X);
+		this.angularLimits[1].hiLimit = angularUpper.get(Y);
+		this.angularLimits[2].hiLimit = angularUpper.get(Z);
 	}
 
 	/**
 	 * Retrieves the angular limit informacion.
 	 */
 	public RotationalLimitMotor getRotationalLimitMotor(int index) {
-		return angularLimits[index];
+		return this.angularLimits[index];
 	}
 
 	/**
 	 * Retrieves the limit informacion.
 	 */
 	public TranslationalLimitMotor getTranslationalLimitMotor() {
-		return linearLimits;
+		return this.linearLimits;
 	}
 
 	/**
@@ -467,12 +468,12 @@ public class Generic6DofConstraint extends TypedConstraint {
 	 */
 	public void setLimit(int axis, float lo, float hi) {
 		if (axis < 3) {
-			VectorUtil.setCoord(linearLimits.lowerLimit, axis, lo);
-			VectorUtil.setCoord(linearLimits.upperLimit, axis, hi);
+			this.linearLimits.lowerLimit.set(axis, lo);
+			this.linearLimits.upperLimit.set(axis, hi);
 		}
 		else {
-			angularLimits[axis - 3].loLimit = lo;
-			angularLimits[axis - 3].hiLimit = hi;
+			this.angularLimits[axis - 3].loLimit = lo;
+			this.angularLimits[axis - 3].hiLimit = hi;
 		}
 	}
 	
@@ -485,16 +486,16 @@ public class Generic6DofConstraint extends TypedConstraint {
 	 */
 	public boolean isLimited(int limitIndex) {
 		if (limitIndex < 3) {
-			return linearLimits.isLimited(limitIndex);
+			return this.linearLimits.isLimited(limitIndex);
 
 		}
-		return angularLimits[limitIndex - 3].isLimited();
+		return this.angularLimits[limitIndex - 3].isLimited();
 	}
 	
 	// overridable
 	public void calcAnchorPos() {
-		float imA = rbA.getInvMass();
-		float imB = rbB.getInvMass();
+		float imA = this.rbA.getInvMass();
+		float imB = this.rbB.getInvMass();
 		float weight;
 		if (imB == 0f) {
 			weight = 1f;
@@ -502,15 +503,15 @@ public class Generic6DofConstraint extends TypedConstraint {
 		else {
 			weight = imA / (imA + imB);
 		}
-		Vector3f pA = calculatedTransformA.origin;
-		Vector3f pB = calculatedTransformB.origin;
+		Vector pA = this.calculatedTransformA.origin;
+		Vector pB = this.calculatedTransformB.origin;
 
-		Vector3f tmp1 = Stack.alloc(Vector3f.class);
-		Vector3f tmp2 = Stack.alloc(Vector3f.class);
+		Vector tmp1 = Stack.alloc(new Vector(3));
+		Vector tmp2 = Stack.alloc(new Vector(3));
 
 		tmp1.scale(weight, pA);
 		tmp2.scale(1f - weight, pB);
-		anchorPos.add(tmp1, tmp2);
+		this.anchorPos.add(tmp1, tmp2);
 	}
 	
 }

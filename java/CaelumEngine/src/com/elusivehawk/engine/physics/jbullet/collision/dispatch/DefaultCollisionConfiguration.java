@@ -31,6 +31,9 @@ import com.elusivehawk.engine.physics.jbullet.collision.narrowphase.GjkEpaPenetr
 import com.elusivehawk.engine.physics.jbullet.collision.narrowphase.VoronoiSimplexSolver;
 import com.elusivehawk.engine.physics.jbullet.extras.gimpact.GImpactCollisionAlgorithm;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * Default implementation of {@link CollisionConfiguration}. Provides all core
  * collision algorithms. Some extra algorithms (like {@link GImpactCollisionAlgorithm GImpact})
@@ -60,6 +63,7 @@ public class DefaultCollisionConfiguration extends CollisionConfiguration {
 	protected CollisionAlgorithmCreateFunc planeConvexCF;
 	protected CollisionAlgorithmCreateFunc convexPlaneCF;
 	
+	@SuppressWarnings("unqualified-field-access")
 	public DefaultCollisionConfiguration() {
 		simplexSolver = new VoronoiSimplexSolver();
 	
@@ -73,7 +77,7 @@ public class DefaultCollisionConfiguration extends CollisionConfiguration {
 		/*
 		//default CreationFunctions, filling the m_doubleDispatch table
 		*/
-		convexConvexCreateFunc = new ConvexConvexAlgorithm.CreateFunc(simplexSolver, pdSolver);
+		convexConvexCreateFunc = new ConvexConvexAlgorithm.CreateFunc(this.simplexSolver, this.pdSolver);
 		convexConcaveCreateFunc = new ConvexConcaveCollisionAlgorithm.CreateFunc();
 		swappedConvexConcaveCreateFunc = new ConvexConcaveCollisionAlgorithm.SwappedCreateFunc();
 		compoundCreateFunc = new CompoundCollisionAlgorithm.CreateFunc();
@@ -147,7 +151,7 @@ public class DefaultCollisionConfiguration extends CollisionConfiguration {
 	@Override
 	public CollisionAlgorithmCreateFunc getCollisionAlgorithmCreateFunc(BroadphaseNativeType proxyType0, BroadphaseNativeType proxyType1) {
 		if ((proxyType0 == SPHERE_SHAPE_PROXYTYPE) && (proxyType1 == SPHERE_SHAPE_PROXYTYPE)) {
-			return sphereSphereCF;
+			return this.sphereSphereCF;
 		}
 
 		/*
@@ -178,37 +182,35 @@ public class DefaultCollisionConfiguration extends CollisionConfiguration {
 
 		if (proxyType0.isConvex() && (proxyType1 == STATIC_PLANE_PROXYTYPE))
 		{
-			return convexPlaneCF;
+			return this.convexPlaneCF;
 		}
 
 		if (proxyType1.isConvex() && (proxyType0 == STATIC_PLANE_PROXYTYPE))
 		{
-			return planeConvexCF;
+			return this.planeConvexCF;
 		}
 
 		if (proxyType0.isConvex() && proxyType1.isConvex()) {
-			return convexConvexCreateFunc;
+			return this.convexConvexCreateFunc;
 		}
 
 		if (proxyType0.isConvex() && proxyType1.isConcave()) {
-			return convexConcaveCreateFunc;
+			return this.convexConcaveCreateFunc;
 		}
 
 		if (proxyType1.isConvex() && proxyType0.isConcave()) {
-			return swappedConvexConcaveCreateFunc;
+			return this.swappedConvexConcaveCreateFunc;
 		}
 
 		if (proxyType0.isCompound()) {
-			return compoundCreateFunc;
+			return this.compoundCreateFunc;
 		}
-		else {
-			if (proxyType1.isCompound()) {
-				return swappedCompoundCreateFunc;
-			}
+		if (proxyType1.isCompound()) {
+			return this.swappedCompoundCreateFunc;
 		}
 
 		// failed to find an algorithm
-		return emptyCreateFunc;
+		return this.emptyCreateFunc;
 	}
 
 }

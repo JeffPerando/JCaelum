@@ -23,15 +23,18 @@
 
 package com.elusivehawk.engine.physics.jbullet.dynamics.vehicle;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * VehicleRaycaster is provides interface for between vehicle simulation and raycasting.
  * 
  * @author jezek2
  */
-public abstract class VehicleRaycaster {
-
-	public abstract Object castRay(Vector3f from, Vector3f to, VehicleRaycasterResult result);
+public abstract class VehicleRaycaster
+{
+	public abstract Object castRay(Vector from, Vector to, VehicleRaycasterResult result);
 	
 }

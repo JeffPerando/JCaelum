@@ -23,9 +23,13 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.shapes;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.MathConst;
+import com.elusivehawk.engine.math.Vector;
 import cz.advel.stack.Stack;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * Cylinder shape around the Z axis.
  * 
@@ -33,27 +37,27 @@ import cz.advel.stack.Stack;
  */
 public class CylinderShapeZ extends CylinderShape {
 
-	public CylinderShapeZ(Vector3f halfExtents) {
+	public CylinderShapeZ(Vector halfExtents) {
 		super(halfExtents, false);
 		upAxis = 2;
 		recalcLocalAabb();
 	}
 
 	@Override
-	public Vector3f localGetSupportingVertexWithoutMargin(Vector3f vec, Vector3f out) {
-		return cylinderLocalSupportZ(getHalfExtentsWithoutMargin(Stack.alloc(Vector3f.class)), vec, out);
+	public Vector localGetSupportingVertexWithoutMargin(Vector vec, Vector out) {
+		return cylinderLocalSupportZ(getHalfExtentsWithoutMargin(Stack.alloc(new Vector(3))), vec, out);
 	}
 
 	@Override
-	public void batchedUnitVectorGetSupportingVertexWithoutMargin(Vector3f[] vectors, Vector3f[] supportVerticesOut, int numVectors) {
+	public void batchedUnitVectorGetSupportingVertexWithoutMargin(Vector[] vectors, Vector[] supportVerticesOut, int numVectors) {
 		for (int i = 0; i < numVectors; i++) {
-			cylinderLocalSupportZ(getHalfExtentsWithoutMargin(Stack.alloc(Vector3f.class)), vectors[i], supportVerticesOut[i]);
+			cylinderLocalSupportZ(getHalfExtentsWithoutMargin(Stack.alloc(new Vector(3))), vectors[i], supportVerticesOut[i]);
 		}
 	}
 
 	@Override
 	public float getRadius() {
-		return getHalfExtentsWithMargin(Stack.alloc(Vector3f.class)).x;
+		return getHalfExtentsWithMargin(Stack.alloc(new Vector(3))).get(MathConst.X);
 	}
 
 	@Override

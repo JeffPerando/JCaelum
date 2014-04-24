@@ -27,9 +27,12 @@
 
 package com.elusivehawk.engine.physics.jbullet.extras.gimpact;
 
+import static com.elusivehawk.engine.math.MathConst.W;
+import static com.elusivehawk.engine.math.MathConst.X;
+import static com.elusivehawk.engine.math.MathConst.Y;
+import static com.elusivehawk.engine.math.MathConst.Z;
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.Vector;
-import static com.elusivehawk.engine.math.MathConst.*;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 import cz.advel.stack.Stack;
@@ -177,11 +180,11 @@ class BoxCollision {
 			}
 			
 			/*R1to0.getRow(0, tmp);
-			out.x = tmp.dot(point) + T1to0.get(X);
+			out.set(X, tmp.dot(point) + T1to0.get(X);
 			R1to0.getRow(1, tmp);
-			out.y = tmp.dot(point) + T1to0.get(Y);
+			out.set(Y, tmp.dot(point) + T1to0.get(Y);
 			R1to0.getRow(2, tmp);
-			out.z = tmp.dot(point) + T1to0.get(Z);*/
+			out.get(Z)= tmp.dot(point) + T1to0.get(Z);*/
 			return out;
 		}
 		
@@ -214,12 +217,12 @@ class BoxCollision {
 			this(other);
 			
 			increment_margin(margin);
-			/*min.x -= margin;
-			min.y -= margin;
-			min.z -= margin;
-			max.x += margin;
-			max.y += margin;
-			max.z += margin;*/
+			/*min.get(X)-= margin;
+			min.get(Y)-= margin;
+			min.get(Z)-= margin;
+			max.get(X)+= margin;
+			max.get(Y)+= margin;
+			max.get(Z)+= margin;*/
 		}
 
 		public void init(Vector V1, Vector V2, Vector V3, float margin)
@@ -255,12 +258,12 @@ class BoxCollision {
 				max.set(c, maxsrc.get(c) + margin, c == 2);
 				
 			}
-			/*min.x -= margin;
-			min.y -= margin;
-			min.z -= margin;
-			max.x += margin;
-			max.y += margin;
-			max.z += margin;*/
+			/*min.get(X)-= margin;
+			min.get(Y)-= margin;
+			min.get(Z)-= margin;
+			max.get(X)+= margin;
+			max.get(Y)+= margin;
+			max.get(Z)+= margin;*/
 		}
 
 		public void copy_with_margin(AABB other, float margin)
@@ -278,13 +281,13 @@ class BoxCollision {
 				
 			}
 			
-			/*min.x = BT_MIN3(V1.x, V2.x, V3.x);
-			min.y = BT_MIN3(V1.y, V2.y, V3.y);
-			min.z = BT_MIN3(V1.z, V2.z, V3.z);
+			/*min.set(X, BT_MIN3(V1.x, V2.x, V3.x);
+			min.set(Y, BT_MIN3(V1.y, V2.y, V3.y);
+			min.get(Z)= BT_MIN3(V1.z, V2.z, V3.z);
 
-			max.x = BT_MAX3(V1.x, V2.x, V3.x);
-			max.y = BT_MAX3(V1.y, V2.y, V3.y);
-			max.z = BT_MAX3(V1.z, V2.z, V3.z);*/
+			max.set(X, BT_MAX3(V1.x, V2.x, V3.x);
+			max.set(Y, BT_MAX3(V1.y, V2.y, V3.y);
+			max.get(Z)= BT_MAX3(V1.z, V2.z, V3.z);*/
 			
 		}
 
@@ -324,15 +327,15 @@ class BoxCollision {
 			
 			/*trans.basis.getRow(0, tmp);
 			tmp.absolute();
-			textends.x = extends_.dot(tmp);
+			textends.set(X, extends_.dot(tmp);
 
 			trans.basis.getRow(1, tmp);
 			tmp.absolute();
-			textends.y = extends_.dot(tmp);
+			textends.set(Y, extends_.dot(tmp);
 
 			trans.basis.getRow(2, tmp);
 			tmp.absolute();
-			textends.z = extends_.dot(tmp);*/
+			textends.get(Z)= extends_.dot(tmp);*/
 			
 			min.sub(center, textends);
 			max.add(center, textends);
@@ -367,15 +370,15 @@ class BoxCollision {
 			
 			/*trans.R1to0.getRow(0, tmp);
 			tmp.absolute();
-			textends.x = extends_.dot(tmp);
+			textends.set(X, extends_.dot(tmp);
 
 			trans.R1to0.getRow(1, tmp);
 			tmp.absolute();
-			textends.y = extends_.dot(tmp);
+			textends.set(Y, extends_.dot(tmp);
 
 			trans.R1to0.getRow(2, tmp);
 			tmp.absolute();
-			textends.z = extends_.dot(tmp);*/
+			textends.get(Z)= extends_.dot(tmp);*/
 			
 			min.sub(center, textends);
 			max.add(center, textends);
@@ -393,13 +396,13 @@ class BoxCollision {
 				
 			}
 			
-			/*min.x = Math.min(min.x, box.min.x);
-			min.y = Math.min(min.y, box.min.y);
-			min.z = Math.min(min.z, box.min.z);
+			/*min.set(X, Math.min(min.x, box.min.x);
+			min.set(Y, Math.min(min.y, box.min.y);
+			min.get(Z)= Math.min(min.z, box.min.z);
 
-			max.x = Math.max(max.x, box.max.x);
-			max.y = Math.max(max.y, box.max.y);
-			max.z = Math.max(max.z, box.max.z);*/
+			max.set(X, Math.max(max.x, box.max.x);
+			max.set(Y, Math.max(max.y, box.max.y);
+			max.get(Z)= Math.max(max.z, box.max.z);*/
 		}
 
 		/**
@@ -414,13 +417,13 @@ class BoxCollision {
 				
 			}
 			
-			/*min.x = Math.min(min.x, point.x);
-			min.y = Math.min(min.y, point.y);
-			min.z = Math.min(min.z, point.z);
+			/*min.set(X, Math.min(min.x, point.x);
+			min.set(Y, Math.min(min.y, point.y);
+			min.get(Z)= Math.min(min.z, point.z);
 
-			max.x = Math.max(max.x, point.x);
-			max.y = Math.max(max.y, point.y);
-			max.z = Math.max(max.z, point.z);*/
+			max.set(X, Math.max(max.x, point.x);
+			max.set(Y, Math.max(max.y, point.y);
+			max.get(Z)= Math.max(max.z, point.z);*/
 			
 		}
 		
@@ -445,13 +448,13 @@ class BoxCollision {
 				intersection.max.set(c, Math.min(other.max.get(c), max.get(c)), c == 2);
 				
 			}
-			/*intersection.min.x = Math.max(other.min.x, min.x);
-			intersection.min.y = Math.max(other.min.y, min.y);
-			intersection.min.z = Math.max(other.min.z, min.z);
+			/*intersection.min.set(X, Math.max(other.min.x, min.x);
+			intersection.min.set(Y, Math.max(other.min.y, min.y);
+			intersection.min.get(Z)= Math.max(other.min.z, min.z);
 
-			intersection.max.x = Math.min(other.max.x, max.x);
-			intersection.max.y = Math.min(other.max.y, max.y);
-			intersection.max.z = Math.min(other.max.z, max.z);*/
+			intersection.max.set(X, Math.min(other.max.x, max.x);
+			intersection.max.set(Y, Math.min(other.max.y, max.y);
+			intersection.max.get(Z)= Math.min(other.max.z, max.z);*/
 			
 		}
 
@@ -465,12 +468,12 @@ class BoxCollision {
 				}
 				
 			}
-			/*if (min.x > other.max.x ||
-			    max.x < other.min.x ||
-			    min.y > other.max.y ||
-			    max.y < other.min.y ||
-			    min.z > other.max.z ||
-			    max.z < other.min.z) {
+			/*if (min.get(X)> other.max.get(X)||
+			    max.get(X)< other.min.get(X)||
+			    min.get(Y)> other.max.get(Y)||
+			    max.get(Y)< other.min.get(Y)||
+			    min.get(Z)> other.max.get(Z)||
+			    max.get(Z)< other.min.z) {
 				return false;
 			}*/
 			return true;

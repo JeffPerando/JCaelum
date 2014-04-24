@@ -27,13 +27,16 @@
 
 package com.elusivehawk.engine.physics.jbullet.extras.gimpact;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.StridingMeshInterface;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.VertexData;
 import com.elusivehawk.engine.physics.jbullet.extras.gimpact.BoxCollision.AABB;
 import com.elusivehawk.engine.physics.jbullet.linearmath.VectorUtil;
 import cz.advel.stack.Stack;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  *
  * @author jezek2
@@ -42,7 +45,7 @@ class TrimeshPrimitiveManager extends PrimitiveManagerBase {
 
 	public float margin;
 	public StridingMeshInterface meshInterface;
-	public final Vector3f scale = new Vector3f();
+	public final Vector scale = new Vector();
 	public int part;
 	public int lock_count;
 
@@ -117,7 +120,7 @@ class TrimeshPrimitiveManager extends PrimitiveManagerBase {
 		out[2] = vertexData.getIndex(face_index*3+2);
 	}
 
-	public void get_vertex(int vertex_index, Vector3f vertex) {
+	public void get_vertex(int vertex_index, Vector vertex) {
 		vertexData.getVertex(vertex_index, vertex);
 		VectorUtil.mul(vertex, vertex, scale);
 	}

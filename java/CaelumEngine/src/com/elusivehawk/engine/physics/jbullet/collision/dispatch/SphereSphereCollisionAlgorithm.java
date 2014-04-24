@@ -23,7 +23,7 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.dispatch;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.CollisionAlgorithm;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.CollisionAlgorithmConstructionInfo;
@@ -35,6 +35,9 @@ import com.elusivehawk.engine.physics.jbullet.util.ObjectArrayList;
 import com.elusivehawk.engine.physics.jbullet.util.ObjectPool;
 import cz.advel.stack.Stack;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * Provides collision detection between two spheres.
  * 
@@ -84,7 +87,7 @@ public class SphereSphereCollisionAlgorithm extends CollisionAlgorithm {
 		SphereShape sphere0 = (SphereShape) col0.getCollisionShape();
 		SphereShape sphere1 = (SphereShape) col1.getCollisionShape();
 
-		Vector3f diff = Stack.alloc(Vector3f.class);
+		Vector diff = Stack.alloc(new Vector(3));
 		diff.sub(col0.getWorldTransform(tmpTrans1).origin, col1.getWorldTransform(tmpTrans2).origin);
 
 		float len = diff.length();
@@ -105,21 +108,21 @@ public class SphereSphereCollisionAlgorithm extends CollisionAlgorithm {
 		// distance (negative means penetration)
 		float dist = len - (radius0 + radius1);
 
-		Vector3f normalOnSurfaceB = Stack.alloc(Vector3f.class);
+		Vector normalOnSurfaceB = Stack.alloc(new Vector(3));
 		normalOnSurfaceB.set(1f, 0f, 0f);
 		if (len > BulletGlobals.FLT_EPSILON) {
 			normalOnSurfaceB.scale(1f / len, diff);
 		}
 
-		Vector3f tmp = Stack.alloc(Vector3f.class);
+		Vector tmp = Stack.alloc(new Vector(3));
 
 		// point on A (worldspace)
-		Vector3f pos0 = Stack.alloc(Vector3f.class);
+		Vector pos0 = Stack.alloc(new Vector(3));
 		tmp.scale(radius0, normalOnSurfaceB);
 		pos0.sub(col0.getWorldTransform(tmpTrans1).origin, tmp);
 
 		// point on B (worldspace)
-		Vector3f pos1 = Stack.alloc(Vector3f.class);
+		Vector pos1 = Stack.alloc(new Vector(3));
 		tmp.scale(radius1, normalOnSurfaceB);
 		pos1.add(col1.getWorldTransform(tmpTrans2).origin, tmp);
 

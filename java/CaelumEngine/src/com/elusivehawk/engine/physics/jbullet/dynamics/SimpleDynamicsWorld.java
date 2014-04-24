@@ -23,7 +23,7 @@
 
 package com.elusivehawk.engine.physics.jbullet.dynamics;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.BroadphaseInterface;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.Dispatcher;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.DispatcherInfo;
@@ -37,6 +37,9 @@ import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 import com.elusivehawk.engine.physics.jbullet.util.ObjectArrayList;
 import cz.advel.stack.Stack;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * SimpleDynamicsWorld serves as unit-test and to verify more complicated and
  * optimized dynamics worlds. Please use {@link DiscreteDynamicsWorld} instead
@@ -48,7 +51,7 @@ public class SimpleDynamicsWorld extends DynamicsWorld {
 
 	protected ConstraintSolver constraintSolver;
 	protected boolean ownsConstraintSolver;
-	protected final Vector3f gravity = new Vector3f(0f, 0f, -10f);
+	protected final Vector gravity = new Vector(0f, 0f, -10f);
 	
 	public SimpleDynamicsWorld(Dispatcher dispatcher, BroadphaseInterface pairCache, ConstraintSolver constraintSolver, CollisionConfiguration collisionConfiguration) {
 		super(dispatcher, pairCache, collisionConfiguration);
@@ -144,7 +147,7 @@ public class SimpleDynamicsWorld extends DynamicsWorld {
 	}
 
 	@Override
-	public void setGravity(Vector3f gravity) {
+	public void setGravity(Vector gravity) {
 		this.gravity.set(gravity);
 		for (int i = 0; i < collisionObjects.size(); i++) {
 			CollisionObject colObj = collisionObjects.getQuick(i);
@@ -156,7 +159,7 @@ public class SimpleDynamicsWorld extends DynamicsWorld {
 	}
 
 	@Override
-	public Vector3f getGravity(Vector3f out) {
+	public Vector getGravity(Vector out) {
 		out.set(gravity);
 		return out;
 	}
@@ -179,7 +182,7 @@ public class SimpleDynamicsWorld extends DynamicsWorld {
 	public void updateAabbs() {
 		Transform tmpTrans = Stack.alloc(Transform.class);
 		Transform predictedTrans = Stack.alloc(Transform.class);
-		Vector3f minAabb = Stack.alloc(Vector3f.class), maxAabb = Stack.alloc(Vector3f.class);
+		Vector minAabb = Stack.alloc(new Vector(3)), maxAabb = Stack.alloc(new Vector(3));
 
 		for (int i = 0; i < collisionObjects.size(); i++) {
 			CollisionObject colObj = collisionObjects.getQuick(i);

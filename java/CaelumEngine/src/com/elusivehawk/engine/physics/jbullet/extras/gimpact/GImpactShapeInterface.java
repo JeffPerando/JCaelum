@@ -28,7 +28,6 @@
 package com.elusivehawk.engine.physics.jbullet.extras.gimpact;
 
 import com.elusivehawk.engine.math.Vector;
-import com.elusivehawk.engine.math.Vector3f;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.BroadphaseNativeType;
 import com.elusivehawk.engine.physics.jbullet.collision.dispatch.CollisionWorld.RayResultCallback;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.CollisionShape;
@@ -47,7 +46,7 @@ public abstract class GImpactShapeInterface extends ConcaveShape {
 
     protected AABB localAABB = new AABB();
     protected boolean needs_update;
-    protected final Vector3f localScaling = new Vector3f();
+    protected final Vector localScaling = new Vector();
     GImpactBvh box_set = new GImpactBvh(); // optionally boxset
 
 	public GImpactShapeInterface() {
@@ -110,13 +109,13 @@ public abstract class GImpactShapeInterface extends ConcaveShape {
 	 * You must call updateBound() for update the box set.
 	 */
 	@Override
-	public void setLocalScaling(Vector3f scaling) {
+	public void setLocalScaling(Vector scaling) {
 		localScaling.set(scaling);
 		postUpdate();
 	}
 
 	@Override
-	public Vector3f getLocalScaling(Vector3f out) {
+	public Vector getLocalScaling(Vector out) {
 		out.set(localScaling);
 		return out;
 	}
@@ -244,14 +243,14 @@ public abstract class GImpactShapeInterface extends ConcaveShape {
 	/**
 	 * Virtual method for ray collision.
 	 */
-	public void rayTest(Vector3f rayFrom, Vector3f rayTo, RayResultCallback resultCallback) {
+	public void rayTest(Vector rayFrom, Vector rayTo, RayResultCallback resultCallback) {
 	}
 	
 	/**
 	 * Function for retrieve triangles. It gives the triangles in local space.
 	 */
 	@Override
-	public void processAllTriangles(TriangleCallback callback, Vector3f aabbMin, Vector3f aabbMax) {
+	public void processAllTriangles(TriangleCallback callback, Vector aabbMin, Vector aabbMax) {
 	}
 	
 }

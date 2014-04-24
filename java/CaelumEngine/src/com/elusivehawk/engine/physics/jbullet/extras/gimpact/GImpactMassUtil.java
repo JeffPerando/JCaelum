@@ -27,18 +27,22 @@
 
 package com.elusivehawk.engine.physics.jbullet.extras.gimpact;
 
-import com.elusivehawk.engine.math.Vector3f;
+import static com.elusivehawk.engine.math.MathConst.*;
+import com.elusivehawk.engine.math.Vector;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  *
  * @author jezek2
  */
 class GImpactMassUtil {
 
-	public static Vector3f get_point_inertia(Vector3f point, float mass, Vector3f out) {
-		float x2 = point.x * point.x;
-		float y2 = point.y * point.y;
-		float z2 = point.z * point.z;
+	public static Vector get_point_inertia(Vector point, float mass, Vector out) {
+		float x2 = point.get(X)* point.get(X);
+		float y2 = point.get(Y)* point.get(Y);
+		float z2 = point.get(Z)* point.get(Z);
 		out.set(mass * (y2 + z2), mass * (x2 + z2), mass * (x2 + y2));
 		return out;
 	}

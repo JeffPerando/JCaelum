@@ -23,11 +23,14 @@
 
 package com.elusivehawk.engine.physics.jbullet.dynamics;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.CollisionShape;
 import com.elusivehawk.engine.physics.jbullet.linearmath.MotionState;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * RigidBodyConstructionInfo provides information to create a rigid body.<p>
  * 
@@ -55,7 +58,7 @@ public class RigidBodyConstructionInfo {
 	public final Transform startWorldTransform = new Transform();
 
 	public CollisionShape collisionShape;
-	public final Vector3f localInertia = new Vector3f();
+	public final Vector localInertia = new Vector(3);
 	public float linearDamping = 0f;
 	public float angularDamping = 0f;
 
@@ -79,10 +82,10 @@ public class RigidBodyConstructionInfo {
 	public float additionalAngularDampingFactor = 0.01f;
 
 	public RigidBodyConstructionInfo(float mass, MotionState motionState, CollisionShape collisionShape) {
-		this(mass, motionState, collisionShape, new Vector3f(0f, 0f, 0f));
+		this(mass, motionState, collisionShape, new Vector(0f, 0f, 0f));
 	}
 	
-	public RigidBodyConstructionInfo(float mass, MotionState motionState, CollisionShape collisionShape, Vector3f localInertia) {
+	public RigidBodyConstructionInfo(float mass, MotionState motionState, CollisionShape collisionShape, Vector localInertia) {
 		this.mass = mass;
 		this.motionState = motionState;
 		this.collisionShape = collisionShape;

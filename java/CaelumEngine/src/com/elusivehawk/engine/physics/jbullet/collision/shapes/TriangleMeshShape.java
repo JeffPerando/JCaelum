@@ -23,13 +23,12 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.shapes;
 
-import static com.elusivehawk.engine.math.MathConst.*;
+import static com.elusivehawk.engine.math.MathConst.X;
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.linearmath.AabbUtil2;
 import com.elusivehawk.engine.physics.jbullet.linearmath.MatrixUtil;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
-import com.elusivehawk.engine.physics.jbullet.linearmath.VectorUtil;
 import cz.advel.stack.Stack;
 
 /*
@@ -189,7 +188,7 @@ public abstract class TriangleMeshShape extends ConcaveShape {
 			MatrixUtil.transposeTransform(supportVecLocal, supportVecWorld, worldTrans.basis);
 		}
 		
-		public void processTriangle(Vector3f[] triangle, int partId, int triangleIndex) {
+		public void processTriangle(Vector[] triangle, int partId, int triangleIndex) {
 			for (int i = 0; i < 3; i++) {
 				float dot = supportVecLocal.dot(triangle[i]);
 				if (dot > maxDot) {

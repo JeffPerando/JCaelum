@@ -23,10 +23,13 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.narrowphase;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.linearmath.IDebugDraw;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * This interface is made to be used by an iterative approach to do TimeOfImpact calculations.<p>
  * 
@@ -43,7 +46,7 @@ public abstract class DiscreteCollisionDetectorInterface {
 		///setShapeIdentifiers provides experimental support for per-triangle material / custom material combiner
 		public abstract void setShapeIdentifiers(int partId0, int index0, int partId1, int index1);
 
-		public abstract void addContactPoint(Vector3f normalOnBInWorld, Vector3f pointInWorld, float depth);
+		public abstract void addContactPoint(Vector normalOnBInWorld, Vector pointInWorld, float depth);
 	}
 	
 	public static class ClosestPointInput {
@@ -57,7 +60,7 @@ public abstract class DiscreteCollisionDetectorInterface {
 		}
 		
 		public void init() {
-			maximumDistanceSquared = Float.MAX_VALUE;
+			this.maximumDistanceSquared = Float.MAX_VALUE;
 		}
 	}
 

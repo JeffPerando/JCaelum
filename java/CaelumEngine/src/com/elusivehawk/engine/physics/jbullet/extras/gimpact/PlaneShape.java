@@ -27,40 +27,44 @@
 
 package com.elusivehawk.engine.physics.jbullet.extras.gimpact;
 
-import com.elusivehawk.engine.math.Vector3f;
-import com.elusivehawk.engine.math.Vector4f;
+import static com.elusivehawk.engine.math.MathConst.*;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.StaticPlaneShape;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 import com.elusivehawk.engine.physics.jbullet.linearmath.VectorUtil;
 import cz.advel.stack.Stack;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  *
  * @author jezek2
  */
 class PlaneShape {
 
-	public static void get_plane_equation(StaticPlaneShape shape, Vector4f equation) {
-		Vector3f tmp = Stack.alloc(Vector3f.class);
+	public static void get_plane_equation(StaticPlaneShape shape, Vector equation) {
+		Vector tmp = Stack.alloc(new Vector(3));
 		equation.set(shape.getPlaneNormal(tmp));
-		equation.w = shape.getPlaneConstant();
+		equation.set(W, shape.getPlaneConstant());
 	}
 	
-	public static void get_plane_equation_transformed(StaticPlaneShape shape, Transform trans, Vector4f equation) {
+	public static void get_plane_equation_transformed(StaticPlaneShape shape, Transform trans, Vector equation) {
 		get_plane_equation(shape, equation);
 
-		Vector3f tmp = Stack.alloc(Vector3f.class);
+		Vector tmp = Stack.alloc(new Vector(3));
+		float[] fl = new float[4];
+		
+		for (int c = 0; c < 3; c++)
+		{
+			trans.basis.getRow(c, tmp);
+			fl[c] = VectorUtil.dot3(tmp, equation);
+			
+		}
+		
+		fl[3] = VectorUtil.dot3(trans.origin, equation) + equation.get(W);
 
-		trans.basis.getRow(0, tmp);
-		float x = VectorUtil.dot3(tmp, equation);
-		trans.basis.getRow(1, tmp);
-		float y = VectorUtil.dot3(tmp, equation);
-		trans.basis.getRow(2, tmp);
-		float z = VectorUtil.dot3(tmp, equation);
-
-		float w = VectorUtil.dot3(trans.origin, equation) + equation.w;
-
-		equation.set(x, y, z, w);
+		equation.set(fl);
 	}
 	
 }

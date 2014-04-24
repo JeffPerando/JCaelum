@@ -25,10 +25,13 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.broadphase;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.util.ObjectArrayList;
 import cz.advel.stack.Stack;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  *
  * @author jezek2
@@ -174,7 +177,7 @@ public class DbvtBroadphase extends BroadphaseInterface {
 		return list;
 	}
 
-	public BroadphaseProxy createProxy(Vector3f aabbMin, Vector3f aabbMax, BroadphaseNativeType shapeType, Object userPtr, short collisionFilterGroup, short collisionFilterMask, Dispatcher dispatcher, Object multiSapProxy) {
+	public BroadphaseProxy createProxy(Vector aabbMin, Vector aabbMax, BroadphaseNativeType shapeType, Object userPtr, short collisionFilterGroup, short collisionFilterMask, Dispatcher dispatcher, Object multiSapProxy) {
 		DbvtProxy proxy = new DbvtProxy(userPtr, collisionFilterGroup, collisionFilterMask);
 		DbvtAabbMm.FromMM(aabbMin, aabbMax, proxy.aabb);
 		proxy.leaf = sets[0].insert(proxy.aabb, proxy);
@@ -197,7 +200,7 @@ public class DbvtBroadphase extends BroadphaseInterface {
 		//btAlignedFree(proxy);
 	}
 
-	public void setAabb(BroadphaseProxy absproxy, Vector3f aabbMin, Vector3f aabbMax, Dispatcher dispatcher) {
+	public void setAabb(BroadphaseProxy absproxy, Vector aabbMin, Vector aabbMax, Dispatcher dispatcher) {
 		DbvtProxy proxy = (DbvtProxy)absproxy;
 		DbvtAabbMm aabb = DbvtAabbMm.FromMM(aabbMin, aabbMax, new DbvtAabbMm());
 		if (proxy.stage == STAGECOUNT) {
@@ -208,10 +211,10 @@ public class DbvtBroadphase extends BroadphaseInterface {
 		else {
 			// dynamic set:
 			if (DbvtAabbMm.Intersect(proxy.leaf.volume, aabb)) {/* Moving				*/
-				Vector3f delta = Stack.alloc(Vector3f.class);
+				Vector delta = Stack.alloc(new Vector(3));
 				delta.add(aabbMin, aabbMax);
 				delta.scale(0.5f);
-				delta.sub(proxy.aabb.Center(Stack.alloc(Vector3f.class)));
+				delta.sub(proxy.aabb.Center(Stack.alloc(new Vector(3))));
 				//#ifdef DBVT_BP_MARGIN
 				delta.scale(predictedframes);
 				sets[0].update(proxy.leaf, aabb, delta, DBVT_BP_MARGIN);
@@ -261,7 +264,7 @@ public class DbvtBroadphase extends BroadphaseInterface {
 		return paircache;
 	}
 
-	public void getBroadphaseAabb(Vector3f aabbMin, Vector3f aabbMax) {
+	public void getBroadphaseAabb(Vector aabbMin, Vector aabbMax) {
 		DbvtAabbMm bounds = new DbvtAabbMm();
 		if (!sets[0].empty()) {
 			if (!sets[1].empty()) {
@@ -275,7 +278,7 @@ public class DbvtBroadphase extends BroadphaseInterface {
 			bounds.set(sets[1].root.volume);
 		}
 		else {
-			DbvtAabbMm.FromCR(new Vector3f(0f, 0f, 0f), 0f, bounds);
+			DbvtAabbMm.FromCR(new Vector(0f, 0f, 0f), 0f, bounds);
 		}
 		aabbMin.set(bounds.Mins());
 		aabbMax.set(bounds.Maxs());

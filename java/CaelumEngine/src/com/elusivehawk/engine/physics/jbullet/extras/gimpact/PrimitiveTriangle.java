@@ -27,37 +27,41 @@
 
 package com.elusivehawk.engine.physics.jbullet.extras.gimpact;
 
-import com.elusivehawk.engine.math.Vector3f;
-import com.elusivehawk.engine.math.Vector4f;
+import static com.elusivehawk.engine.math.MathConst.*;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 import com.elusivehawk.engine.physics.jbullet.util.ObjectArrayList;
 import cz.advel.stack.Stack;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  *
  * @author jezek2
  */
 public class PrimitiveTriangle {
 
-	private final ObjectArrayList<Vector3f> tmpVecList1 = new ObjectArrayList<Vector3f>(TriangleContact.MAX_TRI_CLIPPING);
-	private final ObjectArrayList<Vector3f> tmpVecList2 = new ObjectArrayList<Vector3f>(TriangleContact.MAX_TRI_CLIPPING);
-	private final ObjectArrayList<Vector3f> tmpVecList3 = new ObjectArrayList<Vector3f>(TriangleContact.MAX_TRI_CLIPPING);
+	private final ObjectArrayList<Vector> tmpVecList1 = new ObjectArrayList<Vector>(TriangleContact.MAX_TRI_CLIPPING);
+	private final ObjectArrayList<Vector> tmpVecList2 = new ObjectArrayList<Vector>(TriangleContact.MAX_TRI_CLIPPING);
+	private final ObjectArrayList<Vector> tmpVecList3 = new ObjectArrayList<Vector>(TriangleContact.MAX_TRI_CLIPPING);
 	
 	{
 		for (int i=0; i<TriangleContact.MAX_TRI_CLIPPING; i++) {
-			tmpVecList1.add(new Vector3f());
-			tmpVecList2.add(new Vector3f());
-			tmpVecList3.add(new Vector3f());
+			this.tmpVecList1.add(new Vector());
+			this.tmpVecList2.add(new Vector());
+			this.tmpVecList3.add(new Vector());
 		}
 	}
 	
-	public final Vector3f[] vertices = new Vector3f[3];
-	public final Vector4f plane = new Vector4f();
+	public final Vector[] vertices = new Vector[3];
+	public final Vector plane = new Vector();
 	public float margin = 0.01f;
 
+	@SuppressWarnings("unqualified-field-access")
 	public PrimitiveTriangle() {
 		for (int i=0; i<vertices.length; i++) {
-			vertices[i] = new Vector3f();
+			vertices[i] = new Vector();
 		}
 	}
 	
@@ -66,39 +70,39 @@ public class PrimitiveTriangle {
 	}
 	
 	public void buildTriPlane() {
-		Vector3f tmp1 = Stack.alloc(Vector3f.class);
-		Vector3f tmp2 = Stack.alloc(Vector3f.class);
+		Vector tmp1 = Stack.alloc(new Vector(3));
+		Vector tmp2 = Stack.alloc(new Vector(3));
 
-		Vector3f normal = Stack.alloc(Vector3f.class);
-		tmp1.sub(vertices[1], vertices[0]);
-		tmp2.sub(vertices[2], vertices[0]);
+		Vector normal = Stack.alloc(new Vector(3));
+		tmp1.sub(this.vertices[1], this.vertices[0]);
+		tmp2.sub(this.vertices[2], this.vertices[0]);
 		normal.cross(tmp1, tmp2);
 		normal.normalize();
 
-		plane.set(normal.x, normal.y, normal.z, vertices[0].dot(normal));
+		this.plane.set(normal.get(X), normal.get(Y), normal.get(Z), this.vertices[0].dot(normal));
 	}
 
 	/**
 	 * Test if triangles could collide.
 	 */
 	public boolean overlap_test_conservative(PrimitiveTriangle other) {
-		float total_margin = margin + other.margin;
+		float total_margin = this.margin + other.margin;
 		// classify points on other triangle
-		float dis0 = ClipPolygon.distance_point_plane(plane, other.vertices[0]) - total_margin;
+		float dis0 = ClipPolygon.distance_point_plane(this.plane, other.vertices[0]) - total_margin;
 
-		float dis1 = ClipPolygon.distance_point_plane(plane, other.vertices[1]) - total_margin;
+		float dis1 = ClipPolygon.distance_point_plane(this.plane, other.vertices[1]) - total_margin;
 
-		float dis2 = ClipPolygon.distance_point_plane(plane, other.vertices[2]) - total_margin;
+		float dis2 = ClipPolygon.distance_point_plane(this.plane, other.vertices[2]) - total_margin;
 
 		if (dis0 > 0.0f && dis1 > 0.0f && dis2 > 0.0f) {
 			return false; // classify points on this triangle
 		}
 		
-		dis0 = ClipPolygon.distance_point_plane(other.plane, vertices[0]) - total_margin;
+		dis0 = ClipPolygon.distance_point_plane(other.plane, this.vertices[0]) - total_margin;
 
-		dis1 = ClipPolygon.distance_point_plane(other.plane, vertices[1]) - total_margin;
+		dis1 = ClipPolygon.distance_point_plane(other.plane, this.vertices[1]) - total_margin;
 
-		dis2 = ClipPolygon.distance_point_plane(other.plane, vertices[2]) - total_margin;
+		dis2 = ClipPolygon.distance_point_plane(other.plane, this.vertices[2]) - total_margin;
 
 		if (dis0 > 0.0f && dis1 > 0.0f && dis2 > 0.0f) {
 			return false;
@@ -110,20 +114,20 @@ public class PrimitiveTriangle {
 	 * Calcs the plane which is paralele to the edge and perpendicular to the triangle plane.
 	 * This triangle must have its plane calculated.
 	 */
-	public void get_edge_plane(int edge_index, Vector4f plane) {
-		Vector3f e0 = vertices[edge_index];
-		Vector3f e1 = vertices[(edge_index + 1) % 3];
+	public void get_edge_plane(int edge_index, Vector plane) {
+		Vector e0 = this.vertices[edge_index];
+		Vector e1 = this.vertices[(edge_index + 1) % 3];
 
-		Vector3f tmp = Stack.alloc(Vector3f.class);
-		tmp.set(this.plane.x, this.plane.y, this.plane.z);
+		Vector tmp = Stack.alloc(new Vector(3));
+		tmp.set(this.plane.get(X), this.plane.get(Y), this.plane.get(Z));
 
 		GeometryOperations.edge_plane(e0, e1, tmp, plane);
 	}
 
 	public void applyTransform(Transform t) {
-		t.transform(vertices[0]);
-		t.transform(vertices[1]);
-		t.transform(vertices[2]);
+		t.transform(this.vertices[0]);
+		t.transform(this.vertices[1]);
+		t.transform(this.vertices[2]);
 	}
 	
 	/**
@@ -132,11 +136,11 @@ public class PrimitiveTriangle {
 	 * @param clipped_points must have MAX_TRI_CLIPPING size, and this triangle must have its plane calculated.
 	 * @return the number of clipped points
 	 */
-	public int clip_triangle(PrimitiveTriangle other, ObjectArrayList<Vector3f> clipped_points) {
+	public int clip_triangle(PrimitiveTriangle other, ObjectArrayList<Vector> clipped_points) {
 		// edge 0
-		ObjectArrayList<Vector3f> temp_points = tmpVecList1;
+		ObjectArrayList<Vector> temp_points = this.tmpVecList1;
 
-		Vector4f edgeplane = Stack.alloc(Vector4f.class);
+		Vector edgeplane = Stack.alloc(new Vector(4));
 
 		get_edge_plane(0, edgeplane);
 
@@ -145,7 +149,7 @@ public class PrimitiveTriangle {
 		if (clipped_count == 0) {
 			return 0;
 		}
-		ObjectArrayList<Vector3f> temp_points1 = tmpVecList2;
+		ObjectArrayList<Vector> temp_points1 = this.tmpVecList2;
 
 		// edge 1
 		get_edge_plane(1, edgeplane);
@@ -169,7 +173,7 @@ public class PrimitiveTriangle {
 	public boolean find_triangle_collision_clip_method(PrimitiveTriangle other, TriangleContact contacts) {
 		float margin = this.margin + other.margin;
 
-		ObjectArrayList<Vector3f> clipped_points = tmpVecList3;
+		ObjectArrayList<Vector> clipped_points = this.tmpVecList3;
 
 		int clipped_count;
 		//create planes
@@ -177,7 +181,7 @@ public class PrimitiveTriangle {
 
 		TriangleContact contacts1 = Stack.alloc(TriangleContact.class);
 
-		contacts1.separating_normal.set(plane);
+		contacts1.separating_normal.set(this.plane);
 
 		clipped_count = clip_triangle(other, clipped_points);
 
@@ -191,10 +195,8 @@ public class PrimitiveTriangle {
 			return false; // too far
 		// Normal pointing to this triangle
 		}
-		contacts1.separating_normal.x *= -1.f;
-		contacts1.separating_normal.y *= -1.f;
-		contacts1.separating_normal.z *= -1.f;
-
+		contacts1.separating_normal.mulAll(-1f);
+		
 		// Clip tri1 by tri2 edges
 		TriangleContact contacts2 = Stack.alloc(TriangleContact.class);
 		contacts2.separating_normal.set(other.plane);

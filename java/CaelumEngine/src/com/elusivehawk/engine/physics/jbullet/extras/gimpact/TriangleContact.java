@@ -27,12 +27,14 @@
 
 package com.elusivehawk.engine.physics.jbullet.extras.gimpact;
 
-import com.elusivehawk.engine.math.Vector3f;
-import com.elusivehawk.engine.math.Vector4f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
 import com.elusivehawk.engine.physics.jbullet.util.ArrayPool;
 import com.elusivehawk.engine.physics.jbullet.util.ObjectArrayList;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  *
  * @author jezek2
@@ -45,12 +47,13 @@ public class TriangleContact {
 
     public float penetration_depth;
     public int point_count;
-    public final Vector4f separating_normal = new Vector4f();
-    public Vector3f[] points = new Vector3f[MAX_TRI_CLIPPING];
+    public final Vector separating_normal = new Vector();
+    public Vector[] points = new Vector[MAX_TRI_CLIPPING];
 
+	@SuppressWarnings("unqualified-field-access")
 	public TriangleContact() {
 		for (int i=0; i<points.length; i++) {
-			points[i] = new Vector3f();
+			points[i] = new Vector();
 		}
 	}
 
@@ -63,34 +66,34 @@ public class TriangleContact {
 	}
 	
 	public void copy_from(TriangleContact other) {
-		penetration_depth = other.penetration_depth;
-		separating_normal.set(other.separating_normal);
-		point_count = other.point_count;
-		int i = point_count;
+		this.penetration_depth = other.penetration_depth;
+		this.separating_normal.set(other.separating_normal);
+		this.point_count = other.point_count;
+		int i = this.point_count;
 		while ((i--) != 0) {
-			points[i].set(other.points[i]);
+			this.points[i].set(other.points[i]);
 		}
 	}
 	
 	/**
 	 * Classify points that are closer.
 	 */
-	public void merge_points(Vector4f plane, float margin, ObjectArrayList<Vector3f> points, int point_count) {
+	public void merge_points(Vector plane, float margin, ObjectArrayList<Vector> points, int point_count) {
 		this.point_count = 0;
-		penetration_depth = -1000.0f;
+		this.penetration_depth = -1000.0f;
 
-		int[] point_indices = intArrays.getFixed(MAX_TRI_CLIPPING);
+		int[] point_indices = this.intArrays.getFixed(MAX_TRI_CLIPPING);
 
 		for (int _k = 0; _k < point_count; _k++) {
 			float _dist = -ClipPolygon.distance_point_plane(plane, points.getQuick(_k)) + margin;
 
 			if (_dist >= 0.0f) {
-				if (_dist > penetration_depth) {
-					penetration_depth = _dist;
+				if (_dist > this.penetration_depth) {
+					this.penetration_depth = _dist;
 					point_indices[0] = _k;
 					this.point_count = 1;
 				}
-				else if ((_dist + BulletGlobals.SIMD_EPSILON) >= penetration_depth) {
+				else if ((_dist + BulletGlobals.SIMD_EPSILON) >= this.penetration_depth) {
 					point_indices[this.point_count] = _k;
 					this.point_count++;
 				}
@@ -101,7 +104,7 @@ public class TriangleContact {
 			this.points[_k].set(points.getQuick(point_indices[_k]));
 		}
 		
-		intArrays.release(point_indices);
+		this.intArrays.release(point_indices);
 	}
 
 }

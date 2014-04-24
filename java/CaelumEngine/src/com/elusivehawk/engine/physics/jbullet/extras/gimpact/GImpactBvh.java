@@ -27,13 +27,16 @@
 
 package com.elusivehawk.engine.physics.jbullet.extras.gimpact;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.extras.gimpact.BoxCollision.AABB;
 import com.elusivehawk.engine.physics.jbullet.extras.gimpact.BoxCollision.BoxBoxTransformCache;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 import com.elusivehawk.engine.physics.jbullet.util.IntArrayList;
 import cz.advel.stack.Stack;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  *
  * @author jezek2
@@ -46,6 +49,7 @@ class GImpactBvh {
 	/**
 	 * This constructor doesn't build the tree. you must call buildSet.
 	 */
+	@SuppressWarnings("unqualified-field-access")
 	public GImpactBvh() {
 		primitive_manager = null;
 	}
@@ -67,7 +71,7 @@ class GImpactBvh {
 	}
 
 	public PrimitiveManagerBase getPrimitiveManager() {
-		return primitive_manager;
+		return this.primitive_manager;
 	}
 	
 	// stackless refit
@@ -79,7 +83,7 @@ class GImpactBvh {
 		int nodecount = getNodeCount();
 		while ((nodecount--) != 0) {
 			if (isLeafNode(nodecount)) {
-				primitive_manager.get_primitive_box(getNodeData(nodecount), leafbox);
+				this.primitive_manager.get_primitive_box(getNodeData(nodecount), leafbox);
 				setNodeBound(nodecount, leafbox);
 			}
 			else {
@@ -118,19 +122,19 @@ class GImpactBvh {
 	public void buildSet() {
 		// obtain primitive boxes
 		BvhDataArray primitive_boxes = new BvhDataArray();
-		primitive_boxes.resize(primitive_manager.get_primitive_count());
+		primitive_boxes.resize(this.primitive_manager.get_primitive_count());
 
 		AABB tmpAABB = Stack.alloc(AABB.class);
 
 		for (int i = 0; i < primitive_boxes.size(); i++) {
 			//primitive_manager.get_primitive_box(i,primitive_boxes[i].bound);
-			primitive_manager.get_primitive_box(i, tmpAABB);
+			this.primitive_manager.get_primitive_box(i, tmpAABB);
 			primitive_boxes.setBound(i, tmpAABB);
 
 			primitive_boxes.setData(i, i);
 		}
 
-		box_tree.build_tree(primitive_boxes);
+		this.box_tree.build_tree(primitive_boxes);
 	}
 
 	/**
@@ -181,7 +185,7 @@ class GImpactBvh {
 	/**
 	 * Returns the indices of the primitives in the primitive_manager field.
 	 */
-	public boolean rayQuery(Vector3f ray_dir, Vector3f ray_origin, IntArrayList collided_results) {
+	public boolean rayQuery(Vector ray_dir, Vector ray_origin, IntArrayList collided_results) {
 		int curIndex = 0;
 		int numNodes = getNodeCount();
 
@@ -225,50 +229,50 @@ class GImpactBvh {
 	 * Tells if this set is a trimesh.
 	 */
 	public boolean isTrimesh() {
-		return primitive_manager.is_trimesh();
+		return this.primitive_manager.is_trimesh();
 	}
 	
 	public int getNodeCount() {
-		return box_tree.getNodeCount();
+		return this.box_tree.getNodeCount();
 	}
 	
 	/**
 	 * Tells if the node is a leaf.
 	 */
 	public boolean isLeafNode(int nodeindex) {
-		return box_tree.isLeafNode(nodeindex);
+		return this.box_tree.isLeafNode(nodeindex);
 	}
 
 	public int getNodeData(int nodeindex) {
-		return box_tree.getNodeData(nodeindex);
+		return this.box_tree.getNodeData(nodeindex);
 	}
 
 	public void getNodeBound(int nodeindex, AABB bound) {
-		box_tree.getNodeBound(nodeindex, bound);
+		this.box_tree.getNodeBound(nodeindex, bound);
 	}
 
 	public void setNodeBound(int nodeindex, AABB bound) {
-		box_tree.setNodeBound(nodeindex, bound);
+		this.box_tree.setNodeBound(nodeindex, bound);
 	}
 
 	public int getLeftNode(int nodeindex) {
-		return box_tree.getLeftNode(nodeindex);
+		return this.box_tree.getLeftNode(nodeindex);
 	}
 
 	public int getRightNode(int nodeindex) {
-		return box_tree.getRightNode(nodeindex);
+		return this.box_tree.getRightNode(nodeindex);
 	}
 
 	public int getEscapeNodeIndex(int nodeindex) {
-		return box_tree.getEscapeNodeIndex(nodeindex);
+		return this.box_tree.getEscapeNodeIndex(nodeindex);
 	}
 
 	public void getNodeTriangle(int nodeindex, PrimitiveTriangle triangle) {
-		primitive_manager.get_primitive_triangle(getNodeData(nodeindex), triangle);
+		this.primitive_manager.get_primitive_triangle(getNodeData(nodeindex), triangle);
 	}
 
 	public BvhTreeNodeArray get_node_pointer() {
-		return box_tree.get_node_pointer();
+		return this.box_tree.get_node_pointer();
 	}
 
 	private static boolean _node_collision(GImpactBvh boxset0, GImpactBvh boxset1, BoxBoxTransformCache trans_cache_1to0, int node0, int node1, boolean complete_primitive_tests) {
@@ -297,19 +301,17 @@ class GImpactBvh {
 				collision_pairs.push_pair(boxset0.getNodeData(node0), boxset1.getNodeData(node1));
 				return;
 			}
-			else {
-				// collide left recursive
-				_find_collision_pairs_recursive(
-						boxset0, boxset1,
-						collision_pairs, trans_cache_1to0,
-						node0, boxset1.getLeftNode(node1), false);
+			// collide left recursive
+			_find_collision_pairs_recursive(
+					boxset0, boxset1,
+					collision_pairs, trans_cache_1to0,
+					node0, boxset1.getLeftNode(node1), false);
 
-				// collide right recursive
-				_find_collision_pairs_recursive(
-						boxset0, boxset1,
-						collision_pairs, trans_cache_1to0,
-						node0, boxset1.getRightNode(node1), false);
-			}
+			// collide right recursive
+			_find_collision_pairs_recursive(
+					boxset0, boxset1,
+					collision_pairs, trans_cache_1to0,
+					node0, boxset1.getRightNode(node1), false);
 		}
 		else {
 			if (boxset1.isLeafNode(node1)) {

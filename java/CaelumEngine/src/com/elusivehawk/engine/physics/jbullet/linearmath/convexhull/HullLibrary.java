@@ -25,8 +25,10 @@
 
 package com.elusivehawk.engine.physics.jbullet.linearmath.convexhull;
 
+import static com.elusivehawk.engine.math.MathConst.X;
+import static com.elusivehawk.engine.math.MathConst.Y;
+import static com.elusivehawk.engine.math.MathConst.Z;
 import com.elusivehawk.engine.math.Vector;
-import static com.elusivehawk.engine.math.MathConst.*;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.ShapeHull;
 import com.elusivehawk.engine.physics.jbullet.linearmath.MiscUtil;
@@ -202,15 +204,15 @@ public class HullLibrary {
 
 	private Tri allocateTriangle(int a, int b, int c) {
 		Tri tr = new Tri(a, b, c);
-		tr.id = tris.size();
-		tris.add(tr);
+		tr.id = this.tris.size();
+		this.tris.add(tr);
 
 		return tr;
 	}
 	
 	private void deAllocateTriangle(Tri tri) {
-		assert (tris.getQuick(tri.id) == tri);
-		tris.setQuick(tri.id, null);
+		assert (this.tris.getQuick(tri.id) == tri);
+		this.tris.setQuick(tri.id, null);
 	}
 	
 	private void b2bfix(Tri s, Tri t) {
@@ -219,10 +221,10 @@ public class HullLibrary {
 			int i2 = (i + 2) % 3;
 			int a = s.getCoord(i1);
 			int b = s.getCoord(i2);
-			assert (tris.getQuick(s.neib(a, b).get()).neib(b, a).get() == s.id);
-			assert (tris.getQuick(t.neib(a, b).get()).neib(b, a).get() == t.id);
-			tris.getQuick(s.neib(a, b).get()).neib(b, a).set(t.neib(b, a).get());
-			tris.getQuick(t.neib(b, a).get()).neib(a, b).set(s.neib(a, b).get());
+			assert (this.tris.getQuick(s.neib(a, b).get()).neib(b, a).get() == s.id);
+			assert (this.tris.getQuick(t.neib(a, b).get()).neib(b, a).get() == t.id);
+			this.tris.getQuick(s.neib(a, b).get()).neib(b, a).set(t.neib(b, a).get());
+			this.tris.getQuick(t.neib(b, a).get()).neib(a, b).set(s.neib(a, b).get());
 		}
 	}
 
@@ -234,7 +236,7 @@ public class HullLibrary {
 	}
 
 	private void checkit(Tri t) {
-		assert (tris.getQuick(t.id) == t);
+		assert (this.tris.getQuick(t.id) == t);
 		for (int i=0; i<3; i++) {
 			int i1 = (i + 1) % 3;
 			int i2 = (i + 2) % 3;
@@ -242,15 +244,15 @@ public class HullLibrary {
 			int b = t.getCoord(i2);
 
 			assert (a != b);
-			assert (tris.getQuick(t.n.getCoord(i)).neib(b, a).get() == t.id);
+			assert (this.tris.getQuick(t.n.getCoord(i)).neib(b, a).get() == t.id);
 		}
 	}
 
 	private Tri extrudable(float epsilon) {
 		Tri t = null;
-		for (int i=0; i<tris.size(); i++) {
-			if (t == null || (tris.getQuick(i) != null && t.rise < tris.getQuick(i).rise)) {
-				t = tris.getQuick(i);
+		for (int i=0; i<this.tris.size(); i++) {
+			if (t == null || (this.tris.getQuick(i) != null && t.rise < this.tris.getQuick(i).rise)) {
+				t = this.tris.getQuick(i);
 			}
 		}
 		return (t.rise > epsilon) ? t : null;
@@ -262,12 +264,12 @@ public class HullLibrary {
 		
 		IntArrayList ts = new IntArrayList();
 
-		for (int i=0; i<tris.size(); i++) {
-			if (tris.getQuick(i) != null) {
+		for (int i=0; i<this.tris.size(); i++) {
+			if (this.tris.getQuick(i) != null) {
 				for (int j = 0; j < 3; j++) {
-					ts.add((tris.getQuick(i)).getCoord(j));
+					ts.add((this.tris.getQuick(i)).getCoord(j));
 				}
-				deAllocateTriangle(tris.getQuick(i));
+				deAllocateTriangle(this.tris.getQuick(i));
 			}
 		}
 		tris_count[0] = ts.size() / 3;
@@ -276,7 +278,7 @@ public class HullLibrary {
 		for (int i=0; i<ts.size(); i++) {
 			tris_out.set(i, ts.get(i));
 		}
-		MiscUtil.resize(tris, 0, Tri.class);
+		MiscUtil.resize(this.tris, 0, Tri.class);
 
 		return 1;
 	}
@@ -338,8 +340,8 @@ public class HullLibrary {
 
 		Vector n = Stack.alloc(new Vector(3));
 
-		for (int j=0; j<tris.size(); j++) {
-			Tri t = tris.getQuick(j);
+		for (int j=0; j<this.tris.size(); j++) {
+			Tri t = this.tris.getQuick(j);
 			assert (t != null);
 			assert (t.vmax < 0);
 			triNormal(verts.getQuick(t.getCoord(0)), verts.getQuick(t.getCoord(1)), verts.getQuick(t.getCoord(2)), n);
@@ -356,41 +358,41 @@ public class HullLibrary {
 			assert (isextreme.get(v) == 0);  // wtf we've already done this vertex
 			isextreme.set(v, 1);
 			//if(v==p0 || v==p1 || v==p2 || v==p3) continue; // done these already
-			int j = tris.size();
+			int j = this.tris.size();
 			while ((j--) != 0) {
-				if (tris.getQuick(j) == null) {
+				if (this.tris.getQuick(j) == null) {
 					continue;
 				}
-				Int3 t = tris.getQuick(j);
+				Int3 t = this.tris.getQuick(j);
 				if (above(verts, t, verts.getQuick(v), 0.01f * epsilon)) {
-					extrude(tris.getQuick(j), v);
+					extrude(this.tris.getQuick(j), v);
 				}
 			}
 			// now check for those degenerate cases where we have a flipped triangle or a really skinny triangle
-			j = tris.size();
+			j = this.tris.size();
 			while ((j--) != 0) {
-				if (tris.getQuick(j) == null) {
+				if (this.tris.getQuick(j) == null) {
 					continue;
 				}
-				if (!hasvert(tris.getQuick(j), v)) {
+				if (!hasvert(this.tris.getQuick(j), v)) {
 					break;
 				}
-				Int3 nt = tris.getQuick(j);
+				Int3 nt = this.tris.getQuick(j);
 				tmp1.sub(verts.getQuick(nt.getCoord(1)), verts.getQuick(nt.getCoord(0)));
 				tmp2.sub(verts.getQuick(nt.getCoord(2)), verts.getQuick(nt.getCoord(1)));
 				tmp.cross(tmp1, tmp2);
 				if (above(verts, nt, center, 0.01f * epsilon) || tmp.length() < epsilon * epsilon * 0.1f) {
-					Tri nb = tris.getQuick(tris.getQuick(j).n.getCoord(0));
+					Tri nb = this.tris.getQuick(this.tris.getQuick(j).n.getCoord(0));
 					assert (nb != null);
 					assert (!hasvert(nb, v));
 					assert (nb.id < j);
 					extrude(nb, v);
-					j = tris.size();
+					j = this.tris.size();
 				}
 			}
-			j = tris.size();
+			j = this.tris.size();
 			while ((j--) != 0) {
-				Tri t = tris.getQuick(j);
+				Tri t = this.tris.getQuick(j);
 				if (t == null) {
 					continue;
 				}
@@ -478,27 +480,27 @@ public class HullLibrary {
 
 	private void extrude(Tri t0, int v) {
 		Int3 t = new Int3(t0);
-		int n = tris.size();
+		int n = this.tris.size();
 		Tri ta = allocateTriangle(v, t.getCoord(1), t.getCoord(2));
 		ta.n.set(t0.n.getCoord(0), n + 1, n + 2);
-		tris.getQuick(t0.n.getCoord(0)).neib(t.getCoord(1), t.getCoord(2)).set(n + 0);
+		this.tris.getQuick(t0.n.getCoord(0)).neib(t.getCoord(1), t.getCoord(2)).set(n + 0);
 		Tri tb = allocateTriangle(v, t.getCoord(2), t.getCoord(0));
 		tb.n.set(t0.n.getCoord(1), n + 2, n + 0);
-		tris.getQuick(t0.n.getCoord(1)).neib(t.getCoord(2), t.getCoord(0)).set(n + 1);
+		this.tris.getQuick(t0.n.getCoord(1)).neib(t.getCoord(2), t.getCoord(0)).set(n + 1);
 		Tri tc = allocateTriangle(v, t.getCoord(0), t.getCoord(1));
 		tc.n.set(t0.n.getCoord(2), n + 0, n + 1);
-		tris.getQuick(t0.n.getCoord(2)).neib(t.getCoord(0), t.getCoord(1)).set(n + 2);
+		this.tris.getQuick(t0.n.getCoord(2)).neib(t.getCoord(0), t.getCoord(1)).set(n + 2);
 		checkit(ta);
 		checkit(tb);
 		checkit(tc);
-		if (hasvert(tris.getQuick(ta.n.getCoord(0)), v)) {
-			removeb2b(ta, tris.getQuick(ta.n.getCoord(0)));
+		if (hasvert(this.tris.getQuick(ta.n.getCoord(0)), v)) {
+			removeb2b(ta, this.tris.getQuick(ta.n.getCoord(0)));
 		}
-		if (hasvert(tris.getQuick(tb.n.getCoord(0)), v)) {
-			removeb2b(tb, tris.getQuick(tb.n.getCoord(0)));
+		if (hasvert(this.tris.getQuick(tb.n.getCoord(0)), v)) {
+			removeb2b(tb, this.tris.getQuick(tb.n.getCoord(0)));
 		}
-		if (hasvert(tris.getQuick(tc.n.getCoord(0)), v)) {
-			removeb2b(tc, tris.getQuick(tc.n.getCoord(0)));
+		if (hasvert(this.tris.getQuick(tc.n.getCoord(0)), v)) {
+			removeb2b(tc, this.tris.getQuick(tc.n.getCoord(0)));
 		}
 		deAllocateTriangle(t0);
 	}
@@ -512,8 +514,8 @@ public class HullLibrary {
 	private void bringOutYourDead(ObjectArrayList<Vector> verts, int vcount, ObjectArrayList<Vector> overts, int[] ocount, IntArrayList indices, int indexcount)
 	{
 		IntArrayList tmpIndices = new IntArrayList();
-		for (int i=0; i<vertexIndexMapping.size(); i++) {
-			tmpIndices.add(vertexIndexMapping.size());
+		for (int i=0; i<this.vertexIndexMapping.size(); i++) {
+			tmpIndices.add(this.vertexIndexMapping.size());
 		}
 
 		IntArrayList usedIndices = new IntArrayList();
@@ -540,9 +542,9 @@ public class HullLibrary {
 
 				overts.getQuick(ocount[0]).set(verts.getQuick(v)); // copy old vert to new vert array
 
-				for (int k = 0; k < vertexIndexMapping.size(); k++) {
+				for (int k = 0; k < this.vertexIndexMapping.size(); k++) {
 					if (tmpIndices.get(k) == v) {
-						vertexIndexMapping.set(k, ocount[0]);
+						this.vertexIndexMapping.set(k, ocount[0]);
 					}
 				}
 
@@ -569,7 +571,7 @@ public class HullLibrary {
 			return false;
 		}
 
-		vertexIndexMapping.clear();
+		this.vertexIndexMapping.clear();
 
 		vcount[0] = 0;
 
@@ -621,9 +623,9 @@ public class HullLibrary {
 			center.set(c, d[c] * 0.5f + bmin[c], false);
 			
 		}
-		/*center.x = dx * 0.5f + bmin[0];
-		center.y = dy * 0.5f + bmin[1];
-		center.z = dz * 0.5f + bmin[2];*/
+		/*center.set(X, dx * 0.5f + bmin[0];
+		center.set(Y, dy * 0.5f + bmin[1];
+		center.get(Z)= dz * 0.5f + bmin[2];*/
 
 		if (dx < EPSILON || dy < EPSILON || dz < EPSILON || svcount < 3) {
 
@@ -662,22 +664,20 @@ public class HullLibrary {
 
 			return true; // return cube
 		}
-		else {
-			if (scale != null) {
-				scale.set(X, dx, false);
-				scale.set(Y, dy, false);
-				scale.set(Z, dz, true);
-				
-				recip[0] = 1f / dx;
-				recip[1] = 1f / dy;
-				recip[2] = 1f / dz;
+		if (scale != null) {
+			scale.set(X, dx, false);
+			scale.set(Y, dy, false);
+			scale.set(Z, dz, true);
+			
+			recip[0] = 1f / dx;
+			recip[1] = 1f / dy;
+			recip[2] = 1f / dz;
 
+			
+			for (int c = 0; c < 3; c++)
+			{
+				center.set(c, center.get(c) * recip[c], c == 2);
 				
-				for (int c = 0; c < 3; c++)
-				{
-					center.set(c, center.get(c) * recip[c], c == 2);
-					
-				}
 			}
 		}
 
@@ -736,7 +736,7 @@ public class HullLibrary {
 					vcount[0]++;
 				}
 
-				vertexIndexMapping.add(j);
+				this.vertexIndexMapping.add(j);
 			}
 		}
 
@@ -828,10 +828,8 @@ public class HullLibrary {
 			out.normalize(a);
 			return out;
 		}
-		else {
-			out.normalize(b);
-			return out;
-		}
+		out.normalize(b);
+		return out;
 	}
 	
 	private static int maxdirfiltered(ObjectArrayList<Vector> p, int count, Vector dir, IntArrayList allow)

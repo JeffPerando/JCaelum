@@ -209,9 +209,9 @@ public abstract class AxisSweep3Internal extends BroadphaseInterface {
 		v.sub(clampedPoint, worldAabbMin);
 		VectorUtil.mul(v, v, quantize);
 
-		/*out[0] = (((int)v.x & bpHandleMask) | isMax) & mask;
-		out[1] = (((int)v.y & bpHandleMask) | isMax) & mask;
-		out[2] = (((int)v.z & bpHandleMask) | isMax) & mask;*/
+		/*out[0] = (((int)v.get(X)& bpHandleMask) | isMax) & mask;
+		out[1] = (((int)v.get(Y)& bpHandleMask) | isMax) & mask;
+		out[2] = (((int)v.get(Z)& bpHandleMask) | isMax) & mask;*/
 		for (int c = 0; c < v.getSize(); c++)
 		{
 			out[c] = ((v.get(c).intValue() & bpHandleMask) | isMax) & mask;
@@ -386,6 +386,7 @@ public abstract class AxisSweep3Internal extends BroadphaseInterface {
 		return numHandles;
 	}
 
+	@Override
 	public void calculateOverlappingPairs(Dispatcher dispatcher) {
 		if (pairCache.hasDeferredRemoval()) {
 			ObjectArrayList<BroadphasePair> overlappingPairArray = pairCache.getOverlappingPairArray();
@@ -457,7 +458,7 @@ public abstract class AxisSweep3Internal extends BroadphaseInterface {
 		}
 	}
 	
-	public int addHandle(Vector3f aabbMin, Vector3f aabbMax, Object pOwner, short collisionFilterGroup, short collisionFilterMask, Dispatcher dispatcher, Object multiSapProxy) {
+	public int addHandle(Vector aabbMin, Vector aabbMax, Object pOwner, short collisionFilterGroup, short collisionFilterMask, Dispatcher dispatcher, Object multiSapProxy) {
 		// quantize the bounds
 		int[] min = new int[3], max = new int[3];
 		quantize(min, aabbMin, 0);
@@ -549,7 +550,7 @@ public abstract class AxisSweep3Internal extends BroadphaseInterface {
 		freeHandle(handle);
 	}
 	
-	public void updateHandle(int handle, Vector3f aabbMin, Vector3f aabbMax, Dispatcher dispatcher) {
+	public void updateHandle(int handle, Vector aabbMin, Vector aabbMax, Dispatcher dispatcher) {
 		Handle pHandle = getHandle(handle);
 
 		// quantize the new bounds
@@ -595,7 +596,8 @@ public abstract class AxisSweep3Internal extends BroadphaseInterface {
 	//public void processAllOverlappingPairs(OverlapCallback callback) {
 	//}
 	
-	public BroadphaseProxy createProxy(Vector3f aabbMin, Vector3f aabbMax, BroadphaseNativeType shapeType, Object userPtr, short collisionFilterGroup, short collisionFilterMask, Dispatcher dispatcher, Object multiSapProxy) {
+	@Override
+	public BroadphaseProxy createProxy(Vector aabbMin, Vector aabbMax, BroadphaseNativeType shapeType, Object userPtr, short collisionFilterGroup, short collisionFilterMask, Dispatcher dispatcher, Object multiSapProxy) {
 		int handleId = addHandle(aabbMin, aabbMax, userPtr, collisionFilterGroup, collisionFilterMask, dispatcher, multiSapProxy);
 
 		Handle handle = getHandle(handleId);
@@ -603,12 +605,14 @@ public abstract class AxisSweep3Internal extends BroadphaseInterface {
 		return handle;
 	}
 	
+	@Override
 	public void destroyProxy(BroadphaseProxy proxy, Dispatcher dispatcher) {
 		Handle handle = (Handle)proxy;
 		removeHandle(handle.uniqueId, dispatcher);
 	}
 
-	public void setAabb(BroadphaseProxy proxy, Vector3f aabbMin, Vector3f aabbMax, Dispatcher dispatcher) {
+	@Override
+	public void setAabb(BroadphaseProxy proxy, Vector aabbMin, Vector aabbMax, Dispatcher dispatcher) {
 		Handle handle = (Handle) proxy;
 		updateHandle(handle.uniqueId, aabbMin, aabbMax, dispatcher);
 	}
@@ -628,6 +632,7 @@ public abstract class AxisSweep3Internal extends BroadphaseInterface {
 		return true;
 	}
 
+	@Override
 	public OverlappingPairCache getOverlappingPairCache() {
 		return pairCache;
 	}
@@ -642,11 +647,13 @@ public abstract class AxisSweep3Internal extends BroadphaseInterface {
 	
 	// getAabb returns the axis aligned bounding box in the 'global' coordinate frame
 	// will add some transform later
-	public void getBroadphaseAabb(Vector3f aabbMin, Vector3f aabbMax) {
+	@Override
+	public void getBroadphaseAabb(Vector aabbMin, Vector aabbMax) {
 		aabbMin.set(worldAabbMin);
 		aabbMax.set(worldAabbMax);
 	}
 
+	@Override
 	public void printStats() {
 		/*
 		printf("btAxisSweep3.h\n");

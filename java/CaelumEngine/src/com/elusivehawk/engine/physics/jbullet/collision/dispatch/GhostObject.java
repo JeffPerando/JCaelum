@@ -24,7 +24,7 @@
 package com.elusivehawk.engine.physics.jbullet.collision.dispatch;
 
 import com.elusivehawk.engine.math.Quaternion;
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.BroadphaseProxy;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.Dispatcher;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.ConvexShape;
@@ -88,13 +88,13 @@ public class GhostObject extends CollisionObject {
 		convexFromTrans.set(convexFromWorld);
 		convexToTrans.set(convexToWorld);
 
-		Vector3f castShapeAabbMin = Stack.alloc(Vector3f.class);
-		Vector3f castShapeAabbMax = Stack.alloc(Vector3f.class);
+		Vector castShapeAabbMin = Stack.alloc(new Vector(3));
+		Vector castShapeAabbMax = Stack.alloc(new Vector(3));
 
 		// compute AABB that encompasses angular movement
 		{
-			Vector3f linVel = Stack.alloc(Vector3f.class);
-			Vector3f angVel = Stack.alloc(Vector3f.class);
+			Vector linVel = Stack.alloc(new Vector(3));
+			Vector angVel = Stack.alloc(new Vector(3));
 			TransformUtil.calculateVelocity(convexFromTrans, convexToTrans, 1f, linVel, angVel);
 			Transform R = Stack.alloc(Transform.class);
 			R.setIdentity();
@@ -112,12 +112,12 @@ public class GhostObject extends CollisionObject {
 			// only perform raycast if filterMask matches
 			if (resultCallback.needsCollision(collisionObject.getBroadphaseHandle())) {
 				//RigidcollisionObject* collisionObject = ctrl->GetRigidcollisionObject();
-				Vector3f collisionObjectAabbMin = Stack.alloc(Vector3f.class);
-				Vector3f collisionObjectAabbMax = Stack.alloc(Vector3f.class);
+				Vector collisionObjectAabbMin = Stack.alloc(new Vector(3));
+				Vector collisionObjectAabbMax = Stack.alloc(new Vector(3));
 				collisionObject.getCollisionShape().getAabb(collisionObject.getWorldTransform(tmpTrans), collisionObjectAabbMin, collisionObjectAabbMax);
 				AabbUtil2.aabbExpand(collisionObjectAabbMin, collisionObjectAabbMax, castShapeAabbMin, castShapeAabbMax);
 				float[] hitLambda = new float[]{1f}; // could use resultCallback.closestHitFraction, but needs testing
-				Vector3f hitNormal = Stack.alloc(Vector3f.class);
+				Vector hitNormal = Stack.alloc(new Vector(3));
 				if (AabbUtil2.rayAabb(convexFromWorld.origin, convexToWorld.origin, collisionObjectAabbMin, collisionObjectAabbMax, hitLambda, hitNormal)) {
 					CollisionWorld.objectQuerySingle(castShape, convexFromTrans, convexToTrans,
 					                                 collisionObject,
@@ -130,7 +130,7 @@ public class GhostObject extends CollisionObject {
 		}
 	}
 
-	public void rayTest(Vector3f rayFromWorld, Vector3f rayToWorld, CollisionWorld.RayResultCallback resultCallback) {
+	public void rayTest(Vector rayFromWorld, Vector rayToWorld, CollisionWorld.RayResultCallback resultCallback) {
 		Transform rayFromTrans = Stack.alloc(Transform.class);
 		rayFromTrans.setIdentity();
 		rayFromTrans.origin.set(rayFromWorld);

@@ -23,7 +23,7 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.dispatch;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
 import com.elusivehawk.engine.physics.jbullet.collision.narrowphase.DiscreteCollisionDetectorInterface;
 import com.elusivehawk.engine.physics.jbullet.collision.narrowphase.ManifoldPoint;
@@ -32,6 +32,9 @@ import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 import com.elusivehawk.engine.physics.jbullet.util.ObjectPool;
 import cz.advel.stack.Stack;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * ManifoldResult is helper class to manage contact results.
  * 
@@ -83,7 +86,7 @@ public class ManifoldResult extends DiscreteCollisionDetectorInterface.Result {
 		this.index1 = index1;
 	}
 
-	public void addContactPoint(Vector3f normalOnBInWorld, Vector3f pointInWorld, float depth) {
+	public void addContactPoint(Vector normalOnBInWorld, Vector pointInWorld, float depth) {
 		assert (manifoldPtr != null);
 		//order in manifold needs to match
 
@@ -93,11 +96,11 @@ public class ManifoldResult extends DiscreteCollisionDetectorInterface.Result {
 
 		boolean isSwapped = manifoldPtr.getBody0() != body0;
 
-		Vector3f pointA = Stack.alloc(Vector3f.class);
+		Vector pointA = Stack.alloc(new Vector(3));
 		pointA.scaleAdd(depth, normalOnBInWorld, pointInWorld);
 
-		Vector3f localA = Stack.alloc(Vector3f.class);
-		Vector3f localB = Stack.alloc(Vector3f.class);
+		Vector localA = Stack.alloc(new Vector(3));
+		Vector localB = Stack.alloc(new Vector(3));
 
 		if (isSwapped) {
 			rootTransB.invXform(pointA, localA);

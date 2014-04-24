@@ -23,12 +23,15 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.shapes;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.BroadphaseNativeType;
 import com.elusivehawk.engine.physics.jbullet.linearmath.MatrixUtil;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 import cz.advel.stack.Stack;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * MinkowskiSumShape is only for advanced users. This shape represents implicit
  * based minkowski sum of two convex implicit shapes.
@@ -50,10 +53,10 @@ public class MinkowskiSumShape extends ConvexInternalShape {
 	}
 	
 	@Override
-	public Vector3f localGetSupportingVertexWithoutMargin(Vector3f vec, Vector3f out) {
-		Vector3f tmp = Stack.alloc(Vector3f.class);
-		Vector3f supVertexA = Stack.alloc(Vector3f.class);
-		Vector3f supVertexB = Stack.alloc(Vector3f.class);
+	public Vector localGetSupportingVertexWithoutMargin(Vector vec, Vector out) {
+		Vector tmp = Stack.alloc(new Vector(3));
+		Vector supVertexA = Stack.alloc(new Vector(3));
+		Vector supVertexB = Stack.alloc(new Vector(3));
 
 		// btVector3 supVertexA = m_transA(m_shapeA->localGetSupportingVertexWithoutMargin(-vec*m_transA.getBasis()));
 		tmp.negate(vec);
@@ -72,7 +75,7 @@ public class MinkowskiSumShape extends ConvexInternalShape {
 	}
 
 	@Override
-	public void batchedUnitVectorGetSupportingVertexWithoutMargin(Vector3f[] vectors, Vector3f[] supportVerticesOut, int numVectors) {
+	public void batchedUnitVectorGetSupportingVertexWithoutMargin(Vector[] vectors, Vector[] supportVerticesOut, int numVectors) {
 		//todo: could make recursive use of batching. probably this shape is not used frequently.
 		for (int i = 0; i < numVectors; i++) {
 			localGetSupportingVertexWithoutMargin(vectors[i], supportVerticesOut[i]);
@@ -80,7 +83,7 @@ public class MinkowskiSumShape extends ConvexInternalShape {
 	}
 
 	@Override
-	public void getAabb(Transform t, Vector3f aabbMin, Vector3f aabbMax) {
+	public void getAabb(Transform t, Vector aabbMin, Vector aabbMax) {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
@@ -90,7 +93,7 @@ public class MinkowskiSumShape extends ConvexInternalShape {
 	}
 
 	@Override
-	public void calculateLocalInertia(float mass, Vector3f inertia) {
+	public void calculateLocalInertia(float mass, Vector inertia) {
 		assert (false);
 		inertia.set(0, 0, 0);
 	}

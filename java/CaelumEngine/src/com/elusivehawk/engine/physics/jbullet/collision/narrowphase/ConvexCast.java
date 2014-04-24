@@ -23,10 +23,13 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.narrowphase;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.linearmath.IDebugDraw;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * ConvexCast is an interface for casting.
  * 
@@ -49,8 +52,8 @@ public abstract class ConvexCast {
 		public final Transform hitTransformA = new Transform();
 		public final Transform hitTransformB = new Transform();
 		
-		public final Vector3f normal = new Vector3f();
-		public final Vector3f hitPoint = new Vector3f();
+		public final Vector normal = new Vector();
+		public final Vector hitPoint = new Vector();
 		public float fraction = 1e30f; // input and output
 		public float allowedPenetration = 0f;
 		

@@ -23,14 +23,15 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.narrowphase;
 
-import com.elusivehawk.engine.math.Vector3f;
-import com.elusivehawk.engine.math.Vector4f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 import com.elusivehawk.engine.physics.jbullet.linearmath.VectorUtil;
 import cz.advel.stack.Stack;
 
-
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * PersistentManifold is a contact point cache, it stays persistent as long as objects
  * are overlapping in the broadphase. Those contact points are created by the collision
@@ -100,56 +101,56 @@ public class PersistentManifold {
 
 		float res0 = 0f, res1 = 0f, res2 = 0f, res3 = 0f;
 		if (maxPenetrationIndex != 0) {
-			Vector3f a0 = Stack.alloc(pt.localPointA);
+			Vector a0 = Stack.alloc(pt.localPointA);
 			a0.sub(pointCache[1].localPointA);
 
-			Vector3f b0 = Stack.alloc(pointCache[3].localPointA);
+			Vector b0 = Stack.alloc(pointCache[3].localPointA);
 			b0.sub(pointCache[2].localPointA);
 
-			Vector3f cross = Stack.alloc(Vector3f.class);
+			Vector cross = Stack.alloc(new Vector(3));
 			cross.cross(a0, b0);
 
 			res0 = cross.lengthSquared();
 		}
 
 		if (maxPenetrationIndex != 1) {
-			Vector3f a1 = Stack.alloc(pt.localPointA);
+			Vector a1 = Stack.alloc(pt.localPointA);
 			a1.sub(pointCache[0].localPointA);
 
-			Vector3f b1 = Stack.alloc(pointCache[3].localPointA);
+			Vector b1 = Stack.alloc(pointCache[3].localPointA);
 			b1.sub(pointCache[2].localPointA);
 
-			Vector3f cross = Stack.alloc(Vector3f.class);
+			Vector cross = Stack.alloc(new Vector(3));
 			cross.cross(a1, b1);
 			res1 = cross.lengthSquared();
 		}
 
 		if (maxPenetrationIndex != 2) {
-			Vector3f a2 = Stack.alloc(pt.localPointA);
+			Vector a2 = Stack.alloc(pt.localPointA);
 			a2.sub(pointCache[0].localPointA);
 
-			Vector3f b2 = Stack.alloc(pointCache[3].localPointA);
+			Vector b2 = Stack.alloc(pointCache[3].localPointA);
 			b2.sub(pointCache[1].localPointA);
 
-			Vector3f cross = Stack.alloc(Vector3f.class);
+			Vector cross = Stack.alloc(new Vector(3));
 			cross.cross(a2, b2);
 
 			res2 = cross.lengthSquared();
 		}
 
 		if (maxPenetrationIndex != 3) {
-			Vector3f a3 = Stack.alloc(pt.localPointA);
+			Vector a3 = Stack.alloc(pt.localPointA);
 			a3.sub(pointCache[0].localPointA);
 
-			Vector3f b3 = Stack.alloc(pointCache[2].localPointA);
+			Vector b3 = Stack.alloc(pointCache[2].localPointA);
 			b3.sub(pointCache[1].localPointA);
 
-			Vector3f cross = Stack.alloc(Vector3f.class);
+			Vector cross = Stack.alloc(new Vector(3));
 			cross.cross(a3, b3);
 			res3 = cross.lengthSquared();
 		}
 
-		Vector4f maxvec = Stack.alloc(Vector4f.class);
+		Vector maxvec = Stack.alloc(new Vector(4));
 		maxvec.set(res0, res1, res2, res3);
 		int biggestarea = VectorUtil.closestAxis4(maxvec);
 		return biggestarea;
@@ -215,7 +216,7 @@ public class PersistentManifold {
 		float shortestDist = getContactBreakingThreshold() * getContactBreakingThreshold();
 		int size = getNumContacts();
 		int nearestPoint = -1;
-		Vector3f diffA = Stack.alloc(Vector3f.class);
+		Vector diffA = Stack.alloc(new Vector(3));
 		for (int i = 0; i < size; i++) {
 			ManifoldPoint mp = pointCache[i];
 
@@ -310,7 +311,7 @@ public class PersistentManifold {
 
 	/// calculated new worldspace coordinates and depth, and reject points that exceed the collision margin
 	public void refreshContactPoints(Transform trA, Transform trB) {
-		Vector3f tmp = Stack.alloc(Vector3f.class);
+		Vector tmp = Stack.alloc(new Vector(3));
 		int i;
 //#ifdef DEBUG_PERSISTENCY
 //	printf("refreshContactPoints posA = (%f,%f,%f) posB = (%f,%f,%f)\n",
@@ -340,7 +341,7 @@ public class PersistentManifold {
 
 		// then 
 		float distance2d;
-		Vector3f projectedDifference = Stack.alloc(Vector3f.class), projectedPoint = Stack.alloc(Vector3f.class);
+		Vector projectedDifference = Stack.alloc(new Vector(3)), projectedPoint = Stack.alloc(new Vector(3));
 
 		for (i = getNumContacts() - 1; i >= 0; i--) {
 

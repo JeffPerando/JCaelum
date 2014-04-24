@@ -24,8 +24,11 @@
 package com.elusivehawk.engine.physics.jbullet.collision.shapes;
 
 import java.io.Serializable;
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * OptimizedBvhNode contains both internal and leaf node information.
  * 
@@ -35,8 +38,8 @@ public class OptimizedBvhNode implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	public final Vector3f aabbMinOrg = new Vector3f();
-	public final Vector3f aabbMaxOrg = new Vector3f();
+	public final Vector aabbMinOrg = new Vector();
+	public final Vector aabbMaxOrg = new Vector();
 
 	public int escapeIndex;
 
@@ -45,11 +48,11 @@ public class OptimizedBvhNode implements Serializable {
 	public int triangleIndex;
 	
 	public void set(OptimizedBvhNode n) {
-		aabbMinOrg.set(n.aabbMinOrg);
-		aabbMaxOrg.set(n.aabbMaxOrg);
-		escapeIndex = n.escapeIndex;
-		subPart = n.subPart;
-		triangleIndex = n.triangleIndex;
+		this.aabbMinOrg.set(n.aabbMinOrg);
+		this.aabbMaxOrg.set(n.aabbMaxOrg);
+		this.escapeIndex = n.escapeIndex;
+		this.subPart = n.subPart;
+		this.triangleIndex = n.triangleIndex;
 	}
 
 }

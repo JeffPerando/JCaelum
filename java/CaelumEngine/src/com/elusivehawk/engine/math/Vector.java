@@ -428,6 +428,11 @@ public class Vector implements IMathObject<Float>
 		return MathHelper.length(this);
 	}
 	
+	public float lengthSquared()
+	{
+		return MathHelper.lengthSquared(this);
+	}
+	
 	public Vector scale(float f, Vector dest)
 	{
 		for (int c = 0; c < this.getSize(); c++)
@@ -466,8 +471,16 @@ public class Vector implements IMathObject<Float>
 		return this.negate(this);
 	}
 	
-	public Vector negate(Vector v)//FIXME
+	public Vector negate(Vector v)
 	{
+		int length = Math.min(this.getSize(), v.getSize());
+		
+		for (int c = 0; c < length; c++)
+		{
+			this.set(c, -v.get(c), c == (length - 1));
+			
+		}
+		
 		return v;
 	}
 	
@@ -561,6 +574,11 @@ public class Vector implements IMathObject<Float>
 		this.set(pos, this.nums[pos] - f, notify);
 		
 		return this;
+	}
+	
+	public Vector scale(float f)
+	{
+		return this.mulAll(f);
 	}
 	
 }

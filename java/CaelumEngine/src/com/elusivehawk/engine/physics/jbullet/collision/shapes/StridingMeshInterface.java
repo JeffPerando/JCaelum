@@ -24,7 +24,6 @@
 package com.elusivehawk.engine.physics.jbullet.collision.shapes;
 
 import com.elusivehawk.engine.math.Vector;
-import com.elusivehawk.engine.math.Vector3f;
 import com.elusivehawk.engine.physics.jbullet.linearmath.VectorUtil;
 import cz.advel.stack.Stack;
 

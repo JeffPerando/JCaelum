@@ -27,10 +27,13 @@
 
 package com.elusivehawk.engine.physics.jbullet.extras.gimpact;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.dispatch.CollisionObject;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.TriangleCallback;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  *
  * @author jezek2
@@ -44,18 +47,19 @@ class GImpactTriangleCallback extends TriangleCallback {
 	public boolean swapped;
 	public float margin;
 	
-	public void processTriangle(Vector3f[] triangle, int partId, int triangleIndex) {
+	@Override
+	public void processTriangle(Vector[] triangle, int partId, int triangleIndex) {
 		TriangleShapeEx tri1 = new TriangleShapeEx(triangle[0], triangle[1], triangle[2]);
-		tri1.setMargin(margin);
-		if (swapped) {
-			algorithm.setPart0(partId);
-			algorithm.setFace0(triangleIndex);
+		tri1.setMargin(this.margin);
+		if (this.swapped) {
+			this.algorithm.setPart0(partId);
+			this.algorithm.setFace0(triangleIndex);
 		}
 		else {
-			algorithm.setPart1(partId);
-			algorithm.setFace1(triangleIndex);
+			this.algorithm.setPart1(partId);
+			this.algorithm.setFace1(triangleIndex);
 		}
-		algorithm.gimpact_vs_shape(body0, body1, gimpactshape0, tri1, swapped);
+		this.algorithm.gimpact_vs_shape(this.body0, this.body1, this.gimpactshape0, tri1, this.swapped);
 	}
 
 }

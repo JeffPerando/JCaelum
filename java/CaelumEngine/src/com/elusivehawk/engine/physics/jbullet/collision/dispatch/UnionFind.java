@@ -27,6 +27,9 @@ import java.util.Comparator;
 import com.elusivehawk.engine.physics.jbullet.linearmath.MiscUtil;
 import com.elusivehawk.engine.physics.jbullet.util.ObjectArrayList;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * UnionFind calculates connected subsets. Implements weighted Quick Union with
  * path compression.
@@ -45,11 +48,11 @@ public class UnionFind {
 	 */
 	public void sortIslands() {
 		// first store the original body index, and islandId
-		int numElements = elements.size();
+		int numElements = this.elements.size();
 
 		for (int i = 0; i < numElements; i++) {
-			elements.getQuick(i).id = find(i);
-			elements.getQuick(i).sz = i;
+			this.elements.getQuick(i).id = find(i);
+			this.elements.getQuick(i).sz = i;
 		}
 
 		// Sort the vector using predicate and std::sort
@@ -58,36 +61,36 @@ public class UnionFind {
 		//elements.heapSort(btUnionFindElementSortPredicate());
 		
 		//Collections.sort(elements);
-		MiscUtil.quickSort(elements, elementComparator);
+		MiscUtil.quickSort(this.elements, elementComparator);
 	}
 
 	public void reset(int N) {
 		allocate(N);
 
 		for (int i = 0; i < N; i++) {
-			elements.getQuick(i).id = i;
-			elements.getQuick(i).sz = 1;
+			this.elements.getQuick(i).id = i;
+			this.elements.getQuick(i).sz = 1;
 		}
 	}
 
 	public int getNumElements() {
-		return elements.size();
+		return this.elements.size();
 	}
 
 	public boolean isRoot(int x) {
-		return (x == elements.getQuick(x).id);
+		return (x == this.elements.getQuick(x).id);
 	}
 
 	public Element getElement(int index) {
-		return elements.getQuick(index);
+		return this.elements.getQuick(index);
 	}
 
 	public void allocate(int N) {
-		MiscUtil.resize(elements, N, Element.class);
+		MiscUtil.resize(this.elements, N, Element.class);
 	}
 
 	public void free() {
-		elements.clear();
+		this.elements.clear();
 	}
 
 	public int find(int p, int q) {
@@ -111,8 +114,8 @@ public class UnionFind {
 		//	m_elements[j].m_id = i; m_elements[i].m_sz += m_elements[j].m_sz; 
 		//}
 		//#else
-		elements.getQuick(i).id = j;
-		elements.getQuick(j).sz += elements.getQuick(i).sz;
+		this.elements.getQuick(i).id = j;
+		this.elements.getQuick(j).sz += this.elements.getQuick(i).sz;
 		//#endif //USE_PATH_COMPRESSION
 	}
 
@@ -120,13 +123,13 @@ public class UnionFind {
 		//assert(x < m_N);
 		//assert(x >= 0);
 
-		while (x != elements.getQuick(x).id) {
+		while (x != this.elements.getQuick(x).id) {
 			// not really a reason not to use path compression, and it flattens the trees/improves find performance dramatically
 
 			//#ifdef USE_PATH_COMPRESSION
-			elements.getQuick(x).id = elements.getQuick(elements.getQuick(x).id).id;
+			this.elements.getQuick(x).id = this.elements.getQuick(this.elements.getQuick(x).id).id;
 			//#endif //
-			x = elements.getQuick(x).id;
+			x = this.elements.getQuick(x).id;
 			//assert(x < m_N);
 			//assert(x >= 0);
 		}
@@ -141,6 +144,7 @@ public class UnionFind {
 	}
 	
 	private static final Comparator<Element> elementComparator = new Comparator<Element>() {
+		@Override
 		public int compare(Element o1, Element o2) {
 			return o1.id < o2.id? -1 : +1;
 		}

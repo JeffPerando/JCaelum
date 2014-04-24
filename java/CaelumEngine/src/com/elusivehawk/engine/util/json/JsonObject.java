@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.util.json;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import com.google.common.collect.Lists;
@@ -11,7 +12,7 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-public class JsonObject extends JsonKeypair
+public class JsonObject extends JsonKeypair implements Iterable<JsonKeypair>
 {
 	protected final List<JsonKeypair> jsons;
 	
@@ -21,6 +22,12 @@ public class JsonObject extends JsonKeypair
 		super(EnumJsonType.OBJECT, name, "{");
 		jsons = Lists.newArrayList(map.values());
 		
+	}
+	
+	@Override
+	public Iterator<JsonKeypair> iterator()
+	{
+		return this.jsons.iterator();
 	}
 	
 	@Override

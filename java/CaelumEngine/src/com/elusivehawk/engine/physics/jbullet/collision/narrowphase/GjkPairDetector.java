@@ -23,7 +23,8 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.narrowphase;
 
-import com.elusivehawk.engine.math.Vector3f;
+import static com.elusivehawk.engine.math.MathConst.*;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
 import com.elusivehawk.engine.physics.jbullet.BulletStats;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.ConvexShape;
@@ -33,6 +34,9 @@ import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 import cz.advel.stack.Stack;
 import cz.advel.stack.StaticAlloc;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * GjkPairDetector uses GJK to implement the {@link DiscreteCollisionDetectorInterface}.
  * 
@@ -45,7 +49,7 @@ public class GjkPairDetector extends DiscreteCollisionDetectorInterface {
 	// must be above the machine epsilon
 	private static final float REL_ERROR2 = 1.0e-6f;
 	
-	private final Vector3f cachedSeparatingAxis = new Vector3f();
+	private final Vector cachedSeparatingAxis = new Vector();
 	private ConvexPenetrationDepthSolver penetrationDepthSolver;
 	private SimplexSolverInterface simplexSolver;
 	private ConvexShape minkowskiA;
@@ -72,15 +76,15 @@ public class GjkPairDetector extends DiscreteCollisionDetectorInterface {
 	
 	@StaticAlloc
 	public void getClosestPoints(ClosestPointInput input, Result output, IDebugDraw debugDraw, boolean swapResults) {
-		Vector3f tmp = Stack.alloc(Vector3f.class);
+		Vector tmp = Stack.alloc(new Vector(3));
 
 		float distance = 0f;
-		Vector3f normalInB = Stack.alloc(Vector3f.class);
+		Vector normalInB = Stack.alloc(new Vector(3));
 		normalInB.set(0f, 0f, 0f);
-		Vector3f pointOnA = Stack.alloc(Vector3f.class), pointOnB = Stack.alloc(Vector3f.class);
+		Vector pointOnA = Stack.alloc(new Vector(3)), pointOnB = Stack.alloc(new Vector(3));
 		Transform localTransA = Stack.alloc(input.transformA);
 		Transform localTransB = Stack.alloc(input.transformB);
-		Vector3f positionOffset = Stack.alloc(Vector3f.class);
+		Vector positionOffset = Stack.alloc(new Vector(3));
 		positionOffset.add(localTransA.origin, localTransB.origin);
 		positionOffset.scale(0.5f);
 		localTransA.origin.sub(positionOffset);
@@ -116,18 +120,18 @@ public class GjkPairDetector extends DiscreteCollisionDetectorInterface {
 
 			simplexSolver.reset();
 
-			Vector3f seperatingAxisInA = Stack.alloc(Vector3f.class);
-			Vector3f seperatingAxisInB = Stack.alloc(Vector3f.class);
+			Vector seperatingAxisInA = Stack.alloc(new Vector(3));
+			Vector seperatingAxisInB = Stack.alloc(new Vector(3));
 			
-			Vector3f pInA = Stack.alloc(Vector3f.class);
-			Vector3f qInB = Stack.alloc(Vector3f.class);
+			Vector pInA = Stack.alloc(new Vector(3));
+			Vector qInB = Stack.alloc(new Vector(3));
 			
-			Vector3f pWorld = Stack.alloc(Vector3f.class);
-			Vector3f qWorld = Stack.alloc(Vector3f.class);
-			Vector3f w = Stack.alloc(Vector3f.class);
+			Vector pWorld = Stack.alloc(new Vector(3));
+			Vector qWorld = Stack.alloc(new Vector(3));
+			Vector w = Stack.alloc(new Vector(3));
 			
-			Vector3f tmpPointOnA = Stack.alloc(Vector3f.class), tmpPointOnB = Stack.alloc(Vector3f.class);
-			Vector3f tmpNormalInB = Stack.alloc(Vector3f.class);
+			Vector tmpPointOnA = Stack.alloc(new Vector(3)), tmpPointOnB = Stack.alloc(new Vector(3));
+			Vector tmpNormalInB = Stack.alloc(new Vector(3));
 			
 			for (;;) //while (true)
 			{
@@ -207,9 +211,9 @@ public class GjkPairDetector extends DiscreteCollisionDetectorInterface {
 					if (BulletGlobals.DEBUG) {
 						System.err.printf("btGjkPairDetector maxIter exceeded:%i\n", curIter);
 						System.err.printf("sepAxis=(%f,%f,%f), squaredDistance = %f, shapeTypeA=%i,shapeTypeB=%i\n",
-								cachedSeparatingAxis.x,
-								cachedSeparatingAxis.y,
-								cachedSeparatingAxis.z,
+								cachedSeparatingAxis.get(X),
+								cachedSeparatingAxis.get(Y),
+								cachedSeparatingAxis.get(Z),
 								squaredDistance,
 								minkowskiA.getShapeType(),
 								minkowskiB.getShapeType());
@@ -335,7 +339,7 @@ public class GjkPairDetector extends DiscreteCollisionDetectorInterface {
 		minkowskiB = minkB;
 	}
 
-	public void setCachedSeperatingAxis(Vector3f seperatingAxis) {
+	public void setCachedSeperatingAxis(Vector seperatingAxis) {
 		cachedSeparatingAxis.set(seperatingAxis);
 	}
 

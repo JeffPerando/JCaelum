@@ -27,8 +27,8 @@
 
 package com.elusivehawk.engine.physics.jbullet.extras.gimpact;
 
-import com.elusivehawk.engine.math.Vector3f;
-import com.elusivehawk.engine.math.Vector4f;
+import com.elusivehawk.engine.math.MathConst;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
 import com.elusivehawk.engine.physics.jbullet.linearmath.VectorUtil;
 import com.elusivehawk.engine.physics.jbullet.util.ArrayPool;
@@ -43,15 +43,15 @@ import com.elusivehawk.engine.physics.jbullet.util.ObjectArrayList;
  */
 class ClipPolygon
 {
-	public static float distance_point_plane(Vector4f plane, Vector3f point)
+	public static float distance_point_plane(Vector plane, Vector point)
 	{
-		return VectorUtil.dot(point, plane) - plane.w;
+		return VectorUtil.dot(point, plane) - plane.get(MathConst.W);
 	}
 	
 	/**
 	 * Vector blending. Takes two vectors a, b, blends them together.
 	 */
-	public static void vec_blend(Vector3f vr, Vector3f va, Vector3f vb,
+	public static void vec_blend(Vector vr, Vector va, Vector vb,
 			float blend_factor)
 	{
 		vr.scale(1f - blend_factor, va);
@@ -61,9 +61,9 @@ class ClipPolygon
 	/**
 	 * This function calcs the distance from a 3D plane.
 	 */
-	public static void plane_clip_polygon_collect(Vector3f point0,
-			Vector3f point1, float dist0, float dist1,
-			ObjectArrayList<Vector3f> clipped, int[] clipped_count)
+	public static void plane_clip_polygon_collect(Vector point0,
+			Vector point1, float dist0, float dist1,
+			ObjectArrayList<Vector> clipped, int[] clipped_count)
 	{
 		boolean _prevclassif = (dist0 > BulletGlobals.SIMD_EPSILON);
 		boolean _classif = (dist1 > BulletGlobals.SIMD_EPSILON);
@@ -86,9 +86,9 @@ class ClipPolygon
 	 * 
 	 * @return The count of the clipped counts
 	 */
-	public static int plane_clip_polygon(Vector4f plane,
-			ObjectArrayList<Vector3f> polygon_points, int polygon_point_count,
-			ObjectArrayList<Vector3f> clipped)
+	public static int plane_clip_polygon(Vector plane,
+			ObjectArrayList<Vector> polygon_points, int polygon_point_count,
+			ObjectArrayList<Vector> clipped)
 	{
 		ArrayPool<int[]> intArrays = ArrayPool.get(int.class);
 		
@@ -135,8 +135,8 @@ class ClipPolygon
 	 *            must be an array of 16 points.
 	 * @return the count of the clipped counts
 	 */
-	public static int plane_clip_triangle(Vector4f plane, Vector3f point0,
-			Vector3f point1, Vector3f point2, ObjectArrayList<Vector3f> clipped)
+	public static int plane_clip_triangle(Vector plane, Vector point0,
+			Vector point1, Vector point2, ObjectArrayList<Vector> clipped)
 	{
 		ArrayPool<int[]> intArrays = ArrayPool.get(int.class);
 		

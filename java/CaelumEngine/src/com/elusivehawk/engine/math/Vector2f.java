@@ -64,12 +64,6 @@ public class Vector2f extends Vector
 		
 	}
 	
-	public void scale(float f)
-	{
-		this.scale(f, this);
-		
-	}
-	
 	public void set(float a, float b)
 	{
 		this.x = a;

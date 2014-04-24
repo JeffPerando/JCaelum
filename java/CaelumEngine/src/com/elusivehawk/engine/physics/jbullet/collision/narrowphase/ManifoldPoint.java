@@ -23,8 +23,11 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.narrowphase;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * ManifoldPoint collects and maintains persistent contactpoints. Used to improve
  * stability and performance of rigidbody dynamics response.
@@ -33,12 +36,12 @@ import com.elusivehawk.engine.math.Vector3f;
  */
 public class ManifoldPoint {
 
-	public final Vector3f localPointA = new Vector3f();
-	public final Vector3f localPointB = new Vector3f();
-	public final Vector3f positionWorldOnB = new Vector3f();
+	public final Vector localPointA = new Vector();
+	public final Vector localPointB = new Vector();
+	public final Vector positionWorldOnB = new Vector();
 	///m_positionWorldOnA is redundant information, see getPositionWorldOnA(), but for clarity
-	public final Vector3f positionWorldOnA = new Vector3f();
-	public final Vector3f normalWorldOnB = new Vector3f();
+	public final Vector positionWorldOnA = new Vector();
+	public final Vector normalWorldOnB = new Vector();
 	
 	public float distance1;
 	public float combinedFriction;
@@ -58,8 +61,8 @@ public class ManifoldPoint {
 	public float appliedImpulseLateral2;
 	public int lifeTime; //lifetime of the contactpoint in frames
 
-	public final Vector3f lateralFrictionDir1 = new Vector3f();
-	public final Vector3f lateralFrictionDir2 = new Vector3f();
+	public final Vector lateralFrictionDir1 = new Vector();
+	public final Vector lateralFrictionDir2 = new Vector();
 	
 	public ManifoldPoint() {
 		this.userPersistentData = null;
@@ -68,11 +71,11 @@ public class ManifoldPoint {
 		this.lifeTime = 0;
 	}
 	
-	public ManifoldPoint(Vector3f pointA, Vector3f pointB, Vector3f normal, float distance) {
+	public ManifoldPoint(Vector pointA, Vector pointB, Vector normal, float distance) {
 		init(pointA, pointB, normal, distance);
 	}
 
-	public void init(Vector3f pointA, Vector3f pointB, Vector3f normal, float distance) {
+	public void init(Vector pointA, Vector pointB, Vector normal, float distance) {
 		this.localPointA.set(pointA);
 		this.localPointB.set(pointB);
 		this.normalWorldOnB.set(normal);
@@ -118,13 +121,13 @@ public class ManifoldPoint {
 		lateralFrictionDir2.set(p.lateralFrictionDir2);
 	}
 	
-	public Vector3f getPositionWorldOnA(Vector3f out) {
+	public Vector getPositionWorldOnA(Vector out) {
 		out.set(positionWorldOnA);
 		return out;
 		//return m_positionWorldOnB + m_normalWorldOnB * m_distance1;
 	}
 
-	public Vector3f getPositionWorldOnB(Vector3f out) {
+	public Vector getPositionWorldOnB(Vector out) {
 		out.set(positionWorldOnB);
 		return out;
 	}

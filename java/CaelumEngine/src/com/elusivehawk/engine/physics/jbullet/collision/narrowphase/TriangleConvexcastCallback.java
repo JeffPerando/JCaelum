@@ -23,19 +23,22 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.narrowphase;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.narrowphase.ConvexCast.CastResult;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.ConvexShape;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.TriangleCallback;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.TriangleShape;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  *
  * @author jezek2
  */
-public abstract class TriangleConvexcastCallback extends TriangleCallback {
-
+public abstract class TriangleConvexcastCallback extends TriangleCallback
+{
 	public ConvexShape convexShape;
 	public final Transform convexShapeFrom = new Transform();
 	public final Transform convexShapeTo = new Transform();
@@ -52,7 +55,8 @@ public abstract class TriangleConvexcastCallback extends TriangleCallback {
 		this.triangleCollisionMargin = triangleCollisionMargin;
 	}
 	
-	public void processTriangle(Vector3f[] triangle, int partId, int triangleIndex) {
+	public void processTriangle(Vector[] triangle, int partId, int triangleIndex)
+	{
 		TriangleShape triangleShape = new TriangleShape(triangle[0], triangle[1], triangle[2]);
 		triangleShape.setMargin(triangleCollisionMargin);
 
@@ -95,6 +99,6 @@ public abstract class TriangleConvexcastCallback extends TriangleCallback {
 		}
 	}
 
-	public abstract float reportHit(Vector3f hitNormalLocal, Vector3f hitPointLocal, float hitFraction, int partId, int triangleIndex);
+	public abstract float reportHit(Vector hitNormalLocal, Vector hitPointLocal, float hitFraction, int partId, int triangleIndex);
 	
 }

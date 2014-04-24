@@ -23,11 +23,15 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.shapes;
 
-import com.elusivehawk.engine.math.Vector3f;
+import static com.elusivehawk.engine.math.MathConst.*;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.BroadphaseNativeType;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 import cz.advel.stack.Stack;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * SphereShape implements an implicit sphere, centered around a local origin with radius.
  * 
@@ -36,27 +40,27 @@ import cz.advel.stack.Stack;
 public class SphereShape extends ConvexInternalShape {
 	
 	public SphereShape(float radius) {
-		implicitShapeDimensions.x = radius;
+		implicitShapeDimensions.set(X, radius);
 		collisionMargin = radius;
 	}
 
 	@Override
-	public Vector3f localGetSupportingVertexWithoutMargin(Vector3f vec, Vector3f out) {
+	public Vector localGetSupportingVertexWithoutMargin(Vector vec, Vector out) {
 		out.set(0f, 0f, 0f);
 		return out;
 	}
 
 	@Override
-	public void batchedUnitVectorGetSupportingVertexWithoutMargin(Vector3f[] vectors, Vector3f[] supportVerticesOut, int numVectors) {
+	public void batchedUnitVectorGetSupportingVertexWithoutMargin(Vector[] vectors, Vector[] supportVerticesOut, int numVectors) {
 		for (int i = 0; i < numVectors; i++) {
 			supportVerticesOut[i].set(0f, 0f, 0f);
 		}
 	}
 
 	@Override
-	public void getAabb(Transform t, Vector3f aabbMin, Vector3f aabbMax) {
-		Vector3f center = t.origin;
-		Vector3f extent = Stack.alloc(Vector3f.class);
+	public void getAabb(Transform t, Vector aabbMin, Vector aabbMax) {
+		Vector center = t.origin;
+		Vector extent = Stack.alloc(new Vector(3));
 		extent.set(getMargin(), getMargin(), getMargin());
 		aabbMin.sub(center, extent);
 		aabbMax.add(center, extent);
@@ -68,7 +72,7 @@ public class SphereShape extends ConvexInternalShape {
 	}
 
 	@Override
-	public void calculateLocalInertia(float mass, Vector3f inertia) {
+	public void calculateLocalInertia(float mass, Vector inertia) {
 		float elem = 0.4f * mass * getMargin() * getMargin();
 		inertia.set(elem, elem, elem);
 	}
@@ -79,7 +83,7 @@ public class SphereShape extends ConvexInternalShape {
 	}
 	
 	public float getRadius() {
-		return implicitShapeDimensions.x * localScaling.x;
+		return implicitShapeDimensions.get(X)* localScaling.get(X);
 	}
 
 	@Override

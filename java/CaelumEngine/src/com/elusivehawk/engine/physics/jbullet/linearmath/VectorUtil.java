@@ -61,7 +61,7 @@ public class VectorUtil
 		return maxAxis(tmp);
 	}
 	
-	/*public static float getCoord(Vector3f vec, int num)
+	/*public static float getCoord(Vector vec, int num)
 	{
 		switch (num)
 		{
@@ -77,18 +77,18 @@ public class VectorUtil
 		
 	}
 	
-	public static void setCoord(Vector3f vec, int num, float value)
+	public static void setCoord(Vector vec, int num, float value)
 	{
 		switch (num)
 		{
 			case 0:
-				vec.x = value;
+				vec.set(X, value;
 				break;
 			case 1:
-				vec.y = value;
+				vec.set(Y, value;
 				break;
 			case 2:
-				vec.z = value;
+				vec.get(Z)= value;
 				break;
 			default:
 				throw new InternalError();
@@ -96,18 +96,18 @@ public class VectorUtil
 		
 	}
 	
-	public static void mulCoord(Vector3f vec, int num, float value)
+	public static void mulCoord(Vector vec, int num, float value)
 	{
 		switch (num)
 		{
 			case 0:
-				vec.x *= value;
+				vec.get(X)*= value;
 				break;
 			case 1:
-				vec.y *= value;
+				vec.get(Y)*= value;
 				break;
 			case 2:
-				vec.z *= value;
+				vec.get(Z)*= value;
 				break;
 			default:
 				throw new InternalError();
@@ -123,9 +123,9 @@ public class VectorUtil
 			dest.set(c, s * v0.get(c) + rt * v1.get(c), c == 2);
 			
 		}
-		/*dest.x = s * v0.x + rt * v1.x;
-		dest.y = s * v0.y + rt * v1.y;
-		dest.z = s * v0.z + rt * v1.z;*/
+		/*dest.set(X, s * v0.get(X)+ rt * v1.x;
+		dest.set(Y, s * v0.get(Y)+ rt * v1.y;
+		dest.get(Z)= s * v0.get(Z)+ rt * v1.z;*/
 		// don't do the unused w component
 		// m_co[3] = s * v0[3] + rt * v1[3];
 		
@@ -135,9 +135,9 @@ public class VectorUtil
 	{
 		v1.mul(v2, dest);
 		
-		/*dest.x = v1.x + v2.x;
-		dest.y = v1.y + v2.y;
-		dest.z = v1.z + v2.z;*/
+		/*dest.set(X, v1.get(X)+ v2.x;
+		dest.set(Y, v1.get(Y)+ v2.y;
+		dest.get(Z)= v1.get(Z)+ v2.z;*/
 		
 	}
 	
@@ -151,9 +151,9 @@ public class VectorUtil
 			
 		}
 		
-		/*dest.x = v1.x + v2.x + v3.x;
-		dest.y = v1.y + v2.y + v3.y;
-		dest.z = v1.z + v2.z + v3.z;*/
+		/*dest.set(X, v1.get(X)+ v2.get(X)+ v3.x;
+		dest.set(Y, v1.get(Y)+ v2.get(Y)+ v3.y;
+		dest.get(Z)= v1.get(Z)+ v2.get(Z)+ v3.z;*/
 		
 	}
 	
@@ -167,9 +167,9 @@ public class VectorUtil
 			
 		}
 		
-		/*dest.x = v1.x + v2.x + v3.x + v4.x;
-		dest.y = v1.y + v2.y + v3.y + v4.y;
-		dest.z = v1.z + v2.z + v3.z + v4.z;*/
+		/*dest.set(X, v1.get(X)+ v2.get(X)+ v3.get(X)+ v4.x;
+		dest.set(Y, v1.get(Y)+ v2.get(Y)+ v3.get(Y)+ v4.y;
+		dest.get(Z)= v1.get(Z)+ v2.get(Z)+ v3.get(Z)+ v4.z;*/
 		
 	}
 	
@@ -177,9 +177,9 @@ public class VectorUtil
 	{
 		v1.mul(v2, dest);
 		
-		/*dest.x = v1.x * v2.x;
-		dest.y = v1.y * v2.y;
-		dest.z = v1.z * v2.z;*/
+		/*dest.set(X, v1.get(X)* v2.x;
+		dest.set(Y, v1.get(Y)* v2.y;
+		dest.get(Z)= v1.get(Z)* v2.z;*/
 		
 	}
 	
@@ -187,9 +187,9 @@ public class VectorUtil
 	{
 		v1.div(v2, dest);
 		
-		/*dest.x = v1.x / v2.x;
-		dest.y = v1.y / v2.y;
-		dest.z = v1.z / v2.z;*/
+		/*dest.set(X, v1.get(X)/ v2.x;
+		dest.set(Y, v1.get(Y)/ v2.y;
+		dest.get(Z)= v1.get(Z)/ v2.z;*/
 		
 	}
 	
@@ -202,9 +202,9 @@ public class VectorUtil
 			a.set(c, Math.min(a.get(c), b.get(c)), c == (length - 1));
 		}
 		
-		/*a.x = Math.min(a.x, b.x);
-		a.y = Math.min(a.y, b.y);
-		a.z = Math.min(a.z, b.z);*/
+		/*a.set(X, Math.min(a.x, b.x);
+		a.set(Y, Math.min(a.y, b.y);
+		a.get(Z)= Math.min(a.z, b.z);*/
 		
 	}
 	
@@ -217,9 +217,9 @@ public class VectorUtil
 			a.set(c, Math.max(a.get(c), b.get(c)), c == (length - 1));
 		}
 		
-		/*a.x = Math.max(a.x, b.x);
-		a.y = Math.max(a.y, b.y);
-		a.z = Math.max(a.z, b.z);*/
+		/*a.set(X, Math.max(a.x, b.x);
+		a.set(Y, Math.max(a.y, b.y);
+		a.get(Z)= Math.max(a.z, b.z);*/
 		
 	}
 	
@@ -230,21 +230,21 @@ public class VectorUtil
 	
 	public static float dot(Vector v0, Vector v1)
 	{
-		return MathHelper.dot(v0, v1);//(v0.x * v1.x + v0.y * v1.y + v0.z * v1.z);
+		return MathHelper.dot(v0, v1);//(v0.get(X)* v1.get(X)+ v0.get(Y)* v1.get(Y)+ v0.get(Z)* v1.z);
 	}
 	
 	public static float lengthSquared(Vector v)
 	{
-		return MathHelper.length(v);//(v.x * v.x + v.y * v.y + v.z * v.z);
+		return MathHelper.lengthSquared(v);//(v.get(X)* v.get(X)+ v.get(Y)* v.get(Y)+ v.get(Z)* v.z);
 	}
 	
 	public static void normalize3(Vector v)
 	{
 		v.normalize();
-		/*float norm = (float)(1.0 / Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z));
-		v.x *= norm;
-		v.y *= norm;
-		v.z *= norm;*/
+		/*float norm = (float)(1.0 / Math.sqrt(v.get(X)* v.get(X)+ v.get(Y)* v.get(Y)+ v.get(Z)* v.z));
+		v.get(X)*= norm;
+		v.get(Y)*= norm;
+		v.get(Z)*= norm;*/
 		
 	}
 	
@@ -252,11 +252,11 @@ public class VectorUtil
 	{
 		v1.cross(v2, dest);
 		/*float x, y;
-		x = v1.y * v2.z - v1.z * v2.y;
-		y = v2.x * v1.z - v2.z * v1.x;
-		dest.z = v1.x * v2.y - v1.y * v2.x;
-		dest.x = x;
-		dest.y = y;*/
+		x = v1.get(Y)* v2.get(Z)- v1.get(Z)* v2.y;
+		y = v2.get(X)* v1.get(Z)- v2.get(Z)* v1.x;
+		dest.get(Z)= v1.get(X)* v2.get(Y)- v1.get(Y)* v2.x;
+		dest.set(X, x;
+		dest.set(Y, y;*/
 		
 	}
 	

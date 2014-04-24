@@ -23,11 +23,14 @@
 
 package com.elusivehawk.engine.physics.jbullet.dynamics.vehicle;
 
-import com.elusivehawk.engine.math.Vector3f;
+import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.dispatch.CollisionWorld.ClosestRayResultCallback;
 import com.elusivehawk.engine.physics.jbullet.dynamics.DynamicsWorld;
 import com.elusivehawk.engine.physics.jbullet.dynamics.RigidBody;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * Default implementation of {@link VehicleRaycaster}.
  * 
@@ -41,12 +44,13 @@ public class DefaultVehicleRaycaster extends VehicleRaycaster {
 		this.dynamicsWorld = world;
 	}
 
-	public Object castRay(Vector3f from, Vector3f to, VehicleRaycasterResult result) {
+	@Override
+	public Object castRay(Vector from, Vector to, VehicleRaycasterResult result) {
 		//RayResultCallback& resultCallback;
 
 		ClosestRayResultCallback rayCallback = new ClosestRayResultCallback(from, to);
 
-		dynamicsWorld.rayTest(from, to, rayCallback);
+		this.dynamicsWorld.rayTest(from, to, rayCallback);
 
 		if (rayCallback.hasHit()) {
 			RigidBody body = RigidBody.upcast(rayCallback.collisionObject);
