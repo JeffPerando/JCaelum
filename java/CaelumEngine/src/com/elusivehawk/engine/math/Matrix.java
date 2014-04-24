@@ -486,7 +486,6 @@ public class Matrix implements IMathObject<Float>
 	public Matrix invert()
 	{
 		return this.invert(this);
-		
 	}
 	
 	public Matrix invert(Matrix m)//FIXME
