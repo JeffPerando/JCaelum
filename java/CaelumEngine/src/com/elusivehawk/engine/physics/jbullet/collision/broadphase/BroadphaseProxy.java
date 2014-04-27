@@ -26,6 +26,9 @@ package com.elusivehawk.engine.physics.jbullet.collision.broadphase;
 import com.elusivehawk.engine.physics.jbullet.collision.dispatch.CollisionObject;
 import com.elusivehawk.engine.physics.jbullet.dynamics.RigidBody;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * BroadphaseProxy is the main class that can be used with the Bullet broadphases.
  * It stores collision shape type information, collision filter information and
@@ -33,8 +36,8 @@ import com.elusivehawk.engine.physics.jbullet.dynamics.RigidBody;
  * 
  * @author jezek2
  */
-public class BroadphaseProxy {
-
+public class BroadphaseProxy
+{
 	// Usually the client CollisionObject or Rigidbody class
 	public Object clientObject;
 	
@@ -46,22 +49,26 @@ public class BroadphaseProxy {
 	
 	public int uniqueId; // uniqueId is introduced for paircache. could get rid of this, by calculating the address offset etc.
 
-	public BroadphaseProxy() {
-	}
+	public BroadphaseProxy(){}
 	
-	public BroadphaseProxy(Object userPtr, short collisionFilterGroup, short collisionFilterMask) {
+	public BroadphaseProxy(Object userPtr, short collisionFilterGroup, short collisionFilterMask)
+	{
 		this(userPtr, collisionFilterGroup, collisionFilterMask, null);
+		
 	}
 	
-	public BroadphaseProxy(Object userPtr, short collisionFilterGroup, short collisionFilterMask, Object multiSapParentProxy) {
+	public BroadphaseProxy(Object userPtr, short collisionFilterGroup, short collisionFilterMask, Object multiSapParentProxy)
+	{
 		this.clientObject = userPtr;
 		this.collisionFilterGroup = collisionFilterGroup;
 		this.collisionFilterMask = collisionFilterMask;
 		this.multiSapParentProxy = multiSapParentProxy;
+		
 	}
-
-	public int getUid() {
-		return uniqueId;
+	
+	public int getUid()
+	{
+		return this.uniqueId;
 	}
 	
 }

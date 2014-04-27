@@ -209,17 +209,6 @@ public class Matrix implements IMathObject<Float>
 	}
 	
 	@Override
-	public void setAll(Float num, boolean notify)
-	{
-		for (int c = 0; c < this.getSize(); c++)
-		{
-			this.set(c, num);
-			
-		}
-		
-	}
-	
-	@Override
 	public void normalize()
 	{
 		this.normalize(this);
@@ -231,11 +220,7 @@ public class Matrix implements IMathObject<Float>
 	{
 		assert !dest.isImmutable();
 		
-		for (int c = 0; c < this.getSize(); c++)
-		{
-			dest.set(c, (float)Math.sqrt(MathHelper.square(this.get(c))), false);
-			
-		}
+		
 		
 	}
 	

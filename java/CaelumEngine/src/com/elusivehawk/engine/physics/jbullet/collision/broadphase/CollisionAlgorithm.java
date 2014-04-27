@@ -29,14 +29,17 @@ import com.elusivehawk.engine.physics.jbullet.collision.dispatch.ManifoldResult;
 import com.elusivehawk.engine.physics.jbullet.collision.narrowphase.PersistentManifold;
 import com.elusivehawk.engine.physics.jbullet.util.ObjectArrayList;
 
+/*
+ * NOTICE: Edited by Elusivehawk
+ */
 /**
  * Collision algorithm for handling narrowphase or midphase collision detection
  * between two collision object types.
  * 
  * @author jezek2
  */
-public abstract class CollisionAlgorithm {
-
+public abstract class CollisionAlgorithm
+{
 	//protected final BulletStack stack = BulletStack.get();
 	
 	// JAVA NOTE: added
@@ -44,11 +47,11 @@ public abstract class CollisionAlgorithm {
 	
 	protected Dispatcher dispatcher;
 
-	public void init() {
-	}
+	public void init(){}
 
-	public void init(CollisionAlgorithmConstructionInfo ci) {
-		dispatcher = ci.dispatcher1;
+	public void init(CollisionAlgorithmConstructionInfo ci)
+	{
+		this.dispatcher = ci.dispatcher1;
 	}
 	
 	public abstract void destroy();
@@ -59,12 +62,15 @@ public abstract class CollisionAlgorithm {
 	
 	public abstract void getAllContactManifolds(ObjectArrayList<PersistentManifold> manifoldArray);
 	
-	public final void internalSetCreateFunc(CollisionAlgorithmCreateFunc func) {
-		createFunc = func;
+	public final void internalSetCreateFunc(CollisionAlgorithmCreateFunc func)
+	{
+		this.createFunc = func;
+		
 	}
 
-	public final CollisionAlgorithmCreateFunc internalGetCreateFunc() {
-		return createFunc;
+	public final CollisionAlgorithmCreateFunc internalGetCreateFunc()
+	{
+		return this.createFunc;
 	}
 	
 }

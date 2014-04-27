@@ -19,10 +19,12 @@ public interface IMathObject<T extends Number> extends IStorable<T>
 	
 	public int getSize();
 	
+	@MakeDefault
 	public boolean isImmutable();
 	
 	public T get(int pos);
 	
+	@MakeDefault
 	public T[] multiget(int bitmask);
 	
 	@MakeDefault
@@ -32,8 +34,6 @@ public interface IMathObject<T extends Number> extends IStorable<T>
 	
 	@MakeDefault
 	public void setAll(T num);
-	
-	public void setAll(T num, boolean notify);
 	
 	@MakeDefault
 	public void normalize();

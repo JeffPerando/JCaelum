@@ -149,24 +149,13 @@ public class Vector implements IMathObject<Float>
 	@Override
 	public void setAll(Float num)
 	{
-		this.setAll(num, true);
-		
-	}
-	
-	@Override
-	public void setAll(Float num, boolean notify)
-	{
 		for (int c = 0; c < this.getSize(); c++)
 		{
 			this.nums[c] = num.floatValue();
 			
 		}
 		
-		if (notify)
-		{
-			this.onChanged();
-			
-		}
+		this.onChanged();
 		
 	}
 	
@@ -491,9 +480,20 @@ public class Vector implements IMathObject<Float>
 	
 	public Vector addAll(float f)
 	{
+		return this.addAll(f, true);
+	}
+	
+	public Vector addAll(float f, boolean notify)
+	{
 		for (int c = 0; c < this.getSize(); c++)
 		{
 			this.nums[c] += f;
+			
+		}
+		
+		if (notify)
+		{
+			this.onChanged();
 			
 		}
 		
@@ -502,9 +502,20 @@ public class Vector implements IMathObject<Float>
 	
 	public Vector divAll(float f)
 	{
+		return this.divAll(f, true);
+	}
+	
+	public Vector divAll(float f, boolean notify)
+	{
 		for (int c = 0; c < this.getSize(); c++)
 		{
 			this.nums[c] /= f;
+			
+		}
+		
+		if (notify)
+		{
+			this.onChanged();
 			
 		}
 		
@@ -513,9 +524,20 @@ public class Vector implements IMathObject<Float>
 	
 	public Vector mulAll(float f)
 	{
+		return this.mulAll(f, true);
+	}
+	
+	public Vector mulAll(float f, boolean notify)
+	{
 		for (int c = 0; c < this.getSize(); c++)
 		{
 			this.nums[c] *= f;
+			
+		}
+		
+		if (notify)
+		{
+			this.onChanged();
 			
 		}
 		
@@ -524,9 +546,20 @@ public class Vector implements IMathObject<Float>
 	
 	public Vector subAll(float f)
 	{
+		return this.subAll(f, true);
+	}
+	
+	public Vector subAll(float f, boolean notify)
+	{
 		for (int c = 0; c < this.getSize(); c++)
 		{
 			this.nums[c] -= f;
+			
+		}
+		
+		if (notify)
+		{
+			this.onChanged();
 			
 		}
 		
@@ -548,11 +581,21 @@ public class Vector implements IMathObject<Float>
 		return this;
 	}
 	
+	public Vector add(int pos, float f)
+	{
+		return this.add(pos, f, true);
+	}
+	
 	public Vector add(int pos, float f, boolean notify)
 	{
 		this.set(pos, this.nums[pos] + f, notify);
 		
 		return this;
+	}
+	
+	public Vector div(int pos, float f)
+	{
+		return this.div(pos, f, true);
 	}
 	
 	public Vector div(int pos, float f, boolean notify)
@@ -562,11 +605,21 @@ public class Vector implements IMathObject<Float>
 		return this;
 	}
 	
+	public Vector mul(int pos, float f)
+	{
+		return this.mul(pos, f, true);
+	}
+	
 	public Vector mul(int pos, float f, boolean notify)
 	{
 		this.set(pos, this.nums[pos] * f, notify);
 		
 		return this;
+	}
+	
+	public Vector sub(int pos, float f)
+	{
+		return this.sub(pos, f, true);
 	}
 	
 	public Vector sub(int pos, float f, boolean notify)

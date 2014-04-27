@@ -118,6 +118,7 @@ public class VectorUtil
 	public static void setInterpolate(Vector dest, Vector v0, Vector v1, float rt)
 	{
 		float s = 1f - rt;
+		
 		for (int c = 0; c < 3; c++)
 		{
 			dest.set(c, s * v0.get(c) + rt * v1.get(c), c == 2);

@@ -66,8 +66,8 @@ import cz.advel.stack.Stack;
  * 
  * @author jezek2
  */
-public class CollisionWorld {
-
+public class CollisionWorld
+{
 	//protected final BulletStack stack = BulletStack.get();
 	
 	protected ObjectArrayList<CollisionObject> collisionObjects = new ObjectArrayList<CollisionObject>();
@@ -87,16 +87,16 @@ public class CollisionWorld {
 	
 	public void destroy() {
 		// clean up remaining objects
-		for (int i = 0; i < collisionObjects.size(); i++) {
-			CollisionObject collisionObject = collisionObjects.getQuick(i);
+		for (int i = 0; i < this.collisionObjects.size(); i++) {
+			CollisionObject collisionObject = this.collisionObjects.getQuick(i);
 
 			BroadphaseProxy bp = collisionObject.getBroadphaseHandle();
 			if (bp != null) {
 				//
 				// only clear the cached algorithms
 				//
-				getBroadphase().getOverlappingPairCache().cleanProxyFromPairs(bp, dispatcher1);
-				getBroadphase().destroyProxy(bp, dispatcher1);
+				getBroadphase().getOverlappingPairCache().cleanProxyFromPairs(bp, this.dispatcher1);
+				getBroadphase().destroyProxy(bp, this.dispatcher1);
 			}
 		}
 	}
@@ -107,9 +107,9 @@ public class CollisionWorld {
 
 	public void addCollisionObject(CollisionObject collisionObject, short collisionFilterGroup, short collisionFilterMask) {
 		// check that the object isn't already added
-		assert (!collisionObjects.contains(collisionObject));
+		assert (!this.collisionObjects.contains(collisionObject));
 
-		collisionObjects.add(collisionObject);
+		this.collisionObjects.add(collisionObject);
 
 		// calculate new AABB
 		// TODO: check if it's overwritten or not
@@ -127,7 +127,7 @@ public class CollisionWorld {
 				collisionObject,
 				collisionFilterGroup,
 				collisionFilterMask,
-				dispatcher1, null));
+				this.dispatcher1, null));
 	}
 
 	public void performDiscreteCollisionDetection() {
@@ -139,7 +139,7 @@ public class CollisionWorld {
 
 			BulletStats.pushProfile("calculateOverlappingPairs");
 			try {
-				broadphasePairCache.calculateOverlappingPairs(dispatcher1);
+				this.broadphasePairCache.calculateOverlappingPairs(this.dispatcher1);
 			}
 			finally {
 				BulletStats.popProfile();
@@ -150,7 +150,7 @@ public class CollisionWorld {
 				BulletStats.pushProfile("dispatchAllCollisionPairs");
 				try {
 					if (dispatcher != null) {
-						dispatcher.dispatchAllCollisionPairs(broadphasePairCache.getOverlappingPairCache(), dispatchInfo, dispatcher1);
+						dispatcher.dispatchAllCollisionPairs(this.broadphasePairCache.getOverlappingPairCache(), this.dispatchInfo, this.dispatcher1);
 					}
 				}
 				finally {
@@ -172,34 +172,34 @@ public class CollisionWorld {
 				//
 				// only clear the cached algorithms
 				//
-				getBroadphase().getOverlappingPairCache().cleanProxyFromPairs(bp, dispatcher1);
-				getBroadphase().destroyProxy(bp, dispatcher1);
+				getBroadphase().getOverlappingPairCache().cleanProxyFromPairs(bp, this.dispatcher1);
+				getBroadphase().destroyProxy(bp, this.dispatcher1);
 				collisionObject.setBroadphaseHandle(null);
 			}
 		}
 
 		//swapremove
-		collisionObjects.remove(collisionObject);
+		this.collisionObjects.remove(collisionObject);
 	}
 
 	public void setBroadphase(BroadphaseInterface pairCache) {
-		broadphasePairCache = pairCache;
+		this.broadphasePairCache = pairCache;
 	}
 	
 	public BroadphaseInterface getBroadphase() {
-		return broadphasePairCache;
+		return this.broadphasePairCache;
 	}
 	
 	public OverlappingPairCache getPairCache() {
-		return broadphasePairCache.getOverlappingPairCache();
+		return this.broadphasePairCache.getOverlappingPairCache();
 	}
 
 	public Dispatcher getDispatcher() {
-		return dispatcher1;
+		return this.dispatcher1;
 	}
 
 	public DispatcherInfo getDispatchInfo() {
-		return dispatchInfo;
+		return this.dispatchInfo;
 	}
 	
 	private static boolean updateAabbs_reportMe = true;
@@ -217,24 +217,24 @@ public class CollisionWorld {
 		minAabb.sub(contactThreshold);
 		maxAabb.add(contactThreshold);
 
-		BroadphaseInterface bp = broadphasePairCache;
+		BroadphaseInterface bp = this.broadphasePairCache;
 
 		// moving objects should be moderately sized, probably something wrong if not
 		tmp.sub(maxAabb, minAabb); // TODO: optimize
 		if (colObj.isStaticObject() || (tmp.lengthSquared() < 1e12f)) {
-			bp.setAabb(colObj.getBroadphaseHandle(), minAabb, maxAabb, dispatcher1);
+			bp.setAabb(colObj.getBroadphaseHandle(), minAabb, maxAabb, this.dispatcher1);
 		}
 		else {
 			// something went wrong, investigate
 			// this assert is unwanted in 3D modelers (danger of loosing work)
 			colObj.setActivationState(CollisionObject.DISABLE_SIMULATION);
 
-			if (updateAabbs_reportMe && debugDrawer != null) {
+			if (updateAabbs_reportMe && this.debugDrawer != null) {
 				updateAabbs_reportMe = false;
-				debugDrawer.reportErrorWarning("Overflow in AABB, object removed from simulation");
-				debugDrawer.reportErrorWarning("If you can reproduce this, please email bugs@continuousphysics.com\n");
-				debugDrawer.reportErrorWarning("Please include above information, your Platform, version of OS.\n");
-				debugDrawer.reportErrorWarning("Thanks.\n");
+				this.debugDrawer.reportErrorWarning("Overflow in AABB, object removed from simulation");
+				this.debugDrawer.reportErrorWarning("If you can reproduce this, please email bugs@continuousphysics.com\n");
+				this.debugDrawer.reportErrorWarning("Please include above information, your Platform, version of OS.\n");
+				this.debugDrawer.reportErrorWarning("Thanks.\n");
 			}
 		}
 	}
@@ -242,8 +242,8 @@ public class CollisionWorld {
 	public void updateAabbs() {
 		BulletStats.pushProfile("updateAabbs");
 		try {
-			for (int i=0; i<collisionObjects.size(); i++) {
-				CollisionObject colObj = collisionObjects.getQuick(i);
+			for (int i=0; i<this.collisionObjects.size(); i++) {
+				CollisionObject colObj = this.collisionObjects.getQuick(i);
 
 				// only update aabb of active objects
 				if (colObj.isActive()) {
@@ -257,7 +257,7 @@ public class CollisionWorld {
 	}
 
 	public IDebugDraw getDebugDrawer() {
-		return debugDrawer;
+		return this.debugDrawer;
 	}
 
 	public void setDebugDrawer(IDebugDraw debugDrawer) {
@@ -265,7 +265,7 @@ public class CollisionWorld {
 	}
 	
 	public int getNumCollisionObjects() {
-		return collisionObjects.size();
+		return this.collisionObjects.size();
 	}
 
 	// TODO
@@ -399,9 +399,9 @@ public class CollisionWorld {
 			LocalShapeInfo shapeInfo = new LocalShapeInfo();
 			shapeInfo.shapePart = partId;
 			shapeInfo.triangleIndex = triangleIndex;
-			if (hitFraction <= resultCallback.closestHitFraction) {
-				LocalConvexResult convexResult = new LocalConvexResult(collisionObject, shapeInfo, hitNormalLocal, hitPointLocal, hitFraction);
-				return resultCallback.addSingleResult(convexResult, normalInWorldSpace);
+			if (hitFraction <= this.resultCallback.closestHitFraction) {
+				LocalConvexResult convexResult = new LocalConvexResult(this.collisionObject, shapeInfo, hitNormalLocal, hitPointLocal, hitFraction);
+				return this.resultCallback.addSingleResult(convexResult, this.normalInWorldSpace);
 			}
 			return hitFraction;
 		}
@@ -548,13 +548,13 @@ public class CollisionWorld {
 
 		Transform tmpTrans = Stack.alloc(Transform.class);
 		
-		for (int i = 0; i < collisionObjects.size(); i++) {
+		for (int i = 0; i < this.collisionObjects.size(); i++) {
 			// terminate further ray tests, once the closestHitFraction reached zero
 			if (resultCallback.closestHitFraction == 0f) {
 				break;
 			}
 
-			CollisionObject collisionObject = collisionObjects.getQuick(i);
+			CollisionObject collisionObject = this.collisionObjects.getQuick(i);
 			// only perform raycast if filterMask matches
 			if (resultCallback.needsCollision(collisionObject.getBroadphaseHandle())) {
 				//RigidcollisionObject* collisionObject = ctrl->GetRigidcollisionObject();
@@ -606,8 +606,8 @@ public class CollisionWorld {
 
 		// go over all objects, and if the ray intersects their aabb + cast shape aabb,
 		// do a ray-shape query using convexCaster (CCD)
-		for (int i = 0; i < collisionObjects.size(); i++) {
-			CollisionObject collisionObject = collisionObjects.getQuick(i);
+		for (int i = 0; i < this.collisionObjects.size(); i++) {
+			CollisionObject collisionObject = this.collisionObjects.getQuick(i);
 
 			// only perform raycast if filterMask matches
 			if (resultCallback.needsCollision(collisionObject.getBroadphaseHandle())) {
@@ -630,7 +630,7 @@ public class CollisionWorld {
 	}
 
 	public ObjectArrayList<CollisionObject> getCollisionObjectArray() {
-		return collisionObjects;
+		return this.collisionObjects;
 	}
 	
 	////////////////////////////////////////////////////////////////////////////
@@ -670,12 +670,12 @@ public class CollisionWorld {
 		public short collisionFilterMask = CollisionFilterGroups.ALL_FILTER;
 		
 		public boolean hasHit() {
-			return (collisionObject != null);
+			return (this.collisionObject != null);
 		}
 
 		public boolean needsCollision(BroadphaseProxy proxy0) {
-			boolean collides = ((proxy0.collisionFilterGroup & collisionFilterMask) & 0xFFFF) != 0;
-			collides = collides && ((collisionFilterGroup & proxy0.collisionFilterMask) & 0xFFFF) != 0;
+			boolean collides = ((proxy0.collisionFilterGroup & this.collisionFilterMask) & 0xFFFF) != 0;
+			collides = collides && ((this.collisionFilterGroup & proxy0.collisionFilterMask) & 0xFFFF) != 0;
 			return collides;
 		}
 		
@@ -697,20 +697,20 @@ public class CollisionWorld {
 		@Override
 		public float addSingleResult(LocalRayResult rayResult, boolean normalInWorldSpace) {
 			// caller already does the filter on the closestHitFraction
-			assert (rayResult.hitFraction <= closestHitFraction);
+			assert (rayResult.hitFraction <= this.closestHitFraction);
 
-			closestHitFraction = rayResult.hitFraction;
-			collisionObject = rayResult.collisionObject;
+			this.closestHitFraction = rayResult.hitFraction;
+			this.collisionObject = rayResult.collisionObject;
 			if (normalInWorldSpace) {
-				hitNormalWorld.set(rayResult.hitNormalLocal);
+				this.hitNormalWorld.set(rayResult.hitNormalLocal);
 			}
 			else {
 				// need to transform normal into worldspace
-				hitNormalWorld.set(rayResult.hitNormalLocal);
-				collisionObject.getWorldTransform(Stack.alloc(Transform.class)).basis.transform(hitNormalWorld);
+				this.hitNormalWorld.set(rayResult.hitNormalLocal);
+				this.collisionObject.getWorldTransform(Stack.alloc(Transform.class)).basis.transform(this.hitNormalWorld);
 			}
 
-			VectorUtil.setInterpolate(hitPointWorld, rayFromWorld, rayToWorld, rayResult.hitFraction);
+			VectorUtil.setInterpolate(this.hitPointWorld, this.rayFromWorld, this.rayToWorld, rayResult.hitFraction);
 			return rayResult.hitFraction;
 		}
 	}
@@ -737,12 +737,12 @@ public class CollisionWorld {
 		public short collisionFilterMask = CollisionFilterGroups.ALL_FILTER;
 		
 		public boolean hasHit() {
-			return (closestHitFraction < 1f);
+			return (this.closestHitFraction < 1f);
 		}
 		
 		public boolean needsCollision(BroadphaseProxy proxy0) {
-			boolean collides = ((proxy0.collisionFilterGroup & collisionFilterMask) & 0xFFFF) != 0;
-			collides = collides && ((collisionFilterGroup & proxy0.collisionFilterMask) & 0xFFFF) != 0;
+			boolean collides = ((proxy0.collisionFilterGroup & this.collisionFilterMask) & 0xFFFF) != 0;
+			collides = collides && ((this.collisionFilterGroup & proxy0.collisionFilterMask) & 0xFFFF) != 0;
 			return collides;
 		}
 		
@@ -765,26 +765,26 @@ public class CollisionWorld {
 		@Override
 		public float addSingleResult(LocalConvexResult convexResult, boolean normalInWorldSpace) {
 			// caller already does the filter on the m_closestHitFraction
-			assert (convexResult.hitFraction <= closestHitFraction);
+			assert (convexResult.hitFraction <= this.closestHitFraction);
 
-			closestHitFraction = convexResult.hitFraction;
-			hitCollisionObject = convexResult.hitCollisionObject;
+			this.closestHitFraction = convexResult.hitFraction;
+			this.hitCollisionObject = convexResult.hitCollisionObject;
 			if (normalInWorldSpace) {
-				hitNormalWorld.set(convexResult.hitNormalLocal);
-				if (hitNormalWorld.length() > 2) {
-					System.out.println("CollisionWorld.addSingleResult world " + hitNormalWorld);
+				this.hitNormalWorld.set(convexResult.hitNormalLocal);
+				if (this.hitNormalWorld.length() > 2) {
+					System.out.println("CollisionWorld.addSingleResult world " + this.hitNormalWorld);
 				}
 			}
 			else {
 				// need to transform normal into worldspace
-				hitNormalWorld.set(convexResult.hitNormalLocal);
-				hitCollisionObject.getWorldTransform(Stack.alloc(Transform.class)).basis.transform(hitNormalWorld);
-				if (hitNormalWorld.length() > 2) {
-					System.out.println("CollisionWorld.addSingleResult world " + hitNormalWorld);
+				this.hitNormalWorld.set(convexResult.hitNormalLocal);
+				this.hitCollisionObject.getWorldTransform(Stack.alloc(Transform.class)).basis.transform(this.hitNormalWorld);
+				if (this.hitNormalWorld.length() > 2) {
+					System.out.println("CollisionWorld.addSingleResult world " + this.hitNormalWorld);
 				}
 			}
 
-			hitPointWorld.set(convexResult.hitPointLocal);
+			this.hitPointWorld.set(convexResult.hitPointLocal);
 			return convexResult.hitFraction;
 		}
 	}
@@ -806,10 +806,10 @@ public class CollisionWorld {
 			shapeInfo.shapePart = partId;
 			shapeInfo.triangleIndex = triangleIndex;
 
-			LocalRayResult rayResult = new LocalRayResult(collisionObject, shapeInfo, hitNormalLocal, hitFraction);
+			LocalRayResult rayResult = new LocalRayResult(this.collisionObject, shapeInfo, hitNormalLocal, hitFraction);
 
 			boolean normalInWorldSpace = false;
-			return resultCallback.addSingleResult(rayResult, normalInWorldSpace);
+			return this.resultCallback.addSingleResult(rayResult, normalInWorldSpace);
 		}
 	}
 	

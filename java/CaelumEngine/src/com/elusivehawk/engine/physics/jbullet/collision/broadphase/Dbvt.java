@@ -815,10 +815,9 @@ public class Dbvt {
 				node.childs[1].parent = node;
 				return node;
 			}
-			else {
-				bottomup(pdbvt, leaves);
-				return leaves.getQuick(0);
-			}
+			
+			bottomup(pdbvt, leaves);
+			return leaves.getQuick(0);
 		}
 		return leaves.getQuick(0);
 	}

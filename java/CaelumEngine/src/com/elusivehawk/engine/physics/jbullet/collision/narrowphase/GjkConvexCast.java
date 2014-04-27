@@ -39,155 +39,181 @@ import cz.advel.stack.Stack;
  * 
  * @author jezek2
  */
-public class GjkConvexCast extends ConvexCast {
-
+public class GjkConvexCast extends ConvexCast
+{
 	//protected final BulletStack stack = BulletStack.get();
 	protected final ObjectPool<ClosestPointInput> pointInputsPool = ObjectPool.get(ClosestPointInput.class);
-
-//#ifdef BT_USE_DOUBLE_PRECISION
-//	private static final int MAX_ITERATIONS = 64;
-//#else
+	
+	// #ifdef BT_USE_DOUBLE_PRECISION
+	// private static final int MAX_ITERATIONS = 64;
+	// #else
 	private static final int MAX_ITERATIONS = 32;
-//#endif
+	// #endif
 	
 	private SimplexSolverInterface simplexSolver;
 	private ConvexShape convexA;
 	private ConvexShape convexB;
 	
 	private GjkPairDetector gjk = new GjkPairDetector();
-
-	public GjkConvexCast(ConvexShape convexA, ConvexShape convexB, SimplexSolverInterface simplexSolver) {
+	
+	public GjkConvexCast(ConvexShape convexA, ConvexShape convexB, SimplexSolverInterface simplexSolver)
+	{
 		this.simplexSolver = simplexSolver;
 		this.convexA = convexA;
 		this.convexB = convexB;
+		
 	}
 	
-	public boolean calcTimeOfImpact(Transform fromA, Transform toA, Transform fromB, Transform toB, CastResult result) {
-		simplexSolver.reset();
-
+	@Override
+	public boolean calcTimeOfImpact(Transform fromA, Transform toA, Transform fromB, Transform toB, CastResult result)
+	{
+		this.simplexSolver.reset();
+		
 		// compute linear velocity for this interval, to interpolate
 		// assume no rotation/angular velocity, assert here?
 		Vector linVelA = Stack.alloc(new Vector(3));
 		Vector linVelB = Stack.alloc(new Vector(3));
-
+		
 		linVelA.sub(toA.origin, fromA.origin);
 		linVelB.sub(toB.origin, fromB.origin);
-
+		
 		float radius = 0.001f;
 		float lambda = 0f;
 		Vector v = Stack.alloc(new Vector(3));
 		v.set(1f, 0f, 0f);
-
+		
 		int maxIter = MAX_ITERATIONS;
-
+		
 		Vector n = Stack.alloc(new Vector(3));
 		n.set(0f, 0f, 0f);
 		boolean hasResult = false;
 		Vector c = Stack.alloc(new Vector(3));
 		Vector r = Stack.alloc(new Vector(3));
 		r.sub(linVelA, linVelB);
-
+		
 		float lastLambda = lambda;
-		//btScalar epsilon = btScalar(0.001);
-
+		// btScalar epsilon = btScalar(0.001);
+		
 		int numIter = 0;
 		// first solution, using GJK
-
+		
 		Transform identityTrans = Stack.alloc(Transform.class);
 		identityTrans.setIdentity();
-
-		//result.drawCoordSystem(sphereTr);
-
+		
+		// result.drawCoordSystem(sphereTr);
+		
 		PointCollector pointCollector = new PointCollector();
-
-		gjk.init(convexA, convexB, simplexSolver, null); // penetrationDepthSolver);		
-		ClosestPointInput input = pointInputsPool.get();
+		
+		this.gjk.init(this.convexA, this.convexB, this.simplexSolver, null); // penetrationDepthSolver);
+		
+		ClosestPointInput input = this.pointInputsPool.get();
 		input.init();
-		try {
+		
+		try
+		{
 			// we don't use margins during CCD
-			//	gjk.setIgnoreMargin(true);
-
+			// gjk.setIgnoreMargin(true);
+			
 			input.transformA.set(fromA);
 			input.transformB.set(fromB);
-			gjk.getClosestPoints(input, pointCollector, null);
-
+			this.gjk.getClosestPoints(input, pointCollector, null);
+			
 			hasResult = pointCollector.hasResult;
 			c.set(pointCollector.pointInWorld);
-
-			if (hasResult) {
-				float dist;
-				dist = pointCollector.distance;
+			
+			if (hasResult)
+			{
+				float dist = pointCollector.distance;
 				n.set(pointCollector.normalOnBInWorld);
-
+				
 				// not close enough
-				while (dist > radius) {
+				while (dist > radius)
+				{
 					numIter++;
-					if (numIter > maxIter) {
+					
+					if (numIter > maxIter)
+					{
 						return false; // todo: report a failure
 					}
+					
 					float dLambda = 0f;
-
 					float projectedLinearVelocity = r.dot(n);
-
+					
 					dLambda = dist / (projectedLinearVelocity);
-
+					
 					lambda = lambda - dLambda;
-
-					if (lambda > 1f) {
+					
+					if (lambda > 1f)
+					{
 						return false;
 					}
-					if (lambda < 0f) {
+					if (lambda < 0f)
+					{
 						return false;					// todo: next check with relative epsilon
 					}
 					
-					if (lambda <= lastLambda) {
+					if (lambda <= lastLambda)
+					{
 						return false;
-					//n.setValue(0,0,0);
-					//break;
+						// n.setValue(0,0,0);
+						// break;
 					}
+					
 					lastLambda = lambda;
-
+					
 					// interpolate to next lambda
 					result.debugDraw(lambda);
 					VectorUtil.setInterpolate(input.transformA.origin, fromA.origin, toA.origin, lambda);
 					VectorUtil.setInterpolate(input.transformB.origin, fromB.origin, toB.origin, lambda);
-
-					gjk.getClosestPoints(input, pointCollector, null);
-					if (pointCollector.hasResult) {
-						if (pointCollector.distance < 0f) {
+					
+					this.gjk.getClosestPoints(input, pointCollector, null);
+					
+					if (pointCollector.hasResult)
+					{
+						if (pointCollector.distance < 0f)
+						{
 							result.fraction = lastLambda;
 							n.set(pointCollector.normalOnBInWorld);
 							result.normal.set(n);
 							result.hitPoint.set(pointCollector.pointInWorld);
 							return true;
 						}
+						
 						c.set(pointCollector.pointInWorld);
 						n.set(pointCollector.normalOnBInWorld);
 						dist = pointCollector.distance;
+						
 					}
-					else {
+					else
+					{
 						// ??
 						return false;
 					}
-
+					
 				}
-
+				
 				// is n normalized?
 				// don't report time of impact for motion away from the contact normal (or causes minor penetration)
-				if (n.dot(r) >= -result.allowedPenetration) {
+				if (n.dot(r) >= -result.allowedPenetration)
+				{
 					return false;
 				}
+				
 				result.fraction = lambda;
 				result.normal.set(n);
 				result.hitPoint.set(c);
+				
 				return true;
 			}
-
+			
 			return false;
 		}
-		finally {
-			pointInputsPool.release(input);
+		finally
+		{
+			this.pointInputsPool.release(input);
+			
 		}
+		
 	}
 	
 }

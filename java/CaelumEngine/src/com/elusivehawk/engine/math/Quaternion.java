@@ -92,18 +92,13 @@ public class Quaternion implements IMathObject<Float>
 	@Override
 	public void setAll(Float num)
 	{
-		this.setAll(num, true);
-		
-	}
-	
-	@Override
-	public void setAll(Float num, boolean notify)
-	{
 		for (int c = 0; c < this.getSize(); c++)
 		{
 			this.set(c, num, false);
 			
 		}
+		
+		this.onChanged();
 		
 	}
 	
