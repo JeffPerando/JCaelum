@@ -4,7 +4,7 @@ package com.elusivehawk.engine.util;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Reader;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -57,14 +57,27 @@ public final class StringHelper
 				
 			}
 			
-			br.close();
-			
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 			
 		}
+		finally
+		{
+			try
+			{
+				br.close();
+				
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+				
+			}
+			
+		}
+		
 		
 		return text;
 	}
@@ -93,12 +106,24 @@ public final class StringHelper
 				
 			}
 			
-			br.close();
-			
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
+			
+		}
+		finally
+		{
+			try
+			{
+				br.close();
+				
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+				
+			}
 			
 		}
 		
@@ -145,10 +170,10 @@ public final class StringHelper
 			return false;
 		}
 		
+		BufferedWriter writer = new BufferedWriter(FileHelper.createWriter(file, true, append));
+		
 		try
 		{
-			BufferedWriter writer = new BufferedWriter(new FileWriter(file, append));
-			
 			for (String line : text)
 			{
 				writer.write(line);
@@ -156,13 +181,25 @@ public final class StringHelper
 				
 			}
 			
-			writer.close();
-			
 			return true;
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
+			
+		}
+		finally
+		{
+			try
+			{
+				writer.close();
+				
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+				
+			}
 			
 		}
 		

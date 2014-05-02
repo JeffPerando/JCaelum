@@ -201,7 +201,20 @@ public class Buffer<T> implements IDirty, Collection<T>, Iterator<T>, IGettable<
 	
 	public T next(boolean next)
 	{
-		return this.hasNext() ? (this.l.get(next ? this.pos++ : this.pos)) : null;
+		if (!this.hasNext())
+		{
+			return null;
+		}
+		
+		T ret = this.get(this.pos);
+		
+		if (next)
+		{
+			this.pos++;
+			
+		}
+		
+		return ret;
 	}
 	
 	@SuppressWarnings("unchecked")

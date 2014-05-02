@@ -2,15 +2,12 @@
 package com.elusivehawk.engine.render;
 
 import java.nio.FloatBuffer;
-import java.util.HashMap;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.assets.Material;
 import com.elusivehawk.engine.assets.Shader;
 import com.elusivehawk.engine.assets.Texture;
 import com.elusivehawk.engine.math.MathHelper;
-import com.elusivehawk.engine.math.Matrix;
-import com.elusivehawk.engine.math.MatrixHelper;
 import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
@@ -26,7 +23,6 @@ import com.elusivehawk.engine.util.IDirty;
  */
 public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 {
-	protected final HashMap<EnumVectorType, Vector> vecs = new HashMap<EnumVectorType, Vector>();
 	protected final Model m;
 	protected final GLProgram p;
 	protected final VertexBuffer vbo;
@@ -55,12 +51,6 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 		m = mdl;
 		buf = BufferHelper.createFloatBuffer(this.m.getTotalPointCount() * 7);
 		vbo = new VertexBuffer(GLConst.GL_ARRAY_BUFFER, this.buf, GLConst.GL_STREAM_DRAW);
-		
-		for (EnumVectorType type : EnumVectorType.values())
-		{
-			this.vecs.put(type, type.getDefault());
-			
-		}
 		
 	}
 	
@@ -126,9 +116,9 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 		
 		if (this.isDirty())
 		{
-			Matrix m = MatrixHelper.createHomogenousMatrix(this.vecs.get(EnumVectorType.ROTATION), this.vecs.get(EnumVectorType.SCALING), this.vecs.get(EnumVectorType.TRANSLATION));
+			/*Matrix m = MatrixHelper.createHomogenousMatrix(this.vecs.get(EnumVectorType.ROTATION), this.vecs.get(EnumVectorType.SCALING), this.vecs.get(EnumVectorType.TRANSLATION));
 			
-			this.p.attachUniform("model", m.asBuffer(), GLProgram.EnumUniformType.M_FOUR);
+			this.p.attachUniform("model", m.asBuffer(), GLProgram.EnumUniformType.M_FOUR);*/
 			
 			
 			
@@ -160,7 +150,7 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 		
 	}
 	
-	public synchronized void setVector(EnumVectorType type, Vector vec)
+	/*public synchronized void setVector(EnumVectorType type, Vector vec)
 	{
 		this.vecs.get(type).set(vec);
 		
@@ -168,7 +158,7 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 		
 	}
 	
-	/*public synchronized void setModelAnimation(IModelAnimation a)
+	public synchronized void setModelAnimation(IModelAnimation a)
 	{
 		this.lastAnim = this.anim;
 		
@@ -285,28 +275,6 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 	public boolean enableZBuffering()
 	{
 		return this.zBuffer;
-	}
-	
-	public static enum EnumVectorType
-	{
-		ROTATION(new Vector(0f, 0f, 0f)),
-		TRANSLATION(new Vector(0f, 0f, 0f)),
-		SCALING(new Vector(1.0f, 1.0f, 1.0f));
-		
-		private final Vector vec;
-		
-		@SuppressWarnings("unqualified-field-access")
-		EnumVectorType(Vector d)
-		{
-			vec = d;
-			
-		}
-		
-		protected Vector getDefault()
-		{
-			return new Vector(this.vec);
-		}
-		
 	}
 	
 }

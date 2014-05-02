@@ -23,9 +23,7 @@
 
 package com.elusivehawk.engine.physics.jbullet.linearmath;
 
-import static com.elusivehawk.engine.math.MathConst.X;
-import static com.elusivehawk.engine.math.MathConst.Y;
-import static com.elusivehawk.engine.math.MathConst.Z;
+import static com.elusivehawk.engine.math.MathConst.*;
 import com.elusivehawk.engine.math.MathConst;
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.Quaternion;
@@ -42,8 +40,8 @@ import cz.advel.stack.Stack;
  * 
  * @author jezek2
  */
-public class MatrixUtil {
-	
+public class MatrixUtil
+{
 	public static void scale(Matrix dest, Matrix mat, Vector s)
 	{
 		for (int x = 0; x < 3; x++)
@@ -55,6 +53,7 @@ public class MatrixUtil {
 			}
 			
 		}
+		
 		/*dest.m00 = mat.m00 * s.x;   dest.m01 = mat.m01 * s.y;   dest.m02 = mat.m02 * s.z;
 		dest.m10 = mat.m10 * s.x;   dest.m11 = mat.m11 * s.y;   dest.m12 = mat.m12 * s.z;
 		dest.m20 = mat.m20 * s.x;   dest.m21 = mat.m21 * s.y;   dest.m22 = mat.m22 * s.z;*/
@@ -71,6 +70,7 @@ public class MatrixUtil {
 			}
 			
 		}
+		
 		/*mat.m00 = Math.abs(mat.m00);
 		mat.m01 = Math.abs(mat.m01);
 		mat.m02 = Math.abs(mat.m02);
@@ -104,42 +104,60 @@ public class MatrixUtil {
 		m[9] = mat.get(1, 2);
 		m[10] = mat.get(2, 2);
 		m[11] = 0f;
+		
 	}
 	
 	/**
 	 * Sets rotation matrix from euler angles. The euler angles are applied in ZYX
 	 * order. This means a vector is first rotated about X then Y and then Z axis.
 	 */
-	public static void setEulerZYX(Matrix mat, float eulerX, float eulerY, float eulerZ) {
-		float ci = (float) Math.cos(eulerX);
-		float cj = (float) Math.cos(eulerY);
-		float ch = (float) Math.cos(eulerZ);
-		float si = (float) Math.sin(eulerX);
-		float sj = (float) Math.sin(eulerY);
-		float sh = (float) Math.sin(eulerZ);
-		float cc = ci * ch;
-		float cs = ci * sh;
-		float sc = si * ch;
-		float ss = si * sh;
-
-		mat.setRow(0, cj * ch, sj * sc - cs, sj * cc + ss);
-		mat.setRow(1, cj * sh, sj * ss + cc, sj * cs - sc);
-		mat.setRow(2, -sj, cj * si, cj * ci);
+	public static void setEulerZYX(Matrix mat, Vector euler)
+	{
+		setEulerZYX(mat, euler.get(X), euler.get(Y), euler.get(Z));
+		
 	}
 	
-	private static float tdotx(Matrix mat, Vector vec) {
+	/**
+	 * Sets rotation matrix from euler angles. The euler angles are applied in ZYX
+	 * order. This means a vector is first rotated about X then Y and then Z axis.
+	 */
+	public static void setEulerZYX(Matrix mat, float eulerX, float eulerY, float eulerZ)
+	{
+		float cx = (float)Math.cos(eulerX);
+		float cy = (float)Math.cos(eulerY);
+		float cz = (float)Math.cos(eulerZ);
+		float sx = (float)Math.sin(eulerX);
+		float sy = (float)Math.sin(eulerY);
+		float sz = (float)Math.sin(eulerZ);
+		
+		float cxz = cx * cz;
+		float cxsz = cx * sz;
+		float sxcz = sx * cz;
+		float sxz = sx * sz;
+		
+		mat.setRow(0, cy * cz, sy * sxcz - cxsz, sy * cxz + sxz);
+		mat.setRow(1, cy * sz, sy * sxz + cxz, sy * cxsz - sxcz);
+		mat.setRow(2, -sy, cy * sx, cy * cx);
+		
+	}
+	
+	private static float tdotx(Matrix mat, Vector vec)
+	{
 		return mat.get(0, 0) * vec.get(X) + mat.get(1, 0) * vec.get(Y) + mat.get(2, 0) * vec.get(Z);
 	}
-
-	private static float tdoty(Matrix mat, Vector vec) {
+	
+	private static float tdoty(Matrix mat, Vector vec)
+	{
 		return mat.get(0, 1) * vec.get(X) + mat.get(1, 1) * vec.get(Y) + mat.get(2, 1) * vec.get(Z);
 	}
-
-	private static float tdotz(Matrix mat, Vector vec) {
+	
+	private static float tdotz(Matrix mat, Vector vec)
+	{
 		return mat.get(0, 2) * vec.get(X) + mat.get(1, 2) * vec.get(Y) + mat.get(2, 2) * vec.get(Z);
 	}
 	
-	public static void transposeTransform(Vector dest, Vector vec, Matrix mat) {
+	public static void transposeTransform(Vector dest, Vector vec, Matrix mat)
+	{
 		float x = tdotx(mat, vec);
 		float y = tdoty(mat, vec);
 		float z = tdotz(mat, vec);
@@ -150,7 +168,8 @@ public class MatrixUtil {
 		
 	}
 	
-	public static void setRotation(Matrix dest, Quaternion q) {
+	public static void setRotation(Matrix dest, Quaternion q)
+	{
 		float x = q.get(MathConst.X),
 				y = q.get(MathConst.Y),
 				z = q.get(MathConst.Z),
@@ -172,35 +191,41 @@ public class MatrixUtil {
 		dest.set(2, 0, xz - wy);
 		dest.set(2, 1, yz + wx);
 		dest.set(2, 2, 1f - (xx + yy));
+		
 	}
 	
-	public static void getRotation(Matrix mat, Quaternion dest) {
+	public static void getRotation(Matrix mat, Quaternion dest)
+	{
 		ArrayPool<float[]> floatArrays = ArrayPool.get(float.class);
 		
 		float trace = mat.get(0, 0) + mat.get(1, 1) + mat.get(2, 2);
 		float[] temp = floatArrays.getFixed(4);
 
-		if (trace > 0f) {
+		if (trace > 0f)
+		{
 			float s = (float)Math.sqrt(trace + 1f);
 			temp[3] = (s * 0.5f);
 			s = 0.5f / s;
-
+			
 			temp[0] = ((mat.get(2, 1) - mat.get(1, 2)) * s);
 			temp[1] = ((mat.get(0, 2) - mat.get(2, 0)) * s);
 			temp[2] = ((mat.get(1, 0) - mat.get(0, 1)) * s);
+			
 		}
-		else {
+		else
+		{
 			int i = mat.get(0, 0) < mat.get(1, 1) ? (mat.get(1, 1) < mat.get(2, 2) ? 2 : 1) : (mat.get(0, 0) < mat.get(2, 2) ? 2 : 0);
 			int j = (i + 1) % 3;
 			int k = (i + 2) % 3;
-
+			
 			float s = (float) Math.sqrt(mat.get(i, i) - mat.get(j, j) - mat.get(k, k) + 1f);
 			temp[i] = s * 0.5f;
 			s = 0.5f / s;
-
+			
 			temp[3] = (mat.get(k, j) - mat.get(j, k)) * s;
 			temp[j] = (mat.get(j, i) + mat.get(i, j)) * s;
 			temp[k] = (mat.get(k, i) + mat.get(i, k)) * s;
+			
 		}
 		
 		for (int c = 0; c < 4; c++)
@@ -212,13 +237,16 @@ public class MatrixUtil {
 		dest.onChanged();
 		
 		floatArrays.release(temp);
+		
 	}
 
-	private static float cofac(Matrix mat, int r1, int c1, int r2, int c2) {
+	private static float cofac(Matrix mat, int r1, int c1, int r2, int c2)
+	{
 		return mat.get(r1, c1) * mat.get(r2, c2) - mat.get(r1, c2) * mat.get(r2, c1);
 	}
 	
-	public static void invert(Matrix mat) {
+	public static void invert(Matrix mat)
+	{
 		float co_x = cofac(mat, 1, 1, 2, 2);
 		float co_y = cofac(mat, 1, 2, 2, 0);
 		float co_z = cofac(mat, 1, 0, 2, 1);
@@ -251,7 +279,7 @@ public class MatrixUtil {
 		mat.set(2, 2, m22);
 		
 	}
-
+	
 	/**
 	 * Diagonalizes this matrix by the Jacobi method. rot stores the rotation
 	 * from the coordinate system in which the matrix is diagonal to the original
@@ -261,36 +289,50 @@ public class MatrixUtil {
 	 * been executed. Note that this matrix is assumed to be symmetric.
 	 */
 	// JAVA NOTE: diagonalize method from 2.71
-	public static void diagonalize(Matrix mat, Matrix rot, float threshold, int maxSteps) {
+	public static void diagonalize(Matrix mat, Matrix rot, float threshold, int maxSteps)
+	{
 		Vector row = Stack.alloc(new Vector(3));
-
+		
 		rot.setIdentity();
-		for (int step = maxSteps; step > 0; step--) {
+		for (int step = maxSteps; step > 0; step--)
+		{
 			// find off-diagonal element [p][q] with largest magnitude
 			int p = 0;
 			int q = 1;
 			int r = 2;
 			float max = Math.abs(mat.get(0, 1));
 			float v = Math.abs(mat.get(0, 2));
-			if (v > max) {
+			
+			if (v > max)
+			{
 				q = 2;
 				r = 1;
 				max = v;
+				
 			}
+			
 			v = Math.abs(mat.get(1, 2));
-			if (v > max) {
+			
+			if (v > max)
+			{
 				p = 1;
 				q = 2;
 				r = 0;
 				max = v;
+				
 			}
 
 			float t = threshold * (Math.abs(mat.get(0, 0)) + Math.abs(mat.get(1, 1)) + Math.abs(mat.get(2, 2)));
-			if (max <= t) {
-				if (max <= BulletGlobals.SIMD_EPSILON * t) {
+			
+			if (max <= t)
+			{
+				if (max <= BulletGlobals.SIMD_EPSILON * t)
+				{
 					return;
 				}
+				
 				step = 1;
+				
 			}
 
 			// compute Jacobi rotation J which leads to a zero for element [p][q]
@@ -299,42 +341,51 @@ public class MatrixUtil {
 			float theta2 = theta * theta;
 			float cos;
 			float sin;
-			if ((theta2 * theta2) < (10f / BulletGlobals.SIMD_EPSILON)) {
-				t = (theta >= 0f) ? 1f / (theta + (float) Math.sqrt(1f + theta2))
-						: 1f / (theta - (float) Math.sqrt(1f + theta2));
+			if ((theta2 * theta2) < (10f / BulletGlobals.SIMD_EPSILON))
+			{
+				t = (theta >= 0f) ? 1f / (theta + (float) Math.sqrt(1f + theta2)) : 1f / (theta - (float) Math.sqrt(1f + theta2));
 				cos = 1f / (float) Math.sqrt(1f + t * t);
 				sin = cos * t;
+				
 			}
-			else {
+			else
+			{
 				// approximation for large theta-value, i.e., a nearly diagonal matrix
 				t = 1 / (theta * (2 + 0.5f / theta2));
 				cos = 1 - 0.5f * t * t;
 				sin = cos * t;
+				
 			}
-
+			
 			// apply rotation to matrix (this = J^T * this * J)
 			mat.set(p, q, 0f);
 			mat.set(q, p, 0f);
 			mat.set(p, p, mat.get(p, p) - t * mpq);
 			mat.set(q, q, mat.get(q, q) + t * mpq);
+			
 			float mrp = mat.get(r, p);
 			float mrq = mat.get(r, q);
+			
 			mat.set(r, p, cos * mrp - sin * mrq);
 			mat.set(p, r, cos * mrp - sin * mrq);
 			mat.set(r, q, cos * mrq + sin * mrp);
 			mat.set(q, r, cos * mrq + sin * mrp);
-
+			
 			// apply rotation to rot (rot = rot * J)
-			for (int i=0; i<3; i++) {
+			for (int i=0; i<3; i++)
+			{
 				rot.getRow(i, row);
-
+				
 				mrp = row.get(p);
 				mrq = row.get(q);
 				row.set(p, cos * mrp - sin * mrq, false);
 				row.set(q, cos * mrq + sin * mrp, false);
 				rot.setRow(i, row);
+				
 			}
+			
 		}
+		
 	}
 	
 }

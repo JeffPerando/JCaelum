@@ -113,6 +113,11 @@ public class FileHelper
 	
 	public static FileWriter createWriter(File file, boolean create)
 	{
+		return createWriter(file, create, false);
+	}
+	
+	public static FileWriter createWriter(File file, boolean create, boolean append)
+	{
 		if (file == null)
 		{
 			return null;
@@ -149,7 +154,7 @@ public class FileHelper
 		
 		try
 		{
-			ret = new FileWriter(file);
+			ret = new FileWriter(file, append);
 			
 		}
 		catch (Exception e){}
