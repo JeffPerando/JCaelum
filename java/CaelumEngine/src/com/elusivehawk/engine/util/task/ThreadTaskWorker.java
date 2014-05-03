@@ -30,7 +30,7 @@ public class ThreadTaskWorker extends ThreadStoppable
 		{
 			t = this.tasks.get(c);
 			
-			if (t.completeTask(this.getArgs()))
+			if (t.completeTask())
 			{
 				this.tasks.remove(c);
 				
@@ -43,12 +43,6 @@ public class ThreadTaskWorker extends ThreadStoppable
 	public int getTaskCount()
 	{
 		return this.tasks.size();
-	}
-	
-	@SuppressWarnings("static-method")
-	protected Object[] getArgs()
-	{
-		return null;
 	}
 	
 	public synchronized void scheduleTask(Task t)
