@@ -54,8 +54,27 @@ public final class CaelumEngine
 	private Game game = null;
 	private GameArguments gameargs = null;
 	private AssetManager assets = null;
+	private RenderSystem rsys = null;
 	
-	private CaelumEngine(){}
+	private CaelumEngine()
+	{
+		if (EnumOS.getCurrentOS() != EnumOS.ANDROID)
+		{
+			Runtime.getRuntime().addShutdownHook(new Thread()
+			{
+				@Override
+				public void run()
+				{
+					CaelumEngine.instance().shutDownGame();
+					CaelumEngine.instance().clearGameEnv();
+					
+				}
+				
+			});
+			
+		}
+		
+	}
 	
 	public static CaelumEngine instance()
 	{
@@ -106,14 +125,9 @@ public final class CaelumEngine
 	
 	public static boolean isPaused()
 	{
-		return isPaused(true);
-	}
-	
-	public static boolean isPaused(boolean safe)
-	{
 		Thread t = Thread.currentThread();
 		
-		if (safe && !(t instanceof IPausable))
+		if (!(t instanceof IPausable))
 		{
 			return false;
 		}
@@ -123,13 +137,17 @@ public final class CaelumEngine
 	
 	public static void flipScreen(boolean flip)
 	{
-		if (game() == null)
+		if (instance().rsys != null)
 		{
-			return;
+			instance().rsys.onScreenFlipped(flip);
+			
 		}
 		
-		((ThreadGameRender)instance().threads.get(EnumEngineFeature.RENDER)).flipScreen(flip);
-		game().onScreenFlipped(flip);
+		if (game() != null)
+		{
+			game().onScreenFlipped(flip);
+			
+		}
 		
 	}
 	
@@ -185,7 +203,7 @@ public final class CaelumEngine
 			
 		}
 		
-		//XXX Game environment
+		//XXX Loading game environment
 		
 		if (this.env == null)
 		{
@@ -268,6 +286,8 @@ public final class CaelumEngine
 			
 		}
 		
+		//XXX Loading input
+		
 		if (this.inputs.isEmpty())
 		{
 			List<Input> inputList = this.env.loadInputs();
@@ -295,7 +315,7 @@ public final class CaelumEngine
 	
 	public void startGame()
 	{
-		//XXX Game
+		//XXX Loading the game
 		
 		Game g = null;
 		
@@ -329,6 +349,19 @@ public final class CaelumEngine
 		
 		this.game = g;
 		
+		try
+		{
+			g.initiateGame(this.gameargs);
+			
+		}
+		catch (Throwable e)
+		{
+			this.log.log(EnumLogType.ERROR, "Game failed to load!", e);
+			
+			ShutdownHelper.exit("GAME-LOAD-FAILURE".hashCode());
+			
+		}
+		
 		//XXX Creating game threads
 		
 		ThreadAssetLoader al = new ThreadAssetLoader();
@@ -338,17 +371,23 @@ public final class CaelumEngine
 		this.assets.initiate();
 		
 		this.threads.put(EnumEngineFeature.ASSET_LOADING, al);
-		this.threads.put(EnumEngineFeature.LOGIC, new ThreadGameLoop(this.inputs, this.game, this.gameargs));
+		this.threads.put(EnumEngineFeature.LOGIC, new ThreadGameLoop(this.inputs, this.game));
 		
 		IRenderHUB hub = this.game.getRenderHUB();
 		
 		if (hub != null)
 		{
-			RenderSystem rsys = new RenderSystem(this.renv, hub);
+			this.rsys = new RenderSystem(this.renv, hub);
 			
-			IThreadStoppable rt = this.renv.createRenderThread(rsys);
+			IThreadStoppable rt = this.renv.createRenderThread(this.rsys);
 			
-			this.threads.put(EnumEngineFeature.RENDER, rt == null ? new ThreadGameRender(rsys) : rt);
+			if (rt == null)
+			{
+				rt = new ThreadGameRender(this.rsys);
+				
+			}
+			
+			this.threads.put(EnumEngineFeature.RENDER, rt);
 			
 		}
 		
@@ -362,22 +401,7 @@ public final class CaelumEngine
 			
 		}*/
 		
-		if (EnumOS.getCurrentOS() != EnumOS.ANDROID)
-		{
-			Runtime.getRuntime().addShutdownHook(new Thread(){
-				@Override
-				public void run()
-				{
-					CaelumEngine.instance().shutDownGame();
-					CaelumEngine.instance().clearGameEnv();
-					
-				}
-				
-			});
-			
-		}
-		
-		//XXX Starting the threads
+		//XXX Starting game threads
 		
 		for (EnumEngineFeature fe : EnumEngineFeature.values())
 		{
@@ -418,13 +442,19 @@ public final class CaelumEngine
 	
 	public void shutDownGame()
 	{
-		if (this.game == null || !this.threads.isEmpty())
+		if (this.threads.isEmpty())
 		{
 			return;
 		}
 		
-		this.game.onShutdown();
-		this.game = null;
+		this.rsys = null;
+		
+		if (this.game != null)
+		{
+			this.game.onShutdown();
+			this.game = null;
+			
+		}
 		
 		for (EnumEngineFeature fe : EnumEngineFeature.values())
 		{

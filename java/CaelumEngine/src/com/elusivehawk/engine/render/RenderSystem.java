@@ -208,7 +208,7 @@ public final class RenderSystem implements IPausable, IGameStateListener, IThrea
 		
 	}
 	
-	public void onScreenFlipped(boolean flip)
+	public synchronized void onScreenFlipped(boolean flip)
 	{
 		this.context.setScreenFlipped(flip);
 		

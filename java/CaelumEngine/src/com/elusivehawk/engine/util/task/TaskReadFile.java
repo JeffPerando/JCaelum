@@ -26,7 +26,7 @@ public class TaskReadFile extends Task
 	}
 	
 	@Override
-	protected boolean finishTask(Object... args) throws Throwable
+	protected boolean finishTask() throws Throwable
 	{
 		this.fin = StringHelper.read(this.txt);
 		

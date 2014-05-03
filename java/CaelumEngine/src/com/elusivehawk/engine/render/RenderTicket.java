@@ -24,33 +24,25 @@ import com.elusivehawk.engine.util.IDirty;
 public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 {
 	protected final Model m;
-	protected final GLProgram p;
-	protected final VertexBuffer vbo;
-	protected final FloatBuffer buf;
+	protected final Material[] mats = RenderHelper.createMaterials();
+	protected final Shader[] sh = RenderHelper.createShaders();
+	
+	protected GLProgram p = null;
+	protected FloatBuffer buf = null;
+	protected VertexBuffer vbo = null;
 	
 	protected boolean dirty = true, zBuffer = true, initiated = false;//, animPause = false;
 	//protected int frame = 0;
 	//protected IModelAnimation anim = null, lastAnim = null;
 	protected Texture tex;
-	protected final Material[] mats = new Material[RenderHelper.MATERIAL_CAP];
 	protected int matCount = 0;
 	
+	@SuppressWarnings("unqualified-field-access")
 	public RenderTicket(Model mdl)
 	{
-		this(new GLProgram(), mdl);
-		
-	}
-	
-	@SuppressWarnings("unqualified-field-access")
-	public RenderTicket(GLProgram program, Model mdl)
-	{
-		assert program != null;
 		assert mdl != null;
 		
-		p = program;
 		m = mdl;
-		buf = BufferHelper.createFloatBuffer(this.m.getTotalPointCount() * 7);
-		vbo = new VertexBuffer(GLConst.GL_ARRAY_BUFFER, this.buf, GLConst.GL_STREAM_DRAW);
 		
 	}
 	
@@ -76,6 +68,29 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 	@Override
 	public boolean updateBeforeUse()
 	{
+		if (!this.initiated)
+		{
+			if (!this.m.isFinished())
+			{
+				this.m.finish();
+				
+			}
+			
+			if (!this.m.isFinished())
+			{
+				return false;
+			}
+			
+			this.buf = BufferHelper.createFloatBuffer(this.m.getTotalPointCount() * RenderConst.FLOATS_PER_POINT);
+			this.vbo = new VertexBuffer(GLConst.GL_ARRAY_BUFFER, this.buf, GLConst.GL_STREAM_DRAW);
+			
+			this.p = new GLProgram(this.sh);
+			this.p.attachRenderTicket(this);
+			
+			this.initiated = true;
+			
+		}
+		
 		/*if (this.anim != null && !this.isAnimationPaused())
 		{
 			boolean usedBefore = this.anim == this.lastAnim;
@@ -100,20 +115,6 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 			
 		}*/
 		
-		if (!this.initiated)
-		{
-			if (!this.m.isFinished())
-			{
-				this.m.finish();
-				
-			}
-			
-			this.p.attachRenderTicket(this);
-			
-			this.initiated = true;
-			
-		}
-		
 		if (this.isDirty())
 		{
 			/*Matrix m = MatrixHelper.createHomogenousMatrix(this.vecs.get(EnumVectorType.ROTATION), this.vecs.get(EnumVectorType.SCALING), this.vecs.get(EnumVectorType.TRANSLATION));
@@ -130,14 +131,29 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 	}
 	
 	@Override
-	public synchronized void onAssetLoaded(Asset a)
+	public void onAssetLoaded(Asset a)
 	{
 		if (a instanceof Shader)
 		{
-			this.p.onAssetLoaded(a);
+			synchronized (this)
+			{
+				if (this.p == null)
+				{
+					Shader s = (Shader)a;
+					
+					this.sh[s.gltype.ordinal()] = s;
+					
+				}
+				else
+				{
+					this.p.attachShader((Shader)a);
+					
+				}
+				
+			}
 			
 		}
-		else if (a instanceof Texture && this.tex == null)
+		else if (a instanceof Texture)
 		{
 			this.setTexture((Texture)a);
 			
@@ -188,7 +204,7 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 	{
 		for (Material mat : materials)
 		{
-			if (this.matCount == RenderHelper.MATERIAL_CAP)
+			if (this.matCount == RenderConst.MATERIAL_CAP)
 			{
 				return;
 			}

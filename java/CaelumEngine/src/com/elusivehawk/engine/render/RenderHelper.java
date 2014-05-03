@@ -8,6 +8,8 @@ import java.nio.IntBuffer;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
+import com.elusivehawk.engine.assets.Material;
+import com.elusivehawk.engine.assets.Shader;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.render.opengl.GLConst;
@@ -29,8 +31,6 @@ import com.elusivehawk.engine.util.storage.Buffer;
  */
 public final class RenderHelper
 {
-	public static final int MATERIAL_CAP = 16;
-	
 	private RenderHelper(){}
 	
 	public static IGL1 gl1()
@@ -272,6 +272,16 @@ public final class RenderHelper
 		}
 		
 		return ret;
+	}
+	
+	public static Material[] createMaterials()
+	{
+		return new Material[RenderConst.MATERIAL_CAP];
+	}
+	
+	public static Shader[] createShaders()
+	{
+		return new Shader[GLEnumShader.values().length];
 	}
 	
 }

@@ -12,6 +12,7 @@ uniform boolean flip;
 (location = 3) in vec3 in_scale;
 (location = 4) in vec3 in_rot;
 (location = 5) in vec3 in_trans;
+
 (location = 6) in int in_mindex;
 
 out vec2 frag_texcoord;

@@ -14,13 +14,11 @@ public final class ThreadGameLoop extends ThreadCaelum
 {
 	private final Map<EnumInputType, Input> input = Maps.newHashMap();
 	private final Game game;
-	private final GameArguments args;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public ThreadGameLoop(Map<EnumInputType, Input> inputMap, Game g, GameArguments gargs)
+	public ThreadGameLoop(Map<EnumInputType, Input> inputMap, Game g)
 	{
 		game = g;
-		args = gargs;
 		
 		if (inputMap != null)
 		{
@@ -28,14 +26,6 @@ public final class ThreadGameLoop extends ThreadCaelum
 			
 		}
 		
-	}
-	
-	@Override
-	public boolean initiate()
-	{
-		super.initiate();
-		
-		return this.game.initiateGame(this.args);
 	}
 	
 	@Override
@@ -70,6 +60,7 @@ public final class ThreadGameLoop extends ThreadCaelum
 	public synchronized void setPaused(boolean pause)
 	{
 		super.setPaused(pause);
+		
 		this.game.setPaused(pause);
 		
 	}

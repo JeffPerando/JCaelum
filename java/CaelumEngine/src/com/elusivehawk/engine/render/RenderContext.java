@@ -34,6 +34,7 @@ public final class RenderContext implements IContext
 	
 	private final List<Texture> texturePool = Lists.newArrayList();
 	private final List<IGLBindable> cleanables = Lists.newArrayList();
+	private final List<RenderTask> rtasks = Lists.newArrayList();
 	private final Map<EnumRenderMode, List<IGLManipulator>> manipulators = Maps.newHashMapWithExpectedSize(3);
 	
 	private EnumRenderStage stage = null;
@@ -294,9 +295,15 @@ public final class RenderContext implements IContext
 		
 	}
 	
-	public void setScreenFlipped(boolean b)
+	public synchronized void setScreenFlipped(boolean b)
 	{
 		this.flipScreen = b;
+		
+	}
+	
+	public synchronized void scheduleRTask(RenderTask rt)
+	{
+		this.rtasks.add(rt);
 		
 	}
 	

@@ -70,6 +70,11 @@ public class RenderEngine3D implements IRenderEngine
 				
 				tkt = tickets.get(c);
 				
+				if (!tkt.updateBeforeUse())
+				{
+					continue;
+				}
+				
 				m = tkt.getModel();
 				p = tkt.getProgram();
 				
@@ -80,13 +85,6 @@ public class RenderEngine3D implements IRenderEngine
 				
 				if (!p.bind(context))
 				{
-					continue;
-				}
-				
-				if (!tkt.updateBeforeUse())
-				{
-					p.unbind(context);
-					
 					continue;
 				}
 				

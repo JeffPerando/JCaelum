@@ -14,19 +14,17 @@ public abstract class Task
 	@SuppressWarnings("unqualified-field-access")
 	public Task(ITaskListener tlis)
 	{
-		assert tlis != null;
-		
 		listener = tlis;
 		
 	}
 	
-	public boolean completeTask(Object... args)
+	public boolean completeTask()
 	{
 		boolean finish = false;
 		
 		try
 		{
-			finish = this.finishTask(args);
+			finish = this.finishTask();
 			
 		}
 		catch (Throwable e)
@@ -35,7 +33,7 @@ public abstract class Task
 			
 		}
 		
-		if (finish)
+		if (finish && this.listener != null)
 		{
 			this.listener.onTaskComplete(this);
 			
@@ -44,6 +42,6 @@ public abstract class Task
 		return finish;
 	}
 	
-	protected abstract boolean finishTask(Object... args) throws Throwable;
+	protected abstract boolean finishTask() throws Throwable;
 	
 }

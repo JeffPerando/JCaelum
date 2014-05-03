@@ -53,25 +53,28 @@ public abstract class Game implements IUpdatable, IPausable
 		{
 			throw new GameTickException(e);
 		}
-		
-		if (this.nextState != null)
+		finally
 		{
-			if (this.state != null)
+			if (this.nextState != null)
 			{
-				this.state.finish();
-				
-			}
-			
-			this.nextState.initiate();
-			
-			this.state = this.nextState;
-			this.nextState = null;
-			
-			if (!this.listeners.isEmpty())
-			{
-				for (IGameStateListener gsl : this.listeners)
+				if (this.state != null)
 				{
-					gsl.onGameStateSwitch(this.state);
+					this.state.finish();
+					
+				}
+				
+				this.state = this.nextState;
+				this.nextState = null;
+				
+				this.state.initiate();
+				
+				if (!this.listeners.isEmpty())
+				{
+					for (IGameStateListener gsl : this.listeners)
+					{
+						gsl.onGameStateSwitch(this.state);
+						
+					}
 					
 				}
 				
@@ -100,12 +103,9 @@ public abstract class Game implements IUpdatable, IPausable
 		return this.getGameVersion() == null ? this.name : String.format("%s v%s", this.name, this.getGameVersion());
 	}
 	
-	public final boolean initiateGame(GameArguments args)
+	public final void initiateGame(GameArguments args) throws Throwable
 	{
-		if (!this.initiate(args))
-		{
-			return false;
-		}
+		this.initiate(args);
 		
 		if (this.nextState != null)
 		{
@@ -116,7 +116,6 @@ public abstract class Game implements IUpdatable, IPausable
 			
 		}
 		
-		return true;
 	}
 	
 	public void preInit(){}
@@ -156,7 +155,7 @@ public abstract class Game implements IUpdatable, IPausable
 	
 	public abstract Version getGameVersion();
 	
-	protected abstract boolean initiate(GameArguments args);
+	protected abstract void initiate(GameArguments args) throws Throwable;
 	
 	/**
 	 * 

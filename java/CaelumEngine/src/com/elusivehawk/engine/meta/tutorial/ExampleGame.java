@@ -33,10 +33,10 @@ public class ExampleGame extends Game
 	 * @see com.elusivehawk.engine.core.Game#initiate(com.elusivehawk.engine.core.GameArguments)
 	 */
 	@Override
-	protected boolean initiate(GameArguments args)
+	protected void initiate(GameArguments args)
 	{
 		// TODO Auto-generated method stub
-		return false;
+		
 	}
 	
 	/* (non-Javadoc)

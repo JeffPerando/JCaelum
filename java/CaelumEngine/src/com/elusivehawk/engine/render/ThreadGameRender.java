@@ -81,10 +81,4 @@ public class ThreadGameRender extends ThreadCaelum implements IThreadContext
 		return this.sys.getContext();
 	}
 	
-	public synchronized void flipScreen(boolean flip)
-	{
-		this.sys.onScreenFlipped(flip);
-		
-	}
-	
 }

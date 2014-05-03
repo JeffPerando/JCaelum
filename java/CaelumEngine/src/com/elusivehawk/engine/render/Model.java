@@ -106,9 +106,9 @@ public class Model implements IAssetReceiver
 			throw new RenderException("No meshes, no shoes, no service. (You forgot to load at least one section)");
 		}
 		
-		if (this.sections.size() > RenderHelper.MATERIAL_CAP)
+		if (this.sections.size() > RenderConst.MATERIAL_CAP)
 		{
-			throw new RenderException("Too many sections: %s, must be at or less than %s", this.sections.size(), RenderHelper.MATERIAL_CAP);
+			throw new RenderException("Too many sections: %s, must be at or less than %s", this.sections.size(), RenderConst.MATERIAL_CAP);
 		}
 		
 		List<Integer> in = Lists.newArrayList(),

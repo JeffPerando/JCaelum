@@ -27,18 +27,24 @@ import com.elusivehawk.engine.util.ArrayHelper;
 public class GLProgram implements IGLBindable, IAssetReceiver
 {
 	private final int id, vba;
-	private final Shader[] shaders = new Shader[GLEnumShader.values().length];
+	private final Shader[] shaders;
 	private HashMap<VertexBuffer, List<Integer>> vbos = new HashMap<VertexBuffer, List<Integer>>();
 	private boolean bound = false, relink = true;
 	
-	@SuppressWarnings("unqualified-field-access")
 	public GLProgram()
 	{
-		RenderContext context = CaelumEngine.renderContext();
-		IGL2 gl2 = context.getGL2();
+		this(RenderHelper.createShaders());
 		
-		id = gl2.glCreateProgram();
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public GLProgram(Shader[] sh)
+	{
+		RenderContext context = CaelumEngine.renderContext();
+		
+		id = context.getGL2().glCreateProgram();
 		vba = context.getGL3().glGenVertexArrays();
+		shaders = sh;
 		
 		context.registerCleanable(this);
 		
@@ -203,8 +209,7 @@ public class GLProgram implements IGLBindable, IAssetReceiver
 	{
 		if (a instanceof Shader)
 		{
-			this.shaders[((Shader)a).gltype.ordinal()] = (Shader)a;
-			this.relink = true;
+			this.attachShader((Shader)a);
 			
 		}
 		
@@ -272,6 +277,13 @@ public class GLProgram implements IGLBindable, IAssetReceiver
 		gl2.glVertexAttribPointer(5, 3, GLConst.GL_FLOAT, false, 6, tkt.getBuffer());
 		
 		this.unbind(context);*/
+		
+	}
+	
+	public void attachShader(Shader sh)
+	{
+		this.shaders[sh.gltype.ordinal()] = sh;
+		this.relink = true;
 		
 	}
 	
