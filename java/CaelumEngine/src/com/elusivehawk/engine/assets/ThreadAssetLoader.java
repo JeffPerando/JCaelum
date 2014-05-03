@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
-import com.elusivehawk.engine.util.ThreadStoppable;
+import com.elusivehawk.engine.util.concurrent.ThreadStoppable;
 import com.elusivehawk.engine.util.storage.TriTuple;
 import com.google.common.collect.Lists;
 

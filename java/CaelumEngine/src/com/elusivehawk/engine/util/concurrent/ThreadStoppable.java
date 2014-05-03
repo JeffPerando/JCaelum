@@ -1,5 +1,5 @@
 
-package com.elusivehawk.engine.util;
+package com.elusivehawk.engine.util.concurrent;
 
 /**
  * 
@@ -12,7 +12,7 @@ package com.elusivehawk.engine.util;
 @SuppressWarnings("static-method")
 public abstract class ThreadStoppable extends Thread implements IThreadStoppable
 {
-	protected boolean running = true, paused = false;
+	private boolean running = false, paused = false;
 	
 	public ThreadStoppable()
 	{
@@ -31,9 +31,15 @@ public abstract class ThreadStoppable extends Thread implements IThreadStoppable
 	{
 		if (!this.initiate())
 		{
-			this.running = false;
+			this.stopThread();
 			
 			return;
+		}
+		
+		synchronized (this)
+		{
+			this.running = true;
+			
 		}
 		
 		while (this.isRunning() && this.canRun())
@@ -53,7 +59,7 @@ public abstract class ThreadStoppable extends Thread implements IThreadStoppable
 		
 		this.onThreadStopped();
 		
-		this.running = false;
+		this.stopThread();
 		
 	}
 	

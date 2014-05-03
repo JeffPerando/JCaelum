@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.core;
 
-import com.elusivehawk.engine.util.ThreadTimed;
+import com.elusivehawk.engine.util.concurrent.ThreadTimed;
 
 /**
  * 

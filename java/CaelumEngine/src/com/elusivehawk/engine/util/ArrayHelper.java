@@ -113,4 +113,18 @@ public class ArrayHelper
 		return ret;
 	}
 	
+	public static boolean isFull(Object[] arr)
+	{
+		for (int c = 0; c < arr.length; c++)
+		{
+			if (arr[c] == null)
+			{
+				return false;
+			}
+			
+		}
+		
+		return true;
+	}
+	
 }

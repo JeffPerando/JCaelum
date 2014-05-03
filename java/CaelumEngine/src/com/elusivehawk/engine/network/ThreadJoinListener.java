@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import com.elusivehawk.engine.util.ThreadStoppable;
+import com.elusivehawk.engine.util.concurrent.ThreadStoppable;
 
 /**
  * 

@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import com.elusivehawk.engine.math.MathHelper;
-import com.elusivehawk.engine.util.ThreadStoppable;
+import com.elusivehawk.engine.util.concurrent.ThreadStoppable;
 import com.elusivehawk.engine.util.storage.Tuple;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
