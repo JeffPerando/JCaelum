@@ -285,20 +285,8 @@ public class Matrix implements IMathObject<Float>
 		
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void setRow(int r, Vector vec)
 	{
-		if (vec instanceof Vector3f)
-		{
-			Vector3f vec3f = (Vector3f)vec;
-			
-			this.set(r, 0, vec3f.x);
-			this.set(r, 1, vec3f.y);
-			this.set(r, 2, vec3f.z);
-			
-			return;
-		}
-		
 		int i = Math.min(this.w, vec.getSize());
 		
 		for (int c = 0; c < i; c++)
