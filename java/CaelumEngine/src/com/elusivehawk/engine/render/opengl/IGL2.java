@@ -14,7 +14,11 @@ import com.elusivehawk.engine.assets.Shader;
  */
 public interface IGL2
 {
-	public void glAttachShader(GLProgram program, Shader shader);
+	default void glAttachShader(GLProgram program, Shader shader)
+	{
+		this.glAttachShader(program.getId(), shader.getGLId());
+		
+	}
 	
 	public void glAttachShader(int program, int shader);
 	
@@ -22,25 +26,44 @@ public interface IGL2
 	
 	public void glBlendEquationSeparate(int modeRGB, int modeAlpha);
 	
-	public void glCompileShader(GLEnumShader type);
+	default void glCompileShader(Shader shader)
+	{
+		this.glCompileShader(shader.getGLId());
+		
+	}
 	
 	public void glCompileShader(int shader);
 	
 	public int glCreateProgram();
 	
-	public int glCreateShader(GLEnumShader type);
+	default int glCreateShader(GLEnumShader type)
+	{
+		return this.glCreateShader(type.gl);
+	}
 	
 	public int glCreateShader(int type);
 	
-	public void glDeleteProgram(GLProgram program);
+	default void glDeleteProgram(GLProgram program)
+	{
+		this.glDeleteProgram(program.getId());
+		
+	}
 	
 	public void glDeleteProgram(int program);
 	
-	public void glDeleteShader(Shader shader);
+	default void glDeleteShader(Shader shader)
+	{
+		this.glDeleteShader(shader.getGLId());
+		
+	}
 	
 	public void glDeleteShader(int shader);
 	
-	public void glDetachShader(GLProgram program, Shader shader);
+	default void glDetachShader(GLProgram program, Shader shader)
+	{
+		this.glDetachShader(program.getId(), shader.getGLId());
+		
+	}
 	
 	public void glDetachShader(int program, int shader);
 	
@@ -100,7 +123,11 @@ public interface IGL2
 	
 	public boolean glIsShader(int shader);
 	
-	public void glLinkProgram(GLProgram program);
+	default void glLinkProgram(GLProgram program)
+	{
+		this.glLinkProgram(program.getId());
+		
+	}
 	
 	public void glLinkProgram(int program);
 	
@@ -150,11 +177,19 @@ public interface IGL2
 	
 	public void glUniformMatrix4fv(int location, int count, boolean transpose, FloatBuffer value);
 	
-	public void glUseProgram(GLProgram program);
+	default void glUseProgram(GLProgram program)
+	{
+		this.glUseProgram(program.getId());
+		
+	}
 	
 	public void glUseProgram(int program);
 	
-	public void glValidateProgram(GLProgram program);
+	default void glValidateProgram(GLProgram program)
+	{
+		this.glValidateProgram(program.getId());
+		
+	}
 	
 	public void glValidateProgram(int program);
 	

@@ -127,4 +127,9 @@ public class ArrayHelper
 		return true;
 	}
 	
+	public static boolean isNullOrEmpty(Object[] arr)
+	{
+		return arr == null || arr.length == 0;
+	}
+	
 }

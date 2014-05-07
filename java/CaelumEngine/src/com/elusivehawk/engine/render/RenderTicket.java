@@ -2,12 +2,19 @@
 package com.elusivehawk.engine.render;
 
 import java.nio.FloatBuffer;
+import java.util.Arrays;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.assets.Material;
 import com.elusivehawk.engine.assets.Shader;
 import com.elusivehawk.engine.assets.Texture;
+import com.elusivehawk.engine.core.CaelumException;
+import com.elusivehawk.engine.math.IQuaternionListener;
+import com.elusivehawk.engine.math.IVectorListener;
 import com.elusivehawk.engine.math.MathHelper;
+import com.elusivehawk.engine.math.Matrix;
+import com.elusivehawk.engine.math.MatrixHelper;
+import com.elusivehawk.engine.math.Quaternion;
 import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
@@ -20,14 +27,27 @@ import com.elusivehawk.engine.util.IDirty;
  * Used to render static {@link Model}s with non-static information (i.e. rotation)
  * 
  * @author Elusivehawk
+ * 
+ * @see Model
+ * @see IDirty
+ * @see ILogicalRender
+ * @see IAssetReceiver
+ * @see IVectorListener
+ * @see IQuaternionListener
  */
-public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
+public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver, IVectorListener, IQuaternionListener
 {
-	protected final Model m;
-	protected final Material[] mats = RenderHelper.createMaterials();
-	protected final Shader[] sh = RenderHelper.createShaders();
+	protected final Vector offset = new Vector(),
+			pos = new Vector(),
+			scale = new Vector(1f, 1f, 1f);
 	
-	protected GLProgram p = null;
+	protected final Quaternion rotOff = new Quaternion(),
+			rot = new Quaternion();
+	
+	protected final Model m;
+	protected final GLProgram p;
+	protected final Material[] mats = RenderHelper.createMaterials();
+	
 	protected FloatBuffer buf = null;
 	protected VertexBuffer vbo = null;
 	
@@ -38,11 +58,40 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 	protected int matCount = 0;
 	
 	@SuppressWarnings("unqualified-field-access")
+	public RenderTicket(Model mdl, Vector off, Quaternion roff)
+	{
+		this(mdl);
+		
+		offset.set(off);
+		rotOff.set(roff);
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public RenderTicket(Model mdl, Quaternion roff)
+	{
+		this(mdl);
+		
+		rotOff.set(roff);
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public RenderTicket(Model mdl, Vector off)
+	{
+		this(mdl);
+		
+		offset.set(off);
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
 	public RenderTicket(Model mdl)
 	{
 		assert mdl != null;
 		
 		m = mdl;
+		p = new GLProgram();
 		
 	}
 	
@@ -53,7 +102,7 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 	}
 	
 	@Override
-	public void setIsDirty(boolean b)
+	public synchronized void setIsDirty(boolean b)
 	{
 		this.dirty = b;
 		
@@ -81,11 +130,11 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 				return false;
 			}
 			
-			this.buf = BufferHelper.createFloatBuffer(this.m.getTotalPointCount() * RenderConst.FLOATS_PER_POINT);
+			this.buf = BufferHelper.createFloatBuffer(this.m.getIndiceCount() * 16);
 			this.vbo = new VertexBuffer(GLConst.GL_ARRAY_BUFFER, this.buf, GLConst.GL_STREAM_DRAW);
 			
-			this.p = new GLProgram(context, this.sh);
-			this.p.attachRenderTicket(this);
+			this.p.attachModel(this.m);
+			this.p.attachVBO(this.vbo, Arrays.asList(3));
 			
 			this.initiated = true;
 			
@@ -117,11 +166,11 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 		
 		if (this.isDirty())
 		{
-			/*Matrix m = MatrixHelper.createHomogenousMatrix(this.vecs.get(EnumVectorType.ROTATION), this.vecs.get(EnumVectorType.SCALING), this.vecs.get(EnumVectorType.TRANSLATION));
+			Matrix m = MatrixHelper.createHomogenousMatrix(this.rot, this.scale, this.pos);
 			
-			this.p.attachUniform("model", m.asBuffer(), GLProgram.EnumUniformType.M_FOUR);*/
+			this.p.attachUniform("model", m.asBuffer(), GLProgram.EnumUniformType.M_FOUR);
 			
-			
+			//TODO Load materials into program
 			
 			this.setIsDirty(false);
 			
@@ -135,22 +184,7 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 	{
 		if (a instanceof Shader)
 		{
-			synchronized (this)
-			{
-				if (this.p == null)
-				{
-					Shader s = (Shader)a;
-					
-					this.sh[s.gltype.ordinal()] = s;
-					
-				}
-				else
-				{
-					this.p.attachShader((Shader)a);
-					
-				}
-				
-			}
+			this.p.attachShader((Shader)a);
 			
 		}
 		else if (a instanceof Texture)
@@ -164,6 +198,28 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 			
 		}
 		
+	}
+	
+	@Override
+	public synchronized void onVectorChanged(Vector vec)
+	{
+		this.offset.add(vec, this.pos);
+		this.setIsDirty(true);
+		
+	}
+	
+	@Override
+	public synchronized void onQuatChanged(Quaternion q)
+	{
+		this.rotOff.add(q, this.rot);
+		this.setIsDirty(true);
+		
+	}
+	
+	@Override
+	public String toString()
+	{
+		return String.format("%s:%s-%s-%s", this.m.getName(), this.pos.toString(), this.scale.toString(), this.rot.toString());
 	}
 	
 	/*public synchronized void setVector(EnumVectorType type, Vector vec)
@@ -232,34 +288,18 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 	
 	/**
 	 * 
-	 * NOTICE: Do *NOT* call this outside of the designated model animation, since it's not synchronized.
+	 * 
 	 * 
 	 * @param pos
-	 * @param rot
-	 * @param trans
-	 * @param scale
+	 * @param m
 	 */
-	public void setIndice(int pos, Vector rot, Vector trans, Vector scale)
+	public synchronized void setIndice(int pos, Matrix m)
 	{
-		this.buf.position(pos * 9);
+		this.buf.position(this.m.getIndice(pos) * 16);
 		
-		for (int c = 0; c < rot.getSize(); c++)
-		{
-			this.buf.put(rot.get(c));
-			
-		}
+		m.save(this.buf);
 		
-		for (int c = 0; c < trans.getSize(); c++)
-		{
-			this.buf.put(trans.get(c));
-			
-		}
-		
-		for (int c = 0; c < scale.getSize(); c++)
-		{
-			this.buf.put(scale.get(c));
-			
-		}
+		this.setIsDirty(true);
 		
 	}
 	
@@ -271,11 +311,6 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 	public Model getModel()
 	{
 		return this.m;
-	}
-	
-	public VertexBuffer getExtraVBO()
-	{
-		return this.vbo;
 	}
 	
 	/*public int getCurrentFrame()
@@ -291,6 +326,44 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 	public boolean enableZBuffering()
 	{
 		return this.zBuffer;
+	}
+	
+	public synchronized void setPosOffset(Vector off)
+	{
+		this.offset.set(off);
+		this.pos.add(this.offset);
+		
+		this.setIsDirty(true);
+		
+	}
+	
+	public void setScale(Vector s)
+	{
+		for (int c = 0; c < s.getSize(); c++)
+		{
+			if (s.get(c) > 0f)
+			{
+				continue;
+			}
+			
+			throw new CaelumException("[%s]: Vector %s has an invalid scaling float at position %s", this, s, c);
+		}
+		
+		synchronized (this)
+		{
+			this.scale.set(s);
+			
+		}
+		
+	}
+	
+	public synchronized void setRotOffset(Quaternion qoff)
+	{
+		this.rotOff.set(qoff);
+		this.rot.add(this.rotOff);
+		
+		this.setIsDirty(true);
+		
 	}
 	
 }

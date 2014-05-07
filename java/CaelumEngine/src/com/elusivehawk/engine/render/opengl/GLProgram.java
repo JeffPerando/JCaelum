@@ -15,8 +15,8 @@ import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.render.Model;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
-import com.elusivehawk.engine.render.RenderTicket;
 import com.elusivehawk.engine.util.ArrayHelper;
+import com.elusivehawk.engine.util.storage.Few;
 
 /**
  * 
@@ -24,52 +24,64 @@ import com.elusivehawk.engine.util.ArrayHelper;
  * 
  * @author Elusivehawk
  */
-public class GLProgram implements IGLBindable, IAssetReceiver
+public final class GLProgram implements IGLBindable, IAssetReceiver
 {
-	private final int id, vba;
-	private final Shader[] shaders;
-	private HashMap<VertexBuffer, List<Integer>> vbos = new HashMap<VertexBuffer, List<Integer>>();
+	private final Shader[] shaders = RenderHelper.createShaders();
+	private final HashMap<VertexBuffer, List<Integer>> vbos = new HashMap<VertexBuffer, List<Integer>>();
+	
+	private int id = -1, vba = -1, shaderCount = 0;
 	private boolean bound = false, relink = true;
 	
 	public GLProgram()
 	{
-		this(RenderHelper.createShaders());
+		this(null);
 		
 	}
 	
 	public GLProgram(Shader[] sh)
 	{
-		this(CaelumEngine.renderContext(), sh);
-		
-	}
-	
-	@SuppressWarnings("unqualified-field-access")
-	public GLProgram(RenderContext context, Shader[] sh)
-	{
-		id = context.getGL2().glCreateProgram();
-		vba = context.getGL3().glGenVertexArrays();
-		shaders = sh;
-		
-		context.registerCleanable(this);
+		if (!ArrayHelper.isNullOrEmpty(sh))
+		{
+			for (Shader s : sh)
+			{
+				attachShader(s);
+				
+			}
+			
+		}
 		
 	}
 	
 	@Override
 	public boolean bind(RenderContext context)
 	{
-		if (ArrayHelper.isEmpty(this.shaders))
+		if (this.shaderCount == 0)
 		{
-			return false;
+			for (Shader sh : context.getDefaultShaders())
+			{
+				this.attachShader(sh);
+				
+			}
+			
+		}
+		
+		if (this.id == -1)
+		{
+			this.id = context.getGL2().glCreateProgram();
+			this.vba = context.getGL3().glGenVertexArrays();
+			
+			context.registerCleanable(this);
+			
+			RenderHelper.checkForGLError(context);
+			
 		}
 		
 		if (this.relink)
 		{
 			IGL2 gl2 = context.getGL2();
 			
-			for (GLEnumShader stype : GLEnumShader.values())
+			for (Shader s : this.shaders)
 			{
-				Shader s = this.shaders[stype.ordinal()];
-				
 				if (s != null)
 				{
 					gl2.glAttachShader(this, s);
@@ -85,7 +97,7 @@ public class GLProgram implements IGLBindable, IAssetReceiver
 			{
 				RenderHelper.checkForGLError(context);
 				
-				this.relink =  false;
+				this.relink = false;
 				
 			}
 			catch (Exception e){}
@@ -255,37 +267,27 @@ public class GLProgram implements IGLBindable, IAssetReceiver
 	
 	public void attachModel(Model m)
 	{
-		this.attachVBO(m.getVBOs().one, Arrays.asList(0, 1, 2));
-		this.attachVBO(m.getVBOs().two, null);
-		this.attachVBO(m.getVBOs().three, Arrays.asList(6));
+		Few<VertexBuffer> vbos = m.getVBOs();
+		
+		this.attachVBO(vbos.one, Arrays.asList(0, 1, 2));
+		this.attachVBO(vbos.two, null);
+		this.attachVBO(vbos.three, Arrays.asList(4));
 		
 	}
 	
-	public void attachRenderTicket(RenderTicket tkt)
+	public synchronized void attachShader(Shader sh)
 	{
-		this.attachModel(tkt.getModel());
-		
-		this.attachVBO(tkt.getExtraVBO(), Arrays.asList(3, 4, 5));
-		
-		/*RenderContext context = CaelumEngine.renderContext();
-		
-		if (!this.bound && !this.bind(context))
+		if (sh == null)
 		{
 			return;
 		}
 		
-		IGL2 gl2 = context.getGL2();
+		if (this.shaders[sh.gltype.ordinal()] == null)
+		{
+			this.shaderCount++;
+			
+		}
 		
-		gl2.glVertexAttribPointer(3, 3, GLConst.GL_FLOAT, false, 0, tkt.getBuffer());
-		gl2.glVertexAttribPointer(4, 3, GLConst.GL_FLOAT, false, 3, tkt.getBuffer());
-		gl2.glVertexAttribPointer(5, 3, GLConst.GL_FLOAT, false, 6, tkt.getBuffer());
-		
-		this.unbind(context);*/
-		
-	}
-	
-	public void attachShader(Shader sh)
-	{
 		this.shaders[sh.gltype.ordinal()] = sh;
 		this.relink = true;
 		

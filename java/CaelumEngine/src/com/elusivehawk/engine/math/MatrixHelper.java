@@ -16,18 +16,15 @@ public final class MatrixHelper
 	
 	public static Matrix createIdentityMatrix()
 	{
-		Matrix ret = new Matrix(4, 4);
-		
-		for (int c = 0; c < 4; c++)
-		{
-			ret.set(c, c, 1f);
-			
-		}
-		
-		return ret;
+		return new Matrix(4, 4).setIdentity();
 	}
 	
 	public static Matrix createHomogenousMatrix(Vector rot, Vector scl, Vector trans)
+	{
+		return (Matrix)createRotationMatrix(rot).mul(createScalingMatrix(scl)).mul(createTranslationMatrix(trans));
+	}
+	
+	public static Matrix createHomogenousMatrix(Quaternion rot, Vector scl, Vector trans)
 	{
 		return (Matrix)createRotationMatrix(rot).mul(createScalingMatrix(scl)).mul(createTranslationMatrix(trans));
 	}
@@ -65,6 +62,32 @@ public final class MatrixHelper
 		MatrixUtil.setEulerZYX(ret, x, y, z);
 		
 		return ret;
+	}
+	
+	public static Matrix createRotationMatrix(Quaternion q)
+	{
+		float a = (float)Math.cos(q.get(A));
+		float b = (float)Math.sin(q.get(A));
+		float c = (float)Math.cos(q.get(B));
+		float d = (float)Math.sin(q.get(B));
+		float e = (float)Math.cos(q.get(C));
+		float f = (float)Math.sin(q.get(C));
+		
+		float ad = a * d;
+		float bd = b * d;
+		
+		float[] buf = new float[16];
+		
+		buf[0] = c * e; buf[1] = -c * f; buf[2] = d; buf[3] = 0f;
+		//-------------------------------------------------
+		buf[4] = bd * e + a * f; buf[5] = -bd * f + a * e; buf[6] = -b * c; buf[7] = 0f;
+		//-------------------------------------------------
+		buf[8] = -ad * e + b * f; buf[9] = ad * f + b * e; buf[10] = a * c; buf[11] = 0f;
+		//-------------------------------------------------
+		buf[12] = buf[13] = buf[14] = 0f; buf[15] = 1f;
+		//-------------------------------------------------
+		
+		return new Matrix(buf);
 	}
 	
 	public static Matrix createScalingMatrix(Vector vec)

@@ -1,8 +1,10 @@
 
 package com.elusivehawk.engine.render;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
+import com.elusivehawk.engine.assets.Shader;
 import com.elusivehawk.engine.assets.Texture;
 import com.elusivehawk.engine.core.IContext;
 import com.elusivehawk.engine.render.opengl.GLEnumShader;
@@ -13,6 +15,7 @@ import com.elusivehawk.engine.render.opengl.IGL3;
 import com.elusivehawk.engine.render.opengl.IGLBindable;
 import com.elusivehawk.engine.render.opengl.IGLManipulator;
 import com.elusivehawk.engine.util.FileHelper;
+import com.elusivehawk.engine.util.storage.ImmutableArray;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -30,7 +33,9 @@ public final class RenderContext implements IContext
 	private IGL2 gl2;
 	private IGL3 gl3;
 	
-	private int sVertex, sFrag, notex;
+	private int notex;
+	
+	private ImmutableArray<Shader> shaders = null;
 	
 	private final List<Texture> texturePool = Lists.newArrayList();
 	private final List<IGLBindable> cleanables = Lists.newArrayList();
@@ -59,8 +64,25 @@ public final class RenderContext implements IContext
 		this.gl2 = (IGL2)this.sys.getRenderEnv().getGL(IRenderEnvironment.GL_2);
 		this.gl3 = (IGL3)this.sys.getRenderEnv().getGL(IRenderEnvironment.GL_3);
 		
-		this.sVertex = RenderHelper.loadShader(FileHelper.createFile("/vertex.glsl"), GLEnumShader.VERTEX);
-		this.sFrag = RenderHelper.loadShader(FileHelper.createFile("/fragment.glsl"), GLEnumShader.FRAG);
+		Shader[] shs = RenderHelper.createShaders();
+		
+		for (GLEnumShader sh : GLEnumShader.values())
+		{
+			File file = FileHelper.createFile(".", String.format("/%s.glsl", sh.name().toLowerCase()));
+			
+			if (FileHelper.canReadFile(file))
+			{
+				Shader s = new Shader(file, sh);
+				
+				s.finish();
+				
+				shs[sh.ordinal()] = s;
+				
+			}
+			
+		}
+		
+		this.shaders = new ImmutableArray<Shader>(shs);
 		
 		PixelGrid ntf = new PixelGrid(32, 32, EnumColorFormat.RGBA);
 		
@@ -100,14 +122,9 @@ public final class RenderContext implements IContext
 		return this.gl3;
 	}
 	
-	public int getDefaultFragmentShader()
+	public ImmutableArray<Shader> getDefaultShaders()
 	{
-		return this.sFrag;
-	}
-	
-	public int getDefaultVertexShader()
-	{
-		return this.sVertex;
+		return this.shaders;
 	}
 	
 	public int getDefaultTexture()

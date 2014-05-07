@@ -52,9 +52,9 @@ public class GLES2 implements IGL2
 	}
 	
 	@Override
-	public void glCompileShader(GLEnumShader type)
+	public void glCompileShader(Shader shader)
 	{
-		this.glCompileShader(type.gl);
+		this.glCompileShader(shader.getGLId());
 		
 	}
 	

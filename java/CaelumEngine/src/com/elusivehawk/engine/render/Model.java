@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
+import java.nio.IntBuffer;
 import java.util.List;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
@@ -16,16 +17,23 @@ import com.google.common.collect.Lists;
  * 
  * 
  * @author Elusivehawk
+ * 
+ * @see IAssetReceiver
+ * @see Tessellator
  */
 public class Model implements IAssetReceiver
 {
 	protected final String name;
+	protected final List<ModelSection> sections = Lists.newArrayList();
 	
 	protected ModelSection sec = null;
-	protected List<ModelSection> sections = Lists.newArrayList();
-	
 	protected Few<VertexBuffer> fin = null;
-	protected int glmode = GLConst.GL_TRIANGLES, polyCount = 0, pointCount = 0;
+	protected int glmode = GLConst.GL_TRIANGLES,
+			polyCount = 0,
+			pointCount = 0,
+			indiceCount = -1;
+	
+	protected IntBuffer indices = null;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public Model(String title)
@@ -118,7 +126,7 @@ public class Model implements IAssetReceiver
 		
 		t.begin(GLConst.GL_TRIANGLES);//TODO Implement an indice efficiency... thing
 		
-		int i = 0, matIn = 0;
+		int i = 0, matIn = 0, maxInd =-1;
 		
 		for (ModelSection s : this.sections)
 		{
@@ -126,7 +134,9 @@ public class Model implements IAssetReceiver
 			{
 				for (int c = 0; c < m.points.length(); c++)
 				{
-					in.add(i = t.point(m.points.get(c), m.texOffs.get(c), m.normals.get(c)));
+					i = t.point(m.points.get(c), m.texOffs.get(c), m.normals.get(c));
+					
+					in.add(i);
 					this.pointCount++;
 					
 					if (matIndices.get(i) == null)
@@ -134,6 +144,8 @@ public class Model implements IAssetReceiver
 						matIndices.add(i, matIn);
 						
 					}
+					
+					maxInd = Math.max(i, maxInd);
 					
 				}
 				
@@ -147,13 +159,21 @@ public class Model implements IAssetReceiver
 		
 		t.finish(in);
 		
+		this.polyCount = RenderHelper.getPolygonCount(in.size(), this.glmode);
+		this.indices = t.getIndices();
+		this.indiceCount = maxInd;
+		
 		VertexBuffer vtx = new VertexBuffer(GLConst.GL_ARRAY_BUFFER, t.getPolygons(), GLConst.GL_STATIC_DRAW/*TODO Review usage*/);
-		VertexBuffer ind = new VertexBuffer(GLConst.GL_INDEX_ARRAY, t.getIndices(), GLConst.GL_STATIC_DRAW);
+		VertexBuffer ind = new VertexBuffer(GLConst.GL_INDEX_ARRAY, this.indices, GLConst.GL_STATIC_DRAW);
 		VertexBuffer mat = new VertexBuffer(GLConst.GL_ARRAY_BUFFER, BufferHelper.makeIntBuffer(matIndices), GLConst.GL_STATIC_DRAW);
 		
 		this.fin = Few.createFew(vtx, ind, mat);
-		this.polyCount = RenderHelper.getPolygonCount(in.size(), this.glmode);
 		
+	}
+	
+	public String getName()
+	{
+		return this.name;
 	}
 	
 	public boolean isFinished()
@@ -179,6 +199,16 @@ public class Model implements IAssetReceiver
 	public int getTotalPointCount()
 	{
 		return this.pointCount;
+	}
+	
+	public int getIndiceCount()
+	{
+		return this.indiceCount;
+	}
+	
+	public int getIndice(int pos)
+	{
+		return this.indices == null ? -1 : this.indices.get(pos);
 	}
 	
 }

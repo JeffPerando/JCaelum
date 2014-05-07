@@ -5,6 +5,8 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import com.elusivehawk.engine.assets.Texture;
 import com.elusivehawk.engine.render.Color;
+import com.elusivehawk.engine.render.EnumColorFilter;
+import com.elusivehawk.engine.util.BufferHelper;
 
 /**
  * 
@@ -14,17 +16,29 @@ import com.elusivehawk.engine.render.Color;
  */
 public interface IGL1
 {
+	default void glActiveTexture(Texture texture)
+	{
+		this.glActiveTexture(texture.getTexId());
+		
+	}
+	
 	public void glActiveTexture(int texture);
 	
-	public void glActiveTexture(Texture texture);
-	
-	public void glBindBuffer(VertexBuffer vbo);
+	default void glBindBuffer(VertexBuffer vbo)
+	{
+		this.glBindBuffer(vbo.t, vbo.id);
+		
+	}
 	
 	public void glBindBuffer(int target, int buffer);
 	
-	public void glBindTexture(int target, int texture);
+	default void glBindTexture(int target, Texture texture)
+	{
+		this.glBindTexture(target, texture.getTexId());
+		
+	}
 	
-	public void glBindTexture(int target, Texture texture);
+	public void glBindTexture(int target, int texture);
 	
 	public void glBlendFunc(int sfactor, int dfactor);
 	
@@ -34,7 +48,11 @@ public interface IGL1
 	
 	public void glClear(int mask);
 	
-	public void glClearColor(Color col);
+	default void glClearColor(Color col)
+	{
+		this.glClearColor(col.getColorFloat(EnumColorFilter.RED), col.getColorFloat(EnumColorFilter.GREEN), col.getColorFloat(EnumColorFilter.BLUE), col.getColorFloat(EnumColorFilter.ALPHA));
+		
+	}
 	
 	public void glClearColor(float r, float g, float b, float a);
 	
@@ -50,13 +68,37 @@ public interface IGL1
 	
 	public void glCullFace(int mode);
 	
-	public void glDeleteBuffers(VertexBuffer buffer);
+	default void glDeleteBuffers(VertexBuffer... buffers)
+	{
+		IntBuffer bufs = BufferHelper.createIntBuffer(buffers.length);
+		
+		for (VertexBuffer vb : buffers)
+		{
+			bufs.put(vb.id);
+			
+		}
+		
+		this.glDeleteBuffers(bufs);
+		
+	}
 	
 	public void glDeleteBuffers(int... buffer);
 	
 	public void glDeleteBuffers(IntBuffer buffers);
 	
-	public void glDeleteTextures(Texture... textures);
+	default void glDeleteTextures(Texture... textures)
+	{
+		int[] texs = new int[textures.length];
+		
+		for (int c = 0; c < texs.length; c++)
+		{
+			texs[c] = textures[c].getTexId();
+			
+		}
+		
+		this.glDeleteBuffers(texs);
+		
+	}
 	
 	public void glDeleteTextures(int... textures);
 	

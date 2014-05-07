@@ -9,10 +9,10 @@ package com.elusivehawk.engine.math;
  */
 public final class MathConst
 {
-	public static final int X = 0;
-	public static final int Y = 1;
-	public static final int Z = 2;
-	public static final int W = 3;
+	public static final int X = 0, A = 0;
+	public static final int Y = 1, B = 1;
+	public static final int Z = 2, C = 2;
+	public static final int W = 3, D = 3;
 	
 	public static final int X_BITMASK = 0b0001;
 	public static final int Y_BITMASK = 0b0010;

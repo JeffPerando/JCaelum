@@ -151,7 +151,7 @@ public final class RenderHelper
 		
 		int id = gl2.glCreateShader(type);
 		gl2.glShaderSource(id, src);
-		gl2.glCompileShader(type);
+		gl2.glCompileShader(id);
 		
 		try
 		{

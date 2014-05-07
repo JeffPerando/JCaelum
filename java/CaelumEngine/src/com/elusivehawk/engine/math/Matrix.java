@@ -83,11 +83,18 @@ public class Matrix implements IMathObject<Float>
 		return this;
 	}
 	
+	public Matrix save(FloatBuffer buf)
+	{
+		buf.put(this.data);
+		
+		return this;
+	}
+	
 	public FloatBuffer asBuffer()
 	{
 		FloatBuffer ret = BufferHelper.createFloatBuffer(this.w * this.h);
 		
-		this.load(ret);
+		this.save(ret);
 		
 		return ret;
 	}
@@ -325,7 +332,7 @@ public class Matrix implements IMathObject<Float>
 		
 	}
 	
-	public void setIdentity()
+	public Matrix setIdentity()
 	{
 		for (int x = 0; x < this.w; x++)
 		{
@@ -337,6 +344,7 @@ public class Matrix implements IMathObject<Float>
 			
 		}
 		
+		return this;
 	}
 	
 	public Matrix add(int x, int y, float f)

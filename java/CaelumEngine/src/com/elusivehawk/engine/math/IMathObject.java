@@ -66,7 +66,7 @@ public interface IMathObject<T extends Number> extends IStorable<T>
 	
 	default IMathObject<T> set(IMathObject<T> obj)
 	{
-		assert !this.isImmutable();
+		assert obj != null && !this.isImmutable();
 		
 		int l = Math.min(this.getSize(), obj.getSize());
 		

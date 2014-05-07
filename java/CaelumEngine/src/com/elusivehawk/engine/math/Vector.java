@@ -163,9 +163,11 @@ public class Vector implements IMathObject<Float>
 		
 		for (int c = 0; c < l; c++)
 		{
-			dest.set(c, this.get(c) + obj.get(c));
+			dest.set(c, this.get(c) + obj.get(c), false);
 			
 		}
+		
+		this.onChanged();
 		
 		return dest;
 	}
@@ -177,9 +179,11 @@ public class Vector implements IMathObject<Float>
 		
 		for (int c = 0; c < l; c++)
 		{
-			dest.set(c, this.get(c) / obj.get(c));
+			dest.set(c, this.get(c) / obj.get(c), false);
 			
 		}
+		
+		this.onChanged();
 		
 		return dest;
 	}
@@ -191,9 +195,11 @@ public class Vector implements IMathObject<Float>
 		
 		for (int c = 0; c < l; c++)
 		{
-			dest.set(c, this.get(c) - obj.get(c));
+			dest.set(c, this.get(c) - obj.get(c), false);
 			
 		}
+		
+		this.onChanged();
 		
 		return dest;
 	}
@@ -205,9 +211,11 @@ public class Vector implements IMathObject<Float>
 		
 		for (int c = 0; c < l; c++)
 		{
-			dest.set(c, this.get(c) * obj.get(c));
+			dest.set(c, this.get(c) * obj.get(c), false);
 			
 		}
+		
+		this.onChanged();
 		
 		return dest;
 	}
@@ -382,9 +390,11 @@ public class Vector implements IMathObject<Float>
 		
 		for (int c = 0; c < length; c++)
 		{
-			this.set(c, -v.get(c), c == (length - 1));
+			this.set(c, -v.get(c), false);
 			
 		}
+		
+		this.onChanged();
 		
 		return v;
 	}

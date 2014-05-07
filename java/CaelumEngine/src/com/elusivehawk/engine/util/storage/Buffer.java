@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import com.elusivehawk.engine.math.MathHelper;
 import com.elusivehawk.engine.util.IDirty;
 import com.google.common.collect.Lists;
 
@@ -63,7 +64,7 @@ public class Buffer<T> implements IDirty, Collection<T>, Iterator<T>, IGettable<
 	@Override
 	public boolean hasNext()
 	{
-		return this.remaining() > 0;
+		return this.pos < this.l.size();
 	}
 	
 	@Override
@@ -80,7 +81,7 @@ public class Buffer<T> implements IDirty, Collection<T>, Iterator<T>, IGettable<
 	
 	public T get(int pos)
 	{
-		return this.l.size() > pos && pos >= 0 ? this.l.get(pos) : null;
+		return MathHelper.bounds(pos, 0, this.l.size()) ? this.l.get(pos) : null;
 	}
 	
 	@Override

@@ -8,10 +8,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import org.lwjgl.opengl.GL20;
-import com.elusivehawk.engine.assets.Shader;
 import com.elusivehawk.engine.render.opengl.GLConst;
-import com.elusivehawk.engine.render.opengl.GLEnumShader;
-import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGL2;
 
 /**
@@ -22,13 +19,6 @@ import com.elusivehawk.engine.render.opengl.IGL2;
  */
 public class OpenGL2 implements IGL2
 {
-	@Override
-	public void glAttachShader(GLProgram program, Shader shader)
-	{
-		this.glAttachShader(program.getId(), shader.getGLId());
-		
-	}
-	
 	@Override
 	public void glAttachShader(int program, int shader)
 	{
@@ -51,13 +41,6 @@ public class OpenGL2 implements IGL2
 	}
 	
 	@Override
-	public void glCompileShader(GLEnumShader type)
-	{
-		this.glCompileShader(type.gl);
-		
-	}
-	
-	@Override
 	public void glCompileShader(int shader)
 	{
 		GL20.glCompileShader(shader);
@@ -71,22 +54,9 @@ public class OpenGL2 implements IGL2
 	}
 	
 	@Override
-	public int glCreateShader(GLEnumShader type)
-	{
-		return this.glCreateShader(type.gl);
-	}
-	
-	@Override
 	public int glCreateShader(int type)
 	{
 		return GL20.glCreateShader(type);
-	}
-	
-	@Override
-	public void glDeleteProgram(GLProgram program)
-	{
-		this.glDeleteProgram(program.getId());
-		
 	}
 	
 	@Override
@@ -97,23 +67,9 @@ public class OpenGL2 implements IGL2
 	}
 	
 	@Override
-	public void glDeleteShader(Shader shader)
-	{
-		this.glDeleteShader(shader.getGLId());
-		
-	}
-	
-	@Override
 	public void glDeleteShader(int shader)
 	{
 		GL20.glDeleteShader(shader);
-		
-	}
-	
-	@Override
-	public void glDetachShader(GLProgram program, Shader shader)
-	{
-		this.glDetachShader(program.getId(), shader.getGLId());
 		
 	}
 	
@@ -299,13 +255,6 @@ public class OpenGL2 implements IGL2
 	}
 	
 	@Override
-	public void glLinkProgram(GLProgram program)
-	{
-		this.glLinkProgram(program.getId());
-		
-	}
-	
-	@Override
 	public void glLinkProgram(int program)
 	{
 		GL20.glLinkProgram(program);
@@ -476,23 +425,9 @@ public class OpenGL2 implements IGL2
 	}
 	
 	@Override
-	public void glUseProgram(GLProgram program)
-	{
-		this.glUseProgram(program.getId());
-		
-	}
-	
-	@Override
 	public void glUseProgram(int program)
 	{
 		GL20.glUseProgram(program);
-		
-	}
-	
-	@Override
-	public void glValidateProgram(GLProgram program)
-	{
-		this.glValidateProgram(program.getId());
 		
 	}
 	

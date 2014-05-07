@@ -175,25 +175,9 @@ public class OpenGL1 implements IGL1
 	}
 	
 	@Override
-	public void glDeleteBuffers(VertexBuffer buffer)
-	{
-		this.glDeleteBuffers(buffer.id);
-		
-	}
-	
-	@Override
 	public void glDeleteBuffers(int... buffers)
 	{
-		if (buffers.length == 1)
-		{
-			GL15.glDeleteBuffers(buffers[0]);
-			
-		}
-		else
-		{
-			this.glDeleteBuffers(BufferHelper.makeIntBuffer(buffers));
-			
-		}
+		this.glDeleteBuffers(BufferHelper.makeIntBuffer(buffers));
 		
 	}
 	

@@ -157,9 +157,17 @@ public class GLES1 implements IGL1
 	}
 	
 	@Override
-	public void glDeleteBuffers(VertexBuffer vbo)
+	public void glDeleteBuffers(VertexBuffer... buffers)
 	{
-		this.glDeleteBuffers(vbo.id);
+		IntBuffer bufs = BufferHelper.createIntBuffer(buffers.length);
+		
+		for (VertexBuffer vb : buffers)
+		{
+			bufs.put(vb.id);
+			
+		}
+		
+		this.glDeleteBuffers(bufs);
 		
 	}
 	
