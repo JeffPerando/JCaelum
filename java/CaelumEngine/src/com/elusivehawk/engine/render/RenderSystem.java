@@ -196,12 +196,14 @@ public final class RenderSystem implements IPausable, IGameStateListener, IThrea
 		return true;
 	}
 	
+	@SuppressWarnings("unused")
 	public void onDisplayResized(IDisplay d)
 	{
 		//TODO
 		
 	}
 		
+	@SuppressWarnings("unused")
 	public void onDisplayClosed(IDisplay d)
 	{
 		this.context.cleanup();
