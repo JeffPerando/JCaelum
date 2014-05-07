@@ -29,6 +29,7 @@ public final class MatrixHelper
 		return (Matrix)createRotationMatrix(rot).mul(createScalingMatrix(scl)).mul(createTranslationMatrix(trans));
 	}
 	
+	@SuppressWarnings("unused")//FIXME
 	public static Matrix createProjectionMatrix(Vector pos, Vector rot, float fov, float aspect, float zFar, float zNear)
 	{
 		float[] ret = new float[16];

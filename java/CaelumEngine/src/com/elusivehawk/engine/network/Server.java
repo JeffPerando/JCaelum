@@ -1,7 +1,6 @@
 
 package com.elusivehawk.engine.network;
 
-import java.io.IOException;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SocketChannel;
 import java.util.List;

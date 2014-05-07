@@ -399,6 +399,7 @@ public class Vector implements IMathObject<Float>
 		return v;
 	}
 	
+	@SuppressWarnings({"static-method", "unused"})
 	public Vector scaleAdd(float f, Vector vec, Vector dest)//FIXME
 	{
 		return dest;
