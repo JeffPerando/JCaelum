@@ -188,6 +188,7 @@ public abstract class AxisSweep3Internal extends BroadphaseInterface
 		
 	}
 	
+	@SuppressWarnings("static-method")
 	protected boolean testOverlap(int ignoreAxis, Handle pHandleA, Handle pHandleB)
 	{
 		// optimization 1: check the array index (memory address), instead of the m_pos
@@ -251,6 +252,7 @@ public abstract class AxisSweep3Internal extends BroadphaseInterface
 	}
 	
 	// sorting a min edge downwards can only ever *add* overlaps
+	@SuppressWarnings("unused")
 	protected void sortMinDown(int axis, int edge, Dispatcher dispatcher, boolean updateOverlaps)
 	{
 		EdgeArray edgeArray = this.pEdges[axis];
@@ -414,6 +416,7 @@ public abstract class AxisSweep3Internal extends BroadphaseInterface
 	}
 	
 	// sorting a max edge upwards can only ever *add* overlaps
+	@SuppressWarnings("unused")
 	protected void sortMaxUp(int axis, int edge, Dispatcher dispatcher, boolean updateOverlaps)
 	{
 		EdgeArray edgeArray = this.pEdges[axis];
@@ -758,6 +761,7 @@ public abstract class AxisSweep3Internal extends BroadphaseInterface
 		
 	}
 	
+	@SuppressWarnings("static-method")
 	public boolean testAabbOverlap(BroadphaseProxy proxy0, BroadphaseProxy proxy1)
 	{
 		Handle pHandleA = (Handle)proxy0;

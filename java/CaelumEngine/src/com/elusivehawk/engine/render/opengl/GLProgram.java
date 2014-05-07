@@ -37,11 +37,15 @@ public class GLProgram implements IGLBindable, IAssetReceiver
 		
 	}
 	
-	@SuppressWarnings("unqualified-field-access")
 	public GLProgram(Shader[] sh)
 	{
-		RenderContext context = CaelumEngine.renderContext();
+		this(CaelumEngine.renderContext(), sh);
 		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public GLProgram(RenderContext context, Shader[] sh)
+	{
 		id = context.getGL2().glCreateProgram();
 		vba = context.getGL3().glGenVertexArrays();
 		shaders = sh;

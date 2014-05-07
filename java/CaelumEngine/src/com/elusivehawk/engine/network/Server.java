@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.network;
 
+import java.io.IOException;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SocketChannel;
 import java.util.List;
@@ -218,6 +219,7 @@ public class Server implements IHost
 		return this.paused;
 	}
 	
+	@SuppressWarnings("resource")
 	@Override
 	public void onHandshake(IConnection connection, List<Packet> pkts)
 	{
@@ -251,8 +253,8 @@ public class Server implements IHost
 			
 			if (finish)
 			{
-				ArrayHelper.add(this.clients, connect);
-				ArrayHelper.add(this.ids, connect.getId());
+				this.clients[this.playerCount] = connect;
+				this.ids[this.playerCount] = connect.getId();
 				
 				this.playerCount++;
 				
@@ -271,7 +273,7 @@ public class Server implements IHost
 		{
 			if (client != null)
 			{
-				client.close(true);
+				client.close();
 				
 			}
 			

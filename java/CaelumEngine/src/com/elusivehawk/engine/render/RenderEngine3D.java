@@ -63,14 +63,9 @@ public class RenderEngine3D implements IRenderEngine
 			
 			for (int c = 0; c < tickets.size(); c++)
 			{
-				if (!group.doRenderTicket(c))
-				{
-					continue;
-				}
-				
 				tkt = tickets.get(c);
 				
-				if (!tkt.updateBeforeUse())
+				if (!tkt.updateBeforeUse(context))
 				{
 					continue;
 				}

@@ -32,13 +32,10 @@ public class ThreadAssetLoader extends ThreadStoppable
 		}
 		
 		Iterator<TriTuple<String, IAssetReceiver, IAssetReader>> itr = this.assets.iterator();
-		TriTuple<String, IAssetReceiver, IAssetReader> t;
-		Asset a;
 		
-		while (itr.hasNext())
+		itr.forEachRemaining((t) ->
 		{
-			t = itr.next();
-			a = this.assetMgr.getExistingAsset(t.one);
+			Asset a = this.assetMgr.getExistingAsset(t.one);
 			
 			if (a == null)
 			{
@@ -46,7 +43,24 @@ public class ThreadAssetLoader extends ThreadStoppable
 				{
 					if (file.getAbsolutePath().endsWith(t.one))
 					{
-						a = t.three == null ? this.assetMgr.readAsset(file) : t.three.readAsset(this.assetMgr, file);
+						if (t.three == null)
+						{
+							a = this.assetMgr.readAsset(file);
+							
+						}
+						else
+						{
+							try
+							{
+								a = t.three.readAsset(this.assetMgr, file);
+							}
+							catch (Throwable e)
+							{
+								this.handleException(e);
+								
+							}
+							
+						}
 						
 						if (a != null)
 						{
@@ -75,7 +89,7 @@ public class ThreadAssetLoader extends ThreadStoppable
 			
 			itr.remove();
 			
-		}
+		});
 		
 	}
 	

@@ -42,64 +42,69 @@ import com.elusivehawk.engine.physics.jbullet.dynamics.vehicle.RaycastVehicle;
  * 
  * @author jezek2
  */
-public abstract class DynamicsWorld extends CollisionWorld {
-
+public abstract class DynamicsWorld extends CollisionWorld
+{
 	protected InternalTickCallback internalTickCallback;
 	protected Object worldUserInfo;
 	
 	protected final ContactSolverInfo solverInfo = new ContactSolverInfo();
 	
-	public DynamicsWorld(Dispatcher dispatcher, BroadphaseInterface broadphasePairCache, CollisionConfiguration collisionConfiguration) {
+	public DynamicsWorld(Dispatcher dispatcher, BroadphaseInterface broadphasePairCache, CollisionConfiguration collisionConfiguration)
+	{
 		super(dispatcher, broadphasePairCache, collisionConfiguration);
+		
 	}
-
-	public final int stepSimulation(float timeStep) {
+	
+	public final int stepSimulation(float timeStep)
+	{
 		return stepSimulation(timeStep, 1, 1f / 60f);
 	}
-
-	public final int stepSimulation(float timeStep, int maxSubSteps) {
+	
+	public final int stepSimulation(float timeStep, int maxSubSteps)
+	{
 		return stepSimulation(timeStep, maxSubSteps, 1f / 60f);
 	}
-
+	
 	/**
-	 * Proceeds the simulation over 'timeStep', units in preferably in seconds.<p>
+	 * Proceeds the simulation over 'timeStep', units in preferably in seconds.
+	 * <p>
 	 *
-	 * By default, Bullet will subdivide the timestep in constant substeps of each
-	 * 'fixedTimeStep'.<p>
+	 * By default, Bullet will subdivide the timestep in constant substeps of each 'fixedTimeStep'.
+	 * <p>
 	 *
-	 * In order to keep the simulation real-time, the maximum number of substeps can
-	 * be clamped to 'maxSubSteps'.<p>
+	 * In order to keep the simulation real-time, the maximum number of substeps can be clamped to 'maxSubSteps'.
+	 * <p>
 	 * 
-	 * You can disable subdividing the timestep/substepping by passing maxSubSteps=0
-	 * as second argument to stepSimulation, but in that case you have to keep the
-	 * timeStep constant.
+	 * You can disable subdividing the timestep/substepping by passing maxSubSteps=0 as second argument to stepSimulation, but in that case you have to keep the timeStep constant.
 	 */
-	public abstract int stepSimulation(float timeStep, int maxSubSteps, float fixedTimeStep);
-
+	public abstract int stepSimulation(float timeStep, int maxSubSteps,
+			float fixedTimeStep);
+	
 	public abstract void debugDrawWorld();
-
-	public final void addConstraint(TypedConstraint constraint) {
+	
+	public final void addConstraint(TypedConstraint constraint)
+	{
 		addConstraint(constraint, false);
 	}
 	
-	public void addConstraint(TypedConstraint constraint, boolean disableCollisionsBetweenLinkedBodies) {
-	}
-
-	public void removeConstraint(TypedConstraint constraint) {
-	}
-
-	public void addAction(ActionInterface action) {
-	}
-
-	public void removeAction(ActionInterface action) {
-	}
-
-	public void addVehicle(RaycastVehicle vehicle) {
-	}
-
-	public void removeVehicle(RaycastVehicle vehicle) {
-	}
-
+	@SuppressWarnings("unused")
+	public void addConstraint(TypedConstraint constraint, boolean disableCollisionsBetweenLinkedBodies){}
+	
+	@SuppressWarnings("unused")
+	public void removeConstraint(TypedConstraint constraint){}
+	
+	@SuppressWarnings("unused")
+	public void addAction(ActionInterface action){}
+	
+	@SuppressWarnings("unused")
+	public void removeAction(ActionInterface action){}
+	
+	@SuppressWarnings("unused")
+	public void addVehicle(RaycastVehicle vehicle){}
+	
+	@SuppressWarnings("unused")
+	public void removeVehicle(RaycastVehicle vehicle){}
+	
 	/**
 	 * Once a rigidbody is added to the dynamics world, it will get this gravity assigned.
 	 * Existing rigidbodies in the world get gravity assigned too, during this method.
@@ -107,55 +112,67 @@ public abstract class DynamicsWorld extends CollisionWorld {
 	public abstract void setGravity(Vector gravity);
 	
 	public abstract Vector getGravity(Vector out);
-
+	
 	public abstract void addRigidBody(RigidBody body);
-
+	
 	public abstract void removeRigidBody(RigidBody body);
-
+	
 	public abstract void setConstraintSolver(ConstraintSolver solver);
-
+	
 	public abstract ConstraintSolver getConstraintSolver();
-
-	public int getNumConstraints() {
+	
+	@SuppressWarnings("static-method")
+	public int getNumConstraints()
+	{
 		return 0;
 	}
-
-	public TypedConstraint getConstraint(int index) {
+	
+	@SuppressWarnings({"static-method", "unused"})
+	public TypedConstraint getConstraint(int index)
+	{
 		return null;
 	}
-
+	
 	// JAVA NOTE: not part of the original api
-	public int getNumActions() {
+	@SuppressWarnings("static-method")
+	public int getNumActions()
+	{
 		return 0;
 	}
-
+	
 	// JAVA NOTE: not part of the original api
-	public ActionInterface getAction(int index) {
+	@SuppressWarnings({"static-method", "unused"})
+	public ActionInterface getAction(int index)
+	{
 		return null;
 	}
-
+	
 	public abstract DynamicsWorldType getWorldType();
-
+	
 	public abstract void clearForces();
 	
 	/**
 	 * Set the callback for when an internal tick (simulation substep) happens, optional user info.
 	 */
-	public void setInternalTickCallback(InternalTickCallback cb, Object worldUserInfo) {
+	public void setInternalTickCallback(InternalTickCallback cb, Object worldUserInfo)
+	{
 		this.internalTickCallback = cb;
 		this.worldUserInfo = worldUserInfo;
 	}
-
-	public void setWorldUserInfo(Object worldUserInfo) {
+	
+	public void setWorldUserInfo(Object worldUserInfo)
+	{
 		this.worldUserInfo = worldUserInfo;
 	}
-
-	public Object getWorldUserInfo() {
-		return worldUserInfo;
+	
+	public Object getWorldUserInfo()
+	{
+		return this.worldUserInfo;
 	}
-
-	public ContactSolverInfo getSolverInfo() {
-		return solverInfo;
+	
+	public ContactSolverInfo getSolverInfo()
+	{
+		return this.solverInfo;
 	}
 	
 }

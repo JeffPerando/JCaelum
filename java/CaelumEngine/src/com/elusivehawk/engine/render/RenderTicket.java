@@ -66,7 +66,7 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 	}
 	
 	@Override
-	public boolean updateBeforeUse()
+	public boolean updateBeforeUse(RenderContext context)
 	{
 		if (!this.initiated)
 		{
@@ -84,7 +84,7 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver
 			this.buf = BufferHelper.createFloatBuffer(this.m.getTotalPointCount() * RenderConst.FLOATS_PER_POINT);
 			this.vbo = new VertexBuffer(GLConst.GL_ARRAY_BUFFER, this.buf, GLConst.GL_STREAM_DRAW);
 			
-			this.p = new GLProgram(this.sh);
+			this.p = new GLProgram(context, this.sh);
 			this.p.attachRenderTicket(this);
 			
 			this.initiated = true;

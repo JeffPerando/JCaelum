@@ -18,19 +18,17 @@ public class GameArguments
 	@SuppressWarnings("unqualified-field-access")
 	public GameArguments(Iterable<String> buf)
 	{
-		String[] spl;
-		
-		for (String str : buf)
+		buf.forEach((str) ->
 		{
 			if (str.contains("="))
 			{
-				spl = StringHelper.splitOnce(str, "=");
+				String[] spl = StringHelper.splitOnce(str, "=");
 				
 				args.put(spl[0], spl[1]);
 				
 			}
 			
-		}
+		});
 		
 	}
 	

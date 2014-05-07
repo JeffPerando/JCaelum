@@ -68,7 +68,7 @@ public class ParticleScene implements ILogicalRender
 		}
 		
 		this.buf.position(this.particles.size() * PARTICLE_FLOAT_COUNT);
-		Vector pos = new Vector(3).set(p.getPosition());
+		Vector pos = (Vector)new Vector(3).set(p.getPosition());
 		
 		for (int c = 0; c < 3; c++)
 		{
@@ -88,7 +88,7 @@ public class ParticleScene implements ILogicalRender
 	}
 	
 	@Override
-	public boolean updateBeforeUse()
+	public boolean updateBeforeUse(RenderContext context)
 	{
 		if (this.getParticleCount() == 0)
 		{
@@ -112,7 +112,7 @@ public class ParticleScene implements ILogicalRender
 			
 			if (p.updatePositionOrColor())
 			{
-				Vector vec = new Vector(3).set(p.getPosition());
+				Vector vec = (Vector)new Vector(3).set(p.getPosition());
 				Color col = p.getColor();
 				
 				this.buf.position(c * PARTICLE_FLOAT_COUNT);

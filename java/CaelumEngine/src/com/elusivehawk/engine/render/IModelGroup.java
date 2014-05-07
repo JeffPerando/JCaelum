@@ -23,11 +23,4 @@ public interface IModelGroup
 	 */
 	public SyncList<RenderTicket> getTickets();
 	
-	/**
-	 * 
-	 * @param index The index of the {@link RenderTicket} that is about to be rendered
-	 * @return True to render the ticket represented by index.
-	 */
-	public boolean doRenderTicket(int index);
-	
 }

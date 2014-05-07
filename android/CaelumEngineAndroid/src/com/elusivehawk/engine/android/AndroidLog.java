@@ -49,6 +49,18 @@ public class AndroidLog implements ILog
 		
 	}
 	
+	@Deprecated
+	@Override
+	public void log(EnumLogType type, Iterable<String> str)
+	{
+		for (String line : str)
+		{
+			this.log(type, line);
+			
+		}
+		
+	}
+	
 	@Override
 	public boolean enableVerbosity()
 	{

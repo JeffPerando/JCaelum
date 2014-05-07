@@ -129,17 +129,6 @@ public class Matrix implements IMathObject<Float>
 	}
 	
 	@Override
-	public void store(Buffer<Float> buf)
-	{
-		for (int c = 0; c < this.getSize(); c++)
-		{
-			buf.add(this.get(c));
-			
-		}
-		
-	}
-	
-	@Override
 	public int getSize()
 	{
 		return this.w * this.h;
@@ -152,22 +141,9 @@ public class Matrix implements IMathObject<Float>
 	}
 	
 	@Override
-	public boolean isImmutable()
-	{
-		return false;
-	}
-	
-	@Override
 	public Float[] multiget(int bitmask)
 	{
 		throw new UnsupportedOperationException("Matrices do not currently support multiget().");
-	}
-	
-	@Override
-	public void set(int pos, Float num)
-	{
-		this.set(pos, num, true);
-		
 	}
 	
 	@Override
@@ -198,36 +174,12 @@ public class Matrix implements IMathObject<Float>
 	}
 	
 	@Override
-	public void setAll(Float num)
-	{
-		for (int c = 0; c < this.data.length; c++)
-		{
-			this.data[c] = num.floatValue();
-			
-		}
-		
-	}
-	
-	@Override
-	public void normalize()
-	{
-		this.normalize(this);
-		
-	}
-	
-	@Override
 	public void normalize(IMathObject<Float> dest)
 	{
 		assert !dest.isImmutable();
 		
 		
 		
-	}
-	
-	@Override
-	public IMathObject<Float> add(IMathObject<Float> obj)
-	{
-		return this.add(obj, this);
 	}
 	
 	@Override
@@ -251,12 +203,6 @@ public class Matrix implements IMathObject<Float>
 	}
 	
 	@Override
-	public IMathObject<Float> div(IMathObject<Float> obj)
-	{
-		return this.div(obj, this);
-	}
-	
-	@Override
 	public IMathObject<Float> div(IMathObject<Float> obj, IMathObject<Float> dest)
 	{
 		Buffer<Float> buf = new Buffer<Float>(obj);
@@ -274,12 +220,6 @@ public class Matrix implements IMathObject<Float>
 		}
 		
 		return dest;
-	}
-	
-	@Override
-	public IMathObject<Float> sub(IMathObject<Float> obj)
-	{
-		return this.mul(obj, this);
 	}
 	
 	@Override
@@ -303,12 +243,6 @@ public class Matrix implements IMathObject<Float>
 	}
 	
 	@Override
-	public IMathObject<Float> mul(IMathObject<Float> obj)
-	{
-		return this.mul(obj, this);
-	}
-	
-	@Override
 	public IMathObject<Float> mul(IMathObject<Float> obj, IMathObject<Float> dest)
 	{
 		Buffer<Float> buf = new Buffer<Float>(obj);
@@ -327,9 +261,6 @@ public class Matrix implements IMathObject<Float>
 		
 		return dest;
 	}
-	
-	@Override
-	public void onChanged(){}
 	
 	public float get(int x, int y)
 	{

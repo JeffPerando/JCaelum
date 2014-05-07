@@ -11,6 +11,6 @@ import java.io.File;
  */
 public interface IAssetReader
 {
-	public Asset readAsset(AssetManager mgr, File file) throws Exception;
+	public Asset readAsset(AssetManager mgr, File file) throws Throwable;
 	
 }

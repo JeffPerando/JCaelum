@@ -27,13 +27,23 @@ public interface IConnection extends Closeable
 	
 	public void clearPkt(Packet pkt);
 	
-	public boolean connect(ConnectionType type, IP ip);
+	default boolean connect(ConnectionType type, IP ip)
+	{
+		return this.connect(type, ip.toChannel(type));
+	}
 	
 	public boolean connect(ConnectionType type, NetworkChannel ch);
 	
 	public void sendPackets(Packet... pkts);
 	
 	public boolean isClosed();
+	
+	@Override
+	default void close()
+	{
+		this.close(true);
+		
+	}
 	
 	public void close(boolean closeSkt);
 	

@@ -13,57 +13,102 @@ import com.elusivehawk.engine.util.storage.IStorable;
  */
 public interface IMathObject<T extends Number> extends IStorable<T>
 {
-	@MakeDefault
 	@Override
-	public void store(Buffer<T> buf);
+	default void store(Buffer<T> buf)
+	{
+		for (int c = 0; c < this.getSize(); c++)
+		{
+			buf.add(this.get(c));
+			
+		}
+		
+	}
 	
 	public int getSize();
 	
-	@MakeDefault
-	public boolean isImmutable();
+	default boolean isImmutable()
+	{
+		return false;
+	}
 	
 	public T get(int pos);
 	
 	@MakeDefault
 	public T[] multiget(int bitmask);
 	
-	@MakeDefault
-	public void set(int pos, T num);
+	default void set(int pos, T num)
+	{
+		this.set(pos, num, true);
+		
+	}
 	
 	public void set(int pos, T num, boolean notify);
 	
-	@MakeDefault
-	public void setAll(T num);
+	default void setAll(T num)
+	{
+		for (int c = 0; c < this.getSize(); c++)
+		{
+			this.set(c, num, false);
+			
+		}
+		
+		this.onChanged();
+		
+	}
 	
-	@MakeDefault
-	public void normalize();
+	default void normalize()
+	{
+		this.normalize(this);
+		
+	}
 	
 	public void normalize(IMathObject<T> dest);
 	
-	@MakeDefault
-	public IMathObject<T> set(IMathObject<T> obj);
+	default IMathObject<T> set(IMathObject<T> obj)
+	{
+		assert !this.isImmutable();
+		
+		int l = Math.min(this.getSize(), obj.getSize());
+		
+		for (int c = 0; c < l; c++)
+		{
+			this.set(c, obj.get(c), false);
+			
+		}
+		
+		this.onChanged();
+		
+		return this;
+	}
 	
-	@MakeDefault
-	public IMathObject<T> add(IMathObject<T> obj);
+	default IMathObject<T> add(IMathObject<T> obj)
+	{
+		return this.add(obj, this);
+	}
 	
 	public IMathObject<T> add(IMathObject<T> obj, IMathObject<T> dest);
 	
-	@MakeDefault
-	public IMathObject<T> div(IMathObject<T> obj);
+	default IMathObject<T> div(IMathObject<T> obj)
+	{
+		return this.div(obj, this);
+	}
 	
 	public IMathObject<T> div(IMathObject<T> obj, IMathObject<T> dest);
 	
-	@MakeDefault
-	public IMathObject<T> sub(IMathObject<T> obj);
+	default IMathObject<T> sub(IMathObject<T> obj)
+	{
+		return this.sub(obj, this);
+	}
 	
 	public IMathObject<T> sub(IMathObject<T> obj, IMathObject<T> dest);
 	
-	@MakeDefault
-	public IMathObject<T> mul(IMathObject<T> obj);
+	default IMathObject<T> mul(IMathObject<T> obj)
+	{
+		return this.mul(obj, this);
+	}
 	
 	public IMathObject<T> mul(IMathObject<T> obj, IMathObject<T> dest);
 	
-	@MakeDefault
-	public void onChanged();
+	default void onChanged(){}
 	
 }

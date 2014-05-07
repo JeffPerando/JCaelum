@@ -201,7 +201,7 @@ public final class RenderSystem implements IPausable, IGameStateListener, IThrea
 		//TODO
 		
 	}
-	
+		
 	public void onDisplayClosed(IDisplay d)
 	{
 		this.context.cleanup();

@@ -168,7 +168,7 @@ public class AssetManager
 				ret = r.readAsset(this, file);
 				
 			}
-			catch (Exception e)
+			catch (Throwable e)
 			{
 				CaelumEngine.log().log(EnumLogType.ERROR, null, e);
 				

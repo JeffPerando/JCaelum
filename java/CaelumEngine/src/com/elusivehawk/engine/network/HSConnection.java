@@ -72,31 +72,9 @@ public class HSConnection implements IPacketHandler, IConnection
 	}
 	
 	@Override
-	public boolean connect(ConnectionType type, IP ip)
-	{
-		return this.connect.connect(type, ip);
-	}
-	
-	@Override
 	public boolean connect(ConnectionType type, NetworkChannel ch)
 	{
 		return this.connect.connect(type, ch);
-	}
-	
-	@Override
-	public void close()
-	{
-		try
-		{
-			this.connect.close();
-			
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			
-		}
-		
 	}
 	
 	@Override
@@ -136,7 +114,7 @@ public class HSConnection implements IPacketHandler, IConnection
 		this.connect.sendPackets(pkts);
 		
 	}
-
+	
 	@Override
 	public boolean isClosed()
 	{

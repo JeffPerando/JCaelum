@@ -79,12 +79,6 @@ public class Vector implements IMathObject<Float>
 	}
 	
 	@Override
-	public boolean isImmutable()
-	{
-		return false;
-	}
-	
-	@Override
 	public Float get(int pos)
 	{
 		return MathHelper.bounds(pos, 0, this.getSize() - 1) ? this.nums[pos] : 0f;
@@ -127,13 +121,6 @@ public class Vector implements IMathObject<Float>
 	}
 	
 	@Override
-	public void set(int pos, Float num)
-	{
-		this.set(pos, num, true);
-		
-	}
-	
-	@Override
 	public void set(int pos, Float num, boolean notify)
 	{
 		this.nums[pos] = num.floatValue();
@@ -143,26 +130,6 @@ public class Vector implements IMathObject<Float>
 			this.onChanged();
 			
 		}
-		
-	}
-	
-	@Override
-	public void setAll(Float num)
-	{
-		for (int c = 0; c < this.getSize(); c++)
-		{
-			this.nums[c] = num.floatValue();
-			
-		}
-		
-		this.onChanged();
-		
-	}
-	
-	@Override
-	public void normalize()
-	{
-		this.normalize(this);
 		
 	}
 	
@@ -190,28 +157,6 @@ public class Vector implements IMathObject<Float>
 	}
 	
 	@Override
-	public Vector set(IMathObject<Float> obj)
-	{
-		int l = Math.min(this.getSize(), obj.getSize());
-		
-		for (int c = 0; c < l; c++)
-		{
-			this.set(c, obj.get(c));
-			
-		}
-		
-		this.onChanged();
-		
-		return this;
-	}
-	
-	@Override
-	public IMathObject<Float> add(IMathObject<Float> obj)
-	{
-		return this.add(obj, this);
-	}
-	
-	@Override
 	public IMathObject<Float> add(IMathObject<Float> obj, IMathObject<Float> dest)
 	{
 		int l = Math.min(this.getSize(), obj.getSize());
@@ -223,12 +168,6 @@ public class Vector implements IMathObject<Float>
 		}
 		
 		return dest;
-	}
-	
-	@Override
-	public IMathObject<Float> div(IMathObject<Float> obj)
-	{
-		return this.div(obj, this);
 	}
 	
 	@Override
@@ -246,12 +185,6 @@ public class Vector implements IMathObject<Float>
 	}
 	
 	@Override
-	public IMathObject<Float> sub(IMathObject<Float> obj)
-	{
-		return this.sub(obj, this);
-	}
-	
-	@Override
 	public IMathObject<Float> sub(IMathObject<Float> obj, IMathObject<Float> dest)
 	{
 		int l = Math.min(this.getSize(), obj.getSize());
@@ -266,12 +199,6 @@ public class Vector implements IMathObject<Float>
 	}
 	
 	@Override
-	public IMathObject<Float> mul(IMathObject<Float> obj)
-	{
-		return this.mul(obj, this);
-	}
-	
-	@Override
 	public IMathObject<Float> mul(IMathObject<Float> obj, IMathObject<Float> dest)
 	{
 		int l = Math.min(this.getSize(), obj.getSize());
@@ -283,17 +210,6 @@ public class Vector implements IMathObject<Float>
 		}
 		
 		return dest;
-	}
-	
-	@Override
-	public void store(Buffer<Float> buf)
-	{
-		for (int c = 0; c < this.getSize(); c++)
-		{
-			buf.add(this.get(c));
-			
-		}
-		
 	}
 	
 	@Override

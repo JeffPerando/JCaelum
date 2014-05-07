@@ -12,5 +12,6 @@
 	<classpathentry kind="lib" path="lib/lwjgl/jar/lzma.jar"/>
 	<classpathentry kind="lib" path="lib/lwjgl/lwjgl-source.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CaelumEngine"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -69,11 +69,6 @@ public class Connection implements IConnection
 		
 	}
 	
-	@Override
-	public boolean connect(ConnectionType type, IP ip)
-	{
-		return this.connect(type, ip.toChannel(type));
-	}
 	
 	@Override
 	public boolean connect(ConnectionType type, NetworkChannel s)
@@ -100,13 +95,6 @@ public class Connection implements IConnection
 		}
 		
 		return true;
-	}
-	
-	@Override
-	public void close()
-	{
-		this.close(true);
-		
 	}
 	
 	@Override

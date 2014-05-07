@@ -60,17 +60,12 @@ public final class CaelumEngine
 	{
 		if (EnumOS.getCurrentOS() != EnumOS.ANDROID)
 		{
-			Runtime.getRuntime().addShutdownHook(new Thread()
+			Runtime.getRuntime().addShutdownHook(new Thread(() ->
 			{
-				@Override
-				public void run()
-				{
-					CaelumEngine.instance().shutDownGame();
-					CaelumEngine.instance().clearGameEnv();
-					
-				}
+				CaelumEngine.instance().shutDownGame();
+				CaelumEngine.instance().clearGameEnv();
 				
-			});
+			}));
 			
 		}
 		

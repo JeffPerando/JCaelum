@@ -31,15 +31,15 @@ public class ThreadGameRender extends ThreadCaelum implements IThreadContext
 	{
 		super.initiate();
 		
-		if (this.sys.initiate())
+		if (!this.sys.initiate())
 		{
-			this.fps = this.sys.getFPS();
-			this.display = this.sys.getDisplay();
-			
-			return true;
+			return false;
 		}
 		
-		return false;
+		this.fps = this.sys.getFPS();
+		this.display = this.sys.getDisplay();
+		
+		return true;
 	}
 	
 	@Override

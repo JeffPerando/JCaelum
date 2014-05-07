@@ -30,16 +30,7 @@ public class GameLog implements ILog
 			return;
 		}
 		
-		StringBuilder b = new StringBuilder();
-		
-		b.append("[");
-		b.append(type.name());
-		b.append("] ");
-		b.append(StringHelper.parseDate(Calendar.getInstance(), "-", ":"));
-		b.append(": ");
-		b.append(type.err && msg == null ? this.crashDialog.get(this.rng.nextInt(this.crashDialog.size())) : msg);
-		
-		String fin = b.toString();
+		String fin = String.format("[%s] [%s]: %s", type, StringHelper.parseDate(Calendar.getInstance(), "-", ":"), type.err && msg == null ? this.crashDialog.get(this.rng.nextInt(this.crashDialog.size())) : msg);
 		
 		if (type.err)
 		{
