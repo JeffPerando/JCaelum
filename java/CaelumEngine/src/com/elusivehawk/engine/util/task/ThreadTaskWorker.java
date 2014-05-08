@@ -18,7 +18,7 @@ public class ThreadTaskWorker extends ThreadStoppable
 	@Override
 	public void rawUpdate() throws Throwable
 	{
-		if (this.tasks.isEmpty())
+		if (this.isPaused() || this.tasks.isEmpty())
 		{
 			Thread.sleep(1L);
 			

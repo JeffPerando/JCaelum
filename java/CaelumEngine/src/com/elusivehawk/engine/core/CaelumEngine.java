@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import com.elusivehawk.engine.assets.AssetManager;
-import com.elusivehawk.engine.assets.ThreadAssetLoader;
 import com.elusivehawk.engine.render.IRenderEnvironment;
 import com.elusivehawk.engine.render.IRenderHUB;
 import com.elusivehawk.engine.render.RenderContext;
@@ -26,6 +25,7 @@ import com.elusivehawk.engine.util.json.JsonKeypair;
 import com.elusivehawk.engine.util.json.JsonObject;
 import com.elusivehawk.engine.util.json.JsonParser;
 import com.elusivehawk.engine.util.storage.Tuple;
+import com.elusivehawk.engine.util.task.TaskManager;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -45,6 +45,7 @@ public final class CaelumEngine
 	private final Map<EnumEngineFeature, IThreadStoppable> threads = Maps.newEnumMap(EnumEngineFeature.class);
 	private final Map<EnumInputType, Input> inputs = Maps.newEnumMap(EnumInputType.class);
 	private final Map<String, String> startargs = Maps.newHashMap();
+	private final TaskManager tasks = new TaskManager();
 	
 	private ILog log = new GameLog();
 	private IGameEnvironment env = null;
@@ -94,6 +95,11 @@ public final class CaelumEngine
 	public static ILog log()
 	{
 		return instance().log;
+	}
+	
+	public static TaskManager tasks()
+	{
+		return instance().tasks;
 	}
 	
 	public static IContext getContext(boolean safe)
@@ -359,13 +365,11 @@ public final class CaelumEngine
 		
 		//XXX Creating game threads
 		
-		ThreadAssetLoader al = new ThreadAssetLoader();
-		this.assets = new AssetManager(al);
+		this.assets = new AssetManager();
 		
 		this.game.loadAssets(this.assets);
 		this.assets.initiate();
 		
-		this.threads.put(EnumEngineFeature.ASSET_LOADING, al);
 		this.threads.put(EnumEngineFeature.LOGIC, new ThreadGameLoop(this.inputs, this.game));
 		
 		IRenderHUB hub = this.game.getRenderHUB();
@@ -410,6 +414,8 @@ public final class CaelumEngine
 			}
 			
 		}
+		
+		this.tasks.start();
 		
 	}
 	
@@ -462,6 +468,8 @@ public final class CaelumEngine
 			}
 			
 		}
+		
+		this.tasks.stop();
 		
 		this.threads.clear();
 		

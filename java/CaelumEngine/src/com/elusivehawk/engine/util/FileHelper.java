@@ -164,7 +164,7 @@ public class FileHelper
 	
 	public static boolean isFileReal(File file)
 	{
-		return file == null ? false : file.exists();
+		return file != null && file.exists();
 	}
 	
 	public static boolean canReadFile(File file)

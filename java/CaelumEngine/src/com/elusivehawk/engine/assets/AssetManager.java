@@ -5,7 +5,6 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 import com.elusivehawk.engine.core.CaelumEngine;
-import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.util.FileHelper;
 import com.elusivehawk.engine.util.StringHelper;
 import com.google.common.collect.Lists;
@@ -19,8 +18,6 @@ import com.google.common.collect.Maps;
  */
 public class AssetManager
 {
-	protected final ThreadAssetLoader worker;
-	
 	protected final Map<String, IAssetReceiver> expectedRes = Maps.newHashMap();
 	protected final Map<String, IAssetReader> readers = Maps.newHashMap();
 	protected final List<Asset> assets = Lists.newArrayList();
@@ -29,13 +26,7 @@ public class AssetManager
 	
 	protected boolean loaded = false;
 	
-	@SuppressWarnings("unqualified-field-access")
-	public AssetManager(ThreadAssetLoader thr)
-	{
-		worker = thr;
-		thr.setManager(this);
-		
-	}
+	public AssetManager(){}
 	
 	public synchronized void addSearchDirectory(File dir)
 	{
@@ -55,10 +46,7 @@ public class AssetManager
 	
 	public void loadResource(String res, IAssetReceiver req)
 	{
-		assert res != null && !"".equals(res);
-		assert req != null;
-		
-		this.worker.loadAsset(res.replace("/", FileHelper.FILE_SEP), req);
+		CaelumEngine.tasks().scheduleTask(new TaskLoadAsset(req, this, res.replace("/", FileHelper.FILE_SEP)));
 		
 	}
 	
@@ -146,37 +134,18 @@ public class AssetManager
 		return this.readers.get(StringHelper.splitOnce(file.getName(), ".")[1]);
 	}
 	
-	public List<File> getFiles()
+	public File findFile(String loc)
 	{
-		return this.filesToScan;
-	}
-	
-	public Asset readAsset(File file)
-	{
-		if (!FileHelper.canReadFile(file))
+		for (File file : this.filesToScan)
 		{
-			return null;
-		}
-		
-		Asset ret = null;
-		IAssetReader r = this.getReader(file);
-		
-		if (r != null)
-		{
-			try
+			if (file.getPath().endsWith(loc))
 			{
-				ret = r.readAsset(this, file);
-				
-			}
-			catch (Throwable e)
-			{
-				CaelumEngine.log().log(EnumLogType.ERROR, null, e);
-				
+				return file;
 			}
 			
 		}
 		
-		return ret;
+		return null;
 	}
 	
 }

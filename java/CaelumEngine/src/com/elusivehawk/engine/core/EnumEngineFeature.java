@@ -12,7 +12,6 @@ public enum EnumEngineFeature
 	LOGIC,
 	RENDER,
 	PHYSICS,
-	SOUND,
-	ASSET_LOADING;
+	SOUND;
 	
 }

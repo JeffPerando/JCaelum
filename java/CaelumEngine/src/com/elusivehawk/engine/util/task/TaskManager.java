@@ -1,16 +1,18 @@
 
 package com.elusivehawk.engine.util.task;
 
+import com.elusivehawk.engine.util.IPausable;
+
 /**
  * 
  * 
  * 
  * @author Elusivehawk
  */
-public class TaskManager
+public class TaskManager implements IPausable
 {
 	private final ThreadTaskWorker[] threads;
-	private boolean started = false;
+	private boolean started = false, paused = true;
 	private int next = 0;
 	
 	public TaskManager()
@@ -32,6 +34,25 @@ public class TaskManager
 		
 	}
 	
+	@Override
+	public boolean isPaused()
+	{
+		return this.paused;
+	}
+	
+	@Override
+	public void setPaused(boolean p)
+	{
+		this.paused = p;
+		
+		for (ThreadTaskWorker th : this.threads)
+		{
+			th.setPaused(p);
+			
+		}
+		
+	}
+	
 	public void start()
 	{
 		if (this.started)
@@ -39,17 +60,32 @@ public class TaskManager
 			return;
 		}
 		
-		synchronized (this)
+		for (ThreadTaskWorker t : this.threads)
 		{
-			for (ThreadTaskWorker t : this.threads)
-			{
-				t.start();
-				
-			}
+			t.start();
 			
 		}
 		
 		this.started = true;
+		
+	}
+	
+	public void stop()
+	{
+		if (!this.started)
+		{
+			return;
+		}
+		
+		for (int c = 0; c < this.threads.length; c++)
+		{
+			this.threads[c].stopThread();
+			
+			this.threads[c] = null;
+			
+		}
+		
+		this.started = false;
 		
 	}
 	
