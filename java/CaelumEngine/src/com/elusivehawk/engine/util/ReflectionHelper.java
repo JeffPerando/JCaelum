@@ -180,51 +180,61 @@ public final class ReflectionHelper
 	
 	public static Object newInstance(Class<?> clazz, Class<?>[] assign, Class<? extends Annotation>[] annot)
 	{
-		if (clazz != null)
+		if (clazz == null)
 		{
-			if (assign != null)
-			{
-				for (Class<?> a : assign)
-				{
-					if (!a.isAssignableFrom(clazz))
-					{
-						return null;
-					}
-					
-				}
-				
-			}
-			
-			if (annot != null)
-			{
-				for (Class<? extends Annotation> anno : annot)
-				{
-					if (!clazz.isAnnotationPresent(anno))
-					{
-						return null;
-					}
-					
-				}
-				
-			}
-			
-			Object ret = null;
-			
-			try
-			{
-				ret = clazz.newInstance();
-				
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-				
-			}
-			
-			return ret;
+			return null;
 		}
 		
-		return null;
+		if (clazz.isEnum())
+		{
+			return null;
+		}
+		
+		if (clazz.isInterface())
+		{
+			return null;
+		}
+		
+		if (assign != null)
+		{
+			for (Class<?> a : assign)
+			{
+				if (!a.isAssignableFrom(clazz))
+				{
+					return null;
+				}
+				
+			}
+			
+		}
+		
+		if (annot != null)
+		{
+			for (Class<? extends Annotation> anno : annot)
+			{
+				if (!clazz.isAnnotationPresent(anno))
+				{
+					return null;
+				}
+				
+			}
+			
+		}
+		
+		Object ret = null;
+		
+		try
+		{
+			ret = clazz.newInstance();
+			
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			
+		}
+		
+		return ret;
 	}
 	
 	public static Tuple<ClassLoader, Set<Class<?>>> loadLibrary(File file)
