@@ -17,10 +17,10 @@ import com.google.common.collect.ImmutableList;
  */
 public class Server implements IHost
 {
-	protected final int port, maxPlayers;
 	protected final INetworkMaster master;
 	protected final ThreadJoinListener listener;
 	protected final ThreadNetwork network;
+	protected final int port, maxPlayers;
 	
 	protected final IConnection[] clients;
 	protected final UUID[] ids;
@@ -30,15 +30,15 @@ public class Server implements IHost
 	protected boolean paused = false;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Server(int p, INetworkMaster m, int players)
+	public Server(INetworkMaster m, int gameport, int players)
 	{
 		assert m != null;
 		assert players > 0;
 		
-		port = p;
 		master = m;
-		listener = new ThreadJoinListener(this, p);
-		network = new ThreadNetwork(this, p);
+		port = gameport;
+		listener = new ThreadJoinListener(this, gameport);
+		network = new ThreadNetwork(this, gameport);
 		maxPlayers = players;
 		clients = new IConnection[players];
 		ids = new UUID[players];

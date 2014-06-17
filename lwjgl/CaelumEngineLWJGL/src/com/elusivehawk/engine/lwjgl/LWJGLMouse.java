@@ -47,9 +47,9 @@ public class LWJGLMouse extends Input
 			
 		}
 		
-		int buttons = Mouse.getButtonCount();
+		/*int buttons = Mouse.getButtonCount();
 		
-		/*for (int c = 0; c < buttons; c++)
+		for (int c = 0; c < buttons; c++)
 		{
 			this.bools.put(InputConst.MOUSE_CLICK | ((c + 1) << 16), Mouse.isButtonDown(c));
 			

@@ -4,18 +4,13 @@
 *.war
 *.ear
 
-/android/CaelumEngineAndroid/bin/*
-
+/builds/*
+/*/*/bin/*
 /cpp/*
 
-/java/.metadata/.log
-/java/.metadata/.plugins/*
-/java/.metadata/.mylyn/*
+/.metadata/.log
+/.metadata/.plugins/*
+/.metadata/.mylyn/*
 
-/java/CaelumEngine/bin/*
-/java/cCaelumEngine/*
-/java/CaelumEngine/test/*
 /java/CaelumEngine/log.txt
 /java/CaelumEngine/replacements.txt
-
-/java/CaelumEngineLWJGL/bin/*
