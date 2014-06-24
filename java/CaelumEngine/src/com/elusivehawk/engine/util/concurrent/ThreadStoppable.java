@@ -31,8 +31,6 @@ public abstract class ThreadStoppable extends Thread implements IThreadStoppable
 	{
 		if (!this.initiate())
 		{
-			this.stopThread();
-			
 			return;
 		}
 		

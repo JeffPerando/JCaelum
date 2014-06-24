@@ -40,24 +40,13 @@ public class ByteBuffers implements IByteReader, IByteWriter
 	}
 	
 	@Override
-	public byte[] readAll()
+	public int write(byte... bytes)
 	{
-		byte[] ret = new byte[this.remaining()];
+		int pos = this.out.position();
 		
-		for (int c = 0; c < ret.length; c++)
-		{
-			ret[c] = this.read();
-			
-		}
-		
-		return ret;
-	}
-	
-	@Override
-	public void write(byte... bytes)
-	{
 		this.out.put(bytes);
 		
+		return this.out.position() - pos;
 	}
 	
 }

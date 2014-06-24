@@ -90,11 +90,14 @@ public class ByteStreams implements IByteReader, IByteWriter
 	}
 	
 	@Override
-	public void write(byte... bytes)
+	public int write(byte... bytes)
 	{
+		int written = 0;
+		
 		try
 		{
 			this.out.write(bytes);
+			written = bytes.length;
 			
 		}
 		catch (IOException e)
@@ -103,6 +106,7 @@ public class ByteStreams implements IByteReader, IByteWriter
 			
 		}
 		
+		return written;
 	}
 	
 }

@@ -13,6 +13,17 @@ public interface IByteReader
 	
 	public byte read();
 	
-	public byte[] readAll();
+	default byte[] readAll()
+	{
+		byte[] ret = new byte[this.remaining()];
+		
+		for (int c = 0; c < ret.length; c++)
+		{
+			ret[c] = this.read();
+			
+		}
+		
+		return ret;
+	}
 	
 }

@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.network;
 
 import com.elusivehawk.engine.math.MathHelper;
+import com.elusivehawk.engine.util.FixMe;
 import com.elusivehawk.engine.util.io.IByteWriter;
 
 /**
@@ -44,12 +45,13 @@ public final class Packet implements IByteWriter
 		
 	}
 	
+	@FixMe//FIXME
 	@Override
-	public void write(byte... bytes)
+	public int write(byte... bytes)
 	{
 		if (this.pos == this.getDataSize())
 		{
-			return;
+			return 0;
 		}
 		
 		for (byte b : bytes)
@@ -58,6 +60,7 @@ public final class Packet implements IByteWriter
 			
 		}
 		
+		return -1;
 	}
 	
 	public int getDataSize()

@@ -40,28 +40,22 @@ public class ByteBufWrapper implements IByteReader, IByteWriter
 	}
 	
 	@Override
-	public byte[] readAll()
+	public int write(byte... bytes)
 	{
-		byte[] ret = new byte[this.remaining()];
+		int written = 0;
 		
-		for (int c = 0; c < ret.length; c++)
-		{
-			ret[c] = this.read();
-			
-		}
-		
-		return ret;
-	}
-	
-	@Override
-	public void write(byte... bytes)
-	{
 		for (byte b : bytes)
 		{
-			this.in.add(b);
+			if (!this.in.add(b))
+			{
+				break;
+			}
+			
+			written++;
 			
 		}
 		
+		return written;
 	}
 	
 }

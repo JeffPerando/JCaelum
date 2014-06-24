@@ -37,38 +37,23 @@ public class ByteArray implements IByteReader, IByteWriter
 	}
 	
 	@Override
-	public byte[] readAll()
+	public int write(byte... bytes)
 	{
-		if (this.pos == 0)
-		{
-			return this.info;
-		}
+		int written = 0;
 		
-		byte[] ret = new byte[this.remaining()];
-		
-		for (int c = 0; c < ret.length; c++)
-		{
-			ret[c] = this.read();
-			
-		}
-		
-		return ret;
-	}
-	
-	@Override
-	public void write(byte... bytes)
-	{
 		for (int c = 0; c < bytes.length; c++)
 		{
-			if (c + this.pos == this.info.length)
+			if (this.pos + c == this.info.length)
 			{
-				return;
+				break;
 			}
 			
+			written++;
 			this.info[this.pos + c] = bytes[c];
 			
 		}
 		
+		return written;
 	}
 	
 }

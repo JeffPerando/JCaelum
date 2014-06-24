@@ -9,6 +9,6 @@ package com.elusivehawk.engine.util.io;
  */
 public interface IByteWriter
 {
-	public void write(byte... bytes);
+	public int write(byte... bytes);
 	
 }
