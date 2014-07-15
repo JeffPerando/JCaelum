@@ -11,6 +11,12 @@ public abstract class Task
 {
 	private final ITaskListener listener;
 	
+	public Task()
+	{
+		this(null);
+		
+	}
+	
 	@SuppressWarnings("unqualified-field-access")
 	public Task(ITaskListener tlis)
 	{

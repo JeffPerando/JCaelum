@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.math;
 
-import java.util.Random;
+import com.elusivehawk.engine.util.RNG;
 
 /**
  * 
@@ -12,8 +12,6 @@ import java.util.Random;
 public final class MathHelper
 {
 	public static final float PI = 3.141592653589793238f;
-	
-	public static final Random RNG = new Random(((long)"CaelumEngine".hashCode()) << 32 | "Elusivehawk".hashCode());
 	
 	private MathHelper(){}
 	
@@ -153,7 +151,7 @@ public final class MathHelper
 	
 	public static boolean rollDice(float weight)
 	{
-		return weight > RNG.nextFloat();
+		return weight > RNG.instance().nextFloat();
 	}
 	
 	public static float square(float f)
