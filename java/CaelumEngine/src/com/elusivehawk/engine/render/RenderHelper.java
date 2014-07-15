@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.List;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
@@ -22,6 +23,7 @@ import com.elusivehawk.engine.util.BufferHelper;
 import com.elusivehawk.engine.util.StringHelper;
 import com.elusivehawk.engine.util.io.ByteBuffers;
 import com.elusivehawk.engine.util.storage.Buffer;
+import com.google.common.collect.Lists;
 
 /**
  * 
@@ -149,31 +151,48 @@ public final class RenderHelper
 		return formatShaderSource(src, new File("."));
 	}
 	
-	public static String formatShaderSource(String src, File parentDir)
+	private static String formatShaderSource(String src, File parentDir)
 	{
-		int in = src.indexOf("#include");
+		List<String> inc = Lists.newArrayList();
+		int in;
 		
-		while (in != -1)
+		while ((in = src.indexOf(RenderConst.INCLUDE)) != -1)
 		{
-			String include = src.substring(in, src.indexOf("\n", in));
+			int newline = src.indexOf("\n", in);
+			String include;
+			
+			if (newline == -1)
+			{
+				include = src.substring(in);
+				
+			}
+			else
+			{
+				include = src.substring(in, newline);
+				
+			}
 			
 			String[] split = include.split(" ");
 			
 			String rep = "";
 			
-			if (split != null && split.length != 2)
+			if (split != null && split.length == 2)
 			{
+				CaelumEngine.log().log(EnumLogType.DEBUG, String.format("#include found: %s", include));
+				
 				String loc = split[1];
 				
-				File sh = new File(parentDir, loc);
-				
-				rep = formatShaderSource(sh);
+				if (!inc.contains(loc))
+				{
+					rep = StringHelper.readToOneLine(new File(parentDir, loc));
+					
+					inc.add(loc);
+					
+				}
 				
 			}
 			
 			src.replaceFirst(include, rep);
-			
-			in = src.indexOf("#include");
 			
 		}
 		
