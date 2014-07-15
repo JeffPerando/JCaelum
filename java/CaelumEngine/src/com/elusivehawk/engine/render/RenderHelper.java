@@ -173,6 +173,8 @@ public final class RenderHelper
 			
 			src.replaceFirst(include, rep);
 			
+			in = src.indexOf("#include");
+			
 		}
 		
 		return src;
