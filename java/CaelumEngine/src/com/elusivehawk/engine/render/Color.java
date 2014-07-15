@@ -11,6 +11,9 @@ import com.elusivehawk.engine.util.io.IByteReader;
  * The much more flexible cousin to {@link java.awt.Color}.
  * 
  * @author Elusivehawk
+ * 
+ * @see EnumColorFilter
+ * @see EnumColorFormat
  */
 public class Color
 {

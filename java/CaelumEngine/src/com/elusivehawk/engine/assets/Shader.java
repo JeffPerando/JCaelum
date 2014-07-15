@@ -4,7 +4,6 @@ package com.elusivehawk.engine.assets;
 import java.io.File;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.opengl.GLEnumShader;
-import com.elusivehawk.engine.util.StringHelper;
 
 /**
  * 
@@ -15,7 +14,7 @@ import com.elusivehawk.engine.util.StringHelper;
 public class Shader extends Asset
 {
 	public final GLEnumShader gltype;
-	public final String source;
+	public final File source;
 	
 	protected int glId = 0;
 	
@@ -25,7 +24,7 @@ public class Shader extends Asset
 		super(file.getName());
 		
 		gltype = type;
-		source = StringHelper.readToOneLine(file);
+		source = file;
 		
 	}
 	

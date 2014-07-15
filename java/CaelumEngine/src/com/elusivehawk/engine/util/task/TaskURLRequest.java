@@ -3,6 +3,7 @@ package com.elusivehawk.engine.util.task;
 
 import java.net.URL;
 import java.net.URLConnection;
+import com.elusivehawk.engine.util.io.ByteStreams;
 
 /**
  * 
@@ -21,7 +22,13 @@ public class TaskURLRequest extends TaskURL
 	@Override
 	protected boolean finishTask() throws Throwable
 	{
-		//URLConnection con = new URLConnection();
+		URLConnection con = this.url.openConnection();
+		
+		con.connect();
+		
+		ByteStreams s = new ByteStreams(con.getInputStream());
+		
+		byte[] incoming = s.readAll();
 		
 		return false;
 	}

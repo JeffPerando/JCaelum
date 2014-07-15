@@ -51,7 +51,7 @@ public enum EnumColorFormat
 	
 	public Color convert(Color old)
 	{
-		if (old.format.ordinal() == this.ordinal())
+		if (old.format == this)
 		{
 			return old;
 		}

@@ -30,6 +30,8 @@ public final class MathConst
 	public static final Vector Y_AXIS = new Vector(0f, 1f, 0f);
 	public static final Vector Z_AXIS = new Vector(0f, 0f, 1f);
 	
+	public static final Vector[] AXES = new Vector[]{X_AXIS, Y_AXIS, Z_AXIS};
+	
 	private MathConst(){}
 	
 }

@@ -139,13 +139,49 @@ public final class RenderHelper
 		return buf;
 	}
 	
-	public static int loadShader(File file, GLEnumShader type)
+	public static String formatShaderSource(File file)
 	{
-		return loadShader(StringHelper.readToOneLine(file), type);
+		return formatShaderSource(StringHelper.readToOneLine(file), file.getParentFile());
 	}
 	
-	public static int loadShader(String src, GLEnumShader type)
+	public static String formatShaderSource(String src)
 	{
+		return formatShaderSource(src, new File("."));
+	}
+	
+	public static String formatShaderSource(String src, File parentDir)
+	{
+		int in = src.indexOf("#include");
+		
+		while (in != -1)
+		{
+			String include = src.substring(in, src.indexOf("\n", in));
+			
+			String[] split = include.split(" ");
+			
+			String rep = "";
+			
+			if (split != null && split.length != 2)
+			{
+				String loc = split[1];
+				
+				File sh = new File(parentDir, loc);
+				
+				rep = formatShaderSource(sh);
+				
+			}
+			
+			src.replaceFirst(include, rep);
+			
+		}
+		
+		return src;
+	}
+	
+	public static int loadShader(File file, GLEnumShader type)
+	{
+		String src = formatShaderSource(file);
+		
 		RenderContext context = CaelumEngine.renderContext();
 		IGL2 gl2 = context.getGL2();
 		
