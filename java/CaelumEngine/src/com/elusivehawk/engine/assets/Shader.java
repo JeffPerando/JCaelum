@@ -28,17 +28,17 @@ public class Shader extends Asset
 		
 	}
 	
-	public int getGLId()
-	{
-		return this.glId;
-	}
-	
 	@Override
 	protected boolean finishAsset()
 	{
 		this.glId = RenderHelper.loadShader(this.source, this.gltype);
 		
 		return this.glId != 0;
+	}
+	
+	public int getGLId()
+	{
+		return this.glId;
 	}
 	
 }

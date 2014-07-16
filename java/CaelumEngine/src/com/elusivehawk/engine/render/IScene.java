@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
+import com.elusivehawk.engine.render.three.IModelGroup;
 import com.elusivehawk.engine.util.storage.SyncList;
 
 /**

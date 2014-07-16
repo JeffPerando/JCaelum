@@ -12,9 +12,9 @@ import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.assets.Shader;
 import com.elusivehawk.engine.core.CaelumEngine;
-import com.elusivehawk.engine.render.Model;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
+import com.elusivehawk.engine.render.three.Model;
 import com.elusivehawk.engine.util.ArrayHelper;
 import com.elusivehawk.engine.util.storage.Few;
 

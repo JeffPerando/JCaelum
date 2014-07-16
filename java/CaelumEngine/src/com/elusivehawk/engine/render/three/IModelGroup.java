@@ -1,5 +1,5 @@
 
-package com.elusivehawk.engine.render;
+package com.elusivehawk.engine.render.three;
 
 import com.elusivehawk.engine.util.storage.SyncList;
 

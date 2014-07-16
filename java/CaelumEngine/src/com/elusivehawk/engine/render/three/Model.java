@@ -1,11 +1,14 @@
 
-package com.elusivehawk.engine.render;
+package com.elusivehawk.engine.render.three;
 
 import java.nio.IntBuffer;
 import java.util.List;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.assets.Mesh;
+import com.elusivehawk.engine.render.RenderConst;
+import com.elusivehawk.engine.render.RenderException;
+import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
 import com.elusivehawk.engine.util.BufferHelper;

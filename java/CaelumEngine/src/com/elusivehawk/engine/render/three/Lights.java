@@ -1,6 +1,8 @@
 
-package com.elusivehawk.engine.render;
+package com.elusivehawk.engine.render.three;
 
+import com.elusivehawk.engine.render.EnumRenderMode;
+import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGLManipulator;
 

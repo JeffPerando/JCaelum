@@ -1,5 +1,5 @@
 
-package com.elusivehawk.engine.render;
+package com.elusivehawk.engine.render.three;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -8,6 +8,8 @@ import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.math.MathConst;
 import com.elusivehawk.engine.math.Vector;
+import com.elusivehawk.engine.render.RenderException;
+import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.util.BufferHelper;
 import com.elusivehawk.engine.util.storage.Buffer;
 import com.google.common.collect.Lists;

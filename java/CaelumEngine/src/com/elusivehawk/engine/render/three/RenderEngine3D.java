@@ -1,8 +1,14 @@
 
-package com.elusivehawk.engine.render;
+package com.elusivehawk.engine.render.three;
 
 import java.util.Collection;
 import java.util.List;
+import com.elusivehawk.engine.render.EnumRenderMode;
+import com.elusivehawk.engine.render.IRenderEngine;
+import com.elusivehawk.engine.render.IRenderHUB;
+import com.elusivehawk.engine.render.IScene;
+import com.elusivehawk.engine.render.RenderContext;
+import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGL1;

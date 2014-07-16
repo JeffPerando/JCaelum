@@ -1,5 +1,5 @@
 
-package com.elusivehawk.engine.render;
+package com.elusivehawk.engine.render.two;
 
 /**
  * 
@@ -9,12 +9,12 @@ package com.elusivehawk.engine.render;
  */
 public class Canvas
 {
-	protected final Object[] layers;
+	protected final CanvasLayer[] layers;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public Canvas(int layerCount)
 	{
-		layers = new Object[layerCount];
+		layers = new CanvasLayer[layerCount];
 		
 	}
 	

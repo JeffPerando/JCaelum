@@ -1,5 +1,5 @@
 
-package com.elusivehawk.engine.render;
+package com.elusivehawk.engine.render.three;
 
 import java.nio.FloatBuffer;
 import java.util.Arrays;
@@ -16,6 +16,10 @@ import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.MatrixHelper;
 import com.elusivehawk.engine.math.Quaternion;
 import com.elusivehawk.engine.math.Vector;
+import com.elusivehawk.engine.render.ILogicalRender;
+import com.elusivehawk.engine.render.RenderConst;
+import com.elusivehawk.engine.render.RenderContext;
+import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
