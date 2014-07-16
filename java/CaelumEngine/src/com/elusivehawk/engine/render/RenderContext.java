@@ -14,8 +14,8 @@ import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
 import com.elusivehawk.engine.render.opengl.IGLBindable;
 import com.elusivehawk.engine.render.opengl.IGLManipulator;
-import com.elusivehawk.engine.util.FileHelper;
-import com.elusivehawk.engine.util.storage.ImmutableArray;
+import com.elusivehawk.util.FileHelper;
+import com.elusivehawk.util.storage.ImmutableArray;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -176,7 +176,7 @@ public final class RenderContext implements IContext
 					continue;
 				}
 				
-				tex.updateTexture();
+				//tex.updateTexture();
 				
 			}
 			

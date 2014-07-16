@@ -4,8 +4,8 @@ package com.elusivehawk.engine.core;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
-import com.elusivehawk.engine.util.FileHelper;
-import com.elusivehawk.engine.util.StringHelper;
+import com.elusivehawk.util.FileHelper;
+import com.elusivehawk.util.StringHelper;
 
 /**
  * 

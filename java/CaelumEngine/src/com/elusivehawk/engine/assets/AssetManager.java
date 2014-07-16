@@ -5,8 +5,8 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 import com.elusivehawk.engine.core.CaelumEngine;
-import com.elusivehawk.engine.util.FileHelper;
-import com.elusivehawk.engine.util.StringHelper;
+import com.elusivehawk.util.FileHelper;
+import com.elusivehawk.util.StringHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 

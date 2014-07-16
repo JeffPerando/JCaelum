@@ -19,10 +19,10 @@ import com.elusivehawk.engine.render.opengl.GLException;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
-import com.elusivehawk.engine.util.BufferHelper;
-import com.elusivehawk.engine.util.StringHelper;
-import com.elusivehawk.engine.util.io.ByteBuffers;
-import com.elusivehawk.engine.util.storage.Buffer;
+import com.elusivehawk.util.BufferHelper;
+import com.elusivehawk.util.StringHelper;
+import com.elusivehawk.util.io.ByteBuffers;
+import com.elusivehawk.util.storage.Buffer;
 import com.google.common.collect.Lists;
 
 /**

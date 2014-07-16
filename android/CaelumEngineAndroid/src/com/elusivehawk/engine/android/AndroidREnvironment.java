@@ -8,7 +8,7 @@ import com.elusivehawk.engine.render.RenderSystem;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
-import com.elusivehawk.engine.util.concurrent.IThreadStoppable;
+import com.elusivehawk.util.concurrent.IThreadStoppable;
 
 /**
  * 

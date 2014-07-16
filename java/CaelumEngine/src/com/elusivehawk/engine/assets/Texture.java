@@ -12,36 +12,49 @@ import com.elusivehawk.engine.render.ILegibleImage;
 public abstract class Texture extends Asset
 {
 	protected int tex = 0;
+	protected final ILegibleImage[] frames;
 	
 	protected Texture(String filename)
 	{
-		super(filename);
+		this(filename, 1);
 		
 	}
 	
-	public int getTexId()
+	@SuppressWarnings("unqualified-field-access")
+	protected Texture(String filename, ILegibleImage... imgs)
+	{
+		this(filename, imgs.length);
+		
+		System.arraycopy(imgs, 0, frames, 0, imgs.length);
+		
+	}
+	
+	protected Texture(String filename, int frameCount)
+	{
+		super(filename);
+		this.frames = new ILegibleImage[frameCount];
+		
+	}
+	
+	@SuppressWarnings("unused")
+	public int getTexId(int frame)
 	{
 		return this.tex;
 	}
 	
-	public void updateTexture(){}
-	
-	@SuppressWarnings("static-method")
 	public int getFrameCount()
 	{
-		return 0;
+		return this.frames.length;
 	}
 	
-	@SuppressWarnings("static-method")
 	public boolean isAnimated()
 	{
-		return false;
+		return this.getFrameCount() > 1;
 	}
 	
-	@SuppressWarnings({"static-method", "unused"})
 	public ILegibleImage getSourceImg(int frame)
 	{
-		return null;
+		return this.frames[frame];
 	}
 	
 }

@@ -4,7 +4,7 @@ package com.elusivehawk.engine.assets;
 import com.elusivehawk.engine.math.MathHelper;
 import com.elusivehawk.engine.render.Color;
 import com.elusivehawk.engine.render.EnumColorFormat;
-import com.elusivehawk.engine.util.IDirty;
+import com.elusivehawk.util.IDirty;
 
 /**
  * 

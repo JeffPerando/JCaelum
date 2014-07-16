@@ -2,9 +2,9 @@
 package com.elusivehawk.engine.assets;
 
 import java.io.File;
-import com.elusivehawk.engine.util.FileHelper;
-import com.elusivehawk.engine.util.task.ITaskListener;
-import com.elusivehawk.engine.util.task.Task;
+import com.elusivehawk.util.FileHelper;
+import com.elusivehawk.util.task.ITaskListener;
+import com.elusivehawk.util.task.Task;
 
 /**
  * 

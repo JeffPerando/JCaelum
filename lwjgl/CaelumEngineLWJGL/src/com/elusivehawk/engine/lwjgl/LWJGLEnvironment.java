@@ -7,11 +7,11 @@ import com.elusivehawk.engine.core.IGameEnvironment;
 import com.elusivehawk.engine.core.ILog;
 import com.elusivehawk.engine.core.Input;
 import com.elusivehawk.engine.render.IRenderEnvironment;
-import com.elusivehawk.engine.util.EnumOS;
-import com.elusivehawk.engine.util.FileHelper;
-import com.elusivehawk.engine.util.json.EnumJsonType;
-import com.elusivehawk.engine.util.json.JsonObject;
-import com.elusivehawk.engine.util.json.JsonKeypair;
+import com.elusivehawk.util.EnumOS;
+import com.elusivehawk.util.FileHelper;
+import com.elusivehawk.util.json.EnumJsonType;
+import com.elusivehawk.util.json.JsonKeypair;
+import com.elusivehawk.util.json.JsonObject;
 
 /**
  * 

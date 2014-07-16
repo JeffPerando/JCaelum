@@ -5,9 +5,9 @@ import java.util.List;
 import com.elusivehawk.engine.assets.AssetManager;
 import com.elusivehawk.engine.physics.IPhysicsSimulator;
 import com.elusivehawk.engine.render.IRenderHUB;
-import com.elusivehawk.engine.util.IPausable;
-import com.elusivehawk.engine.util.IUpdatable;
-import com.elusivehawk.engine.util.Version;
+import com.elusivehawk.util.IPausable;
+import com.elusivehawk.util.IUpdatable;
+import com.elusivehawk.util.Version;
 import com.google.common.collect.Lists;
 
 /**

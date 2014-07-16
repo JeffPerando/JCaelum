@@ -14,7 +14,7 @@ import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
-import com.elusivehawk.engine.util.BufferHelper;
+import com.elusivehawk.util.BufferHelper;
 
 /**
  * 

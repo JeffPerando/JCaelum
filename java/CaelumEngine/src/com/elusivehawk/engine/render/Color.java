@@ -2,9 +2,9 @@
 package com.elusivehawk.engine.render;
 
 import java.nio.FloatBuffer;
-import com.elusivehawk.engine.util.BufferHelper;
-import com.elusivehawk.engine.util.io.ByteArray;
-import com.elusivehawk.engine.util.io.IByteReader;
+import com.elusivehawk.util.BufferHelper;
+import com.elusivehawk.util.io.ByteArray;
+import com.elusivehawk.util.io.IByteReader;
 
 /**
  * 

@@ -6,7 +6,7 @@ import java.nio.IntBuffer;
 import com.elusivehawk.engine.assets.Texture;
 import com.elusivehawk.engine.render.Color;
 import com.elusivehawk.engine.render.EnumColorFilter;
-import com.elusivehawk.engine.util.BufferHelper;
+import com.elusivehawk.util.BufferHelper;
 
 /**
  * 
@@ -18,7 +18,7 @@ public interface IGL1
 {
 	default void glActiveTexture(Texture texture)
 	{
-		this.glActiveTexture(texture.getTexId());
+		this.glActiveTexture(texture.getTexId(0));
 		
 	}
 	
@@ -34,7 +34,7 @@ public interface IGL1
 	
 	default void glBindTexture(int target, Texture texture)
 	{
-		this.glBindTexture(target, texture.getTexId());
+		this.glBindTexture(target, texture.getTexId(0));
 		
 	}
 	
@@ -88,11 +88,29 @@ public interface IGL1
 	
 	default void glDeleteTextures(Texture... textures)
 	{
-		int[] texs = new int[textures.length];
+		int texCount = 0;
 		
-		for (int c = 0; c < texs.length; c++)
+		for (Texture tex : textures)
 		{
-			texs[c] = textures[c].getTexId();
+			if (tex == null)
+			{
+				continue;
+			}
+			
+			texCount += tex.getFrameCount();
+			
+		}
+		
+		int[] texs = new int[texCount];
+		int curr = 0;
+		
+		for (Texture tex : textures)
+		{
+			for (int c = 0; c < tex.getFrameCount(); c++)
+			{
+				texs[curr++] = tex.getTexId(c);
+				
+			}
 			
 		}
 		

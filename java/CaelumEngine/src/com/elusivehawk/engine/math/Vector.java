@@ -2,7 +2,7 @@
 package com.elusivehawk.engine.math;
 
 import java.util.List;
-import com.elusivehawk.engine.util.storage.Buffer;
+import com.elusivehawk.util.storage.Buffer;
 import com.google.common.collect.Lists;
 
 /**

@@ -6,13 +6,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
-import com.elusivehawk.engine.util.FileHelper;
-import com.elusivehawk.engine.util.StringHelper;
-import com.elusivehawk.engine.util.json.EnumJsonType;
-import com.elusivehawk.engine.util.json.JsonKeypair;
-import com.elusivehawk.engine.util.json.JsonObject;
-import com.elusivehawk.engine.util.json.JsonParseException;
-import com.elusivehawk.engine.util.json.JsonParser;
+import com.elusivehawk.util.FileHelper;
+import com.elusivehawk.util.StringHelper;
+import com.elusivehawk.util.json.EnumJsonType;
+import com.elusivehawk.util.json.JsonKeypair;
+import com.elusivehawk.util.json.JsonObject;
+import com.elusivehawk.util.json.JsonParseException;
+import com.elusivehawk.util.json.JsonParser;
 import com.google.common.collect.Lists;
 
 /**

@@ -2,7 +2,7 @@
 package com.elusivehawk.engine.android;
 
 import android.app.Activity;
-import com.elusivehawk.engine.util.ShutdownHelper.ShutdownMechanism;
+import com.elusivehawk.util.ShutdownHelper.ShutdownMechanism;
 
 /**
  * 

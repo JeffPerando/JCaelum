@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
-import com.elusivehawk.engine.util.concurrent.IThreadStoppable;
+import com.elusivehawk.util.concurrent.IThreadStoppable;
 
 /**
  * 

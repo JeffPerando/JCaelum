@@ -2,7 +2,7 @@
 package com.elusivehawk.engine.assets;
 
 import com.elusivehawk.engine.math.Vector;
-import com.elusivehawk.engine.util.storage.ImmutableArray;
+import com.elusivehawk.util.storage.ImmutableArray;
 
 /**
  * 

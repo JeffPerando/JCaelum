@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.core;
 
-import com.elusivehawk.engine.util.concurrent.ThreadTimed;
+import com.elusivehawk.util.concurrent.ThreadTimed;
 
 /**
  * 
@@ -11,18 +11,12 @@ import com.elusivehawk.engine.util.concurrent.ThreadTimed;
  */
 public abstract class ThreadCaelum extends ThreadTimed
 {
-	/* (non-Javadoc)
-	 * @see com.elusivehawk.engine.util.ThreadTimed#getMaxDelta()
-	 */
 	@Override
 	public double getMaxDelta()
 	{
 		return 0.5;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.elusivehawk.engine.util.ThreadStoppable#handleException(java.lang.Throwable)
-	 */
 	@Override
 	public void handleException(Throwable e)
 	{

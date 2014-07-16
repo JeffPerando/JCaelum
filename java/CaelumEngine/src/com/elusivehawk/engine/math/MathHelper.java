@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.math;
 
-import com.elusivehawk.engine.util.RNG;
+import com.elusivehawk.util.RNG;
 
 /**
  * 

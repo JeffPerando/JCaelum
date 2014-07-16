@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.render.three;
 
-import com.elusivehawk.engine.util.storage.SyncList;
+import com.elusivehawk.util.storage.SyncList;
 
 /**
  * 

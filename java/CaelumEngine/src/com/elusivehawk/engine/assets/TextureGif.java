@@ -1,8 +1,9 @@
 
 package com.elusivehawk.engine.assets;
 
+import java.io.File;
 import com.elusivehawk.engine.render.ILegibleImage;
-import com.elusivehawk.engine.util.storage.Buffer;
+import com.elusivehawk.engine.render.RenderHelper;
 
 /**
  * 
@@ -12,84 +13,40 @@ import com.elusivehawk.engine.util.storage.Buffer;
  */
 public class TextureGif extends Texture
 {
-	protected final ILegibleImage[] imgs;
-	protected Buffer<TextureStatic> textures;
+	protected final File gif;
+	protected int[] textures = null;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public TextureGif(String filename, ILegibleImage[] listimgs)
+	public TextureGif(File file)
 	{
-		super(filename);
-		imgs = listimgs;
+		super(file.getName());
+		gif = file;
 		
 	}
 	
 	@Override
 	protected boolean finishAsset()
 	{
-		TextureStatic tex;
-		boolean flag = true;
+		ILegibleImage[] imgs = RenderHelper.readGifFile(this.gif);
 		
-		this.textures = new Buffer<TextureStatic>(this.getFrameCount());
-		
-		for (ILegibleImage img : this.imgs)
+		if (imgs != null)
 		{
-			tex = new TextureStatic(this.name, img);
-			
-			tex.finish();
-			
-			if (!tex.isFinished())
+			for (int c = 0; c < imgs.length; c++)
 			{
-				flag = false;
-				break;
+				this.textures[c] = RenderHelper.processImage(imgs[c]);
+				
 			}
 			
-			this.textures.add(tex);
-			
+			return true;
 		}
 		
-		if (!flag)
-		{
-			this.textures.clear();
-			
-		}
-		
-		return flag;
+		return false;
 	}
 	
 	@Override
-	public void updateTexture()
+	public int getTexId(int frame)
 	{
-		if (this.textures.remaining() == 0)
-		{
-			this.textures.rewind();
-			
-		}
-		else
-		{
-			this.textures.next();
-			
-		}
-		
-		this.tex = this.textures.get().getTexId();
-		
-	}
-	
-	@Override
-	public boolean isAnimated()
-	{
-		return true;
-	}
-	
-	@Override
-	public int getFrameCount()
-	{
-		return this.imgs.length;
-	}
-	
-	@Override
-	public ILegibleImage getSourceImg(int frame)
-	{
-		return this.imgs[frame];
+		return this.textures[frame];
 	}
 	
 }

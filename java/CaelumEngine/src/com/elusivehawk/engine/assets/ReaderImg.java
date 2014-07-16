@@ -4,7 +4,6 @@ package com.elusivehawk.engine.assets;
 import java.io.File;
 import javax.imageio.ImageIO;
 import com.elusivehawk.engine.render.LegibleBufferedImage;
-import com.elusivehawk.engine.render.RenderHelper;
 
 /**
  * 
@@ -19,7 +18,7 @@ public class ReaderImg implements IAssetReader
 	{
 		if (file.getName().endsWith(".gif"))
 		{
-			return new TextureGif(file.getName(), RenderHelper.readGifFile(file));
+			return new TextureGif(file);
 		}
 		
 		return new TextureStatic(file.getName(), new LegibleBufferedImage(ImageIO.read(file)));

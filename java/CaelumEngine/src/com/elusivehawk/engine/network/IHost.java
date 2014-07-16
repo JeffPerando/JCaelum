@@ -4,7 +4,7 @@ package com.elusivehawk.engine.network;
 import java.io.Closeable;
 import java.util.List;
 import java.util.UUID;
-import com.elusivehawk.engine.util.IPausable;
+import com.elusivehawk.util.IPausable;
 import com.google.common.collect.ImmutableList;
 
 /**

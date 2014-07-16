@@ -4,8 +4,8 @@ package com.elusivehawk.engine.android;
 import android.app.Activity;
 import android.os.Bundle;
 import com.elusivehawk.engine.core.CaelumEngine;
-import com.elusivehawk.engine.util.ShutdownHelper;
-import com.elusivehawk.engine.util.StringHelper;
+import com.elusivehawk.util.ShutdownHelper;
+import com.elusivehawk.util.StringHelper;
 
 /**
  * 

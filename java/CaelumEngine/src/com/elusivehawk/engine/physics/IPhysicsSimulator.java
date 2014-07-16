@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.physics;
 
-import com.elusivehawk.engine.util.IUpdatable;
+import com.elusivehawk.util.IUpdatable;
 
 /**
  * 

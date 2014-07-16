@@ -3,7 +3,7 @@ package com.elusivehawk.engine.meta.tutorial;
 
 import com.elusivehawk.engine.core.Game;
 import com.elusivehawk.engine.core.GameArguments;
-import com.elusivehawk.engine.util.Version;
+import com.elusivehawk.util.Version;
 
 /**
  * 

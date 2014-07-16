@@ -11,8 +11,8 @@ import com.elusivehawk.engine.render.RenderException;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
-import com.elusivehawk.engine.util.BufferHelper;
-import com.elusivehawk.engine.util.storage.Few;
+import com.elusivehawk.util.BufferHelper;
+import com.elusivehawk.util.storage.Few;
 import com.google.common.collect.Lists;
 
 /**

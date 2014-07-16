@@ -1,9 +1,9 @@
 
 package com.elusivehawk.engine.math;
 
-import com.elusivehawk.engine.util.MakeDefault;
-import com.elusivehawk.engine.util.storage.Buffer;
-import com.elusivehawk.engine.util.storage.IStorable;
+import com.elusivehawk.util.MakeDefault;
+import com.elusivehawk.util.storage.Buffer;
+import com.elusivehawk.util.storage.IStorable;
 
 /**
  * 

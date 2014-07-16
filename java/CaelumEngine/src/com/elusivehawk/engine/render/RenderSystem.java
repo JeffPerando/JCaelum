@@ -10,7 +10,7 @@ import com.elusivehawk.engine.core.IGameStateListener;
 import com.elusivehawk.engine.core.IThreadContext;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.IGL1;
-import com.elusivehawk.engine.util.IPausable;
+import com.elusivehawk.util.IPausable;
 
 /**
  * 

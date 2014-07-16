@@ -14,7 +14,7 @@ import com.elusivehawk.engine.render.Color;
 import com.elusivehawk.engine.render.EnumColorFilter;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
-import com.elusivehawk.engine.util.BufferHelper;
+import com.elusivehawk.util.BufferHelper;
 
 /**
  * 
@@ -33,13 +33,6 @@ public class GLES1 implements IGL1
 	}
 	
 	@Override
-	public void glActiveTexture(Texture texture)
-	{
-		this.glActiveTexture(texture == null ? 0 : texture.getTexId());
-		
-	}
-	
-	@Override
 	public void glBindBuffer(int target, int buffer)
 	{
 		GLES11.glBindBuffer(target, buffer);
@@ -47,23 +40,9 @@ public class GLES1 implements IGL1
 	}
 	
 	@Override
-	public void glBindBuffer(VertexBuffer vbo)
-	{
-		this.glBindBuffer(vbo.t, vbo.id);
-		
-	}
-	
-	@Override
 	public void glBindTexture(int target, int texture)
 	{
 		GLES10.glBindTexture(target, texture);
-		
-	}
-	
-	@Override
-	public void glBindTexture(int target, Texture texture)
-	{
-		this.glBindTexture(target, texture == null ? 0 : texture.getTexId());
 		
 	}
 	
@@ -181,28 +160,6 @@ public class GLES1 implements IGL1
 	public void glDeleteBuffers(IntBuffer buffers)
 	{
 		GLES11.glDeleteBuffers(buffers.remaining(), buffers);
-		
-	}
-	
-	@Override
-	public void glDeleteTextures(Texture... textures)
-	{
-		IntBuffer buf = BufferHelper.createIntBuffer(textures.length);
-		
-		for (Texture tex : textures)
-		{
-			buf.put(tex.getTexId());
-			
-		}
-		
-		buf.flip();
-		
-		if (buf.limit() == 0)
-		{
-			return;
-		}
-		
-		this.glDeleteTextures(buf);
 		
 	}
 	

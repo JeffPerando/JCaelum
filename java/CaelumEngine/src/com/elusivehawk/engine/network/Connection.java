@@ -13,7 +13,7 @@ import java.security.PublicKey;
 import java.util.List;
 import java.util.UUID;
 import javax.crypto.Cipher;
-import com.elusivehawk.engine.util.storage.SemiFinalStorage;
+import com.elusivehawk.util.storage.SemiFinalStorage;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 

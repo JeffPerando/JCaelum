@@ -2,7 +2,7 @@
 package com.elusivehawk.engine.core;
 
 import java.util.Map;
-import com.elusivehawk.engine.util.StringHelper;
+import com.elusivehawk.util.StringHelper;
 import com.google.common.collect.Maps;
 
 /**

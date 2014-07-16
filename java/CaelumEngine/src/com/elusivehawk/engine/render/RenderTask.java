@@ -2,8 +2,8 @@
 package com.elusivehawk.engine.render;
 
 import com.elusivehawk.engine.core.CaelumEngine;
-import com.elusivehawk.engine.util.task.ITaskListener;
-import com.elusivehawk.engine.util.task.Task;
+import com.elusivehawk.util.task.ITaskListener;
+import com.elusivehawk.util.task.Task;
 
 /**
  * 

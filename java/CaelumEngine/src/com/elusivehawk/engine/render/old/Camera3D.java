@@ -7,7 +7,7 @@ import com.elusivehawk.engine.render.EnumRenderMode;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGLManipulator;
-import com.elusivehawk.engine.util.storage.DirtableStorage;
+import com.elusivehawk.util.storage.DirtableStorage;
 
 /**
  * 

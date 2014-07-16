@@ -2,8 +2,8 @@
 package com.elusivehawk.engine.network;
 
 import com.elusivehawk.engine.math.MathHelper;
-import com.elusivehawk.engine.util.FixMe;
-import com.elusivehawk.engine.util.io.IByteWriter;
+import com.elusivehawk.util.FixMe;
+import com.elusivehawk.util.io.IByteWriter;
 
 /**
  * 

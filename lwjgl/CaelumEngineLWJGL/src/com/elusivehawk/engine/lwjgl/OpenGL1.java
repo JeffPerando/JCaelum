@@ -11,13 +11,11 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
-import com.elusivehawk.engine.assets.Texture;
 import com.elusivehawk.engine.render.Color;
 import com.elusivehawk.engine.render.EnumColorFilter;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.IGL1;
-import com.elusivehawk.engine.render.opengl.VertexBuffer;
-import com.elusivehawk.engine.util.BufferHelper;
+import com.elusivehawk.util.BufferHelper;
 
 /**
  * 
@@ -35,20 +33,6 @@ public class OpenGL1 implements IGL1
 	}
 	
 	@Override
-	public void glActiveTexture(Texture texture)
-	{
-		this.glActiveTexture(texture.getTexId());
-		
-	}
-	
-	@Override
-	public void glBindBuffer(VertexBuffer vbo)
-	{
-		this.glBindBuffer(vbo.t, vbo.id);
-		
-	}
-	
-	@Override
 	public void glBindBuffer(int target, int buffer)
 	{
 		GL15.glBindBuffer(target, buffer);
@@ -59,13 +43,6 @@ public class OpenGL1 implements IGL1
 	public void glBindTexture(int target, int texture)
 	{
 		GL11.glBindTexture(target, texture);
-		
-	}
-	
-	@Override
-	public void glBindTexture(int target, Texture texture)
-	{
-		GL11.glBindTexture(target, texture.getTexId());
 		
 	}
 	
@@ -185,28 +162,6 @@ public class OpenGL1 implements IGL1
 	public void glDeleteBuffers(IntBuffer buffers)
 	{
 		GL15.glDeleteBuffers(buffers);
-		
-	}
-	
-	@Override
-	public void glDeleteTextures(Texture... textures)
-	{
-		IntBuffer buf = BufferHelper.createIntBuffer(textures.length);
-		
-		for (Texture asset : textures)
-		{
-			buf.put(asset.getTexId());
-			
-		}
-		
-		buf.flip();
-		
-		if (buf.limit() == 0)
-		{
-			return;
-		}
-		
-		this.glDeleteTextures(buf);
 		
 	}
 	

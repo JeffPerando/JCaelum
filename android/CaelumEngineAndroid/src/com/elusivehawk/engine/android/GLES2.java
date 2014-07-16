@@ -12,7 +12,7 @@ import com.elusivehawk.engine.assets.Shader;
 import com.elusivehawk.engine.render.opengl.GLEnumShader;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGL2;
-import com.elusivehawk.engine.util.BufferHelper;
+import com.elusivehawk.util.BufferHelper;
 
 /**
  * 

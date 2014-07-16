@@ -1,8 +1,8 @@
 
 package com.elusivehawk.engine.render;
 
-import com.elusivehawk.engine.util.io.ByteBufWrapper;
-import com.elusivehawk.engine.util.storage.Buffer;
+import com.elusivehawk.util.io.ByteBufWrapper;
+import com.elusivehawk.util.storage.Buffer;
 
 /**
  * 

@@ -12,28 +12,20 @@ import com.elusivehawk.engine.render.RenderHelper;
  */
 public class TextureStatic extends Texture
 {
-	protected final ILegibleImage image;
-	
 	@SuppressWarnings("unqualified-field-access")
 	public TextureStatic(String filename, ILegibleImage img)
 	{
 		super(filename);
-		image = img;
+		frames[0] = img;
 		
 	}
 	
 	@Override
 	protected boolean finishAsset()
 	{
-		this.tex = RenderHelper.processImage(this.image);
+		this.tex = RenderHelper.processImage(this.frames[0]);
 		
 		return this.tex != 0;
-	}
-	
-	@Override
-	public ILegibleImage getSourceImg(int frame)
-	{
-		return this.image;
 	}
 	
 }

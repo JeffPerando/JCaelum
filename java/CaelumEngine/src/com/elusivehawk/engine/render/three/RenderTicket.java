@@ -23,8 +23,8 @@ import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
-import com.elusivehawk.engine.util.BufferHelper;
-import com.elusivehawk.engine.util.IDirty;
+import com.elusivehawk.util.BufferHelper;
+import com.elusivehawk.util.IDirty;
 
 /**
  * 
@@ -59,7 +59,7 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver, IVe
 	//protected int frame = 0;
 	//protected IModelAnimation anim = null, lastAnim = null;
 	protected Texture tex;
-	protected int matCount = 0;
+	protected int matCount = 0, texFrame = 0;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public RenderTicket(Model mdl, Vector off, Quaternion roff)
@@ -121,8 +121,23 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver, IVe
 	@Override
 	public boolean updateBeforeUse(RenderContext context)
 	{
-		if (!this.initiated)
+		if (this.initiated)
 		{
+			if (this.tex != null)
+			{
+				if (this.tex.isAnimated()) this.texFrame++;
+				else this.texFrame = 0;
+				
+			}
+			
+		}
+		else
+		{
+			if (this.m == null)
+			{
+				return false;
+			}
+			
 			if (!this.m.isFinished())
 			{
 				this.m.finish();
@@ -132,6 +147,16 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver, IVe
 			if (!this.m.isFinished())
 			{
 				return false;
+			}
+			
+			if (this.tex != null)
+			{
+				if (!this.tex.isFinished())
+				{
+					this.tex.finish();
+					
+				}
+				
 			}
 			
 			this.buf = BufferHelper.createFloatBuffer(this.m.getIndiceCount() * 16);
@@ -321,6 +346,11 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver, IVe
 	{
 		return this.frame;
 	}*/
+	
+	public int getCurrentTexFrame()
+	{
+		return this.texFrame;
+	}
 	
 	public Texture getTexture()
 	{
