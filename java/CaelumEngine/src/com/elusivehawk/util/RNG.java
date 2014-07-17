@@ -15,7 +15,7 @@ public final class RNG
 	
 	private RNG(){}
 	
-	public static Random instance()
+	public static Random rng()
 	{
 		return RNG;
 	}

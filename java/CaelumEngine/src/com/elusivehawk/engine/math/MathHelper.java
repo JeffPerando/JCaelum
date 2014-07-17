@@ -151,7 +151,7 @@ public final class MathHelper
 	
 	public static boolean rollDice(float weight)
 	{
-		return weight > RNG.instance().nextFloat();
+		return weight > RNG.rng().nextFloat();
 	}
 	
 	public static float square(float f)
