@@ -24,13 +24,6 @@ import com.elusivehawk.util.BufferHelper;
 public class GLES2 implements IGL2
 {
 	@Override
-	public void glAttachShader(GLProgram program, Shader shader)
-	{
-		this.glAttachShader(program.getId(), shader.getGLId());
-		
-	}
-	
-	@Override
 	public void glAttachShader(int program, int shader)
 	{
 		GLES20.glAttachShader(program, shader);
@@ -52,13 +45,6 @@ public class GLES2 implements IGL2
 	}
 	
 	@Override
-	public void glCompileShader(Shader shader)
-	{
-		this.glCompileShader(shader.getGLId());
-		
-	}
-	
-	@Override
 	public void glCompileShader(int shader)
 	{
 		GLES20.glCompileShader(shader);
@@ -72,22 +58,9 @@ public class GLES2 implements IGL2
 	}
 	
 	@Override
-	public int glCreateShader(GLEnumShader type)
-	{
-		return this.glCreateShader(type.gl);
-	}
-	
-	@Override
 	public int glCreateShader(int type)
 	{
 		return GLES20.glCreateShader(type);
-	}
-	
-	@Override
-	public void glDeleteProgram(GLProgram program)
-	{
-		this.glDeleteProgram(program.getId());
-		
 	}
 	
 	@Override
@@ -98,23 +71,9 @@ public class GLES2 implements IGL2
 	}
 	
 	@Override
-	public void glDeleteShader(Shader shader)
-	{
-		this.glDeleteShader(shader.getGLId());
-		
-	}
-	
-	@Override
 	public void glDeleteShader(int shader)
 	{
 		GLES20.glDeleteShader(shader);
-		
-	}
-	
-	@Override
-	public void glDetachShader(GLProgram program, Shader shader)
-	{
-		this.glDetachShader(program.getId(), shader.getGLId());
 		
 	}
 	
@@ -337,13 +296,6 @@ public class GLES2 implements IGL2
 	}
 	
 	@Override
-	public void glLinkProgram(GLProgram program)
-	{
-		this.glLinkProgram(program.getId());
-		
-	}
-	
-	@Override
 	public void glLinkProgram(int program)
 	{
 		GLES20.glLinkProgram(program);
@@ -512,23 +464,9 @@ public class GLES2 implements IGL2
 	}
 	
 	@Override
-	public void glUseProgram(GLProgram program)
-	{
-		this.glUseProgram(program.getId());
-		
-	}
-	
-	@Override
 	public void glUseProgram(int program)
 	{
 		GLES20.glUseProgram(program);
-		
-	}
-	
-	@Override
-	public void glValidateProgram(GLProgram program)
-	{
-		this.glValidateProgram(program.getId());
 		
 	}
 	
