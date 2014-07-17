@@ -13,6 +13,11 @@ import com.elusivehawk.engine.render.opengl.GLProgram;
  */
 public class CanvasLayer implements ILogicalRender
 {
+	public CanvasLayer(int imageCount)
+	{
+		
+	}
+
 	@Override
 	public boolean updateBeforeUse(RenderContext context)
 	{
