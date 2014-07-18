@@ -70,7 +70,7 @@ public class ReaderOBJ implements IAssetReader
 				vertNormals.add(new VertNormal(x, y, z));
 				
 			}
-			else if ("tex".equalsIgnoreCase(prefix)))
+			else if ("tex".equalsIgnoreCase(prefix))
 			{
 				texstring = s[1];
 				
