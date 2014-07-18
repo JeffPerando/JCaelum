@@ -209,7 +209,7 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver, IVe
 	}
 	
 	@Override
-	public void onAssetLoaded(Asset a)
+	public boolean onAssetLoaded(Asset a)
 	{
 		if (a instanceof Shader)
 		{
@@ -227,6 +227,7 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver, IVe
 			
 		}
 		
+		return true;
 	}
 	
 	@Override
@@ -285,13 +286,18 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver, IVe
 		
 	}
 	
-	public synchronized void addMaterials(Material... materials)
+	public synchronized boolean addMaterials(Material... materials)
 	{
+		if (this.matCount == RenderConst.MATERIAL_CAP)
+		{
+			return false;
+		}
+		
 		for (Material mat : materials)
 		{
 			if (this.matCount == RenderConst.MATERIAL_CAP)
 			{
-				return;
+				break;
 			}
 			
 			this.mats[this.matCount++] = mat;
@@ -299,6 +305,7 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver, IVe
 			
 		}
 		
+		return true;
 	}
 	
 	public synchronized void setMaterial(int i, Material m)

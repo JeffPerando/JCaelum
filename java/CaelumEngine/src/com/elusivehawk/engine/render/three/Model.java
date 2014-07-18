@@ -46,7 +46,7 @@ public class Model implements IAssetReceiver
 	}
 	
 	@Override
-	public void onAssetLoaded(Asset a)
+	public boolean onAssetLoaded(Asset a)
 	{
 		if (a instanceof Mesh)
 		{
@@ -54,6 +54,7 @@ public class Model implements IAssetReceiver
 			
 		}
 		
+		return true;
 	}
 	
 	public void startSection(String secname) throws RenderException

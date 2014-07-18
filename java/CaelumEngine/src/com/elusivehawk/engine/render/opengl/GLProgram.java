@@ -12,6 +12,7 @@ import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.assets.Shader;
 import com.elusivehawk.engine.core.CaelumEngine;
+import com.elusivehawk.engine.render.RenderConst;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.three.Model;
@@ -221,14 +222,20 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 	}
 	
 	@Override
-	public synchronized void onAssetLoaded(Asset a)
+	public synchronized boolean onAssetLoaded(Asset a)
 	{
-		if (a instanceof Shader)
+		if (this.shaderCount < RenderConst.SHADER_COUNT)
 		{
-			this.attachShader((Shader)a);
+			if (a instanceof Shader)
+			{
+				this.attachShader((Shader)a);
+				
+			}
 			
+			return true;
 		}
 		
+		return false;
 	}
 	
 	public void attachVBO(VertexBuffer vbo, List<Integer> attribs)
@@ -275,11 +282,11 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 		
 	}
 	
-	public synchronized void attachShader(Shader sh)
+	public synchronized boolean attachShader(Shader sh)
 	{
 		if (sh == null)
 		{
-			return;
+			return false;
 		}
 		
 		if (this.shaders[sh.gltype.ordinal()] == null)
@@ -291,6 +298,7 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 		this.shaders[sh.gltype.ordinal()] = sh;
 		this.relink = true;
 		
+		return true;
 	}
 	
 	public void attachUniform(String name, FloatBuffer info, EnumUniformType type)

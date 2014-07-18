@@ -9,6 +9,6 @@ package com.elusivehawk.engine.assets;
  */
 public interface IAssetReceiver
 {
-	public void onAssetLoaded(Asset a);
+	public boolean onAssetLoaded(Asset a);
 	
 }

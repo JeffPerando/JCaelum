@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import com.elusivehawk.engine.assets.AssetManager;
+import com.elusivehawk.engine.assets.TaskLoadAsset;
 import com.elusivehawk.engine.render.IRenderEnvironment;
 import com.elusivehawk.engine.render.IRenderHUB;
 import com.elusivehawk.engine.render.RenderContext;
@@ -149,6 +150,12 @@ public final class CaelumEngine
 			game().onScreenFlipped(flip);
 			
 		}
+		
+	}
+	
+	public static void loadResource(String res)
+	{
+		tasks().scheduleTask(new TaskLoadAsset(FileHelper.fixPath(res)));
 		
 	}
 	

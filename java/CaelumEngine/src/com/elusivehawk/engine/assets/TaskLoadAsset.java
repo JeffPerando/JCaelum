@@ -2,8 +2,8 @@
 package com.elusivehawk.engine.assets;
 
 import java.io.File;
+import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.util.FileHelper;
-import com.elusivehawk.util.task.ITaskListener;
 import com.elusivehawk.util.task.Task;
 
 /**
@@ -14,20 +14,23 @@ import com.elusivehawk.util.task.Task;
  */
 public class TaskLoadAsset extends Task
 {
-	protected final AssetManager mgr;
 	protected final String assetLoc;
 	
 	protected Asset fin = null;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public TaskLoadAsset(IAssetReceiver r, AssetManager assetMgr, String loc)
+	public TaskLoadAsset(String loc)
 	{
-		super(new AssetTaskListener(r));
+		super((t) ->
+		{
+			Asset a = ((TaskLoadAsset)t).getCompleteAsset();
+			
+			CaelumEngine.assetManager().onAssetRead(a);
+			
+		});
 		
-		assert assetMgr != null;
 		assert loc != null && !loc.isEmpty();
 		
-		mgr = assetMgr;
 		assetLoc = loc;
 		
 	}
@@ -35,7 +38,14 @@ public class TaskLoadAsset extends Task
 	@Override
 	protected boolean finishTask() throws Throwable
 	{
-		Asset a = this.mgr.getExistingAsset(this.assetLoc);
+		AssetManager mgr = CaelumEngine.assetManager();
+		
+		if (mgr == null)
+		{
+			throw new NullPointerException("Asset manager not found! Aborting!!");
+		}
+		
+		Asset a = mgr.getExistingAsset(this.assetLoc);
 		
 		if (a != null)
 		{
@@ -44,21 +54,21 @@ public class TaskLoadAsset extends Task
 			return true;
 		}
 		
-		File file = this.mgr.findFile(this.assetLoc);
+		File file = mgr.findFile(this.assetLoc);
 		
 		if (!FileHelper.canReadFile(file))
 		{
 			return false;
 		}
 		
-		IAssetReader r = this.mgr.getReader(file);
+		IAssetReader r = mgr.getReader(file);
 		
 		if (r == null)
 		{
 			return false;
 		}
 		
-		a = r.readAsset(this.mgr, file);
+		a = r.readAsset(mgr, file);
 		
 		if (a == null)
 		{
@@ -66,7 +76,6 @@ public class TaskLoadAsset extends Task
 		}
 		
 		this.fin = a;
-		this.mgr.registerAsset(a);
 		
 		return true;
 	}
@@ -74,28 +83,6 @@ public class TaskLoadAsset extends Task
 	public Asset getCompleteAsset()
 	{
 		return this.fin;
-	}
-	
-	public static class AssetTaskListener implements ITaskListener
-	{
-		private final IAssetReceiver r;
-		
-		@SuppressWarnings("unqualified-field-access")
-		public AssetTaskListener(IAssetReceiver ar)
-		{
-			assert ar != null;
-			
-			r = ar;
-			
-		}
-		
-		@Override
-		public void onTaskComplete(Task task)
-		{
-			this.r.onAssetLoaded(((TaskLoadAsset)task).getCompleteAsset());
-			
-		}
-		
 	}
 	
 }

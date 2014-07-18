@@ -2,9 +2,10 @@
 package com.elusivehawk.engine.assets;
 
 import java.io.File;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import com.elusivehawk.engine.core.CaelumEngine;
+import com.elusivehawk.engine.core.CaelumException;
 import com.elusivehawk.util.FileHelper;
 import com.elusivehawk.util.StringHelper;
 import com.google.common.collect.Lists;
@@ -18,8 +19,8 @@ import com.google.common.collect.Maps;
  */
 public class AssetManager
 {
-	protected final Map<String, IAssetReceiver> expectedRes = Maps.newHashMap();
 	protected final Map<String, IAssetReader> readers = Maps.newHashMap();
+	protected final List<IAssetReceiver> receivers = Lists.newArrayList();
 	protected final List<Asset> assets = Lists.newArrayList();
 	protected final List<File> resourceLocations = Lists.newArrayList(),
 			filesToScan = Lists.newArrayList();
@@ -44,12 +45,6 @@ public class AssetManager
 		
 	}
 	
-	public void loadResource(String res, IAssetReceiver req)
-	{
-		CaelumEngine.tasks().scheduleTask(new TaskLoadAsset(req, this, res.replace("/", FileHelper.FILE_SEP)));
-		
-	}
-	
 	public synchronized void addAssetReader(String ext, IAssetReader r)
 	{
 		assert ext != null;
@@ -59,9 +54,65 @@ public class AssetManager
 		
 	}
 	
-	public synchronized void registerAsset(Asset a)
+	public synchronized void addAssetReceiver(IAssetReceiver r)
 	{
-		this.assets.add(a);
+		this.receivers.add(r);
+		
+	}
+	
+	public synchronized void removeAssetReceiver(IAssetReceiver r)
+	{
+		this.receivers.remove(r);
+		
+	}
+	
+	public void dropAsset(Asset a)
+	{
+		if (a != null)
+		{
+			synchronized (this)
+			{
+				this.assets.remove(a);
+				
+			}
+			
+			return;
+		}
+		
+		throw new NullPointerException();
+	}
+	
+	public void onAssetRead(Asset a)
+	{
+		if (a == null)
+		{
+			throw new NullPointerException("Asset was not read, it is null!");
+		}
+		if (this.assets.contains(a))
+		{
+			throw new CaelumException("Duplicate asset entry %s!", a);
+		}
+		
+		synchronized (this)
+		{
+			this.assets.add(a);
+			
+		}
+		
+		Iterator<IAssetReceiver> itr = this.receivers.iterator();
+		IAssetReceiver r;
+		
+		while (itr.hasNext())
+		{
+			r = itr.next();
+			
+			if (!r.onAssetLoaded(a))
+			{
+				itr.remove();
+				
+			}
+			
+		}
 		
 	}
 	
@@ -107,7 +158,7 @@ public class AssetManager
 	
 	public boolean canLoadAssets()
 	{
-		return !this.resourceLocations.isEmpty() && !this.expectedRes.isEmpty() && !this.readers.isEmpty();
+		return !this.resourceLocations.isEmpty() && !this.readers.isEmpty() && !this.receivers.isEmpty();
 	}
 	
 	protected void scanForFiles(File file)

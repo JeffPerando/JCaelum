@@ -13,18 +13,20 @@ import java.io.FileWriter;
  * 
  * @author Elusivehawk
  */
-public class FileHelper
+public final class FileHelper
 {
 	public static final String FILE_SEP = System.getProperty("file.separator");
 	
+	private FileHelper(){}
+	
 	public static File createFile(String path)
 	{
-		return new File(path.replace("/", FILE_SEP));
+		return new File(fixPath(path));
 	}
 	
 	public static File createFile(String src, String path)
 	{
-		return new File(src.replace("/", FILE_SEP), path.replace("/", FILE_SEP));
+		return new File(fixPath(src), fixPath(path));
 	}
 	
 	public static FileInputStream createInStream(File file)
@@ -170,6 +172,11 @@ public class FileHelper
 	public static boolean canReadFile(File file)
 	{
 		return isFileReal(file) && file.isFile() && file.canRead();
+	}
+	
+	public static String fixPath(String path)
+	{
+		return path.replace("/", FILE_SEP);
 	}
 	
 }

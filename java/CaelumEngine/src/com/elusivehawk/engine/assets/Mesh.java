@@ -18,6 +18,7 @@ public class Mesh extends Asset
 	public Mesh(String filename, Vector[] p, Vector[] tex, Vector[] norm)
 	{
 		super(filename);
+		
 		points = ImmutableArray.create(p);
 		texOffs = ImmutableArray.create(tex);
 		normals = ImmutableArray.create(norm);

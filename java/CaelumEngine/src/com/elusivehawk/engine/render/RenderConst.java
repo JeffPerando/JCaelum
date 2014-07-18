@@ -1,6 +1,8 @@
 
 package com.elusivehawk.engine.render;
 
+import com.elusivehawk.engine.render.opengl.GLEnumShader;
+
 /**
  * 
  * 
@@ -14,6 +16,7 @@ public final class RenderConst
 	public static final String INCLUDE = "#include";
 	
 	public static final int MATERIAL_CAP = 16;
+	public static final int SHADER_COUNT = GLEnumShader.values().length;
 	
 	public static final int VERTEX_I = 0;
 	public static final int TEXCOORD_I = 1;
