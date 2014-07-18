@@ -10,8 +10,6 @@ import com.elusivehawk.util.StringHelper;
 /**
  * 
  * Default logging implementation.
- * <p>
- * Note: Unlike {@link System}.out.println(), this is thread safe.
  * 
  * @author Elusivehawk
  */

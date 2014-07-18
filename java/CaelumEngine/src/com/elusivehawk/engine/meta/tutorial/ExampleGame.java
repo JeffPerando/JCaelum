@@ -19,9 +19,6 @@ public class ExampleGame extends Game
 		
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.elusivehawk.engine.core.Game#getGameVersion()
-	 */
 	@Override
 	public Version getGameVersion()
 	{
@@ -29,9 +26,6 @@ public class ExampleGame extends Game
 		return null;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.elusivehawk.engine.core.Game#initiate(com.elusivehawk.engine.core.GameArguments)
-	 */
 	@Override
 	protected void initiate(GameArguments args)
 	{
@@ -39,9 +33,6 @@ public class ExampleGame extends Game
 		
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.elusivehawk.engine.core.Game#tick(double)
-	 */
 	@Override
 	protected void tick(double delta) throws Throwable
 	{
@@ -49,9 +40,6 @@ public class ExampleGame extends Game
 		
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.elusivehawk.engine.core.Game#onGameShutdown()
-	 */
 	@Override
 	protected void onGameShutdown()
 	{

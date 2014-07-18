@@ -53,6 +53,7 @@ public final class CaelumEngine
 	private IRenderEnvironment renv = null;
 	private JsonObject envConfig = null;
 	
+	private GameFactory factory = null;
 	private Game game = null;
 	private GameArguments gameargs = null;
 	private AssetManager assets = null;
@@ -319,21 +320,31 @@ public final class CaelumEngine
 			
 		}
 		
+		if (this.factory == null)
+		{
+			String gamefac = this.startargs.get("gamefac");
+			
+			if (gamefac != null)
+			{
+				this.factory = (GameFactory)ReflectionHelper.newInstance(gamefac, new Class<?>[]{GameFactory.class}, null);
+				
+			}
+			
+		}
+		
 	}
 	
 	public void startGame()
 	{
 		//XXX Loading the game
 		
-		Game g = null;
-		
-		String game = this.startargs.get("game");
-		
-		if (game != null)
+		if (this.factory == null)
 		{
-			g = (Game)ReflectionHelper.newInstance(game, new Class<?>[]{Game.class}, null);
+			ShutdownHelper.exit("NO-FACTORY-FOUND".hashCode());
 			
 		}
+		
+		Game g = this.factory.createGame();
 		
 		if (g == null)
 		{
@@ -341,11 +352,8 @@ public final class CaelumEngine
 			ShutdownHelper.exit("NO-GAME-FOUND".hashCode());
 			
 		}
-		else
-		{
-			g.preInit();
-			
-		}
+		
+		g.preInit();
 		
 		this.log.log(EnumLogType.INFO, String.format("Loading %s", g));
 		
