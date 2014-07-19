@@ -82,7 +82,7 @@ public class AssetManager
 		throw new NullPointerException();
 	}
 	
-	public void onAssetRead(Asset a)
+	public void onAssetRead(Asset a, boolean received)
 	{
 		if (a == null)
 		{
@@ -99,16 +99,20 @@ public class AssetManager
 			
 		}
 		
-		Iterator<IAssetReceiver> itr = this.receivers.iterator();
-		IAssetReceiver r;
-		
-		while (itr.hasNext())
+		if (!received)
 		{
-			r = itr.next();
+			Iterator<IAssetReceiver> itr = this.receivers.iterator();
+			IAssetReceiver r;
 			
-			if (!r.onAssetLoaded(a))
+			while (itr.hasNext())
 			{
-				itr.remove();
+				r = itr.next();
+				
+				if (!r.onAssetLoaded(a))
+				{
+					itr.remove();
+					
+				}
 				
 			}
 			

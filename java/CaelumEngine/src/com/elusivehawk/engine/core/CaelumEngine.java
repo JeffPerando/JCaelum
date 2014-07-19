@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import com.elusivehawk.engine.assets.AssetManager;
+import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.assets.TaskLoadAsset;
 import com.elusivehawk.engine.render.IRenderEnvironment;
 import com.elusivehawk.engine.render.IRenderHUB;
@@ -157,6 +158,12 @@ public final class CaelumEngine
 	public static void loadResource(String res)
 	{
 		tasks().scheduleTask(new TaskLoadAsset(FileHelper.fixPath(res)));
+		
+	}
+	
+	public static void loadResource(String res, IAssetReceiver r)
+	{
+		tasks().scheduleTask(new TaskLoadAsset(FileHelper.fixPath(res), r));
 		
 	}
 	
@@ -353,6 +360,8 @@ public final class CaelumEngine
 			
 		}
 		
+		this.tasks.start();
+		
 		g.preInit();
 		
 		this.log.log(EnumLogType.INFO, String.format("Loading %s", g));
@@ -429,8 +438,6 @@ public final class CaelumEngine
 			}
 			
 		}
-		
-		this.tasks.start();
 		
 	}
 	

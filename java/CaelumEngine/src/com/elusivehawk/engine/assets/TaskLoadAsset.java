@@ -17,21 +17,35 @@ public class TaskLoadAsset extends Task
 	protected final String assetLoc;
 	
 	protected Asset fin = null;
+	protected IAssetReceiver receiver;
+	
+	public TaskLoadAsset(String loc)
+	{
+		this(loc, null);
+		
+	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public TaskLoadAsset(String loc)
+	public TaskLoadAsset(String loc, IAssetReceiver r)
 	{
 		super((t) ->
 		{
 			Asset a = ((TaskLoadAsset)t).getCompleteAsset();
 			
-			CaelumEngine.assetManager().onAssetRead(a);
+			if (r != null)
+			{
+				r.onAssetLoaded(a);
+				
+			}
+			
+			CaelumEngine.assetManager().onAssetRead(a, r != null);
 			
 		});
 		
 		assert loc != null && !loc.isEmpty();
 		
 		assetLoc = loc;
+		receiver = r;
 		
 	}
 	
