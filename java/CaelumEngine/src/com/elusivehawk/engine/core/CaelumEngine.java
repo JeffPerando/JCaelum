@@ -42,7 +42,7 @@ public final class CaelumEngine
 	private static final CaelumEngine INSTANCE = new CaelumEngine();
 	
 	public static final boolean DEBUG = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().contains("-agentlib:jdwp");
-	public static final Version VERSION = new Version(1, 0, 0);
+	public static final Version VERSION = new Version(Version.ALPHA, 1, 0, 0);
 	
 	private final Map<EnumEngineFeature, IThreadStoppable> threads = Maps.newEnumMap(EnumEngineFeature.class);
 	private final Map<EnumInputType, Input> inputs = Maps.newEnumMap(EnumInputType.class);
@@ -207,7 +207,7 @@ public final class CaelumEngine
 		this.startargs.putAll(strs);
 		this.gameargs = new GameArguments(gargs);
 		
-		this.log.log(EnumLogType.INFO, String.format("Starting Caelum Engine v%s on %s", VERSION, EnumOS.getCurrentOS()));
+		this.log.log(EnumLogType.INFO, String.format("Starting Caelum Engine %s on %s", VERSION, EnumOS.getCurrentOS()));
 		
 		boolean verbose = !"false".equalsIgnoreCase(this.startargs.get("verbose"));
 		

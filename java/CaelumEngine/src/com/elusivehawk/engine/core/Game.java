@@ -100,7 +100,7 @@ public abstract class Game implements IUpdatable, IPausable
 	@Override
 	public String toString()
 	{
-		return this.getGameVersion() == null ? this.name : String.format("%s v%s", this.name, this.getGameVersion());
+		return this.getGameVersion() == null ? this.name : String.format("%s %s", this.name, this.getGameVersion());
 	}
 	
 	public final void initiateGame(GameArguments args) throws Throwable
