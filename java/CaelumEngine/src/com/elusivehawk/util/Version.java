@@ -9,23 +9,35 @@ package com.elusivehawk.util;
  */
 public class Version
 {
-	public final int major, minor, patch, build;
+	public static final String ALPHA = "Alpha",
+			BETA = "Beta",
+			RC = "RC",
+			RELEASE = "Release";
 	
-	public Version(int mj, int mn)
-	{
-		this(mj, mn, 0);
-		
-	}
+	public final String release;
+	public final int major, minor, patch, build;
 	
 	public Version(int mj, int mn, int p)
 	{
-		this(mj, mn, p, 0);
+		this(RELEASE, mj, mn, p);
 		
 	}
 	
-	@SuppressWarnings("unqualified-field-access")
+	public Version(String type, int mj, int mn, int p)
+	{
+		this(type, mj, mn, p, 0);
+		
+	}
+	
 	public Version(int mj, int mn, int p, int b)
 	{
+		this(RELEASE, mj, mn, p, b);
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public Version(String type, int mj, int mn, int p, int b)
+	{
+		release = type;
 		major = mj;
 		minor = mn;
 		patch = p;
@@ -36,7 +48,7 @@ public class Version
 	@Override
 	public String toString()
 	{
-		return String.format("%s.%s.%s.%s", this.major, this.minor, this.patch, this.build);
+		return String.format("%s v%s.%s.%s.%s", this.release, this.major, this.minor, this.patch, this.build);
 	}
 	
 }
