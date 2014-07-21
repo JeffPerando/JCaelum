@@ -1,3 +1,4 @@
 Guava: 16.0.1
 JDOM: 2.0.5
 JStackAlloc: 2008-17-6
+LWJGL: 2.9.1
