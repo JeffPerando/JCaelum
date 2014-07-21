@@ -5,6 +5,7 @@ import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import com.elusivehawk.engine.assets.AssetManager;
 import com.elusivehawk.engine.assets.IAssetReceiver;
@@ -208,6 +209,12 @@ public final class CaelumEngine
 		this.gameargs = new GameArguments(gargs);
 		
 		this.log.log(EnumLogType.INFO, String.format("Starting Caelum Engine %s on %s", VERSION, EnumOS.getCurrentOS()));
+		
+		for (Entry<String, String> entry : this.startargs.entrySet())
+		{
+			this.log.log(EnumLogType.INFO, String.format("Argument: %s, %s", entry.getKey(), entry.getValue()));
+			
+		}
 		
 		boolean verbose = !"false".equalsIgnoreCase(this.startargs.get("verbose"));
 		
