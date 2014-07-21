@@ -54,32 +54,37 @@ public final class StringHelper
 	public static List<String> read(Reader r)
 	{
 		List<String> text = Lists.newArrayList();
-		BufferedReader br = (r instanceof BufferedReader) ? (BufferedReader)r : new BufferedReader(r);
 		
-		try
+		if (r != null)
 		{
-			for (String line = br.readLine(); line != null; line = br.readLine())
-			{
-				text.add(line);
-				
-			}
+			BufferedReader br = (r instanceof BufferedReader) ? (BufferedReader)r : new BufferedReader(r);
 			
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			
-		}
-		finally
-		{
 			try
 			{
-				br.close();
+				for (String line = br.readLine(); line != null; line = br.readLine())
+				{
+					text.add(line);
+					
+				}
 				
 			}
-			catch (IOException e)
+			catch (Exception e)
 			{
 				e.printStackTrace();
+				
+			}
+			finally
+			{
+				try
+				{
+					br.close();
+					
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+					
+				}
 				
 			}
 			
@@ -101,33 +106,38 @@ public final class StringHelper
 	public static String readToOneLine(Reader r)
 	{
 		StringBuilder b = newBuilder();
-		BufferedReader br = (r instanceof BufferedReader) ? (BufferedReader)r : new BufferedReader(r);
 		
-		try
+		if (r != null)
 		{
-			for (String line = br.readLine(); line != null; line = br.readLine())
-			{
-				b.append(line);
-				b.append("\n");
-				
-			}
+			BufferedReader br = (r instanceof BufferedReader) ? (BufferedReader)r : new BufferedReader(r);
 			
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			
-		}
-		finally
-		{
 			try
 			{
-				br.close();
+				for (String line = br.readLine(); line != null; line = br.readLine())
+				{
+					b.append(line);
+					b.append("\n");
+					
+				}
 				
 			}
-			catch (IOException e)
+			catch (Exception e)
 			{
 				e.printStackTrace();
+				
+			}
+			finally
+			{
+				try
+				{
+					br.close();
+					
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+					
+				}
 				
 			}
 			

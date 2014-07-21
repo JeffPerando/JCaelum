@@ -331,7 +331,13 @@ public final class CaelumEngine
 		{
 			String gamefac = this.startargs.get("gamefac");
 			
-			if (gamefac != null)
+			if (gamefac == null)
+			{
+				this.log.log(EnumLogType.ERROR, "Game factory not found: Factory not provided");
+				ShutdownHelper.exit("NO-FACTORY-FOUND".hashCode());
+				
+			}
+			else
 			{
 				this.factory = (GameFactory)ReflectionHelper.newInstance(gamefac, new Class<?>[]{GameFactory.class}, null);
 				
@@ -347,6 +353,7 @@ public final class CaelumEngine
 		
 		if (this.factory == null)
 		{
+			this.log.log(EnumLogType.ERROR, "Game factory not found: Factory not provided");
 			ShutdownHelper.exit("NO-FACTORY-FOUND".hashCode());
 			
 		}
@@ -519,7 +526,14 @@ public final class CaelumEngine
 	
 	private Class<?> loadEnvironmentFromJson()
 	{
-		JsonObject j = JsonParser.parse(FileHelper.createFile(".", "/gameEnv.json"));
+		File json = FileHelper.createFile(".", "gameEnv.json");
+		
+		if (!FileHelper.isFileReal(json))
+		{
+			return null;
+		}
+		
+		JsonObject j = JsonParser.parse(json);
 		
 		if (j == null)
 		{

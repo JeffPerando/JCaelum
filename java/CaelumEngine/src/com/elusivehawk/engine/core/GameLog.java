@@ -3,6 +3,7 @@ package com.elusivehawk.engine.core;
 
 import java.util.Calendar;
 import java.util.List;
+import com.elusivehawk.util.FileHelper;
 import com.elusivehawk.util.RNG;
 import com.elusivehawk.util.StringHelper;
 
@@ -14,7 +15,7 @@ import com.elusivehawk.util.StringHelper;
  */
 public class GameLog implements ILog
 {
-	protected final List<String> crashDialog = StringHelper.read(CaelumEngine.class.getResourceAsStream("com/elusivehawk/engine/core/CrashReportDialog.txt"));
+	protected final List<String> crashDialog = StringHelper.read(FileHelper.createFile("CrashReportDialog.txt"));
 	
 	private boolean enableVerbosity = true;
 	
@@ -26,16 +27,16 @@ public class GameLog implements ILog
 			return;
 		}
 		
-		String fin = String.format("[%s] [%s]: %s", type, StringHelper.parseDate(Calendar.getInstance(), "-", ":"), type.err && msg == null ? this.crashDialog.get(RNG.rng().nextInt(this.crashDialog.size())) : msg);
+		String fin = String.format("[%s] [%s]: %s\n", type, StringHelper.parseDate(Calendar.getInstance(), "-", ":"), type.err && msg == null ? this.crashDialog.get(RNG.rng().nextInt(this.crashDialog.size())) : msg);
 		
 		if (type.err)
 		{
-			System.err.println(fin);
+			System.err.print(fin);
 			
 		}
 		else
 		{
-			System.out.println(fin);
+			System.out.print(fin);
 			
 		}
 		

@@ -29,6 +29,8 @@ public final class ShutdownHelper
 	
 	public static void exit(int err)
 	{
+		System.err.println(String.format("Exiting with err %s", err));
+		
 		ShutdownMechanism sm = instance().shutdown;
 		instance().shutdown = null;
 		
