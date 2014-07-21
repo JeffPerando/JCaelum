@@ -296,12 +296,7 @@ public final class StringHelper
 			return new String[]{"", str};
 		}
 		
-		String[] ret = new String[2];
-		
-		ret[0] = ind == 0 ? "" : str.substring(0, ind - 1);
-		ret[1] = str.substring(ind + out.length(), str.length() - (ret[0].length() + out.length()));
-		
-		return ret;
+		return new String[]{str.substring(0, ind), str.substring(ind + out.length())};
 	}
 	
 	public static String parseDate(Calendar cal, String dateSep, String timeSep)
