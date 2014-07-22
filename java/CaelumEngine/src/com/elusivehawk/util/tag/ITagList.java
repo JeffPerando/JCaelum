@@ -17,23 +17,50 @@ public interface ITagList
 	
 	public <T> Tag<T> getTag(int index);
 	
-	public Boolean readBoolean(String name, Boolean d);
+	default Boolean readBoolean(String name, Boolean d)
+	{
+		return this.readOther(name, d);
+	}
 	
-	public Byte readByte(String name, Byte d);
+	default Byte readByte(String name, Byte d)
+	{
+		return this.readOther(name, d);
+	}
 	
-	public Float readFloat(String name, Float d);
+	default Float readFloat(String name, Float d)
+	{
+		return this.readOther(name, d);
+	}
 	
-	public Double readDouble(String name, Double d);
+	default Double readDouble(String name, Double d)
+	{
+		return this.readOther(name, d);
+	}
 	
-	public Integer readInt(String name, Integer d);
+	default Integer readInt(String name, Integer d)
+	{
+		return this.readOther(name, d);
+	}
 	
-	public ITagList readList(String name, ITagList d);
+	default ITagList readList(String name, ITagList d)
+	{
+		return this.readOther(name, d);
+	}
 	
-	public Long readLong(String name, Long d);
+	default Long readLong(String name, Long d)
+	{
+		return this.readOther(name, d);
+	}
 	
-	public Short readShort(String name, Short d);
+	default Short readShort(String name, Short d)
+	{
+		return this.readOther(name, d);
+	}
 	
-	public String readString(String name, String d);
+	default String readString(String name, String d)
+	{
+		return this.readOther(name, d);
+	}
 	
 	public <T> T readOther(String name, T d);
 	

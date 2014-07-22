@@ -109,60 +109,6 @@ public class TagList implements ITagList
 	}
 	
 	@Override
-	public Boolean readBoolean(String name, Boolean d)
-	{
-		return this.<Boolean>readOther(name, d);
-	}
-	
-	@Override
-	public Byte readByte(String name, Byte d)
-	{
-		return this.<Byte>readOther(name, d);
-	}
-	
-	@Override
-	public Float readFloat(String name, Float d)
-	{
-		return this.<Float>readOther(name, d);
-	}
-	
-	@Override
-	public Double readDouble(String name, Double d)
-	{
-		return this.<Double>readOther(name, d);
-	}
-	
-	@Override
-	public Integer readInt(String name, Integer d)
-	{
-		return this.<Integer>readOther(name, d);
-	}
-	
-	@Override
-	public ITagList readList(String name, ITagList d)
-	{
-		return this.<ITagList>readOther(name, d);
-	}
-	
-	@Override
-	public Long readLong(String name, Long d)
-	{
-		return this.<Long>readOther(name, d);
-	}
-	
-	@Override
-	public Short readShort(String name, Short d)
-	{
-		return this.<Short>readOther(name, d);
-	}
-	
-	@Override
-	public String readString(String name, String d)
-	{
-		return this.<String>readOther(name, d);
-	}
-	
-	@Override
 	public <T> T readOther(String name, T d)
 	{
 		Tag<T> ret = this.<T>getTag(name);
