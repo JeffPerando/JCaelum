@@ -210,9 +210,13 @@ public final class CaelumEngine
 		
 		this.log.log(EnumLogType.INFO, String.format("Starting Caelum Engine %s on %s", VERSION, EnumOS.getCurrentOS()));
 		
-		for (Entry<String, String> entry : this.startargs.entrySet())
+		if (DEBUG)
 		{
-			this.log.log(EnumLogType.INFO, String.format("Argument: %s, %s", entry.getKey(), entry.getValue()));
+			for (Entry<String, String> entry : this.startargs.entrySet())
+			{
+				this.log.log(EnumLogType.INFO, String.format("Argument: %s, %s", entry.getKey(), entry.getValue()));
+				
+			}
 			
 		}
 		
