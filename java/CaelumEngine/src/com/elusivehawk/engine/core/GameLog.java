@@ -43,14 +43,6 @@ public class GameLog implements ILog
 	}
 	
 	@Override
-	public void log(EnumLogType type, String msg, Throwable e)
-	{
-		this.log(type, msg);
-		e.printStackTrace();
-		
-	}
-	
-	@Override
 	public boolean enableVerbosity()
 	{
 		return this.enableVerbosity;

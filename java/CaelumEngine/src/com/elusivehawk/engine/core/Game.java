@@ -46,7 +46,7 @@ public abstract class Game implements IUpdatable, IPausable
 			}
 			else
 			{
-				this.state.gsTick(this, delta);
+				this.state.update(delta);
 				
 			}
 			

@@ -148,7 +148,7 @@ public final class Tessellator
 			
 			if (p == null)
 			{
-				CaelumEngine.log().log(EnumLogType.WARN, String.format("Skipping indice %s at location %s", i, c));
+				CaelumEngine.log().log(EnumLogType.WARN, "Skipping indice %s at location %s", i, c);
 				
 				continue;
 			}

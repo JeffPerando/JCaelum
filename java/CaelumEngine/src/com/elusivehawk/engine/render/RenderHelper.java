@@ -178,7 +178,7 @@ public final class RenderHelper
 			
 			if (split != null && split.length == 2)
 			{
-				CaelumEngine.log().log(EnumLogType.DEBUG, String.format("#include found: %s", include));
+				CaelumEngine.log().log(EnumLogType.DEBUG, "#include found: %s", include);
 				
 				String loc = split[1];
 				

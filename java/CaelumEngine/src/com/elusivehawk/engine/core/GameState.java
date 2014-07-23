@@ -3,6 +3,7 @@ package com.elusivehawk.engine.core;
 
 import com.elusivehawk.engine.physics.IPhysicsSimulator;
 import com.elusivehawk.engine.render.IRenderHUB;
+import com.elusivehawk.util.IUpdatable;
 
 /**
  * 
@@ -10,11 +11,9 @@ import com.elusivehawk.engine.render.IRenderHUB;
  * 
  * @author Elusivehawk
  */
-public abstract class GameState
+public abstract class GameState implements IUpdatable
 {
 	public abstract void initiate();
-	
-	public abstract void gsTick(Game game, double delta) throws Throwable;
 	
 	public abstract void finish();
 	
