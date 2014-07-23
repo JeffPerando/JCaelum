@@ -3,6 +3,7 @@ package com.elusivehawk.engine.core;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -76,6 +77,22 @@ public final class CaelumEngine
 				CaelumEngine.instance().clearGameEnv();
 				
 			}));
+			
+		}
+		
+		Iterator<String> itr = this.startupPrefixes.iterator();
+		String prefix;
+		
+		while (itr.hasNext())
+		{
+			prefix = itr.next();
+			
+			if (!prefix.endsWith(":"))
+			{
+				this.log.log(EnumLogType.WTF, String.format("Prefix is missing colon: %s", prefix));
+				itr.remove();
+				
+			}
 			
 		}
 		
