@@ -17,6 +17,8 @@ public class Version
 	public final String release;
 	public final int major, minor, patch, build;
 	
+	public final String formatted;
+	
 	public Version(int mj, int mn, int p)
 	{
 		this(RELEASE, mj, mn, p);
@@ -43,12 +45,14 @@ public class Version
 		patch = p;
 		build = b;
 		
+		formatted = String.format("%s v%s.%s.%s.%s", this.release, this.major, this.minor, this.patch, this.build);
+		
 	}
 	
 	@Override
 	public String toString()
 	{
-		return String.format("%s v%s.%s.%s.%s", this.release, this.major, this.minor, this.patch, this.build);
+		return this.formatted;
 	}
 	
 }
