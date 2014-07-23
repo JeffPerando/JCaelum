@@ -1,9 +1,9 @@
 
 package com.elusivehawk.util.json;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import com.google.common.collect.Lists;
 
 /**
@@ -12,20 +12,35 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-public class JsonObject extends JsonKeypair implements Iterable<JsonKeypair>
+public class JsonObject extends JsonData implements Iterable<JsonData>
 {
-	protected final List<JsonKeypair> jsons;
+	protected final List<JsonData> jsons;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public JsonObject(String name, Map<String, JsonKeypair> map)
+	public JsonObject(String name)
 	{
 		super(EnumJsonType.OBJECT, name, "{");
-		jsons = Lists.newArrayList(map.values());
+		jsons = Lists.newArrayList();
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public JsonObject(String name, Collection<JsonData> data)
+	{
+		this(name);
+		jsons.addAll(data);
+		
+	}
+	
+	public JsonObject(String name, IJsonObjPopulator pop)
+	{
+		this(name);
+		pop.populate(this);
 		
 	}
 	
 	@Override
-	public Iterator<JsonKeypair> iterator()
+	public Iterator<JsonData> iterator()
 	{
 		return this.jsons.iterator();
 	}
@@ -55,11 +70,27 @@ public class JsonObject extends JsonKeypair implements Iterable<JsonKeypair>
 		return b.toString();
 	}
 	
-	public JsonKeypair getValue(String name)
+	public boolean add(JsonData data)
+	{
+		for (JsonData info : this.jsons)
+		{
+			if (info.key.equals(data.key))
+			{
+				return false;
+			}
+			
+		}
+		
+		this.jsons.add(data);
+		
+		return true;
+	}
+	
+	public JsonData getValue(String name)
 	{
 		if ((name != null && !"".equalsIgnoreCase(name)) && !this.jsons.isEmpty())
 		{
-			for (JsonKeypair json : this.jsons)
+			for (JsonData json : this.jsons)
 			{
 				if (name.equalsIgnoreCase(json.key))
 				{

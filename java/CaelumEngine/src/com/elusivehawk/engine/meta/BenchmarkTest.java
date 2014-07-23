@@ -9,7 +9,7 @@ import java.util.List;
 import com.elusivehawk.util.FileHelper;
 import com.elusivehawk.util.StringHelper;
 import com.elusivehawk.util.json.EnumJsonType;
-import com.elusivehawk.util.json.JsonKeypair;
+import com.elusivehawk.util.json.JsonData;
 import com.elusivehawk.util.json.JsonObject;
 import com.elusivehawk.util.json.JsonParseException;
 import com.elusivehawk.util.json.JsonParser;
@@ -101,7 +101,7 @@ public class BenchmarkTest
 					String str = strs.get(c);
 					String old = new String(str);
 					
-					for (JsonKeypair kp : json)
+					for (JsonData kp : json)
 					{
 						if (kp.type != EnumJsonType.STRING)
 						{

@@ -47,6 +47,8 @@ public final class MathHelper
 	
 	public static Vector cross(Vector one, Vector two)
 	{
+		assert one.getSize() <= 3 && two.getSize() <= 3;
+		
 		float ax = one.get(MathConst.X);
 		float ay = one.get(MathConst.Y);
 		float az = one.get(MathConst.Z);
@@ -67,12 +69,30 @@ public final class MathHelper
 	
 	public static float distSquare(Vector from, Vector to)
 	{
-		return lengthSquared(to.get(MathConst.X) - from.get(MathConst.X), to.get(MathConst.Y) - from.get(MathConst.Y), to.get(MathConst.Z) - from.get(MathConst.Z));
+		int size = Math.min(from.getSize(), to.getSize());
+		float ret = 0f;
+		
+		for (int c = 0; c < size; c++)
+		{
+			ret += square(to.get(c) - from.get(c));
+			
+		}
+		
+		return ret;
 	}
 	
 	public static float dot(Vector one, Vector two)
 	{
-		return (one.get(MathConst.X) * two.get(MathConst.X)) + (one.get(MathConst.Y) * two.get(MathConst.Y)) + (one.get(MathConst.Z) * two.get(MathConst.Z));
+		int size = Math.min(one.getSize(), two.getSize());
+		float ret = 0f;
+		
+		for (int c = 0; c < size; c++)
+		{
+			ret += one.get(c) * two.get(c);
+			
+		}
+		
+		return ret;
 	}
 	
 	public static float interpolate(float one, float two, float factor)
@@ -91,7 +111,7 @@ public final class MathHelper
 	{
 		for (int c = 0; c < dest.getSize(); c++)
 		{
-			dest.set(c, interpolate(one.get(c), two.get(c), factor), false);
+			dest.set(c, ((two.get(c) * factor) + ((1f - factor) * one.get(c))), false);
 			
 		}
 		
@@ -110,12 +130,15 @@ public final class MathHelper
 	
 	public static float lengthSquared(Vector vec)
 	{
-		return lengthSquared(vec.get(MathConst.X), vec.get(MathConst.Y), vec.get(MathConst.Z));
-	}
-	
-	public static float lengthSquared(float x, float y, float z)
-	{
-		return square(x) + square(y) + square(z);
+		float ret = 0f;
+		
+		for (int c = 0; c < vec.getSize(); c++)
+		{
+			ret += square(vec.get(c));
+			
+		}
+		
+		return ret;
 	}
 	
 	public static int percent(int i, int max)
@@ -178,24 +201,41 @@ public final class MathHelper
 	{
 		Vector ret = new Vector(vec);
 		
-		ret.set(MathConst.X, toRadians(ret.get(MathConst.X)));
-		ret.set(MathConst.Y, toRadians(ret.get(MathConst.Y)));
-		ret.set(MathConst.Z, toRadians(ret.get(MathConst.Z)));
+		for (int c = 0; c < ret.getSize(); c++)
+		{
+			ret.set(c, toRadians(ret.get(c)), false);
+			
+		}
+		
+		ret.onChanged();
+		
+		return ret;
+	}
+	
+	public static int max(int... is)
+	{
+		int ret = Integer.MIN_VALUE;
+		
+		for (int i : is)
+		{
+			ret = Math.max(ret, i);
+			
+		}
 		
 		return ret;
 	}
 	
 	public static int min(int... is)
 	{
-		int min = Integer.MAX_VALUE;
+		int ret = Integer.MAX_VALUE;
 		
 		for (int i : is)
 		{
-			min = Math.min(min, i);
+			ret = Math.min(ret, i);
 			
 		}
 		
-		return min;
+		return ret;
 	}
 	
 }

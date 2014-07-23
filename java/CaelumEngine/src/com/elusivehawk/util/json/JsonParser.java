@@ -75,7 +75,7 @@ public final class JsonParser
 		return parseObj("", buf);
 	}
 	
-	public static JsonKeypair parseKeypair(Buffer<String> buf)  throws JsonParseException
+	public static JsonData parseKeypair(Buffer<String> buf)  throws JsonParseException
 	{
 		skipWhitespace(buf);
 		
@@ -93,18 +93,18 @@ public final class JsonParser
 		return parseContent(name, buf);
 	}
 	
-	public static JsonKeypair parseContent(String name, Buffer<String> buf) throws JsonParseException
+	public static JsonData parseContent(String name, Buffer<String> buf) throws JsonParseException
 	{
 		String str = buf.next(false).toLowerCase();
 		
 		switch (str)
 		{
-			case "\"": return new JsonKeypair(EnumJsonType.STRING, name, parseString(buf));
+			case "\"": return new JsonData(EnumJsonType.STRING, name, parseString(buf));
 			case "{": return parseObj(name, buf);
 			case "[": return parseArray(name, buf);
-			case "null": return new JsonKeypair(EnumJsonType.STRING, name, null);
+			case "null": return new JsonData(EnumJsonType.STRING, name, null);
 			case "true":
-			case "false": return new JsonKeypair(EnumJsonType.BOOL, name, str);
+			case "false": return new JsonData(EnumJsonType.BOOL, name, str);
 			
 		}
 		
@@ -143,12 +143,12 @@ public final class JsonParser
 			throw new JsonParseException("Not an object: %s", name);
 		}
 		
-		Map<String, JsonKeypair> m = Maps.newHashMap();
+		Map<String, JsonData> m = Maps.newHashMap();
 		boolean kill = false;
 		
 		while (!"}".equalsIgnoreCase(buf.next(false)))
 		{
-			JsonKeypair v = parseKeypair(buf);
+			JsonData v = parseKeypair(buf);
 			
 			if (m.containsKey(v.key))
 			{
@@ -174,7 +174,7 @@ public final class JsonParser
 			
 		}
 		
-		return new JsonObject(name, m);
+		return new JsonObject(name, m.values());
 	}
 	
 	public static JsonArray parseArray(String name, Buffer<String> buf) throws JsonParseException
@@ -184,7 +184,7 @@ public final class JsonParser
 			throw new JsonParseException("Not an array: %s", name);
 		}
 		
-		List<JsonKeypair> list = Lists.newArrayList();
+		List<JsonData> list = Lists.newArrayList();
 		boolean kill = false;
 		
 		while (!"]".equalsIgnoreCase(buf.next(false)))
@@ -213,7 +213,7 @@ public final class JsonParser
 		return new JsonArray(name, list);
 	}
 	
-	public static JsonKeypair parseInt(String name, Buffer<String> buf) throws JsonParseException
+	public static JsonData parseInt(String name, Buffer<String> buf) throws JsonParseException
 	{
 		String str = buf.next(false);
 		boolean neg = str.equalsIgnoreCase("-"), isFloat = false;
@@ -279,7 +279,7 @@ public final class JsonParser
 			
 		}
 		
-		return new JsonKeypair(isFloat ? EnumJsonType.FLOAT : EnumJsonType.INT, name, b.toString());
+		return new JsonData(isFloat ? EnumJsonType.FLOAT : EnumJsonType.INT, name, b.toString());
 	}
 	
 	public static String gatherInts(Buffer<String> buf)

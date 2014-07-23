@@ -24,7 +24,7 @@ import com.elusivehawk.util.StringHelper;
 import com.elusivehawk.util.Version;
 import com.elusivehawk.util.concurrent.IThreadStoppable;
 import com.elusivehawk.util.json.EnumJsonType;
-import com.elusivehawk.util.json.JsonKeypair;
+import com.elusivehawk.util.json.JsonData;
 import com.elusivehawk.util.json.JsonObject;
 import com.elusivehawk.util.json.JsonParser;
 import com.elusivehawk.util.storage.Tuple;
@@ -551,7 +551,7 @@ public final class CaelumEngine
 			return null;
 		}
 		
-		JsonKeypair curEnv = j.getValue(EnumOS.getCurrentOS().toString());
+		JsonData curEnv = j.getValue(EnumOS.getCurrentOS().toString());
 		
 		if (curEnv == null || curEnv.type != EnumJsonType.OBJECT)
 		{
@@ -559,7 +559,7 @@ public final class CaelumEngine
 		}
 		
 		this.envConfig = (JsonObject)curEnv;
-		JsonKeypair envLoc = this.envConfig.getValue("lib");
+		JsonData envLoc = this.envConfig.getValue("lib");
 		
 		if (envLoc == null || envLoc.type != EnumJsonType.STRING)
 		{
