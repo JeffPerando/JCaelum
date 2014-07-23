@@ -105,7 +105,7 @@ public abstract class Game implements IUpdatable, IPausable
 		return this.getGameVersion() == null ? this.name : String.format("%s %s", this.name, this.getGameVersion());
 	}
 	
-	//Optional/technical methods
+	//XXX Optional/technical methods
 	
 	public final void initiateGame(GameArguments args) throws Throwable
 	{
@@ -145,7 +145,7 @@ public abstract class Game implements IUpdatable, IPausable
 		
 	}
 	
-	//Game state stuff
+	//XXX Game state stuff
 	
 	public void setGameState(GameState gs)
 	{
@@ -159,7 +159,7 @@ public abstract class Game implements IUpdatable, IPausable
 		
 	}
 	
-	//Module things
+	//XXX Module things
 	
 	public synchronized void addModule(IUpdatable m)
 	{
@@ -195,18 +195,15 @@ public abstract class Game implements IUpdatable, IPausable
 		
 	}
 	
-	//Abstract methods
+	//XXX Abstract methods
 	
 	public abstract Version getGameVersion();
 	
 	protected abstract void initiate(GameArguments args) throws Throwable;
 	
-	/**
-	 * Called during shutdown.
-	 */
 	protected abstract void onGameShutdown();
 	
-	//Getters
+	//XXX Getters
 	
 	/**
 	 * 
