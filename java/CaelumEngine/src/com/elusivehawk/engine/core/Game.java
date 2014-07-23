@@ -21,8 +21,10 @@ public abstract class Game implements IUpdatable, IPausable
 {
 	public final String name;
 	
+	private final List<IGameStateListener> listeners = Lists.newArrayList();
+	private final List<IUpdatable> modules = Lists.newArrayList();
+	
 	private GameState state = null, nextState = null;
-	private List<IGameStateListener> listeners = Lists.newArrayList();
 	private boolean initiated = false, paused = false;
 	
 	@SuppressWarnings("unqualified-field-access")
@@ -103,6 +105,8 @@ public abstract class Game implements IUpdatable, IPausable
 		return this.getGameVersion() == null ? this.name : String.format("%s %s", this.name, this.getGameVersion());
 	}
 	
+	//Optional/technical methods
+	
 	public final void initiateGame(GameArguments args) throws Throwable
 	{
 		this.initiate(args);
@@ -141,6 +145,8 @@ public abstract class Game implements IUpdatable, IPausable
 		
 	}
 	
+	//Game state stuff
+	
 	public void setGameState(GameState gs)
 	{
 		this.nextState = gs;
@@ -153,9 +159,24 @@ public abstract class Game implements IUpdatable, IPausable
 		
 	}
 	
-	public abstract Version getGameVersion();
+	//Module things
 	
-	protected abstract void initiate(GameArguments args) throws Throwable;
+	public synchronized void addModule(IUpdatable m)
+	{
+		if (m instanceof Thread)
+		{
+			throw new CaelumException("Threads are NOT modules. Silly Buttons..."/*[sic]*/);
+		}
+		
+		this.modules.add(m);
+		
+	}
+	
+	public synchronized void removeModule(IUpdatable m)
+	{
+		this.modules.remove(m);
+		
+	}
 	
 	/**
 	 * 
@@ -164,12 +185,28 @@ public abstract class Game implements IUpdatable, IPausable
 	 * @param delta
 	 * @throws Throwable
 	 */
-	protected abstract void tick(double delta) throws Throwable;
+	protected void tick(double delta) throws Throwable
+	{
+		for (IUpdatable m : this.modules)
+		{
+			m.update(delta);
+			
+		}
+		
+	}
+	
+	//Abstract methods
+	
+	public abstract Version getGameVersion();
+	
+	protected abstract void initiate(GameArguments args) throws Throwable;
 	
 	/**
 	 * Called during shutdown.
 	 */
 	protected abstract void onGameShutdown();
+	
+	//Getters
 	
 	/**
 	 * 
