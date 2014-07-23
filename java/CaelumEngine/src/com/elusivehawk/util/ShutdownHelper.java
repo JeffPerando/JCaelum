@@ -27,10 +27,26 @@ public final class ShutdownHelper
 		
 	}
 	
+	public static void exit(String err)
+	{
+		int hash = err.hashCode();
+		
+		System.err.println(String.format("Exiting with err %s (%s)", hash, err));
+		
+		exit0(hash);
+		
+	}
+	
 	public static void exit(int err)
 	{
 		System.err.println(String.format("Exiting with err %s", err));
 		
+		exit0(err);
+		
+	}
+	
+	private static void exit0(int err)
+	{
 		ShutdownMechanism sm = instance().shutdown;
 		instance().shutdown = null;
 		

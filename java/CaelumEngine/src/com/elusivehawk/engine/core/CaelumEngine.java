@@ -285,14 +285,14 @@ public final class CaelumEngine
 			if (env == null)
 			{
 				this.log.log(EnumLogType.ERROR, String.format("Unable to load environment: Instance couldn't be created. Class: %s", clazz == null ? "NULL" : clazz.getCanonicalName()));
-				ShutdownHelper.exit("NO-ENVIRONMENT-FOUND".hashCode());
+				ShutdownHelper.exit("NO-ENVIRONMENT-FOUND");
 				
 			}
 			
 			if (!env.isCompatible(EnumOS.getCurrentOS()))
 			{
 				this.log.log(EnumLogType.ERROR, String.format("Unable to load environment: Current OS is incompatible. Class: %s; OS: %s", clazz == null ? "NULL" : clazz.getCanonicalName(), EnumOS.getCurrentOS()));
-				ShutdownHelper.exit("NO-ENVIRONMENT-FOUND".hashCode());
+				ShutdownHelper.exit("NO-ENVIRONMENT-FOUND");
 				
 			}
 			
@@ -345,7 +345,7 @@ public final class CaelumEngine
 			if (gamefac == null)
 			{
 				this.log.log(EnumLogType.ERROR, "Game factory not found: Factory not provided");
-				ShutdownHelper.exit("NO-FACTORY-FOUND".hashCode());
+				ShutdownHelper.exit("NO-FACTORY-FOUND");
 				
 			}
 			else
@@ -365,7 +365,7 @@ public final class CaelumEngine
 		if (this.factory == null)
 		{
 			this.log.log(EnumLogType.ERROR, "Game factory not found: Factory not provided");
-			ShutdownHelper.exit("NO-FACTORY-FOUND".hashCode());
+			ShutdownHelper.exit("NO-FACTORY-FOUND");
 			
 		}
 		
@@ -374,7 +374,7 @@ public final class CaelumEngine
 		if (g == null)
 		{
 			this.log.log(EnumLogType.ERROR, "Could not load game");
-			ShutdownHelper.exit("NO-GAME-FOUND".hashCode());
+			ShutdownHelper.exit("NO-GAME-FOUND");
 			
 		}
 		
@@ -401,7 +401,7 @@ public final class CaelumEngine
 		{
 			this.log.log(EnumLogType.ERROR, "Game failed to load!", e);
 			
-			ShutdownHelper.exit("GAME-LOAD-FAILURE".hashCode());
+			ShutdownHelper.exit("GAME-LOAD-FAILURE");
 			
 		}
 		
