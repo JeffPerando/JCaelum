@@ -49,6 +49,7 @@ public final class CaelumEngine
 	private final Map<EnumInputType, Input> inputs = Maps.newEnumMap(EnumInputType.class);
 	private final Map<String, String> startargs = Maps.newHashMap();
 	private final TaskManager tasks = new TaskManager();
+	private final List<String> startupPrefixes = Lists.newArrayList();
 	
 	private ILog log = new GameLog();
 	private IGameEnvironment env = null;
@@ -58,11 +59,15 @@ public final class CaelumEngine
 	private GameFactory factory = null;
 	private Game game = null;
 	private GameArguments gameargs = null;
-	private AssetManager assets = null;
+	private AssetManager assets = new AssetManager();
 	private RenderSystem rsys = null;
 	
 	private CaelumEngine()
 	{
+		this.startupPrefixes.add("env:");
+		this.startupPrefixes.add("gamefac:");
+		this.startupPrefixes.add("verbose:");
+		
 		if (EnumOS.getCurrentOS() != EnumOS.ANDROID)
 		{
 			Runtime.getRuntime().addShutdownHook(new Thread(() ->
@@ -191,15 +196,24 @@ public final class CaelumEngine
 		
 		for (String str : args)
 		{
-			if (str.indexOf(":") == -1)
+			boolean testForGameArg = true;
+			
+			for (String prefix : this.startupPrefixes)
 			{
-				gargs.add(str);
+				if (str.startsWith(prefix))
+				{
+					spl = StringHelper.splitOnce(str, ":");
+					strs.put(spl[0], spl[1]);
+					testForGameArg = false;
+					break;
+					
+				}
 				
 			}
-			else
+			
+			if (testForGameArg)
 			{
-				spl = StringHelper.splitOnce(str, ":");
-				strs.put(spl[0], spl[1]);
+				gargs.add(str);
 				
 			}
 			
@@ -407,7 +421,11 @@ public final class CaelumEngine
 		
 		//XXX Creating game threads
 		
-		this.assets = new AssetManager();
+		if (this.assets == null)
+		{
+			this.assets = new AssetManager();
+			
+		}
 		
 		this.game.loadAssets(this.assets);
 		this.assets.initiate();
