@@ -127,7 +127,7 @@ public class Connection implements IConnection
 	}
 	
 	@Override
-	public void clearPkt(Packet pkt)
+	public void flushPacket(Packet pkt)
 	{
 		this.incoming.remove(pkt);
 		
@@ -186,30 +186,22 @@ public class Connection implements IConnection
 	}
 	
 	@Override
-	public byte[] decryptData(ByteBuffer buf)
+	public ByteBuffer decryptData(ByteBuffer buf)
 	{
 		return null;//FIXME
 	}
 	
 	@Override
-	public void encryptData(byte[] b, ByteBuffer buf)
+	public void encryptData(ByteBuffer in, ByteBuffer out)
 	{
-		byte[] info = null;
-		
 		try
 		{
 			Cipher cipher = Cipher.getInstance("RSA");
 			cipher.init(Cipher.ENCRYPT_MODE, this.pub);
-			info = cipher.doFinal(b);
+			cipher.doFinal(in, out);
 			
 		}
 		catch (Exception e){}
-		
-		if (info != null)
-		{
-			buf.put(info);
-			
-		}
 		
 	}
 	

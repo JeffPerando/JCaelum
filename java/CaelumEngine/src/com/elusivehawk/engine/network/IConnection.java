@@ -25,7 +25,7 @@ public interface IConnection extends Closeable
 	
 	public ImmutableList<Packet> getOutgoingPackets();
 	
-	public void clearPkt(Packet pkt);
+	public void flushPacket(Packet pkt);
 	
 	default boolean connect(ConnectionType type, IP ip)
 	{
@@ -47,8 +47,8 @@ public interface IConnection extends Closeable
 	
 	public void close(boolean closeSkt);
 	
-	public byte[] decryptData(ByteBuffer buf);
+	public ByteBuffer decryptData(ByteBuffer buf);
 	
-	public void encryptData(byte[] in, ByteBuffer out);
+	public void encryptData(ByteBuffer in, ByteBuffer out);
 	
 }

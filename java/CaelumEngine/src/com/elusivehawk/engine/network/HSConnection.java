@@ -39,12 +39,6 @@ public class HSConnection implements IPacketHandler, IConnection
 	}
 	
 	@Override
-	public boolean isPacketSafe(Packet pkt)
-	{
-		return this.master.isPacketSafe(pkt);
-	}
-	
-	@Override
 	public Side getSide()
 	{
 		return this.master.getSide();
@@ -58,16 +52,15 @@ public class HSConnection implements IPacketHandler, IConnection
 	}
 	
 	@Override
-	public byte[] decryptData(ByteBuffer buf)
+	public ByteBuffer decryptData(ByteBuffer buf)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return this.connect.decryptData(buf);
 	}
 	
 	@Override
-	public void encryptData(byte[] r, ByteBuffer buf)
+	public void encryptData(ByteBuffer in, ByteBuffer out)
 	{
-		// TODO Auto-generated method stub
+		this.connect.encryptData(in, out);
 		
 	}
 	
@@ -102,9 +95,9 @@ public class HSConnection implements IPacketHandler, IConnection
 	}
 	
 	@Override
-	public void clearPkt(Packet pkt)
+	public void flushPacket(Packet pkt)
 	{
-		this.connect.clearPkt(pkt);
+		this.connect.flushPacket(pkt);
 		
 	}
 	

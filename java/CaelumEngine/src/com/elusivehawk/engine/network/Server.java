@@ -110,12 +110,6 @@ public class Server implements IHost
 	}
 	
 	@Override
-	public boolean isPacketSafe(Packet pkt)
-	{
-		return this.master.isPacketSafe(pkt);
-	}
-	
-	@Override
 	public Side getSide()
 	{
 		return Side.SERVER;

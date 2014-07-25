@@ -18,9 +18,7 @@ public final class Serializers
 				@Override
 				public int toBytes(IByteWriter w, Boolean b)
 				{
-					w.write((byte)(b ? 1 : 0));
-					
-					return 1;
+					return w.write((byte)(b ? 1 : 0));
 				}
 				
 				@Override
@@ -35,9 +33,7 @@ public final class Serializers
 				@Override
 				public int toBytes(IByteWriter w, Byte b)
 				{
-					w.write(b);
-					
-					return 1;
+					return w.write(b);
 				}
 				
 				@Override
@@ -52,9 +48,7 @@ public final class Serializers
 				@Override
 				public int toBytes(IByteWriter w, Short s)
 				{
-					w.write((byte)(s & 255), (byte)((s >> 8) & 255));
-					
-					return 1;
+					return w.write((byte)(s & 255), (byte)((s >> 8) & 255));
 				}
 				
 				@Override
@@ -69,13 +63,20 @@ public final class Serializers
 				@Override
 				public int toBytes(IByteWriter w, Integer i)
 				{
+					int ret = 0;
+					
 					for (int c = 0; c < 4; c++)
 					{
-						w.write((byte)(i >> (c * 8) & 255));
+						if (w.write((byte)(i >> (c * 8) & 255)) == 0)
+						{
+							break;
+						}
+						
+						ret++;
 						
 					}
 					
-					return 4;
+					return ret;
 				}
 				
 				@Override
@@ -98,13 +99,20 @@ public final class Serializers
 				@Override
 				public int toBytes(IByteWriter w, Long l)
 				{
-					for (int c = 0; c < 8; c++)
+					int ret = 0;
+					
+					for (int c = 0; c < 4; c++)
 					{
-						w.write((byte)(l >> (c * 8) & 255));
+						if (w.write((byte)(l >> (c * 8) & 255)) == 0)
+						{
+							break;
+						}
+						
+						ret++;
 						
 					}
 					
-					return 8;
+					return ret;
 				}
 				
 				@Override
@@ -157,7 +165,7 @@ public final class Serializers
 				@Override
 				public int toBytes(IByteWriter w, String str)
 				{
-					SHORT.toBytes(w, (short)str.length());
+					INTEGER.toBytes(w, str.length());
 					
 					for (int c = 0; c < str.length(); c++)
 					{
@@ -165,13 +173,13 @@ public final class Serializers
 						
 					}
 					
-					return (str.length() + 1) * 2;
+					return (str.length() * 2) + 4;
 				}
 				
 				@Override
 				public String fromBytes(IByteReader b)
 				{
-					char[] str = new char[SHORT.fromBytes(b) & 0xFFFF];
+					char[] str = new char[INTEGER.fromBytes(b)];
 					
 					for (int c = 0; c < str.length; c++)
 					{

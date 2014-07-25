@@ -9,9 +9,11 @@ package com.elusivehawk.engine.network;
  */
 public final class NetworkConst
 {
-	public static final int HEADER_LENGTH = 3,
-			DATA_LENGTH = 8192,
-			TOTAL_PKT_LENGTH = HEADER_LENGTH + DATA_LENGTH,
-			PKT_LIMIT = 32;
+	public static final int KB = 1024;
+	public static final int MB = KB * 1024;
+	
+	public static final int HEADER_LENGTH = 5;
+	public static final int DATA_LENGTH = (4 * MB);
+	public static final int PKT_LIMIT = 32;
 	
 }

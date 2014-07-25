@@ -99,12 +99,6 @@ public class Client implements IHost
 	}
 	
 	@Override
-	public boolean isPacketSafe(Packet pkt)
-	{
-		return this.master.isPacketSafe(pkt);
-	}
-	
-	@Override
 	public UUID connect(UUID id, IP ip, ConnectionType type)
 	{
 		if (this.connection != null)

@@ -1,81 +1,174 @@
 
 package com.elusivehawk.engine.network;
 
+import java.nio.ByteBuffer;
+import java.util.UUID;
 import com.elusivehawk.engine.math.MathHelper;
-import com.elusivehawk.util.FixMe;
+import com.elusivehawk.util.BufferHelper;
+import com.elusivehawk.util.io.IByteReader;
 import com.elusivehawk.util.io.IByteWriter;
+import com.elusivehawk.util.io.Serializers;
 
 /**
  * 
- * The core packet class.
- * <p>
- * Stores two things: The current format (Which is how it will be read on the other side), and the data the packet is taking along.
- * <p>
- * All data needs to have a corresponding {@link DataType}, no exceptions.
+ * 
  * 
  * @author Elusivehawk
  */
-public final class Packet implements IByteWriter
+public class Packet implements IByteReader, IByteWriter
 {
-	private final Side side;
-	private final byte[] data;
-	private int pos = 0;
+	private final ByteBuffer data;
+	private boolean potenCorrupt = false;
 	
-	public Packet(Side s, int length)
+	public Packet(int size)
 	{
-		this(s, new byte[MathHelper.clamp(length, 1, NetworkConst.DATA_LENGTH) + NetworkConst.HEADER_LENGTH]);
+		this(BufferHelper.createByteBuffer(size));
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Packet(Side s, byte[] b)
+	public Packet(ByteBuffer info)
 	{
-		assert b != null;
-		assert MathHelper.bounds(b.length, 1, NetworkConst.TOTAL_PKT_LENGTH);
+		assert MathHelper.bounds(info.capacity(), 1, NetworkConst.DATA_LENGTH);
 		
-		side = s;
-		data = b;
-		
-		data[0] = (byte)s.ordinal();
-		
-		int l = this.getDataSize();
-		
-		data[1] = (byte)(l & 0xFF);
-		data[2] = (byte)((l >> 8) & 0xFF);
+		data = info;
 		
 	}
 	
-	@FixMe//FIXME
 	@Override
 	public int write(byte... bytes)
 	{
-		if (this.pos == this.getDataSize())
-		{
-			return 0;
-		}
+		int rem = this.data.remaining();
 		
-		for (byte b : bytes)
-		{
-			this.data[(NetworkConst.HEADER_LENGTH + this.pos++)] = b;
-			
-		}
+		this.data.put(bytes);
 		
-		return -1;
+		return rem - this.data.remaining();
+	}
+	
+	@Override
+	public int remaining()
+	{
+		return this.data.remaining();
+	}
+	
+	@Override
+	public byte read()
+	{
+		return this.data.get();
 	}
 	
 	public int getDataSize()
 	{
-		return this.data.length - 3;
+		return this.data.capacity();
 	}
 	
-	public byte[] getBytes()
+	public ByteBuffer getBytes()
 	{
 		return this.data;
 	}
 	
-	public Side getSide()
+	public boolean readBool()
 	{
-		return this.side;
+		return this.data.get() == 1;
+	}
+	
+	public double readDouble()
+	{
+		return Serializers.DOUBLE.fromBytes(this);
+	}
+	
+	public float readFloat()
+	{
+		return Serializers.FLOAT.fromBytes(this);
+	}
+	
+	public int readInt()
+	{
+		return Serializers.INTEGER.fromBytes(this);
+	}
+	
+	public long readLong()
+	{
+		return Serializers.LONG.fromBytes(this);
+	}
+	
+	public short readShort()
+	{
+		return Serializers.SHORT.fromBytes(this);
+	}
+	
+	public String readString()
+	{
+		return Serializers.STRING.fromBytes(this);
+	}
+	
+	public UUID readUUID()
+	{
+		return Serializers.UUID.fromBytes(this);
+	}
+	
+	public void writeBool(boolean b)
+	{
+		this.data.put((byte)(b ? 1 : 0));
+		
+	}
+	
+	public void writeByte(byte b)
+	{
+		this.data.put(b);
+		
+	}
+	
+	public void writeDouble(double d)
+	{
+		Serializers.DOUBLE.toBytes(this, d);
+		
+	}
+	
+	public void writeFloat(float f)
+	{
+		Serializers.FLOAT.toBytes(this, f);
+	}
+	
+	public void writeInt(int i)
+	{
+		Serializers.INTEGER.toBytes(this, i);
+		
+	}
+	
+	public void writeLong(long l)
+	{
+		Serializers.LONG.toBytes(this, l);
+		
+	}
+	
+	public void writeShort(short s)
+	{
+		Serializers.SHORT.toBytes(this, s);
+		
+	}
+	
+	public void writeString(String str)
+	{
+		Serializers.STRING.toBytes(this, str);
+		
+	}
+	
+	public void writeUUID(UUID uuid)
+	{
+		Serializers.UUID.toBytes(this, uuid);
+		
+	}
+	
+	public boolean mightBeCorrupt()
+	{
+		return this.potenCorrupt;
+	}
+	
+	public void markPotentiallyCorrupt()
+	{
+		this.potenCorrupt = true;
+		
 	}
 	
 }

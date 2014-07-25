@@ -41,7 +41,7 @@ public class ThreadNetwork extends ThreadStoppable
 	
 	//Outgoing
 	
-	protected final ByteBuffer bout = ByteBuffer.allocate(NetworkConst.TOTAL_PKT_LENGTH * NetworkConst.PKT_LIMIT);
+	protected final ByteBuffer bout = ByteBuffer.allocate((NetworkConst.DATA_LENGTH + NetworkConst.HEADER_LENGTH) * NetworkConst.PKT_LIMIT);
 	
 	@SuppressWarnings("unqualified-field-access")
 	public ThreadNetwork(IPacketHandler h, int playerCount)
@@ -80,11 +80,10 @@ public class ThreadNetwork extends ThreadStoppable
 		}
 		
 		byte s;
-		short length;
-		byte[] b;
+		int length;
+		ByteBuffer b;
 		List<Packet> pkts = null;
 		Packet pkt;
-		Side side;
 		
 		int select = this.selector.selectNow();
 		
@@ -111,11 +110,9 @@ public class ThreadNetwork extends ThreadStoppable
 						while (io.read(this.head) != -1)
 						{
 							s = this.head.get();
-							length = (short)MathHelper.clamp(this.head.getShort(), 1, NetworkConst.DATA_LENGTH);//Get the remaining packet length
+							length = MathHelper.clamp(this.head.getInt(), 1, NetworkConst.DATA_LENGTH);//Get the remaining packet length
 							
 							this.head.clear();//Clear the buffer for reuse
-							
-							this.bin.limit(length);//Make sure we can't go over
 							
 							io.read(this.bin);//Read the data
 							
@@ -126,26 +123,26 @@ public class ThreadNetwork extends ThreadStoppable
 								continue;
 							}
 							
-							side = Side.values()[s];
-							
-							if (!this.handler.getSide().canReceive(side))//Maintains the good ol' side check
+							if (!this.handler.getSide().canReceive(Side.values()[s]))//If the packet isn't meant for this side to receive it...
 							{
 								continue;
 							}
 							
-							pkt = new Packet(Side.values()[s], b);
-							
-							if (this.handler.isPacketSafe(pkt))//Is the packet is safe...
+							if (pkts == null)//Dynamically load the packet list with a soft limit of 32 packets.
 							{
-								if (pkts == null)//Dynamically load the packet list with a soft limit of 32 packets.
-								{
-									pkts = Lists.newArrayListWithCapacity(32);
-									
-								}
+								pkts = Lists.newArrayListWithCapacity(32);
 								
-								//Schedule the packet to be sent to the game.
-								
-								pkts.add(pkt);
+							}
+							
+							//Schedule the packet to be sent to the game.
+							
+							pkt = new Packet(b);
+							
+							pkts.add(pkt);
+							
+							if (b.capacity() != length)//TODO Investigate this.
+							{
+								pkt.markPotentiallyCorrupt();
 								
 							}
 							
@@ -171,19 +168,15 @@ public class ThreadNetwork extends ThreadStoppable
 						{
 							pkt = pktItr.next();
 							
-							if (!this.handler.getSide().canSend(pkt.getSide()))
-							{
-								continue;
-							}
+							b = pkt.getBytes();
 							
-							if (!this.handler.isPacketSafe(pkt))
-							{
-								continue;
-							}
+							this.bout.put((byte)this.handler.getSide().ordinal());
 							
-							info.two.encryptData(pkt.getBytes(), this.bout);
+							this.bout.putInt(b.capacity() - b.remaining());
 							
-							info.two.clearPkt(pkt);
+							info.two.encryptData(b, this.bout);
+							
+							info.two.flushPacket(pkt);
 							
 						}
 						
