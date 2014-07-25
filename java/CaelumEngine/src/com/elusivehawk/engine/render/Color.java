@@ -85,7 +85,16 @@ public class Color
 				continue;
 			}
 			
-			color = (color << f.getColorOffset(col)) | buf.read();
+			try
+			{
+				color = (color << f.getColorOffset(col)) | buf.read();
+				
+			}
+			catch (Throwable e)
+			{
+				e.printStackTrace();
+				break;
+			}
 			
 		}
 		

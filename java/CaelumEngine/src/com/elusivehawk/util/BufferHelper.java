@@ -109,13 +109,22 @@ public final class BufferHelper
 	{
 		ByteBuffer ret = createByteBuffer(length);
 		
-		for (int c = 0; c < length; c++)
+		try
 		{
-			ret.put(r.read());
+			for (int c = 0; c < length; c++)
+			{
+				ret.put(r.read());
+				
+			}
+			
+			ret.flip();
 			
 		}
-		
-		ret.flip();
+		catch (Throwable e)
+		{
+			e.printStackTrace();
+			
+		}
 		
 		return ret;
 	}

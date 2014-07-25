@@ -52,6 +52,13 @@ public class HSConnection implements IPacketHandler, IConnection
 	}
 	
 	@Override
+	public void onPacketDropped(Packet pkt)
+	{
+		this.master.onPacketDropped(pkt);
+		
+	}
+	
+	@Override
 	public ByteBuffer decryptData(ByteBuffer buf)
 	{
 		return this.connect.decryptData(buf);

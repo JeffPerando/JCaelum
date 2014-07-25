@@ -76,6 +76,13 @@ public class Client implements IHost
 		
 	}
 	
+	@Override
+	public void onPacketDropped(Packet pkt)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	
 	/*
 	@Override
 	public ByteBuffer decryptData(ByteBuffer buf)

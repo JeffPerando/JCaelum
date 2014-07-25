@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.network;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.UUID;
 import com.elusivehawk.engine.math.MathHelper;
@@ -18,7 +19,7 @@ import com.elusivehawk.util.io.Serializers;
 public class Packet implements IByteReader, IByteWriter
 {
 	private final ByteBuffer data;
-	private boolean potenCorrupt = false;
+	private boolean potenCorrupt = false, write = true;
 	
 	public Packet(int size)
 	{
@@ -29,15 +30,20 @@ public class Packet implements IByteReader, IByteWriter
 	@SuppressWarnings("unqualified-field-access")
 	public Packet(ByteBuffer info)
 	{
-		assert MathHelper.bounds(info.capacity(), 1, NetworkConst.DATA_LENGTH);
+		assert MathHelper.bounds(info.remaining(), 1, NetworkConst.DATA_LENGTH);
 		
-		data = info;
+		data = BufferHelper.makeByteBuffer(info.slice());
 		
 	}
 	
 	@Override
 	public int write(byte... bytes)
 	{
+		if (!this.write)
+		{
+			return -1;
+		}
+		
 		int rem = this.data.remaining();
 		
 		this.data.put(bytes);
@@ -52,8 +58,13 @@ public class Packet implements IByteReader, IByteWriter
 	}
 	
 	@Override
-	public byte read()
+	public byte read() throws IOException
 	{
+		if (this.write)
+		{
+			throw new IOException("Cannot read bytes when in write mode!");
+		}
+		
 		return this.data.get();
 	}
 	
@@ -113,12 +124,6 @@ public class Packet implements IByteReader, IByteWriter
 		
 	}
 	
-	public void writeByte(byte b)
-	{
-		this.data.put(b);
-		
-	}
-	
 	public void writeDouble(double d)
 	{
 		Serializers.DOUBLE.toBytes(this, d);
@@ -165,9 +170,22 @@ public class Packet implements IByteReader, IByteWriter
 		return this.potenCorrupt;
 	}
 	
+	public boolean canWrite()
+	{
+		return this.write;
+	}
+	
 	public void markPotentiallyCorrupt()
 	{
 		this.potenCorrupt = true;
+		
+	}
+	
+	public void markForReading()
+	{
+		this.write = false;
+		
+		this.data.flip();
 		
 	}
 	

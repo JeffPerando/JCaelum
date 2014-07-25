@@ -49,15 +49,16 @@ public final class TagReaderRegistry implements Serializer<Tag<?>>
 	{
 		String name = Serializers.STRING.fromBytes(r);
 		
-		byte id = r.read();
+		byte id;
 		Serializer<T> s = null;
 		
 		try
 		{
+			id = r.read();
 			s  = this.getSerializer(id);
 			
 		}
-		catch (ClassCastException e)
+		catch (Throwable e)
 		{
 			e.printStackTrace();
 			return null;

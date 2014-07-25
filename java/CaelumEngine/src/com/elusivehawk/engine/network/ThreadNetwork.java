@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import com.elusivehawk.engine.math.MathHelper;
+import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.concurrent.ThreadStoppable;
 import com.elusivehawk.util.storage.Tuple;
 import com.google.common.collect.ImmutableList;
@@ -34,14 +35,9 @@ public class ThreadNetwork extends ThreadStoppable
 	
 	protected final Selector selector;
 	
-	//Incoming
-	
-	protected final ByteBuffer head = ByteBuffer.allocate(NetworkConst.HEADER_LENGTH),
-			bin = ByteBuffer.allocate(NetworkConst.DATA_LENGTH);
-	
-	//Outgoing
-	
-	protected final ByteBuffer bout = ByteBuffer.allocate((NetworkConst.DATA_LENGTH + NetworkConst.HEADER_LENGTH) * NetworkConst.PKT_LIMIT);
+	protected final ByteBuffer bin = BufferHelper.createByteBuffer(NetworkConst.HEADER_LENGTH + NetworkConst.DATA_LENGTH * 4),
+			bout = BufferHelper.createByteBuffer(NetworkConst.HEADER_LENGTH + NetworkConst.DATA_LENGTH * NetworkConst.PKT_LIMIT),
+			tmp = BufferHelper.createByteBuffer(NetworkConst.HEADER_LENGTH + NetworkConst.DATA_LENGTH);
 	
 	@SuppressWarnings("unqualified-field-access")
 	public ThreadNetwork(IPacketHandler h, int playerCount)
@@ -107,21 +103,22 @@ public class ThreadNetwork extends ThreadStoppable
 					
 					if (key.isReadable())
 					{
-						while (io.read(this.head) != -1)
+						if (io.read(this.bin) == -1)
 						{
-							s = this.head.get();
-							length = MathHelper.clamp(this.head.getInt(), 1, NetworkConst.DATA_LENGTH);//Get the remaining packet length
-							
-							this.head.clear();//Clear the buffer for reuse
-							
-							io.read(this.bin);//Read the data
-							
-							b = info.two.decryptData(this.bin);//Decrypt the data
-							
-							if (b == null)//Unlikely, but...
-							{
-								continue;
-							}
+							continue;
+						}
+						
+						b = info.two.decryptData(this.bin);//Decrypt the data
+						
+						if (b == null)//Unlikely, but...
+						{
+							continue;
+						}
+						
+						while (b.remaining() > 0)
+						{
+							s = b.get();
+							length = MathHelper.clamp(this.bin.getInt(), 1, NetworkConst.DATA_LENGTH);//Get the remaining packet length
 							
 							if (!this.handler.getSide().canReceive(Side.values()[s]))//If the packet isn't meant for this side to receive it...
 							{
@@ -139,6 +136,7 @@ public class ThreadNetwork extends ThreadStoppable
 							pkt = new Packet(b);
 							
 							pkts.add(pkt);
+							pkt.markForReading();
 							
 							if (b.capacity() != length)//TODO Investigate this.
 							{
@@ -146,9 +144,9 @@ public class ThreadNetwork extends ThreadStoppable
 								
 							}
 							
-							this.bin.clear();//Clear the incoming bytes to prepare for the next packet.
-							
 						}
+						
+						this.bin.clear();//Clear the incoming bytes to prepare for the next packet.
 						
 						if (pkts != null)
 						{
@@ -168,15 +166,26 @@ public class ThreadNetwork extends ThreadStoppable
 						{
 							pkt = pktItr.next();
 							
+							if (pkt.canWrite())
+							{
+								pktItr.remove();
+								
+								this.handler.onPacketDropped(pkt);
+								
+								continue;
+							}
+							
 							b = pkt.getBytes();
 							
-							this.bout.put((byte)this.handler.getSide().ordinal());
+							this.tmp.put((byte)this.handler.getSide().ordinal());
+							this.tmp.putInt(b.capacity() - b.remaining());
+							this.tmp.put(b);
 							
-							this.bout.putInt(b.capacity() - b.remaining());
-							
-							info.two.encryptData(b, this.bout);
+							info.two.encryptData(this.tmp, this.bout);
 							
 							info.two.flushPacket(pkt);
+							
+							this.tmp.clear();
 							
 						}
 						

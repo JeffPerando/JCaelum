@@ -24,7 +24,17 @@ public final class Serializers
 				@Override
 				public Boolean fromBytes(IByteReader b)
 				{
-					return b.read() != 0;
+					try
+					{
+						return b.read() != 0;
+					}
+					catch (Throwable e)
+					{
+						e.printStackTrace();
+						
+					}
+					
+					return false;
 				}
 				
 			};
@@ -39,7 +49,16 @@ public final class Serializers
 				@Override
 				public Byte fromBytes(IByteReader b)
 				{
-					return b.read();
+					try
+					{
+						return b.read();
+					}
+					catch (Throwable e)
+					{
+						e.printStackTrace();
+					}
+					
+					return null;
 				}
 				
 			};
@@ -54,7 +73,17 @@ public final class Serializers
 				@Override
 				public Short fromBytes(IByteReader b)
 				{
-					return (short)(b.read() | (b.read() << 8));
+					try
+					{
+						return (short)(b.read() | (b.read() << 8));
+					}
+					catch (Throwable e)
+					{
+						e.printStackTrace();
+						
+					}
+					
+					return null;
 				}
 				
 			};
@@ -86,7 +115,16 @@ public final class Serializers
 					
 					for (int c = 0; c < 4; c++)
 					{
-						ret = (ret << 8) | b.read();
+						try
+						{
+							ret = (ret << 8) | b.read();
+							
+						}
+						catch (Throwable e)
+						{
+							e.printStackTrace();
+							break;
+						}
 						
 					}
 					
@@ -122,7 +160,16 @@ public final class Serializers
 					
 					for (int c = 0; c < 8; c++)
 					{
-						ret = (ret << 8) | b.read();
+						try
+						{
+							ret = (ret << 8) | b.read();
+							
+						}
+						catch (Throwable e)
+						{
+							e.printStackTrace();
+							break;
+						}
 						
 					}
 					

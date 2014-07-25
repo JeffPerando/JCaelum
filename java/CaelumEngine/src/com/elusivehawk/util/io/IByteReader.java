@@ -11,11 +11,16 @@ public interface IByteReader
 {
 	public int remaining();
 	
-	public byte read();
+	public byte read() throws Throwable;
 	
-	default byte[] readAll()
+	default byte[] readAll() throws Throwable
 	{
-		byte[] ret = new byte[this.remaining()];
+		return this.read(this.remaining());
+	}
+	
+	default byte[] read(int count) throws Throwable
+	{
+		byte[] ret = new byte[count];
 		
 		for (int c = 0; c < ret.length; c++)
 		{

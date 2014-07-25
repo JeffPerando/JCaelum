@@ -26,4 +26,7 @@ public interface IPacketHandler extends IPacketListener
 	 */
 	public void onDisconnect(IConnection connect);
 	
+	@SuppressWarnings("unused")
+	default void onPacketDropped(Packet pkt){}
+	
 }

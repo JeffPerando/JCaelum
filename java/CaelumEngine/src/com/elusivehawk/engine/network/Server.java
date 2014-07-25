@@ -124,6 +124,14 @@ public class Server implements IHost
 		this.playerCount--;
 		
 	}
+	
+	@Override
+	public void onPacketDropped(Packet pkt)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	
 	/*
 	@Override
 	public ByteBuffer decryptData(ByteBuffer buf)
