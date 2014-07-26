@@ -1,7 +1,10 @@
 
-package com.elusivehawk.engine.render;
+package com.elusivehawk.engine.render.old;
 
 import java.util.Collection;
+import com.elusivehawk.engine.render.DisplaySettings;
+import com.elusivehawk.engine.render.EnumRenderMode;
+import com.elusivehawk.engine.render.IDisplay;
 
 /**
  * 
@@ -9,6 +12,7 @@ import java.util.Collection;
  * 
  * @author Elusivehawk
  */
+@Deprecated
 public interface IRenderHUB
 {
 	/**

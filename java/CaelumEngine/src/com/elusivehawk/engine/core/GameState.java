@@ -2,7 +2,8 @@
 package com.elusivehawk.engine.core;
 
 import com.elusivehawk.engine.physics.IPhysicsSimulator;
-import com.elusivehawk.engine.render.IRenderHUB;
+import com.elusivehawk.engine.render.RenderContext;
+import com.elusivehawk.engine.render.old.IRenderHUB;
 import com.elusivehawk.util.IUpdatable;
 
 /**
@@ -17,16 +18,11 @@ public abstract class GameState implements IUpdatable
 	
 	public abstract void finish();
 	
-	@SuppressWarnings("static-method")
-	public IRenderHUB getRenderHUB()
-	{
-		return null;
-	}
+	@Deprecated
+	public abstract IRenderHUB getRenderHUB();
 	
-	@SuppressWarnings("static-method")
-	public IPhysicsSimulator getPhysicsSimulator()
-	{
-		return null;
-	}
+	public abstract void render(RenderContext rcon, double delta);
+	
+	public abstract IPhysicsSimulator getPhysicsSimulator();
 	
 }

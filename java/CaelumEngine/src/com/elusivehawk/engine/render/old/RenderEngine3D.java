@@ -1,17 +1,16 @@
 
-package com.elusivehawk.engine.render.three;
+package com.elusivehawk.engine.render.old;
 
 import java.util.Collection;
 import java.util.List;
 import com.elusivehawk.engine.render.EnumRenderMode;
-import com.elusivehawk.engine.render.IRenderEngine;
-import com.elusivehawk.engine.render.IRenderHUB;
-import com.elusivehawk.engine.render.IScene;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGL1;
+import com.elusivehawk.engine.render.three.Model;
+import com.elusivehawk.engine.render.three.RenderTicket;
 
 /**
  * 
@@ -19,6 +18,7 @@ import com.elusivehawk.engine.render.opengl.IGL1;
  * 
  * @author Elusivehawk
  */
+@Deprecated
 public class RenderEngine3D implements IRenderEngine
 {
 	@Override

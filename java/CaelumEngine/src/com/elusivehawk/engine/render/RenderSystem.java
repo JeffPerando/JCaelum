@@ -8,6 +8,8 @@ import com.elusivehawk.engine.core.GameState;
 import com.elusivehawk.engine.core.IContext;
 import com.elusivehawk.engine.core.IGameStateListener;
 import com.elusivehawk.engine.core.IThreadContext;
+import com.elusivehawk.engine.render.old.IRenderEngine;
+import com.elusivehawk.engine.render.old.IRenderHUB;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.util.IPausable;
@@ -131,6 +133,8 @@ public final class RenderSystem implements IPausable, IGameStateListener, IThrea
 			boolean flag = true;
 			
 			this.context.setRenderStage(EnumRenderStage.RENDER);
+			
+			CaelumEngine.game().render(this.context, delta);
 			
 			gl1.glClear(GLConst.GL_COLOR_BUFFER_BIT | GLConst.GL_DEPTH_BUFFER_BIT);
 			

@@ -1,7 +1,6 @@
 
-package com.elusivehawk.engine.render;
+package com.elusivehawk.engine.render.old;
 
-import com.elusivehawk.engine.render.three.IModelGroup;
 import com.elusivehawk.util.storage.SyncList;
 
 /**
@@ -10,6 +9,7 @@ import com.elusivehawk.util.storage.SyncList;
  * 
  * @author Elusivehawk
  */
+@Deprecated
 public interface IScene
 {
 	public SyncList<IModelGroup> getModels();

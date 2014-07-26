@@ -39,18 +39,26 @@ public abstract class NetworkGame extends Game implements INetworkMaster
 	public abstract int getMaxPlayerCount(GameArguments args);
 	
 	@Override
+	protected void preInit(GameArguments args)
+	{
+		switch (this.side)
+		{
+			case CLIENT: this.host = new Client(this, this.port);
+			case SERVER: this.host = new Server(this, this.port, this.getMaxPlayerCount(args));
+		}
+		
+	}
+	
+	@Override
 	protected void initiate(GameArguments args) throws Throwable
 	{
-		if (this.side == Side.CLIENT)
+		if (this.side != Side.SERVER)
 		{
-			this.host = new Client(this, this.port);
+			
 			
 		}
-		else if (this.side == Side.SERVER)
-		{
-			this.host = new Server(this, this.port, this.getMaxPlayerCount(args));
-			
-		}
+		
+		this.host.beginComm();
 		
 	}
 	

@@ -7,6 +7,7 @@ import java.util.Map;
 import com.elusivehawk.engine.assets.Shader;
 import com.elusivehawk.engine.assets.Texture;
 import com.elusivehawk.engine.core.IContext;
+import com.elusivehawk.engine.render.old.IRenderHUB;
 import com.elusivehawk.engine.render.opengl.GLEnumShader;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGL1;
@@ -43,7 +44,9 @@ public final class RenderContext implements IContext
 	private final Map<EnumRenderMode, List<IGLManipulator>> manipulators = Maps.newHashMapWithExpectedSize(3);
 	
 	private EnumRenderStage stage = null;
-	private boolean initiated = false, flipScreen = false;
+	private boolean //Hey, I sorta like that...
+			initiated = false,
+			flipScreen = false;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public RenderContext(RenderSystem rsys)

@@ -12,10 +12,10 @@ import com.elusivehawk.engine.assets.AssetManager;
 import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.assets.TaskLoadAsset;
 import com.elusivehawk.engine.render.IRenderEnvironment;
-import com.elusivehawk.engine.render.IRenderHUB;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderSystem;
 import com.elusivehawk.engine.render.ThreadGameRender;
+import com.elusivehawk.engine.render.old.IRenderHUB;
 import com.elusivehawk.util.EnumOS;
 import com.elusivehawk.util.FileHelper;
 import com.elusivehawk.util.IPausable;
@@ -411,7 +411,7 @@ public final class CaelumEngine
 		
 		this.tasks.start();
 		
-		g.preInit();
+		g.preInit(this.gameargs);
 		
 		this.log.log(EnumLogType.INFO,"Loading %s", g);
 		
@@ -467,9 +467,9 @@ public final class CaelumEngine
 			
 		}
 		
-		//this.threads.put(EnumEngineFeature.SOUND, new ThreadSoundPlayer());
+		/*this.threads.put(EnumEngineFeature.SOUND, new ThreadSoundPlayer());
 		
-		/*IPhysicsSimulator ph = this.game.getPhysicsSimulator();
+		IPhysicsSimulator ph = this.game.getPhysicsSimulator();
 		
 		if (ph != null)
 		{

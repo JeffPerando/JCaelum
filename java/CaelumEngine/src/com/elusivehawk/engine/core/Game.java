@@ -4,7 +4,9 @@ package com.elusivehawk.engine.core;
 import java.util.List;
 import com.elusivehawk.engine.assets.AssetManager;
 import com.elusivehawk.engine.physics.IPhysicsSimulator;
-import com.elusivehawk.engine.render.IRenderHUB;
+import com.elusivehawk.engine.render.RenderContext;
+import com.elusivehawk.engine.render.RenderHelper;
+import com.elusivehawk.engine.render.old.IRenderHUB;
 import com.elusivehawk.util.IPausable;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.Version;
@@ -107,6 +109,8 @@ public abstract class Game implements IUpdatable, IPausable
 	
 	//XXX Optional/technical methods
 	
+	protected void preInit(GameArguments args){}
+	
 	public final void initiateGame(GameArguments args) throws Throwable
 	{
 		this.initiate(args);
@@ -121,8 +125,6 @@ public abstract class Game implements IUpdatable, IPausable
 		}
 		
 	}
-	
-	public void preInit(){}
 	
 	public void loadAssets(AssetManager mgr){}
 	
@@ -211,9 +213,30 @@ public abstract class Game implements IUpdatable, IPausable
 	 * 
 	 * @return The rendering HUB to be used to render the game.
 	 */
+	@Deprecated
 	public IRenderHUB getRenderHUB()
 	{
 		return this.state == null ? null : this.state.getRenderHUB();
+	}
+	
+	/**
+	 * 
+	 * NOTICE: THIS IS NOT THREAD SAFE!<br>
+	 * I mean it people, sync your entities and crap!
+	 * 
+	 * @param rcon
+	 * @param delta
+	 * 
+	 * @see RenderHelper
+	 */
+	public void render(RenderContext rcon, double delta)
+	{
+		if (this.state != null)
+		{
+			this.state.render(rcon, delta);
+			
+		}
+		
 	}
 	
 	/**

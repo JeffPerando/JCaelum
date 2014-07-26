@@ -1,8 +1,6 @@
 
 package com.elusivehawk.engine.render.old;
 
-import com.elusivehawk.engine.render.IRenderEngine;
-import com.elusivehawk.engine.render.IRenderHUB;
 import com.elusivehawk.engine.render.RenderContext;
 
 /**
