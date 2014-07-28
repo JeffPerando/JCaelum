@@ -19,7 +19,10 @@ public abstract class GameState implements IUpdatable
 	public abstract void finish();
 	
 	@Deprecated
-	public abstract IRenderHUB getRenderHUB();
+	public IRenderHUB getRenderHUB()
+	{
+		return null;
+	}
 	
 	public abstract void render(RenderContext rcon, double delta);
 	
