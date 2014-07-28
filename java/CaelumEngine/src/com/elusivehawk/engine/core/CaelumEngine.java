@@ -451,21 +451,26 @@ public final class CaelumEngine
 		
 		IRenderHUB hub = this.game.getRenderHUB();
 		
-		if (hub != null)
+		if (hub == null)
+		{
+			this.rsys = new RenderSystem(this.renv);
+			
+		}
+		else
 		{
 			this.rsys = new RenderSystem(this.renv, hub);
 			
-			IThreadStoppable rt = this.renv.createRenderThread(this.rsys);
-			
-			if (rt == null)
-			{
-				rt = new ThreadGameRender(this.rsys);
-				
-			}
-			
-			this.threads.put(EnumEngineFeature.RENDER, rt);
+		}
+		
+		IThreadStoppable rt = this.renv.createRenderThread(this.rsys);
+		
+		if (rt == null)
+		{
+			rt = new ThreadGameRender(this.rsys);
 			
 		}
+		
+		this.threads.put(EnumEngineFeature.RENDER, rt);
 		
 		/*this.threads.put(EnumEngineFeature.SOUND, new ThreadSoundPlayer());
 		

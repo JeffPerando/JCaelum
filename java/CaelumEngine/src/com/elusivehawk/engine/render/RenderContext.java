@@ -7,6 +7,7 @@ import java.util.Map;
 import com.elusivehawk.engine.assets.Shader;
 import com.elusivehawk.engine.assets.Texture;
 import com.elusivehawk.engine.core.IContext;
+import com.elusivehawk.engine.render.old.EnumRenderStage;
 import com.elusivehawk.engine.render.old.IRenderHUB;
 import com.elusivehawk.engine.render.opengl.GLEnumShader;
 import com.elusivehawk.engine.render.opengl.GLProgram;
@@ -44,6 +45,7 @@ public final class RenderContext implements IContext
 	private final Map<EnumRenderMode, List<IGLManipulator>> manipulators = Maps.newHashMapWithExpectedSize(3);
 	
 	private EnumRenderStage stage = null;
+	private DisplaySettings settings = new DisplaySettings();
 	private boolean //Hey, I sorta like that...
 			initiated = false,
 			flipScreen = false;
@@ -105,9 +107,40 @@ public final class RenderContext implements IContext
 		
 	}
 	
+	@Deprecated
 	public IRenderHUB getHUB()
 	{
 		return this.sys.getHUB();
+	}
+	
+	@Deprecated
+	public EnumRenderMode getRenderMode()
+	{
+		return this.getHUB().getRenderMode();
+	}
+	
+	@Deprecated
+	public EnumRenderStage getCurrentRenderingStage()
+	{
+		return this.stage;
+	}
+	
+	public DisplaySettings getSettings()
+	{
+		if (this.getHUB() != null)
+		{
+			return this.getHUB().getSettings();
+		}
+		
+		return this.settings;
+	}
+	
+	public void setSettings(DisplaySettings ds)
+	{
+		assert ds != null;
+		
+		this.settings = ds;
+		
 	}
 	
 	public IGL1 getGL1()
@@ -135,21 +168,12 @@ public final class RenderContext implements IContext
 		return this.notex;
 	}
 	
-	public EnumRenderMode getRenderMode()
-	{
-		return this.getHUB().getRenderMode();
-	}
-	
-	public EnumRenderStage getCurrentRenderingStage()
-	{
-		return this.stage;
-	}
-	
 	public boolean isScreenFlipped()
 	{
 		return this.flipScreen;
 	}
 	
+	@Deprecated
 	public void setRenderStage(EnumRenderStage rstage)
 	{
 		if (rstage == this.stage)
@@ -161,14 +185,14 @@ public final class RenderContext implements IContext
 		
 		switch (this.stage)
 		{
-			case PRERENDER: this.updateEverything(); break;
-			case POSTEFFECTS: this.onPostRender(); break;
+			case PRERENDER: this.preRender(); break;
+			case POSTEFFECTS: this.postRender(); break;
 			
 		}
 		
 	}
 	
-	private void updateEverything()
+	private void preRender()
 	{
 		if (!this.texturePool.isEmpty())
 		{
@@ -250,7 +274,7 @@ public final class RenderContext implements IContext
 		
 	}
 	
-	private void onPostRender()
+	private void postRender()
 	{
 		if (!this.manipulators.isEmpty())
 		{
@@ -279,11 +303,6 @@ public final class RenderContext implements IContext
 	
 	public void attachManipulator(EnumRenderMode mode, IGLManipulator glm)
 	{
-		if (!glm.isModeValid(mode))
-		{
-			throw new RuntimeException(String.format("Invalid rendering mode: %s", mode.name()));
-		}
-		
 		List<IGLManipulator> mani = this.manipulators.get(mode);
 		
 		if (mani == null)

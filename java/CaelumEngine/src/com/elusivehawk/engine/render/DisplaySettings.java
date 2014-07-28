@@ -11,7 +11,7 @@ import java.nio.ByteBuffer;
  */
 public class DisplaySettings
 {
-	public String title = "Caelum Engine Game (Now with experimental Android compatibility!)";
+	public String title = "Caelum Engine Game (Now with more deprecation!)";
 	public int width = 800, height = 600;
 	public ByteBuffer[] icons = null;
 	public int targetFPS = 30;

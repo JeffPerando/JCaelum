@@ -1,7 +1,6 @@
 
 package com.elusivehawk.engine.render.three;
 
-import com.elusivehawk.engine.render.EnumRenderMode;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGLManipulator;
@@ -34,12 +33,6 @@ public class Lights implements IGLManipulator
 		this.lights[this.size++] = l;
 		
 		return l;
-	}
-	
-	@Override
-	public boolean isModeValid(EnumRenderMode mode)
-	{
-		return mode.is3D();
 	}
 	
 	@Override

@@ -8,6 +8,7 @@ import com.elusivehawk.engine.core.GameState;
 import com.elusivehawk.engine.core.IContext;
 import com.elusivehawk.engine.core.IGameStateListener;
 import com.elusivehawk.engine.core.IThreadContext;
+import com.elusivehawk.engine.render.old.EnumRenderStage;
 import com.elusivehawk.engine.render.old.IRenderEngine;
 import com.elusivehawk.engine.render.old.IRenderHUB;
 import com.elusivehawk.engine.render.opengl.GLConst;
@@ -26,17 +27,25 @@ public final class RenderSystem implements IPausable, IGameStateListener, IThrea
 	private final RenderContext context;
 	
 	private IDisplay display = null;
-	private IRenderHUB hub;
+	private IRenderHUB hub = null;
 	private int fps;
 	private boolean paused = false;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public RenderSystem(IRenderEnvironment renderEnv, IRenderHUB rhub)
+	public RenderSystem(IRenderEnvironment renderEnv)
 	{
-		hub = rhub;
 		renv = renderEnv;
 		context = new RenderContext(this);
 		
+	}
+	
+	@Deprecated
+	@SuppressWarnings("unqualified-field-access")
+	public RenderSystem(IRenderEnvironment renderEnv, IRenderHUB rhub)
+	{
+		this(renderEnv);
+		
+		hub = rhub;
 		CaelumEngine.game().addGameStateListener(this);
 		
 	}
@@ -47,6 +56,7 @@ public final class RenderSystem implements IPausable, IGameStateListener, IThrea
 		return this.context;
 	}
 	
+	@Deprecated
 	@Override
 	public void onGameStateSwitch(GameState gs)
 	{
@@ -78,41 +88,48 @@ public final class RenderSystem implements IPausable, IGameStateListener, IThrea
 		
 		this.context.initContext();
 		
-		DisplaySettings settings = this.hub.getSettings();
-		
-		if (settings == null)
-		{
-			settings = new DisplaySettings();
-			
-		}
+		DisplaySettings settings = this.context.getSettings();
 		
 		this.fps = settings.targetFPS;
-		
 		IDisplay d = this.renv.createDisplay("default", settings);
 		
-		if (d != null)
+		if (d == null)
 		{
-			this.hub.initiate(d);
-			this.display = d;
+			return false;
 			
-			return true;
 		}
 		
-		return false;
+		if (this.hub != null)
+		{
+			CaelumEngine.log().log(EnumLogType.WARN, "Rendering using render HUB system! Use Game.render()!");
+			
+			this.hub.initiate(d);
+			
+		}
+		
+		this.display = d;
+		
+		return true;
 	}
 	
 	public boolean drawScreen(double delta) throws RenderException
 	{
-		if (this.isPaused() || this.hub == null)
+		if (this.isPaused())
 		{
 			return false;
 		}
 		
-		this.hub.updateHUB(delta);
+		boolean useHub = (this.hub != null);
+		
+		if (useHub)
+		{
+			this.hub.updateHUB(delta);
+			
+		}
 		
 		this.context.setRenderStage(EnumRenderStage.PRERENDER);
 		
-		if (this.hub.updateDisplay())
+		if (useHub && this.hub.updateDisplay())
 		{
 			DisplaySettings settings = this.hub.getSettings();
 			
@@ -123,71 +140,75 @@ public final class RenderSystem implements IPausable, IGameStateListener, IThrea
 			
 		}
 		
-		Collection<IRenderEngine> engines = this.hub.getRenderEngines();
-		IGL1 gl1 = this.context.getGL1();
+		this.context.setRenderStage(EnumRenderStage.RENDER);
 		
-		if (engines != null && !engines.isEmpty())
+		CaelumEngine.game().render(this.context, delta);
+		
+		if (useHub)
 		{
-			int priority = 0, priorityCount = Math.max(this.hub.getHighestPriority(), 1);
-			int renderersUsed = 0;
-			boolean flag = true;
+			Collection<IRenderEngine> engines = this.hub.getRenderEngines();
+			IGL1 gl1 = this.context.getGL1();
 			
-			this.context.setRenderStage(EnumRenderStage.RENDER);
-			
-			CaelumEngine.game().render(this.context, delta);
-			
-			gl1.glClear(GLConst.GL_COLOR_BUFFER_BIT | GLConst.GL_DEPTH_BUFFER_BIT);
-			
-			for (int p = 0; p < priorityCount && flag; p++)
+			if (engines != null && !engines.isEmpty())
 			{
-				for (IRenderEngine engine : engines)
+				int priority = 0, priorityCount = Math.max(this.hub.getHighestPriority(), 1);
+				int renderersUsed = 0;
+				boolean flag = true;
+				
+				gl1.glClear(GLConst.GL_COLOR_BUFFER_BIT | GLConst.GL_DEPTH_BUFFER_BIT);
+				
+				for (int p = 0; p < priorityCount && flag; p++)
 				{
-					if (renderersUsed == engines.size())
+					for (IRenderEngine engine : engines)
 					{
-						flag = false;
-						break;
-					}
-					
-					priority = Math.min(engine.getPriority(this.hub), priorityCount - 1);
-					
-					if (priority == -1)
-					{
-						continue;
-					}
-					
-					if (priority != p)
-					{
-						continue;
-					}
-					
-					try
-					{
-						engine.render(this.context, this.hub);
-						
-					}
-					catch (RenderException e)
-					{
-						CaelumEngine.log().log(EnumLogType.ERROR, null, e);
-						
-					}
-					
-					renderersUsed++;
-					
-					int tex = 0, texUnits = gl1.glGetInteger(GLConst.GL_MAX_TEXTURE_UNITS);
-					
-					for (int c = 0; c < texUnits; c++)
-					{
-						tex = gl1.glGetInteger(GLConst.GL_TEXTURE0 + c);
-						
-						if (tex != 0)
+						if (renderersUsed == engines.size())
 						{
-							gl1.glBindTexture(GLConst.GL_TEXTURE0 + c, 0);
+							flag = false;
+							break;
+						}
+						
+						priority = Math.min(engine.getPriority(this.hub), priorityCount - 1);
+						
+						if (priority == -1)
+						{
+							continue;
+						}
+						
+						if (priority != p)
+						{
+							continue;
+						}
+						
+						try
+						{
+							engine.render(this.context, this.hub);
+							
+						}
+						catch (RenderException e)
+						{
+							CaelumEngine.log().log(EnumLogType.ERROR, null, e);
 							
 						}
 						
+						renderersUsed++;
+						
+						int tex = 0, texUnits = gl1.glGetInteger(GLConst.GL_MAX_TEXTURE_UNITS);
+						
+						for (int c = 0; c < texUnits; c++)
+						{
+							tex = gl1.glGetInteger(GLConst.GL_TEXTURE0 + c);
+							
+							if (tex != 0)
+							{
+								gl1.glBindTexture(GLConst.GL_TEXTURE0 + c, 0);
+								
+							}
+							
+						}
+						
+						RenderHelper.checkForGLError(gl1);
+						
 					}
-					
-					RenderHelper.checkForGLError(gl1);
 					
 				}
 				
@@ -225,6 +246,7 @@ public final class RenderSystem implements IPausable, IGameStateListener, IThrea
 		return this.renv;
 	}
 	
+	@Deprecated
 	public IRenderHUB getHUB()
 	{
 		return this.hub;
