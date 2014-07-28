@@ -16,6 +16,7 @@ public class LWJGLDisplay implements IDisplay
 {
 	private final String name;
 	
+	@SuppressWarnings("unqualified-field-access")
 	public LWJGLDisplay(String nickname)
 	{
 		name = nickname;
