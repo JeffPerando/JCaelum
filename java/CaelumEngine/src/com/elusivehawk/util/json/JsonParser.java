@@ -42,22 +42,22 @@ public final class JsonParser
 		
 	}
 	
-	public static JsonObject parse(File file) throws JsonParseException
+	public static JsonData parse(File file) throws JsonParseException
 	{
 		return parse(StringHelper.readToOneLine(file));
 	}
 	
-	public static JsonObject parse(Reader r) throws JsonParseException
+	public static JsonData parse(Reader r) throws JsonParseException
 	{
 		return parse(StringHelper.readToOneLine(r));
 	}
 	
-	public static JsonObject parse(List<String> strs) throws JsonParseException
+	public static JsonData parse(List<String> strs) throws JsonParseException
 	{
 		return parse(StringHelper.concat(strs, "\n", "", null));
 	}
 	
-	public static JsonObject parse(String str) throws JsonParseException
+	public static JsonData parse(String str) throws JsonParseException
 	{
 		if (str == null)
 		{
@@ -72,7 +72,7 @@ public final class JsonParser
 		
 		Buffer<String> buf = new Buffer<String>(t.tokenize(str));
 		
-		return parseObj("", buf);
+		return parseContent("", buf);
 	}
 	
 	public static JsonData parseKeypair(Buffer<String> buf)  throws JsonParseException

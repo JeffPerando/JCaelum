@@ -58,6 +58,7 @@ public class BenchmarkTest
 			}
 			
 			List<File> files = Lists.newArrayList();
+			JsonData jdata = null;
 			JsonObject json = null;
 			
 			FileOutputStream fos = FileHelper.createOutStream(log, true);
@@ -65,7 +66,7 @@ public class BenchmarkTest
 			
 			try
 			{
-				json = JsonParser.parse(jsonFile);
+				jdata = JsonParser.parse(jsonFile);
 				
 			}
 			catch (JsonParseException e)
@@ -74,6 +75,13 @@ public class BenchmarkTest
 				
 				return;
 			}
+			
+			if (!(jdata instanceof JsonObject))
+			{
+				return;
+			}
+			
+			json = (JsonObject)jdata;
 			
 			scanForFiles(file, files);
 			

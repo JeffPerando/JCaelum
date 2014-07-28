@@ -572,21 +572,28 @@ public final class CaelumEngine
 	
 	private Class<?> loadEnvironmentFromJson()
 	{
-		File json = FileHelper.createFile(".", "gameEnv.json");
+		File jsonFile = FileHelper.createFile(".", "gameEnv.json");
 		
-		if (!FileHelper.isFileReal(json))
+		if (!FileHelper.isFileReal(jsonFile))
 		{
 			return null;
 		}
 		
-		JsonObject j = JsonParser.parse(json);
+		JsonData j = JsonParser.parse(jsonFile);
 		
 		if (j == null)
 		{
 			return null;
 		}
 		
-		JsonData curEnv = j.getValue(EnumOS.getCurrentOS().toString());
+		if (!(j instanceof JsonObject))
+		{
+			return null;
+		}
+		
+		JsonObject json = (JsonObject)j;
+		
+		JsonData curEnv = json.getValue(EnumOS.getCurrentOS().toString());
 		
 		if (curEnv == null || curEnv.type != EnumJsonType.OBJECT)
 		{
