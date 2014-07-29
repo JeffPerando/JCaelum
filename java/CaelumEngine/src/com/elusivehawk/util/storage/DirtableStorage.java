@@ -9,7 +9,7 @@ import com.elusivehawk.util.IDirty;
  * 
  * @author Elusivehawk
  */
-public class DirtableStorage<T> implements IDirty, IGettable<T>, ISettable<T>
+public class DirtableStorage<T> implements IDirty, IStorage<T>
 {
 	protected T obj;
 	protected boolean dirty = false, enableNull = true;
