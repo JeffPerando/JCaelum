@@ -1,11 +1,10 @@
 
 package com.elusivehawk.engine.network;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
-import java.nio.channels.NetworkChannel;
 import java.nio.channels.SocketChannel;
+import java.nio.channels.spi.AbstractSelectableChannel;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
@@ -13,7 +12,6 @@ import java.security.PublicKey;
 import java.util.List;
 import java.util.UUID;
 import javax.crypto.Cipher;
-import com.elusivehawk.util.storage.SemiFinalStorage;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
@@ -27,30 +25,42 @@ public class Connection implements IConnection
 {
 	protected final IPacketHandler handler;
 	protected final UUID connectId;
+	protected final ConnectionType type;
+	protected final AbstractSelectableChannel channel;
 	protected final PublicKey pub;
 	protected final PrivateKey priv;
 	
-	private final SemiFinalStorage<Boolean> closed = new SemiFinalStorage<Boolean>(false);
-	
-	private SocketChannel tcp = null;
-	private List<DatagramChannel> udp = Lists.newArrayList();
+	protected PublicKey pub_rec = null;
 	
 	private List<Packet> incoming = Lists.newArrayList();
 	
-	public Connection(IPacketHandler h, UUID id)
+	public Connection(IPacketHandler h, UUID id, AbstractSelectableChannel ch)
 	{
-		this(h, id, 1024);
+		this(h, id, ch, 1024);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Connection(IPacketHandler h, UUID id, int bits)
+	public Connection(IPacketHandler h, UUID id, AbstractSelectableChannel ch, int bits)
 	{
 		assert h != null;
 		assert id != null;
 		
 		handler = h;
 		connectId = id;
+		channel = ch;
+		
+		if (ch instanceof SocketChannel)
+		{
+			type = ConnectionType.TCP;
+			
+		}
+		else if (ch instanceof DatagramChannel)
+		{
+			type = ConnectionType.UDP;
+			
+		}
+		else type = ConnectionType.UNKNOWN;
 		
 		KeyPairGenerator kpg = null;
 		
@@ -69,32 +79,22 @@ public class Connection implements IConnection
 		
 	}
 	
+	@SuppressWarnings("unqualified-field-access")
+	public Connection(IConnection con)
+	{
+		handler = con.getListener();
+		connectId = con.getId();
+		channel = con.getChannel();
+		type = con.getType();
+		pub = con.getPubKey();
+		priv = con.getPrivKey();
+		
+	}
 	
 	@Override
-	public boolean connect(ConnectionType type, NetworkChannel s)
+	public ConnectionType getType()
 	{
-		if (s == null)
-		{
-			return false;
-		}
-		
-		if (type.isTcp())
-		{
-			if (this.tcp != null)
-			{
-				return false;
-			}
-			
-			this.tcp = (SocketChannel)s;
-			
-		}
-		else
-		{
-			this.udp.add((DatagramChannel)s);
-			
-		}
-		
-		return true;
+		return this.type;
 	}
 	
 	@Override
@@ -104,15 +104,27 @@ public class Connection implements IConnection
 	}
 	
 	@Override
-	public SocketChannel getTcp()
+	public AbstractSelectableChannel getChannel()
 	{
-		return this.tcp;
+		return this.channel;
 	}
 	
 	@Override
-	public ImmutableList<DatagramChannel> getUdp()
+	public IPacketHandler getListener()
 	{
-		return ImmutableList.copyOf(this.udp);
+		return this.handler;
+	}
+	
+	@Override
+	public PublicKey getPubKey()
+	{
+		return this.pub;
+	}
+	
+	@Override
+	public PrivateKey getPrivKey()
+	{
+		return this.priv;
 	}
 	
 	@Override
@@ -145,47 +157,6 @@ public class Connection implements IConnection
 	}
 	
 	@Override
-	public boolean isClosed()
-	{
-		return this.closed.get();
-	}
-	
-	@Override
-	public void close(boolean closeSkt)
-	{
-		if (this.isClosed())
-		{
-			return;
-		}
-		
-		this.handler.onDisconnect(this);
-		
-		this.closed.set(true);
-		
-		if (closeSkt)
-		{
-			try
-			{
-				this.tcp.close();
-				
-				for (DatagramChannel ch : this.udp)
-				{
-					ch.close();
-					
-				}
-				
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-				
-			}
-			
-		}
-		
-	}
-	
-	@Override
 	public ByteBuffer decryptData(ByteBuffer buf)
 	{
 		return null;//FIXME
@@ -197,7 +168,7 @@ public class Connection implements IConnection
 		try
 		{
 			Cipher cipher = Cipher.getInstance("RSA");
-			cipher.init(Cipher.ENCRYPT_MODE, this.pub);
+			cipher.init(Cipher.ENCRYPT_MODE, this.priv);
 			cipher.doFinal(in, out);
 			
 		}

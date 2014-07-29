@@ -1,12 +1,13 @@
 
 package com.elusivehawk.engine.network;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ByteChannel;
-import java.nio.channels.NetworkChannel;
 import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
+import java.security.PublicKey;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +16,6 @@ import java.util.UUID;
 import com.elusivehawk.engine.math.MathHelper;
 import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.concurrent.ThreadStoppable;
-import com.elusivehawk.util.storage.Tuple;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -65,16 +65,6 @@ public class ThreadNetwork extends ThreadStoppable
 	@Override
 	public void rawUpdate() throws Throwable
 	{
-		for (IConnection con : this.connections.values())
-		{
-			if (con.isClosed())
-			{
-				this.connections.remove(con.getId());
-				
-			}
-			
-		}
-		
 		byte s;
 		int length;
 		ByteBuffer b;
@@ -89,6 +79,7 @@ public class ThreadNetwork extends ThreadStoppable
 			Iterator<SelectionKey> itr = keys.iterator();
 			SelectionKey key;
 			ByteChannel io;
+			IConnection con;
 			
 			while (itr.hasNext())
 			{
@@ -98,59 +89,56 @@ public class ThreadNetwork extends ThreadStoppable
 				{
 					io = (ByteChannel)key.channel();
 					
-					@SuppressWarnings("unchecked")
-					Tuple<ConnectionType, IConnection> info = (Tuple<ConnectionType, IConnection>)key.attachment();
+					con = (IConnection)key.attachment();
 					
 					if (key.isReadable())
 					{
-						if (io.read(this.bin) == -1)
+						if (io.read(this.bin) != -1)
 						{
-							continue;
-						}
-						
-						b = info.two.decryptData(this.bin);//Decrypt the data
-						
-						if (b == null)//Unlikely, but...
-						{
-							continue;
-						}
-						
-						while (b.remaining() > 0)
-						{
-							s = b.get();
-							length = MathHelper.clamp(this.bin.getInt(), 1, NetworkConst.DATA_LENGTH);//Get the remaining packet length
+							b = con.decryptData(this.bin);//Decrypt the data
 							
-							if (!this.handler.getSide().canReceive(Side.values()[s]))//If the packet isn't meant for this side to receive it...
+							if (b != null)
 							{
-								continue;
-							}
-							
-							if (pkts == null)//Dynamically load the packet list with a soft limit of 32 packets.
-							{
-								pkts = Lists.newArrayListWithCapacity(32);
+								while (b.remaining() > 0)
+								{
+									s = b.get();
+									length = MathHelper.clamp(this.bin.getInt(), 1, NetworkConst.DATA_LENGTH);//Get the remaining packet length
+									
+									if (!this.handler.getSide().canReceive(Side.values()[s]))//If the packet isn't meant for this side to receive it...
+									{
+										continue;
+									}
+									
+									if (pkts == null)//Dynamically load the packet list with a soft limit of 32 packets.
+									{
+										pkts = Lists.newArrayListWithCapacity(32);
+										
+									}
+									
+									//Schedule the packet to be sent to the game.
+									
+									pkt = new Packet(b);
+									
+									pkts.add(pkt);
+									pkt.markForReading();
+									
+									if (b.capacity() != length)//TODO Investigate this.
+									{
+										pkt.markPotentiallyCorrupt();
+										
+									}
+									
+								}
+								
+								this.bin.clear();//Clear the incoming bytes to prepare for the next packet.
+								
+								if (pkts != null)
+								{
+									this.handler.onPacketsReceived(con, ImmutableList.copyOf(pkts));
+									
+								}
 								
 							}
-							
-							//Schedule the packet to be sent to the game.
-							
-							pkt = new Packet(b);
-							
-							pkts.add(pkt);
-							pkt.markForReading();
-							
-							if (b.capacity() != length)//TODO Investigate this.
-							{
-								pkt.markPotentiallyCorrupt();
-								
-							}
-							
-						}
-						
-						this.bin.clear();//Clear the incoming bytes to prepare for the next packet.
-						
-						if (pkts != null)
-						{
-							this.handler.onPacketsReceived(info.two, ImmutableList.copyOf(pkts));
 							
 						}
 						
@@ -158,55 +146,55 @@ public class ThreadNetwork extends ThreadStoppable
 					
 					if (key.isWritable())
 					{
-						ImmutableList<Packet> outPkts = info.two.getOutgoingPackets();
+						ImmutableList<Packet> outPkts = con.getOutgoingPackets();
 						
-						Iterator<Packet> pktItr = outPkts.iterator();
-						
-						while (pktItr.hasNext())
+						if (outPkts != null && !outPkts.isEmpty())
 						{
-							pkt = pktItr.next();
+							Iterator<Packet> pktItr = outPkts.iterator();
 							
-							if (pkt.canWrite())
+							while (pktItr.hasNext())
 							{
-								pktItr.remove();
+								pkt = pktItr.next();
 								
-								this.handler.onPacketDropped(pkt);
+								if (pkt.canWrite())
+								{
+									pktItr.remove();
+									
+									this.handler.onPacketDropped(pkt);
+									
+									continue;
+								}
 								
-								continue;
+								b = pkt.getBytes();
+								
+								this.tmp.put((byte)this.handler.getSide().ordinal());
+								this.tmp.putInt(b.capacity() - b.remaining());
+								this.tmp.put(b);
+								
+								con.encryptData(this.tmp, this.bout);
+								
+								con.flushPacket(pkt);
+								
+								this.tmp.clear();
+								
 							}
 							
-							b = pkt.getBytes();
+							this.bout.flip();
+							io.write(this.bout);
 							
-							this.tmp.put((byte)this.handler.getSide().ordinal());
-							this.tmp.putInt(b.capacity() - b.remaining());
-							this.tmp.put(b);
+							for (int c = 0; c < this.bout.limit(); c++)
+							{
+								this.bout.put(c, (byte)0);
+								
+							}
 							
-							info.two.encryptData(this.tmp, this.bout);
-							
-							info.two.flushPacket(pkt);
-							
-							this.tmp.clear();
-							
-						}
-						
-						this.bout.flip();
-						io.write(this.bout);
-						
-						for (int c = 0; c < this.bout.limit(); c++)
-						{
-							this.bout.put(c, (byte)0);
+							this.bout.clear();
 							
 						}
-						
-						this.bout.clear();
 						
 					}
 					
 				}
-				
-				itr.remove();
-				
-				io = null;
 				
 			}
 			
@@ -245,22 +233,48 @@ public class ThreadNetwork extends ThreadStoppable
 		
 	}
 	
-	public void connect(IConnection con, ConnectionType type, SelectableChannel ch)
+	public synchronized void connect(IConnection con)
 	{
-		if (!con.connect(type, (NetworkChannel)ch))
+		if (this.connections.get(con.getId()) == null)
 		{
-			return;
+			this.connections.put(con.getId(), con);
+			
 		}
 		
-		this.connections.put(con.getId(), con);
+		SelectableChannel ch = con.getChannel();
 		
 		try
 		{
 			ch.configureBlocking(false);
-			ch.register(this.selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE, Tuple.create(type, con));
+			ch.register(this.selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE, con);
 			
 		}
 		catch (Exception e){}
+		
+		ByteChannel io = (ByteChannel)ch;
+		
+		PublicKey key = con.getPubKey();
+		
+		//TODO Transmit key.
+		
+	}
+	
+	public synchronized void disconnect(IConnection con)
+	{
+		if (this.connections.remove(con.getId()) != null)
+		{
+			try
+			{
+				con.getChannel().close();
+				
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+				
+			}
+			
+		}
 		
 	}
 	

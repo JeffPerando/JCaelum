@@ -2,8 +2,7 @@
 package com.elusivehawk.engine.network;
 
 import java.io.IOException;
-import java.nio.channels.DatagramChannel;
-import java.nio.channels.SocketChannel;
+import java.nio.channels.spi.AbstractSelectableChannel;
 import java.security.Key;
 import java.util.List;
 import java.util.UUID;
@@ -38,22 +37,6 @@ public class Client implements IHost
 		master = mstr;
 		thr = new ThreadNetwork(this, 1);
 		
-		/*KeyPairGenerator kpg = null;
-		
-		try
-		{
-			kpg = KeyPairGenerator.getInstance("RSA");
-			
-		}
-		catch (NoSuchAlgorithmException e){}
-		
-		kpg.initialize(bits);
-		
-		KeyPair kp = kpg.genKeyPair();
-		
-		pub = kp.getPublic();
-		priv = kp.getPrivate();*/
-		
 	}
 	
 	@Override
@@ -83,21 +66,6 @@ public class Client implements IHost
 		
 	}
 	
-	/*
-	@Override
-	public ByteBuffer decryptData(ByteBuffer buf)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public ByteBuffer encryptData(ByteBuffer buf)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-	*/
 	@Override
 	public void onPacketsReceived(IConnection origin, ImmutableList<Packet> pkts)
 	{
@@ -106,37 +74,26 @@ public class Client implements IHost
 	}
 	
 	@Override
-	public UUID connect(UUID id, IP ip, ConnectionType type)
+	public UUID connect(ConnectionType type, IP ip)
 	{
 		if (this.connection != null)
 		{
-			if (type.isUdp() && this.connection.getId().equals(id))
-			{
-				this.connection.connect(type, ip);
-				
-				return this.connection.getId();
-			}
-			
-		}
-		
-		if (type.isUdp())
-		{
 			return null;
 		}
 		
-		return this.connect((SocketChannel)ip.toChannel(type));
+		return this.connect(ip.toChannel(type));
 	}
 	
 	@Override
-	public UUID connect(SocketChannel s)
+	public UUID connect(AbstractSelectableChannel ch)
 	{
-		if (s == null || (this.connection != null || this.hasHS))
+		if (ch == null)
 		{
 			return null;
 		}
 		
-		this.connection = new HSConnection(this, UUID.randomUUID());
-		this.thr.connect(this.connection, ConnectionType.TCP, s);
+		this.connection = new HSConnection(this, UUID.randomUUID(), ch, this.master.getEncryptionBitCount());
+		this.thr.connect(this.connection);
 		
 		return this.connection.getId();
 	}
@@ -153,30 +110,11 @@ public class Client implements IHost
 	}
 	
 	@Override
-	public void sendPackets(UUID client, Packet... pkts)
+	public void forEveryConnection(IConnectionUser user)
 	{
-		if (this.connection == null)
+		if (this.connection != null)
 		{
-			return;
-		}
-		
-		if (!this.connection.getId().equals(client))
-		{
-			return;
-		}
-		
-		this.connection.sendPackets(pkts);
-		
-	}
-	
-	@Override
-	public void sendPacketsExcept(UUID client, Packet... pkts)
-	{
-		assert client != null;
-		
-		if (!client.equals(this.connection.getId()))
-		{
-			this.sendPackets(this.connection.getId(), pkts);
+			user.processConnection(this.connection);
 			
 		}
 		
@@ -192,12 +130,6 @@ public class Client implements IHost
 	public int getPlayerCount()
 	{
 		return this.connection == null ? 0 : 1;
-	}
-	
-	@Override
-	public ImmutableList<UUID> getConnectionIds()
-	{
-		return this.connection == null ? null : ImmutableList.copyOf(new UUID[]{this.connection.getId()});
 	}
 	
 	@Override
@@ -225,41 +157,9 @@ public class Client implements IHost
 			return;
 		}
 		
-		boolean success = this.master.handshake(connection, pkts);
-		
-		connection.close(!success);
-		
-		if (success)
+		if (this.master.handshake(connection, pkts))
 		{
-			this.connection = new Connection(this, UUID.randomUUID());
-			
-			boolean finish = true;
-			
-			if (this.connection.connect(ConnectionType.TCP, connection.getTcp()))
-			{
-				finish = false;
-				
-			}
-			
-			ImmutableList<DatagramChannel> udp = connection.getUdp();
-			
-			if (udp != null && !udp.isEmpty())
-			{
-				for (DatagramChannel ch : udp)
-				{
-					this.connection.connect(ConnectionType.UDP, ch);
-					
-				}
-				
-			}
-			
-			this.hasHS = finish;
-			
-		}
-		
-		if (!this.hasHS)
-		{
-			this.connection = null;
+			this.connection = new Connection(connection);
 			
 		}
 		
@@ -268,8 +168,7 @@ public class Client implements IHost
 	@Override
 	public void close() throws IOException
 	{
-		this.connection.close(true);
-		this.connection = null;
+		this.thr.stopThread();
 		
 	}
 	

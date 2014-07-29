@@ -2,9 +2,9 @@
 package com.elusivehawk.engine.network;
 
 import java.nio.ByteBuffer;
-import java.nio.channels.DatagramChannel;
-import java.nio.channels.NetworkChannel;
-import java.nio.channels.SocketChannel;
+import java.nio.channels.spi.AbstractSelectableChannel;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.UUID;
 import com.google.common.collect.ImmutableList;
 
@@ -22,12 +22,12 @@ public class HSConnection implements IPacketHandler, IConnection
 	private final IConnection connect;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public HSConnection(IHost owner, UUID id)
+	public HSConnection(IHost owner, UUID id, AbstractSelectableChannel ch, int bits)
 	{
 		assert owner != null;
 		
 		master = owner;
-		connect = new Connection(this, id);
+		connect = new Connection(this, id, ch, bits);
 		
 	}
 	
@@ -59,22 +59,9 @@ public class HSConnection implements IPacketHandler, IConnection
 	}
 	
 	@Override
-	public ByteBuffer decryptData(ByteBuffer buf)
+	public ConnectionType getType()
 	{
-		return this.connect.decryptData(buf);
-	}
-	
-	@Override
-	public void encryptData(ByteBuffer in, ByteBuffer out)
-	{
-		this.connect.encryptData(in, out);
-		
-	}
-	
-	@Override
-	public boolean connect(ConnectionType type, NetworkChannel ch)
-	{
-		return this.connect.connect(type, ch);
+		return this.connect.getType();
 	}
 	
 	@Override
@@ -84,28 +71,33 @@ public class HSConnection implements IPacketHandler, IConnection
 	}
 	
 	@Override
-	public SocketChannel getTcp()
+	public AbstractSelectableChannel getChannel()
 	{
-		return this.connect.getTcp();
+		return this.connect.getChannel();
 	}
 	
 	@Override
-	public ImmutableList<DatagramChannel> getUdp()
+	public IPacketHandler getListener()
 	{
-		return this.connect.getUdp();
+		return this.connect.getListener();
+	}
+	
+	@Override
+	public PublicKey getPubKey()
+	{
+		return this.connect.getPubKey();
+	}
+	
+	@Override
+	public PrivateKey getPrivKey()
+	{
+		return this.connect.getPrivKey();
 	}
 	
 	@Override
 	public ImmutableList<Packet> getOutgoingPackets()
 	{
 		return this.connect.getOutgoingPackets();
-	}
-	
-	@Override
-	public void flushPacket(Packet pkt)
-	{
-		this.connect.flushPacket(pkt);
-		
 	}
 	
 	@Override
@@ -116,15 +108,22 @@ public class HSConnection implements IPacketHandler, IConnection
 	}
 	
 	@Override
-	public boolean isClosed()
+	public void flushPacket(Packet pkt)
 	{
-		return this.connect.isClosed();
+		this.connect.flushPacket(pkt);
+		
 	}
 	
 	@Override
-	public void close(boolean closeSkt)
+	public ByteBuffer decryptData(ByteBuffer buf)
 	{
-		this.connect.close(closeSkt);
+		return this.connect.decryptData(buf);
+	}
+	
+	@Override
+	public void encryptData(ByteBuffer in, ByteBuffer out)
+	{
+		this.connect.encryptData(in, out);
 		
 	}
 	

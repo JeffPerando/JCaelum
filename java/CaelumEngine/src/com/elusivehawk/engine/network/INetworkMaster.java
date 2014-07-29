@@ -11,6 +11,8 @@ import java.util.List;
  */
 public interface INetworkMaster extends IPacketListener
 {
+	public int getEncryptionBitCount();
+	
 	public boolean handshake(IConnection connection, List<Packet> sentPkts);
 	
 }

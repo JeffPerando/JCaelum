@@ -11,16 +11,17 @@ public enum ConnectionType
 {
 	TCP,
 	UDP,
-	EITHER;
+	EITHER,
+	UNKNOWN;
 	
 	public boolean isTcp()
 	{
-		return this != UDP;
+		return this != UDP && this != UNKNOWN;
 	}
 	
 	public boolean isUdp()
 	{
-		return this != TCP;
+		return this != TCP && this != UNKNOWN;
 	}
 	
 	public boolean isCompatible(ConnectionType type)

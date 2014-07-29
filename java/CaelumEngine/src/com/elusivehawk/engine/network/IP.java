@@ -5,8 +5,8 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.nio.channels.DatagramChannel;
-import java.nio.channels.NetworkChannel;
 import java.nio.channels.SocketChannel;
+import java.nio.channels.spi.AbstractSelectableChannel;
 import javax.net.SocketFactory;
 
 /**
@@ -89,9 +89,9 @@ public final class IP
 		return ret;
 	}
 	
-	public NetworkChannel toChannel(ConnectionType type)
+	public AbstractSelectableChannel toChannel(ConnectionType type)
 	{
-		NetworkChannel ret = null;
+		AbstractSelectableChannel ret = null;
 		
 		try
 		{
@@ -104,7 +104,7 @@ public final class IP
 			{
 				ret = DatagramChannel.open();
 				
-				ret.bind(this.toInet());
+				((DatagramChannel)ret).bind(this.toInet());
 				
 			}
 			

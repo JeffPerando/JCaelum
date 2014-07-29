@@ -1,11 +1,10 @@
 
 package com.elusivehawk.engine.network;
 
-import java.io.Closeable;
 import java.nio.ByteBuffer;
-import java.nio.channels.DatagramChannel;
-import java.nio.channels.NetworkChannel;
-import java.nio.channels.SocketChannel;
+import java.nio.channels.spi.AbstractSelectableChannel;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.UUID;
 import com.google.common.collect.ImmutableList;
 
@@ -15,37 +14,25 @@ import com.google.common.collect.ImmutableList;
  * 
  * @author Elusivehawk
  */
-public interface IConnection extends Closeable
+public interface IConnection
 {
+	public ConnectionType getType();
+	
 	public UUID getId();
 	
-	public SocketChannel getTcp();
+	public AbstractSelectableChannel getChannel();
 	
-	public ImmutableList<DatagramChannel> getUdp();
+	public IPacketHandler getListener();
+	
+	public PublicKey getPubKey();
+	
+	public PrivateKey getPrivKey();
 	
 	public ImmutableList<Packet> getOutgoingPackets();
 	
-	public void flushPacket(Packet pkt);
-	
-	default boolean connect(ConnectionType type, IP ip)
-	{
-		return this.connect(type, ip.toChannel(type));
-	}
-	
-	public boolean connect(ConnectionType type, NetworkChannel ch);
-	
 	public void sendPackets(Packet... pkts);
 	
-	public boolean isClosed();
-	
-	@Override
-	default void close()
-	{
-		this.close(true);
-		
-	}
-	
-	public void close(boolean closeSkt);
+	public void flushPacket(Packet pkt);
 	
 	public ByteBuffer decryptData(ByteBuffer buf);
 	

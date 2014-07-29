@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.network;
 
-import java.nio.channels.SocketChannel;
+import java.nio.channels.spi.AbstractSelectableChannel;
 import java.util.UUID;
 
 /**
@@ -15,9 +15,12 @@ import java.util.UUID;
  */
 public interface IConnectable
 {
-	public UUID connect(UUID origin, IP ip, ConnectionType type);
+	default UUID connect(ConnectionType type, IP ip)
+	{
+		return this.connect(ip.toChannel(type));
+	}
 	
-	public UUID connect(SocketChannel ch);
+	public UUID connect(AbstractSelectableChannel ch);
 	
 	public void beginComm();
 	

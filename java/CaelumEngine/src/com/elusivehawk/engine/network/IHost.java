@@ -5,7 +5,6 @@ import java.io.Closeable;
 import java.util.List;
 import java.util.UUID;
 import com.elusivehawk.util.IPausable;
-import com.google.common.collect.ImmutableList;
 
 /**
  * 
@@ -24,15 +23,42 @@ public interface IHost extends IConnectable, IPacketHandler, Closeable, IPausabl
 	 * @param client The connection ID to use, null if it's client -> server communication.
 	 * @param pkts The packets to send.
 	 */
-	public void sendPackets(UUID client, Packet... pkts);
+	default void sendPackets(UUID client, Packet... pkts)
+	{
+		this.forEveryConnection(((con) ->
+		{
+			if (client == null || con.getId().equals(client))
+			{
+				con.sendPackets(pkts);
+				
+				return false;
+			}
+			
+			return true;
+		}));
+		
+	}
 	
-	public void sendPacketsExcept(UUID client, Packet... pkts);
+	default void sendPacketsExcept(UUID client, Packet... pkts)
+	{
+		this.forEveryConnection(((con) ->
+		{
+			if (client == null || !con.getId().equals(client))
+			{
+				con.sendPackets(pkts);
+				
+			}
+			
+			return true;
+		}));
+		
+	}
+	
+	public void forEveryConnection(IConnectionUser user);
 	
 	public int getMaxPlayerCount();
 	
 	public int getPlayerCount();
-	
-	public ImmutableList<UUID> getConnectionIds();
 	
 	public void onHandshake(IConnection connection, List<Packet> pkts);
 	

@@ -1,13 +1,11 @@
 
 package com.elusivehawk.engine.network;
 
-import java.nio.channels.DatagramChannel;
-import java.nio.channels.SocketChannel;
+import java.nio.channels.spi.AbstractSelectableChannel;
 import java.util.List;
 import java.util.UUID;
-import com.elusivehawk.util.ArrayHelper;
-import com.elusivehawk.util.storage.SemiFinalStorage;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 /**
  * 
@@ -22,11 +20,8 @@ public class Server implements IHost
 	protected final ThreadNetwork network;
 	protected final int port, maxPlayers;
 	
-	protected final IConnection[] clients;
-	protected final UUID[] ids;
-	protected final SemiFinalStorage<Boolean> disabled = new SemiFinalStorage<Boolean>(false);
+	protected final List<IConnection> clients;
 	
-	protected int playerCount = 0;
 	protected boolean paused = false;
 	
 	@SuppressWarnings("unqualified-field-access")
@@ -39,9 +34,9 @@ public class Server implements IHost
 		port = gameport;
 		listener = new ThreadJoinListener(this, gameport);
 		network = new ThreadNetwork(this, gameport);
+		
 		maxPlayers = players;
-		clients = new IConnection[players];
-		ids = new UUID[players];
+		clients = Lists.newArrayList();
 		
 	}
 	
@@ -53,53 +48,20 @@ public class Server implements IHost
 	}
 	
 	@Override
-	public UUID connect(UUID origin, IP ip, ConnectionType type)
+	public UUID connect(AbstractSelectableChannel ch)
 	{
-		if (type.isTcp())
+		assert ch != null;
+		
+		if (this.clients.size() == this.maxPlayers)
 		{
-			return this.connect((SocketChannel)ip.toChannel(type));
-		}
-		else if (type.isUdp())
-		{
-			for (IConnection client : this.clients)
-			{
-				if (client.getId().equals(origin))
-				{
-					client.connect(type, ip);
-					
-					return client.getId();
-				}
-				
-			}
-			
+			return null;
 		}
 		
-		return null;
-	}
-	
-	@SuppressWarnings("resource")
-	@Override
-	public UUID connect(SocketChannel s)
-	{
-		assert s != null;
+		IConnection next = new HSConnection(this, UUID.randomUUID(), ch, this.master.getEncryptionBitCount());
 		
-		IConnection next = new HSConnection(this, UUID.randomUUID());
+		this.clients.add(next);
 		
-		if (ArrayHelper.add(this.clients, next))
-		{
-			next.connect(ConnectionType.TCP, s);
-			
-			return next.getId();
-		}
-		
-		try
-		{
-			next.close();
-			
-		}
-		catch (Exception e){}
-		
-		return null;
+		return next.getId();
 	}
 	
 	@Override
@@ -118,10 +80,17 @@ public class Server implements IHost
 	@Override
 	public void onDisconnect(IConnection connect)
 	{
-		ArrayHelper.remove(this.clients, connect);
-		ArrayHelper.remove(this.ids, connect.getId());
+		if (this.clients.isEmpty())
+		{
+			return;
+		}
 		
-		this.playerCount--;
+		if (connect == null)
+		{
+			return;
+		}
+		
+		this.clients.remove(connect);
 		
 	}
 	
@@ -132,57 +101,15 @@ public class Server implements IHost
 		
 	}
 	
-	/*
 	@Override
-	public ByteBuffer decryptData(ByteBuffer buf)
+	public void forEveryConnection(IConnectionUser user)
 	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public ByteBuffer encryptData(ByteBuffer buf)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-	*/
-	@Override
-	public void sendPackets(UUID client, Packet... pkts)
-	{
-		if (client == null)
+		for (IConnection client : this.clients)
 		{
-			return;
-		}
-		
-		for (IConnection connect : this.clients)
-		{
-			if (connect.getId().equals(client))
+			if (!user.processConnection(client))
 			{
-				connect.sendPackets(pkts);
 				break;
 			}
-			
-		}
-		
-	}
-	
-	@Override
-	public void sendPacketsExcept(UUID client, Packet... pkts)
-	{
-		for (IConnection connect : this.clients)
-		{
-			if (connect == null)
-			{
-				continue;
-			}
-			
-			if (connect.getId().equals(client))
-			{
-				continue;
-			}
-			
-			connect.sendPackets(pkts);
 			
 		}
 		
@@ -197,13 +124,7 @@ public class Server implements IHost
 	@Override
 	public int getPlayerCount()
 	{
-		return this.playerCount;
-	}
-	
-	@Override
-	public ImmutableList<UUID> getConnectionIds()
-	{
-		return ImmutableList.copyOf(this.ids);
+		return this.clients.size();
 	}
 	
 	@Override
@@ -220,46 +141,27 @@ public class Server implements IHost
 		return this.paused;
 	}
 	
-	@SuppressWarnings("resource")
 	@Override
-	public void onHandshake(IConnection connection, List<Packet> pkts)
+	public void onHandshake(IConnection con, List<Packet> pkts)
 	{
-		boolean success = this.master.handshake(connection, pkts);
-		
-		connection.close(!success);
-		
-		if (success)
+		if (con == null)
 		{
-			IConnection connect = new Connection(this, UUID.randomUUID());
-			
-			boolean finish = true;
-			
-			if (connect.connect(ConnectionType.TCP, connection.getTcp()))
+			return;
+		}
+		
+		if (this.clients.isEmpty())
+		{
+			return;
+		}
+		
+		if (this.master.handshake(con, pkts))
+		{
+			if (!this.clients.remove(con))
 			{
-				finish = false;
-				
+				return;
 			}
 			
-			ImmutableList<DatagramChannel> udp = connection.getUdp();
-			
-			if (udp != null && !udp.isEmpty())
-			{
-				for (DatagramChannel ch : udp)
-				{
-					connect.connect(ConnectionType.UDP, ch);
-					
-				}
-				
-			}
-			
-			if (finish)
-			{
-				this.clients[this.playerCount] = connect;
-				this.ids[this.playerCount] = connect.getId();
-				
-				this.playerCount++;
-				
-			}
+			this.clients.add(new Connection(con));
 			
 		}
 		
@@ -269,22 +171,8 @@ public class Server implements IHost
 	public void close()
 	{
 		this.listener.stopThread();
-		
-		for (IConnection client : this.clients)
-		{
-			if (client != null)
-			{
-				client.close();
-				
-			}
-			
-		}
-		
-		for (int c = 0; c < this.maxPlayers; c++)
-		{
-			this.clients[c] = null;
-			
-		}
+		this.network.stopThread();
+		this.clients.clear();
 		
 	}
 	
