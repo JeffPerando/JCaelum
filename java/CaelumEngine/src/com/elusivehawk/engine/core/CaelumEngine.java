@@ -391,7 +391,7 @@ public final class CaelumEngine
 	
 	public void startGame()
 	{
-		//XXX Loading the game
+		//XXX Loading the game itself
 		
 		if (this.factory == null)
 		{
