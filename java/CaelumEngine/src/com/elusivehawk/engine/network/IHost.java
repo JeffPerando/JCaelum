@@ -60,6 +60,6 @@ public interface IHost extends IConnectable, IPacketHandler, Closeable, IPausabl
 	
 	public int getPlayerCount();
 	
-	public void onHandshake(IConnection connection, List<Packet> pkts);
+	public void onHandshake(Connection connection, List<Packet> pkts);
 	
 }

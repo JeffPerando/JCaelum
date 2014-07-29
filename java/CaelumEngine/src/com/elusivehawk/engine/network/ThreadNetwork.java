@@ -29,7 +29,7 @@ import com.google.common.collect.Maps;
 public class ThreadNetwork extends ThreadStoppable
 {
 	protected final IPacketHandler handler;
-	protected final Map<UUID, IConnection> connections;
+	protected final Map<UUID, Connection> connections;
 	
 	//NIO channel things
 	
@@ -79,7 +79,7 @@ public class ThreadNetwork extends ThreadStoppable
 			Iterator<SelectionKey> itr = keys.iterator();
 			SelectionKey key;
 			ByteChannel io;
-			IConnection con;
+			Connection con;
 			
 			while (itr.hasNext())
 			{
@@ -89,7 +89,7 @@ public class ThreadNetwork extends ThreadStoppable
 				{
 					io = (ByteChannel)key.channel();
 					
-					con = (IConnection)key.attachment();
+					con = (Connection)key.attachment();
 					
 					if (key.isReadable())
 					{
@@ -223,7 +223,7 @@ public class ThreadNetwork extends ThreadStoppable
 			return;
 		}
 		
-		IConnection connect = this.connections.get(id);
+		Connection connect = this.connections.get(id);
 		
 		if (connect != null)
 		{
@@ -233,7 +233,7 @@ public class ThreadNetwork extends ThreadStoppable
 		
 	}
 	
-	public synchronized void connect(IConnection con)
+	public synchronized void connect(Connection con)
 	{
 		if (this.connections.get(con.getId()) == null)
 		{
@@ -259,7 +259,7 @@ public class ThreadNetwork extends ThreadStoppable
 		
 	}
 	
-	public synchronized void disconnect(IConnection con)
+	public synchronized void disconnect(Connection con)
 	{
 		if (this.connections.remove(con.getId()) != null)
 		{

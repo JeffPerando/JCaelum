@@ -21,7 +21,7 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-public class Connection implements IConnection
+public class Connection
 {
 	protected final IPacketHandler handler;
 	protected final UUID connectId;
@@ -34,20 +34,25 @@ public class Connection implements IConnection
 	
 	private List<Packet> incoming = Lists.newArrayList();
 	
-	public Connection(IPacketHandler h, UUID id, AbstractSelectableChannel ch)
+	public Connection(IPacketHandler h, AbstractSelectableChannel ch)
 	{
-		this(h, id, ch, 1024);
+		this(h, ch, 1024);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Connection(IPacketHandler h, UUID id, AbstractSelectableChannel ch, int bits)
+	public Connection(IPacketHandler h, AbstractSelectableChannel ch, int bits)
 	{
 		assert h != null;
-		assert id != null;
 		
-		handler = h;
-		connectId = id;
+		if (h == null && this instanceof IPacketHandler)
+		{
+			handler = (IPacketHandler)this;
+			
+		}
+		else handler = h;
+		
+		connectId = UUID.randomUUID();
 		channel = ch;
 		
 		if (ch instanceof SocketChannel)
@@ -80,54 +85,38 @@ public class Connection implements IConnection
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Connection(IConnection con)
+	public Connection(Connection con)
 	{
-		handler = con.getListener();
-		connectId = con.getId();
-		channel = con.getChannel();
-		type = con.getType();
-		pub = con.getPubKey();
-		priv = con.getPrivKey();
+		handler = con.handler;
+		connectId = con.connectId;
+		channel = con.channel;
+		type = con.type;
+		pub = con.pub;
+		priv = con.priv;
+		pub_rec = con.pub_rec;
 		
 	}
 	
-	@Override
 	public ConnectionType getType()
 	{
 		return this.type;
 	}
 	
-	@Override
 	public UUID getId()
 	{
 		return this.connectId;
 	}
 	
-	@Override
 	public AbstractSelectableChannel getChannel()
 	{
 		return this.channel;
 	}
 	
-	@Override
-	public IPacketHandler getListener()
-	{
-		return this.handler;
-	}
-	
-	@Override
 	public PublicKey getPubKey()
 	{
 		return this.pub;
 	}
 	
-	@Override
-	public PrivateKey getPrivKey()
-	{
-		return this.priv;
-	}
-	
-	@Override
 	public ImmutableList<Packet> getOutgoingPackets()
 	{
 		if (this.incoming.isEmpty())
@@ -138,14 +127,12 @@ public class Connection implements IConnection
 		return ImmutableList.copyOf(this.incoming);
 	}
 	
-	@Override
 	public void flushPacket(Packet pkt)
 	{
 		this.incoming.remove(pkt);
 		
 	}
 	
-	@Override
 	public synchronized void sendPackets(Packet... pkts)
 	{
 		for (Packet pkt : pkts)
@@ -156,13 +143,11 @@ public class Connection implements IConnection
 		
 	}
 	
-	@Override
 	public ByteBuffer decryptData(ByteBuffer buf)
 	{
 		return null;//FIXME
 	}
 	
-	@Override
 	public void encryptData(ByteBuffer in, ByteBuffer out)
 	{
 		try

@@ -20,7 +20,7 @@ public class Server implements IHost
 	protected final ThreadNetwork network;
 	protected final int port, maxPlayers;
 	
-	protected final List<IConnection> clients;
+	protected final List<Connection> clients;
 	
 	protected boolean paused = false;
 	
@@ -57,7 +57,7 @@ public class Server implements IHost
 			return null;
 		}
 		
-		IConnection next = new HSConnection(this, UUID.randomUUID(), ch, this.master.getEncryptionBitCount());
+		Connection next = new HSConnection(this, ch, this.master.getEncryptionBitCount());
 		
 		this.clients.add(next);
 		
@@ -65,7 +65,7 @@ public class Server implements IHost
 	}
 	
 	@Override
-	public void onPacketsReceived(IConnection origin, ImmutableList<Packet> pkts)
+	public void onPacketsReceived(Connection origin, ImmutableList<Packet> pkts)
 	{
 		this.master.onPacketsReceived(origin, pkts);
 		
@@ -78,7 +78,7 @@ public class Server implements IHost
 	}
 	
 	@Override
-	public void onDisconnect(IConnection connect)
+	public void onDisconnect(Connection connect)
 	{
 		if (this.clients.isEmpty())
 		{
@@ -104,7 +104,7 @@ public class Server implements IHost
 	@Override
 	public void forEveryConnection(IConnectionUser user)
 	{
-		for (IConnection client : this.clients)
+		for (Connection client : this.clients)
 		{
 			if (!user.processConnection(client))
 			{
@@ -142,7 +142,7 @@ public class Server implements IHost
 	}
 	
 	@Override
-	public void onHandshake(IConnection con, List<Packet> pkts)
+	public void onHandshake(Connection con, List<Packet> pkts)
 	{
 		if (con == null)
 		{

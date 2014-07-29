@@ -24,7 +24,7 @@ public class Client implements IHost
 	//protected final PublicKey pub;
 	//protected final PrivateKey priv;
 	
-	protected IConnection connection = null;
+	protected Connection connection = null;
 	protected boolean hasHS = false;
 	protected Key outgoing = null;
 	
@@ -46,7 +46,7 @@ public class Client implements IHost
 	}
 	
 	@Override
-	public void onDisconnect(IConnection connect)
+	public void onDisconnect(Connection connect)
 	{
 		if (this.connection != connect)
 		{
@@ -67,7 +67,7 @@ public class Client implements IHost
 	}
 	
 	@Override
-	public void onPacketsReceived(IConnection origin, ImmutableList<Packet> pkts)
+	public void onPacketsReceived(Connection origin, ImmutableList<Packet> pkts)
 	{
 		this.master.onPacketsReceived(origin, pkts);
 		
@@ -92,7 +92,7 @@ public class Client implements IHost
 			return null;
 		}
 		
-		this.connection = new HSConnection(this, UUID.randomUUID(), ch, this.master.getEncryptionBitCount());
+		this.connection = new HSConnection(this, ch, this.master.getEncryptionBitCount());
 		this.thr.connect(this.connection);
 		
 		return this.connection.getId();
@@ -150,7 +150,7 @@ public class Client implements IHost
 	}
 	
 	@Override
-	public void onHandshake(IConnection connection, List<Packet> pkts)
+	public void onHandshake(Connection connection, List<Packet> pkts)
 	{
 		if (this.hasHS)
 		{

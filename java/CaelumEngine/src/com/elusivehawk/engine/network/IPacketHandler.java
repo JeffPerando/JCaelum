@@ -24,7 +24,7 @@ public interface IPacketHandler extends IPacketListener
 	 * 
 	 * @param connect The connection about to be closed.
 	 */
-	public void onDisconnect(IConnection connect);
+	public void onDisconnect(Connection connect);
 	
 	@SuppressWarnings("unused")
 	default void onPacketDropped(Packet pkt){}

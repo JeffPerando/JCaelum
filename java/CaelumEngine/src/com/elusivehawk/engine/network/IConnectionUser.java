@@ -9,6 +9,6 @@ package com.elusivehawk.engine.network;
  */
 public interface IConnectionUser
 {
-	public boolean processConnection(IConnection con);
+	public boolean processConnection(Connection con);
 	
 }
