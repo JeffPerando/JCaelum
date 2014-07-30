@@ -58,7 +58,6 @@ public final class RenderContext implements IPausable, IGameStateListener, ICont
 	private final List<RenderTask> rtasks = Lists.newArrayList();
 	private final Map<EnumRenderMode, List<IGLManipulator>> manipulators = Maps.newHashMapWithExpectedSize(3);
 	
-	private EnumRenderStage stage = null;
 	private DisplaySettings settings = new DisplaySettings();
 	private boolean //Hey, I sorta like this...
 			initiated = false,
@@ -80,27 +79,6 @@ public final class RenderContext implements IPausable, IGameStateListener, ICont
 		
 		hub = rhub;
 		CaelumEngine.game().addGameStateListener(this);
-		
-	}
-	
-	@Deprecated
-	@Override
-	public void onGameStateSwitch(GameState gs)
-	{
-		this.hub = gs.getRenderHUB();
-		
-	}
-	
-	@Override
-	public boolean isPaused()
-	{
-		return this.paused;
-	}
-	
-	@Override
-	public void setPaused(boolean p)
-	{
-		this.paused = p;
 		
 	}
 	
@@ -197,6 +175,26 @@ public final class RenderContext implements IPausable, IGameStateListener, ICont
 		
 	}
 	
+	@Override
+	public void onGameStateSwitch(GameState gs)
+	{
+		this.hub = gs.getRenderHUB();
+		
+	}
+	
+	@Override
+	public boolean isPaused()
+	{
+		return this.paused;
+	}
+	
+	@Override
+	public void setPaused(boolean p)
+	{
+		this.paused = p;
+		
+	}
+	
 	public boolean drawScreen(double delta) throws RenderException
 	{
 		if (this.isPaused())
@@ -214,9 +212,9 @@ public final class RenderContext implements IPausable, IGameStateListener, ICont
 		
 		this.preRender();
 		
-		if (useHub && this.hub.updateDisplay())
+		if ((useHub && this.hub.updateDisplay()) || this.refreshScreen)
 		{
-			DisplaySettings settings = this.hub.getSettings();
+			DisplaySettings settings = this.refreshScreen ? this.settings : this.hub.getSettings();
 			
 			this.display.resize(settings.height, settings.width);
 			this.display.setFullscreen(settings.fullscreen);
