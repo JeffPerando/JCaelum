@@ -4,6 +4,7 @@ package com.elusivehawk.engine.core;
 import java.util.List;
 import com.elusivehawk.engine.render.IRenderEnvironment;
 import com.elusivehawk.util.EnumOS;
+import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.json.JsonObject;
 
 /**
@@ -20,6 +21,7 @@ import com.elusivehawk.util.json.JsonObject;
  * 
  * @author Elusivehawk
  */
+@Internal
 public interface IGameEnvironment
 {
 	public boolean isCompatible(EnumOS os);

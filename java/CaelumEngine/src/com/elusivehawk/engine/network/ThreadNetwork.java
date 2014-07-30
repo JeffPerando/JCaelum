@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import com.elusivehawk.util.BufferHelper;
+import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.concurrent.ThreadStoppable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -25,6 +26,7 @@ import com.google.common.collect.Maps;
  * 
  * @author Elusivehawk
  */
+@Internal
 public class ThreadNetwork extends ThreadStoppable
 {
 	protected final IPacketHandler handler;

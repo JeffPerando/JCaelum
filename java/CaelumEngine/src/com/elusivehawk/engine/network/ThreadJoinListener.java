@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.concurrent.ThreadStoppable;
 
 /**
@@ -13,6 +14,7 @@ import com.elusivehawk.util.concurrent.ThreadStoppable;
  * 
  * @author Elusivehawk
  */
+@Internal
 public class ThreadJoinListener extends ThreadStoppable
 {
 	protected final IHost svr;

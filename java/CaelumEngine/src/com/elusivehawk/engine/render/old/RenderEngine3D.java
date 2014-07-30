@@ -3,7 +3,6 @@ package com.elusivehawk.engine.render.old;
 
 import java.util.Collection;
 import java.util.List;
-import com.elusivehawk.engine.render.EnumRenderMode;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.opengl.GLConst;

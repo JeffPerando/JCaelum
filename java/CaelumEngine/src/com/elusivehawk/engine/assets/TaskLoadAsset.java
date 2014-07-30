@@ -4,6 +4,7 @@ package com.elusivehawk.engine.assets;
 import java.io.File;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.util.FileHelper;
+import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.task.Task;
 
 /**
@@ -12,12 +13,13 @@ import com.elusivehawk.util.task.Task;
  * 
  * @author Elusivehawk
  */
+@Internal
 public class TaskLoadAsset extends Task
 {
 	protected final String assetLoc;
+	protected final IAssetReceiver receiver;
 	
 	protected Asset fin = null;
-	protected IAssetReceiver receiver;
 	
 	public TaskLoadAsset(String loc)
 	{

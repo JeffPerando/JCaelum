@@ -1,9 +1,9 @@
 
 package com.elusivehawk.util.task;
 
-import java.util.List;
+import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.concurrent.ThreadStoppable;
-import com.google.common.collect.Lists;
+import com.elusivehawk.util.storage.SyncList;
 
 /**
  * 
@@ -11,9 +11,10 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
+@Internal
 public class ThreadTaskWorker extends ThreadStoppable
 {
-	protected final List<Task> tasks = Lists.newArrayList();
+	protected final SyncList<Task> tasks = new SyncList<Task>();
 	
 	@Override
 	public void rawUpdate() throws Throwable
@@ -45,7 +46,7 @@ public class ThreadTaskWorker extends ThreadStoppable
 		return this.tasks.size();
 	}
 	
-	public synchronized void scheduleTask(Task t)
+	public void scheduleTask(Task t)
 	{
 		this.tasks.add(t);
 		

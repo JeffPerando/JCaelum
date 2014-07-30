@@ -13,6 +13,7 @@ import com.elusivehawk.engine.core.GameState;
 import com.elusivehawk.engine.core.IContext;
 import com.elusivehawk.engine.core.IGameStateListener;
 import com.elusivehawk.engine.core.IThreadContext;
+import com.elusivehawk.engine.render.old.EnumRenderMode;
 import com.elusivehawk.engine.render.old.EnumRenderStage;
 import com.elusivehawk.engine.render.old.IRenderEngine;
 import com.elusivehawk.engine.render.old.IRenderHUB;

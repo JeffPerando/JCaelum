@@ -1,12 +1,15 @@
 
 package com.elusivehawk.engine.core;
 
+import com.elusivehawk.util.Internal;
+
 /**
  * 
  * 
  * 
  * @author Elusivehawk
  */
+@Internal
 public class GameTickException extends CaelumException
 {
 	private static final long serialVersionUID = 8634027849112642888L;

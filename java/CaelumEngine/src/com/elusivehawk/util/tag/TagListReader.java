@@ -3,6 +3,7 @@ package com.elusivehawk.util.tag;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.io.IByteReader;
 import com.elusivehawk.util.io.IByteWriter;
 import com.elusivehawk.util.io.Serializer;
@@ -14,6 +15,7 @@ import com.elusivehawk.util.io.Serializers;
  * 
  * @author Elusivehawk
  */
+@Internal
 public class TagListReader implements Serializer<List<Tag<?>>>
 {
 	@Override

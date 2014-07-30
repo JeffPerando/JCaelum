@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.render.three;
 
 import com.elusivehawk.engine.math.Vector;
+import com.elusivehawk.util.Internal;
 
 /**
  * 
@@ -9,6 +10,7 @@ import com.elusivehawk.engine.math.Vector;
  * 
  * @author Elusivehawk
  */
+@Internal
 public class ModelPoint
 {
 	public final Vector v, t, n;

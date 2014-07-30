@@ -4,6 +4,7 @@ package com.elusivehawk.engine.render.three;
 import java.util.Iterator;
 import java.util.List;
 import com.elusivehawk.engine.assets.Mesh;
+import com.elusivehawk.util.Internal;
 import com.google.common.collect.Lists;
 
 /**
@@ -12,6 +13,7 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
+@Internal
 public class ModelSection implements Iterable<Mesh>
 {
 	public final String name;

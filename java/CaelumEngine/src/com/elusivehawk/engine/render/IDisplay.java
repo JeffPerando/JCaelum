@@ -1,7 +1,6 @@
 
 package com.elusivehawk.engine.render;
 
-import java.awt.Canvas;
 import java.io.Closeable;
 import com.elusivehawk.engine.render.opengl.IGL1;
 
@@ -55,12 +54,6 @@ public interface IDisplay extends Closeable
 	 * @return The current width of the current display.
 	 */
 	public int getWidth();
-	
-	/**
-	 * 
-	 * @return The corresponding canvas.
-	 */
-	public Canvas getCanvas();
 	
 	public void setTitle(String title);
 	

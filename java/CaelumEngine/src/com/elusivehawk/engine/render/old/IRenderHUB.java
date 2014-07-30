@@ -3,7 +3,6 @@ package com.elusivehawk.engine.render.old;
 
 import java.util.Collection;
 import com.elusivehawk.engine.render.DisplaySettings;
-import com.elusivehawk.engine.render.EnumRenderMode;
 import com.elusivehawk.engine.render.IDisplay;
 
 /**

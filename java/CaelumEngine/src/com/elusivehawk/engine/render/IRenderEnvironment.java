@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
+import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.concurrent.IThreadStoppable;
 
 /**
@@ -9,6 +10,7 @@ import com.elusivehawk.util.concurrent.IThreadStoppable;
  * 
  * @author Elusivehawk
  */
+@Internal
 public interface IRenderEnvironment
 {
 	public static final int GL_1 = 1;

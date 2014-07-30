@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.core;
 
 import java.util.Map;
+import com.elusivehawk.util.Internal;
 import com.google.common.collect.Maps;
 
 /**
@@ -10,6 +11,7 @@ import com.google.common.collect.Maps;
  * 
  * @author Elusivehawk
  */
+@Internal
 public final class ThreadGameLoop extends ThreadCaelum
 {
 	private final Map<EnumInputType, Input> input = Maps.newHashMap();
