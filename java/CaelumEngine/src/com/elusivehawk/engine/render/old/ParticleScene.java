@@ -43,13 +43,13 @@ public class ParticleScene implements ILogicalRender
 		p = new GLProgram(); //TODO Create default particle shaders.
 		vbo = new VertexBuffer(GLConst.GL_ARRAY_BUFFER, buf, GLConst.GL_STREAM_DRAW);
 		
-		RenderContext sys = CaelumEngine.renderContext();
+		RenderContext con = CaelumEngine.renderContext();
 		
-		if (p.bind(sys))
+		if (p.bind(con))
 		{
 			p.attachVBO(vbo, Arrays.asList(0, 1));
 			
-			p.unbind(sys);
+			p.unbind(con);
 			
 		}
 		else

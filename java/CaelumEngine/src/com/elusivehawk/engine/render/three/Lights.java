@@ -36,10 +36,10 @@ public class Lights implements IGLManipulator
 	}
 	
 	@Override
-	public void updateUniforms(RenderContext sys){}
+	public void updateUniforms(RenderContext con){}
 	
 	@Override
-	public void manipulateUniforms(RenderContext sys, GLProgram p)
+	public void manipulateUniforms(RenderContext con, GLProgram p)
 	{
 		// TODO Auto-generated method stub
 		

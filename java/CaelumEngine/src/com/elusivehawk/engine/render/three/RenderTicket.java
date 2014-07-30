@@ -119,7 +119,7 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver, IVe
 	}
 	
 	@Override
-	public boolean updateBeforeUse(RenderContext sys)
+	public boolean updateBeforeUse(RenderContext con)
 	{
 		if (this.initiated)
 		{
