@@ -214,12 +214,16 @@ public final class RenderContext implements IPausable, IGameStateListener, ICont
 		
 		if ((useHub && this.hub.updateDisplay()) || this.refreshScreen)
 		{
-			DisplaySettings settings = this.refreshScreen ? this.settings : this.hub.getSettings();
+			if (useHub)
+			{
+				this.settings = this.hub.getSettings();
+				
+			}
 			
-			this.display.resize(settings.height, settings.width);
-			this.display.setFullscreen(settings.fullscreen);
-			this.display.setVSync(settings.vsync);
-			this.display.setFPS(this.fps = settings.targetFPS);
+			this.display.resize(this.settings.height, settings.width);
+			this.display.setFullscreen(this.settings.fullscreen);
+			this.display.setVSync(this.settings.vsync);
+			this.display.setFPS(this.fps = this.settings.targetFPS);
 			
 		}
 		
@@ -308,7 +312,7 @@ public final class RenderContext implements IPausable, IGameStateListener, ICont
 	 * @param delta
 	 */
 	@SuppressWarnings("unused")
-	private void render0(double delta)//TODO Expand
+	private void drawScreen0(double delta)//TODO Expand
 	{
 		this.preRender();
 		
