@@ -18,11 +18,9 @@ sourceSets
 {
 	main
 	{
-	        output.resourcesDir = 'java/CaelumEngine/'
+		output.resourcesDir = 'java/CaelumEngine/'
 		output.classesDir = 'java/CaelumEngine/'
-
 	}
-
 }
 
 dependencies
@@ -39,7 +37,7 @@ jar
 	{
 		attributes('Main-class': 'com.elusivehawk.engine.core.CaelumEngine')
 	}
- 
+
 	from configurations.compile.collect {it.isDirectory() ? it : zipTree(it)}
 
 	into ("natives")
@@ -52,6 +50,6 @@ jar
 	exclude "ExampleGame.class"
 	exclude "LICENSE"
 	exclude "README.md"
- 
+
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
