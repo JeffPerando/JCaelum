@@ -5,6 +5,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/guava/guava-16.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jdom/jdom-2.0.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jstackalloc/stack-alloc.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/lwjgl-2.9.1/jar/lwjgl.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lwjgl/jar/lwjgl.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
