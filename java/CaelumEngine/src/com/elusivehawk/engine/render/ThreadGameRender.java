@@ -14,30 +14,33 @@ import com.elusivehawk.util.ShutdownHelper;
  */
 public class ThreadGameRender extends ThreadCaelum implements IThreadContext
 {
-	protected final RenderSystem sys;
+	protected final RenderContext con;
 	
 	protected int fps = 30;
 	protected IDisplay display = null;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public ThreadGameRender(RenderSystem rsys)
+	public ThreadGameRender(RenderContext rcon)
 	{
-		sys = rsys;
+		con = rcon;
 		
 	}
 	
 	@Override
 	public boolean initiate()
 	{
-		super.initiate();
-		
-		if (!this.sys.initContext())
+		if (!super.initiate())
 		{
 			return false;
 		}
 		
-		this.fps = this.sys.getFPS();
-		this.display = this.sys.getDisplay();
+		if (!this.con.initContext())
+		{
+			return false;
+		}
+		
+		this.fps = this.con.getFPS();
+		this.display = this.con.getDisplay();
 		
 		return true;
 	}
@@ -47,13 +50,13 @@ public class ThreadGameRender extends ThreadCaelum implements IThreadContext
 	{
 		if (this.display.isCloseRequested())
 		{
-			this.sys.onDisplayClosed(this.display);
+			this.con.onDisplayClosed(this.display);
 			
 			ShutdownHelper.exit(0);
 			
 		}
 		
-		if (this.sys.drawScreen(delta))
+		if (this.con.drawScreen(delta))
 		{
 			this.display.updateDisplay();
 			
@@ -65,7 +68,7 @@ public class ThreadGameRender extends ThreadCaelum implements IThreadContext
 	public synchronized void setPaused(boolean pause)
 	{
 		super.setPaused(pause);
-		this.sys.setPaused(pause);
+		this.con.setPaused(pause);
 		
 	}
 	
@@ -78,7 +81,7 @@ public class ThreadGameRender extends ThreadCaelum implements IThreadContext
 	@Override
 	public IContext getContext()
 	{
-		return this.sys;
+		return this.con;
 	}
 	
 }

@@ -2,7 +2,7 @@
 package com.elusivehawk.engine.render.old;
 
 import com.elusivehawk.engine.render.RenderException;
-import com.elusivehawk.engine.render.RenderSystem;
+import com.elusivehawk.engine.render.RenderContext;
 
 
 /**
@@ -17,11 +17,11 @@ public interface IRenderEngine
 	/**
 	 * Called once every frame.
 	 * 
-	 * @param sys The current rendering system.
+	 * @param con The current rendering context.
 	 * @param hub The current rendering HUB.
 	 * @throws RenderException
 	 */
-	public void render(RenderSystem sys, IRenderHUB hub) throws RenderException;
+	public void render(RenderContext con, IRenderHUB hub) throws RenderException;
 	
 	/**
 	 * 

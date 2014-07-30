@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.render.three;
 
-import com.elusivehawk.engine.render.RenderSystem;
+import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGLManipulator;
 
@@ -36,10 +36,10 @@ public class Lights implements IGLManipulator
 	}
 	
 	@Override
-	public void updateUniforms(RenderSystem sys){}
+	public void updateUniforms(RenderContext sys){}
 	
 	@Override
-	public void manipulateUniforms(RenderSystem sys, GLProgram p)
+	public void manipulateUniforms(RenderContext sys, GLProgram p)
 	{
 		// TODO Auto-generated method stub
 		

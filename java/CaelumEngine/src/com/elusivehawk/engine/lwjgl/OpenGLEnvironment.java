@@ -4,7 +4,7 @@ package com.elusivehawk.engine.lwjgl;
 import com.elusivehawk.engine.render.DisplaySettings;
 import com.elusivehawk.engine.render.IDisplay;
 import com.elusivehawk.engine.render.IRenderEnvironment;
-import com.elusivehawk.engine.render.RenderSystem;
+import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
@@ -51,7 +51,7 @@ public class OpenGLEnvironment implements IRenderEnvironment
 	}
 	
 	@Override
-	public IThreadStoppable createRenderThread(RenderSystem rsys)
+	public IThreadStoppable createRenderThread(RenderContext rcon)
 	{
 		return null;
 	}

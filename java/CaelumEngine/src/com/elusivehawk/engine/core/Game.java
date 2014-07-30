@@ -4,8 +4,8 @@ package com.elusivehawk.engine.core;
 import java.util.List;
 import com.elusivehawk.engine.assets.AssetManager;
 import com.elusivehawk.engine.physics.IPhysicsSimulator;
+import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
-import com.elusivehawk.engine.render.RenderSystem;
 import com.elusivehawk.engine.render.old.IRenderHUB;
 import com.elusivehawk.util.IPausable;
 import com.elusivehawk.util.IUpdatable;
@@ -224,16 +224,16 @@ public abstract class Game implements IUpdatable, IPausable
 	 * NOTICE: THIS IS NOT THREAD SAFE!<br>
 	 * I mean it people, sync your entities and crap!
 	 * 
-	 * @param rsys
+	 * @param rcon
 	 * @param delta
 	 * 
 	 * @see RenderHelper
 	 */
-	public void render(RenderSystem rsys, double delta)
+	public void render(RenderContext rcon, double delta)
 	{
 		if (this.state != null)
 		{
-			this.state.render(rsys, delta);
+			this.state.render(rcon, delta);
 			
 		}
 		

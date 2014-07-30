@@ -37,6 +37,6 @@ public interface IRenderEnvironment
 	 */
 	public IDisplay createDisplay(String name, DisplaySettings settings);
 	
-	public IThreadStoppable createRenderThread(RenderSystem rsys);
+	public IThreadStoppable createRenderThread(RenderContext rcon);
 	
 }

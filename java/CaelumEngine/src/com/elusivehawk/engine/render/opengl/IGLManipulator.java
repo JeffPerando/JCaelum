@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.render.opengl;
 
-import com.elusivehawk.engine.render.RenderSystem;
+import com.elusivehawk.engine.render.RenderContext;
 
 /**
  * 
@@ -15,11 +15,11 @@ public interface IGLManipulator
 	 * 
 	 * Called once every frame; Do whatever you need to before rendering in this method.
 	 * 
-	 * @param sys The current rendering system
+	 * @param con The current rendering context
 	 */
-	public void updateUniforms(RenderSystem sys);
+	public void updateUniforms(RenderContext con);
 	
-	public void manipulateUniforms(RenderSystem sys, GLProgram p);
+	public void manipulateUniforms(RenderContext con, GLProgram p);
 	
 	/**
 	 * 

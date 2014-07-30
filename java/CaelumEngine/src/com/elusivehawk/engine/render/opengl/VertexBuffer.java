@@ -5,7 +5,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.render.RenderHelper;
-import com.elusivehawk.engine.render.RenderSystem;
+import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.storage.Buffer;
 
@@ -22,13 +22,13 @@ public class VertexBuffer implements IGLBindable
 	@SuppressWarnings("unqualified-field-access")
 	private VertexBuffer(int vbo, int target, int mode)
 	{
-		RenderSystem sys = CaelumEngine.renderContext();
+		RenderContext con = CaelumEngine.renderContext();
 		
 		t = target;
-		id = sys.getGL1().glIsBuffer(vbo) ? vbo : sys.getGL1().glGenBuffers();
+		id = con.getGL1().glIsBuffer(vbo) ? vbo : con.getGL1().glGenBuffers();
 		loadMode = mode;
 		
-		sys.registerCleanable(this);
+		con.registerCleanable(this);
 		
 	}
 	
@@ -60,15 +60,15 @@ public class VertexBuffer implements IGLBindable
 	
 	protected void loadData(FloatBuffer buf)
 	{
-		RenderSystem sys = CaelumEngine.renderContext();
+		RenderContext con = CaelumEngine.renderContext();
 		
-		IGL1 gl1 = sys.getGL1();
+		IGL1 gl1 = con.getGL1();
 		
 		int vba = gl1.glGetInteger(GLConst.GL_VERTEX_ARRAY_BINDING);
 		
 		if (vba != 0)
 		{
-			sys.getGL3().glBindVertexArray(0);
+			con.getGL3().glBindVertexArray(0);
 			
 		}
 		
@@ -78,7 +78,7 @@ public class VertexBuffer implements IGLBindable
 		
 		if (vba != 0)
 		{
-			sys.getGL3().glBindVertexArray(vba);
+			con.getGL3().glBindVertexArray(vba);
 			
 		}
 		
@@ -86,17 +86,17 @@ public class VertexBuffer implements IGLBindable
 	
 	protected void loadData(IntBuffer buf)
 	{
-		RenderSystem sys = CaelumEngine.renderContext();
+		RenderContext con = CaelumEngine.renderContext();
 		
-		int vba = sys.getGL1().glGetInteger(GLConst.GL_VERTEX_ARRAY_BINDING);
+		int vba = con.getGL1().glGetInteger(GLConst.GL_VERTEX_ARRAY_BINDING);
 		
 		if (vba != 0)
 		{
-			sys.getGL3().glBindVertexArray(0);
+			con.getGL3().glBindVertexArray(0);
 			
 		}
 		
-		IGL1 gl1 = sys.getGL1();
+		IGL1 gl1 = con.getGL1();
 		
 		gl1.glBindBuffer(this);
 		gl1.glBufferData(this.t, GLConst.GL_INT, buf, this.loadMode);
@@ -104,7 +104,7 @@ public class VertexBuffer implements IGLBindable
 		
 		if (vba != 0)
 		{
-			sys.getGL3().glBindVertexArray(vba);
+			con.getGL3().glBindVertexArray(vba);
 			
 		}
 		
@@ -179,9 +179,9 @@ public class VertexBuffer implements IGLBindable
 	}
 	
 	@Override
-	public boolean bind(RenderSystem sys)
+	public boolean bind(RenderContext con)
 	{
-		IGL1 gl1 = sys.getGL1();
+		IGL1 gl1 = con.getGL1();
 		
 		gl1.glBindBuffer(this);
 		
@@ -192,7 +192,7 @@ public class VertexBuffer implements IGLBindable
 		}
 		catch (Exception e)
 		{
-			this.unbind(sys);
+			this.unbind(con);
 			
 			return false;
 		}
@@ -201,16 +201,16 @@ public class VertexBuffer implements IGLBindable
 	}
 	
 	@Override
-	public void unbind(RenderSystem sys)
+	public void unbind(RenderContext con)
 	{
-		sys.getGL1().glBindBuffer(this.t, 0);
+		con.getGL1().glBindBuffer(this.t, 0);
 		
 	}
 	
 	@Override
-	public void glDelete(RenderSystem sys)
+	public void glDelete(RenderContext con)
 	{
-		sys.getGL1().glDeleteBuffers(this);
+		con.getGL1().glDeleteBuffers(this);
 		
 	}
 	

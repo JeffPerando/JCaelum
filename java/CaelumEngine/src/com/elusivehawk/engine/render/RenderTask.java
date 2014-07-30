@@ -25,6 +25,6 @@ public abstract class RenderTask extends Task
 		return this.finishRTask(CaelumEngine.renderContext());
 	}
 	
-	protected abstract boolean finishRTask(RenderSystem sys);
+	protected abstract boolean finishRTask(RenderContext con);
 	
 }

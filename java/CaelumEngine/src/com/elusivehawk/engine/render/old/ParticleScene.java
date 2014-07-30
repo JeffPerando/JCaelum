@@ -10,7 +10,7 @@ import com.elusivehawk.engine.render.Color;
 import com.elusivehawk.engine.render.EnumColorFilter;
 import com.elusivehawk.engine.render.EnumColorFormat;
 import com.elusivehawk.engine.render.ILogicalRender;
-import com.elusivehawk.engine.render.RenderSystem;
+import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
@@ -43,7 +43,7 @@ public class ParticleScene implements ILogicalRender
 		p = new GLProgram(); //TODO Create default particle shaders.
 		vbo = new VertexBuffer(GLConst.GL_ARRAY_BUFFER, buf, GLConst.GL_STREAM_DRAW);
 		
-		RenderSystem sys = CaelumEngine.renderContext();
+		RenderContext sys = CaelumEngine.renderContext();
 		
 		if (p.bind(sys))
 		{
@@ -88,7 +88,7 @@ public class ParticleScene implements ILogicalRender
 	}
 	
 	@Override
-	public boolean updateBeforeUse(RenderSystem sys)
+	public boolean updateBeforeUse(RenderContext con)
 	{
 		if (this.getParticleCount() == 0)
 		{

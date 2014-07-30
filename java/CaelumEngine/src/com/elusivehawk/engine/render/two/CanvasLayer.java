@@ -2,7 +2,7 @@
 package com.elusivehawk.engine.render.two;
 
 import com.elusivehawk.engine.render.ILogicalRender;
-import com.elusivehawk.engine.render.RenderSystem;
+import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 
 /**
@@ -23,7 +23,7 @@ public class CanvasLayer implements ILogicalRender
 	}
 
 	@Override
-	public boolean updateBeforeUse(RenderSystem sys)
+	public boolean updateBeforeUse(RenderContext sys)
 	{
 		return false;
 	}

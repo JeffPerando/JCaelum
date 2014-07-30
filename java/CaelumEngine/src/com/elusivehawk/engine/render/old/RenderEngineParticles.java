@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.render.old;
 
-import com.elusivehawk.engine.render.RenderSystem;
+import com.elusivehawk.engine.render.RenderContext;
 
 /**
  * 
@@ -13,7 +13,7 @@ import com.elusivehawk.engine.render.RenderSystem;
 public class RenderEngineParticles implements IRenderEngine
 {
 	@Override
-	public void render(RenderSystem sys, IRenderHUB hub)
+	public void render(RenderContext con, IRenderHUB hub)
 	{
 		/*if (hub.getScene() == null || !hub.getRenderMode().is3D())
 		{
@@ -34,7 +34,7 @@ public class RenderEngineParticles implements IRenderEngine
 			return;
 		}
 		
-		IGL1 gl1 = sys.getGL1();
+		IGL1 gl1 = con.getGL1();
 		
 		gl1.glEnable(GLConst.GL_DEPTH_TEST);
 		gl1.glDepthFunc(GLConst.GL_LESS);

@@ -12,7 +12,7 @@ import com.elusivehawk.engine.assets.AssetManager;
 import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.assets.TaskLoadAsset;
 import com.elusivehawk.engine.render.IRenderEnvironment;
-import com.elusivehawk.engine.render.RenderSystem;
+import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.ThreadGameRender;
 import com.elusivehawk.engine.render.old.IRenderHUB;
 import com.elusivehawk.util.EnumOS;
@@ -60,7 +60,7 @@ public final class CaelumEngine
 	private Game game = null;
 	private GameArguments gameargs = null;
 	private AssetManager assets = new AssetManager();
-	private RenderSystem rsys = null;
+	private RenderContext rcon = null;
 	
 	private CaelumEngine()
 	{
@@ -139,14 +139,14 @@ public final class CaelumEngine
 		return ((IThreadContext)t).getContext();
 	}
 	
-	public static RenderSystem renderContext()
+	public static RenderContext renderContext()
 	{
 		return renderContext(true);
 	}
 	
-	public static RenderSystem renderContext(boolean safe)
+	public static RenderContext renderContext(boolean safe)
 	{
-		return (RenderSystem)getContext(safe);
+		return (RenderContext)getContext(safe);
 	}
 	
 	public static boolean isPaused()
@@ -163,9 +163,9 @@ public final class CaelumEngine
 	
 	public static void flipScreen(boolean flip)
 	{
-		if (instance().rsys != null)
+		if (instance().rcon != null)
 		{
-			instance().rsys.onScreenFlipped(flip);
+			instance().rcon.onScreenFlipped(flip);
 			
 		}
 		
@@ -452,20 +452,20 @@ public final class CaelumEngine
 		
 		if (hub == null)
 		{
-			this.rsys = new RenderSystem(this.renv);
+			this.rcon = new RenderContext(this.renv);
 			
 		}
 		else
 		{
-			this.rsys = new RenderSystem(this.renv, hub);
+			this.rcon = new RenderContext(this.renv, hub);
 			
 		}
 		
-		IThreadStoppable rt = this.renv.createRenderThread(this.rsys);
+		IThreadStoppable rt = this.renv.createRenderThread(this.rcon);
 		
 		if (rt == null)
 		{
-			rt = new ThreadGameRender(this.rsys);
+			rt = new ThreadGameRender(this.rcon);
 			
 		}
 		
@@ -527,7 +527,7 @@ public final class CaelumEngine
 			return;
 		}
 		
-		this.rsys = null;
+		this.rcon = null;
 		
 		if (this.game != null)
 		{

@@ -36,7 +36,7 @@ import com.google.common.collect.Maps;
  * 
  * @author Elusivehawk
  */
-public final class RenderSystem implements IPausable, IGameStateListener, IContext
+public final class RenderContext implements IPausable, IGameStateListener, IContext
 {
 	private final IRenderEnvironment renv;
 	
@@ -66,7 +66,7 @@ public final class RenderSystem implements IPausable, IGameStateListener, IConte
 			flipScreen = false;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public RenderSystem(IRenderEnvironment renderEnv)
+	public RenderContext(IRenderEnvironment renderEnv)
 	{
 		renv = renderEnv;
 		
@@ -74,7 +74,7 @@ public final class RenderSystem implements IPausable, IGameStateListener, IConte
 	
 	@Deprecated
 	@SuppressWarnings("unqualified-field-access")
-	public RenderSystem(IRenderEnvironment renderEnv, IRenderHUB rhub)
+	public RenderContext(IRenderEnvironment renderEnv, IRenderHUB rhub)
 	{
 		this(renderEnv);
 		

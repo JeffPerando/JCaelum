@@ -19,6 +19,11 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 	@Override
 	public boolean initiate()
 	{
+		if (this.initiated)
+		{
+			return false;
+		}
+		
 		this.updateCount = this.getTargetUpdateCount();
 		this.delta = (1000000000.0 / this.updateCount);
 		this.nextTime = (System.nanoTime() / 1000000000.0) + this.delta;

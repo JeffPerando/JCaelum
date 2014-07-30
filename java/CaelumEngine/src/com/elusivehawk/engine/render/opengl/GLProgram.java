@@ -14,7 +14,7 @@ import com.elusivehawk.engine.assets.Shader;
 import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.render.RenderConst;
 import com.elusivehawk.engine.render.RenderHelper;
-import com.elusivehawk.engine.render.RenderSystem;
+import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.three.Model;
 import com.elusivehawk.util.ArrayHelper;
 import com.elusivehawk.util.storage.Few;
@@ -54,11 +54,11 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 	}
 	
 	@Override
-	public boolean bind(RenderSystem sys)
+	public boolean bind(RenderContext con)
 	{
 		if (this.shaderCount == 0)
 		{
-			for (Shader sh : sys.getDefaultShaders())
+			for (Shader sh : con.getDefaultShaders())
 			{
 				this.attachShader(sh);
 				
@@ -68,18 +68,18 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 		
 		if (this.id == -1)
 		{
-			this.id = sys.getGL2().glCreateProgram();
-			this.vba = sys.getGL3().glGenVertexArrays();
+			this.id = con.getGL2().glCreateProgram();
+			this.vba = con.getGL3().glGenVertexArrays();
 			
-			sys.registerCleanable(this);
+			con.registerCleanable(this);
 			
-			RenderHelper.checkForGLError(sys);
+			RenderHelper.checkForGLError(con);
 			
 		}
 		
 		if (this.relink)
 		{
-			IGL2 gl2 = sys.getGL2();
+			IGL2 gl2 = con.getGL2();
 			
 			for (Shader s : this.shaders)
 			{
@@ -96,7 +96,7 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 			
 			try
 			{
-				RenderHelper.checkForGLError(sys);
+				RenderHelper.checkForGLError(con);
 				
 				this.relink = false;
 				
@@ -105,9 +105,9 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 			
 		}
 		
-		if (!this.bind0(sys))
+		if (!this.bind0(con))
 		{
-			this.unbind(sys);
+			this.unbind(con);
 			
 			return false;
 		}
@@ -115,33 +115,33 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 		return true;
 	}
 	
-	private boolean bind0(RenderSystem sys)
+	private boolean bind0(RenderContext con)
 	{
 		if (this.bound)
 		{
 			return true;
 		}
 		
-		if (sys.getGL1().glGetInteger(GLConst.GL_CURRENT_PROGRAM) != 0)
+		if (con.getGL1().glGetInteger(GLConst.GL_CURRENT_PROGRAM) != 0)
 		{
 			return false;
 		}
 		
-		sys.getGL2().glUseProgram(this);
+		con.getGL2().glUseProgram(this);
 		
-		sys.getGL3().glBindVertexArray(this.vba);
+		con.getGL3().glBindVertexArray(this.vba);
 		
 		if (!this.vbos.isEmpty())
 		{
 			for (Entry<VertexBuffer, List<Integer>> entry : this.vbos.entrySet())
 			{
-				sys.getGL1().glBindBuffer(entry.getKey());
+				con.getGL1().glBindBuffer(entry.getKey());
 				
 				if (entry.getValue() != null)
 				{
 					for (int attrib : entry.getValue())
 					{
-						sys.getGL2().glEnableVertexAttribArray(attrib);
+						con.getGL2().glEnableVertexAttribArray(attrib);
 						
 					}
 					
@@ -157,7 +157,7 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 	}
 	
 	@Override
-	public void unbind(RenderSystem sys)
+	public void unbind(RenderContext con)
 	{
 		if (!this.bound)
 		{
@@ -172,38 +172,38 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 				{
 					for (int a : entry.getValue())
 					{
-						sys.getGL2().glDisableVertexAttribArray(a);
+						con.getGL2().glDisableVertexAttribArray(a);
 						
 					}
 					
 				}
 				
-				sys.getGL1().glBindBuffer(entry.getKey().t, 0);
+				con.getGL1().glBindBuffer(entry.getKey().t, 0);
 				
 			}
 			
 		}
 		
-		sys.getGL3().glBindVertexArray(0);
+		con.getGL3().glBindVertexArray(0);
 		
-		sys.getGL2().glUseProgram(0);
+		con.getGL2().glUseProgram(0);
 		
 		this.bound = false;
 		
 	}
 	
 	@Override
-	public void glDelete(RenderSystem sys)
+	public void glDelete(RenderContext con)
 	{
 		if (this.bound)
 		{
-			this.unbind(sys);
+			this.unbind(con);
 			
 		}
 		
-		IGL2 gl2 = sys.getGL2();
+		IGL2 gl2 = con.getGL2();
 		
-		sys.getGL3().glDeleteVertexArrays(this.vba);
+		con.getGL3().glDeleteVertexArrays(this.vba);
 		
 		for (Shader s : this.shaders)
 		{
@@ -303,14 +303,14 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 	
 	public void attachUniform(String name, FloatBuffer info, EnumUniformType type)
 	{
-		RenderSystem sys = CaelumEngine.renderContext();
+		RenderContext con = CaelumEngine.renderContext();
 		
-		if (!this.bound && !this.bind(sys))
+		if (!this.bound && !this.bind(con))
 		{
 			return;
 		}
 		
-		int loc = sys.getGL2().glGetUniformLocation(this.id, name);
+		int loc = con.getGL2().glGetUniformLocation(this.id, name);
 		
 		if (loc == 0)
 		{
@@ -323,14 +323,14 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 	
 	public void attachUniform(String name, IntBuffer info, EnumUniformType type)
 	{
-		RenderSystem sys = CaelumEngine.renderContext();
+		RenderContext con = CaelumEngine.renderContext();
 		
-		if (!this.bound && !this.bind(sys))
+		if (!this.bound && !this.bind(con))
 		{
 			return;
 		}
 		
-		int loc = sys.getGL2().glGetUniformLocation(this.id, name);
+		int loc = con.getGL2().glGetUniformLocation(this.id, name);
 		
 		if (loc == 0)
 		{

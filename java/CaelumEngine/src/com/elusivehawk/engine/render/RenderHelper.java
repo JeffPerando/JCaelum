@@ -203,8 +203,8 @@ public final class RenderHelper
 	{
 		String src = formatShaderSource(file);
 		
-		RenderSystem sys = CaelumEngine.renderContext();
-		IGL2 gl2 = sys.getGL2();
+		RenderContext con = CaelumEngine.renderContext();
+		IGL2 gl2 = con.getGL2();
 		
 		int id = gl2.glCreateShader(type);
 		gl2.glShaderSource(id, src);
@@ -212,7 +212,7 @@ public final class RenderHelper
 		
 		try
 		{
-			checkForGLError(sys);
+			checkForGLError(con);
 			
 		}
 		catch (Exception e)
@@ -279,9 +279,9 @@ public final class RenderHelper
 		
 	}
 	
-	public static void checkForGLError(RenderSystem sys) throws GLException
+	public static void checkForGLError(RenderContext con) throws GLException
 	{
-		checkForGLError(sys.getGL1());
+		checkForGLError(con.getGL1());
 		
 	}
 	
