@@ -5,13 +5,16 @@ import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.AbstractSelectableChannel;
+import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.List;
 import java.util.UUID;
 import javax.crypto.Cipher;
+import com.elusivehawk.util.BufferHelper;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
@@ -31,6 +34,7 @@ public class Connection
 	protected final PrivateKey priv;
 	
 	protected PublicKey pub_rec = null;
+	protected boolean readPubKey = false;
 	
 	private List<Packet> incoming = Lists.newArrayList();
 	
@@ -91,10 +95,18 @@ public class Connection
 		connectId = con.connectId;
 		channel = con.channel;
 		type = con.type;
+		
 		pub = con.pub;
 		priv = con.priv;
 		pub_rec = con.pub_rec;
+		readPubKey = con.readPubKey;
 		
+	}
+	
+	@Override
+	public Connection clone()
+	{
+		return new Connection(this);
 	}
 	
 	public ConnectionType getType()
@@ -143,9 +155,49 @@ public class Connection
 		
 	}
 	
-	public ByteBuffer decryptData(ByteBuffer buf)
+	public ByteBuffer decryptData(ByteBuffer buf) throws NetworkException
 	{
-		return null;//FIXME
+		if (this.pub_rec == null)
+		{
+			if (this.readPubKey)
+			{
+				throw new NetworkException("Cannot read bytes!");
+			}
+			
+			X509EncodedKeySpec keyspec = new X509EncodedKeySpec(buf.array());
+			
+			try
+			{
+				KeyFactory fac = KeyFactory.getInstance("RSA");
+				this.pub_rec = fac.generatePublic(keyspec);
+				
+			}
+			catch (Throwable e)
+			{
+				throw new NetworkException("Error whilst reading public key:", e);
+				
+			}
+			
+			this.readPubKey = true;
+			
+			return null;
+		}
+		
+		byte[] ret = null;
+		
+		try
+		{
+			Cipher cipher = Cipher.getInstance("RSA");
+			cipher.init(Cipher.DECRYPT_MODE, this.pub_rec);
+			ret = cipher.doFinal(buf.array());
+			
+		}
+		catch (Throwable e)
+		{
+			throw new NetworkException("Cannot decrypt data:", e);
+		}
+		
+		return BufferHelper.makeByteBuffer(ret);
 	}
 	
 	public void encryptData(ByteBuffer in, ByteBuffer out)

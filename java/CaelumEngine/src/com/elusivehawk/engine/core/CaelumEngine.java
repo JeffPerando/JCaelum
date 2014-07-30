@@ -12,7 +12,6 @@ import com.elusivehawk.engine.assets.AssetManager;
 import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.assets.TaskLoadAsset;
 import com.elusivehawk.engine.render.IRenderEnvironment;
-import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderSystem;
 import com.elusivehawk.engine.render.ThreadGameRender;
 import com.elusivehawk.engine.render.old.IRenderHUB;
@@ -140,14 +139,14 @@ public final class CaelumEngine
 		return ((IThreadContext)t).getContext();
 	}
 	
-	public static RenderContext renderContext()
+	public static RenderSystem renderContext()
 	{
 		return renderContext(true);
 	}
 	
-	public static RenderContext renderContext(boolean safe)
+	public static RenderSystem renderContext(boolean safe)
 	{
-		return (RenderContext)getContext(safe);
+		return (RenderSystem)getContext(safe);
 	}
 	
 	public static boolean isPaused()
@@ -430,7 +429,7 @@ public final class CaelumEngine
 		}
 		catch (Throwable e)
 		{
-			this.log.log(EnumLogType.ERROR, "Game failed to load!", e);
+			this.log.err("Game failed to load!", e);
 			
 			ShutdownHelper.exit("GAME-LOAD-FAILURE");
 			

@@ -9,7 +9,7 @@ package com.elusivehawk.engine.core;
  */
 public interface IContext
 {
-	public void initContext();
+	public boolean initContext();
 	
 	public void cleanup();
 	

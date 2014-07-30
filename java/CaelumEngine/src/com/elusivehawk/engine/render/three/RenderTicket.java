@@ -18,8 +18,8 @@ import com.elusivehawk.engine.math.Quaternion;
 import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.render.ILogicalRender;
 import com.elusivehawk.engine.render.RenderConst;
-import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
+import com.elusivehawk.engine.render.RenderSystem;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
@@ -119,7 +119,7 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver, IVe
 	}
 	
 	@Override
-	public boolean updateBeforeUse(RenderContext context)
+	public boolean updateBeforeUse(RenderSystem sys)
 	{
 		if (this.initiated)
 		{

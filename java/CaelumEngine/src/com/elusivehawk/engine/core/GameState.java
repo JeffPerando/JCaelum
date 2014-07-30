@@ -2,7 +2,7 @@
 package com.elusivehawk.engine.core;
 
 import com.elusivehawk.engine.physics.IPhysicsSimulator;
-import com.elusivehawk.engine.render.RenderContext;
+import com.elusivehawk.engine.render.RenderSystem;
 import com.elusivehawk.engine.render.old.IRenderHUB;
 import com.elusivehawk.util.IUpdatable;
 
@@ -24,7 +24,7 @@ public abstract class GameState implements IUpdatable
 		return null;
 	}
 	
-	public abstract void render(RenderContext rcon, double delta);
+	public abstract void render(RenderSystem rsys, double delta);
 	
 	public abstract IPhysicsSimulator getPhysicsSimulator();
 	

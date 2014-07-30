@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.render.opengl;
 
-import com.elusivehawk.engine.render.RenderContext;
+import com.elusivehawk.engine.render.RenderSystem;
 
 /**
  * 
@@ -11,10 +11,10 @@ import com.elusivehawk.engine.render.RenderContext;
  */
 public interface IGLBindable
 {
-	public boolean bind(RenderContext context);
+	public boolean bind(RenderSystem sys);
 	
-	public void unbind(RenderContext context);
+	public void unbind(RenderSystem sys);
 	
-	public void glDelete(RenderContext context);
+	public void glDelete(RenderSystem sys);
 	
 }

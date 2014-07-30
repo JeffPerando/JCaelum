@@ -3,7 +3,7 @@ package com.elusivehawk.engine.render.old;
 
 import com.elusivehawk.engine.math.Matrix;
 import com.elusivehawk.engine.math.MatrixHelper;
-import com.elusivehawk.engine.render.RenderContext;
+import com.elusivehawk.engine.render.RenderSystem;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGLManipulator;
 import com.elusivehawk.util.storage.DirtableStorage;
@@ -29,14 +29,14 @@ public class Camera3D implements IGLManipulator
 	}
 	
 	@Override
-	public void updateUniforms(RenderContext context)
+	public void updateUniforms(RenderSystem sys)
 	{
-		if (!context.getRenderMode().is3D())
+		/*if (!sys.getRenderMode().is3D())
 		{
 			return;
 		}
 		
-		/*if (Mouse.isCreated() && Mouse.isInsideWindow())
+		if (Mouse.isCreated() && Mouse.isInsideWindow())
 		{
 			if (this.grabMouse.isDirty())
 			{
@@ -74,7 +74,7 @@ public class Camera3D implements IGLManipulator
 	}
 	
 	@Override
-	public void manipulateUniforms(RenderContext context, GLProgram p)
+	public void manipulateUniforms(RenderSystem sys, GLProgram p)
 	{
 		if (!this.dirty)
 		{
@@ -88,7 +88,7 @@ public class Camera3D implements IGLManipulator
 	@Override
 	public void postRender()
 	{
-		this.dirty = false;;
+		this.dirty = false;
 		
 	}
 	

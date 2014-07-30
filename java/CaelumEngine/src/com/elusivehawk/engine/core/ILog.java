@@ -21,9 +21,9 @@ public interface ILog
 		
 	}
 	
-	default void log(EnumLogType type, String msg, Throwable e)
+	default void err(String msg, Throwable e, Object... info)
 	{
-		this.log(type, msg);
+		this.log(EnumLogType.ERROR, msg, info);
 		e.printStackTrace();
 		
 	}

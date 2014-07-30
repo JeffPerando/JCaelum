@@ -31,7 +31,7 @@ public class ThreadGameRender extends ThreadCaelum implements IThreadContext
 	{
 		super.initiate();
 		
-		if (!this.sys.initiate())
+		if (!this.sys.initContext())
 		{
 			return false;
 		}
@@ -78,7 +78,7 @@ public class ThreadGameRender extends ThreadCaelum implements IThreadContext
 	@Override
 	public IContext getContext()
 	{
-		return this.sys.getContext();
+		return this.sys;
 	}
 	
 }

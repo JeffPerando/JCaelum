@@ -6,6 +6,7 @@ import java.nio.channels.spi.AbstractSelectableChannel;
 import java.security.Key;
 import java.util.List;
 import java.util.UUID;
+import com.elusivehawk.engine.core.CaelumEngine;
 import com.elusivehawk.engine.math.MathHelper;
 import com.google.common.collect.ImmutableList;
 
@@ -93,7 +94,17 @@ public class Client implements IHost
 		}
 		
 		this.connection = new HSConnection(this, ch, this.master.getEncryptionBitCount());
-		this.thr.connect(this.connection);
+		
+		try
+		{
+			this.thr.connect(this.connection);
+			
+		}
+		catch (NetworkException e)
+		{
+			CaelumEngine.log().err("Could not connect.", e);
+			
+		}
 		
 		return this.connection.getId();
 	}

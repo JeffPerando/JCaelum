@@ -4,8 +4,8 @@ package com.elusivehawk.engine.render.old;
 import java.util.Collection;
 import java.util.List;
 import com.elusivehawk.engine.render.EnumRenderMode;
-import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
+import com.elusivehawk.engine.render.RenderSystem;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGL1;
@@ -22,7 +22,7 @@ import com.elusivehawk.engine.render.three.RenderTicket;
 public class RenderEngine3D implements IRenderEngine
 {
 	@Override
-	public void render(RenderContext context, IRenderHUB hub)
+	public void render(RenderSystem sys, IRenderHUB hub)
 	{
 		if (!hub.getRenderMode().is3D())
 		{
@@ -43,7 +43,7 @@ public class RenderEngine3D implements IRenderEngine
 			return;
 		}
 		
-		IGL1 gl1 = context.getGL1();
+		IGL1 gl1 = sys.getGL1();
 		
 		gl1.glEnable(GLConst.GL_DEPTH_TEST);
 		gl1.glDepthFunc(GLConst.GL_LESS);
@@ -71,7 +71,7 @@ public class RenderEngine3D implements IRenderEngine
 			{
 				tkt = tickets.get(c);
 				
-				if (!tkt.updateBeforeUse(context))
+				if (!tkt.updateBeforeUse(sys))
 				{
 					continue;
 				}
@@ -84,12 +84,12 @@ public class RenderEngine3D implements IRenderEngine
 					continue;
 				}
 				
-				if (!p.bind(context))
+				if (!p.bind(sys))
 				{
 					continue;
 				}
 				
-				context.manipulateProgram(EnumRenderMode.MODE_3D, p);
+				sys.manipulateProgram(EnumRenderMode.MODE_3D, p);
 				
 				try
 				{
@@ -98,18 +98,18 @@ public class RenderEngine3D implements IRenderEngine
 				}
 				catch (Exception e)
 				{
-					p.unbind(context);
+					p.unbind(sys);
 					
 					throw e;
 				}
 				
-				tex = tkt.getTexture() == null ? context.getDefaultTexture() : tkt.getTexture().getTexId(tkt.getCurrentTexFrame());
+				tex = tkt.getTexture() == null ? sys.getDefaultTexture() : tkt.getTexture().getTexId(tkt.getCurrentTexFrame());
 				
 				if (currTex != tex)
 				{
 					if (!gl1.glIsTexture(tex))
 					{
-						tex = context.getDefaultTexture();
+						tex = sys.getDefaultTexture();
 						
 					}
 					
@@ -140,7 +140,7 @@ public class RenderEngine3D implements IRenderEngine
 				
 				RenderHelper.checkForGLError(gl1);
 				
-				p.unbind(context);
+				p.unbind(sys);
 				
 			}
 			

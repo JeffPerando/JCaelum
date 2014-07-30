@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import com.elusivehawk.engine.math.MathHelper;
 import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.concurrent.ThreadStoppable;
 import com.google.common.collect.ImmutableList;
@@ -67,7 +66,9 @@ public class ThreadNetwork extends ThreadStoppable
 	{
 		byte s;
 		int length;
-		ByteBuffer b;
+		boolean read = false;
+		
+		ByteBuffer b = null;
 		List<Packet> pkts = null;
 		Packet pkt;
 		
@@ -95,14 +96,26 @@ public class ThreadNetwork extends ThreadStoppable
 					{
 						if (io.read(this.bin) != -1)
 						{
-							b = con.decryptData(this.bin);//Decrypt the data
+							read = false;
 							
-							if (b != null)
+							try
+							{
+								b = con.decryptData(this.bin);//Decrypt the data
+								read = b != null;
+								
+							}
+							catch (NetworkException e)
+							{
+								this.handleException(e);
+								
+							}
+							
+							if (read)
 							{
 								while (b.remaining() > 0)
 								{
 									s = b.get();
-									length = MathHelper.clamp(this.bin.getInt(), 1, NetworkConst.DATA_LENGTH);//Get the remaining packet length
+									length = this.bin.getInt();//Get the packet's actual length
 									
 									if (!this.handler.getSide().canReceive(Side.values()[s]))//If the packet isn't meant for this side to receive it...
 									{
@@ -115,9 +128,9 @@ public class ThreadNetwork extends ThreadStoppable
 										
 									}
 									
-									//Schedule the packet to be sent to the game.
-									
 									pkt = new Packet(b);
+									
+									//Schedule the packet to be sent to the game.
 									
 									pkts.add(pkt);
 									pkt.markForReading();
@@ -233,7 +246,7 @@ public class ThreadNetwork extends ThreadStoppable
 		
 	}
 	
-	public synchronized void connect(Connection con)
+	public synchronized void connect(Connection con) throws NetworkException
 	{
 		if (this.connections.get(con.getId()) == null)
 		{
@@ -254,6 +267,19 @@ public class ThreadNetwork extends ThreadStoppable
 		ByteChannel io = (ByteChannel)ch;
 		
 		PublicKey key = con.getPubKey();
+		
+		ByteBuffer buf = BufferHelper.makeByteBuffer(key.getEncoded());
+		
+		try
+		{
+			io.write(buf);
+			
+		}
+		catch (IOException e)
+		{
+			throw new NetworkException("Cannot send public key! This is a bug!", e);
+			
+		}
 		
 		//TODO Transmit key.
 		

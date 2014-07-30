@@ -84,7 +84,7 @@ public final class RenderHelper
 		}
 		catch (Exception e)
 		{
-			CaelumEngine.log().log(EnumLogType.ERROR, null, e);
+			CaelumEngine.log().err(null, e);
 			
 		}
 		
@@ -203,8 +203,8 @@ public final class RenderHelper
 	{
 		String src = formatShaderSource(file);
 		
-		RenderContext context = CaelumEngine.renderContext();
-		IGL2 gl2 = context.getGL2();
+		RenderSystem sys = CaelumEngine.renderContext();
+		IGL2 gl2 = sys.getGL2();
 		
 		int id = gl2.glCreateShader(type);
 		gl2.glShaderSource(id, src);
@@ -212,12 +212,12 @@ public final class RenderHelper
 		
 		try
 		{
-			checkForGLError(context);
+			checkForGLError(sys);
 			
 		}
 		catch (Exception e)
 		{
-			CaelumEngine.log().log(EnumLogType.ERROR, null, e);
+			CaelumEngine.log().err(null, e);
 			
 			return 0;
 		}
@@ -279,9 +279,9 @@ public final class RenderHelper
 		
 	}
 	
-	public static void checkForGLError(RenderContext context) throws GLException
+	public static void checkForGLError(RenderSystem sys) throws GLException
 	{
-		checkForGLError(context.getGL1());
+		checkForGLError(sys.getGL1());
 		
 	}
 	

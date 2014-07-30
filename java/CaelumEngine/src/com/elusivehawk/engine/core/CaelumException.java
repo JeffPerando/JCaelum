@@ -41,6 +41,12 @@ public class CaelumException extends RuntimeException
 		
 	}
 	
+	public CaelumException(Throwable e, String err, Object... args)
+	{
+		super(String.format(err, args), e);
+		
+	}
+	
 	public CaelumException(String err, Throwable e, boolean arg2, boolean arg3)
 	{
 		super(err, e, arg2, arg3);

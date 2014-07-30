@@ -20,7 +20,7 @@ public abstract class ThreadCaelum extends ThreadTimed
 	@Override
 	public void handleException(Throwable e)
 	{
-		CaelumEngine.log().log(EnumLogType.ERROR, null, e);
+		CaelumEngine.log().err(null, e);
 		
 	}
 	
