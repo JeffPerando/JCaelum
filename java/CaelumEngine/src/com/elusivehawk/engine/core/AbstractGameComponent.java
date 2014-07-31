@@ -5,6 +5,7 @@ import java.util.List;
 import com.elusivehawk.engine.assets.AssetManager;
 import com.elusivehawk.engine.physics.IPhysicsSimulator;
 import com.elusivehawk.engine.render.RenderContext;
+import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.old.IRenderHUB;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.StringHelper;
@@ -129,6 +130,16 @@ public abstract class AbstractGameComponent implements IUpdatable
 		return null;
 	}
 	
+	/**
+	 * 
+	 * NOTICE: THIS IS NOT THREAD SAFE!<br>
+	 * I mean it people, sync your entities and crap!
+	 * 
+	 * @param rcon
+	 * @param delta
+	 * 
+	 * @see RenderHelper
+	 */
 	public abstract void render(RenderContext rcon, double delta);
 	
 	public abstract IPhysicsSimulator getPhysicsSimulator();

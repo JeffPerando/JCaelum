@@ -32,6 +32,71 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 	}
 	
 	@Override
+	public boolean isPaused()
+	{
+		return this.paused;
+	}
+	
+	@Override
+	public void setPaused(boolean p)
+	{
+		this.paused = p;
+		
+	}
+	
+	@Override
+	public final void initiate(GameArguments args) throws Throwable
+	{
+		this.initiateGame(args);
+		
+		if (this.nextState != null)
+		{
+			this.nextState.initiate(args);
+			
+			this.state = this.nextState;
+			this.nextState = null;
+			
+		}
+		
+	}
+	
+	@Override
+	public final void onShutdown()
+	{
+		this.onGameShutdown();
+		
+		if (this.state != null)
+		{
+			this.state.onShutdown();
+			
+		}
+		
+	}
+	
+	@Override
+	public void render(RenderContext rcon, double delta)
+	{
+		if (this.state != null)
+		{
+			this.state.render(rcon, delta);
+			
+		}
+		
+	}
+	
+	/**
+	 * 
+	 * Called during startup.
+	 * 
+	 * @return The physics simulator to use during the game's lifespan.
+	 */
+	@Override
+	public IPhysicsSimulator getPhysicsSimulator()
+	{
+		return this.state == null ? null : this.state.getPhysicsSimulator();
+	}
+	
+	@Override
 	public final void update(double delta) throws GameTickException
 	{
 		try
@@ -95,19 +160,6 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 	}
 	
 	@Override
-	public boolean isPaused()
-	{
-		return this.paused;
-	}
-	
-	@Override
-	public void setPaused(boolean p)
-	{
-		this.paused = p;
-		
-	}
-	
-	@Override
 	public String getFormattedName()
 	{
 		return this.getGameVersion() == null ? this.name : String.format("%s %s", this.name, this.getGameVersion());
@@ -124,42 +176,28 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 		
 	}
 	
+	//XXX Getting the axe
+	
+	/**
+	 * 
+	 * Called during startup.
+	 * 
+	 * @return The rendering HUB to be used to render the game.
+	 */
+	@Override
+	@Deprecated
+	public IRenderHUB getRenderHUB()
+	{
+		return this.state == null ? null : this.state.getRenderHUB();
+	}
+	
 	//XXX Optional/technical methods
 	
 	protected void preInit(GameArguments args){}
 	
-	@Override
-	public final void initiate(GameArguments args) throws Throwable
-	{
-		this.initiateGame(args);
-		
-		if (this.nextState != null)
-		{
-			this.nextState.initiate(args);
-			
-			this.state = this.nextState;
-			this.nextState = null;
-			
-		}
-		
-	}
-	
 	public int getUpdateCount()
 	{
 		return 30;
-	}
-	
-	@Override
-	public final void onShutdown()
-	{
-		this.onGameShutdown();
-		
-		if (this.state != null)
-		{
-			this.state.onShutdown();
-			
-		}
-		
 	}
 	
 	//XXX Game state stuff
@@ -193,56 +231,8 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 	
 	protected abstract void initiateGame(GameArguments args) throws Throwable;
 	
-	public abstract Version getGameVersion();
-	
 	protected abstract void onGameShutdown();
 	
-	//XXX Getters
-	
-	/**
-	 * 
-	 * Called during startup.
-	 * 
-	 * @return The rendering HUB to be used to render the game.
-	 */
-	@Override
-	@Deprecated
-	public IRenderHUB getRenderHUB()
-	{
-		return this.state == null ? null : this.state.getRenderHUB();
-	}
-	
-	/**
-	 * 
-	 * NOTICE: THIS IS NOT THREAD SAFE!<br>
-	 * I mean it people, sync your entities and crap!
-	 * 
-	 * @param rcon
-	 * @param delta
-	 * 
-	 * @see RenderHelper
-	 */
-	@Override
-	public void render(RenderContext rcon, double delta)
-	{
-		if (this.state != null)
-		{
-			this.state.render(rcon, delta);
-			
-		}
-		
-	}
-	
-	/**
-	 * 
-	 * Called during startup.
-	 * 
-	 * @return The physics simulator to use during the game's lifespan.
-	 */
-	@Override
-	public IPhysicsSimulator getPhysicsSimulator()
-	{
-		return this.state == null ? null : this.state.getPhysicsSimulator();
-	}
+	public abstract Version getGameVersion();
 	
 }
