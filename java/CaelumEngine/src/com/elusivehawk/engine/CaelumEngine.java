@@ -11,6 +11,7 @@ import java.util.Set;
 import com.elusivehawk.engine.assets.AssetManager;
 import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.assets.TaskLoadAsset;
+import com.elusivehawk.engine.meta.tutorial.ExampleGameFactory;
 import com.elusivehawk.engine.render.IRenderEnvironment;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.ThreadGameRender;
@@ -373,7 +374,12 @@ public final class CaelumEngine
 			
 		}
 		
-		if (this.factory == null)
+		if (DEBUG)
+		{
+			this.factory = new ExampleGameFactory();
+			
+		}
+		else if (this.factory == null)
 		{
 			String gamefac = this.startargs.get("gamefac");
 			
