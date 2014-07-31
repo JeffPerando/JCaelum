@@ -27,11 +27,11 @@
 
 package com.elusivehawk.engine.physics.jbullet.extras.gimpact;
 
-import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.extras.gimpact.BoxCollision.AABB;
 import com.elusivehawk.engine.physics.jbullet.extras.gimpact.BoxCollision.BoxBoxTransformCache;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 import com.elusivehawk.engine.physics.jbullet.util.IntArrayList;
+import com.elusivehawk.util.math.Vector;
 import cz.advel.stack.Stack;
 
 /*

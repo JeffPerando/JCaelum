@@ -2,8 +2,8 @@
 package com.elusivehawk.engine.lwjgl;
 
 import org.lwjgl.input.Mouse;
-import com.elusivehawk.engine.core.EnumInputType;
-import com.elusivehawk.engine.core.Input;
+import com.elusivehawk.engine.EnumInputType;
+import com.elusivehawk.engine.Input;
 import com.elusivehawk.util.storage.DirtableStorage;
 
 /**

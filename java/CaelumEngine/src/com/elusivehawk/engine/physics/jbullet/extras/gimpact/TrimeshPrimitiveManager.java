@@ -27,11 +27,11 @@
 
 package com.elusivehawk.engine.physics.jbullet.extras.gimpact;
 
-import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.StridingMeshInterface;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.VertexData;
 import com.elusivehawk.engine.physics.jbullet.extras.gimpact.BoxCollision.AABB;
 import com.elusivehawk.engine.physics.jbullet.linearmath.VectorUtil;
+import com.elusivehawk.util.math.Vector;
 import cz.advel.stack.Stack;
 
 /*

@@ -1,11 +1,11 @@
 
 package com.elusivehawk.engine.render.old;
 
-import com.elusivehawk.engine.math.Matrix;
-import com.elusivehawk.engine.math.MatrixHelper;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGLManipulator;
+import com.elusivehawk.util.math.Matrix;
+import com.elusivehawk.util.math.MatrixHelper;
 import com.elusivehawk.util.storage.DirtableStorage;
 
 /**

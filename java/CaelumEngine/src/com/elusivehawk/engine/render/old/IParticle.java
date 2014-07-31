@@ -1,8 +1,8 @@
 
 package com.elusivehawk.engine.render.old;
 
-import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.render.Color;
+import com.elusivehawk.util.math.Vector;
 
 /**
  * 

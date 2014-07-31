@@ -24,8 +24,8 @@
 package com.elusivehawk.engine.physics.jbullet.collision.shapes;
 
 import java.nio.ByteBuffer;
-import static com.elusivehawk.engine.math.MathConst.*;
-import com.elusivehawk.engine.math.Vector;
+import static com.elusivehawk.util.math.MathConst.*;
+import com.elusivehawk.util.math.Vector;
 
 /*
  * NOTICE: Edited by Elusivehawk

@@ -24,7 +24,6 @@
 package com.elusivehawk.engine.physics.jbullet.dynamics;
 
 import java.util.Comparator;
-import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
 import com.elusivehawk.engine.physics.jbullet.BulletStats;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.BroadphaseInterface;
@@ -55,6 +54,7 @@ import com.elusivehawk.engine.physics.jbullet.linearmath.ScalarUtil;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 import com.elusivehawk.engine.physics.jbullet.linearmath.TransformUtil;
 import com.elusivehawk.engine.physics.jbullet.util.ObjectArrayList;
+import com.elusivehawk.util.math.Vector;
 import cz.advel.stack.Stack;
 
 /*

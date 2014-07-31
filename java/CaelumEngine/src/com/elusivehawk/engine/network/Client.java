@@ -4,7 +4,7 @@ package com.elusivehawk.engine.network;
 import java.nio.channels.spi.AbstractSelectableChannel;
 import java.security.Key;
 import java.util.UUID;
-import com.elusivehawk.engine.core.CaelumEngine;
+import com.elusivehawk.engine.CaelumEngine;
 import com.google.common.collect.ImmutableList;
 
 /**

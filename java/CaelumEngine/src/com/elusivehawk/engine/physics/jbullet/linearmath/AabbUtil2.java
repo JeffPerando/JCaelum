@@ -23,11 +23,11 @@
 
 package com.elusivehawk.engine.physics.jbullet.linearmath;
 
-import static com.elusivehawk.engine.math.MathConst.X;
-import static com.elusivehawk.engine.math.MathConst.Y;
-import static com.elusivehawk.engine.math.MathConst.Z;
-import com.elusivehawk.engine.math.Matrix;
-import com.elusivehawk.engine.math.Vector;
+import static com.elusivehawk.util.math.MathConst.X;
+import static com.elusivehawk.util.math.MathConst.Y;
+import static com.elusivehawk.util.math.MathConst.Z;
+import com.elusivehawk.util.math.Matrix;
+import com.elusivehawk.util.math.Vector;
 import cz.advel.stack.Stack;
 
 /*

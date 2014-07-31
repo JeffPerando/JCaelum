@@ -23,7 +23,6 @@
 
 package com.elusivehawk.engine.physics.jbullet.dynamics;
 
-import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.BroadphaseInterface;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.Dispatcher;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.DispatcherInfo;
@@ -35,6 +34,7 @@ import com.elusivehawk.engine.physics.jbullet.dynamics.constraintsolver.Constrai
 import com.elusivehawk.engine.physics.jbullet.dynamics.constraintsolver.ContactSolverInfo;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 import com.elusivehawk.engine.physics.jbullet.util.ObjectArrayList;
+import com.elusivehawk.util.math.Vector;
 import cz.advel.stack.Stack;
 
 /*

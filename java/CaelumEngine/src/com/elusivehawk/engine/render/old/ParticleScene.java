@@ -4,8 +4,7 @@ package com.elusivehawk.engine.render.old;
 import java.nio.FloatBuffer;
 import java.util.Arrays;
 import java.util.List;
-import com.elusivehawk.engine.core.CaelumEngine;
-import com.elusivehawk.engine.math.Vector;
+import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.render.Color;
 import com.elusivehawk.engine.render.EnumColorFilter;
 import com.elusivehawk.engine.render.EnumColorFormat;
@@ -15,6 +14,7 @@ import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
 import com.elusivehawk.util.BufferHelper;
+import com.elusivehawk.util.math.Vector;
 
 /**
  * 

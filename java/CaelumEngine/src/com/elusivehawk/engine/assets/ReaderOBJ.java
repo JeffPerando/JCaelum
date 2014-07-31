@@ -5,8 +5,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.util.StringHelper;
+import com.elusivehawk.util.math.Vector;
 import com.google.common.collect.Lists;
 
 /**

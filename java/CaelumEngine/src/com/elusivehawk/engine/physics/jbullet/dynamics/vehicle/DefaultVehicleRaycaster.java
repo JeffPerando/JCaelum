@@ -23,10 +23,10 @@
 
 package com.elusivehawk.engine.physics.jbullet.dynamics.vehicle;
 
-import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.dispatch.CollisionWorld.ClosestRayResultCallback;
 import com.elusivehawk.engine.physics.jbullet.dynamics.DynamicsWorld;
 import com.elusivehawk.engine.physics.jbullet.dynamics.RigidBody;
+import com.elusivehawk.util.math.Vector;
 
 /*
  * NOTICE: Edited by Elusivehawk

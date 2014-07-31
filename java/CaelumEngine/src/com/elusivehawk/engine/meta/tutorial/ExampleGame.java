@@ -1,8 +1,8 @@
 
 package com.elusivehawk.engine.meta.tutorial;
 
-import com.elusivehawk.engine.core.Game;
-import com.elusivehawk.engine.core.GameArguments;
+import com.elusivehawk.engine.Game;
+import com.elusivehawk.engine.GameArguments;
 import com.elusivehawk.util.Version;
 
 /**

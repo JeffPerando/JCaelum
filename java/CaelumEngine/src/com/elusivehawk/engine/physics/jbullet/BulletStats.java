@@ -23,9 +23,9 @@
 
 package com.elusivehawk.engine.physics.jbullet;
 
-import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.linearmath.CProfileManager;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Clock;
+import com.elusivehawk.util.math.Vector;
 
 /*
  * NOTICE: Edited by Elusivehawk

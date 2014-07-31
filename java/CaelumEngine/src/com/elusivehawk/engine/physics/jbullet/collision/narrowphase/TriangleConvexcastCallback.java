@@ -23,12 +23,12 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.narrowphase;
 
-import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.narrowphase.ConvexCast.CastResult;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.ConvexShape;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.TriangleCallback;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.TriangleShape;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
+import com.elusivehawk.util.math.Vector;
 
 /*
  * NOTICE: Edited by Elusivehawk

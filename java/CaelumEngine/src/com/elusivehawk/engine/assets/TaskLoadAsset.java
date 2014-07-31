@@ -2,7 +2,7 @@
 package com.elusivehawk.engine.assets;
 
 import java.io.File;
-import com.elusivehawk.engine.core.CaelumEngine;
+import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.util.FileHelper;
 import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.task.Task;

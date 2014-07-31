@@ -27,8 +27,7 @@
 
 package com.elusivehawk.engine.physics.jbullet.extras.gimpact;
 
-import static com.elusivehawk.engine.math.MathConst.*;
-import com.elusivehawk.engine.math.Vector;
+import static com.elusivehawk.util.math.MathConst.*;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.BroadphaseNativeType;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.CollisionAlgorithm;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.CollisionAlgorithmConstructionInfo;
@@ -48,6 +47,7 @@ import com.elusivehawk.engine.physics.jbullet.linearmath.VectorUtil;
 import com.elusivehawk.engine.physics.jbullet.util.IntArrayList;
 import com.elusivehawk.engine.physics.jbullet.util.ObjectArrayList;
 import com.elusivehawk.engine.physics.jbullet.util.ObjectPool;
+import com.elusivehawk.util.math.Vector;
 import cz.advel.stack.Stack;
 
 /*

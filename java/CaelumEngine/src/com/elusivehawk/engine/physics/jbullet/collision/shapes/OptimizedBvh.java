@@ -23,15 +23,15 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.shapes;
 
-import static com.elusivehawk.engine.math.MathConst.X;
-import static com.elusivehawk.engine.math.MathConst.Y;
-import static com.elusivehawk.engine.math.MathConst.Z;
+import static com.elusivehawk.util.math.MathConst.X;
+import static com.elusivehawk.util.math.MathConst.Y;
+import static com.elusivehawk.util.math.MathConst.Z;
 import java.io.Serializable;
-import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.linearmath.AabbUtil2;
 import com.elusivehawk.engine.physics.jbullet.linearmath.MiscUtil;
 import com.elusivehawk.engine.physics.jbullet.linearmath.VectorUtil;
 import com.elusivehawk.engine.physics.jbullet.util.ObjectArrayList;
+import com.elusivehawk.util.math.Vector;
 import cz.advel.stack.Stack;
 
 // JAVA NOTE: OptimizedBvh still from 2.66, update it for 2.70b1

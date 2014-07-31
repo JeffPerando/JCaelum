@@ -23,7 +23,6 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.dispatch;
 
-import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.CollisionAlgorithm;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.CollisionAlgorithmConstructionInfo;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.Dispatcher;
@@ -33,6 +32,7 @@ import com.elusivehawk.engine.physics.jbullet.collision.shapes.CollisionShape;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.TriangleCallback;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.TriangleShape;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
+import com.elusivehawk.util.math.Vector;
 import cz.advel.stack.Stack;
 
 /*

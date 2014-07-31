@@ -23,8 +23,8 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.shapes;
 
-import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.linearmath.VectorUtil;
+import com.elusivehawk.util.math.Vector;
 import cz.advel.stack.Stack;
 
 /*

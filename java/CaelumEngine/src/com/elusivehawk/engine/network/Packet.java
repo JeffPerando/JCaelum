@@ -4,11 +4,11 @@ package com.elusivehawk.engine.network;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.UUID;
-import com.elusivehawk.engine.math.MathHelper;
 import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.io.IByteReader;
 import com.elusivehawk.util.io.IByteWriter;
 import com.elusivehawk.util.io.Serializers;
+import com.elusivehawk.util.math.MathHelper;
 
 /**
  * 

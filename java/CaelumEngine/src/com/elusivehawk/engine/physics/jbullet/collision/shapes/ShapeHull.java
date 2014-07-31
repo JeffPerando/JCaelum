@@ -25,7 +25,6 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.shapes;
 
-import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.linearmath.MiscUtil;
 import com.elusivehawk.engine.physics.jbullet.linearmath.convexhull.HullDesc;
 import com.elusivehawk.engine.physics.jbullet.linearmath.convexhull.HullFlags;
@@ -33,6 +32,7 @@ import com.elusivehawk.engine.physics.jbullet.linearmath.convexhull.HullLibrary;
 import com.elusivehawk.engine.physics.jbullet.linearmath.convexhull.HullResult;
 import com.elusivehawk.engine.physics.jbullet.util.IntArrayList;
 import com.elusivehawk.engine.physics.jbullet.util.ObjectArrayList;
+import com.elusivehawk.util.math.Vector;
 import cz.advel.stack.Stack;
 
 /*

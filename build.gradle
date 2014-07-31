@@ -35,7 +35,7 @@ jar
 {
 	manifest
 	{
-		attributes('Main-class': 'com.elusivehawk.engine.core.CaelumEngine')
+		attributes('Main-class': 'com.elusivehawk.engine.CaelumEngine')
 	}
 
 	from configurations.compile.collect {it.isDirectory() ? it : zipTree(it)}

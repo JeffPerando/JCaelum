@@ -1,9 +1,9 @@
 
 package com.elusivehawk.engine.render;
 
-import com.elusivehawk.engine.core.IContext;
-import com.elusivehawk.engine.core.IThreadContext;
-import com.elusivehawk.engine.core.ThreadCaelum;
+import com.elusivehawk.engine.IContext;
+import com.elusivehawk.engine.IThreadContext;
+import com.elusivehawk.engine.ThreadCaelum;
 import com.elusivehawk.util.ShutdownHelper;
 
 /**

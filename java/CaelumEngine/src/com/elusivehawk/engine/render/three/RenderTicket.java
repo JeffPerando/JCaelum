@@ -3,19 +3,12 @@ package com.elusivehawk.engine.render.three;
 
 import java.nio.FloatBuffer;
 import java.util.Arrays;
+import com.elusivehawk.engine.CaelumException;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.assets.Material;
 import com.elusivehawk.engine.assets.Shader;
 import com.elusivehawk.engine.assets.Texture;
-import com.elusivehawk.engine.core.CaelumException;
-import com.elusivehawk.engine.math.IQuaternionListener;
-import com.elusivehawk.engine.math.IVectorListener;
-import com.elusivehawk.engine.math.MathHelper;
-import com.elusivehawk.engine.math.Matrix;
-import com.elusivehawk.engine.math.MatrixHelper;
-import com.elusivehawk.engine.math.Quaternion;
-import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.render.ILogicalRender;
 import com.elusivehawk.engine.render.RenderConst;
 import com.elusivehawk.engine.render.RenderHelper;
@@ -25,6 +18,13 @@ import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
 import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.IDirty;
+import com.elusivehawk.util.math.IQuaternionListener;
+import com.elusivehawk.util.math.IVectorListener;
+import com.elusivehawk.util.math.MathHelper;
+import com.elusivehawk.util.math.Matrix;
+import com.elusivehawk.util.math.MatrixHelper;
+import com.elusivehawk.util.math.Quaternion;
+import com.elusivehawk.util.math.Vector;
 
 /**
  * 

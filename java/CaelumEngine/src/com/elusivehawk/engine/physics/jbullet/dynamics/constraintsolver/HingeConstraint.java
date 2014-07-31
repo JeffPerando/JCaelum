@@ -25,15 +25,15 @@
 
 package com.elusivehawk.engine.physics.jbullet.dynamics.constraintsolver;
 
-import com.elusivehawk.engine.math.Matrix;
-import com.elusivehawk.engine.math.Quaternion;
-import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
 import com.elusivehawk.engine.physics.jbullet.dynamics.RigidBody;
 import com.elusivehawk.engine.physics.jbullet.linearmath.QuaternionUtil;
 import com.elusivehawk.engine.physics.jbullet.linearmath.ScalarUtil;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 import com.elusivehawk.engine.physics.jbullet.linearmath.TransformUtil;
+import com.elusivehawk.util.math.Matrix;
+import com.elusivehawk.util.math.Quaternion;
+import com.elusivehawk.util.math.Vector;
 import cz.advel.stack.Stack;
 
 /*

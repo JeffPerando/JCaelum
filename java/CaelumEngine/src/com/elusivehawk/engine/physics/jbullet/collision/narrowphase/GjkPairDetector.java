@@ -23,14 +23,14 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.narrowphase;
 
-import static com.elusivehawk.engine.math.MathConst.*;
-import com.elusivehawk.engine.math.Vector;
+import static com.elusivehawk.util.math.MathConst.*;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
 import com.elusivehawk.engine.physics.jbullet.BulletStats;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.ConvexShape;
 import com.elusivehawk.engine.physics.jbullet.linearmath.IDebugDraw;
 import com.elusivehawk.engine.physics.jbullet.linearmath.MatrixUtil;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
+import com.elusivehawk.util.math.Vector;
 import cz.advel.stack.Stack;
 import cz.advel.stack.StaticAlloc;
 

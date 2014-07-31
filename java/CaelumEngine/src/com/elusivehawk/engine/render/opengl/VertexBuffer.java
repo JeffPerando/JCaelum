@@ -3,7 +3,7 @@ package com.elusivehawk.engine.render.opengl;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import com.elusivehawk.engine.core.CaelumEngine;
+import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.util.BufferHelper;

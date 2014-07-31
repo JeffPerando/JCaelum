@@ -23,8 +23,6 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.dispatch;
 
-import com.elusivehawk.engine.math.Quaternion;
-import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.BroadphaseProxy;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.Dispatcher;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.ConvexShape;
@@ -32,6 +30,8 @@ import com.elusivehawk.engine.physics.jbullet.linearmath.AabbUtil2;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 import com.elusivehawk.engine.physics.jbullet.linearmath.TransformUtil;
 import com.elusivehawk.engine.physics.jbullet.util.ObjectArrayList;
+import com.elusivehawk.util.math.Quaternion;
+import com.elusivehawk.util.math.Vector;
 import cz.advel.stack.Stack;
 
 /*

@@ -27,11 +27,11 @@
 
 package com.elusivehawk.engine.physics.jbullet.extras.gimpact;
 
-import static com.elusivehawk.engine.math.MathConst.*;
-import com.elusivehawk.engine.math.Vector;
+import static com.elusivehawk.util.math.MathConst.*;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.TriangleShape;
 import com.elusivehawk.engine.physics.jbullet.extras.gimpact.BoxCollision.AABB;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
+import com.elusivehawk.util.math.Vector;
 import cz.advel.stack.Stack;
 
 /**

@@ -6,8 +6,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import com.elusivehawk.engine.math.MathHelper;
 import com.elusivehawk.util.IDirty;
+import com.elusivehawk.util.math.MathHelper;
 import com.google.common.collect.Lists;
 
 /**

@@ -5,7 +5,7 @@ import java.io.File;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import com.elusivehawk.engine.core.CaelumException;
+import com.elusivehawk.engine.CaelumException;
 import com.elusivehawk.util.FileHelper;
 import com.elusivehawk.util.StringHelper;
 import com.google.common.collect.Lists;

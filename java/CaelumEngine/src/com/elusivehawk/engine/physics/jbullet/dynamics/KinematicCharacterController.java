@@ -23,8 +23,6 @@
 
 package com.elusivehawk.engine.physics.jbullet.dynamics;
 
-import com.elusivehawk.engine.math.MathHelper;
-import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.BroadphasePair;
 import com.elusivehawk.engine.physics.jbullet.collision.dispatch.CollisionObject;
@@ -37,6 +35,8 @@ import com.elusivehawk.engine.physics.jbullet.collision.shapes.ConvexShape;
 import com.elusivehawk.engine.physics.jbullet.linearmath.IDebugDraw;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 import com.elusivehawk.engine.physics.jbullet.util.ObjectArrayList;
+import com.elusivehawk.util.math.MathHelper;
+import com.elusivehawk.util.math.Vector;
 import cz.advel.stack.Stack;
 
 /*

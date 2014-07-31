@@ -4,13 +4,13 @@ package com.elusivehawk.engine.render.three;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
-import com.elusivehawk.engine.core.CaelumEngine;
-import com.elusivehawk.engine.core.EnumLogType;
-import com.elusivehawk.engine.math.MathConst;
-import com.elusivehawk.engine.math.Vector;
+import com.elusivehawk.engine.CaelumEngine;
+import com.elusivehawk.engine.EnumLogType;
 import com.elusivehawk.engine.render.RenderException;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.util.BufferHelper;
+import com.elusivehawk.util.math.MathConst;
+import com.elusivehawk.util.math.Vector;
 import com.elusivehawk.util.storage.Buffer;
 import com.google.common.collect.Lists;
 

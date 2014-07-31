@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.network;
 
-import com.elusivehawk.engine.core.CaelumException;
+import com.elusivehawk.engine.CaelumException;
 
 /**
  * 

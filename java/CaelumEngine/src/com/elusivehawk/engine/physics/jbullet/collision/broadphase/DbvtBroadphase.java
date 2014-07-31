@@ -25,8 +25,8 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.broadphase;
 
-import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.util.ObjectArrayList;
+import com.elusivehawk.util.math.Vector;
 import cz.advel.stack.Stack;
 
 /*

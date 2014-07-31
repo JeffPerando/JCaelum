@@ -23,12 +23,9 @@
 
 package com.elusivehawk.engine.physics.jbullet.dynamics;
 
-import static com.elusivehawk.engine.math.MathConst.X;
-import static com.elusivehawk.engine.math.MathConst.Y;
-import static com.elusivehawk.engine.math.MathConst.Z;
-import com.elusivehawk.engine.math.Matrix;
-import com.elusivehawk.engine.math.Quaternion;
-import com.elusivehawk.engine.math.Vector;
+import static com.elusivehawk.util.math.MathConst.X;
+import static com.elusivehawk.util.math.MathConst.Y;
+import static com.elusivehawk.util.math.MathConst.Z;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.BroadphaseProxy;
 import com.elusivehawk.engine.physics.jbullet.collision.dispatch.CollisionFlags;
@@ -42,6 +39,9 @@ import com.elusivehawk.engine.physics.jbullet.linearmath.MotionState;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 import com.elusivehawk.engine.physics.jbullet.linearmath.TransformUtil;
 import com.elusivehawk.engine.physics.jbullet.util.ObjectArrayList;
+import com.elusivehawk.util.math.Matrix;
+import com.elusivehawk.util.math.Quaternion;
+import com.elusivehawk.util.math.Vector;
 import cz.advel.stack.Stack;
 import cz.advel.stack.StaticAlloc;
 

@@ -24,7 +24,7 @@
 package com.elusivehawk.engine.physics.jbullet.collision.shapes;
 
 import java.io.Serializable;
-import com.elusivehawk.engine.math.Vector;
+import com.elusivehawk.util.math.Vector;
 
 /*
  * NOTICE: Edited by Elusivehawk

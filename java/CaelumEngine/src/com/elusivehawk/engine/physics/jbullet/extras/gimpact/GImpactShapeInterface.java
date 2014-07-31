@@ -27,7 +27,6 @@
 
 package com.elusivehawk.engine.physics.jbullet.extras.gimpact;
 
-import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.BroadphaseNativeType;
 import com.elusivehawk.engine.physics.jbullet.collision.dispatch.CollisionWorld.RayResultCallback;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.CollisionShape;
@@ -35,6 +34,7 @@ import com.elusivehawk.engine.physics.jbullet.collision.shapes.ConcaveShape;
 import com.elusivehawk.engine.physics.jbullet.collision.shapes.TriangleCallback;
 import com.elusivehawk.engine.physics.jbullet.extras.gimpact.BoxCollision.AABB;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
+import com.elusivehawk.util.math.Vector;
 import cz.advel.stack.Stack;
 
 /**

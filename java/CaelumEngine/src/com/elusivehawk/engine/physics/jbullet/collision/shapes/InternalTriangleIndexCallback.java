@@ -23,7 +23,7 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.shapes;
 
-import com.elusivehawk.engine.math.Vector;
+import com.elusivehawk.util.math.Vector;
 
 /**
  * Callback for internal processing of triangles.

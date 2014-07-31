@@ -23,16 +23,16 @@
 
 package com.elusivehawk.engine.physics.jbullet.collision.shapes;
 
-import static com.elusivehawk.engine.math.MathConst.X;
-import static com.elusivehawk.engine.math.MathConst.Y;
-import static com.elusivehawk.engine.math.MathConst.Z;
-import com.elusivehawk.engine.math.Matrix;
-import com.elusivehawk.engine.math.Vector;
+import static com.elusivehawk.util.math.MathConst.X;
+import static com.elusivehawk.util.math.MathConst.Y;
+import static com.elusivehawk.util.math.MathConst.Z;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
 import com.elusivehawk.engine.physics.jbullet.collision.broadphase.BroadphaseNativeType;
 import com.elusivehawk.engine.physics.jbullet.linearmath.MatrixUtil;
 import com.elusivehawk.engine.physics.jbullet.linearmath.Transform;
 import com.elusivehawk.engine.physics.jbullet.linearmath.VectorUtil;
+import com.elusivehawk.util.math.Matrix;
+import com.elusivehawk.util.math.Vector;
 import cz.advel.stack.Stack;
 
 /*

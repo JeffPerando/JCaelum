@@ -23,8 +23,8 @@
 
 package com.elusivehawk.engine.physics.jbullet.linearmath;
 
-import com.elusivehawk.engine.math.MathHelper;
-import com.elusivehawk.engine.math.Vector;
+import com.elusivehawk.util.math.MathHelper;
+import com.elusivehawk.util.math.Vector;
 
 /*
  * NOTICE: Edited by Elusivehawk

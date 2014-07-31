@@ -30,9 +30,9 @@ http://gimpact.sf.net
 
 package com.elusivehawk.engine.physics.jbullet.dynamics.constraintsolver;
 
-import com.elusivehawk.engine.math.Vector;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
 import com.elusivehawk.engine.physics.jbullet.dynamics.RigidBody;
+import com.elusivehawk.util.math.Vector;
 import cz.advel.stack.Stack;
 import cz.advel.stack.StaticAlloc;
 

@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
-import com.elusivehawk.engine.core.CaelumEngine;
+import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.util.task.ITaskListener;
 import com.elusivehawk.util.task.Task;
 

@@ -23,13 +23,13 @@
 
 package com.elusivehawk.engine.physics.jbullet.linearmath;
 
-import static com.elusivehawk.engine.math.MathConst.*;
-import com.elusivehawk.engine.math.MathConst;
-import com.elusivehawk.engine.math.Matrix;
-import com.elusivehawk.engine.math.Quaternion;
-import com.elusivehawk.engine.math.Vector;
+import static com.elusivehawk.util.math.MathConst.*;
 import com.elusivehawk.engine.physics.jbullet.BulletGlobals;
 import com.elusivehawk.engine.physics.jbullet.util.ArrayPool;
+import com.elusivehawk.util.math.MathConst;
+import com.elusivehawk.util.math.Matrix;
+import com.elusivehawk.util.math.Quaternion;
+import com.elusivehawk.util.math.Vector;
 import cz.advel.stack.Stack;
 
 /*
