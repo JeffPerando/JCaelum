@@ -1,8 +1,6 @@
 
-package com.elusivehawk.engine.meta.tutorial;
+package com.elusivehawk.engine;
 
-import com.elusivehawk.engine.Game;
-import com.elusivehawk.engine.GameArguments;
 import com.elusivehawk.util.Version;
 
 /**
@@ -11,9 +9,9 @@ import com.elusivehawk.util.Version;
  * 
  * @author Elusivehawk
  */
-public class ExampleGame extends Game
+public class TestGame extends Game
 {
-	public ExampleGame()
+	public TestGame()
 	{
 		super("Example Game");
 		

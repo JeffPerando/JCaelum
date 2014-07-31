@@ -47,7 +47,6 @@ jar
 
 	exclude "BenchmarkTest.class"
 	exclude "RepoCodeStyle.class"
-	exclude "ExampleGame.class"
 	exclude "LICENSE"
 	exclude "README.md"
 
