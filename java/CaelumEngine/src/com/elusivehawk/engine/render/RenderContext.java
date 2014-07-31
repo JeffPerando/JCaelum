@@ -12,9 +12,7 @@ import com.elusivehawk.engine.core.EnumLogType;
 import com.elusivehawk.engine.core.GameState;
 import com.elusivehawk.engine.core.IContext;
 import com.elusivehawk.engine.core.IGameStateListener;
-import com.elusivehawk.engine.core.IThreadContext;
 import com.elusivehawk.engine.render.old.EnumRenderMode;
-import com.elusivehawk.engine.render.old.EnumRenderStage;
 import com.elusivehawk.engine.render.old.IRenderEngine;
 import com.elusivehawk.engine.render.old.IRenderHUB;
 import com.elusivehawk.engine.render.opengl.GLConst;
@@ -221,7 +219,7 @@ public final class RenderContext implements IPausable, IGameStateListener, ICont
 				
 			}
 			
-			this.display.resize(this.settings.height, settings.width);
+			this.display.resize(this.settings.height, this.settings.width);
 			this.display.setFullscreen(this.settings.fullscreen);
 			this.display.setVSync(this.settings.vsync);
 			this.display.setFPS(this.fps = this.settings.targetFPS);
@@ -385,6 +383,30 @@ public final class RenderContext implements IPausable, IGameStateListener, ICont
 					glm.postRender();
 					
 				}
+				
+			}
+			
+		}
+		
+		if (!this.rtasks.isEmpty())
+		{
+			RenderTask t = this.rtasks.get(0);
+			boolean rem = false;
+			
+			try
+			{
+				rem = t.completeTask();
+				
+			}
+			catch (Throwable e)
+			{
+				CaelumEngine.log().err("Error caught whilst finishing render task:", e);
+				
+			}
+			
+			if (rem)
+			{
+				this.rtasks.remove(0);
 				
 			}
 			

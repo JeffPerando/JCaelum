@@ -127,6 +127,11 @@ public final class CaelumEngine
 		return instance().tasks;
 	}
 	
+	public static GameArguments gameArgs()
+	{
+		return instance().gameargs;
+	}
+	
 	public static IContext getContext(boolean safe)
 	{
 		Thread t = Thread.currentThread();
@@ -458,6 +463,7 @@ public final class CaelumEngine
 		else
 		{
 			this.rcon = new RenderContext(this.renv, hub);
+			this.log.log(EnumLogType.WARN, "Game %s is using the rendering HUB system!!", this.game);
 			
 		}
 		

@@ -50,7 +50,7 @@ public abstract class NetworkGame extends Game implements INetworkMaster
 	}
 	
 	@Override
-	protected void initiate(GameArguments args) throws Throwable
+	public void initiateGame(GameArguments args) throws Throwable
 	{
 		if (this.side != Side.SERVER)
 		{

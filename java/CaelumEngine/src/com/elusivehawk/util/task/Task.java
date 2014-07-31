@@ -10,6 +10,7 @@ package com.elusivehawk.util.task;
 public abstract class Task
 {
 	private final ITaskListener listener;
+	private int tries = 0;
 	
 	public Task()
 	{
@@ -24,8 +25,13 @@ public abstract class Task
 		
 	}
 	
-	public boolean completeTask()
+	public final boolean completeTask()
 	{
+		if (this.tries == 5)
+		{
+			return true;
+		}
+		
 		boolean finish = false;
 		
 		try
@@ -39,9 +45,18 @@ public abstract class Task
 			
 		}
 		
-		if (finish && this.listener != null)
+		if (finish)
 		{
-			this.listener.onTaskComplete(this);
+			if (this.listener != null)
+			{
+				this.listener.onTaskComplete(this);
+				
+			}
+			
+		}
+		else
+		{
+			this.tries++;
 			
 		}
 		

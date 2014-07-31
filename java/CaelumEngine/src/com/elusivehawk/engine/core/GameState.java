@@ -3,8 +3,6 @@ package com.elusivehawk.engine.core;
 
 import com.elusivehawk.engine.physics.IPhysicsSimulator;
 import com.elusivehawk.engine.render.RenderContext;
-import com.elusivehawk.engine.render.old.IRenderHUB;
-import com.elusivehawk.util.IUpdatable;
 
 /**
  * 
@@ -12,20 +10,38 @@ import com.elusivehawk.util.IUpdatable;
  * 
  * @author Elusivehawk
  */
-public abstract class GameState implements IUpdatable
+public class GameState extends AbstractGameComponent
 {
-	public abstract void initiate();
+	protected IPhysicsSimulator psim = null;
 	
-	public abstract void finish();
-	
-	@Deprecated
-	public IRenderHUB getRenderHUB()
+	public GameState(Game owner, String title)
 	{
-		return null;
+		super(owner, title);
+		
+		assert owner != null;
+		
 	}
 	
-	public abstract void render(RenderContext rcon, double delta);
+	public GameState setPhysicsSim(IPhysicsSimulator sim)
+	{
+		this.psim = sim;
+		
+		return this;
+	}
 	
-	public abstract IPhysicsSimulator getPhysicsSimulator();
+	@Override
+	public void initiate(GameArguments args) throws Throwable{}
+	
+	@Override
+	public void onShutdown(){}
+	
+	@Override
+	public void render(RenderContext rcon, double delta){}
+	
+	@Override
+	public IPhysicsSimulator getPhysicsSimulator()
+	{
+		return this.psim;
+	}
 	
 }
