@@ -41,13 +41,6 @@ public class Server implements IHost
 	}
 	
 	@Override
-	public void beginComm()
-	{
-		this.listener.start();
-		
-	}
-	
-	@Override
 	public UUID connect(AbstractSelectableChannel ch)
 	{
 		assert ch != null;
@@ -65,9 +58,9 @@ public class Server implements IHost
 	}
 	
 	@Override
-	public void onPacketsReceived(Connection origin, ImmutableList<Packet> pkts)
+	public void beginComm()
 	{
-		this.master.onPacketsReceived(origin, pkts);
+		this.listener.start();
 		
 	}
 	
@@ -95,10 +88,34 @@ public class Server implements IHost
 	}
 	
 	@Override
-	public void onPacketDropped(Packet pkt)
+	public void onPacketsReceived(Connection origin, ImmutableList<Packet> pkts)
 	{
-		// TODO Auto-generated method stub
+		this.master.onPacketsReceived(origin, pkts);
 		
+	}
+	
+	@Override
+	public void close()
+	{
+		this.listener.stopThread();
+		this.network.stopThread();
+		
+		this.clients.clear();
+		
+	}
+	
+	@Override
+	public void setPaused(boolean pause)
+	{
+		this.network.setPaused(pause);
+		this.paused = pause;
+		
+	}
+	
+	@Override
+	public boolean isPaused()
+	{
+		return this.paused;
 	}
 	
 	@Override
@@ -128,21 +145,7 @@ public class Server implements IHost
 	}
 	
 	@Override
-	public void setPaused(boolean pause)
-	{
-		this.network.setPaused(pause);
-		this.paused = pause;
-		
-	}
-	
-	@Override
-	public boolean isPaused()
-	{
-		return this.paused;
-	}
-	
-	@Override
-	public void onHandshake(Connection con, List<Packet> pkts)
+	public void onHandshake(Connection con, ImmutableList<Packet> pkts)
 	{
 		if (con == null)
 		{
@@ -154,25 +157,17 @@ public class Server implements IHost
 			return;
 		}
 		
+		if (!this.clients.contains(con))
+		{
+			return;
+		}
+		
 		if (this.master.handshake(con, pkts))
 		{
-			if (!this.clients.remove(con))
-			{
-				return;
-			}
-			
+			this.clients.remove(con);
 			this.clients.add(new Connection(con));
 			
 		}
-		
-	}
-	
-	@Override
-	public void close()
-	{
-		this.listener.stopThread();
-		this.network.stopThread();
-		this.clients.clear();
 		
 	}
 	

@@ -1,13 +1,10 @@
 
 package com.elusivehawk.engine.network;
 
-import java.io.IOException;
 import java.nio.channels.spi.AbstractSelectableChannel;
 import java.security.Key;
-import java.util.List;
 import java.util.UUID;
 import com.elusivehawk.engine.core.CaelumEngine;
-import com.elusivehawk.engine.math.MathHelper;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -22,55 +19,18 @@ public class Client implements IHost
 {
 	protected final INetworkMaster master;
 	protected final ThreadNetwork thr;
-	//protected final PublicKey pub;
-	//protected final PrivateKey priv;
 	
 	protected Connection connection = null;
 	protected boolean hasHS = false;
 	protected Key outgoing = null;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Client(INetworkMaster mstr, int bits)
+	public Client(INetworkMaster mstr)
 	{
 		assert mstr != null;
-		assert MathHelper.bounds(bits, 0, 4096);
 		
 		master = mstr;
 		thr = new ThreadNetwork(this, 1);
-		
-	}
-	
-	@Override
-	public Side getSide()
-	{
-		return Side.CLIENT;
-	}
-	
-	@Override
-	public void onDisconnect(Connection connect)
-	{
-		if (this.connection != connect)
-		{
-			throw new RuntimeException("Please quit pulling off coding voodoo.");
-			
-		}
-		
-		this.connection = null;
-		this.hasHS = false;
-		
-	}
-	
-	@Override
-	public void onPacketDropped(Packet pkt)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
-	public void onPacketsReceived(Connection origin, ImmutableList<Packet> pkts)
-	{
-		this.master.onPacketsReceived(origin, pkts);
 		
 	}
 	
@@ -121,6 +81,57 @@ public class Client implements IHost
 	}
 	
 	@Override
+	public Side getSide()
+	{
+		return Side.CLIENT;
+	}
+	
+	@Override
+	public void onDisconnect(Connection connect)
+	{
+		if (this.connection != connect)
+		{
+			throw new RuntimeException("Please quit pulling off coding voodoo.");
+			
+		}
+		
+		this.connection = null;
+		this.hasHS = false;
+		
+	}
+	
+	@Override
+	public void onPacketsReceived(Connection origin, ImmutableList<Packet> pkts)
+	{
+		this.master.onPacketsReceived(origin, pkts);
+		
+	}
+	
+	@Override
+	public void close()
+	{
+		this.thr.stopThread();
+		
+	}
+	
+	@Override
+	public boolean isPaused()
+	{
+		return this.connection == null ? false : this.thr.isPaused();
+	}
+	
+	@Override
+	public void setPaused(boolean pause)
+	{
+		if (this.connection != null)
+		{
+			this.thr.setPaused(pause);
+			
+		}
+		
+	}
+	
+	@Override
 	public void forEveryConnection(IConnectionUser user)
 	{
 		if (this.connection != null)
@@ -144,24 +155,7 @@ public class Client implements IHost
 	}
 	
 	@Override
-	public void setPaused(boolean pause)
-	{
-		if (this.connection != null)
-		{
-			this.thr.setPaused(pause);
-			
-		}
-		
-	}
-	
-	@Override
-	public boolean isPaused()
-	{
-		return this.connection == null ? false : this.thr.isPaused();
-	}
-	
-	@Override
-	public void onHandshake(Connection connection, List<Packet> pkts)
+	public void onHandshake(Connection connection, ImmutableList<Packet> pkts)
 	{
 		if (this.hasHS)
 		{
@@ -173,13 +167,6 @@ public class Client implements IHost
 			this.connection = new Connection(connection);
 			
 		}
-		
-	}
-	
-	@Override
-	public void close() throws IOException
-	{
-		this.thr.stopThread();
 		
 	}
 	

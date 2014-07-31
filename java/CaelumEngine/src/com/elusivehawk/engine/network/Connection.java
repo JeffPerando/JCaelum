@@ -28,15 +28,18 @@ public class Connection
 {
 	protected final IPacketHandler handler;
 	protected final UUID connectId;
+	
 	protected final ConnectionType type;
 	protected final AbstractSelectableChannel channel;
+	
 	protected final PublicKey pub;
 	protected final PrivateKey priv;
 	
 	protected PublicKey pub_rec = null;
 	protected boolean readPubKey = false;
+	protected Object attach = null;
 	
-	private List<Packet> incoming = Lists.newArrayList();
+	private final List<Packet> incoming = Lists.newArrayList();
 	
 	public Connection(IPacketHandler h, AbstractSelectableChannel ch)
 	{
@@ -139,7 +142,7 @@ public class Connection
 		return ImmutableList.copyOf(this.incoming);
 	}
 	
-	public void flushPacket(Packet pkt)
+	public synchronized void flushPacket(Packet pkt)
 	{
 		this.incoming.remove(pkt);
 		
@@ -164,6 +167,7 @@ public class Connection
 				throw new NetworkException("Cannot read bytes!");
 			}
 			
+			//TODO Investigate usage.
 			X509EncodedKeySpec keyspec = new X509EncodedKeySpec(buf.array());
 			
 			try
@@ -210,6 +214,17 @@ public class Connection
 			
 		}
 		catch (Exception e){}
+		
+	}
+	
+	public Object getAttachment()
+	{
+		return this.attach;
+	}
+	
+	public void setAttachment(Object a)
+	{
+		this.attach = a;
 		
 	}
 	

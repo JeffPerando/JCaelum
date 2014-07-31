@@ -15,6 +15,11 @@ import java.util.UUID;
  */
 public interface IConnectable
 {
+	default UUID connect(ConnectionType type, int port)
+	{
+		return this.connect(type, new IP(port));
+	}
+	
 	default UUID connect(ConnectionType type, IP ip)
 	{
 		return this.connect(ip.toChannel(type));

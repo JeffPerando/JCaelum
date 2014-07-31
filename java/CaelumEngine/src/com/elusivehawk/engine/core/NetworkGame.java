@@ -43,7 +43,7 @@ public abstract class NetworkGame extends Game implements INetworkMaster
 	{
 		switch (this.side)
 		{
-			case CLIENT: this.host = new Client(this, this.port);
+			case CLIENT: this.host = new Client(this);
 			case SERVER: this.host = new Server(this, this.port, this.getMaxPlayerCount(args));
 		}
 		

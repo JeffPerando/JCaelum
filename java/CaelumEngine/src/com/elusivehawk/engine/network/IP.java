@@ -22,9 +22,15 @@ public final class IP
 	private final String ip;
 	private final int port;
 	
-	private IP(byte[] b, int p)
+	public IP(int p)
 	{
-		this(b[0] + "." + b[1] + "." + b[2] + "." + b[3], p);
+		this(new byte[]{127, 0, 0, 1}, p);
+		
+	}
+	
+	public IP(byte[] b, int p)
+	{
+		this(String.format("%s.%s.%s.%s", b[0], b[1], b[2], b[3]), p);
 		
 	}
 	
@@ -38,6 +44,8 @@ public final class IP
 	
 	/**
 	 * 
+	 * 
+	 * 
 	 * @return The hostname this IP address contains.
 	 */
 	public String getHostname()
@@ -46,6 +54,8 @@ public final class IP
 	}
 	
 	/**
+	 * 
+	 * 
 	 * 
 	 * @return The port this IP address contains.
 	 */
