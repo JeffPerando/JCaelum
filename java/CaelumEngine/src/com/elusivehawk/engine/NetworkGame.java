@@ -3,6 +3,7 @@ package com.elusivehawk.engine;
 
 import java.io.IOException;
 import com.elusivehawk.engine.network.Client;
+import com.elusivehawk.engine.network.ConnectionType;
 import com.elusivehawk.engine.network.IHost;
 import com.elusivehawk.engine.network.INetworkMaster;
 import com.elusivehawk.engine.network.Server;
@@ -54,7 +55,7 @@ public abstract class NetworkGame extends Game implements INetworkMaster
 	{
 		if (this.side != Side.SERVER)
 		{
-			
+			this.host.connect(ConnectionType.TCP, this.port);
 			
 		}
 		

@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.network;
 
 import java.nio.channels.spi.AbstractSelectableChannel;
+import com.elusivehawk.util.Internal;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -12,6 +13,7 @@ import com.google.common.collect.ImmutableList;
  * 
  * @author Elusivehawk
  */
+@Internal
 public class HSConnection extends Connection implements IPacketHandler
 {
 	private final IHost master;
