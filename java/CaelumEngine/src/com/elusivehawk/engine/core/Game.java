@@ -191,7 +191,7 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 	
 	//XXX Abstract methods
 	
-	public abstract void initiateGame(GameArguments args) throws Throwable;
+	protected abstract void initiateGame(GameArguments args) throws Throwable;
 	
 	public abstract Version getGameVersion();
 	

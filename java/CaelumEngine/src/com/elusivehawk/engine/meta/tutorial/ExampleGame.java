@@ -27,7 +27,7 @@ public class ExampleGame extends Game
 	}
 	
 	@Override
-	protected void initiate(GameArguments args)
+	protected void initiateGame(GameArguments args)
 	{
 		// TODO Auto-generated method stub
 		
