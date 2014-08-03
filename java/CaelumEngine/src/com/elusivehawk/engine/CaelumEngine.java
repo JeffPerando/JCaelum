@@ -3,7 +3,6 @@ package com.elusivehawk.engine;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +51,8 @@ public final class CaelumEngine
 	private final TaskManager tasks = new TaskManager();
 	private final List<String> startupPrefixes = Lists.newArrayList();
 	
+	private boolean singleThreadRender = false;
+	
 	private ILog log = new GameLog();
 	private IGameEnvironment env = null;
 	private IRenderEnvironment renv = null;
@@ -68,6 +69,7 @@ public final class CaelumEngine
 		this.startupPrefixes.add("env:");
 		this.startupPrefixes.add("gamefac:");
 		this.startupPrefixes.add("verbose:");
+		this.startupPrefixes.add("st-render:");
 		
 		if (EnumOS.getCurrentOS() != EnumOS.ANDROID)
 		{
@@ -347,6 +349,8 @@ public final class CaelumEngine
 				
 			}
 			
+			this.singleThreadRender = !"false".equalsIgnoreCase(this.startargs.get("st-render")) || env.singleThreadedRendering();
+			
 		}
 		
 		//XXX Loading input
@@ -457,7 +461,9 @@ public final class CaelumEngine
 		this.game.loadAssets(this.assets);
 		this.assets.initiate();
 		
-		this.threads.put(EnumEngineFeature.LOGIC, new ThreadGameLoop(this.inputs, this.game));
+		ThreadGameLoop gameloop = new ThreadGameLoop(this.inputs, this.game);
+		
+		this.threads.put(EnumEngineFeature.LOGIC, gameloop);
 		
 		IRenderHUB hub = this.game.getRenderHUB();
 		
@@ -473,7 +479,18 @@ public final class CaelumEngine
 			
 		}
 		
-		IThreadStoppable rt = this.renv.createRenderThread(this.rcon);
+		IThreadStoppable rt;
+		
+		if (this.singleThreadRender)
+		{
+			rt = gameloop;
+			gameloop.enableSingleThreadedRendering(this.rcon);
+			
+		}
+		else
+		{
+			rt = this.renv.createRenderThread(this.rcon);
+		}
 		
 		if (rt == null)
 		{
@@ -495,14 +512,11 @@ public final class CaelumEngine
 		
 		//XXX Starting game threads
 		
-		Collection<IThreadStoppable> ts = this.threads.values();
-		
-		Iterator<IThreadStoppable> itr = ts.iterator();
 		IThreadStoppable t;
 		
-		while (itr.hasNext())
+		for (EnumEngineFeature fe : EnumEngineFeature.values())
 		{
-			t = itr.next();
+			t = this.threads.get(fe);
 			
 			if (t instanceof Thread)
 			{
@@ -512,7 +526,7 @@ public final class CaelumEngine
 			}
 			else
 			{
-				itr.remove();
+				this.threads.remove(fe);
 				
 			}
 			
