@@ -13,7 +13,7 @@ import com.elusivehawk.engine.render.RenderContext;
 public class RenderEngineParticles implements IRenderEngine
 {
 	@Override
-	public void render(RenderContext con, IRenderHUB hub)
+	public void render(RenderContext con, IRenderHUB hub, double delta)
 	{
 		/*if (hub.getScene() == null || !hub.getRenderMode().is3D())
 		{
@@ -49,12 +49,6 @@ public class RenderEngineParticles implements IRenderEngine
 		
 		p.unbind();
 		*/
-	}
-	
-	@Override
-	public int getPriority(IRenderHUB hub)
-	{
-		return 0;
 	}
 	
 }

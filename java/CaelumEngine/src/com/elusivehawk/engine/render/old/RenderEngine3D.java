@@ -21,7 +21,7 @@ import com.elusivehawk.engine.render.three.RenderTicket;
 public class RenderEngine3D implements IRenderEngine
 {
 	@Override
-	public void render(RenderContext con, IRenderHUB hub)
+	public void render(RenderContext con, IRenderHUB hub, double delta)
 	{
 		if (!hub.getRenderMode().is3D())
 		{
@@ -153,12 +153,6 @@ public class RenderEngine3D implements IRenderEngine
 			
 		}
 		
-	}
-	
-	@Override
-	public int getPriority(IRenderHUB hub)
-	{
-		return hub.getRenderMode().is3D() ? 0 : -1;
 	}
 	
 }

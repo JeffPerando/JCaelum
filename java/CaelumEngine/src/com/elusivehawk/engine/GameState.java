@@ -2,7 +2,6 @@
 package com.elusivehawk.engine;
 
 import com.elusivehawk.engine.physics.IPhysicsSimulator;
-import com.elusivehawk.engine.render.RenderContext;
 
 /**
  * 
@@ -34,9 +33,6 @@ public class GameState extends AbstractGameComponent
 	
 	@Override
 	public void onShutdown(){}
-	
-	@Override
-	public void render(RenderContext rcon, double delta){}
 	
 	@Override
 	public IPhysicsSimulator getPhysicsSimulator()

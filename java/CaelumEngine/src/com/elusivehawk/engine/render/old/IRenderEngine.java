@@ -21,13 +21,6 @@ public interface IRenderEngine
 	 * @param hub The current rendering HUB.
 	 * @throws RenderException
 	 */
-	public void render(RenderContext con, IRenderHUB hub) throws RenderException;
-	
-	/**
-	 * 
-	 * @param hub The current rendering HUB.
-	 * @return The priority of this renderer.
-	 */
-	public int getPriority(IRenderHUB hub);
+	public void render(RenderContext con, IRenderHUB hub, double delta) throws RenderException;
 	
 }

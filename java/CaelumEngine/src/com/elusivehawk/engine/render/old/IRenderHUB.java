@@ -66,9 +66,4 @@ public interface IRenderHUB
 	 */
 	public Collection<IRenderEngine> getRenderEngines();
 	
-	/**
-	 * @return The highest renderer priority.
-	 */
-	public int getHighestPriority();
-	
 }

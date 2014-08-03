@@ -145,7 +145,7 @@ public final class RenderContext implements IPausable, IGameStateListener, ICont
 		
 		if (this.hub != null)
 		{
-			CaelumEngine.log().log(EnumLogType.WARN, "Rendering using render HUB system! Use Game.render()!");
+			CaelumEngine.log().log(EnumLogType.WARN, "Rendering using render HUB system! Override Game.render() instead!");
 			
 			this.hub.initiate(d);
 			
@@ -209,8 +209,6 @@ public final class RenderContext implements IPausable, IGameStateListener, ICont
 			
 		}
 		
-		this.preRender();
-		
 		if ((useHub && this.hub.updateDisplay()) || this.refreshScreen)
 		{
 			if (useHub)
@@ -226,99 +224,13 @@ public final class RenderContext implements IPausable, IGameStateListener, ICont
 			
 		}
 		
-		CaelumEngine.game().render(this, delta);
-		
-		if (useHub)
-		{
-			Collection<IRenderEngine> engines = this.hub.getRenderEngines();
-			
-			if (engines != null && !engines.isEmpty())
-			{
-				int priority = 0, priorityCount = Math.max(this.hub.getHighestPriority(), 1);
-				int renderersUsed = 0;
-				boolean flag = true;
-				
-				this.gl1.glClear(GLConst.GL_COLOR_BUFFER_BIT | GLConst.GL_DEPTH_BUFFER_BIT);
-				
-				for (int p = 0; p < priorityCount && flag; p++)
-				{
-					for (IRenderEngine engine : engines)
-					{
-						if (renderersUsed == engines.size())
-						{
-							flag = false;
-							break;
-						}
-						
-						priority = Math.min(engine.getPriority(this.hub), priorityCount - 1);
-						
-						if (priority == -1)
-						{
-							continue;
-						}
-						
-						if (priority != p)
-						{
-							continue;
-						}
-						
-						try
-						{
-							engine.render(this, this.hub);
-							
-						}
-						catch (RenderException e)
-						{
-							CaelumEngine.log().err(null, e);
-							
-						}
-						
-						renderersUsed++;
-						
-						int tex = 0, texUnits = this.gl1.glGetInteger(GLConst.GL_MAX_TEXTURE_UNITS);
-						
-						for (int c = 0; c < texUnits; c++)
-						{
-							tex = this.gl1.glGetInteger(GLConst.GL_TEXTURE0 + c);
-							
-							if (tex != 0)
-							{
-								this.gl1.glBindTexture(GLConst.GL_TEXTURE0 + c, 0);
-								
-							}
-							
-						}
-						
-						RenderHelper.checkForGLError(this.gl1);
-						
-					}
-					
-				}
-				
-			}
-			
-		}
-		
-		this.postRender();
-		
-		return true;
-	}
-	
-	/**
-	 * 
-	 * Experimental HUB-less render function.
-	 * 
-	 * @param delta
-	 */
-	@SuppressWarnings("unused")
-	private void drawScreen0(double delta)//TODO Expand
-	{
 		this.preRender();
 		
 		CaelumEngine.game().render(this, delta);
 		
 		this.postRender();
 		
+		return true;
 	}
 	
 	public void preRender()
