@@ -3,6 +3,7 @@ package com.elusivehawk.engine;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -494,14 +495,24 @@ public final class CaelumEngine
 		
 		//XXX Starting game threads
 		
-		for (EnumEngineFeature fe : EnumEngineFeature.values())
+		Collection<IThreadStoppable> ts = this.threads.values();
+		
+		Iterator<IThreadStoppable> itr = ts.iterator();
+		IThreadStoppable t;
+		
+		while (itr.hasNext())
 		{
-			IThreadStoppable t = this.threads.get(fe);
+			t = itr.next();
 			
-			if (t != null)
+			if (t instanceof Thread)
 			{
 				t.setPaused(true);
 				((Thread)t).start();
+				
+			}
+			else
+			{
+				itr.remove();
 				
 			}
 			
