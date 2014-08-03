@@ -8,11 +8,10 @@ import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.assets.Material;
 import com.elusivehawk.engine.assets.Shader;
-import com.elusivehawk.engine.assets.Texture;
 import com.elusivehawk.engine.render.ILogicalRender;
 import com.elusivehawk.engine.render.RenderConst;
-import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.RenderContext;
+import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
@@ -58,7 +57,6 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver, IVe
 	protected boolean dirty = true, zBuffer = true, initiated = false;//, animPause = false;
 	//protected int frame = 0;
 	//protected IModelAnimation anim = null, lastAnim = null;
-	protected Texture tex;
 	protected int matCount = 0, texFrame = 0;
 	
 	@SuppressWarnings("unqualified-field-access")
@@ -121,17 +119,7 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver, IVe
 	@Override
 	public boolean updateBeforeUse(RenderContext con)
 	{
-		if (this.initiated)
-		{
-			if (this.tex != null)
-			{
-				if (this.tex.isAnimated()) this.texFrame++;
-				else this.texFrame = 0;
-				
-			}
-			
-		}
-		else
+		if (!this.initiated)
 		{
 			if (this.m == null)
 			{
@@ -149,11 +137,16 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver, IVe
 				return false;
 			}
 			
-			if (this.tex != null)
+			for (Material mat : this.mats)
 			{
-				if (!this.tex.isFinished())
+				if (mat == null)
 				{
-					this.tex.finish();
+					continue;
+				}
+				
+				if (!mat.isFinished())
+				{
+					mat.finish();
 					
 				}
 				
@@ -216,11 +209,6 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver, IVe
 			this.p.attachShader((Shader)a);
 			
 		}
-		else if (a instanceof Texture)
-		{
-			this.setTexture((Texture)a);
-			
-		}
 		else if (a instanceof Material)
 		{
 			this.addMaterials((Material)a);
@@ -273,12 +261,6 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver, IVe
 		this.frame = f;
 		
 	}*/
-	
-	public synchronized void setTexture(Texture texture)
-	{
-		this.tex = texture;
-		
-	}
 	
 	public synchronized void setEnableZBuffer(boolean b)
 	{
@@ -357,11 +339,6 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver, IVe
 	public int getCurrentTexFrame()
 	{
 		return this.texFrame;
-	}
-	
-	public Texture getTexture()
-	{
-		return this.tex;
 	}
 	
 	public boolean enableZBuffering()

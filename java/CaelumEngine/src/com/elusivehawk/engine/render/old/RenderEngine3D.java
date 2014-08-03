@@ -50,7 +50,7 @@ public class RenderEngine3D implements IRenderEngine
 		gl1.glEnable(GLConst.GL_CULL_FACE);
 		gl1.glCullFace(GLConst.GL_BACK);
 		
-		int currTex = 0, tex = 0;
+		//int currTex = 0, tex = 0;
 		boolean zBuffer = true;
 		
 		RenderTicket tkt;
@@ -102,7 +102,7 @@ public class RenderEngine3D implements IRenderEngine
 					throw e;
 				}
 				
-				tex = tkt.getTexture() == null ? con.getDefaultTexture() : tkt.getTexture().getTexId(tkt.getCurrentTexFrame());
+				/*tex = tkt.getTexture() == null ? con.getDefaultTexture() : tkt.getTexture().getTexId(tkt.getCurrentTexFrame());
 				
 				if (currTex != tex)
 				{
@@ -115,7 +115,7 @@ public class RenderEngine3D implements IRenderEngine
 					gl1.glBindTexture(GLConst.GL_TEXTURE0, tex);
 					currTex = tex;
 					
-				}
+				}*/
 				
 				if (zBuffer != tkt.enableZBuffering())
 				{
