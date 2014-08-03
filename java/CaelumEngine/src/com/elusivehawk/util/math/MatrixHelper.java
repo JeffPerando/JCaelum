@@ -1,8 +1,12 @@
 
 package com.elusivehawk.util.math;
 
-import static com.elusivehawk.util.math.MathConst.*;
-import com.elusivehawk.engine.physics.jbullet.linearmath.MatrixUtil;
+import static com.elusivehawk.util.math.MathConst.A;
+import static com.elusivehawk.util.math.MathConst.B;
+import static com.elusivehawk.util.math.MathConst.C;
+import static com.elusivehawk.util.math.MathConst.X;
+import static com.elusivehawk.util.math.MathConst.Y;
+import static com.elusivehawk.util.math.MathConst.Z;
 
 /**
  * 
@@ -51,7 +55,7 @@ public final class MatrixHelper
 	{
 		Matrix ret = new Matrix(4, 4);
 		
-		MatrixUtil.setEulerZYX(ret, vec);
+		setEulerZYX(ret, vec);
 		
 		return ret;
 	}
@@ -60,9 +64,35 @@ public final class MatrixHelper
 	{
 		Matrix ret = new Matrix(4, 4);
 		
-		MatrixUtil.setEulerZYX(ret, x, y, z);
+		setEulerZYX(ret, x, y, z);
 		
 		return ret;
+	}
+	
+	public static void setEulerZYX(Matrix mat, Vector euler)
+	{
+		setEulerZYX(mat, euler.get(X), euler.get(Y), euler.get(Z));
+		
+	}
+	
+	public static void setEulerZYX(Matrix mat, float eulerX, float eulerY, float eulerZ)
+	{
+		float cx = (float)Math.cos(eulerX);
+		float cy = (float)Math.cos(eulerY);
+		float cz = (float)Math.cos(eulerZ);
+		float sx = (float)Math.sin(eulerX);
+		float sy = (float)Math.sin(eulerY);
+		float sz = (float)Math.sin(eulerZ);
+		
+		float cxz = cx * cz;
+		float cxsz = cx * sz;
+		float sxcz = sx * cz;
+		float sxz = sx * sz;
+		
+		mat.setRow(0, cy * cz, sy * sxcz - cxsz, sy * cxz + sxz);
+		mat.setRow(1, cy * sz, sy * sxz + cxz, sy * cxsz - sxcz);
+		mat.setRow(2, -sy, cy * sx, cy * cx);
+		
 	}
 	
 	public static Matrix createRotationMatrix(Quaternion q)

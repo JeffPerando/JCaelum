@@ -46,31 +46,31 @@ public abstract class AbstractGameComponent implements IUpdatable
 	@Override
 	public String toString()
 	{
-		if (this.master != null)
+		if (this.master == null)
 		{
-			StringBuilder b = StringHelper.newBuilder(this.modules.size() * 2 + 2);
+			return this.getFormattedName();
+		}
+		
+		StringBuilder b = StringHelper.newBuilder(this.modules.size() * 2 + 2);
+		
+		b.append(this.name);
+		b.append('{');
+		
+		for (int c = 0; c < this.modules.size(); c++)
+		{
+			b.append(this.modules.get(c));
 			
-			b.append(this.name);
-			b.append('{');
-			
-			for (int c = 0; c < this.modules.size(); c++)
+			if (c < (this.modules.size() - 1))
 			{
-				b.append(this.modules.get(c));
-				
-				if (c < (this.modules.size() - 1))
-				{
-					b.append(", ");
-					
-				}
+				b.append(", ");
 				
 			}
 			
-			b.append('}');
-			
-			return String.format("%s.%s", this.master.master == null ? this.master.name : this.master.toString(), b.toString());
 		}
 		
-		return this.getFormattedName();
+		b.append('}');
+		
+		return String.format("%s.%s", this.master.master == null ? this.master.name : this.master.toString(), b.toString());
 	}
 	
 	@Override
@@ -120,15 +120,15 @@ public abstract class AbstractGameComponent implements IUpdatable
 	@SuppressWarnings("unused")
 	public void loadAssets(AssetManager mgr){}
 	
-	public abstract void initiate(GameArguments args) throws Throwable;
-	
-	public abstract void onShutdown();
-	
 	@Deprecated
 	public IRenderHUB getRenderHUB()
 	{
 		return null;
 	}
+	
+	public abstract void initiate(GameArguments args) throws Throwable;
+	
+	public abstract void onShutdown();
 	
 	/**
 	 * 
