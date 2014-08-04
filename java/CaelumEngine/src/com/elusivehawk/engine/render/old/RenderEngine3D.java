@@ -21,7 +21,7 @@ import com.elusivehawk.engine.render.three.RenderTicket;
 public class RenderEngine3D implements IRenderEngine
 {
 	@Override
-	public void render(RenderContext con, IRenderHUB hub, double delta)
+	public void render(RenderContext rcon, IRenderHUB hub, double delta)
 	{
 		if (!hub.getRenderMode().is3D())
 		{
@@ -42,7 +42,7 @@ public class RenderEngine3D implements IRenderEngine
 			return;
 		}
 		
-		IGL1 gl1 = con.getGL1();
+		IGL1 gl1 = rcon.getGL1();
 		
 		gl1.glEnable(GLConst.GL_DEPTH_TEST);
 		gl1.glDepthFunc(GLConst.GL_LESS);
@@ -69,12 +69,6 @@ public class RenderEngine3D implements IRenderEngine
 			for (int c = 0; c < tickets.size(); c++)
 			{
 				tkt = tickets.get(c);
-				
-				if (!tkt.updateBeforeUse(con))
-				{
-					continue;
-				}
-				
 				m = tkt.getModel();
 				p = tkt.getProgram();
 				
@@ -83,12 +77,17 @@ public class RenderEngine3D implements IRenderEngine
 					continue;
 				}
 				
-				if (!p.bind(con))
+				if (!p.bind(rcon))
 				{
 					continue;
 				}
 				
-				con.manipulateProgram(EnumRenderMode.MODE_3D, p);
+				if (!tkt.updateBeforeRender(rcon, delta))
+				{
+					continue;
+				}
+				
+				rcon.manipulateProgram(EnumRenderMode.MODE_3D, p);
 				
 				try
 				{
@@ -97,7 +96,7 @@ public class RenderEngine3D implements IRenderEngine
 				}
 				catch (Exception e)
 				{
-					p.unbind(con);
+					p.unbind(rcon);
 					
 					throw e;
 				}
@@ -139,7 +138,7 @@ public class RenderEngine3D implements IRenderEngine
 				
 				RenderHelper.checkForGLError(gl1);
 				
-				p.unbind(con);
+				p.unbind(rcon);
 				
 			}
 			

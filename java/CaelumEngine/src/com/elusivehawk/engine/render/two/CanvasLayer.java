@@ -23,7 +23,7 @@ public class CanvasLayer implements ILogicalRender
 	}
 
 	@Override
-	public boolean updateBeforeUse(RenderContext con)
+	public boolean updateBeforeRender(RenderContext con, double delta)
 	{
 		return false;
 	}

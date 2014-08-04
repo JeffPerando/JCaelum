@@ -229,8 +229,8 @@ public final class CaelumEngine
 					spl = StringHelper.splitOnce(str, ":");
 					strs.put(spl[0], spl[1]);
 					testForGameArg = false;
-					break;
 					
+					break;
 				}
 				
 			}

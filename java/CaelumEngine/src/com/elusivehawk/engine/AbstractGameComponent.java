@@ -147,9 +147,10 @@ public abstract class AbstractGameComponent implements IUpdatable
 	 * 
 	 * @see RenderHelper
 	 */
+	@SuppressWarnings("static-method")
 	public void render(RenderContext rcon, double delta) throws RenderException
 	{
-		IRenderHUB hub = this.getRenderHUB();
+		IRenderHUB hub = rcon.getHUB();
 		IGL1 gl1 = rcon.getGL1();
 		
 		if (hub != null)
@@ -164,9 +165,9 @@ public abstract class AbstractGameComponent implements IUpdatable
 				{
 					engine.render(rcon, hub, delta);
 					
-					int tex = 0, texUnits = gl1.glGetInteger(GLConst.GL_MAX_TEXTURE_UNITS);
+					int tex = 0;
 					
-					for (int c = 0; c < texUnits; c++)
+					for (int c = 0; c < rcon.getMaxTextureCount(); c++)
 					{
 						tex = gl1.glGetInteger(GLConst.GL_TEXTURE0 + c);
 						

@@ -18,7 +18,7 @@ public class Material extends Asset implements IDirty
 	public final float shininess;
 	public final Color filter;
 	
-	private boolean dirty = true, isStatic = true;
+	private boolean dirty = true;
 	
 	public Material(String filename, Color overlay)
 	{
@@ -94,33 +94,9 @@ public class Material extends Asset implements IDirty
 		return new Material(this);
 	}
 	
-	public boolean isStaticMat()
+	public boolean isStatic()
 	{
-		return this.isStatic;
+		return this.tex == null ? true : !this.tex.isAnimated();
 	}
-	
-	public Material flagAsNonStatic()
-	{
-		this.isStatic = false;
-		
-		return this;
-	}
-	
-	/*
-	@Override
-	public void updateUniforms(RenderContext context){}
-	
-	@Override
-	public void manipulateUniforms(RenderContext context, GLProgram p)
-	{
-		p.attachUniform("mat.tex", BufferHelper.makeIntBuffer(this.tex.getIds()[0]), GLProgram.EnumUniformType.ONE);
-		p.attachUniform("mat.color", this.filter.asBufferF(), GLProgram.EnumUniformType.FOUR);
-		p.attachUniform("mat.shininess", BufferHelper.makeFloatBuffer(this.shininess), GLProgram.EnumUniformType.ONE);
-		
-	}
-	
-	@Override
-	public void postRender(){}
-	*/
 	
 }

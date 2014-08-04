@@ -13,6 +13,7 @@ import com.elusivehawk.engine.assets.Shader;
 import com.elusivehawk.engine.assets.Texture;
 import com.elusivehawk.engine.render.old.EnumRenderMode;
 import com.elusivehawk.engine.render.old.IRenderHUB;
+import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLEnumShader;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGL1;
@@ -45,7 +46,7 @@ public final class RenderContext implements IPausable, IGameStateListener, ICont
 	private IGL2 gl2;
 	private IGL3 gl3;
 	
-	private int notex;
+	private int notex, maxTexCount;
 	
 	private ImmutableArray<Shader> shaders = null;
 	
@@ -130,6 +131,7 @@ public final class RenderContext implements IPausable, IGameStateListener, ICont
 		}
 		
 		this.notex = RenderHelper.processImage(ntf);
+		this.maxTexCount = this.gl1.glGetInteger(GLConst.GL_MAX_TEXTURE_UNITS);
 		
 		this.fps = this.settings.targetFPS;
 		IDisplay d = this.renv.createDisplay("default", this.settings);
@@ -230,7 +232,7 @@ public final class RenderContext implements IPausable, IGameStateListener, ICont
 		return true;
 	}
 	
-	public void preRender()
+	private void preRender()
 	{
 		if (!this.texturePool.isEmpty())
 		{
@@ -272,7 +274,7 @@ public final class RenderContext implements IPausable, IGameStateListener, ICont
 		
 	}
 	
-	public void postRender()
+	private void postRender()
 	{
 		if (!this.manipulators.isEmpty())
 		{
@@ -329,7 +331,7 @@ public final class RenderContext implements IPausable, IGameStateListener, ICont
 		//TODO
 		
 	}
-		
+	
 	@SuppressWarnings("unused")
 	public void onDisplayClosed(IDisplay d)
 	{
@@ -389,6 +391,11 @@ public final class RenderContext implements IPausable, IGameStateListener, ICont
 		return this.notex;
 	}
 	
+	public int getMaxTextureCount()
+	{
+		return this.maxTexCount;
+	}
+	
 	public boolean isScreenFlipped()
 	{
 		return this.flipScreen;
@@ -423,6 +430,7 @@ public final class RenderContext implements IPausable, IGameStateListener, ICont
 		
 	}
 	
+	@Deprecated
 	public void attachManipulator(EnumRenderMode mode, IGLManipulator glm)
 	{
 		List<IGLManipulator> mani = this.manipulators.get(mode);
@@ -439,6 +447,7 @@ public final class RenderContext implements IPausable, IGameStateListener, ICont
 		
 	}
 	
+	@Deprecated
 	public void manipulateProgram(EnumRenderMode mode, GLProgram p)
 	{
 		List<IGLManipulator> mani = this.manipulators.get(mode);

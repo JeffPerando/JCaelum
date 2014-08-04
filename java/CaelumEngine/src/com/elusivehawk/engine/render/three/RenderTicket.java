@@ -8,6 +8,7 @@ import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.assets.Material;
 import com.elusivehawk.engine.assets.Shader;
+import com.elusivehawk.engine.assets.Texture;
 import com.elusivehawk.engine.render.ILogicalRender;
 import com.elusivehawk.engine.render.RenderConst;
 import com.elusivehawk.engine.render.RenderContext;
@@ -47,10 +48,10 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver, IVe
 	protected final Quaternion rotOff = new Quaternion(),
 			rot = new Quaternion();
 	
-	protected final Model m;
 	protected final GLProgram p;
 	protected final Material[] mats = RenderHelper.createMaterials();
 	
+	protected Model m;
 	protected FloatBuffer buf = null;
 	protected VertexBuffer vbo = null;
 	
@@ -60,9 +61,9 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver, IVe
 	protected int matCount = 0, texFrame = 0;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public RenderTicket(Model mdl, Vector off, Quaternion roff)
+	public RenderTicket(Vector off, Quaternion roff)
 	{
-		this(mdl);
+		this();
 		
 		offset.set(off);
 		rotOff.set(roff);
@@ -70,30 +71,33 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver, IVe
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public RenderTicket(Model mdl, Quaternion roff)
+	public RenderTicket(Quaternion roff)
 	{
-		this(mdl);
+		this();
 		
 		rotOff.set(roff);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public RenderTicket(Model mdl, Vector off)
+	public RenderTicket(Vector off)
 	{
-		this(mdl);
+		this();
 		
 		offset.set(off);
 		
 	}
 	
-	@SuppressWarnings("unqualified-field-access")
-	public RenderTicket(Model mdl)
+	public RenderTicket()
 	{
-		assert mdl != null;
+		this(new GLProgram());
 		
-		m = mdl;
-		p = new GLProgram();
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public RenderTicket(GLProgram program)
+	{
+		p = program;
 		
 	}
 	
@@ -117,7 +121,7 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver, IVe
 	}
 	
 	@Override
-	public boolean updateBeforeUse(RenderContext con)
+	public boolean updateBeforeRender(RenderContext con, double delta)
 	{
 		if (!this.initiated)
 		{
@@ -126,13 +130,7 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver, IVe
 				return false;
 			}
 			
-			if (!this.m.isFinished())
-			{
-				this.m.finish();
-				
-			}
-			
-			if (!this.m.isFinished())
+			if (!this.m.isFinished() && !this.m.finish())
 			{
 				return false;
 			}
@@ -204,15 +202,29 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver, IVe
 	@Override
 	public boolean onAssetLoaded(Asset a)
 	{
+		if (this.m == null && a instanceof Model)
+		{
+			this.m = (Model)a;
+			
+		}
 		if (a instanceof Shader)
 		{
 			this.p.attachShader((Shader)a);
 			
 		}
+		else if (a instanceof Texture)
+		{
+			if (this.matCount == RenderConst.MATERIAL_CAP)
+			{
+				return false;
+			}
+			
+			return this.addMaterials(new Material(String.format("mat-%s", this.matCount + 1), (Texture)a));
+			
+		}
 		else if (a instanceof Material)
 		{
-			this.addMaterials((Material)a);
-			
+			return this.addMaterials((Material)a);
 		}
 		
 		return true;

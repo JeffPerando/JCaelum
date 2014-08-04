@@ -25,10 +25,9 @@ public abstract class Asset
 		return this.finished;
 	}
 	
-	public final void finish()
+	public final boolean finish()
 	{
-		this.finished = this.finishAsset();
-		
+		return (this.finished = this.finishAsset());
 	}
 	
 	protected abstract boolean finishAsset();

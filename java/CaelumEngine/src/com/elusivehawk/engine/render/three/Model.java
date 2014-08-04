@@ -24,9 +24,8 @@ import com.google.common.collect.Lists;
  * @see IAssetReceiver
  * @see Tessellator
  */
-public class Model implements IAssetReceiver
+public class Model extends Asset implements IAssetReceiver
 {
-	protected final String name;
 	protected final List<ModelSection> sections = Lists.newArrayList();
 	
 	protected ModelSection sec = null;
@@ -38,10 +37,9 @@ public class Model implements IAssetReceiver
 	
 	protected IntBuffer indices = null;
 	
-	@SuppressWarnings("unqualified-field-access")
-	public Model(String title)
+	public Model(String filename)
 	{
-		name = title;
+		super(filename);
 		
 	}
 	
@@ -106,7 +104,8 @@ public class Model implements IAssetReceiver
 		
 	}
 	
-	public void finish() throws RenderException
+	@Override
+	public boolean finishAsset()
 	{
 		if (this.sec != null)
 		{
@@ -173,16 +172,12 @@ public class Model implements IAssetReceiver
 		
 		this.fin = Few.createFew(vtx, ind, mat);
 		
+		return true;
 	}
 	
 	public String getName()
 	{
 		return this.name;
-	}
-	
-	public boolean isFinished()
-	{
-		return this.fin != null;
 	}
 	
 	public Few<VertexBuffer> getVBOs()

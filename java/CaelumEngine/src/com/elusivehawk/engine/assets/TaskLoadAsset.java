@@ -33,14 +33,15 @@ public class TaskLoadAsset extends Task
 		super((t) ->
 		{
 			Asset a = ((TaskLoadAsset)t).getCompleteAsset();
+			boolean read = r != null;
 			
-			if (r != null)
+			if (read)
 			{
-				r.onAssetLoaded(a);
+				read = r.onAssetLoaded(a);
 				
 			}
 			
-			CaelumEngine.assetManager().onAssetRead(a, r != null);
+			CaelumEngine.assetManager().onAssetRead(a, read);
 			
 		});
 		

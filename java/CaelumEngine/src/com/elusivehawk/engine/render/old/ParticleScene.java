@@ -88,7 +88,7 @@ public class ParticleScene implements ILogicalRender
 	}
 	
 	@Override
-	public boolean updateBeforeUse(RenderContext con)
+	public boolean updateBeforeRender(RenderContext con, double delta)
 	{
 		if (this.getParticleCount() == 0)
 		{
