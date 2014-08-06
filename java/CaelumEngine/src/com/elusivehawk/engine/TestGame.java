@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine;
 
+import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.Version;
 
 /**
@@ -9,7 +10,8 @@ import com.elusivehawk.util.Version;
  * 
  * @author Elusivehawk
  */
-public class TestGame extends Game
+@Internal
+public final class TestGame extends Game
 {
 	public TestGame()
 	{

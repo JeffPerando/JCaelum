@@ -1,6 +1,8 @@
 
 package com.elusivehawk.engine;
 
+import com.elusivehawk.util.Internal;
+
 
 /**
  * 
@@ -8,7 +10,8 @@ package com.elusivehawk.engine;
  * 
  * @author Elusivehawk
  */
-public class TestGameFactory extends GameFactory
+@Internal
+public final class TestGameFactory extends GameFactory
 {
 	@Override
 	public Game createGame()
