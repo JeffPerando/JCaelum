@@ -41,7 +41,7 @@ public class AssetManager
 			return;
 		}
 		
-		this.resourceLocations.add(dir);
+		this.filesToScan.add(dir);
 		
 	}
 	
@@ -150,9 +150,9 @@ public class AssetManager
 			return;
 		}
 		
-		for (File file : this.resourceLocations)
+		for (File file : this.filesToScan)
 		{
-			this.scanForFiles(file);
+			this.resourceLocations.addAll(FileHelper.getFiles(file));
 			
 		}
 		
@@ -165,25 +165,6 @@ public class AssetManager
 		return !this.resourceLocations.isEmpty() && !this.readers.isEmpty() && !this.receivers.isEmpty();
 	}
 	
-	protected void scanForFiles(File file)
-	{
-		if (file.isDirectory())
-		{
-			for (File file0 : file.listFiles())
-			{
-				this.scanForFiles(file0);
-				
-			}
-			
-		}
-		else if (FileHelper.canReadFile(file))
-		{
-			this.filesToScan.add(file);
-			
-		}
-		
-	}
-	
 	public IAssetReader getReader(File file)
 	{
 		return this.readers.get(StringHelper.splitOnce(file.getName(), ".")[1]);
@@ -191,7 +172,7 @@ public class AssetManager
 	
 	public File findFile(String loc)
 	{
-		for (File file : this.filesToScan)
+		for (File file : this.resourceLocations)
 		{
 			if (file.getPath().endsWith(loc))
 			{

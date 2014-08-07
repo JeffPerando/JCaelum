@@ -11,9 +11,11 @@ import com.elusivehawk.util.IUpdatable;
  */
 public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 {
+	public static final double DIV = 1000000000.0;
+	
 	private int updates = 0, updateCount;
 	private long sleepTime = 0L;
-	private double time, nextTime, delta;
+	private double time, lastTime, delta;
 	private boolean initiated = false;
 	
 	@Override
@@ -25,8 +27,8 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 		}
 		
 		this.updateCount = this.getTargetUpdateCount();
-		this.delta = (1000000000.0 / this.updateCount);
-		this.nextTime = (System.nanoTime() / 1000000000.0) + this.delta;
+		this.delta = (this.updateCount / DIV);
+		this.time = (DIV / System.nanoTime()) + this.delta;
 		this.initiated = true;
 		
 		return true;
@@ -46,26 +48,26 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 		
 		if (this.getTargetUpdateCount() != this.updateCount)
 		{
-			this.nextTime -= this.delta;
+			this.lastTime -= this.delta;
 			
 			this.updateCount = this.getTargetUpdateCount();
-			this.delta = (1000000000.0 / this.updateCount);
+			this.delta = (DIV / this.updateCount);
 			
-			this.nextTime += this.delta;
+			this.lastTime += this.delta;
 			
 		}
 		
-		this.time = System.nanoTime() / 1000000000.0;
+		this.time = System.nanoTime() / DIV;
 		
-		if (this.getMaxDelta() > 0 && (this.nextTime - this.time) > this.getMaxDelta()) this.nextTime = this.time;
+		if (this.getMaxDelta() > 0 && (this.lastTime - this.time) > this.getMaxDelta()) this.lastTime = this.time;
 		
-		if ((this.time + this.delta) >= this.nextTime)
+		if ((this.time + this.delta) >= this.lastTime)
 		{
 			this.updates++;
 			
 			try
 			{
-				this.update(this.time - this.nextTime);
+				this.update(this.time - this.lastTime);
 				
 			}
 			catch (Throwable e)
@@ -74,7 +76,7 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 				
 			}
 			
-			this.nextTime += this.delta;
+			this.lastTime += this.delta;
 			
 			if (this.updates >= this.updateCount)
 			{
@@ -85,7 +87,7 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 			}
 			
 		}
-		else this.sleepTime = (long)(1000.0 * (this.time - this.nextTime));
+		else this.sleepTime = (long)(1000.0 * (this.time - this.lastTime));
 		
 		if (this.sleepTime > 0L)
 		{

@@ -3,12 +3,15 @@ package com.elusivehawk.engine.render.three;
 
 import java.nio.FloatBuffer;
 import java.util.Arrays;
+import java.util.UUID;
 import com.elusivehawk.engine.CaelumException;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.assets.Material;
 import com.elusivehawk.engine.assets.Shader;
 import com.elusivehawk.engine.assets.Texture;
+import com.elusivehawk.engine.render.IFilter;
+import com.elusivehawk.engine.render.IFilterable;
 import com.elusivehawk.engine.render.ILogicalRender;
 import com.elusivehawk.engine.render.RenderConst;
 import com.elusivehawk.engine.render.RenderContext;
@@ -33,13 +36,14 @@ import com.elusivehawk.util.math.Vector;
  * @author Elusivehawk
  * 
  * @see Model
- * @see IDirty
- * @see ILogicalRender
  * @see IAssetReceiver
- * @see IVectorListener
+ * @see IDirty
+ * @see IFilterable
+ * @see ILogicalRender
  * @see IQuaternionListener
+ * @see IVectorListener
  */
-public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver, IVectorListener, IQuaternionListener
+public class RenderTicket implements IAssetReceiver, IDirty, IFilterable, ILogicalRender, IQuaternionListener, IVectorListener
 {
 	protected final Vector offset = new Vector(),
 			pos = new Vector(),
@@ -102,22 +106,19 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver, IVe
 	}
 	
 	@Override
-	public boolean isDirty()
+	public synchronized void onVectorChanged(Vector vec)
 	{
-		return this.dirty;
-	}
-	
-	@Override
-	public synchronized void setIsDirty(boolean b)
-	{
-		this.dirty = b;
+		this.offset.add(vec, this.pos);
+		this.setIsDirty(true);
 		
 	}
 	
 	@Override
-	public GLProgram getProgram()
+	public synchronized void onQuatChanged(Quaternion q)
 	{
-		return this.p;
+		this.rotOff.add(q, this.rot);
+		this.setIsDirty(true);
+		
 	}
 	
 	@Override
@@ -200,6 +201,39 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver, IVe
 	}
 	
 	@Override
+	public GLProgram getProgram()
+	{
+		return this.p;
+	}
+	
+	@Override
+	public void addFilter(UUID id, IFilter f)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public boolean removeFilter(UUID id)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	@Override
+	public boolean isDirty()
+	{
+		return this.dirty;
+	}
+	
+	@Override
+	public synchronized void setIsDirty(boolean b)
+	{
+		this.dirty = b;
+		
+	}
+	
+	@Override
 	public boolean onAssetLoaded(Asset a)
 	{
 		if (this.m == null && a instanceof Model)
@@ -228,22 +262,6 @@ public class RenderTicket implements IDirty, ILogicalRender, IAssetReceiver, IVe
 		}
 		
 		return true;
-	}
-	
-	@Override
-	public synchronized void onVectorChanged(Vector vec)
-	{
-		this.offset.add(vec, this.pos);
-		this.setIsDirty(true);
-		
-	}
-	
-	@Override
-	public synchronized void onQuatChanged(Quaternion q)
-	{
-		this.rotOff.add(q, this.rot);
-		this.setIsDirty(true);
-		
 	}
 	
 	@Override

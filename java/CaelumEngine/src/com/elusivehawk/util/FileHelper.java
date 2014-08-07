@@ -6,6 +6,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.List;
+import com.google.common.collect.Lists;
 
 /**
  * 
@@ -177,6 +179,51 @@ public final class FileHelper
 	public static String fixPath(String path)
 	{
 		return path.replace("/", FILE_SEP);
+	}
+	
+	public static List<File> getFiles(File file)
+	{
+		List<File> ret = Lists.newArrayList();
+		
+		if (!isFileReal(file))
+		{
+			return ret;
+		}
+		
+		if (!file.isDirectory())
+		{
+			return ret;
+		}
+		
+		getFiles0(file, ret);
+		
+		return ret;
+	}
+	
+	private static void getFiles0(File file, List<File> filelist)
+	{
+		File[] files = file.listFiles();
+		
+		if (files == null || files.length == 0)
+		{
+			return;
+		}
+		
+		for (File f : files)
+		{
+			if (f.isDirectory())
+			{
+				getFiles0(f, filelist);
+				
+			}
+			else
+			{
+				filelist.add(f);
+				
+			}
+			
+		}
+		
 	}
 	
 }

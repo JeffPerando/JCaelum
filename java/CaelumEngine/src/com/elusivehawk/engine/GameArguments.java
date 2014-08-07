@@ -16,9 +16,9 @@ public class GameArguments
 	protected final Map<String, String> args = Maps.newHashMap();
 	
 	@SuppressWarnings("unqualified-field-access")
-	public GameArguments(Iterable<String> buf)
+	public GameArguments(Iterable<String> itr)
 	{
-		buf.forEach((str) ->
+		itr.forEach((str) ->
 		{
 			if (str.contains("="))
 			{
