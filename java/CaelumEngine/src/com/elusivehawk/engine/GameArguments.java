@@ -3,6 +3,7 @@ package com.elusivehawk.engine;
 
 import java.util.Map;
 import com.elusivehawk.util.StringHelper;
+import com.elusivehawk.util.storage.Pair;
 import com.google.common.collect.Maps;
 
 /**
@@ -22,9 +23,9 @@ public class GameArguments
 		{
 			if (str.contains("="))
 			{
-				String[] spl = StringHelper.splitOnce(str, "=");
+				Pair<String> spl = StringHelper.splitFirst(str, "=");
 				
-				args.put(spl[0], spl[1]);
+				args.put(spl.one, spl.two);
 				
 			}
 			

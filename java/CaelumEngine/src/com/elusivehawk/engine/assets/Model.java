@@ -1,17 +1,19 @@
 
-package com.elusivehawk.engine.render.three;
+package com.elusivehawk.engine.assets;
 
+import java.io.File;
 import java.nio.IntBuffer;
+import java.util.Iterator;
 import java.util.List;
-import com.elusivehawk.engine.assets.Asset;
-import com.elusivehawk.engine.assets.IAssetReceiver;
-import com.elusivehawk.engine.assets.Mesh;
 import com.elusivehawk.engine.render.RenderConst;
+import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderException;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
+import com.elusivehawk.engine.render.three.Tessellator;
 import com.elusivehawk.util.BufferHelper;
+import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.storage.Few;
 import com.google.common.collect.Lists;
 
@@ -24,27 +26,30 @@ import com.google.common.collect.Lists;
  * @see IAssetReceiver
  * @see Tessellator
  */
-public class Model extends Asset implements IAssetReceiver
+public class Model implements IAssetReceiver
 {
 	protected final List<ModelSection> sections = Lists.newArrayList();
+	protected String name;
 	
 	protected ModelSection sec = null;
 	protected Few<VertexBuffer> fin = null;
-	protected int glmode = GLConst.GL_TRIANGLES,
+	protected int
+			glmode = GLConst.GL_TRIANGLES,
 			polyCount = 0,
 			pointCount = 0,
 			indiceCount = -1;
 	
 	protected IntBuffer indices = null;
 	
-	public Model(String filename)
+	@SuppressWarnings("unqualified-field-access")
+	public Model(String mname)
 	{
-		super(filename);
+		name = mname;
 		
 	}
 	
 	@Override
-	public boolean onAssetLoaded(Asset a)
+	public void onAssetLoaded(Asset a)
 	{
 		if (a instanceof Mesh)
 		{
@@ -52,19 +57,18 @@ public class Model extends Asset implements IAssetReceiver
 			
 		}
 		
-		return true;
 	}
 	
 	public void startSection(String secname) throws RenderException
 	{
-		if (this.isFinished())
+		if (this.isModelFinished())
 		{
-			throw new RenderException("Model already finished: %s", this.name);
+			throw new RenderException("Model already finished.");
 		}
 		
 		if (this.sec != null)
 		{
-			throw new RenderException("Cannot start new model section! Model: %s, Section: %s", this.name, this.sec.name);
+			throw new RenderException("Cannot start new model section %s", this.sec.name);
 		}
 		
 		this.sec = new ModelSection(secname);
@@ -73,14 +77,14 @@ public class Model extends Asset implements IAssetReceiver
 	
 	public void addMesh(Mesh mesh) throws RenderException
 	{
-		if (this.isFinished())
+		if (this.isModelFinished())
 		{
-			throw new RenderException("Model already finished: %s", this.name);
+			throw new RenderException("Model already finished");
 		}
 		
 		if (this.sec == null)
 		{
-			throw new RenderException("Cannot add mesh to model section! Model: %s", this.name);
+			throw new RenderException("Current model section is null.");
 		}
 		
 		this.sec.addMesh(mesh);
@@ -89,14 +93,14 @@ public class Model extends Asset implements IAssetReceiver
 	
 	public void endSection() throws RenderException
 	{
-		if (this.isFinished())
+		if (this.isModelFinished())
 		{
-			throw new RenderException("Model already finished: %s", this.name);
+			throw new RenderException("Model already finished.");
 		}
 		
-		if (this.sec == null || this.sec.hasMeshes())
+		if (this.sec == null || !this.sec.hasMeshes())
 		{
-			throw new RenderException("Cannot end model section for model %s", this.name);
+			throw new RenderException("Cannot end model section.");
 		}
 		
 		this.sections.add(this.sec);
@@ -104,8 +108,7 @@ public class Model extends Asset implements IAssetReceiver
 		
 	}
 	
-	@Override
-	public boolean finishAsset()
+	public void finishModel()
 	{
 		if (this.sec != null)
 		{
@@ -172,7 +175,11 @@ public class Model extends Asset implements IAssetReceiver
 		
 		this.fin = Few.createFew(vtx, ind, mat);
 		
-		return true;
+	}
+	
+	public boolean isModelFinished()
+	{
+		return this.fin != null;
 	}
 	
 	public String getName()
@@ -208,6 +215,45 @@ public class Model extends Asset implements IAssetReceiver
 	public int getIndice(int pos)
 	{
 		return this.indices == null ? -1 : this.indices.get(pos);
+	}
+	
+	/**
+	 * 
+	 * 
+	 * 
+	 * @author Elusivehawk
+	 */
+	@Internal
+	private static class ModelSection implements Iterable<Mesh>
+	{
+		public final String name;
+		
+		private final List<Mesh> meshes = Lists.newArrayList();
+		
+		@SuppressWarnings("unqualified-field-access")
+		ModelSection(String title)
+		{
+			name = title;
+			
+		}
+		
+		@Override
+		public Iterator<Mesh> iterator()
+		{
+			return this.meshes.iterator();
+		}
+		
+		public void addMesh(Mesh m)
+		{
+			this.meshes.add(m);
+			
+		}
+		
+		public boolean hasMeshes()
+		{
+			return !this.meshes.isEmpty();
+		}
+		
 	}
 	
 }

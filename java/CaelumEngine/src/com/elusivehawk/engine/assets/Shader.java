@@ -2,8 +2,10 @@
 package com.elusivehawk.engine.assets;
 
 import java.io.File;
+import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.opengl.GLEnumShader;
+import com.elusivehawk.util.StringHelper;
 
 /**
  * 
@@ -11,29 +13,36 @@ import com.elusivehawk.engine.render.opengl.GLEnumShader;
  * 
  * @author Elusivehawk
  */
-public class Shader extends Asset
+public class Shader extends GraphicAsset
 {
 	public final GLEnumShader gltype;
-	public final File source;
 	
+	protected String src;
 	protected int glId = 0;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Shader(File file, GLEnumShader type)
+	public Shader(String filepath, GLEnumShader type)
 	{
-		super(file.getName());
+		super(filepath);
 		
 		gltype = type;
-		source = file;
 		
 	}
 	
 	@Override
-	protected boolean finishAsset()
+	protected boolean loadAssetIntoGPU(RenderContext rcon)
 	{
-		this.glId = RenderHelper.loadShader(this.source, this.gltype);
+		this.glId = RenderHelper.loadShader(this.src, this.gltype, rcon);
 		
 		return this.glId != 0;
+	}
+	
+	@Override
+	protected boolean readAsset(File asset)
+	{
+		this.src = RenderHelper.formatShaderSource(StringHelper.readToOneLine(asset), asset.getParentFile());
+		
+		return this.src != null;
 	}
 	
 	public int getGLId()

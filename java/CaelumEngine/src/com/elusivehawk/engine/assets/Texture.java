@@ -1,60 +1,27 @@
 
 package com.elusivehawk.engine.assets;
 
-import com.elusivehawk.engine.render.ILegibleImage;
-
 /**
  * 
  * 
  * 
  * @author Elusivehawk
  */
-public abstract class Texture extends Asset
+public abstract class Texture extends GraphicAsset
 {
-	protected int tex = 0;
-	protected final ILegibleImage[] frames;
-	
-	protected Texture(String filename)
+	protected Texture(String filepath)
 	{
-		this(filename, 1);
+		super(filepath);
 		
 	}
 	
-	@SuppressWarnings("unqualified-field-access")
-	protected Texture(String filename, ILegibleImage... imgs)
-	{
-		this(filename, imgs.length);
-		
-		System.arraycopy(imgs, 0, frames, 0, imgs.length);
-		
-	}
+	public abstract int getTexId(int frame);
 	
-	protected Texture(String filename, int frameCount)
-	{
-		super(filename);
-		this.frames = new ILegibleImage[frameCount];
-		
-	}
-	
-	@SuppressWarnings("unused")
-	public int getTexId(int frame)
-	{
-		return this.tex;
-	}
-	
-	public int getFrameCount()
-	{
-		return this.frames.length;
-	}
+	public abstract int getFrameCount();
 	
 	public boolean isAnimated()
 	{
 		return this.getFrameCount() > 1;
-	}
-	
-	public ILegibleImage getSourceImg(int frame)
-	{
-		return this.frames[frame];
 	}
 	
 }

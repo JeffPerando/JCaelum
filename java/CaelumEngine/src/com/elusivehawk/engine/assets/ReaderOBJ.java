@@ -15,9 +15,8 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-public class ReaderOBJ implements IAssetReader
+public class ReaderOBJ
 {
-	@Override
 	public Asset readAsset(AssetManager mgr, File file) throws Throwable
 	{
 		List<Vector> vertPositions = Lists.newArrayList(),

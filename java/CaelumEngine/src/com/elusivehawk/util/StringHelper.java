@@ -11,6 +11,7 @@ import java.io.Reader;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import com.elusivehawk.util.storage.Pair;
 import com.google.common.collect.Lists;
 
 /**
@@ -277,7 +278,7 @@ public final class StringHelper
 		return b.toString();
 	}
 	
-	public static String[] splitOnce(String str, String out)
+	public static Pair<String> splitFirst(String str, String out)
 	{
 		if (str == null || "".equals(str))
 		{
@@ -289,14 +290,46 @@ public final class StringHelper
 			return null;
 		}
 		
+		if (str.equalsIgnoreCase(out))
+		{
+			return new Pair<String>("", str);
+		}
+		
 		int ind = str.indexOf(out);
 		
 		if (ind == -1)
 		{
-			return new String[]{"", str};
+			return null;
 		}
 		
-		return new String[]{str.substring(0, ind), str.substring(ind + out.length())};
+		return new Pair<String>(str.substring(0, ind), str.substring(ind + out.length()));
+	}
+	
+	public static Pair<String> splitLast(String str, String out)
+	{
+		if (str == null || "".equals(str))
+		{
+			return null;
+		}
+		
+		if (str.length() < out.length())
+		{
+			return null;
+		}
+		
+		if (str.equalsIgnoreCase(out))
+		{
+			return new Pair<String>("", str);
+		}
+		
+		int ind = str.lastIndexOf(out);
+		
+		if (ind == -1)
+		{
+			return null;
+		}
+		
+		return new Pair<String>(str.substring(0, ind), str.substring(ind + out.length()));
 	}
 	
 	public static String parseDate(Calendar cal, String dateSep, String timeSep)

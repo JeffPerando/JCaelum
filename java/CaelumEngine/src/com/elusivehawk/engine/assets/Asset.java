@@ -1,6 +1,9 @@
 
 package com.elusivehawk.engine.assets;
 
+import java.io.File;
+import com.elusivehawk.engine.CaelumEngine;
+
 /**
  * 
  * 
@@ -9,27 +12,31 @@ package com.elusivehawk.engine.assets;
  */
 public abstract class Asset
 {
-	public final String name;
+	public final String filepath;
 	
-	private boolean finished = false;
+	private boolean read = false;
 	
 	@SuppressWarnings("unqualified-field-access")
-	protected Asset(String filename)
+	protected Asset(String path)
 	{
-		name = filename;
+		filepath = path;
+		
+		CaelumEngine.tasks().scheduleTask(new TaskLoadAsset(this));
 		
 	}
 	
-	public final boolean isFinished()
+	public final boolean isRead()
 	{
-		return this.finished;
+		return this.read;
 	}
 	
-	public final boolean finish()
+	public final boolean read(File file) throws Throwable
 	{
-		return (this.finished = this.finishAsset());
+		return (this.read = this.readAsset(file));
 	}
 	
-	protected abstract boolean finishAsset();
+	protected abstract boolean readAsset(File asset) throws Throwable;
+	
+	public void onRead(){}
 	
 }

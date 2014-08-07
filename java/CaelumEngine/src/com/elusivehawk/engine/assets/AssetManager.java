@@ -5,7 +5,9 @@ import java.io.File;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.CaelumException;
+import com.elusivehawk.engine.EnumLogType;
 import com.elusivehawk.util.FileHelper;
 import com.elusivehawk.util.StringHelper;
 import com.google.common.collect.Lists;
@@ -19,11 +21,15 @@ import com.google.common.collect.Maps;
  */
 public class AssetManager
 {
-	protected final Map<String, IAssetReader> readers = Maps.newHashMap();
 	protected final List<IAssetReceiver> receivers = Lists.newArrayList();
+	
 	protected final List<Asset> assets = Lists.newArrayList();
-	protected final List<File> resourceLocations = Lists.newArrayList(),
+	
+	protected final List<File>
+			resLocs = Lists.newArrayList(),
 			filesToScan = Lists.newArrayList();
+	
+	protected final Map<String, IAssetReader> readers = Maps.newHashMap();
 	
 	protected boolean loaded = false;
 	
@@ -45,15 +51,6 @@ public class AssetManager
 		
 	}
 	
-	public synchronized void addAssetReader(String ext, IAssetReader r)
-	{
-		assert ext != null;
-		assert r != null;
-		
-		this.readers.put(ext, r);
-		
-	}
-	
 	public synchronized void addAssetReceiver(IAssetReceiver r)
 	{
 		this.receivers.add(r);
@@ -66,28 +63,73 @@ public class AssetManager
 		
 	}
 	
-	public void dropAsset(Asset a)
-	{
-		if (a != null)
-		{
-			synchronized (this)
-			{
-				this.assets.remove(a);
-				
-			}
-			
-			return;
-		}
-		
-		throw new NullPointerException();
-	}
-	
-	public void onAssetRead(Asset a, boolean received)
+	public synchronized void dropAsset(Asset a)
 	{
 		if (a == null)
 		{
-			throw new NullPointerException("Asset was not read, it is null!");
+			throw new NullPointerException();
 		}
+		
+		this.assets.remove(a);
+	}
+	
+	public synchronized void addReader(String ext, IAssetReader r)
+	{
+		assert ext != null && !ext.isEmpty();
+		
+		this.readers.put(ext, r);
+		
+	}
+	
+	public void initiate()
+	{
+		if (this.loaded)
+		{
+			return;
+		}
+		
+		for (File file : this.filesToScan)
+		{
+			this.resLocs.addAll(FileHelper.getFiles(file));
+			
+		}
+		
+		if (!this.resLocs.isEmpty() && !this.readers.isEmpty())
+		{
+			int assets = 0;
+			IAssetReader r;
+			
+			for (File res : this.resLocs)
+			{
+				r = this.readers.get(StringHelper.splitLast(res.getPath(), ".").two);
+				
+				if (r != null)
+				{
+					if (r.readAsset(res) != null)
+					{
+						assets++;
+						
+					}
+					
+				}
+				
+			}
+			
+			CaelumEngine.log().log(EnumLogType.VERBOSE, "Pre-loaded %s asset(s).", assets);
+			
+		}
+		
+		this.loaded = true;
+		
+	}
+	
+	protected void onAssetRead(Asset a)
+	{
+		if (a == null)
+		{
+			throw new NullPointerException("Asset is null!");
+		}
+		
 		if (this.assets.contains(a))
 		{
 			throw new CaelumException("Duplicate asset entry %s!", a);
@@ -99,34 +141,23 @@ public class AssetManager
 			
 		}
 		
-		if (!received)
+		Iterator<IAssetReceiver> itr = this.receivers.iterator();
+		
+		while (itr.hasNext())
 		{
-			Iterator<IAssetReceiver> itr = this.receivers.iterator();
-			IAssetReceiver r;
-			
-			while (itr.hasNext())
-			{
-				r = itr.next();
-				
-				if (!r.onAssetLoaded(a))
-				{
-					itr.remove();
-					
-				}
-				
-			}
+			itr.next().onAssetLoaded(a);
 			
 		}
 		
 	}
 	
-	public Asset getExistingAsset(String filename)
+	protected Asset getExistingAsset(String filename)
 	{
 		if (!this.assets.isEmpty())
 		{
 			for (Asset a : this.assets)
 			{
-				if (filename.endsWith(a.name))
+				if (filename.endsWith(a.filepath))
 				{
 					return a;
 				}
@@ -138,41 +169,9 @@ public class AssetManager
 		return null;
 	}
 	
-	public void initiate()
+	protected File findFile(String loc)
 	{
-		if (this.loaded)
-		{
-			return;
-		}
-		
-		if (!this.canLoadAssets())
-		{
-			return;
-		}
-		
-		for (File file : this.filesToScan)
-		{
-			this.resourceLocations.addAll(FileHelper.getFiles(file));
-			
-		}
-		
-		this.loaded = true;
-		
-	}
-	
-	public boolean canLoadAssets()
-	{
-		return !this.resourceLocations.isEmpty() && !this.readers.isEmpty() && !this.receivers.isEmpty();
-	}
-	
-	public IAssetReader getReader(File file)
-	{
-		return this.readers.get(StringHelper.splitOnce(file.getName(), ".")[1]);
-	}
-	
-	public File findFile(String loc)
-	{
-		for (File file : this.resourceLocations)
+		for (File file : this.resLocs)
 		{
 			if (file.getPath().endsWith(loc))
 			{

@@ -11,7 +11,6 @@ import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.EnumLogType;
-import com.elusivehawk.engine.assets.Material;
 import com.elusivehawk.engine.assets.Shader;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLEnumShader;
@@ -141,17 +140,7 @@ public final class RenderHelper
 		return buf;
 	}
 	
-	public static String formatShaderSource(File file)
-	{
-		return formatShaderSource(StringHelper.readToOneLine(file), file.getParentFile());
-	}
-	
-	public static String formatShaderSource(String src)
-	{
-		return formatShaderSource(src, new File("."));
-	}
-	
-	private static String formatShaderSource(String src, File parentDir)
+	public static String formatShaderSource(String src, File parentDir)
 	{
 		List<String> inc = Lists.newArrayList();
 		int in;
@@ -199,12 +188,9 @@ public final class RenderHelper
 		return src;
 	}
 	
-	public static int loadShader(File file, GLEnumShader type)
+	public static int loadShader(String src, GLEnumShader type, RenderContext rcon)
 	{
-		String src = formatShaderSource(file);
-		
-		RenderContext con = CaelumEngine.renderContext();
-		IGL2 gl2 = con.getGL2();
+		IGL2 gl2 = rcon.getGL2();
 		
 		int id = gl2.glCreateShader(type);
 		gl2.glShaderSource(id, src);
@@ -212,7 +198,7 @@ public final class RenderHelper
 		
 		try
 		{
-			checkForGLError(con);
+			checkForGLError(rcon);
 			
 		}
 		catch (Exception e)

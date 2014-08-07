@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.assets;
 
+import java.io.File;
 import com.elusivehawk.util.math.Vector;
 import com.elusivehawk.util.storage.ImmutableArray;
 
@@ -15,9 +16,9 @@ public class Mesh extends Asset
 	public final ImmutableArray<Vector> points, texOffs, normals;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Mesh(String filename, Vector[] p, Vector[] tex, Vector[] norm)
+	public Mesh(String filepath, Vector[] p, Vector[] tex, Vector[] norm)
 	{
-		super(filename);
+		super(filepath);
 		
 		points = ImmutableArray.create(p);
 		texOffs = ImmutableArray.create(tex);
@@ -26,7 +27,7 @@ public class Mesh extends Asset
 	}
 	
 	@Override
-	protected boolean finishAsset()
+	protected boolean readAsset(File asset)
 	{
 		return true;
 	}

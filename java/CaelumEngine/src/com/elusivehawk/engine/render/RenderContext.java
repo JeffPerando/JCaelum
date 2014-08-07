@@ -1,7 +1,6 @@
 
 package com.elusivehawk.engine.render;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 import com.elusivehawk.engine.CaelumEngine;
@@ -21,7 +20,6 @@ import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
 import com.elusivehawk.engine.render.opengl.IGLBindable;
 import com.elusivehawk.engine.render.opengl.IGLManipulator;
-import com.elusivehawk.util.FileHelper;
 import com.elusivehawk.util.IPausable;
 import com.elusivehawk.util.storage.ImmutableArray;
 import com.google.common.collect.Lists;
@@ -102,17 +100,9 @@ public final class RenderContext implements IPausable, IGameStateListener, ICont
 		
 		for (GLEnumShader sh : GLEnumShader.values())
 		{
-			File file = FileHelper.createFile(".", String.format("/%s.glsl", sh.name().toLowerCase()));
+			Shader s = new Shader(String.format("/%s.glsl", sh.name().toLowerCase()), sh);
 			
-			if (FileHelper.canReadFile(file))
-			{
-				Shader s = new Shader(file, sh);
-				
-				s.finish();
-				
-				shs[sh.ordinal()] = s;
-				
-			}
+			shs[sh.ordinal()] = s;
 			
 		}
 		

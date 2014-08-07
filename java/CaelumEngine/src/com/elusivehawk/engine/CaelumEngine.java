@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import com.elusivehawk.engine.assets.AssetManager;
-import com.elusivehawk.engine.assets.IAssetReceiver;
-import com.elusivehawk.engine.assets.TaskLoadAsset;
 import com.elusivehawk.engine.render.IRenderEnvironment;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.ThreadGameRender;
@@ -27,6 +25,7 @@ import com.elusivehawk.util.json.EnumJsonType;
 import com.elusivehawk.util.json.JsonData;
 import com.elusivehawk.util.json.JsonObject;
 import com.elusivehawk.util.json.JsonParser;
+import com.elusivehawk.util.storage.Pair;
 import com.elusivehawk.util.storage.Tuple;
 import com.elusivehawk.util.task.TaskManager;
 import com.google.common.collect.Lists;
@@ -185,18 +184,6 @@ public final class CaelumEngine
 		
 	}
 	
-	public static void loadResource(String res)
-	{
-		tasks().scheduleTask(new TaskLoadAsset(FileHelper.fixPath(res)));
-		
-	}
-	
-	public static void loadResource(String res, IAssetReceiver r)
-	{
-		tasks().scheduleTask(new TaskLoadAsset(FileHelper.fixPath(res), r));
-		
-	}
-	
 	public static void main(String... args)
 	{
 		instance().createGameEnv(args);
@@ -216,7 +203,7 @@ public final class CaelumEngine
 		
 		List<String> gargs = Lists.newArrayList();
 		Map<String, String> strs = Maps.newHashMap();
-		String[] spl;
+		Pair<String> spl;
 		
 		for (String str : args)
 		{
@@ -226,8 +213,8 @@ public final class CaelumEngine
 			{
 				if (str.startsWith(prefix))
 				{
-					spl = StringHelper.splitOnce(str, ":");
-					strs.put(spl[0], spl[1]);
+					spl = StringHelper.splitFirst(str, ":");
+					strs.put(spl.one, spl.two);
 					testForGameArg = false;
 					
 					break;

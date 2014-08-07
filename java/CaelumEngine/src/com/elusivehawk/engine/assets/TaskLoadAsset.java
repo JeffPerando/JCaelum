@@ -16,39 +16,26 @@ import com.elusivehawk.util.task.Task;
 @Internal
 public class TaskLoadAsset extends Task
 {
-	protected final String assetLoc;
-	protected final IAssetReceiver receiver;
+	protected final Asset asset;
 	
 	protected Asset fin = null;
 	
-	public TaskLoadAsset(String loc)
-	{
-		this(loc, null);
-		
-	}
-	
 	@SuppressWarnings("unqualified-field-access")
-	public TaskLoadAsset(String loc, IAssetReceiver r)
+	public TaskLoadAsset(Asset a)
 	{
 		super((t) ->
 		{
-			Asset a = ((TaskLoadAsset)t).getCompleteAsset();
-			boolean read = r != null;
+			Asset asset = ((TaskLoadAsset)t).getCompleteAsset();
 			
-			if (read)
+			if (asset != null)
 			{
-				read = r.onAssetLoaded(a);
+				CaelumEngine.assetManager().onAssetRead(a);
 				
 			}
 			
-			CaelumEngine.assetManager().onAssetRead(a, read);
-			
 		});
 		
-		assert loc != null && !loc.isEmpty();
-		
-		assetLoc = loc;
-		receiver = r;
+		asset = a;
 		
 	}
 	
@@ -62,7 +49,7 @@ public class TaskLoadAsset extends Task
 			throw new NullPointerException("Asset manager not found! Aborting!!");
 		}
 		
-		Asset a = mgr.getExistingAsset(this.assetLoc);
+		Asset a = mgr.getExistingAsset(this.asset.filepath);
 		
 		if (a != null)
 		{
@@ -71,30 +58,21 @@ public class TaskLoadAsset extends Task
 			return true;
 		}
 		
-		File file = mgr.findFile(this.assetLoc);
+		File file = mgr.findFile(this.asset.filepath);
 		
 		if (!FileHelper.canReadFile(file))
 		{
 			return false;
 		}
 		
-		IAssetReader r = mgr.getReader(file);
-		
-		if (r == null)
+		if (this.asset.read(file))
 		{
-			return false;
+			this.fin = this.asset;
+			
+			return true;
 		}
 		
-		a = r.readAsset(mgr, file);
-		
-		if (a == null)
-		{
-			return false;
-		}
-		
-		this.fin = a;
-		
-		return true;
+		return false;
 	}
 	
 	public Asset getCompleteAsset()

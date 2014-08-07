@@ -7,12 +7,13 @@ import java.util.UUID;
 import com.elusivehawk.engine.CaelumException;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
-import com.elusivehawk.engine.assets.Material;
+import com.elusivehawk.engine.assets.Model;
 import com.elusivehawk.engine.assets.Shader;
 import com.elusivehawk.engine.assets.Texture;
 import com.elusivehawk.engine.render.IFilter;
 import com.elusivehawk.engine.render.IFilterable;
 import com.elusivehawk.engine.render.ILogicalRender;
+import com.elusivehawk.engine.render.Material;
 import com.elusivehawk.engine.render.RenderConst;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
@@ -131,23 +132,9 @@ public class RenderTicket implements IAssetReceiver, IDirty, IFilterable, ILogic
 				return false;
 			}
 			
-			if (!this.m.isFinished() && !this.m.finish())
+			if (!this.m.isModelFinished())
 			{
-				return false;
-			}
-			
-			for (Material mat : this.mats)
-			{
-				if (mat == null)
-				{
-					continue;
-				}
-				
-				if (!mat.isFinished())
-				{
-					mat.finish();
-					
-				}
+				this.m.finishModel();
 				
 			}
 			
@@ -234,13 +221,8 @@ public class RenderTicket implements IAssetReceiver, IDirty, IFilterable, ILogic
 	}
 	
 	@Override
-	public boolean onAssetLoaded(Asset a)
+	public void onAssetLoaded(Asset a)
 	{
-		if (this.m == null && a instanceof Model)
-		{
-			this.m = (Model)a;
-			
-		}
 		if (a instanceof Shader)
 		{
 			this.p.attachShader((Shader)a);
@@ -250,18 +232,13 @@ public class RenderTicket implements IAssetReceiver, IDirty, IFilterable, ILogic
 		{
 			if (this.matCount == RenderConst.MATERIAL_CAP)
 			{
-				return false;
+				return;
 			}
 			
-			return this.addMaterials(new Material(String.format("mat-%s", this.matCount + 1), (Texture)a));
+			this.addMaterials(new Material(/*String.format("mat-%s", this.matCount + 1),*/(Texture)a));
 			
 		}
-		else if (a instanceof Material)
-		{
-			return this.addMaterials((Material)a);
-		}
 		
-		return true;
 	}
 	
 	@Override

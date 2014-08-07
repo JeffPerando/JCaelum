@@ -11,11 +11,11 @@ import java.util.Map.Entry;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
+import com.elusivehawk.engine.assets.Model;
 import com.elusivehawk.engine.assets.Shader;
 import com.elusivehawk.engine.render.RenderConst;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.RenderContext;
-import com.elusivehawk.engine.render.three.Model;
 import com.elusivehawk.util.ArrayHelper;
 import com.elusivehawk.util.storage.Few;
 
@@ -222,7 +222,7 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 	}
 	
 	@Override
-	public synchronized boolean onAssetLoaded(Asset a)
+	public synchronized void onAssetLoaded(Asset a)
 	{
 		if (this.shaderCount < RenderConst.SHADER_COUNT)
 		{
@@ -232,10 +232,8 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 				
 			}
 			
-			return true;
 		}
 		
-		return false;
 	}
 	
 	public void attachVBO(VertexBuffer vbo, List<Integer> attribs)
