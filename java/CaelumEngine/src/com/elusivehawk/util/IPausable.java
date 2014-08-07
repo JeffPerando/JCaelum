@@ -1,7 +1,6 @@
 
 package com.elusivehawk.util;
 
-
 /**
  * 
  * "Standardisation" interface for pausing things; Suspiciously similar to {@link IDirty}.

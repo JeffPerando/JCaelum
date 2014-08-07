@@ -9,6 +9,7 @@ package com.elusivehawk.util;
  * 
  * @author Elusivehawk
  */
+@FunctionalInterface
 public interface IUpdatable
 {
 	public void update(double delta) throws Throwable;

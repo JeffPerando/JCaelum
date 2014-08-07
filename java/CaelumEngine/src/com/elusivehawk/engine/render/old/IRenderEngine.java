@@ -11,6 +11,7 @@ import com.elusivehawk.engine.render.RenderContext;
  * 
  * @author Elusivehawk
  */
+@FunctionalInterface
 @Deprecated
 public interface IRenderEngine
 {

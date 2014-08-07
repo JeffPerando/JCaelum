@@ -7,6 +7,7 @@ package com.elusivehawk.engine.network;
  * 
  * @author Elusivehawk
  */
+@FunctionalInterface
 public interface IConnectionUser
 {
 	public boolean processConnection(Connection con);
