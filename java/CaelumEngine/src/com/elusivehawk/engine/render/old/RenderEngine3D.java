@@ -88,6 +88,7 @@ public class RenderEngine3D implements IRenderEngine
 				}
 				
 				rcon.manipulateProgram(EnumRenderMode.MODE_3D, p);
+				tkt.filter(rcon, p);
 				
 				try
 				{

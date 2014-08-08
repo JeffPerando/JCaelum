@@ -3,15 +3,13 @@ package com.elusivehawk.engine.render.three;
 
 import java.nio.FloatBuffer;
 import java.util.Arrays;
-import java.util.UUID;
 import com.elusivehawk.engine.CaelumException;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.assets.Model;
 import com.elusivehawk.engine.assets.Shader;
 import com.elusivehawk.engine.assets.Texture;
-import com.elusivehawk.engine.render.IFilter;
-import com.elusivehawk.engine.render.IFilterable;
+import com.elusivehawk.engine.render.Filterable;
 import com.elusivehawk.engine.render.ILogicalRender;
 import com.elusivehawk.engine.render.Material;
 import com.elusivehawk.engine.render.RenderConst;
@@ -36,15 +34,15 @@ import com.elusivehawk.util.math.Vector;
  * 
  * @author Elusivehawk
  * 
+ * @see Filterable
  * @see Model
  * @see IAssetReceiver
  * @see IDirty
- * @see IFilterable
  * @see ILogicalRender
  * @see IQuaternionListener
  * @see IVectorListener
  */
-public class RenderTicket implements IAssetReceiver, IDirty, IFilterable, ILogicalRender, IQuaternionListener, IVectorListener
+public class RenderTicket extends Filterable implements IAssetReceiver, IDirty, ILogicalRender, IQuaternionListener, IVectorListener
 {
 	protected final Vector offset = new Vector(),
 			pos = new Vector(),
@@ -191,20 +189,6 @@ public class RenderTicket implements IAssetReceiver, IDirty, IFilterable, ILogic
 	public GLProgram getProgram()
 	{
 		return this.p;
-	}
-	
-	@Override
-	public void addFilter(UUID id, IFilter f)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
-	public boolean removeFilter(UUID id)
-	{
-		// TODO Auto-generated method stub
-		return false;
 	}
 	
 	@Override
