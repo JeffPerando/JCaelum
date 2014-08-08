@@ -35,22 +35,16 @@ public class Client implements IHost
 	}
 	
 	@Override
-	public UUID connect(ConnectionType type, IP ip)
-	{
-		if (this.connection != null)
-		{
-			return null;
-		}
-		
-		return this.connect(ip.toChannel(type));
-	}
-	
-	@Override
 	public UUID connect(AbstractSelectableChannel ch)
 	{
 		if (ch == null)
 		{
 			return null;
+		}
+		
+		if (this.connection != null)
+		{
+			return this.connection.getId();
 		}
 		
 		this.connection = new HSConnection(this, ch, this.master.getEncryptionBitCount());
