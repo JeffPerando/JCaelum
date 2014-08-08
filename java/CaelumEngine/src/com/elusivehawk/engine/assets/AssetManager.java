@@ -4,14 +4,9 @@ package com.elusivehawk.engine.assets;
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.CaelumException;
-import com.elusivehawk.engine.EnumLogType;
 import com.elusivehawk.util.FileHelper;
-import com.elusivehawk.util.StringHelper;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 /**
  * 
@@ -28,8 +23,6 @@ public class AssetManager
 	protected final List<File>
 			resLocs = Lists.newArrayList(),
 			filesToScan = Lists.newArrayList();
-	
-	protected final Map<String, IAssetReader> readers = Maps.newHashMap();
 	
 	protected boolean loaded = false;
 	
@@ -73,14 +66,6 @@ public class AssetManager
 		this.assets.remove(a);
 	}
 	
-	public synchronized void addReader(String ext, IAssetReader r)
-	{
-		assert ext != null && !ext.isEmpty();
-		
-		this.readers.put(ext, r);
-		
-	}
-	
 	public void initiate()
 	{
 		if (this.loaded)
@@ -91,31 +76,6 @@ public class AssetManager
 		for (File file : this.filesToScan)
 		{
 			this.resLocs.addAll(FileHelper.getFiles(file));
-			
-		}
-		
-		if (!this.resLocs.isEmpty() && !this.readers.isEmpty())
-		{
-			int assets = 0;
-			IAssetReader r;
-			
-			for (File res : this.resLocs)
-			{
-				r = this.readers.get(StringHelper.splitLast(res.getPath(), ".").two);
-				
-				if (r != null)
-				{
-					if (r.readAsset(res) != null)
-					{
-						assets++;
-						
-					}
-					
-				}
-				
-			}
-			
-			CaelumEngine.log().log(EnumLogType.VERBOSE, "Pre-loaded %s asset(s).", assets);
 			
 		}
 		
