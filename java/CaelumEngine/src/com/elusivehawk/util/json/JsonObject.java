@@ -4,6 +4,7 @@ package com.elusivehawk.util.json;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import com.elusivehawk.util.IPopulator;
 import com.google.common.collect.Lists;
 
 /**
@@ -32,7 +33,7 @@ public class JsonObject extends JsonData implements Iterable<JsonData>
 		
 	}
 	
-	public JsonObject(String name, IJsonObjPopulator pop)
+	public JsonObject(String name, IPopulator<JsonObject> pop)
 	{
 		this(name);
 		pop.populate(this);
