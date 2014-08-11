@@ -55,7 +55,8 @@ public final class ThreadGameLoop extends ThreadCaelum implements IThreadContext
 		
 		if (this.rcon != null)
 		{
-			this.rcon.drawScreen(delta);
+			this.rcon.update(delta);
+			this.rcon.getDisplay().updateDisplay();
 			
 		}
 		
@@ -68,18 +69,18 @@ public final class ThreadGameLoop extends ThreadCaelum implements IThreadContext
 	}
 	
 	@Override
+	public IContext getContext()
+	{
+		return this.rcon;
+	}
+	
+	@Override
 	public synchronized void setPaused(boolean pause)
 	{
 		super.setPaused(pause);
 		
 		this.game.setPaused(pause);
 		
-	}
-	
-	@Override
-	public IContext getContext()
-	{
-		return this.rcon;
 	}
 	
 	public void enableSingleThreadedRendering(RenderContext context)

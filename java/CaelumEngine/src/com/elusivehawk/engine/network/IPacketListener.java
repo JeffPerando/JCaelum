@@ -6,11 +6,10 @@ import com.google.common.collect.ImmutableList;
 /**
  * 
  * Interface for packet listening.
- * <p>
- * Note: This is never used by itself.
  * 
  * @author Elusivehawk
  */
+@FunctionalInterface
 public interface IPacketListener
 {
 	/**

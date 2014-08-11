@@ -16,15 +16,14 @@ import com.elusivehawk.util.ShutdownHelper;
 @Internal
 public class ThreadGameRender extends ThreadCaelum implements IThreadContext
 {
-	protected final RenderContext con;
+	protected final RenderContext rcon;
 	
 	protected int fps = 30;
-	protected IDisplay display = null;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public ThreadGameRender(RenderContext rcon)
+	public ThreadGameRender(RenderContext con)
 	{
-		con = rcon;
+		rcon = con;
 		
 	}
 	
@@ -36,13 +35,12 @@ public class ThreadGameRender extends ThreadCaelum implements IThreadContext
 			return false;
 		}
 		
-		if (!this.con.initContext())
+		if (!this.rcon.initContext())
 		{
 			return false;
 		}
 		
-		this.fps = this.con.getFPS();
-		this.display = this.con.getDisplay();
+		this.fps = this.rcon.getFPS();
 		
 		return true;
 	}
@@ -50,19 +48,16 @@ public class ThreadGameRender extends ThreadCaelum implements IThreadContext
 	@Override
 	public void update(double delta) throws Throwable
 	{
-		if (this.display.isCloseRequested())
+		if (this.rcon.getDisplay().isCloseRequested())
 		{
-			this.con.onDisplayClosed(this.display);
+			this.rcon.onDisplayClosed(this.rcon.getDisplay());
 			
 			ShutdownHelper.exit(0);
 			
 		}
 		
-		if (this.con.drawScreen(delta))
-		{
-			this.display.updateDisplay();
-			
-		}
+		this.rcon.update(delta);
+		this.rcon.getDisplay().updateDisplay();
 		
 	}
 	
@@ -70,7 +65,7 @@ public class ThreadGameRender extends ThreadCaelum implements IThreadContext
 	public synchronized void setPaused(boolean pause)
 	{
 		super.setPaused(pause);
-		this.con.setPaused(pause);
+		this.rcon.setPaused(pause);
 		
 	}
 	
@@ -83,7 +78,7 @@ public class ThreadGameRender extends ThreadCaelum implements IThreadContext
 	@Override
 	public IContext getContext()
 	{
-		return this.con;
+		return this.rcon;
 	}
 	
 }

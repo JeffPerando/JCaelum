@@ -21,6 +21,7 @@ import com.elusivehawk.engine.render.opengl.IGL3;
 import com.elusivehawk.engine.render.opengl.IGLBindable;
 import com.elusivehawk.engine.render.opengl.IGLManipulator;
 import com.elusivehawk.util.IPausable;
+import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.storage.ImmutableArray;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -31,7 +32,7 @@ import com.google.common.collect.Maps;
  * 
  * @author Elusivehawk
  */
-public final class RenderContext implements IPausable, IGameStateListener, IContext
+public final class RenderContext implements IUpdatable, IPausable, IGameStateListener, IContext
 {
 	private final IRenderEnvironment renv;
 	
@@ -183,13 +184,9 @@ public final class RenderContext implements IPausable, IGameStateListener, ICont
 		
 	}
 	
-	public boolean drawScreen(double delta) throws RenderException
+	@Override
+	public void update(double delta) throws RenderException
 	{
-		if (this.isPaused())
-		{
-			return false;
-		}
-		
 		boolean useHub = (this.hub != null);
 		
 		if (useHub)
@@ -219,7 +216,6 @@ public final class RenderContext implements IPausable, IGameStateListener, ICont
 		
 		this.postRender();
 		
-		return true;
 	}
 	
 	private void preRender()
