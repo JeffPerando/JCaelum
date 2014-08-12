@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import com.elusivehawk.engine.CaelumException;
 import com.elusivehawk.util.FileHelper;
+import com.elusivehawk.util.task.ITaskListener;
+import com.elusivehawk.util.task.Task;
 import com.google.common.collect.Lists;
 
 /**
@@ -14,7 +16,7 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-public class AssetManager
+public class AssetManager implements ITaskListener
 {
 	protected final List<IAssetReceiver> receivers = Lists.newArrayList();
 	
@@ -27,6 +29,44 @@ public class AssetManager
 	protected boolean loaded = false;
 	
 	public AssetManager(){}
+	
+	@Override
+	public void onTaskComplete(Task task)
+	{
+		if (!(task instanceof TaskLoadAsset))
+		{
+			return;
+		}
+		
+		TaskLoadAsset t = (TaskLoadAsset)task;
+		
+		Asset a = t.getCompleteAsset();
+		
+		if (a == null)
+		{
+			throw new NullPointerException("Asset is null!");
+		}
+		
+		if (this.assets.contains(a))
+		{
+			throw new CaelumException("Duplicate asset entry %s!", a);
+		}
+		
+		synchronized (this)
+		{
+			this.assets.add(a);
+			
+		}
+		
+		Iterator<IAssetReceiver> itr = this.receivers.iterator();
+		
+		while (itr.hasNext())
+		{
+			itr.next().onAssetLoaded(a);
+			
+		}
+		
+	}
 	
 	public synchronized void addSearchDirectory(File dir)
 	{
@@ -80,34 +120,6 @@ public class AssetManager
 		}
 		
 		this.loaded = true;
-		
-	}
-	
-	protected void onAssetRead(Asset a)
-	{
-		if (a == null)
-		{
-			throw new NullPointerException("Asset is null!");
-		}
-		
-		if (this.assets.contains(a))
-		{
-			throw new CaelumException("Duplicate asset entry %s!", a);
-		}
-		
-		synchronized (this)
-		{
-			this.assets.add(a);
-			
-		}
-		
-		Iterator<IAssetReceiver> itr = this.receivers.iterator();
-		
-		while (itr.hasNext())
-		{
-			itr.next().onAssetLoaded(a);
-			
-		}
 		
 	}
 	
