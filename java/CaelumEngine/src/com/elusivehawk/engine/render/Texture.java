@@ -49,7 +49,7 @@ public class Texture extends GraphicAsset
 	@Override
 	public void onTaskComplete(Task task)
 	{
-		if (this.loaded)
+		if (this.isLoaded())
 		{
 			throw new RenderException("We're already full up on frames, sir...");
 		}
@@ -70,7 +70,7 @@ public class Texture extends GraphicAsset
 			
 		}
 		
-		this.loaded = b;
+		this.loaded.set(b);
 		
 	}
 	

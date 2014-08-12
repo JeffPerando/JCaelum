@@ -51,7 +51,7 @@ public class Shader extends GraphicAsset
 		
 		if (this.glId != -1)//TODO Check to see if this is the proper "blank" value; Might be 0...
 		{
-			this.loaded = true;
+			this.loaded.set(true);
 			
 		}
 		

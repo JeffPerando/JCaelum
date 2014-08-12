@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.assets;
 
+import com.elusivehawk.util.storage.SyncStorage;
 import com.elusivehawk.util.task.ITaskListener;
 
 /**
@@ -11,7 +12,7 @@ import com.elusivehawk.util.task.ITaskListener;
  */
 public abstract class GraphicAsset extends Asset implements ITaskListener
 {
-	protected boolean loaded = false;
+	protected SyncStorage<Boolean> loaded = new SyncStorage<Boolean>(false);
 	
 	public GraphicAsset(String path)
 	{
@@ -21,7 +22,7 @@ public abstract class GraphicAsset extends Asset implements ITaskListener
 	
 	public boolean isLoaded()
 	{
-		return this.loaded && this.isRead();
+		return this.loaded.get() && this.isRead();
 	}
 	
 }
