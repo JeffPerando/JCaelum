@@ -192,6 +192,26 @@ public final class CaelumEngine
 		
 	}
 	
+	/**
+	 * 
+	 * ONLY FOR DEBUGGING! I MEAN IT PEOPLE, DON'T RELY ON THIS!
+	 * 
+	 * @param gamefac
+	 * @param args
+	 */
+	public static void start(GameFactory gamefac, String... args)
+	{
+		if (instance().factory != null)
+		{
+			throw new CaelumException("Nuh uh uh, you didn't say the magic word...");
+		}
+		
+		instance().factory = gamefac;
+		
+		main(args);
+		
+	}
+	
 	public void createGameEnv(String... args)
 	{
 		if (this.game != null)

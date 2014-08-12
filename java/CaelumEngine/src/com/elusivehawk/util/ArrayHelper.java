@@ -1,6 +1,9 @@
 
 package com.elusivehawk.util;
 
+import java.util.List;
+import com.google.common.collect.Lists;
+
 /**
  * 
  * 
@@ -29,6 +32,11 @@ public class ArrayHelper
 		arr[i] = obj;
 				
 		return true;
+	}
+	
+	public static boolean contains(Object[] arr, Object obj)
+	{
+		return indexOf(arr, obj) != -1;
 	}
 	
 	public static int indexOf(Object[] arr, Object obj)
@@ -130,6 +138,36 @@ public class ArrayHelper
 	public static boolean isNullOrEmpty(Object[] arr)
 	{
 		return arr == null || arr.length == 0;
+	}
+	
+	@SafeVarargs
+	public static <T> List<T> concat(T[]... ts)
+	{
+		int size = 0;
+		
+		for (T[] ta : ts)
+		{
+			if (ta == null)
+			{
+				continue;
+			}
+			
+			size += ta.length;
+		}
+		
+		List<T> l = Lists.newArrayListWithCapacity(size);
+		
+		for (T[] ta : ts)
+		{
+			for (T t : ta)
+			{
+				l.add(t);
+				
+			}
+			
+		}
+		
+		return l;
 	}
 	
 }
