@@ -13,35 +13,35 @@ import com.elusivehawk.util.io.IByteReader;
  * @author Elusivehawk
  * 
  * @see EnumColorFilter
- * @see EnumColorFormat
+ * @see ColorFormat
  */
 public class Color
 {
-	public static final Color BLACK = new Color(EnumColorFormat.RGBA, 0x000000);
-	public static final Color GREY = new Color(EnumColorFormat.RGBA, 0x7F7F7F);
+	public static final Color BLACK = new Color(ColorFormat.RGBA, 0x000000);
+	public static final Color GREY = new Color(ColorFormat.RGBA, 0x7F7F7F);
 	public static final Color GRAY = GREY;
-	public static final Color WHITE = new Color(EnumColorFormat.RGBA, 0xFFFFFF);
+	public static final Color WHITE = new Color(ColorFormat.RGBA, 0xFFFFFF);
 	
-	public static final Color RED = new Color(EnumColorFormat.RGBA, 0xFF0000);
-	public static final Color GREEN = new Color(EnumColorFormat.RGBA, 0x00FF00);
-	public static final Color BLUE = new Color(EnumColorFormat.RGBA, 0x0000FF);
+	public static final Color RED = new Color(ColorFormat.RGBA, 0xFF0000);
+	public static final Color GREEN = new Color(ColorFormat.RGBA, 0x00FF00);
+	public static final Color BLUE = new Color(ColorFormat.RGBA, 0x0000FF);
 	
-	public static final Color YELLOW = new Color(EnumColorFormat.RGBA, 0xFFFF00);
-	public static final Color PINK = new Color(EnumColorFormat.RGBA, 0xFF00FF);
-	public static final Color CYAN = new Color(EnumColorFormat.RGBA, 0x00FFFF);
+	public static final Color YELLOW = new Color(ColorFormat.RGBA, 0xFFFF00);
+	public static final Color PINK = new Color(ColorFormat.RGBA, 0xFF00FF);
+	public static final Color CYAN = new Color(ColorFormat.RGBA, 0x00FFFF);
 	
-	public final EnumColorFormat format;
+	public final ColorFormat format;
 	public int color = 0;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Color(EnumColorFormat f)
+	public Color(ColorFormat f)
 	{
 		format = f;
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Color(EnumColorFormat f, int col)
+	public Color(ColorFormat f, int col)
 	{
 		this(f);
 		
@@ -51,30 +51,30 @@ public class Color
 	
 	public Color(java.awt.Color col)
 	{
-		this(EnumColorFormat.RGBA, col.getRGB());
+		this(ColorFormat.RGBA, col.getRGB());
 		
 	}
 	
-	public Color(EnumColorFormat f, int a, int b, int c, int d)
+	public Color(ColorFormat f, int a, int b, int c, int d)
 	{
 		this(f, new byte[]{(byte)a, (byte)b, (byte)c, (byte)d});
 		
 	}
 	
-	public Color(EnumColorFormat f, float a, float b, float c, float d)
+	public Color(ColorFormat f, float a, float b, float c, float d)
 	{
 		this(f, (byte)(255 * a), (byte)(255 * b), (byte)(255 * c), (byte)(255 * d));
 		
 	}
 	
-	public Color(EnumColorFormat f, byte... cols)
+	public Color(ColorFormat f, byte... cols)
 	{
 		this(f, new ByteArray(cols));
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Color(EnumColorFormat f, IByteReader buf)
+	public Color(ColorFormat f, IByteReader buf)
 	{
 		this(f);
 		

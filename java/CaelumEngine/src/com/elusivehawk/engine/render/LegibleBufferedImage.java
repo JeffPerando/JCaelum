@@ -12,25 +12,25 @@ import java.awt.image.BufferedImage;
 public class LegibleBufferedImage implements ILegibleImage
 {
 	protected final BufferedImage img;
-	protected final EnumColorFormat format;
+	protected final ColorFormat format;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public LegibleBufferedImage(BufferedImage image)
 	{
 		img = image;
 		
-		EnumColorFormat f;
+		ColorFormat f;
 		
 		switch (image.getType())
 		{
-			case BufferedImage.TYPE_3BYTE_BGR: f = EnumColorFormat.BGRA;
-			case BufferedImage.TYPE_4BYTE_ABGR: f = EnumColorFormat.ABGR;
-			case BufferedImage.TYPE_4BYTE_ABGR_PRE: f = EnumColorFormat.ABGR;
-			case BufferedImage.TYPE_INT_ARGB: f = EnumColorFormat.ARGB;
-			case BufferedImage.TYPE_INT_ARGB_PRE: f = EnumColorFormat.ARGB;
-			case BufferedImage.TYPE_INT_BGR: f = EnumColorFormat.BGRA;
-			case BufferedImage.TYPE_INT_RGB: f = EnumColorFormat.RGBA;
-			default: f = EnumColorFormat.RGBA;
+			case BufferedImage.TYPE_3BYTE_BGR: f = ColorFormat.BGRA;
+			case BufferedImage.TYPE_4BYTE_ABGR: f = ColorFormat.ABGR;
+			case BufferedImage.TYPE_4BYTE_ABGR_PRE: f = ColorFormat.ABGR;
+			case BufferedImage.TYPE_INT_ARGB: f = ColorFormat.ARGB;
+			case BufferedImage.TYPE_INT_ARGB_PRE: f = ColorFormat.ARGB;
+			case BufferedImage.TYPE_INT_BGR: f = ColorFormat.BGRA;
+			case BufferedImage.TYPE_INT_RGB: f = ColorFormat.RGBA;
+			default: f = ColorFormat.RGBA;
 		}
 		
 		format = f;
@@ -44,7 +44,7 @@ public class LegibleBufferedImage implements ILegibleImage
 	}
 	
 	@Override
-	public EnumColorFormat getFormat()
+	public ColorFormat getFormat()
 	{
 		return this.format;
 	}

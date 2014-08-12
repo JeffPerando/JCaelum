@@ -10,7 +10,7 @@ import com.elusivehawk.util.storage.Buffer;
  * 
  * @author Elusivehawk
  */
-public enum EnumColorFormat
+public enum ColorFormat
 {
 	RGBA(EnumColorFilter.RED, EnumColorFilter.GREEN, EnumColorFilter.BLUE, EnumColorFilter.ALPHA),
 	ARGB(EnumColorFilter.ALPHA, EnumColorFilter.RED, EnumColorFilter.GREEN, EnumColorFilter.BLUE),
@@ -22,7 +22,7 @@ public enum EnumColorFormat
 	private final boolean[] support = new boolean[EnumColorFilter.values().length];
 	
 	@SuppressWarnings("unqualified-field-access")
-	EnumColorFormat(EnumColorFilter... f)
+	ColorFormat(EnumColorFilter... f)
 	{
 		filters = f;
 		

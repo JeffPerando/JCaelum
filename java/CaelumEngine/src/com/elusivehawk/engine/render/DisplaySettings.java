@@ -18,6 +18,6 @@ public class DisplaySettings
 	public boolean resize = false;
 	public boolean fullscreen = false;
 	public boolean vsync = false;
-	public Color bg = new Color(EnumColorFormat.RGBA);
+	public Color bg = new Color(ColorFormat.RGBA);
 	
 }

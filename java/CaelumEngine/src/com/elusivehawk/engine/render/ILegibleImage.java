@@ -14,7 +14,7 @@ public interface ILegibleImage
 {
 	public int getPixel(int x, int y);
 	
-	public EnumColorFormat getFormat();
+	public ColorFormat getFormat();
 	
 	public int getHeight();
 	
@@ -22,10 +22,10 @@ public interface ILegibleImage
 	
 	default IntBuffer toInts()
 	{
-		return toInts(EnumColorFormat.RGBA);
+		return toInts(ColorFormat.RGBA);
 	}
 	
-	default IntBuffer toInts(EnumColorFormat format)
+	default IntBuffer toInts(ColorFormat format)
 	{
 		IntBuffer buf = BufferHelper.createIntBuffer(this.getHeight() * this.getWidth());
 		Color col = new Color(this.getFormat());

@@ -95,7 +95,7 @@ public final class RenderHelper
 		return processImage(img, img.getFormat());
 	}
 	
-	public static int processImage(ILegibleImage img, EnumColorFormat format)
+	public static int processImage(ILegibleImage img, ColorFormat format)
 	{
 		return processImage(img.toInts(format), img.getWidth(), img.getHeight());
 	}
@@ -204,7 +204,7 @@ public final class RenderHelper
 		{
 			for (int y = 0; y < ret.getHeight(); y++)
 			{
-				ret.setRGB(x, y, EnumColorFormat.ARGB.convert(new Color(EnumColorFormat.RGBA, io)).getColor());
+				ret.setRGB(x, y, ColorFormat.ARGB.convert(new Color(ColorFormat.RGBA, io)).getColor());
 				
 			}
 			

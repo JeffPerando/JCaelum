@@ -23,7 +23,7 @@ public class Material
 	
 	public Material(Texture texture)
 	{
-		this(texture, 0.0f, new Color(EnumColorFormat.RGBA));
+		this(texture, 0.0f, new Color(ColorFormat.RGBA));
 		
 	}
 	
@@ -35,7 +35,7 @@ public class Material
 	
 	public Material(Texture texture, float shine)
 	{
-		this(texture, shine, new Color(EnumColorFormat.RGBA));
+		this(texture, shine, new Color(ColorFormat.RGBA));
 		
 	}
 	
@@ -52,7 +52,7 @@ public class Material
 		
 		tex = texture;
 		shininess = MathHelper.clamp(shine, 0f, 1f);
-		filter = EnumColorFormat.RGBA.convert(overlay);
+		filter = ColorFormat.RGBA.convert(overlay);
 		
 	}
 	

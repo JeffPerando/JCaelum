@@ -109,7 +109,7 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 		
 		this.shaders = new ImmutableArray<Shader>(shs);
 		
-		PixelGrid ntf = new PixelGrid(32, 32, EnumColorFormat.RGBA);
+		PixelGrid ntf = new PixelGrid(32, 32, ColorFormat.RGBA);
 		
 		for (int x = 0; x < ntf.getWidth(); x++)
 		{
