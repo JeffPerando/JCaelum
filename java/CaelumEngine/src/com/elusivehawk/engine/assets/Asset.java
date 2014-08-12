@@ -25,6 +25,12 @@ public abstract class Asset
 		
 	}
 	
+	@Override
+	public String toString()
+	{
+		return this.filepath;
+	}
+	
 	public final boolean isRead()
 	{
 		return this.read;

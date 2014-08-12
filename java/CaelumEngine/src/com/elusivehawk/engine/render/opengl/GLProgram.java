@@ -8,14 +8,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.assets.Model;
 import com.elusivehawk.engine.assets.Shader;
 import com.elusivehawk.engine.render.RenderConst;
-import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.RenderContext;
+import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.util.ArrayHelper;
 import com.elusivehawk.util.storage.Few;
 
@@ -301,7 +300,7 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 	
 	public void attachUniform(String name, FloatBuffer info, EnumUniformType type)
 	{
-		RenderContext con = CaelumEngine.renderContext();
+		RenderContext con = RenderHelper.renderContext();
 		
 		if (!this.bound && !this.bind(con))
 		{
@@ -321,7 +320,7 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 	
 	public void attachUniform(String name, IntBuffer info, EnumUniformType type)
 	{
-		RenderContext con = CaelumEngine.renderContext();
+		RenderContext con = RenderHelper.renderContext();
 		
 		if (!this.bound && !this.bind(con))
 		{

@@ -44,12 +44,6 @@ public class LegibleBufferedImage implements ILegibleImage
 	}
 	
 	@Override
-	public ColorFormat getFormat()
-	{
-		return this.format;
-	}
-	
-	@Override
 	public int getHeight()
 	{
 		return this.img.getHeight();
@@ -59,6 +53,12 @@ public class LegibleBufferedImage implements ILegibleImage
 	public int getWidth()
 	{
 		return this.img.getWidth();
+	}
+	
+	@Override
+	public ColorFormat getFormat()
+	{
+		return this.format;
 	}
 	
 }

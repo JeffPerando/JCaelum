@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.assets;
 
-import com.elusivehawk.engine.render.RenderContext;
+import com.elusivehawk.util.task.ITaskListener;
 
 /**
  * 
@@ -9,7 +9,7 @@ import com.elusivehawk.engine.render.RenderContext;
  * 
  * @author Elusivehawk
  */
-public abstract class GraphicAsset extends Asset
+public abstract class GraphicAsset extends Asset implements ITaskListener
 {
 	protected boolean loaded = false;
 	
@@ -23,22 +23,5 @@ public abstract class GraphicAsset extends Asset
 	{
 		return this.loaded && this.isRead();
 	}
-	
-	public boolean loadIntoGPU(RenderContext rcon)
-	{
-		if (!this.isRead())
-		{
-			return false;
-		}
-		
-		if (!this.loaded)
-		{
-			return this.loaded = this.loadAssetIntoGPU(rcon);
-		}
-		
-		return true;
-	}
-	
-	protected abstract boolean loadAssetIntoGPU(RenderContext rcon);
 	
 }

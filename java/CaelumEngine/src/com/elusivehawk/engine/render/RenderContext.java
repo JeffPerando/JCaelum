@@ -235,6 +235,43 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 			
 		}
 		
+		this.preRenderDepr();
+		
+	}
+	
+	private void postRender()
+	{
+		if (!this.rtasks.isEmpty())
+		{
+			RenderTask t = this.rtasks.get(0);
+			boolean rem = false;
+			
+			try
+			{
+				rem = t.completeTask();
+				
+			}
+			catch (Throwable e)
+			{
+				CaelumEngine.log().err("Error caught whilst finishing render task:", e);
+				
+			}
+			
+			if (rem)
+			{
+				this.rtasks.remove(0);
+				
+			}
+			
+		}
+		
+		this.postRenderDepr();
+		
+	}
+	
+	@Deprecated
+	private void preRenderDepr()
+	{
 		if (!this.manipulators.isEmpty())
 		{
 			List<IGLManipulator> mani;
@@ -260,7 +297,8 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 		
 	}
 	
-	private void postRender()
+	@Deprecated
+	private void postRenderDepr()
 	{
 		if (!this.manipulators.isEmpty())
 		{
@@ -280,30 +318,6 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 					glm.postRender();
 					
 				}
-				
-			}
-			
-		}
-		
-		if (!this.rtasks.isEmpty())
-		{
-			RenderTask t = this.rtasks.get(0);
-			boolean rem = false;
-			
-			try
-			{
-				rem = t.completeTask();
-				
-			}
-			catch (Throwable e)
-			{
-				CaelumEngine.log().err("Error caught whilst finishing render task:", e);
-				
-			}
-			
-			if (rem)
-			{
-				this.rtasks.remove(0);
 				
 			}
 			

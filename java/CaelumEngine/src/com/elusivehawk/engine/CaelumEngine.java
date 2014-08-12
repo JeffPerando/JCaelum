@@ -11,11 +11,13 @@ import java.util.Set;
 import com.elusivehawk.engine.assets.AssetManager;
 import com.elusivehawk.engine.render.IRenderEnvironment;
 import com.elusivehawk.engine.render.RenderContext;
+import com.elusivehawk.engine.render.RenderTask;
 import com.elusivehawk.engine.render.ThreadGameRender;
 import com.elusivehawk.engine.render.old.IRenderHUB;
 import com.elusivehawk.util.EnumOS;
 import com.elusivehawk.util.FileHelper;
 import com.elusivehawk.util.IPausable;
+import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.ReflectionHelper;
 import com.elusivehawk.util.ShutdownHelper;
 import com.elusivehawk.util.StringHelper;
@@ -50,7 +52,7 @@ public final class CaelumEngine
 	private final TaskManager tasks = new TaskManager();
 	private final List<String> startupPrefixes = Lists.newArrayList();
 	
-	private boolean singleThreadRender = false;
+	private boolean singleThreaded = false;
 	
 	private ILog log = new GameLog();
 	private IGameEnvironment env = null;
@@ -146,16 +148,6 @@ public final class CaelumEngine
 		return ((IThreadContext)t).getContext();
 	}
 	
-	public static RenderContext renderContext()
-	{
-		return renderContext(true);
-	}
-	
-	public static RenderContext renderContext(boolean safe)
-	{
-		return (RenderContext)getContext(safe);
-	}
-	
 	public static boolean isPaused()
 	{
 		Thread t = Thread.currentThread();
@@ -168,6 +160,13 @@ public final class CaelumEngine
 		return ((IPausable)t).isPaused();
 	}
 	
+	public static void scheduleRenderTask(RenderTask rt)
+	{
+		instance().rcon.scheduleRTask(rt);
+		
+	}
+	
+	@Internal
 	public static void flipScreen(boolean flip)
 	{
 		if (instance().rcon != null)
@@ -184,6 +183,7 @@ public final class CaelumEngine
 		
 	}
 	
+	@Internal
 	public static void main(String... args)
 	{
 		instance().createGameEnv(args);
@@ -194,7 +194,7 @@ public final class CaelumEngine
 	
 	/**
 	 * 
-	 * ONLY FOR DEBUGGING! I MEAN IT PEOPLE, DON'T RELY ON THIS!
+	 * ONLY FOR DEBUGGING AND SMALL GAMES!
 	 * 
 	 * @param gamefac
 	 * @param args
@@ -212,6 +212,7 @@ public final class CaelumEngine
 		
 	}
 	
+	@Internal
 	public void createGameEnv(String... args)
 	{
 		if (this.game != null)
@@ -356,7 +357,7 @@ public final class CaelumEngine
 				
 			}
 			
-			this.singleThreadRender = "true".equalsIgnoreCase(this.startargs.get("st")) || env.singleThreaded();
+			this.singleThreaded = "true".equalsIgnoreCase(this.startargs.get("st")) || env.singleThreaded();
 			
 		}
 		
@@ -410,6 +411,7 @@ public final class CaelumEngine
 		
 	}
 	
+	@Internal
 	public void startGame()
 	{
 		//XXX Loading the game itself
@@ -488,7 +490,7 @@ public final class CaelumEngine
 		
 		IThreadStoppable rt;
 		
-		if (this.singleThreadRender)
+		if (this.singleThreaded)
 		{
 			rt = gameloop;
 			gameloop.enableSingleThreadedRendering(this.rcon);
@@ -564,6 +566,7 @@ public final class CaelumEngine
 		
 	}
 	
+	@Internal
 	public void shutDownGame()
 	{
 		if (this.threads.isEmpty())
@@ -598,11 +601,12 @@ public final class CaelumEngine
 		
 	}
 	
+	@Internal
 	public void clearGameEnv()
 	{
 		if (this.game != null)
 		{
-			return;
+			throw new CaelumException("YOU CLUMSY POOP!");
 		}
 		
 		this.inputs.clear();

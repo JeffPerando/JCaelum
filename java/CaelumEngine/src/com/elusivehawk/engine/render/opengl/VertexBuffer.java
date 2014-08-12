@@ -3,9 +3,8 @@ package com.elusivehawk.engine.render.opengl;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import com.elusivehawk.engine.CaelumEngine;
-import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.RenderContext;
+import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.storage.Buffer;
 
@@ -22,7 +21,7 @@ public class VertexBuffer implements IGLBindable
 	@SuppressWarnings("unqualified-field-access")
 	private VertexBuffer(int vbo, int target, int mode)
 	{
-		RenderContext con = CaelumEngine.renderContext();
+		RenderContext con = RenderHelper.renderContext();
 		
 		t = target;
 		id = con.getGL1().glIsBuffer(vbo) ? vbo : con.getGL1().glGenBuffers();
@@ -60,7 +59,7 @@ public class VertexBuffer implements IGLBindable
 	
 	protected void loadData(FloatBuffer buf)
 	{
-		RenderContext con = CaelumEngine.renderContext();
+		RenderContext con = RenderHelper.renderContext();
 		
 		IGL1 gl1 = con.getGL1();
 		
@@ -86,7 +85,7 @@ public class VertexBuffer implements IGLBindable
 	
 	protected void loadData(IntBuffer buf)
 	{
-		RenderContext con = CaelumEngine.renderContext();
+		RenderContext con = RenderHelper.renderContext();
 		
 		int vba = con.getGL1().glGetInteger(GLConst.GL_VERTEX_ARRAY_BINDING);
 		

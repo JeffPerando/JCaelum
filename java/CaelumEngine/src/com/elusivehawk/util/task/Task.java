@@ -11,6 +11,7 @@ public abstract class Task
 {
 	private final ITaskListener listener;
 	private int tries = 0;
+	private boolean complete = false;
 	
 	public Task()
 	{
@@ -27,16 +28,19 @@ public abstract class Task
 	
 	public final boolean completeTask()
 	{
+		if (this.complete)
+		{
+			return true;
+		}
+		
 		if (this.tries == 5)
 		{
 			return true;
 		}
 		
-		boolean finish = false;
-		
 		try
 		{
-			finish = this.finishTask();
+			this.complete = this.finishTask();
 			
 		}
 		catch (Throwable e)
@@ -45,7 +49,7 @@ public abstract class Task
 			
 		}
 		
-		if (finish)
+		if (this.complete)
 		{
 			if (this.listener != null)
 			{
@@ -60,7 +64,7 @@ public abstract class Task
 			
 		}
 		
-		return finish;
+		return this.complete;
 	}
 	
 	protected abstract boolean finishTask() throws Throwable;

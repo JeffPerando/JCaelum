@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.Arrays;
 import java.util.List;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -34,19 +35,29 @@ public final class RenderHelper
 {
 	private RenderHelper(){}
 	
+	public static RenderContext renderContext()
+	{
+		return renderContext(true);
+	}
+	
+	public static RenderContext renderContext(boolean safe)
+	{
+		return (RenderContext)CaelumEngine.getContext(safe);
+	}
+	
 	public static IGL1 gl1()
 	{
-		return CaelumEngine.renderContext().getGL1();
+		return renderContext().getGL1();
 	}
 	
 	public static IGL2 gl2()
 	{
-		return CaelumEngine.renderContext().getGL2();
+		return renderContext().getGL2();
 	}
 	
 	public static IGL3 gl3()
 	{
-		return CaelumEngine.renderContext().getGL3();
+		return renderContext().getGL3();
 	}
 	
 	/*public static IGL4 gl4()
@@ -54,26 +65,49 @@ public final class RenderHelper
 		return CaelumEngine.renderContext().getGL4();
 	}*/
 	
-	public static ILegibleImage[] readGifFile(File gif)
+	public static List<ILegibleImage> readImg(File img)
 	{
-		if (!gif.getName().endsWith(".gif"))
+		if (img.getName().endsWith(".gif"))
 		{
-			return null;
+			return readGifFile(img);
 		}
 		
+		BufferedImage bufimg = null;
+		
+		try
+		{
+			bufimg = ImageIO.read(img);
+			
+		}
+		catch (Exception e)
+		{
+			CaelumEngine.log().err(null, e);
+			
+		}
+		
+		if (bufimg != null)
+		{
+			return Arrays.asList(new LegibleBufferedImage(bufimg));
+		}
+		
+		return null;
+	}
+	
+	private static List<ILegibleImage> readGifFile(File gif)
+	{
 		try
 		{
 			ImageReader r = ImageIO.getImageReadersByFormatName("gif").next();
 			ImageInputStream in = ImageIO.createImageInputStream(gif);
 			r.setInput(in, false);
 			
-			int max = r.getNumImages(true);
+			int imgs = r.getNumImages(true);
 			
-			ILegibleImage[] ret = new ILegibleImage[max];
+			List<ILegibleImage> ret = Lists.newArrayListWithCapacity(imgs);
 			
-			for (int c = 0; c < max; c++)
+			for (int c = 0; c < imgs; c++)
 			{
-				ret[c] = new LegibleBufferedImage(r.read(c));
+				ret.add(new LegibleBufferedImage(r.read(c)));
 				
 			}
 			
@@ -95,6 +129,11 @@ public final class RenderHelper
 		return processImage(img, img.getFormat());
 	}
 	
+	public static int processImage(RenderContext rcon, ILegibleImage img)
+	{
+		return processImage(rcon, img.toInts(), img.getHeight(), img.getWidth());
+	}
+	
 	public static int processImage(ILegibleImage img, ColorFormat format)
 	{
 		return processImage(img.toInts(format), img.getWidth(), img.getHeight());
@@ -102,7 +141,12 @@ public final class RenderHelper
 	
 	public static int processImage(IntBuffer buf, int w, int h)
 	{
-		IGL1 gl1 = gl1();
+		return processImage(renderContext(), buf, w, h);
+	}
+	
+	public static int processImage(RenderContext rcon, IntBuffer buf, int w, int h)
+	{
+		IGL1 gl1 = rcon.getGL1();
 		
 		int glId = gl1.glGenTextures();
 		
@@ -115,6 +159,8 @@ public final class RenderHelper
 		gl1.glTexImage2D(GLConst.GL_TEXTURE_2D, 0, GLConst.GL_RGBA8, w, h, 0, GLConst.GL_RGBA, GLConst.GL_UNSIGNED_BYTE, buf);
 		
 		gl1.glActiveTexture(0);
+		
+		checkForGLError(gl1);
 		
 		return glId;
 	}

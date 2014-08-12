@@ -14,15 +14,18 @@ public interface ILegibleImage
 {
 	public int getPixel(int x, int y);
 	
-	public ColorFormat getFormat();
-	
 	public int getHeight();
 	
 	public int getWidth();
 	
+	default ColorFormat getFormat()
+	{
+		return ColorFormat.RGBA;
+	}
+	
 	default IntBuffer toInts()
 	{
-		return toInts(ColorFormat.RGBA);
+		return toInts(this.getFormat());
 	}
 	
 	default IntBuffer toInts(ColorFormat format)
