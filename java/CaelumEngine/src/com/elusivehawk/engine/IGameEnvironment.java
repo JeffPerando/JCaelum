@@ -36,7 +36,7 @@ public interface IGameEnvironment
 	
 	public List<Input> loadInputs();
 	
-	default boolean singleThreadedRendering()
+	default boolean singleThreaded()
 	{
 		return false;
 	}

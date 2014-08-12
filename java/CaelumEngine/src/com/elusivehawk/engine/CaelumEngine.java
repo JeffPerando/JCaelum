@@ -68,7 +68,7 @@ public final class CaelumEngine
 		this.startupPrefixes.add("env:");
 		this.startupPrefixes.add("gamefac:");
 		this.startupPrefixes.add("verbose:");
-		this.startupPrefixes.add("st-render:");
+		this.startupPrefixes.add("st:");
 		
 		if (EnumOS.getCurrentOS() != EnumOS.ANDROID)
 		{
@@ -336,7 +336,7 @@ public final class CaelumEngine
 				
 			}
 			
-			this.singleThreadRender = "true".equalsIgnoreCase(this.startargs.get("st-render")) || env.singleThreadedRendering();
+			this.singleThreadRender = "true".equalsIgnoreCase(this.startargs.get("st")) || env.singleThreaded();
 			
 		}
 		
