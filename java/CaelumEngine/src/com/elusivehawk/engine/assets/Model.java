@@ -1,12 +1,10 @@
 
 package com.elusivehawk.engine.assets;
 
-import java.io.File;
 import java.nio.IntBuffer;
 import java.util.Iterator;
 import java.util.List;
 import com.elusivehawk.engine.render.RenderConst;
-import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderException;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.opengl.GLConst;

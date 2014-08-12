@@ -245,7 +245,7 @@ public final class CaelumEngine
 			
 		}
 		
-		boolean verbose = !"false".equalsIgnoreCase(this.startargs.get("verbose"));
+		boolean verbose = "true".equalsIgnoreCase(this.startargs.get("verbose"));
 		
 		this.log.setEnableVerbosity(verbose);
 		
@@ -336,7 +336,7 @@ public final class CaelumEngine
 				
 			}
 			
-			this.singleThreadRender = !"false".equalsIgnoreCase(this.startargs.get("st-render")) || env.singleThreadedRendering();
+			this.singleThreadRender = "true".equalsIgnoreCase(this.startargs.get("st-render")) || env.singleThreadedRendering();
 			
 		}
 		
@@ -477,6 +477,7 @@ public final class CaelumEngine
 		else
 		{
 			rt = this.renv.createRenderThread(this.rcon);
+			
 		}
 		
 		if (rt == null)
