@@ -32,7 +32,7 @@ public abstract class Asset
 	
 	public final boolean read(File file) throws Throwable
 	{
-		return (this.read = this.readAsset(file));
+		return this.read ? true : (this.read = this.readAsset(file));
 	}
 	
 	protected abstract boolean readAsset(File asset) throws Throwable;

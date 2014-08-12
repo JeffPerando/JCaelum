@@ -97,7 +97,7 @@ public final class RenderHelper
 	
 	public static int processImage(ILegibleImage img, EnumColorFormat format)
 	{
-		return processImage(readImage(img, format), img.getWidth(), img.getHeight());
+		return processImage(img.toInts(format), img.getWidth(), img.getHeight());
 	}
 	
 	public static int processImage(IntBuffer buf, int w, int h)
@@ -117,27 +117,6 @@ public final class RenderHelper
 		gl1.glActiveTexture(0);
 		
 		return glId;
-	}
-	
-	public static IntBuffer readImage(ILegibleImage img, EnumColorFormat format)
-	{
-		IntBuffer buf = BufferHelper.createIntBuffer(img.getHeight() * img.getWidth());
-		Color col = new Color(img.getFormat());
-		
-		for (int x = 0; x < img.getWidth(); ++x)
-		{
-			for (int y = 0; y < img.getHeight(); ++y)
-			{
-				col.setColor(img.getPixel(x, y));
-				buf.put(format.convert(col).getColor());
-				
-			}
-			
-		}
-		
-		buf.flip();
-		
-		return buf;
 	}
 	
 	public static String formatShaderSource(String src, File parentDir)

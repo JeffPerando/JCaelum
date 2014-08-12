@@ -1,6 +1,9 @@
 
 package com.elusivehawk.engine.render;
 
+import java.nio.IntBuffer;
+import com.elusivehawk.util.BufferHelper;
+
 /**
  * 
  * Abstraction layer for the different kinds of images there are out there.
@@ -16,5 +19,31 @@ public interface ILegibleImage
 	public int getHeight();
 	
 	public int getWidth();
+	
+	default IntBuffer toInts()
+	{
+		return toInts(EnumColorFormat.RGBA);
+	}
+	
+	default IntBuffer toInts(EnumColorFormat format)
+	{
+		IntBuffer buf = BufferHelper.createIntBuffer(this.getHeight() * this.getWidth());
+		Color col = new Color(this.getFormat());
+		
+		for (int x = 0; x < this.getWidth(); ++x)
+		{
+			for (int y = 0; y < this.getHeight(); ++y)
+			{
+				col.setColor(this.getPixel(x, y));
+				buf.put(format.convert(col).getColor());
+				
+			}
+			
+		}
+		
+		buf.flip();
+		
+		return buf;
+	}
 	
 }
