@@ -8,8 +8,6 @@ import com.elusivehawk.engine.EnumLogType;
 import com.elusivehawk.engine.GameState;
 import com.elusivehawk.engine.IContext;
 import com.elusivehawk.engine.IGameStateListener;
-import com.elusivehawk.engine.assets.Shader;
-import com.elusivehawk.engine.assets.Texture;
 import com.elusivehawk.engine.render.old.EnumRenderMode;
 import com.elusivehawk.engine.render.old.IRenderHUB;
 import com.elusivehawk.engine.render.opengl.GLConst;

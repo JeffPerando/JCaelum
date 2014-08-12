@@ -3,9 +3,9 @@ package com.elusivehawk.engine.render.opengl;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import com.elusivehawk.engine.assets.Texture;
 import com.elusivehawk.engine.render.Color;
 import com.elusivehawk.engine.render.EnumColorFilter;
+import com.elusivehawk.engine.render.Texture;
 import com.elusivehawk.util.BufferHelper;
 
 /**

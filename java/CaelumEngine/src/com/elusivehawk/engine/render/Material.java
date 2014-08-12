@@ -1,7 +1,6 @@
 
 package com.elusivehawk.engine.render;
 
-import com.elusivehawk.engine.assets.Texture;
 import com.elusivehawk.util.math.MathHelper;
 
 /**

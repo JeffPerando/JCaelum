@@ -1,7 +1,8 @@
 
-package com.elusivehawk.engine.assets;
+package com.elusivehawk.engine.render;
 
 import java.io.File;
+import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.util.math.Vector;
 import com.elusivehawk.util.storage.ImmutableArray;
 

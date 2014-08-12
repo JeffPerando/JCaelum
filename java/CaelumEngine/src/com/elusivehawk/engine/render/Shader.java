@@ -1,10 +1,9 @@
 
-package com.elusivehawk.engine.assets;
+package com.elusivehawk.engine.render;
 
 import java.io.File;
 import com.elusivehawk.engine.CaelumEngine;
-import com.elusivehawk.engine.render.RTaskUploadShader;
-import com.elusivehawk.engine.render.RenderHelper;
+import com.elusivehawk.engine.assets.GraphicAsset;
 import com.elusivehawk.engine.render.opengl.GLEnumShader;
 import com.elusivehawk.util.StringHelper;
 import com.elusivehawk.util.task.Task;
@@ -49,6 +48,12 @@ public class Shader extends GraphicAsset
 	public void onTaskComplete(Task task)
 	{
 		this.glId = ((RTaskUploadShader)task).getGLId();
+		
+		if (this.glId != -1)//TODO Check to see if this is the proper "blank" value; Might be 0...
+		{
+			this.loaded = true;
+			
+		}
 		
 	}
 	

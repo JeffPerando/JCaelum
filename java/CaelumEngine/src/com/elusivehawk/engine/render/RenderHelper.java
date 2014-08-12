@@ -12,7 +12,6 @@ import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.EnumLogType;
-import com.elusivehawk.engine.assets.Shader;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLEnumShader;
 import com.elusivehawk.engine.render.opengl.GLException;

@@ -1,12 +1,10 @@
 
-package com.elusivehawk.engine.assets;
+package com.elusivehawk.engine.render;
 
 import java.io.File;
 import java.util.List;
 import com.elusivehawk.engine.CaelumEngine;
-import com.elusivehawk.engine.render.ILegibleImage;
-import com.elusivehawk.engine.render.RTaskUploadImage;
-import com.elusivehawk.engine.render.RenderHelper;
+import com.elusivehawk.engine.assets.GraphicAsset;
 import com.elusivehawk.util.task.Task;
 
 /**
@@ -41,6 +39,7 @@ public class Texture extends GraphicAsset
 		for (int c = 0; c < imgs.size(); c++)
 		{
 			CaelumEngine.scheduleRenderTask(new RTaskUploadImage(this, imgs.get(c), c));
+			this.frames[c] = -1;
 			
 		}
 		
@@ -50,9 +49,28 @@ public class Texture extends GraphicAsset
 	@Override
 	public void onTaskComplete(Task task)
 	{
+		if (this.loaded)
+		{
+			throw new RenderException("We're already full up on frames, sir...");
+		}
+		
 		RTaskUploadImage t = (RTaskUploadImage)task;
 		
 		this.frames[t.getFrame()] = t.getGLId();
+		
+		boolean b = true;
+		
+		for (int c = 0; c < this.getFrameCount(); c++)
+		{
+			if (this.frames[c] == -1)
+			{
+				b = false;
+				break;
+			}
+			
+		}
+		
+		this.loaded = b;
 		
 	}
 	

@@ -4,7 +4,7 @@ package com.elusivehawk.engine.render.opengl;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import com.elusivehawk.engine.assets.Shader;
+import com.elusivehawk.engine.render.Shader;
 
 /**
  * 
