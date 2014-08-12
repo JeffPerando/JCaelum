@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import com.elusivehawk.engine.CaelumException;
 import com.elusivehawk.util.FileHelper;
+import com.elusivehawk.util.storage.SyncList;
 import com.elusivehawk.util.task.ITaskListener;
 import com.elusivehawk.util.task.Task;
 import com.google.common.collect.Lists;
@@ -18,13 +19,13 @@ import com.google.common.collect.Lists;
  */
 public class AssetManager implements ITaskListener
 {
-	protected final List<IAssetReceiver> receivers = Lists.newArrayList();
+	protected final List<IAssetReceiver> receivers = new SyncList<IAssetReceiver>();
 	
-	protected final List<Asset> assets = Lists.newArrayList();
+	protected final List<Asset> assets = new SyncList<Asset>();
 	
 	protected final List<File>
 			resLocs = Lists.newArrayList(),
-			filesToScan = Lists.newArrayList();
+			filesToScan = new SyncList<File>();
 	
 	protected boolean loaded = false;
 	
@@ -52,11 +53,7 @@ public class AssetManager implements ITaskListener
 			throw new CaelumException("Duplicate asset entry %s!", a);
 		}
 		
-		synchronized (this)
-		{
-			this.assets.add(a);
-			
-		}
+		this.assets.add(a);
 		
 		Iterator<IAssetReceiver> itr = this.receivers.iterator();
 		
@@ -84,19 +81,19 @@ public class AssetManager implements ITaskListener
 		
 	}
 	
-	public synchronized void addAssetReceiver(IAssetReceiver r)
+	public void addAssetReceiver(IAssetReceiver r)
 	{
 		this.receivers.add(r);
 		
 	}
 	
-	public synchronized void removeAssetReceiver(IAssetReceiver r)
+	public void removeAssetReceiver(IAssetReceiver r)
 	{
 		this.receivers.remove(r);
 		
 	}
 	
-	public synchronized void dropAsset(Asset a)
+	public void dropAsset(Asset a)
 	{
 		if (a == null)
 		{
