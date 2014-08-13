@@ -17,6 +17,7 @@ import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
 import com.elusivehawk.engine.render.opengl.IGLBindable;
+import com.elusivehawk.engine.render.opengl.IGLDeletable;
 import com.elusivehawk.engine.render.opengl.IGLManipulator;
 import com.elusivehawk.util.IPausable;
 import com.elusivehawk.util.IUpdatable;
@@ -48,7 +49,7 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 	private ImmutableArray<Shader> shaders = null;
 	
 	private final List<Texture> texturePool = Lists.newArrayList();
-	private final List<IGLBindable> cleanables = Lists.newArrayList();
+	private final List<IGLDeletable> cleanables = Lists.newArrayList();
 	private final List<RenderTask> rtasks = Lists.newArrayList();
 	private final Map<EnumRenderMode, List<IGLManipulator>> manipulators = Maps.newHashMapWithExpectedSize(3);
 	
@@ -149,9 +150,9 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 	@Override
 	public void cleanup()
 	{
-		for (IGLBindable gl : this.cleanables)
+		for (IGLDeletable gl : this.cleanables)
 		{
-			gl.glDelete(this);
+			gl.delete(this);
 			
 		}
 		

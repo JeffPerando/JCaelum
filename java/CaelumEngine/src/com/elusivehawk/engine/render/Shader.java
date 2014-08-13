@@ -57,6 +57,13 @@ public class Shader extends GraphicAsset
 		
 	}
 	
+	@Override
+	public void delete(RenderContext rcon)
+	{
+		rcon.getGL2().glDeleteShader(this.glId);
+		
+	}
+	
 	public int getGLId()
 	{
 		return this.glId;

@@ -207,7 +207,7 @@ public class VertexBuffer implements IGLBindable
 	}
 	
 	@Override
-	public void glDelete(RenderContext con)
+	public void delete(RenderContext con)
 	{
 		con.getGL1().glDeleteBuffers(this);
 		

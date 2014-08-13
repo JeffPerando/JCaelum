@@ -74,6 +74,13 @@ public class Texture extends GraphicAsset
 		
 	}
 	
+	@Override
+	public void delete(RenderContext rcon)
+	{
+		rcon.getGL1().glDeleteTextures(this.frames);
+		
+	}
+	
 	public int getTexId(int frame)
 	{
 		return this.frames == null ? -1 : this.frames[frame];

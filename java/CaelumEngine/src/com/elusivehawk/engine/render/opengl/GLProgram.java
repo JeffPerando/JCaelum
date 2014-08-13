@@ -53,6 +53,35 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 	}
 	
 	@Override
+	public void delete(RenderContext con)
+	{
+		if (this.bound)
+		{
+			this.unbind(con);
+			
+		}
+		
+		IGL2 gl2 = con.getGL2();
+		
+		con.getGL3().glDeleteVertexArrays(this.vba);
+		
+		for (Shader s : this.shaders)
+		{
+			if (s == null)
+			{
+				continue;
+			}
+			
+			gl2.glDetachShader(this, s);
+			gl2.glDeleteShader(s);
+			
+		}
+		
+		gl2.glDeleteProgram(this);
+		
+	}
+	
+	@Override
 	public boolean bind(RenderContext con)
 	{
 		if (this.shaderCount == 0)
@@ -188,35 +217,6 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 		con.getGL2().glUseProgram(0);
 		
 		this.bound = false;
-		
-	}
-	
-	@Override
-	public void glDelete(RenderContext con)
-	{
-		if (this.bound)
-		{
-			this.unbind(con);
-			
-		}
-		
-		IGL2 gl2 = con.getGL2();
-		
-		con.getGL3().glDeleteVertexArrays(this.vba);
-		
-		for (Shader s : this.shaders)
-		{
-			if (s == null)
-			{
-				continue;
-			}
-			
-			gl2.glDetachShader(this, s);
-			gl2.glDeleteShader(s);
-			
-		}
-		
-		gl2.glDeleteProgram(this);
 		
 	}
 	
