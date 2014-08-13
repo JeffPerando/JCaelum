@@ -2,7 +2,6 @@
 package com.elusivehawk.engine.assets;
 
 import com.elusivehawk.engine.render.opengl.IGLDeletable;
-import com.elusivehawk.util.storage.SyncStorage;
 import com.elusivehawk.util.task.ITaskListener;
 
 /**
@@ -13,7 +12,7 @@ import com.elusivehawk.util.task.ITaskListener;
  */
 public abstract class GraphicAsset extends Asset implements ITaskListener, IGLDeletable
 {
-	protected SyncStorage<Boolean> loaded = new SyncStorage<Boolean>(false);
+	protected volatile boolean loaded = false;
 	
 	public GraphicAsset(String path)
 	{
@@ -23,7 +22,7 @@ public abstract class GraphicAsset extends Asset implements ITaskListener, IGLDe
 	
 	public boolean isLoaded()
 	{
-		return this.loaded.get() && this.isRead();
+		return this.loaded && this.isRead();
 	}
 	
 }

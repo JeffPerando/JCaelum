@@ -70,7 +70,7 @@ public class Texture extends GraphicAsset
 			
 		}
 		
-		this.loaded.set(b);
+		this.loaded = b;
 		
 	}
 	
