@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
+import com.elusivehawk.engine.render.old.RenderTask;
 import com.elusivehawk.engine.render.opengl.GLEnumShader;
 import com.elusivehawk.util.task.ITaskListener;
 

@@ -226,4 +226,17 @@ public final class FileHelper
 		
 	}
 	
+	public static String getExtensionlessName(File file)
+	{
+		String name = file.getName();
+		int ind = name.indexOf(".");
+		
+		if (ind == -1)
+		{
+			return name;
+		}
+		
+		return StringHelper.splitLast(name, ".").one;
+	}
+	
 }

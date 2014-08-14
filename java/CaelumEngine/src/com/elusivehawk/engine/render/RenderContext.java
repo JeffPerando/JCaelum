@@ -10,6 +10,7 @@ import com.elusivehawk.engine.IContext;
 import com.elusivehawk.engine.IGameStateListener;
 import com.elusivehawk.engine.render.old.EnumRenderMode;
 import com.elusivehawk.engine.render.old.IRenderHUB;
+import com.elusivehawk.engine.render.old.RenderTask;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLEnumShader;
 import com.elusivehawk.engine.render.opengl.GLProgram;

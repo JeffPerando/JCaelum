@@ -1,7 +1,10 @@
 
-package com.elusivehawk.engine.render;
+package com.elusivehawk.engine.render.old;
 
 import com.elusivehawk.engine.CaelumEngine;
+import com.elusivehawk.engine.render.RenderContext;
+import com.elusivehawk.engine.render.RenderException;
+import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.util.task.ITaskListener;
 import com.elusivehawk.util.task.Task;
 
@@ -10,7 +13,10 @@ import com.elusivehawk.util.task.Task;
  * 
  * 
  * @author Elusivehawk
+ * 
+ * @deprecated To be removed when OpenGL NG support comes out.
  */
+@Deprecated
 public abstract class RenderTask extends Task
 {
 	private int glId = -1;

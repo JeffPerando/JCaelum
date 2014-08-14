@@ -39,32 +39,54 @@ public final class StringHelper
 	
 	public static List<String> read(String path)
 	{
-		return read(FileHelper.createFile(path));
+		return read(path, null);
+	}
+	
+	public static List<String> read(String path, IStringFilter filter)
+	{
+		return read(FileHelper.createFile(path), filter);
 	}
 	
 	public static List<String> read(File file)
 	{
-		return read(FileHelper.createReader(file));
+		return read(file, null);
+	}
+	
+	public static List<String> read(File file, IStringFilter filter)
+	{
+		return read(FileHelper.createInStream(file), filter);
 	}
 	
 	public static List<String> read(InputStream is)
 	{
-		return read(new BufferedReader(new InputStreamReader(is)));
+		return read(is, null);
+	}
+	
+	public static List<String> read(InputStream is, IStringFilter filter)
+	{
+		return read(new BufferedReader(new InputStreamReader(is)), filter);
 	}
 	
 	public static List<String> read(Reader r)
+	{
+		return read(r, null);
+	}
+	
+	public static List<String> read(Reader r, IStringFilter filter)
 	{
 		List<String> text = Lists.newArrayList();
 		
 		if (r != null)
 		{
 			BufferedReader br = (r instanceof BufferedReader) ? (BufferedReader)r : new BufferedReader(r);
+			int l = 0;
 			
 			try
 			{
 				for (String line = br.readLine(); line != null; line = br.readLine())
 				{
-					text.add(line);
+					l++;
+					text.add(filter == null ? line : filter.filter(l, line));
 					
 				}
 				
@@ -468,6 +490,27 @@ public final class StringHelper
 		}
 		
 		return false;
+	}
+	
+	public static String substring(String str, String prefix, String suffix)
+	{
+		int pIn = str.indexOf(prefix);
+		
+		if (pIn == -1)
+		{
+			return "";
+		}
+		
+		pIn += prefix.length();
+		
+		int sIn = str.indexOf(suffix, pIn);
+		
+		if (sIn == -1)
+		{
+			return "";
+		}
+		
+		return str.substring(pIn, sIn);
 	}
 	
 }
