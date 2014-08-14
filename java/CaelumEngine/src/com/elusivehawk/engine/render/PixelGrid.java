@@ -98,7 +98,7 @@ public class PixelGrid implements ILegibleImage
 			{
 				col.setColor(this.getPixel(x, y));
 				
-				for (EnumColorFilter filter : this.f.filters)
+				for (ColorFilter filter : this.f.filters)
 				{
 					ret.put(col.getColor(filter));
 					
@@ -124,9 +124,9 @@ public class PixelGrid implements ILegibleImage
 			{
 				col.setColor(this.getPixel(x, y));
 				
-				for (EnumColorFilter filter : this.f.filters)
+				for (ColorFilter filter : this.f.filters)
 				{
-					ret.put(col.getColorFloat(filter));
+					ret.put(col.getColorf(filter));
 					
 				}
 				

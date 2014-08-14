@@ -29,34 +29,36 @@ public abstract class ThreadStoppable extends Thread implements IThreadStoppable
 	@Override
 	public final void run()
 	{
-		if (!this.initiate())
-		{
-			return;
-		}
+		boolean failure = true;
 		
-		synchronized (this)
+		if (this.initiate())
 		{
-			this.running = true;
+			failure = false;
 			
-		}
-		
-		while (this.isRunning() && this.canRun())
-		{
-			try
+			synchronized (this)
 			{
-				this.rawUpdate();
-				
-			}
-			catch (Throwable e)
-			{
-				this.handleException(e);
+				this.running = true;
 				
 			}
 			
+			while (this.isRunning() && this.canRun())
+			{
+				try
+				{
+					this.rawUpdate();
+					
+				}
+				catch (Throwable e)
+				{
+					this.handleException(e);
+					
+				}
+				
+			}
+			
 		}
 		
-		this.onThreadStopped();
-		
+		this.onThreadStopped(failure);
 		this.stopThread();
 		
 	}
@@ -99,7 +101,8 @@ public abstract class ThreadStoppable extends Thread implements IThreadStoppable
 	
 	public abstract void rawUpdate() throws Throwable;
 	
-	public void onThreadStopped(){}
+	@SuppressWarnings("unused")
+	public void onThreadStopped(boolean failed){}
 	
 	public void handleException(Throwable e)
 	{

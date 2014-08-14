@@ -12,21 +12,21 @@ import com.elusivehawk.util.storage.Buffer;
  */
 public enum ColorFormat
 {
-	RGBA(EnumColorFilter.RED, EnumColorFilter.GREEN, EnumColorFilter.BLUE, EnumColorFilter.ALPHA),
-	ARGB(EnumColorFilter.ALPHA, EnumColorFilter.RED, EnumColorFilter.GREEN, EnumColorFilter.BLUE),
-	ABGR(EnumColorFilter.ALPHA, EnumColorFilter.BLUE, EnumColorFilter.GREEN, EnumColorFilter.RED),
-	BGRA(EnumColorFilter.BLUE, EnumColorFilter.GREEN, EnumColorFilter.RED, EnumColorFilter.ALPHA);
+	RGBA(ColorFilter.RED, ColorFilter.GREEN, ColorFilter.BLUE, ColorFilter.ALPHA),
+	ARGB(ColorFilter.ALPHA, ColorFilter.RED, ColorFilter.GREEN, ColorFilter.BLUE),
+	ABGR(ColorFilter.ALPHA, ColorFilter.BLUE, ColorFilter.GREEN, ColorFilter.RED),
+	BGRA(ColorFilter.BLUE, ColorFilter.GREEN, ColorFilter.RED, ColorFilter.ALPHA);
 	
-	public final EnumColorFilter[] filters;
-	private final int[] colors = new int[EnumColorFilter.values().length];
-	private final boolean[] support = new boolean[EnumColorFilter.values().length];
+	public final ColorFilter[] filters;
+	private final int[] colors = new int[ColorFilter.values().length];
+	private final boolean[] support = new boolean[ColorFilter.values().length];
 	
 	@SuppressWarnings("unqualified-field-access")
-	ColorFormat(EnumColorFilter... f)
+	ColorFormat(ColorFilter... f)
 	{
 		filters = f;
 		
-		EnumColorFilter color;
+		ColorFilter color;
 		
 		for (int c = 0; c < f.length; c++)
 		{
@@ -39,12 +39,12 @@ public enum ColorFormat
 		
 	}
 	
-	public int getColorOffset(EnumColorFilter col)
+	public int getColorOffset(ColorFilter col)
 	{
 		return this.supports(col) ? this.colors[col.ordinal()] : -1;
 	}
 	
-	public boolean supports(EnumColorFilter col)
+	public boolean supports(ColorFilter col)
 	{
 		return this.support[col.ordinal()];
 	}
@@ -58,7 +58,7 @@ public enum ColorFormat
 		
 		Buffer<Byte> buf = new Buffer<Byte>();
 		
-		for (EnumColorFilter col : this.filters)
+		for (ColorFilter col : this.filters)
 		{
 			buf.add(old.getColor(col));
 			

@@ -12,7 +12,7 @@ import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
 import com.elusivehawk.engine.render.Color;
-import com.elusivehawk.engine.render.EnumColorFilter;
+import com.elusivehawk.engine.render.ColorFilter;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.util.BufferHelper;
@@ -93,7 +93,7 @@ public class OpenGL1 implements IGL1
 	@Override
 	public void glClearColor(Color col)
 	{
-		this.glClearColor(col.getColorFloat(EnumColorFilter.RED), col.getColorFloat(EnumColorFilter.GREEN), col.getColorFloat(EnumColorFilter.BLUE), col.getColorFloat(EnumColorFilter.ALPHA));
+		this.glClearColor(col.getColorf(ColorFilter.RED), col.getColorf(ColorFilter.GREEN), col.getColorf(ColorFilter.BLUE), col.getColorf(ColorFilter.ALPHA));
 		
 	}
 	

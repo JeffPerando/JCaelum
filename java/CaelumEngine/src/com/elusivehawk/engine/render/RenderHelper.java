@@ -311,9 +311,9 @@ public final class RenderHelper
 	{
 		Buffer<Float> ret = new Buffer<Float>();
 		
-		for (EnumColorFilter col : EnumColorFilter.values())
+		for (ColorFilter col : ColorFilter.values())
 		{
-			ret.add((a.getColorFloat(col) + b.getColorFloat(col)) % 1f);
+			ret.add((a.getColorf(col) + b.getColorf(col)) % 1f);
 			
 		}
 		

@@ -202,10 +202,7 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 				
 			}
 			
-			this.display.resize(this.settings.height, this.settings.width);
-			this.display.setFullscreen(this.settings.fullscreen);
-			this.display.setVSync(this.settings.vsync);
-			this.display.setFPS(this.fps = this.settings.targetFPS);
+			this.display.updateSettings(this.settings);
 			
 		}
 		

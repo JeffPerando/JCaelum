@@ -47,7 +47,11 @@ public class OpenGLEnvironment implements IRenderEnvironment
 	@Override
 	public IDisplay createDisplay(String name, DisplaySettings settings)
 	{
-		return null;
+		LWJGLDisplay ret = new LWJGLDisplay(name);
+		
+		ret.updateSettings(settings);
+		
+		return ret;
 	}
 	
 	@Override

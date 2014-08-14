@@ -12,7 +12,7 @@ import com.elusivehawk.util.io.IByteReader;
  * 
  * @author Elusivehawk
  * 
- * @see EnumColorFilter
+ * @see ColorFilter
  * @see ColorFormat
  */
 public class Color
@@ -78,7 +78,7 @@ public class Color
 	{
 		this(f);
 		
-		for (EnumColorFilter col : EnumColorFilter.values())
+		for (ColorFilter col : ColorFilter.values())
 		{
 			if (!f.supports(col))
 			{
@@ -118,19 +118,19 @@ public class Color
 		return true;
 	}
 	
-	public byte getColor(EnumColorFilter col)
+	public byte getColor(ColorFilter col)
 	{
 		return (byte)((this.getColor() >> this.format.getColorOffset(col)) & 0xFF);
 	}
 	
-	public float getColorFloat(EnumColorFilter col)
+	public float getColorf(ColorFilter col)
 	{
 		return this.getColor(col) / (byte)255;
 	}
 	
 	public boolean supportsAlpha()
 	{
-		return this.format.supports(EnumColorFilter.ALPHA);
+		return this.format.supports(ColorFilter.ALPHA);
 	}
 	
 	public float[] asFloats()
@@ -138,9 +138,9 @@ public class Color
 		float[] colors = new float[this.format.filters.length];
 		int c = 0;
 		
-		for (EnumColorFilter filter : this.format.filters)
+		for (ColorFilter filter : this.format.filters)
 		{
-			colors[c++] = this.getColorFloat(filter);
+			colors[c++] = this.getColorf(filter);
 			
 		}
 		

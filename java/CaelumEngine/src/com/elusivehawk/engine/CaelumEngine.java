@@ -500,11 +500,11 @@ public final class CaelumEngine
 		{
 			rt = this.renv.createRenderThread(this.rcon);
 			
-		}
-		
-		if (rt == null)
-		{
-			rt = new ThreadGameRender(this.rcon);
+			if (rt == null)
+			{
+				rt = new ThreadGameRender(this.rcon);
+				
+			}
 			
 		}
 		
@@ -530,6 +530,11 @@ public final class CaelumEngine
 			
 			if (t instanceof Thread)
 			{
+				if (((Thread)t).isAlive())
+				{
+					continue;
+				}
+				
 				t.setPaused(true);
 				((Thread)t).start();
 				

@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import com.elusivehawk.engine.render.Color;
 import com.elusivehawk.engine.render.ColorFormat;
-import com.elusivehawk.engine.render.EnumColorFilter;
+import com.elusivehawk.engine.render.ColorFilter;
 import com.elusivehawk.engine.render.ILogicalRender;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
@@ -123,9 +123,9 @@ public class ParticleScene implements ILogicalRender
 					
 				}
 				
-				for (EnumColorFilter filter : ColorFormat.RGBA.filters)
+				for (ColorFilter filter : ColorFormat.RGBA.filters)
 				{
-					this.buf.put(col.getColorFloat(filter));
+					this.buf.put(col.getColorf(filter));
 					
 				}
 				

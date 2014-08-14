@@ -35,12 +35,19 @@ public class Vector implements IMathObject<Float>
 		
 	}
 	
-	@SafeVarargs
 	public Vector(float... info)
 	{
-		this(info.length);
+		this(info.length, info);
 		
-		for (int c = 0; c < getSize(); c++)
+	}
+	
+	public Vector(int length, float... info)
+	{
+		this(length);
+		
+		int i = Math.min(length, info.length);
+		
+		for (int c = 0; c < i; c++)
 		{
 			set(c, info[c], false);
 			
@@ -66,7 +73,7 @@ public class Vector implements IMathObject<Float>
 	@SuppressWarnings("unqualified-field-access")
 	public Vector(int length)
 	{
-		nums = new float[MathHelper.clamp(length, 1, 4)];
+		nums = new float[Math.max(length, 1)];
 		
 		setAll(0f);
 		

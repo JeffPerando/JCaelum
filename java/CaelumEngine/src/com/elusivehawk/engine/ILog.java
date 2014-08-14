@@ -21,6 +21,12 @@ public interface ILog
 		
 	}
 	
+	default void err(Throwable e)
+	{
+		this.err("Error caught:", e);
+		
+	}
+	
 	default void err(String msg, Throwable e, Object... info)
 	{
 		this.log(EnumLogType.ERROR, msg, info);

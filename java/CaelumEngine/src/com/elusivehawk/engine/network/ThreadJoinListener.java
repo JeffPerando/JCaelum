@@ -62,7 +62,7 @@ public class ThreadJoinListener extends ThreadStoppable
 	}
 	
 	@Override
-	public void onThreadStopped()
+	public void onThreadStopped(boolean failure)
 	{
 		try
 		{

@@ -34,6 +34,22 @@ public final class ThreadGameLoop extends ThreadCaelum implements IThreadContext
 	}
 	
 	@Override
+	public boolean initiate()
+	{
+		if (!super.initiate())
+		{
+			return false;
+		}
+		
+		if (this.rcon != null && !this.rcon.initContext())
+		{
+			return false;
+		}
+		
+		return true;
+	}
+	
+	@Override
 	public void update(double delta) throws Throwable
 	{
 		if (!this.input.isEmpty())
@@ -80,6 +96,17 @@ public final class ThreadGameLoop extends ThreadCaelum implements IThreadContext
 		super.setPaused(pause);
 		
 		this.game.setPaused(pause);
+		
+	}
+	
+	@Override
+	public void onThreadStopped(boolean failure)
+	{
+		if (this.rcon != null)
+		{
+			this.rcon.cleanup();
+			
+		}
 		
 	}
 	

@@ -218,7 +218,7 @@ public class ThreadNetwork extends ThreadStoppable
 	}
 	
 	@Override
-	public void onThreadStopped()
+	public void onThreadStopped(boolean failure)
 	{
 		try
 		{

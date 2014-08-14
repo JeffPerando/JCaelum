@@ -4,7 +4,7 @@ package com.elusivehawk.engine.render.opengl;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import com.elusivehawk.engine.render.Color;
-import com.elusivehawk.engine.render.EnumColorFilter;
+import com.elusivehawk.engine.render.ColorFilter;
 import com.elusivehawk.engine.render.Texture;
 import com.elusivehawk.util.BufferHelper;
 
@@ -50,7 +50,7 @@ public interface IGL1
 	
 	default void glClearColor(Color col)
 	{
-		this.glClearColor(col.getColorFloat(EnumColorFilter.RED), col.getColorFloat(EnumColorFilter.GREEN), col.getColorFloat(EnumColorFilter.BLUE), col.getColorFloat(EnumColorFilter.ALPHA));
+		this.glClearColor(col.getColorf(ColorFilter.RED), col.getColorf(ColorFilter.GREEN), col.getColorf(ColorFilter.BLUE), col.getColorf(ColorFilter.ALPHA));
 		
 	}
 	
