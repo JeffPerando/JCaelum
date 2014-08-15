@@ -1,5 +1,5 @@
 
-package com.elusivehawk.engine.test;
+package com.elusivehawk.engine;
 
 import java.io.File;
 import java.util.List;
@@ -12,9 +12,9 @@ import com.elusivehawk.util.storage.Pair;
  * 
  * @author Elusivehawk
  */
-public class StringTranslator extends LangFolder
+public class Language extends LangFolder
 {
-	public StringTranslator(String lang)
+	public Language(String lang)
 	{
 		super(lang);
 		

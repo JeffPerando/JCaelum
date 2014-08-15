@@ -1,5 +1,5 @@
 
-package com.elusivehawk.engine.test;
+package com.elusivehawk.engine;
 
 import java.io.File;
 import java.util.List;
@@ -15,8 +15,8 @@ import com.google.common.collect.Maps;
  */
 public class Translator
 {
-	private final Map<String, StringTranslator> translators = Maps.newHashMap();
-	protected StringTranslator current = null;
+	private final Map<String, Language> translators = Maps.newHashMap();
+	protected Language current = null;
 	
 	protected final File folder;
 	
@@ -45,7 +45,7 @@ public class Translator
 			}
 			
 			String name = FileHelper.getExtensionlessName(file);
-			StringTranslator trans = new StringTranslator(name);
+			Language trans = new Language(name);
 			
 			this.translators.put(name, trans);
 			
@@ -60,7 +60,7 @@ public class Translator
 	
 	public boolean setTranslator(String lang)
 	{
-		StringTranslator t = this.translators.get(lang);
+		Language t = this.translators.get(lang);
 		
 		if (t == null)
 		{
