@@ -14,6 +14,7 @@ import org.lwjgl.opengl.GL15;
 import com.elusivehawk.engine.render.Color;
 import com.elusivehawk.engine.render.ColorFilter;
 import com.elusivehawk.engine.render.opengl.GLConst;
+import com.elusivehawk.engine.render.opengl.GLEnumError;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.util.BufferHelper;
 
@@ -298,9 +299,9 @@ public class OpenGL1 implements IGL1
 	}
 	
 	@Override
-	public int glGetError()
+	public GLEnumError glGetError()
 	{
-		return GL11.glGetError();
+		return GLEnumError.get(GL11.glGetError());
 	}
 	
 	@Override

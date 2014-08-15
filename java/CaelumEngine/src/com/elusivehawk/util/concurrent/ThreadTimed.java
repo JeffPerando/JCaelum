@@ -13,7 +13,7 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 {
 	public static final double DIV = 1000000000.0;
 	
-	private int updates = 0, updateCount;
+	private int updates = 0, updateCount = 0;
 	private long sleepTime = 0L;
 	private double time, lastTime, delta;
 	private boolean initiated = false;
@@ -27,7 +27,7 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 		}
 		
 		this.updateCount = this.getTargetUpdateCount();
-		this.delta = (this.updateCount / DIV);
+		this.delta = (DIV / this.updateCount);
 		this.time = (DIV / System.nanoTime()) + this.delta;
 		this.initiated = true;
 		
@@ -44,17 +44,6 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 			this.stopThread();
 			
 			return;
-		}
-		
-		if (this.getTargetUpdateCount() != this.updateCount)
-		{
-			this.lastTime -= this.delta;
-			
-			this.updateCount = this.getTargetUpdateCount();
-			this.delta = (DIV / this.updateCount);
-			
-			this.lastTime += this.delta;
-			
 		}
 		
 		this.time = System.nanoTime() / DIV;

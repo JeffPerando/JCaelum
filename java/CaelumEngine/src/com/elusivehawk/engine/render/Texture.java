@@ -54,6 +54,8 @@ public class Texture extends GraphicAsset
 			throw new RenderException("We're already full up on frames, sir...");
 		}
 		
+		super.onTaskComplete(task);
+		
 		RTaskUploadImage t = (RTaskUploadImage)task;
 		
 		this.frames[t.getFrame()] = t.getGLId();

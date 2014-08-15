@@ -19,9 +19,9 @@ public class GLException extends RenderException
 		
 	}
 	
-	public GLException(int err)
+	public GLException(GLEnumError err)
 	{
-		this(((Integer)err).toString());
+		this(err.name());
 		
 	}
 	

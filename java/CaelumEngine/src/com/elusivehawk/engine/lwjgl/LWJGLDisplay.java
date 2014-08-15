@@ -49,6 +49,13 @@ public class LWJGLDisplay implements IDisplay
 	}
 	
 	@Override
+	public void createDisplay() throws Exception
+	{
+		Display.create();
+		
+	}
+	
+	@Override
 	public boolean getFullscreen()
 	{
 		return Display.isFullscreen();
@@ -86,7 +93,7 @@ public class LWJGLDisplay implements IDisplay
 		try
 		{
 			Display.setTitle(settings.title);
-			Display.setDisplayMode(new DisplayMode(settings.height, settings.width));
+			Display.setDisplayMode(new DisplayMode(settings.width, settings.height));
 			Display.setFullscreen(settings.vsync);
 			Display.setIcon(settings.icons);
 			
@@ -104,7 +111,6 @@ public class LWJGLDisplay implements IDisplay
 			CaelumEngine.log().err(e);
 			
 		}
-		
 		
 	}
 	

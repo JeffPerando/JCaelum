@@ -154,7 +154,7 @@ public interface IGL1
 	
 	public void glGenTextures(IntBuffer textures);
 	
-	public int glGetError();
+	public GLEnumError glGetError();
 	
 	public int glGetInteger(int pname);
 	

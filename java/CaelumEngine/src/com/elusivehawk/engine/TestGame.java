@@ -13,6 +13,8 @@ import com.elusivehawk.util.Version;
 @Internal
 public final class TestGame extends Game
 {
+	public static final Version VERSION = new Version(1, 0, 0);
+	
 	public TestGame()
 	{
 		super("Example Game");
@@ -22,8 +24,7 @@ public final class TestGame extends Game
 	@Override
 	public Version getGameVersion()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return VERSION;
 	}
 	
 	@Override
@@ -36,6 +37,7 @@ public final class TestGame extends Game
 	@Override
 	protected void tick(double delta) throws Throwable
 	{
+		CaelumEngine.log().log(EnumLogType.INFO, "Test: %s", delta);
 		// TODO Auto-generated method stub
 		
 	}

@@ -4,7 +4,6 @@ package com.elusivehawk.engine.lwjgl;
 import java.util.List;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.IGameEnvironment;
-import com.elusivehawk.engine.ILog;
 import com.elusivehawk.engine.Input;
 import com.elusivehawk.engine.render.IRenderEnvironment;
 import com.elusivehawk.util.EnumOS;
@@ -34,7 +33,7 @@ public class LWJGLEnvironment implements IGameEnvironment
 	{
 		System.setProperty("org.lwjgl.opengl.Display.noinput", "true");
 		
-		String lib = determineLWJGLPath();
+		String lib = null;
 		
 		if (CaelumEngine.DEBUG && json != null)
 		{
@@ -48,6 +47,12 @@ public class LWJGLEnvironment implements IGameEnvironment
 			
 		}
 		
+		if (lib == null)
+		{
+			lib = determineLWJGLPath();
+			
+		}
+		
 		System.setProperty("org.lwjgl.librarypath", lib);
 		
 	}
@@ -56,12 +61,6 @@ public class LWJGLEnvironment implements IGameEnvironment
 	public String getName()
 	{
 		return "CaelumLWJGL";
-	}
-	
-	@Override
-	public ILog getLog()
-	{
-		return null;
 	}
 	
 	@Override
@@ -81,7 +80,7 @@ public class LWJGLEnvironment implements IGameEnvironment
 	{
 		//TODO: this only works on Debian... but we'll try it for now.
 		
-		return (EnumOS.getCurrentOS() == EnumOS.LINUX && FileHelper.createFile("/usr/lib/jni/liblwjgl.so").exists()) ? "/usr/lib/jni" : FileHelper.createFile("/lwjgl/native/" + EnumOS.getCurrentOS().toString()).getAbsolutePath();
+		return (EnumOS.getCurrentOS() == EnumOS.LINUX && FileHelper.createFile("/usr/lib/jni/liblwjgl.so").exists()) ? "/usr/lib/jni" : FileHelper.createFile(CaelumEngine.DEBUG ? "lib" : ".", String.format("/lwjgl/native/%s", EnumOS.getCurrentOS().toString())).getAbsolutePath();
 	}
 	
 }

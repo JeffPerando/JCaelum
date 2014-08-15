@@ -13,6 +13,7 @@ import javax.imageio.stream.ImageInputStream;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.EnumLogType;
 import com.elusivehawk.engine.render.opengl.GLConst;
+import com.elusivehawk.engine.render.opengl.GLEnumError;
 import com.elusivehawk.engine.render.opengl.GLEnumShader;
 import com.elusivehawk.engine.render.opengl.GLException;
 import com.elusivehawk.engine.render.opengl.IGL1;
@@ -155,11 +156,20 @@ public final class RenderHelper
 		gl1.glTexParameterx(GLConst.GL_TEXTURE_2D, GLConst.GL_TEXTURE_MIN_FILTER, GLConst.GL_LINEAR);
 		gl1.glTexParameterx(GLConst.GL_TEXTURE_2D, GLConst.GL_TEXTURE_MAG_FILTER, GLConst.GL_LINEAR);
 		
-		gl1.glTexImage2D(GLConst.GL_TEXTURE_2D, 0, GLConst.GL_RGBA8, w, h, 0, GLConst.GL_RGBA, GLConst.GL_UNSIGNED_BYTE, buf);
+		gl1.glTexImage2D(GLConst.GL_TEXTURE_2D, 0, GLConst.GL_RGBA, w, h, 0, GLConst.GL_RGBA, GLConst.GL_UNSIGNED_BYTE, buf);
 		
 		gl1.glActiveTexture(0);
 		
-		checkForGLError(gl1);
+		try
+		{
+			checkForGLError(gl1);
+			
+		}
+		catch (GLException e)
+		{
+			CaelumEngine.log().err(e);
+			
+		}
 		
 		return glId;
 	}
@@ -289,17 +299,17 @@ public final class RenderHelper
 		
 	}
 	
-	public static void checkForGLError(RenderContext con) throws GLException
+	public static void checkForGLError(RenderContext rcon) throws GLException
 	{
-		checkForGLError(con.getGL1());
+		checkForGLError(rcon.getGL1());
 		
 	}
 	
 	public static void checkForGLError(IGL1 gl) throws GLException
 	{
-		int err = gl.glGetError();
+		GLEnumError err = gl.glGetError();
 		
-		if (err == GLConst.GL_NO_ERROR)
+		if (err == GLEnumError.GL_NO_ERROR)
 		{
 			return;
 		}

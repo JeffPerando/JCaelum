@@ -47,6 +47,8 @@ public class Shader extends GraphicAsset
 	@Override
 	public void onTaskComplete(Task task)
 	{
+		super.onTaskComplete(task);
+		
 		this.glId = ((RTaskUploadShader)task).getGLId();
 		
 		if (this.glId != -1)//TODO Check to see if this is the proper "blank" value; Might be 0...

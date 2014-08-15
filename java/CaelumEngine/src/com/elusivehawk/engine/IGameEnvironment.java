@@ -16,8 +16,6 @@ import com.elusivehawk.util.json.JsonObject;
  * <li>Logging</li>
  * <li>Display implementation</li>
  * </ul>
- * <p>
- * NOTICE: The game environment in question shouldn't be compiled with the game itself.
  * 
  * @author Elusivehawk
  */
@@ -30,11 +28,14 @@ public interface IGameEnvironment
 	
 	public String getName();
 	
-	public ILog getLog();
-	
 	public IRenderEnvironment getRenderEnv();
 	
 	public List<Input> loadInputs();
+	
+	default ILog getLog()
+	{
+		return null;
+	}
 	
 	default boolean singleThreaded()
 	{

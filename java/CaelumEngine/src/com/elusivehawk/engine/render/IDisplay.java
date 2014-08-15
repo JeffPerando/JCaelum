@@ -18,6 +18,8 @@ public interface IDisplay extends Closeable
 	
 	public String getName();
 	
+	public void createDisplay() throws Exception;
+	
 	/**
 	 * 
 	 * @return If the display is in fullscreen.

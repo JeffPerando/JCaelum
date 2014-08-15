@@ -1,7 +1,6 @@
 
 package com.elusivehawk.util.task;
 
-import java.util.Iterator;
 import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.concurrent.ThreadStoppable;
 import com.elusivehawk.util.storage.SyncList;
@@ -23,20 +22,18 @@ public class ThreadTaskWorker extends ThreadStoppable
 		if (this.isPaused() || this.tasks.isEmpty())
 		{
 			Thread.sleep(1L);
-			
+			return;
 		}
 		
-		Iterator<Task> itr = this.tasks.iterator();
-		
-		itr.forEachRemaining(((t) ->
+		for (Task t : this.tasks)
 		{
 			if (t.completeTask())
 			{
-				itr.remove();
+				this.tasks.remove(t);
 				
 			}
 			
-		}));
+		}
 		
 	}
 	

@@ -17,7 +17,6 @@ import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
-import com.elusivehawk.engine.render.opengl.IGLBindable;
 import com.elusivehawk.engine.render.opengl.IGLDeletable;
 import com.elusivehawk.engine.render.opengl.IGLManipulator;
 import com.elusivehawk.util.IPausable;
@@ -93,6 +92,25 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 			return false;
 		}
 		
+		IDisplay d = this.renv.createDisplay("default", this.settings);
+		
+		if (d == null)
+		{
+			return false;
+			
+		}
+		
+		try
+		{
+			d.createDisplay();
+			
+		}
+		catch (Exception e)
+		{
+			CaelumEngine.log().err(e);
+			return false;
+		}
+		
 		this.gl1 = (IGL1)this.renv.getGL(IRenderEnvironment.GL_1);
 		this.gl2 = (IGL2)this.renv.getGL(IRenderEnvironment.GL_2);
 		this.gl3 = (IGL3)this.renv.getGL(IRenderEnvironment.GL_3);
@@ -125,13 +143,6 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 		this.maxTexCount = this.gl1.glGetInteger(GLConst.GL_MAX_TEXTURE_UNITS);
 		
 		this.fps = this.settings.targetFPS;
-		IDisplay d = this.renv.createDisplay("default", this.settings);
-		
-		if (d == null)
-		{
-			return false;
-			
-		}
 		
 		if (this.hub != null)
 		{
@@ -151,6 +162,8 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 	@Override
 	public void cleanup()
 	{
+		this.gl1.glDeleteTextures(this.notex);
+		
 		for (IGLDeletable gl : this.cleanables)
 		{
 			gl.delete(this);
@@ -421,8 +434,13 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 		
 	}
 	
-	public void registerCleanable(IGLBindable gl)
+	public void registerCleanable(IGLDeletable gl)
 	{
+		if (this.cleanables.contains(gl))
+		{
+			return;
+		}
+		
 		this.cleanables.add(gl);
 		
 	}
