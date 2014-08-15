@@ -6,7 +6,6 @@ import java.lang.management.ManagementFactory;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import com.elusivehawk.engine.assets.AssetManager;
 import com.elusivehawk.engine.render.IRenderEnvironment;
@@ -14,6 +13,7 @@ import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.ThreadGameRender;
 import com.elusivehawk.engine.render.old.IRenderHUB;
 import com.elusivehawk.engine.render.old.RenderTask;
+import com.elusivehawk.util.CompInfo;
 import com.elusivehawk.util.EnumOS;
 import com.elusivehawk.util.FileHelper;
 import com.elusivehawk.util.IPausable;
@@ -67,7 +67,7 @@ public final class CaelumEngine
 	
 	private CaelumEngine()
 	{
-		if (EnumOS.getCurrentOS() != EnumOS.ANDROID)
+		if (CompInfo.OS != EnumOS.ANDROID)
 		{
 			Runtime.getRuntime().addShutdownHook(new Thread(() ->
 			{
@@ -254,7 +254,7 @@ public final class CaelumEngine
 		this.startargs.putAll(strs);
 		this.gameargs = new GameArguments(gargs);
 		
-		this.log.log(EnumLogType.INFO, "Starting Caelum Engine %s on %s.", VERSION, EnumOS.getCurrentOS());
+		this.log.log(EnumLogType.INFO, "Starting Caelum Engine %s on %s.", VERSION, CompInfo.OS);
 		
 		boolean verbose = !"false".equalsIgnoreCase(this.startargs.get("verbose"));
 		
@@ -302,13 +302,13 @@ public final class CaelumEngine
 				
 				try
 				{
-					switch (EnumOS.getCurrentOS())
+					switch (CompInfo.OS)
 					{
 						case WINDOWS:
 						case MAC:
 						case LINUX: clazz = Class.forName("com.elusivehawk.engine.lwjgl.LWJGLEnvironment"); break;
 						case ANDROID: clazz = Class.forName("com.elusivehawk.engine.android.AndroidEnvironment"); break;
-						default: this.log.log(EnumLogType.WTF, "Unsupported OS! Enum: %s; OS: %s", EnumOS.getCurrentOS(), System.getProperty("os.name"));
+						default: this.log.log(EnumLogType.WTF, "Unsupported OS! Enum: %s; OS: %s", CompInfo.OS, System.getProperty("os.name"));
 						
 					}
 					
@@ -331,9 +331,9 @@ public final class CaelumEngine
 				
 			}
 			
-			if (!env.isCompatible(EnumOS.getCurrentOS()))
+			if (!env.isCompatible(CompInfo.OS))
 			{
-				this.log.log(EnumLogType.ERROR, "Unable to load environment: Current OS is incompatible. Class: %s; OS: %s", clazz == null ? "NULL" : clazz.getCanonicalName(), EnumOS.getCurrentOS());
+				this.log.log(EnumLogType.ERROR, "Unable to load environment: Current OS is incompatible. Class: %s; OS: %s", clazz == null ? "NULL" : clazz.getCanonicalName(), CompInfo.OS);
 				ShutdownHelper.exit("NO-ENVIRONMENT-FOUND");
 				
 			}
@@ -646,7 +646,7 @@ public final class CaelumEngine
 		
 		JsonObject json = (JsonObject)j;
 		
-		JsonData curEnv = json.getValue(EnumOS.getCurrentOS().toString());
+		JsonData curEnv = json.getValue(CompInfo.OS.toString());
 		
 		if (curEnv == null || curEnv.type != EnumJsonType.OBJECT)
 		{
