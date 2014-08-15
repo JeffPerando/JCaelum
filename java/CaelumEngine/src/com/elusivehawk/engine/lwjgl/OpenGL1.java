@@ -11,8 +11,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
-import com.elusivehawk.engine.render.Color;
-import com.elusivehawk.engine.render.ColorFilter;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLEnumError;
 import com.elusivehawk.engine.render.opengl.IGL1;
@@ -88,13 +86,6 @@ public class OpenGL1 implements IGL1
 	public void glClear(int mask)
 	{
 		GL11.glClear(mask);
-		
-	}
-	
-	@Override
-	public void glClearColor(Color col)
-	{
-		this.glClearColor(col.getColorf(ColorFilter.RED), col.getColorf(ColorFilter.GREEN), col.getColorf(ColorFilter.BLUE), col.getColorf(ColorFilter.ALPHA));
 		
 	}
 	

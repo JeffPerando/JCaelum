@@ -151,12 +151,12 @@ public final class RenderHelper
 		int glId = gl1.glGenTextures();
 		
 		gl1.glActiveTexture(glId);
-		gl1.glPixelStorei(GLConst.GL_UNPACK_ALIGNMENT, 1);
+		gl1.glPixelStorei(GLConst.GL_UNPACK_ALIGNMENT, 1);//XXX Error'd
 		
 		gl1.glTexParameterx(GLConst.GL_TEXTURE_2D, GLConst.GL_TEXTURE_MIN_FILTER, GLConst.GL_LINEAR);
 		gl1.glTexParameterx(GLConst.GL_TEXTURE_2D, GLConst.GL_TEXTURE_MAG_FILTER, GLConst.GL_LINEAR);
 		
-		gl1.glTexImage2D(GLConst.GL_TEXTURE_2D, 0, GLConst.GL_RGBA, w, h, 0, GLConst.GL_RGBA, GLConst.GL_UNSIGNED_BYTE, buf);
+		gl1.glTexImage2D(GLConst.GL_TEXTURE_2D, 0, GLConst.GL_RGB, w, h, 0, GLConst.GL_RGBA, GLConst.GL_UNSIGNED_BYTE, buf);//XXX Error'd
 		
 		gl1.glActiveTexture(0);
 		
@@ -169,11 +169,25 @@ public final class RenderHelper
 		{
 			CaelumEngine.log().err(e);
 			
+			gl1.glDeleteTextures(glId);
+			
+			return -1;
 		}
 		
 		return glId;
 	}
 	
+	/**
+	 * 
+	 * Formats shader source code.
+	 * 
+	 * @param src
+	 * @param parentDir
+	 * @return
+	 * 
+	 * @deprecated To be removed once OpenGL NG comes out, since shaders will be pre-compiled.
+	 */
+	@Deprecated
 	public static String formatShaderSource(String src, File parentDir)
 	{
 		List<String> inc = Lists.newArrayList();
@@ -309,12 +323,11 @@ public final class RenderHelper
 	{
 		GLEnumError err = gl.glGetError();
 		
-		if (err == GLEnumError.GL_NO_ERROR)
+		if (err != GLEnumError.GL_NO_ERROR)
 		{
-			return;
+			throw new GLException(err);
 		}
 		
-		throw new GLException(err);//GLU.gluErrorString(err) TODO Fix after conversion to enums.
 	}
 	
 	public static Buffer<Float> mixColors(Color a, Color b)

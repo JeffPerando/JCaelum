@@ -48,9 +48,10 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 	
 	private ImmutableArray<Shader> shaders = null;
 	
-	private final List<Texture> texturePool = Lists.newArrayList();
 	private final List<IGLDeletable> cleanables = Lists.newArrayList();
+	@Deprecated
 	private final List<RenderTask> rtasks = Lists.newArrayList();
+	@Deprecated
 	private final Map<EnumRenderMode, List<IGLManipulator>> manipulators = Maps.newHashMapWithExpectedSize(3);
 	
 	private DisplaySettings settings = new DisplaySettings();
@@ -170,10 +171,7 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 			
 		}
 		
-		this.gl1.glDeleteTextures(this.texturePool.toArray(new Texture[this.texturePool.size()]));
-		
 		this.cleanables.clear();
-		this.texturePool.clear();
 		
 	}
 	
@@ -230,21 +228,6 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 	
 	private void preRender()
 	{
-		if (!this.texturePool.isEmpty())
-		{
-			for (Texture tex : this.texturePool)
-			{
-				if (!tex.isAnimated())
-				{
-					continue;
-				}
-				
-				//tex.updateTexture();
-				
-			}
-			
-		}
-		
 		this.preRenderDepr();
 		
 	}
@@ -420,20 +403,6 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 		
 	}
 	
-	public void addTexture(Texture tex)
-	{
-		assert tex != null;
-		
-		this.texturePool.add(tex);
-		
-	}
-	
-	public void removeTexture(Texture tex)
-	{
-		this.texturePool.remove(tex);
-		
-	}
-	
 	public void registerCleanable(IGLDeletable gl)
 	{
 		if (this.cleanables.contains(gl))
@@ -486,6 +455,7 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 		
 	}
 	
+	@Deprecated
 	public synchronized void scheduleRTask(RenderTask rt)
 	{
 		this.rtasks.add(rt);
