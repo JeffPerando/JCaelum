@@ -37,7 +37,7 @@ public final class TestGame extends Game
 	@Override
 	protected void tick(double delta) throws Throwable
 	{
-		CaelumEngine.log().log(EnumLogType.INFO, "Test: %s", delta);
+		//CaelumEngine.log().log(EnumLogType.INFO, "Test: %s", delta);
 		// TODO Auto-generated method stub
 		
 	}

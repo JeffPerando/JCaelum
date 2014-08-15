@@ -67,11 +67,6 @@ public final class CaelumEngine
 	
 	private CaelumEngine()
 	{
-		this.startupPrefixes.add("env:");
-		this.startupPrefixes.add("gamefac:");
-		this.startupPrefixes.add("verbose:");
-		this.startupPrefixes.add("st:");
-		
 		if (EnumOS.getCurrentOS() != EnumOS.ANDROID)
 		{
 			Runtime.getRuntime().addShutdownHook(new Thread(() ->
@@ -82,6 +77,11 @@ public final class CaelumEngine
 			}));
 			
 		}
+		
+		this.startupPrefixes.add("env:");
+		this.startupPrefixes.add("gamefac:");
+		this.startupPrefixes.add("verbose:");
+		this.startupPrefixes.add("st:");
 		
 		Iterator<String> itr = this.startupPrefixes.iterator();
 		String prefix;
@@ -256,25 +256,21 @@ public final class CaelumEngine
 		
 		this.log.log(EnumLogType.INFO, "Starting Caelum Engine %s on %s.", VERSION, EnumOS.getCurrentOS());
 		
-		if (DEBUG)
-		{
-			for (Entry<String, String> entry : this.startargs.entrySet())
-			{
-				this.log.log(EnumLogType.INFO, "Argument: %s, %s", entry.getKey(), entry.getValue());
-				
-			}
-			
-		}
-		
-		boolean verbose = "true".equalsIgnoreCase(this.startargs.get("verbose"));
+		boolean verbose = !"false".equalsIgnoreCase(this.startargs.get("verbose"));
 		
 		this.log.setEnableVerbosity(verbose);
 		
-		if (DEBUG)
+		this.log.log(EnumLogType.INFO, "Verbosity is set to \'%s\'", verbose);
+		
+		/*if (DEBUG)
 		{
-			this.log.log(EnumLogType.WARN, "Debugging is turned on!");
+			for (Entry<Object, Object> entry : System.getProperties().entrySet())
+			{
+				this.log.log(EnumLogType.DEBUG, "Argument: \"%s\": \'%s\'", entry.getKey(), entry.getValue());
+				
+			}
 			
-		}
+		}*/
 		
 		//XXX Loading game environment
 		

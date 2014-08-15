@@ -1,7 +1,9 @@
 
 package com.elusivehawk.util.task;
 
+import com.elusivehawk.util.CompInfo;
 import com.elusivehawk.util.IPausable;
+import com.elusivehawk.util.RNG;
 
 /**
  * 
@@ -13,7 +15,6 @@ public class TaskManager implements IPausable
 {
 	private final ThreadTaskWorker[] threads;
 	private boolean started = false, paused = true;
-	private int next = 0;
 	
 	public TaskManager()
 	{
@@ -96,13 +97,7 @@ public class TaskManager implements IPausable
 			return false;
 		}
 		
-		this.threads[this.next++].scheduleTask(t);
-		
-		if (this.next == this.threads.length)
-		{
-			this.next = 0;
-			
-		}
+		this.threads[RNG.rng().nextInt(CompInfo.CORES)].scheduleTask(t);
 		
 		return true;
 	}
