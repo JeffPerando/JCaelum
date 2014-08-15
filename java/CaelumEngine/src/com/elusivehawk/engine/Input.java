@@ -1,8 +1,6 @@
 
 package com.elusivehawk.engine;
 
-import com.google.common.eventbus.EventBus;
-
 /**
  * 
  * 
@@ -12,7 +10,6 @@ import com.google.common.eventbus.EventBus;
 public abstract class Input
 {
 	protected final EnumInputType inputType;
-	protected final EventBus bus = new EventBus(String.format("input-%s", this.getName()));
 	
 	@SuppressWarnings("unqualified-field-access")
 	public Input(EnumInputType type)
@@ -24,17 +21,6 @@ public abstract class Input
 	public final EnumInputType getType()
 	{
 		return this.inputType;
-	}
-	
-	public final void registerListener(Object obj)
-	{
-		this.bus.register(obj);
-		
-	}
-	
-	public String getName()
-	{
-		return this.getClass().getSimpleName();
 	}
 	
 	public abstract boolean initiateInput();
