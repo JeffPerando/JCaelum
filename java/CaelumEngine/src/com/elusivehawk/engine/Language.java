@@ -74,9 +74,9 @@ public class Language extends LangFolder
 		
 		LangFolder f, folder = this;
 		
-		for (int c = 0; c < spl.length; c++)
+		for (String split : spl)
 		{
-			f = folder.getFolder(spl[c]);
+			f = folder.getFolder(split);
 			
 			if (f == null)
 			{
