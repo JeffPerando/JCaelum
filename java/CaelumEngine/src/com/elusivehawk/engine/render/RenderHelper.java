@@ -172,7 +172,7 @@ public final class RenderHelper
 			gl1.glTexParameterx(GLConst.GL_TEXTURE_2D, GLConst.GL_TEXTURE_MAG_FILTER, GLConst.GL_LINEAR);
 			
 			gl1.glActiveTexture(0);
-			gl1.glBindBuffer(GLConst.GL_TEXTURE0, 0);//XXX Error'd
+			gl1.glBindTexture(GLConst.GL_TEXTURE0, 0);//XXX Error'd
 			
 			return tex;
 		}

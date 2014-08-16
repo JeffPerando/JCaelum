@@ -14,6 +14,7 @@ import com.elusivehawk.engine.render.old.IRenderHUB;
 import com.elusivehawk.engine.render.old.RenderTask;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLEnumShader;
+import com.elusivehawk.engine.render.opengl.GLException;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
@@ -113,6 +114,8 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 			return false;
 		}
 		
+		this.display = d;
+		
 		this.gl1 = (IGL1)this.renv.getGL(IRenderEnvironment.GL_1);
 		this.gl2 = (IGL2)this.renv.getGL(IRenderEnvironment.GL_2);
 		this.gl3 = (IGL3)this.renv.getGL(IRenderEnvironment.GL_3);
@@ -147,7 +150,17 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 			
 		}
 		
-		this.notex = RenderHelper.processImage(ntf);
+		try
+		{
+			this.notex = RenderHelper.processImage(ntf);
+			
+		}
+		catch (GLException e)
+		{
+			CaelumEngine.log().err(e);
+			
+		}
+		
 		this.maxTexCount = this.gl1.glGetInteger(GLConst.GL_MAX_TEXTURE_UNITS);
 		
 		this.fps = this.settings.targetFPS;
@@ -159,8 +172,6 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 			this.hub.initiate(d);
 			
 		}
-		
-		this.display = d;
 		
 		this.initiated = true;
 		
