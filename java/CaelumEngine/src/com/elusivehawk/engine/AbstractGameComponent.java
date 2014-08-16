@@ -11,6 +11,7 @@ import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.old.IRenderEngine;
 import com.elusivehawk.engine.render.old.IRenderHUB;
 import com.elusivehawk.engine.render.opengl.GLConst;
+import com.elusivehawk.engine.render.opengl.GLEnumTexture;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.StringHelper;
@@ -169,13 +170,8 @@ public abstract class AbstractGameComponent implements IUpdatable
 					
 					for (int c = 0; c < rcon.getMaxTextureCount(); c++)
 					{
-						tex = gl1.glGetInteger(GLConst.GL_TEXTURE0 + c);
-						
-						if (tex != 0)
-						{
-							gl1.glBindTexture(GLConst.GL_TEXTURE0 + c, 0);
-							
-						}
+						gl1.glActiveTexture(GLConst.GL_TEXTURE0 + c);
+						gl1.glBindTexture(GLEnumTexture.GL_TEXTURE_2D, 0);
 						
 					}
 					

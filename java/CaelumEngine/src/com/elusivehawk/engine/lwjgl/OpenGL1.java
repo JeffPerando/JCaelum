@@ -14,6 +14,7 @@ import org.lwjgl.opengl.GL15;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLEnumError;
+import com.elusivehawk.engine.render.opengl.GLEnumTexture;
 import com.elusivehawk.engine.render.opengl.GLException;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.util.BufferHelper;
@@ -45,9 +46,9 @@ public class OpenGL1 implements IGL1
 	}
 	
 	@Override
-	public void glBindTexture(int target, int texture) throws GLException
+	public void glBindTexture(GLEnumTexture target, int texture) throws GLException
 	{
-		GL11.glBindTexture(target, texture);
+		GL11.glBindTexture(target.glCode, texture);
 		
 		RenderHelper.checkForGLError(this);
 		

@@ -14,6 +14,7 @@ import com.elusivehawk.engine.EnumLogType;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLEnumError;
 import com.elusivehawk.engine.render.opengl.GLEnumShader;
+import com.elusivehawk.engine.render.opengl.GLEnumTexture;
 import com.elusivehawk.engine.render.opengl.GLException;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
@@ -161,8 +162,7 @@ public final class RenderHelper
 		{
 			tex = gl1.glGenTextures();
 			
-			gl1.glBindTexture(GLConst.GL_TEXTURE_2D, tex);
-			gl1.glActiveTexture(GLConst.GL_TEXTURE0);
+			gl1.glBindTexture(GLEnumTexture.GL_TEXTURE_2D, tex);
 			
 			gl1.glPixelStorei(GLConst.GL_UNPACK_ALIGNMENT, 1);
 			gl1.glTexImage2D(GLConst.GL_TEXTURE_2D, 0, GLConst.GL_RGB, w, h, 0, GLConst.GL_RGBA, GLConst.GL_UNSIGNED_BYTE, buf);
@@ -171,8 +171,7 @@ public final class RenderHelper
 			gl1.glTexParameterx(GLConst.GL_TEXTURE_2D, GLConst.GL_TEXTURE_MIN_FILTER, GLConst.GL_LINEAR);
 			gl1.glTexParameterx(GLConst.GL_TEXTURE_2D, GLConst.GL_TEXTURE_MAG_FILTER, GLConst.GL_LINEAR);
 			
-			gl1.glActiveTexture(0);
-			gl1.glBindTexture(GLConst.GL_TEXTURE0, 0);//XXX Error'd
+			gl1.glBindTexture(GLEnumTexture.GL_TEXTURE_2D, 0);
 			
 			return tex;
 		}

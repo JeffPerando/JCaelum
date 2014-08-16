@@ -16,12 +16,6 @@ import com.elusivehawk.util.BufferHelper;
  */
 public interface IGL1
 {
-	default void glActiveTexture(Texture texture)
-	{
-		this.glActiveTexture(texture.getTexId(0));
-		
-	}
-	
 	public void glActiveTexture(int texture) throws GLException;
 	
 	default void glBindBuffer(VertexBuffer vbo)
@@ -32,13 +26,13 @@ public interface IGL1
 	
 	public void glBindBuffer(int target, int buffer) throws GLException;
 	
-	default void glBindTexture(int target, Texture texture)
+	default void glBindTexture(GLEnumTexture target, Texture texture)
 	{
 		this.glBindTexture(target, texture.getTexId(0));
 		
 	}
 	
-	public void glBindTexture(int target, int texture) throws GLException;
+	public void glBindTexture(GLEnumTexture target, int texture) throws GLException;
 	
 	public void glBlendFunc(int sfactor, int dfactor) throws GLException;
 	

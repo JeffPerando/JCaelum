@@ -1,0 +1,33 @@
+
+package com.elusivehawk.engine.render.opengl;
+
+/**
+ * 
+ * 
+ * 
+ * @author Elusivehawk
+ */
+public enum GLEnumTexture
+{
+	GL_TEXTURE_1D(GLConst.GL_TEXTURE_1D),
+	GL_TEXTURE_2D(GLConst.GL_TEXTURE_2D),
+	GL_TEXTURE_BINDING_3D(GLConst.GL_TEXTURE_BINDING_3D),
+	GL_TEXTURE_1D_ARRAY(GLConst.GL_TEXTURE_1D_ARRAY),
+	GL_TEXTURE_2D_ARRAY(GLConst.GL_TEXTURE_2D_ARRAY),
+	GL_TEXTURE_RECTANGLE(GLConst.GL_TEXTURE_RECTANGLE),
+	GL_TEXTURE_BUFFER(GLConst.GL_TEXTURE_BUFFER),
+	GL_TEXTURE_CUBE_MAP(GLConst.GL_TEXTURE_CUBE_MAP),
+	GL_TEXTURE_CUBE_MAP_ARRAY(GLConst.GL_TEXTURE_CUBE_MAP_ARRAY),
+	GL_TEXTURE_2D_MULTISAMPLE(GLConst.GL_TEXTURE_2D_MULTISAMPLE),
+	GL_TEXTURE_2D_MULTISAMPLE_ARRAY(GLConst.GL_TEXTURE_2D_MULTISAMPLE_ARRAY);
+	
+	public final int glCode;
+	
+	@SuppressWarnings("unqualified-field-access")
+	GLEnumTexture(int gl)
+	{
+		glCode = gl;
+		
+	}
+	
+}
