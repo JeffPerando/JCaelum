@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import com.elusivehawk.engine.CaelumEngine;
@@ -120,9 +121,15 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 		
 		for (GLEnumShader sh : GLEnumShader.values())
 		{
-			Shader s = new Shader(String.format("/%s.glsl", sh.name().toLowerCase()), sh);
+			String loc = String.format("/%s.glsl", sh.name().toLowerCase());
 			
-			shs[sh.ordinal()] = s;
+			if (new File(".", loc).exists())
+			{
+				Shader s = new Shader(loc, sh);
+				
+				shs[sh.ordinal()] = s;
+				
+			}
 			
 		}
 		

@@ -5,7 +5,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import java.util.Arrays;
 import java.util.List;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -20,10 +19,12 @@ import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
 import com.elusivehawk.util.BufferHelper;
+import com.elusivehawk.util.FileHelper;
 import com.elusivehawk.util.StringHelper;
 import com.elusivehawk.util.io.ByteBuffers;
 import com.elusivehawk.util.storage.Buffer;
 import com.google.common.collect.Lists;
+import de.matthiasmann.twl.utils.PNGDecoder;
 
 /**
  * 
@@ -67,30 +68,35 @@ public final class RenderHelper
 	
 	public static List<ILegibleImage> readImg(File img)
 	{
+		List<ILegibleImage> ret = null;
+		
 		if (img.getName().endsWith(".gif"))
 		{
-			return readGifFile(img);
+			ret = readGifFile(img);
 		}
-		
-		BufferedImage bufimg = null;
-		
-		try
+		else
 		{
-			bufimg = ImageIO.read(img);
+			try
+			{
+				PNGDecoder dec = new PNGDecoder(FileHelper.createInStream(img));
+				ByteBuffer buf = BufferHelper.createByteBuffer(dec.getWidth() * dec.getHeight() * 4);
+				
+				dec.decode(buf, dec.getWidth() * 4, PNGDecoder.Format.RGBA);
+				
+				ret = Lists.newArrayList();
+				
+				ret.add(new LegibleByteImage(buf, dec.getWidth(), dec.getHeight()));
+				
+			}
+			catch (Exception e)
+			{
+				CaelumEngine.log().err(null, e);
+				
+			}
 			
 		}
-		catch (Exception e)
-		{
-			CaelumEngine.log().err(null, e);
-			
-		}
 		
-		if (bufimg != null)
-		{
-			return Arrays.asList(new LegibleBufferedImage(bufimg));
-		}
-		
-		return null;
+		return ret;
 	}
 	
 	private static List<ILegibleImage> readGifFile(File gif)
@@ -124,57 +130,59 @@ public final class RenderHelper
 		return null;
 	}
 	
-	public static int processImage(ILegibleImage img)
+	public static int processImage(ILegibleImage img) throws GLException
 	{
 		return processImage(img, img.getFormat());
 	}
 	
-	public static int processImage(RenderContext rcon, ILegibleImage img)
+	public static int processImage(RenderContext rcon, ILegibleImage img) throws GLException
 	{
-		return processImage(rcon, img.toInts(), img.getHeight(), img.getWidth());
+		return processImage(rcon, img.toBytes(), img.getHeight(), img.getWidth());
 	}
 	
-	public static int processImage(ILegibleImage img, ColorFormat format)
+	public static int processImage(ILegibleImage img, ColorFormat format) throws GLException
 	{
-		return processImage(img.toInts(format), img.getWidth(), img.getHeight());
+		return processImage(img.toBytes(format), img.getWidth(), img.getHeight());
 	}
 	
-	public static int processImage(IntBuffer buf, int w, int h)
+	public static int processImage(ByteBuffer buf, int w, int h) throws GLException
 	{
 		return processImage(renderContext(), buf, w, h);
 	}
 	
-	public static int processImage(RenderContext rcon, IntBuffer buf, int w, int h)
+	public static int processImage(RenderContext rcon, ByteBuffer buf, int w, int h) throws GLException
 	{
 		IGL1 gl1 = rcon.getGL1();
+		IGL3 gl3 = rcon.getGL3();
 		
-		int glId = gl1.glGenTextures();
-		
-		gl1.glActiveTexture(glId);
-		gl1.glPixelStorei(GLConst.GL_UNPACK_ALIGNMENT, 1);//XXX Error'd
-		
-		gl1.glTexParameterx(GLConst.GL_TEXTURE_2D, GLConst.GL_TEXTURE_MIN_FILTER, GLConst.GL_LINEAR);
-		gl1.glTexParameterx(GLConst.GL_TEXTURE_2D, GLConst.GL_TEXTURE_MAG_FILTER, GLConst.GL_LINEAR);
-		
-		gl1.glTexImage2D(GLConst.GL_TEXTURE_2D, 0, GLConst.GL_RGB, w, h, 0, GLConst.GL_RGBA, GLConst.GL_UNSIGNED_BYTE, buf);//XXX Error'd
-		
-		gl1.glActiveTexture(0);
+		int tex = 0;
 		
 		try
 		{
-			checkForGLError(gl1);
+			tex = gl1.glGenTextures();
 			
+			gl1.glBindTexture(GLConst.GL_TEXTURE_2D, tex);
+			gl1.glActiveTexture(GLConst.GL_TEXTURE0);
+			
+			gl1.glPixelStorei(GLConst.GL_UNPACK_ALIGNMENT, 1);
+			gl1.glTexImage2D(GLConst.GL_TEXTURE_2D, 0, GLConst.GL_RGB, w, h, 0, GLConst.GL_RGBA, GLConst.GL_UNSIGNED_BYTE, buf);
+			gl3.glGenerateMipmap(GLConst.GL_TEXTURE_2D);
+			
+			gl1.glTexParameterx(GLConst.GL_TEXTURE_2D, GLConst.GL_TEXTURE_MIN_FILTER, GLConst.GL_LINEAR);
+			gl1.glTexParameterx(GLConst.GL_TEXTURE_2D, GLConst.GL_TEXTURE_MAG_FILTER, GLConst.GL_LINEAR);
+			
+			gl1.glActiveTexture(0);
+			gl1.glBindBuffer(GLConst.GL_TEXTURE0, 0);//XXX Error'd
+			
+			return tex;
 		}
 		catch (GLException e)
 		{
-			CaelumEngine.log().err(e);
+			gl1.glDeleteTextures(tex);
 			
-			gl1.glDeleteTextures(glId);
-			
-			return -1;
+			throw e;
 		}
 		
-		return glId;
 	}
 	
 	/**

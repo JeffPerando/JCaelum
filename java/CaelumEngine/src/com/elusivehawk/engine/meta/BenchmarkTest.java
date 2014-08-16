@@ -1,12 +1,11 @@
 
 package com.elusivehawk.engine.meta;
 
-import com.elusivehawk.util.StringHelper;
-
 /**
  * 
  * Test log:
  * <p>
+ * Better file filter.<br>
  * String index testing.<br>
  * Refactor helper.<br>
  * Tokenizer testing.<br>
@@ -33,9 +32,11 @@ public class BenchmarkTest
 	{
 		System.out.println("Beginning bench testing...");
 		
-		String test = "Test {$testing123}";
-		
-		System.out.println(StringHelper.substring(test, "{$", "}"));
+		/*StringHelper.filter(FileHelper.createFile("src", "com/elusivehawk/engine/lwjgl/OpenGL2.java"),
+				((line, str) ->
+				{
+					return str.endsWith(")") ? StringHelper.replaceLast(str, ")", ") throws GLException") : str;
+				}));*/
 		
 		System.out.println("Th-th-th-th-That's all, folks!");
 		

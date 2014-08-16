@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
-import java.nio.IntBuffer;
+import java.nio.ByteBuffer;
 import com.elusivehawk.util.BufferHelper;
 
 /**
@@ -23,22 +23,22 @@ public interface ILegibleImage
 		return ColorFormat.RGBA;
 	}
 	
-	default IntBuffer toInts()
+	default ByteBuffer toBytes()
 	{
-		return toInts(this.getFormat());
+		return toBytes(this.getFormat());
 	}
 	
-	default IntBuffer toInts(ColorFormat format)
+	default ByteBuffer toBytes(ColorFormat format)
 	{
-		IntBuffer buf = BufferHelper.createIntBuffer(this.getHeight() * this.getWidth());
-		Color col = new Color(this.getFormat());
+		ByteBuffer buf = BufferHelper.createByteBuffer(this.getHeight() * this.getWidth() * this.getFormat().filterCount());
+		Color col = new Color(format);
 		
 		for (int x = 0; x < this.getWidth(); ++x)
 		{
 			for (int y = 0; y < this.getHeight(); ++y)
 			{
 				col.setColor(this.getPixel(x, y));
-				buf.put(format.convert(col).getColor());
+				col.writeToBuffer(buf);
 				
 			}
 			

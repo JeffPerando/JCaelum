@@ -22,7 +22,7 @@ public interface IGL1
 		
 	}
 	
-	public void glActiveTexture(int texture);
+	public void glActiveTexture(int texture) throws GLException;
 	
 	default void glBindBuffer(VertexBuffer vbo)
 	{
@@ -30,7 +30,7 @@ public interface IGL1
 		
 	}
 	
-	public void glBindBuffer(int target, int buffer);
+	public void glBindBuffer(int target, int buffer) throws GLException;
 	
 	default void glBindTexture(int target, Texture texture)
 	{
@@ -38,15 +38,15 @@ public interface IGL1
 		
 	}
 	
-	public void glBindTexture(int target, int texture);
+	public void glBindTexture(int target, int texture) throws GLException;
 	
-	public void glBlendFunc(int sfactor, int dfactor);
+	public void glBlendFunc(int sfactor, int dfactor) throws GLException;
 	
-	public void glBufferData(int target, int type, java.nio.Buffer data, int usage);
+	public void glBufferData(int target, int type, java.nio.Buffer data, int usage) throws GLException;
 	
-	public void glBufferSubData(int target, int offset, int type, java.nio.Buffer data);
+	public void glBufferSubData(int target, int offset, int type, java.nio.Buffer data) throws GLException;
 	
-	public void glClear(int mask);
+	public void glClear(int mask) throws GLException;
 	
 	default void glClearColor(Color col)
 	{
@@ -56,17 +56,17 @@ public interface IGL1
 	
 	public void glClearColor(float r, float g, float b, float a);
 	
-	public void glCopyTexImage1D(int target, int level, int internalFormat, int x, int y, int width, int border);
+	public void glCopyTexImage1D(int target, int level, int internalFormat, int x, int y, int width, int border) throws GLException;
 	
-	public void glCopyTexImage2D(int target, int level, int internalFormat, int x, int y, int width, int height, int border);
+	public void glCopyTexImage2D(int target, int level, int internalFormat, int x, int y, int width, int height, int border) throws GLException;
 	
-	public void glCopyTexSubImage1D(int target, int level, int xoffset, int x, int y, int width);
+	public void glCopyTexSubImage1D(int target, int level, int xoffset, int x, int y, int width) throws GLException;
 	
-	public void glCopyTexSubImage2D(int target, int level, int xoffset, int yoffset, int x, int y, int width, int height);
+	public void glCopyTexSubImage2D(int target, int level, int xoffset, int yoffset, int x, int y, int width, int height) throws GLException;
 	
-	public void glCopyTexSubImage3D(int target, int level, int xoffset, int yoffset, int zoffset, int x, int y, int width, int height);
+	public void glCopyTexSubImage3D(int target, int level, int xoffset, int yoffset, int zoffset, int x, int y, int width, int height) throws GLException;
 	
-	public void glCullFace(int mode);
+	public void glCullFace(int mode) throws GLException;
 	
 	default void glDeleteBuffers(VertexBuffer... buffers)
 	{
@@ -82,9 +82,9 @@ public interface IGL1
 		
 	}
 	
-	public void glDeleteBuffers(int... buffer);
+	public void glDeleteBuffers(int... buffer) throws GLException;
 	
-	public void glDeleteBuffers(IntBuffer buffers);
+	public void glDeleteBuffers(IntBuffer buffers) throws GLException;
 	
 	default void glDeleteTextures(Texture... textures)
 	{
@@ -118,84 +118,86 @@ public interface IGL1
 		
 	}
 	
-	public void glDeleteTextures(int... textures);
+	public void glDeleteTextures(int... textures) throws GLException;
 	
-	public void glDeleteTextures(IntBuffer textures);
+	public void glDeleteTextures(IntBuffer textures) throws GLException;
 	
-	public void glDepthFunc(int func);
+	public void glDepthFunc(int func) throws GLException;
 	
-	public void glDepthMask(boolean flag);
+	public void glDepthMask(boolean flag) throws GLException;
 	
-	public void glDepthRange(float zNear, float zFar);
+	public void glDepthRange(float zNear, float zFar) throws GLException;
 	
-	public void glDisable(int cap);
+	public void glDisable(int cap) throws GLException;
 	
-	public void glDrawArrays(int mode, int first, int count);
+	public void glDrawArrays(int mode, int first, int count) throws GLException;
 	
-	public void glDrawElements(int mode, int count, int type, IntBuffer indices);
+	public void glDrawElements(int mode, int count, int type, IntBuffer indices) throws GLException;
 	
-	public void glDrawElements(int mode, int count, int type, int offset);
+	public void glDrawElements(int mode, int count, int type, int offset) throws GLException;
 	
-	public void glEnable(int cap);
+	public void glEnable(int cap) throws GLException;
 	
 	public void glFinish();
 	
 	public void glFlush();
 	
-	public void glFrontFace(int mode);
+	public void glFrontFace(int mode) throws GLException;
 	
-	public int glGenBuffers();
+	public int glGenBuffers() throws GLException;
 	
-	public void glGenBuffers(IntBuffer buffers);
+	public void glGenBuffers(IntBuffer buffers) throws GLException;
 	
-	public int glGenTextures();
+	public int glGenTextures() throws GLException;
 	
-	public void glGenTextures(int n, int[] textures, int offset);
+	public void glGenTextures(int n, int[] textures, int offset) throws GLException;
 	
-	public void glGenTextures(IntBuffer textures);
+	public void glGenTextures(IntBuffer textures) throws GLException;
 	
 	public GLEnumError glGetError();
 	
-	public int glGetInteger(int pname);
+	public int glGetInteger(int pname) throws GLException;
 	
-	public void glGetIntegerv(int pname, int[] params, int offset);
+	public void glGetIntegerv(int pname, int[] params, int offset) throws GLException;
 	
-	public void glGetIntegerv(int pname, IntBuffer params);
+	public void glGetIntegerv(int pname, IntBuffer params) throws GLException;
 	
-	public String glGetString(int name);
+	public String glGetString(int name) throws GLException;
 	
-	public void glHint(int target, int mode);
+	public void glHint(int target, int mode) throws GLException;
 	
 	public boolean glIsBuffer(int buffer);
 	
 	public boolean glIsTexture(int texture);
 	
-	public void glLogicOp(int op);
+	public void glLogicOp(int op) throws GLException;
 	
-	public void glPixelStorei(int pname, int param);
+	public void glPixelStoref(int pname, float param) throws GLException;
 	
-	public void glPointSize(float size);
+	public void glPixelStorei(int pname, int param) throws GLException;
 	
-	public void glReadPixels(int x, int y, int width, int height, int format, int type, ByteBuffer pixels);
+	public void glPointSize(float size) throws GLException;
 	
-	public void glScissor(int x, int y, int width, int height);
+	public void glReadPixels(int x, int y, int width, int height, int format, int type, ByteBuffer pixels) throws GLException;
 	
-	public void glStencilFunc(int func, int ref, int mask);
+	public void glScissor(int x, int y, int width, int height) throws GLException;
 	
-	public void glStencilMask(int mask);
+	public void glStencilFunc(int func, int ref, int mask) throws GLException;
 	
-	public void glStencilOp(int fail, int zfail, int zpass);
+	public void glStencilMask(int mask) throws GLException;
 	
-	public void glTexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, IntBuffer pixels);
+	public void glStencilOp(int fail, int zfail, int zpass) throws GLException;
 	
-	public void glTexImage3D(int target, int level, int internalFormat, int width, int height, int depth, int border, int format, int type, IntBuffer pixels);
+	public void glTexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, ByteBuffer pixels) throws GLException;
 	
-	public void glTexParameterf(int target, int pname, float param);
+	public void glTexImage3D(int target, int level, int internalFormat, int width, int height, int depth, int border, int format, int type, ByteBuffer pixels) throws GLException;
 	
-	public void glTexParameterx(int target, int pname, int param);
+	public void glTexParameterf(int target, int pname, float param) throws GLException;
 	
-	public void glTexSubImage2D(int target, int level, int xoffset, int yoffset, int width, int height, int format, int type, ByteBuffer pixels);
+	public void glTexParameterx(int target, int pname, int param) throws GLException;
 	
-	public void glViewport(int x, int y, int width, int height);
+	public void glTexSubImage2D(int target, int level, int xoffset, int yoffset, int width, int height, int format, int type, ByteBuffer pixels) throws GLException;
+	
+	public void glViewport(int x, int y, int width, int height) throws GLException;
 	
 }

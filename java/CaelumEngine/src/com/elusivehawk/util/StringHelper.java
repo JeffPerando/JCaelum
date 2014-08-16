@@ -513,4 +513,16 @@ public final class StringHelper
 		return str.substring(pIn, sIn);
 	}
 	
+	public static void filter(File txt, IStringFilter filter)
+	{
+		List<String> text = read(txt, filter);
+		
+		if (!text.isEmpty())
+		{
+			write(txt, text, false, false);
+			
+		}
+		
+	}
+	
 }

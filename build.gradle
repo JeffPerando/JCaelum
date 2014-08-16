@@ -28,6 +28,7 @@ dependencies
 	compile 'org.lwjgl.lwjgl:${ext.lwjgl}'
 	compile 'com.google.guava:${ext.guava}'
 	compile 'org.jdom:${ext.jdom}'
+	compile files("java/CaelumEngine/lib/PNGDecoder.jar")
 }
 
 jar

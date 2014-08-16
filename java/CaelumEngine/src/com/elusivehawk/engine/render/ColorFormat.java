@@ -44,6 +44,11 @@ public enum ColorFormat
 		return this.supports(col) ? this.colors[col.ordinal()] : -1;
 	}
 	
+	public int filterCount()
+	{
+		return this.filters.length;
+	}
+	
 	public boolean supports(ColorFilter col)
 	{
 		return this.support[col.ordinal()];

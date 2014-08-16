@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.io.ByteArray;
@@ -150,6 +151,22 @@ public class Color
 	public FloatBuffer asBufferF()
 	{
 		return BufferHelper.makeFloatBuffer(this.asFloats());
+	}
+	
+	public void writeToBuffer(ByteBuffer buf)
+	{
+		for (ColorFilter filter : this.format.filters)
+		{
+			buf.put(this.getColor(filter));
+			
+		}
+		
+	}
+	
+	public void writeToBufferf(FloatBuffer buf)
+	{
+		buf.put(this.asFloats());
+		
 	}
 	
 }
