@@ -8,8 +8,8 @@ package com.elusivehawk.util;
  * @author Elusivehawk
  */
 @FunctionalInterface
-public interface IStringFilter
+public interface IFilter<T>
 {
-	public String filter(int line, String str);
+	public T filter(int index, T obj);
 	
 }

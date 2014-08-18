@@ -42,7 +42,7 @@ public final class StringHelper
 		return read(path, null);
 	}
 	
-	public static List<String> read(String path, IStringFilter filter)
+	public static List<String> read(String path, IFilter<String> filter)
 	{
 		return read(FileHelper.createFile(path), filter);
 	}
@@ -52,7 +52,7 @@ public final class StringHelper
 		return read(file, null);
 	}
 	
-	public static List<String> read(File file, IStringFilter filter)
+	public static List<String> read(File file, IFilter<String> filter)
 	{
 		return read(FileHelper.createInStream(file), filter);
 	}
@@ -62,7 +62,7 @@ public final class StringHelper
 		return read(is, null);
 	}
 	
-	public static List<String> read(InputStream is, IStringFilter filter)
+	public static List<String> read(InputStream is, IFilter<String> filter)
 	{
 		return read(new BufferedReader(new InputStreamReader(is)), filter);
 	}
@@ -72,7 +72,7 @@ public final class StringHelper
 		return read(r, null);
 	}
 	
-	public static List<String> read(Reader r, IStringFilter filter)
+	public static List<String> read(Reader r, IFilter<String> filter)
 	{
 		List<String> text = Lists.newArrayList();
 		
@@ -85,8 +85,7 @@ public final class StringHelper
 			{
 				for (String line = br.readLine(); line != null; line = br.readLine())
 				{
-					l++;
-					text.add(filter == null ? line : filter.filter(l, line));
+					text.add(filter == null ? line : filter.filter(l++, line));
 					
 				}
 				
@@ -513,7 +512,7 @@ public final class StringHelper
 		return str.substring(pIn, sIn);
 	}
 	
-	public static void filter(File txt, IStringFilter filter)
+	public static void filter(File txt, IFilter<String> filter)
 	{
 		List<String> text = read(txt, filter);
 		
