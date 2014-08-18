@@ -1,12 +1,11 @@
 
 package com.elusivehawk.engine.lwjgl;
 
-import java.util.Iterator;
 import java.util.List;
 import org.lwjgl.input.Keyboard;
 import com.elusivehawk.engine.CaelumEngine;
-import com.elusivehawk.engine.KeyboardInput;
 import com.elusivehawk.engine.Key;
+import com.elusivehawk.engine.KeyboardInput;
 import com.google.common.collect.Lists;
 
 /**
@@ -178,27 +177,18 @@ public class LWJGLKeyboard extends KeyboardInput
 		
 		while (Keyboard.next())
 		{
-			if (Keyboard.getEventKeyState())
+			key = LWJGL_TO_ENUM[Keyboard.getEventKey()];
+			
+			this.downKeys[key.ordinal()] = Keyboard.getEventKeyState();//TODO See how this affects caps lock
+			
+			if (this.isKeyDown(key))
 			{
-				key = LWJGL_TO_ENUM[Keyboard.getEventKey()];
+				this.downKeyList.add(key);
 				
-				this.downKeys[key.ordinal()] = key.isLock() ? !this.downKeys[key.ordinal()] : true;
-				
-				if (this.isKeyDown(key))
-				{
-					if (key.isLock() && this.downKeyList.contains(key))
-					{
-						continue;
-					}
-					
-					this.downKeyList.add(key);
-					
-				}
-				else
-				{
-					this.downKeyList.remove(key);
-					
-				}
+			}
+			else
+			{
+				this.downKeyList.remove(key);
 				
 			}
 			
@@ -209,22 +199,6 @@ public class LWJGLKeyboard extends KeyboardInput
 	@Override
 	protected void postUpdate()
 	{
-		Key key;
-		Iterator<Key> itr = this.downKeyList.iterator();
-		
-		while (itr.hasNext())
-		{
-			key = itr.next();
-			
-			if (key.isLock())
-			{
-				continue;
-			}
-			
-			this.downKeys[key.ordinal()] = false;
-			itr.remove();
-			
-		}
 		
 	}
 	
