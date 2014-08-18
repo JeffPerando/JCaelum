@@ -15,4 +15,9 @@ public abstract class KeyboardInput extends Input
 	
 	public abstract List<Key> getPushedKeys();
 	
+	public boolean useCapitals()
+	{
+		return this.isKeyDown(Key.SHIFT) || this.isKeyDown(Key.CAPS_LOCK);
+	}
+	
 }
