@@ -2,6 +2,7 @@
 package com.elusivehawk.util.math;
 
 import java.util.List;
+import com.elusivehawk.util.IDirty;
 import com.elusivehawk.util.storage.Buffer;
 import com.google.common.collect.Lists;
 
@@ -11,11 +12,12 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-public class Vector implements IMathObject<Float>
+public class Vector implements IMathObject<Float>, IDirty
 {
 	protected final float[] nums;
 	protected List<IVectorListener> listeners = null;
 	protected String name = null;
+	protected boolean dirty = false;
 	
 	public Vector()
 	{
@@ -32,6 +34,8 @@ public class Vector implements IMathObject<Float>
 			set(c, buf.next());
 			
 		}
+		
+		setIsDirty(false);
 		
 	}
 	
@@ -53,6 +57,8 @@ public class Vector implements IMathObject<Float>
 			
 		}
 		
+		setIsDirty(false);
+		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
@@ -66,6 +72,8 @@ public class Vector implements IMathObject<Float>
 			
 		}
 		
+		setIsDirty(false);
+		
 		listeners = vec.listeners;
 		
 	}
@@ -76,6 +84,21 @@ public class Vector implements IMathObject<Float>
 		nums = new float[Math.max(length, 1)];
 		
 		setAll(0f);
+		
+		setIsDirty(false);
+		
+	}
+	
+	@Override
+	public boolean isDirty()
+	{
+		return this.dirty;
+	}
+	
+	@Override
+	public void setIsDirty(boolean b)
+	{
+		this.dirty = b;
 		
 	}
 	
@@ -130,6 +153,17 @@ public class Vector implements IMathObject<Float>
 	@Override
 	public void set(int pos, Float num, boolean notify)
 	{
+		if (this.nums[pos] == num.floatValue())
+		{
+			return;
+		}
+		
+		if (!this.isDirty())
+		{
+			this.setIsDirty(true);
+			
+		}
+		
 		this.nums[pos] = num.floatValue();
 		
 		if (notify)
@@ -421,7 +455,7 @@ public class Vector implements IMathObject<Float>
 	{
 		for (int c = 0; c < this.getSize(); c++)
 		{
-			this.nums[c] += f;
+			this.add(c, f, false);
 			
 		}
 		
@@ -443,7 +477,7 @@ public class Vector implements IMathObject<Float>
 	{
 		for (int c = 0; c < this.getSize(); c++)
 		{
-			this.nums[c] /= f;
+			this.div(c, f, false);
 			
 		}
 		
@@ -465,7 +499,7 @@ public class Vector implements IMathObject<Float>
 	{
 		for (int c = 0; c < this.getSize(); c++)
 		{
-			this.nums[c] *= f;
+			this.mul(c, f, false);
 			
 		}
 		
@@ -487,7 +521,7 @@ public class Vector implements IMathObject<Float>
 	{
 		for (int c = 0; c < this.getSize(); c++)
 		{
-			this.nums[c] -= f;
+			this.sub(c, f, false);
 			
 		}
 		

@@ -95,7 +95,7 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 			return false;
 		}
 		
-		IDisplay d = this.renv.createDisplay("default", this.settings);
+		IDisplay d = this.renv.createDisplay(this.settings);
 		
 		if (d == null)
 		{

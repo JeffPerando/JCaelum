@@ -16,8 +16,6 @@ public interface IDisplay extends Closeable
 {
 	public String getTitle();
 	
-	public String getName();
-	
 	public void createDisplay() throws Exception;
 	
 	/**

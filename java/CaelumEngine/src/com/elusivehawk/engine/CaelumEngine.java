@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import com.elusivehawk.engine.assets.AssetManager;
+import com.elusivehawk.engine.render.IDisplay;
 import com.elusivehawk.engine.render.IRenderEnvironment;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.ThreadGameRender;
@@ -47,7 +48,7 @@ public final class CaelumEngine
 	public static final Version VERSION = new Version(Version.ALPHA, 1, 0, 0);
 	
 	private final Map<EnumEngineFeature, IThreadStoppable> threads = Maps.newEnumMap(EnumEngineFeature.class);
-	private final Map<EnumInputType, Input> inputs = Maps.newEnumMap(EnumInputType.class);
+	private final List<Input> inputs = Lists.newArrayList();
 	private final Map<String, String> startargs = Maps.newHashMap();
 	private final TaskManager tasks = new TaskManager();
 	private final List<String> startupPrefixes = Lists.newArrayList();
@@ -136,6 +137,11 @@ public final class CaelumEngine
 		return instance().gameargs;
 	}
 	
+	public static IDisplay getDisplay()
+	{
+		return instance().rcon.getDisplay();
+	}
+	
 	public static IContext getContext(boolean safe)
 	{
 		Thread t = Thread.currentThread();
@@ -163,6 +169,20 @@ public final class CaelumEngine
 	public static void scheduleRenderTask(RenderTask rt)
 	{
 		instance().rcon.scheduleRTask(rt);
+		
+	}
+	
+	public static void addInputListener(Class<Input> type, IInputListener lis)
+	{
+		instance().inputs.forEach((input) ->
+		{
+			if (type.isInstance(input))
+			{
+				input.addListener(lis);
+				
+			}
+			
+		});
 		
 	}
 	
@@ -372,9 +392,9 @@ public final class CaelumEngine
 			{
 				for (Input input : inputList)
 				{
-					this.inputs.put(input.getType(), input);
+					this.inputs.add(input);
 					
-					this.log.log(EnumLogType.VERBOSE, "Loaded input of type %s, with class %s", input.getType().name(), input.getClass().getCanonicalName());
+					this.log.log(EnumLogType.DEBUG, "Loaded input: %s", input.getClass().getCanonicalName());
 					
 				}
 				

@@ -12,6 +12,7 @@ import com.elusivehawk.util.FileHelper;
 import com.elusivehawk.util.json.EnumJsonType;
 import com.elusivehawk.util.json.JsonData;
 import com.elusivehawk.util.json.JsonObject;
+import com.google.common.collect.Lists;
 
 /**
  * 
@@ -73,8 +74,12 @@ public class LWJGLEnvironment implements IGameEnvironment
 	@Override
 	public List<Input> loadInputs()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		List<Input> ret = Lists.newArrayList();
+		
+		ret.add(new LWJGLMouse());
+		ret.add(new LWJGLKeyboard());
+		
+		return ret;
 	}
 	
 	public static String determineLWJGLPath()

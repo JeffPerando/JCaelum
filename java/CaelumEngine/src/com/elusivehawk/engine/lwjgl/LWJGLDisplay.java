@@ -19,15 +19,7 @@ import com.elusivehawk.engine.render.IDisplay;
  */
 public class LWJGLDisplay implements IDisplay
 {
-	private final String name;
 	private int framerate = 30;
-	
-	@SuppressWarnings("unqualified-field-access")
-	public LWJGLDisplay(String nickname)
-	{
-		name = nickname;
-		
-	}
 	
 	@Override
 	public void close() throws IOException
@@ -40,12 +32,6 @@ public class LWJGLDisplay implements IDisplay
 	public String getTitle()
 	{
 		return Display.getTitle();
-	}
-	
-	@Override
-	public String getName()
-	{
-		return this.name;
 	}
 	
 	@Override

@@ -1,10 +1,10 @@
 
 package com.elusivehawk.engine;
 
-import java.util.Map;
+import java.util.List;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.util.Internal;
-import com.google.common.collect.Maps;
+import com.google.common.collect.Lists;
 
 /**
  * 
@@ -15,19 +15,19 @@ import com.google.common.collect.Maps;
 @Internal
 public final class ThreadGameLoop extends ThreadCaelum implements IThreadContext
 {
-	private final Map<EnumInputType, Input> input = Maps.newHashMap();
+	private final List<Input> input = Lists.newArrayList();
 	private final Game game;
 	
 	private RenderContext rcon = null;//Only used for single-threaded rendering.
 	
 	@SuppressWarnings("unqualified-field-access")
-	public ThreadGameLoop(Map<EnumInputType, Input> inputMap, Game g)
+	public ThreadGameLoop(List<Input> inputMap, Game g)
 	{
 		game = g;
 		
 		if (inputMap != null)
 		{
-			input.putAll(inputMap);
+			input.addAll(inputMap);
 			
 		}
 		
@@ -54,16 +54,11 @@ public final class ThreadGameLoop extends ThreadCaelum implements IThreadContext
 	{
 		if (!this.input.isEmpty())
 		{
-			for (Input in : this.input.values())
+			this.input.forEach((input) ->
 			{
-				if (in == null)
-				{
-					continue;
-				}
+				input.update(delta);
 				
-				in.updateInput();
-				
-			}
+			});
 			
 		}
 		
@@ -107,6 +102,8 @@ public final class ThreadGameLoop extends ThreadCaelum implements IThreadContext
 			this.rcon.cleanup();
 			
 		}
+		
+		this.input.clear();
 		
 	}
 	

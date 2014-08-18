@@ -27,6 +27,11 @@ public class GameLog implements ILog
 			return;
 		}
 		
+		if (!CaelumEngine.DEBUG && type == EnumLogType.DEBUG)
+		{
+			return;
+		}
+		
 		String fin = String.format("[%s] [%s]: %s\n", type, StringHelper.parseDate(Calendar.getInstance(), "-", ":"), type.err && msg == null ? this.crashDialog.get(RNG.rng().nextInt(this.crashDialog.size())) : msg);
 		
 		if (type.err)

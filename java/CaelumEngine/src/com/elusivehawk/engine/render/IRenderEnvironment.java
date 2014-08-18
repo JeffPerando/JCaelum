@@ -33,11 +33,10 @@ public interface IRenderEnvironment
 	 * 
 	 * Called during startup.
 	 * 
-	 * @param name The name of the {@link IDisplay} to create.
 	 * @param settings The settings to create the display under.
 	 * @return The display created.
 	 */
-	public IDisplay createDisplay(String name, DisplaySettings settings);
+	public IDisplay createDisplay(DisplaySettings settings);
 	
 	public IThreadStoppable createRenderThread(RenderContext rcon);
 	

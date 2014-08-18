@@ -1,34 +1,46 @@
 
 package com.elusivehawk.engine;
 
+import java.io.Closeable;
+import java.util.List;
+import com.elusivehawk.util.IUpdatable;
+import com.google.common.collect.Lists;
+
 /**
  * 
  * 
  * 
  * @author Elusivehawk
  */
-public abstract class Input
+public abstract class Input implements IUpdatable, Closeable
 {
-	protected final EnumInputType inputType;
+	private final List<IInputListener> listeners = Lists.newArrayList();
 	
-	@SuppressWarnings("unqualified-field-access")
-	public Input(EnumInputType type)
+	@Override
+	public void update(double delta)
 	{
-		inputType = type;
+		this.poll();
+		
+		this.listeners.forEach((lis) ->
+		{
+			lis.onInputReceived(delta, this);
+			
+		});
+		
+		this.postUpdate();
 		
 	}
 	
-	public final EnumInputType getType()
+	public void addListener(IInputListener lis)
 	{
-		return this.inputType;
+		this.listeners.add(lis);
+		
 	}
 	
 	public abstract boolean initiateInput();
 	
-	protected abstract void updateInput();
+	protected abstract void poll();
 	
-	public abstract void cleanup();
-	
-	public abstract void setFlag(String name, boolean value);
+	protected abstract void postUpdate();
 	
 }

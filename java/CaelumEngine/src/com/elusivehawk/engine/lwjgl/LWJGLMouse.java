@@ -1,10 +1,13 @@
 
 package com.elusivehawk.engine.lwjgl;
 
+import static com.elusivehawk.engine.EnumMouseClick.*;
 import org.lwjgl.input.Mouse;
-import com.elusivehawk.engine.EnumInputType;
-import com.elusivehawk.engine.Input;
-import com.elusivehawk.util.storage.DirtableStorage;
+import com.elusivehawk.engine.CaelumEngine;
+import com.elusivehawk.engine.EnumMouseClick;
+import com.elusivehawk.engine.MouseInput;
+import com.elusivehawk.engine.render.IDisplay;
+import com.elusivehawk.util.math.Vector;
 
 /**
  * 
@@ -12,13 +15,63 @@ import com.elusivehawk.util.storage.DirtableStorage;
  * 
  * @author Elusivehawk
  */
-public class LWJGLMouse extends Input
+public class LWJGLMouse extends MouseInput
 {
-	private final DirtableStorage<Boolean> grabMouse = new DirtableStorage<Boolean>(false);
+	protected EnumMouseClick[]
+			buttons = null,
+			oldButtons = null;
+	protected Vector
+			mousePos = new Vector(0f, 0f),
+			mousePosDelta = new Vector(0f, 0f);
+	protected float wheel = 0f;
 	
-	public LWJGLMouse()
+	@Override
+	public void close()
 	{
-		super(EnumInputType.MOUSE);
+		Mouse.destroy();
+		
+	}
+	
+	@Override
+	public Vector getMousePos()
+	{
+		return this.mousePos;
+	}
+	
+	@Override
+	public Vector getMousePosDelta()
+	{
+		return this.mousePosDelta;
+	}
+	
+	@Override
+	public EnumMouseClick getClickStatus(int button)
+	{
+		return this.buttons[button];
+	}
+	
+	@Override
+	public EnumMouseClick getOldClickStatus(int button)
+	{
+		return this.oldButtons[button];
+	}
+	
+	@Override
+	public int getButtonCount()
+	{
+		return this.buttons.length;
+	}
+	
+	@Override
+	public float getWheelScroll()
+	{
+		return this.wheel;
+	}
+	
+	@Override
+	public void setGrabMouse(boolean grab)
+	{
+		Mouse.setGrabbed(grab);
 		
 	}
 	
@@ -29,63 +82,82 @@ public class LWJGLMouse extends Input
 		{
 			Mouse.create();
 			
-			return true;
 		}
-		catch (Exception e){}
+		catch (Exception e)
+		{
+			CaelumEngine.log().err(e);
+			
+			return false;
+		}
 		
-		return false;
+		this.buttons = new EnumMouseClick[Mouse.getButtonCount()];
+		this.oldButtons = new EnumMouseClick[Mouse.getButtonCount()];
+		
+		for (int b = 0; b < this.buttons.length; b++)
+		{
+			this.buttons[b] = EnumMouseClick.UP;
+			this.oldButtons[b] = EnumMouseClick.UP;
+			
+		}
+		
+		return true;
 	}
 	
 	@Override
-	protected void updateInput()
+	protected void poll()
 	{
 		Mouse.poll();
+		Mouse.updateCursor();
 		
-		if (this.grabMouse.isDirty())
+		IDisplay display = CaelumEngine.getDisplay();
+		
+		this.mousePos.set(Mouse.getX() / display.getWidth(), Mouse.getY() / display.getHeight());
+		this.mousePosDelta.set(Mouse.getDX() / display.getWidth(), Mouse.getDY() / display.getHeight());
+		this.wheel = Mouse.getDWheel() / display.getHeight();
+		
+		EnumMouseClick cur;
+		boolean click;
+		
+		for (int b = 0; b < this.buttons.length; b++)
 		{
-			Mouse.setGrabbed(this.grabMouse.get());
+			cur = this.buttons[b];
+			
+			click = Mouse.isButtonDown(b);
+			
+			if (click)
+			{
+				switch (cur)
+				{
+					case DOWN:
+						if (this.mousePos.isDirty())
+						{
+							this.oldButtons[b] = DOWN;
+							this.buttons[b] = DRAG;
+						};
+						break;
+					case UP:
+						this.oldButtons[b] = UP;
+						this.buttons[b] = DOWN;
+						break;
+				}
+				
+			}
+			else
+			{
+				this.oldButtons[b] = cur;
+				this.buttons[b] = UP;
+				
+			}
 			
 		}
-		
-		/*int buttons = Mouse.getButtonCount();
-		
-		for (int c = 0; c < buttons; c++)
-		{
-			this.bools.put(InputConst.MOUSE_CLICK | ((c + 1) << 16), Mouse.isButtonDown(c));
-			
-		}
-		
-		this.bools.put(InputConst.MOUSE_LOCK, Mouse.isGrabbed());
-		
-		this.integers.put(InputConst.MOUSE_X, Mouse.getX());
-		this.integers.put(InputConst.MOUSE_Y, Mouse.getY());
-		this.integers.put(InputConst.MOUSE_DX, Mouse.getDX());
-		this.integers.put(InputConst.MOUSE_DY, Mouse.getDY());
-		
-		if (Mouse.hasWheel())
-		{
-			this.integers.put(InputConst.MOUSE_DWHEEL, Mouse.getDWheel());
-			this.bools.put(InputConst.MOUSE_CWHEEL, false);//FIXME
-			
-		}*/
 		
 	}
 	
 	@Override
-	public void cleanup()
+	protected void postUpdate()
 	{
-		Mouse.destroy();
-		
-	}
-	
-	@Override
-	public void setFlag(String name, boolean value)
-	{
-		if ("lock".equalsIgnoreCase(name))
-		{
-			this.grabMouse.set(value);
-			
-		}
+		this.mousePos.setIsDirty(false);
+		this.mousePosDelta.setIsDirty(false);
 		
 	}
 	
