@@ -1,12 +1,6 @@
 apply plugin: 'java'
 
-ext
-{
-	//Versions
-	lwjgl = 'lwjgl:2.9.1'
-	guava = 'guava:16.0.1'
-	jdom = 'jdom2:2.0.5'
-}
+ext{}
 
 repositories
 {
@@ -24,14 +18,17 @@ sourceSets
 
 dependencies
 {
-	compile 'org.lwjgl.lwjgl:${ext.lwjgl}'
-	compile 'com.google.guava:${ext.guava}'
-	compile 'org.jdom:${ext.jdom}'
+	compile 'org.lwjgl.lwjgl:lwjgl:2.9.1'
+	compile 'com.google.guava:guava:16.0.1'
+	compile 'org.jdom:jdom2:2.0.5'
 	compile files("java/CaelumEngine/lib/PNGDecoder.jar")
 }
 
 jar
 {
+	destinationDir = file('builds')
+	version = '1.0.0.0-alpha2'
+
 	manifest
 	{
 		attributes('Main-class': 'com.elusivehawk.engine.CaelumEngine')

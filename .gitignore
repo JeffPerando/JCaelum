@@ -4,6 +4,8 @@
 *.war
 *.ear
 
+/.gradle/*
+/build/*
 /builds/*
 /*/*/bin/*
 /cpp/*
