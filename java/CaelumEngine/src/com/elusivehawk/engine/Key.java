@@ -90,6 +90,7 @@ public enum Key
 	COMMA(SYMBOL, ',', '<'),
 	DASH(SYMBOL, '-', '_'),
 	EQUALS(SYMBOL, '=', '+'),
+	GRAVE(SYMBOL, '`', '~'),
 	PERIOD(SYMBOL, '.', '>'),
 	SEMIUCOLON(SYMBOL, ';', ':'),
 	SLASH(SYMBOL, '/', '?'),

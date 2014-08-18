@@ -117,6 +117,7 @@ public class LWJGLKeyboard extends KeyboardInput
 		LWJGL_TO_ENUM[Keyboard.KEY_COMMA] = Key.COMMA;
 		LWJGL_TO_ENUM[Keyboard.KEY_SUBTRACT] = Key.DASH;
 		LWJGL_TO_ENUM[Keyboard.KEY_EQUALS] = Key.EQUALS;
+		LWJGL_TO_ENUM[Keyboard.KEY_GRAVE] = Key.GRAVE;
 		LWJGL_TO_ENUM[Keyboard.KEY_PERIOD] = Key.PERIOD;
 		LWJGL_TO_ENUM[Keyboard.KEY_NUMPADCOMMA] = Key.PERIOD;//TODO Check usage
 		LWJGL_TO_ENUM[Keyboard.KEY_SEMICOLON] = Key.SEMIUCOLON;
