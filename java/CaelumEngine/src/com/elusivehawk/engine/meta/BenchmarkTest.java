@@ -1,11 +1,16 @@
 
 package com.elusivehawk.engine.meta;
 
+import java.util.List;
+import com.elusivehawk.util.math.MathHelper;
+import com.google.common.collect.Lists;
+
 /**
  * 
  * Test log:
  * <p>
- * Better file filter.<br>
+ * Timer testing.<br>
+ * File filterer.<br>
  * String index testing.<br>
  * Refactor helper.<br>
  * Tokenizer testing.<br>
@@ -26,17 +31,40 @@ package com.elusivehawk.engine.meta;
  */
 public class BenchmarkTest
 {
-	public static final int TESTS = 128;
+	public static final int TESTS = 256;
 	
 	public static void main(String[] args)
 	{
 		System.out.println("Beginning bench testing...");
 		
-		/*StringHelper.filter(FileHelper.createFile("src", "com/elusivehawk/engine/lwjgl/OpenGL2.java"),
-				((line, str) ->
-				{
-					return str.endsWith(")") ? StringHelper.replaceLast(str, ")", ") throws GLException") : str;
-				}));*/
+		List<Long> longs = Lists.newArrayListWithCapacity(TESTS);
+		
+		for (int c = 0; c < TESTS; c++)
+		{
+			long time = 0L;
+			
+			time = System.nanoTime();
+			
+			try
+			{
+				Thread.sleep(1L);
+				
+			}
+			catch (InterruptedException e)
+			{
+				e.printStackTrace();
+				
+			}
+			
+			time = System.nanoTime() - time;
+			
+			System.out.println(String.format("Test #%s: %s", c + 1, time));
+			
+			longs.add(time);
+			
+		}
+		
+		//System.out.println(String.format("Final result: %s", MathHelper.avg(longs)));
 		
 		System.out.println("Th-th-th-th-That's all, folks!");
 		

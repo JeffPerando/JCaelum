@@ -11,7 +11,7 @@ import com.elusivehawk.util.IUpdatable;
  */
 public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 {
-	public static final double DIV = 1000000000.0;
+	public static final double DIV = 1000000000000000.0;
 	
 	private int updates = 0, updateCount = 0;
 	private long sleepTime = 0L;
