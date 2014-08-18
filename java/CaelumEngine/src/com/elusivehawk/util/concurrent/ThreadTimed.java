@@ -27,7 +27,7 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 		}
 		
 		this.updateCount = this.getTargetUpdateCount();
-		this.delta = (DIV / this.updateCount);
+		this.delta = (this.updateCount / DIV);
 		this.time = (DIV / System.nanoTime()) + this.delta;
 		this.initiated = true;
 		

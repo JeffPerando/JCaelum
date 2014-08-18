@@ -1,7 +1,9 @@
 
 package com.elusivehawk.engine.lwjgl;
 
-import static com.elusivehawk.engine.EnumMouseClick.*;
+import static com.elusivehawk.engine.EnumMouseClick.DOWN;
+import static com.elusivehawk.engine.EnumMouseClick.DRAG;
+import static com.elusivehawk.engine.EnumMouseClick.UP;
 import org.lwjgl.input.Mouse;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.EnumMouseClick;
@@ -20,10 +22,17 @@ public class LWJGLMouse extends MouseInput
 	protected EnumMouseClick[]
 			buttons = null,
 			oldButtons = null;
-	protected Vector
-			mousePos = new Vector(0f, 0f),
-			mousePosDelta = new Vector(0f, 0f);
+	protected final Vector mousePos, mousePosDelta;
+			
 	protected float wheel = 0f;
+	
+	@SuppressWarnings("unqualified-field-access")
+	public LWJGLMouse()
+	{
+		mousePos = new Vector(0f, 0f);
+		mousePosDelta = new Vector(0f, 0f);
+		
+	}
 	
 	@Override
 	public void close()

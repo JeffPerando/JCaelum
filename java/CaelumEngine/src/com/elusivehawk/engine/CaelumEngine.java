@@ -381,20 +381,35 @@ public final class CaelumEngine
 		
 		if (this.inputs.isEmpty())
 		{
-			List<Input> inputList = this.env.loadInputs();
+			List<Input> inputList = null;
 			
-			if (inputList == null || inputList.isEmpty())
+			try
 			{
-				this.log.log(EnumLogType.WARN, "Unable to load input");
+				inputList = this.env.loadInputs();
 				
 			}
-			else
+			catch (ClassFormatError e)
 			{
-				for (Input input : inputList)
+				this.log.err(e);
+				
+			}
+			finally
+			{
+
+				if (inputList == null || inputList.isEmpty())
 				{
-					this.inputs.add(input);
+					this.log.log(EnumLogType.WARN, "Unable to load input");
 					
-					this.log.log(EnumLogType.DEBUG, "Loaded input: %s", input.getClass().getCanonicalName());
+				}
+				else
+				{
+					for (Input input : inputList)
+					{
+						this.inputs.add(input);
+						
+						this.log.log(EnumLogType.DEBUG, "Loaded input: %s", input.getClass().getCanonicalName());
+						
+					}
 					
 				}
 				
