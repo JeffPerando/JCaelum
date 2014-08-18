@@ -183,7 +183,17 @@ public class LWJGLKeyboard extends KeyboardInput
 				
 				this.downKeys[key.ordinal()] = key.isLock() ? !this.downKeys[key.ordinal()] : true;
 				
-				if (!this.isKeyDown(key))
+				if (this.isKeyDown(key))
+				{
+					if (key.isLock() && this.downKeyList.contains(key))
+					{
+						continue;
+					}
+					
+					this.downKeyList.add(key);
+					
+				}
+				else
 				{
 					this.downKeyList.remove(key);
 					
