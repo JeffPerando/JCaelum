@@ -181,8 +181,13 @@ public class LWJGLKeyboard extends KeyboardInput
 			{
 				key = LWJGL_TO_ENUM[Keyboard.getEventKey()];
 				
-				this.downKeys[key.ordinal()] = true;
-				this.downKeyList.add(key);
+				this.downKeys[key.ordinal()] = key.isLock() ? !this.downKeys[key.ordinal()] : true;
+				
+				if (!this.isKeyDown(key))
+				{
+					this.downKeyList.remove(key);
+					
+				}
 				
 			}
 			
