@@ -110,21 +110,17 @@ public class LWJGLMouse extends MouseInput
 		Mouse.updateCursor();
 		
 		IDisplay display = CaelumEngine.getDisplay();
+		int b;
 		
-		this.mousePos.set(Mouse.getX() / display.getWidth(), Mouse.getY() / display.getHeight());
-		this.mousePosDelta.set(Mouse.getDX() / display.getWidth(), Mouse.getDY() / display.getHeight());
-		this.wheel = Mouse.getDWheel() / display.getHeight();
-		
-		EnumMouseClick cur;
-		boolean click;
-		
-		for (int b = 0; b < this.buttons.length; b++)
+		while (Mouse.next())
 		{
-			cur = this.buttons[b];
+			this.mousePos.set(Mouse.getEventX() / display.getWidth(), Mouse.getEventY() / display.getHeight());
+			this.mousePosDelta.set(Mouse.getEventDX() / display.getWidth(), Mouse.getEventDY() / display.getHeight());
+			this.wheel = Mouse.getEventDWheel() / display.getHeight();
 			
-			click = Mouse.isButtonDown(b);
+			EnumMouseClick cur = this.buttons[b = Mouse.getEventButton()];
 			
-			if (click)
+			if (Mouse.getEventButtonState())
 			{
 				switch (cur)
 				{
