@@ -9,22 +9,10 @@ package com.elusivehawk.util;
  */
 public class Timer
 {
-	protected long start = 0, time = 0;
+	public static final double NANO_SEC = 1000000000D;
+	
+	protected double start = 0, time = 0;
 	protected boolean started = false;
-	public final boolean nanoTime;
-	
-	public Timer()
-	{
-		this(true);
-		
-	}
-	
-	@SuppressWarnings("unqualified-field-access")
-	public Timer(boolean nano)
-	{
-		nanoTime = nano;
-		
-	}
 	
 	public void start()
 	{
@@ -32,7 +20,7 @@ public class Timer
 		{
 			this.started = true;
 			
-			this.start = this.nanoTime ? System.nanoTime() : System.currentTimeMillis();
+			this.start = System.nanoTime() / NANO_SEC;
 			
 		}
 		
@@ -44,13 +32,13 @@ public class Timer
 		{
 			this.started = false;
 			
-			this.time = (this.nanoTime ? System.nanoTime() : System.currentTimeMillis()) - this.start;
+			this.time = (System.nanoTime() / NANO_SEC) - this.start;
 			
 		}
 		
 	}
 	
-	public long report()
+	public double time()
 	{
 		return this.started ? 0 : this.time;
 	}

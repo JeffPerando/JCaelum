@@ -1,10 +1,6 @@
 
 package com.elusivehawk.engine.meta;
 
-import java.util.List;
-import com.elusivehawk.util.math.MathHelper;
-import com.google.common.collect.Lists;
-
 /**
  * 
  * Test log:
@@ -31,23 +27,22 @@ import com.google.common.collect.Lists;
  */
 public class BenchmarkTest
 {
-	public static final int TESTS = 256;
+	public static final int TESTS = 10;
+	public static final double DIV = 1000000000D;
 	
 	public static void main(String[] args)
 	{
 		System.out.println("Beginning bench testing...");
 		
-		List<Long> longs = Lists.newArrayListWithCapacity(TESTS);
+		long time;
 		
 		for (int c = 0; c < TESTS; c++)
 		{
-			long time = 0L;
-			
 			time = System.nanoTime();
 			
 			try
 			{
-				Thread.sleep(1L);
+				Thread.sleep(1000L);
 				
 			}
 			catch (InterruptedException e)
@@ -58,9 +53,7 @@ public class BenchmarkTest
 			
 			time = System.nanoTime() - time;
 			
-			System.out.println(String.format("Test #%s: %s", c + 1, time));
-			
-			longs.add(time);
+			System.out.println(String.format("Test #%s: %s", c + 1, time / DIV));
 			
 		}
 		

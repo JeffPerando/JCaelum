@@ -41,6 +41,17 @@ public abstract class ThreadStoppable extends Thread implements IThreadStoppable
 				
 			}
 			
+			try
+			{
+				this.firstUpdate();
+				
+			}
+			catch (Throwable e)
+			{
+				this.handleException(e);
+				
+			}
+			
 			while (this.isRunning() && this.canRun())
 			{
 				try
@@ -100,6 +111,8 @@ public abstract class ThreadStoppable extends Thread implements IThreadStoppable
 	}
 	
 	public abstract void rawUpdate() throws Throwable;
+	
+	public void firstUpdate() throws Throwable{}
 	
 	@SuppressWarnings("unused")
 	public void onThreadStopped(boolean failed){}

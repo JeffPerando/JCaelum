@@ -38,6 +38,7 @@ public final class TestGame extends Game
 	protected void tick(double delta) throws Throwable
 	{
 		CaelumEngine.log().log(EnumLogType.INFO, "Test: %s", delta);
+		
 		// TODO Auto-generated method stub
 		
 	}
@@ -47,12 +48,6 @@ public final class TestGame extends Game
 	{
 		// TODO Auto-generated method stub
 		
-	}
-	
-	@Override
-	public int getUpdateCount()
-	{
-		return 40;
 	}
 	
 }

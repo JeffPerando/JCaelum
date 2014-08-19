@@ -2,6 +2,7 @@
 package com.elusivehawk.util.concurrent;
 
 import com.elusivehawk.util.IUpdatable;
+import com.elusivehawk.util.Timer;
 
 /**
  * 
@@ -11,95 +12,101 @@ import com.elusivehawk.util.IUpdatable;
  */
 public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 {
-	public static final double DIV = 1000000000000000.0;
+	public static final int MILI_SEC = 1000;
 	
 	private int updates = 0, updateCount = 0;
-	private long sleepTime = 0L;
-	private double time, lastTime, delta;
-	private boolean initiated = false;
+	private double time = 0, lastTime, timeUsed = 0, delta;
+	
+	private Timer timer = new Timer();
 	
 	@Override
 	public boolean initiate()
 	{
-		if (this.initiated)
-		{
-			return false;
-		}
-		
 		this.updateCount = this.getTargetUpdateCount();
-		this.delta = (this.updateCount / DIV);
-		this.time = (DIV / System.nanoTime()) + this.delta;
-		this.initiated = true;
+		this.delta = (Timer.NANO_SEC / this.updateCount) / Timer.NANO_SEC;
 		
 		return true;
 	}
 	
 	@Override
+	public final void firstUpdate()
+	{
+		this.lastTime = System.nanoTime() / Timer.NANO_SEC;
+		
+		this.timer.start();
+		this.timer.stop();
+		
+	}
+	
+	@Override
 	public final void rawUpdate()
 	{
-		if (!this.initiated)
+		if (this.timeUsed > 1.0 || this.updates == this.updateCount)//Have we run out of time?
 		{
-			System.err.println(String.format("Thread %s failed to initiate, remember to call super.initiate()!", this));
+			long sleep = (long)(MILI_SEC - (Math.abs(this.timeUsed - 1.0) * MILI_SEC));
 			
-			this.stopThread();
+			if (sleep > 0)
+			{
+				try
+				{
+					Thread.sleep(sleep);//Sleep for the remainder of the second
+					
+				}
+				catch (InterruptedException e)
+				{
+					e.printStackTrace();
+					
+				}
+				
+			}
 			
+			//Zero out both timers for the new second.
+			
+			this.timeUsed = 0;
+			this.updates = 0;
 			return;
 		}
 		
-		this.time = System.nanoTime() / DIV;
+		this.time = System.nanoTime() / Timer.NANO_SEC;
+		this.updates++;
 		
-		if (this.getMaxDelta() > 0 && (this.lastTime - this.time) > this.getMaxDelta()) this.lastTime = this.time;
+		this.timer.start();//Start the timer
 		
-		if ((this.time + this.delta) >= this.lastTime)
+		try
 		{
-			this.updates++;
+			this.update(this.time - this.lastTime);//Update the thread
 			
+		}
+		catch (Throwable e)
+		{
+			this.handleException(e);
+			
+		}
+		
+		this.timer.stop();//Stop the timer
+		
+		//System.out.println(String.format("Time: %s; Last Time: %s", this.time, this.lastTime));
+		
+		this.timeUsed += this.timer.time();
+		this.lastTime = this.time;
+		
+		if (this.timer.time() < this.delta)//What if we actually have MORE time than we know what to do with?
+		{
 			try
 			{
-				this.update(this.time - this.lastTime);
+				Thread.sleep((long)((this.delta - this.timer.time()) * MILI_SEC));//Put the thread asleep for the remaining time.
 				
 			}
-			catch (Throwable e)
+			catch (InterruptedException e)
 			{
-				this.handleException(e);
-				
-			}
-			
-			this.lastTime += this.delta;
-			
-			if (this.updates >= this.updateCount)
-			{
-				this.sleepTime = 1L;
-				
-				this.updates = 0;
+				e.printStackTrace();
 				
 			}
 			
 		}
-		else this.sleepTime = (long)(1000.0 * (this.time - this.lastTime));
 		
-		if (this.sleepTime > 0L)
-		{
-			try
-			{
-				Thread.sleep(this.sleepTime);
-				
-			}
-			catch (Exception e){}
-			
-			this.sleepTime = 0L;
-			
-		}
-		
-	}
-	
-	public final boolean isInitiated()
-	{
-		return this.initiated;
 	}
 	
 	public abstract int getTargetUpdateCount();
-	
-	public abstract double getMaxDelta();
 	
 }
