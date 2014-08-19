@@ -11,7 +11,6 @@ import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.math.MathConst;
 import com.elusivehawk.util.math.Vector;
-import com.elusivehawk.util.storage.Buffer;
 import com.google.common.collect.Lists;
 
 /**
@@ -136,7 +135,7 @@ public final class Tessellator
 			throw new RenderException("You forgot to load any points!");
 		}
 		
-		Buffer<Float> temp = new Buffer<Float>();
+		List<Float> temp = Lists.newArrayList();
 		ModelPoint p = null;
 		int  i = 0;
 		
@@ -153,13 +152,31 @@ public final class Tessellator
 				continue;
 			}
 			
-			temp.add(p.v.multiget(MathConst.XYZ));
-			temp.add(p.t.multiget(MathConst.XY));
-			temp.add(p.n.multiget(MathConst.XYZ));
+			Number[] n = p.v.multiget(MathConst.XYZ);
+			
+			for (Number num : n)
+			{
+				temp.add(num.floatValue());
+				
+			}
+			
+			n = p.t.multiget(MathConst.XY);
+			
+			for (Number num : n)
+			{
+				temp.add(num.floatValue());
+				
+			}
+			
+			n = p.n.multiget(MathConst.XYZ);
+			
+			for (Number num : n)
+			{
+				temp.add(num.floatValue());
+				
+			}
 			
 		}
-		
-		temp.rewind();
 		
 		this.finbuf = BufferHelper.makeFloatBuffer(temp).asReadOnlyBuffer();
 		this.indices = BufferHelper.makeIntBuffer(in).asReadOnlyBuffer();

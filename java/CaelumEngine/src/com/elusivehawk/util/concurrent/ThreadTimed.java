@@ -31,7 +31,7 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 	@Override
 	public final void firstUpdate()
 	{
-		this.lastTime = System.nanoTime() / Timer.NANO_SEC;
+		this.time = System.nanoTime() / Timer.NANO_SEC;
 		
 		this.timer.start();
 		this.timer.stop();
@@ -67,6 +67,7 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 			return;
 		}
 		
+		this.lastTime = this.time;
 		this.time = System.nanoTime() / Timer.NANO_SEC;
 		this.updates++;
 		
@@ -85,16 +86,15 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 		
 		this.timer.stop();//Stop the timer
 		
-		//System.out.println(String.format("Time: %s; Last Time: %s", this.time, this.lastTime));
+		System.out.println(String.format("Time: %s; Last Time: %s", this.time, this.lastTime));
 		
 		this.timeUsed += this.timer.time();
-		this.lastTime = this.time;
 		
 		if (this.timer.time() < this.delta)//What if we actually have MORE time than we know what to do with?
 		{
 			try
 			{
-				Thread.sleep((long)((this.delta - this.timer.time()) * MILI_SEC));//Put the thread asleep for the remaining time.
+				Thread.sleep((long)((this.delta - this.timer.time()) * MILI_SEC));//Sleep for the remaining time.
 				
 			}
 			catch (InterruptedException e)

@@ -1,7 +1,6 @@
 
 package com.elusivehawk.util.math;
 
-import com.elusivehawk.util.MakeDefault;
 import com.elusivehawk.util.storage.Buffer;
 import com.elusivehawk.util.storage.IStorable;
 
@@ -33,8 +32,40 @@ public interface IMathObject<T extends Number> extends IStorable<T>
 	
 	public T get(int pos);
 	
-	@MakeDefault
-	public T[] multiget(int bitmask);
+	default Number[] multiget(int bitmask)
+	{
+		int count = 0;
+		
+		for (int bits : MathConst.BITMASKS)
+		{
+			if ((bitmask & bits) != 0)
+			{
+				count++;
+				
+			}
+			
+		}
+		
+		if (count == 0)
+		{
+			return new Float[0];
+		}
+		
+		count = 0;
+		Number[] ret = new Number[count];
+		
+		for (int c = 0; c < MathConst.BITMASKS.length; c++)
+		{
+			if ((bitmask & MathConst.BITMASKS[c]) != 0)
+			{
+				ret[count++] = this.get(c);
+				
+			}
+			
+		}
+		
+		return ret;
+	}
 	
 	default void set(int pos, T num)
 	{

@@ -115,42 +115,6 @@ public class Vector implements IMathObject<Float>, IDirty
 	}
 	
 	@Override
-	public Float[] multiget(int bitmask)
-	{
-		int count = 0;
-		
-		for (int bits : MathConst.BITMASKS)
-		{
-			if ((bitmask & bits) != 0)
-			{
-				count++;
-				
-			}
-			
-		}
-		
-		if (count == 0)
-		{
-			return new Float[0];
-		}
-		
-		count = 0;
-		Float[] ret = new Float[count];
-		
-		for (int c = 0; c < MathConst.BITMASKS.length; c++)
-		{
-			if ((bitmask & MathConst.BITMASKS[c]) != 0)
-			{
-				ret[count++] = this.get(c);
-				
-			}
-			
-		}
-		
-		return ret;
-	}
-	
-	@Override
 	public void set(int pos, Float num, boolean notify)
 	{
 		if (this.nums[pos] == num.floatValue())
