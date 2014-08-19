@@ -53,8 +53,6 @@ public final class CaelumEngine
 	private final TaskManager tasks = new TaskManager();
 	private final List<String> startupPrefixes = Lists.newArrayList();
 	
-	private boolean singleThreaded = false;
-	
 	private ILog log = new GameLog();
 	private IGameEnvironment env = null;
 	private IRenderEnvironment renv = null;
@@ -82,7 +80,6 @@ public final class CaelumEngine
 		this.startupPrefixes.add("env:");
 		this.startupPrefixes.add("gamefac:");
 		this.startupPrefixes.add("verbose:");
-		this.startupPrefixes.add("st:");
 		
 		Iterator<String> itr = this.startupPrefixes.iterator();
 		String prefix;
@@ -373,8 +370,6 @@ public final class CaelumEngine
 				
 			}
 			
-			this.singleThreaded = "true".equalsIgnoreCase(this.startargs.get("st")) || env.singleThreaded();
-			
 		}
 		
 		//XXX Loading input
@@ -519,23 +514,11 @@ public final class CaelumEngine
 			
 		}
 		
-		IThreadStoppable rt;
+		IThreadStoppable rt = this.renv.createRenderThread(this.rcon);
 		
-		if (this.singleThreaded)
+		if (rt == null)
 		{
-			rt = gameloop;
-			gameloop.enableSingleThreadedRendering(this.rcon);
-			
-		}
-		else
-		{
-			rt = this.renv.createRenderThread(this.rcon);
-			
-			if (rt == null)
-			{
-				rt = new ThreadGameRender(this.rcon);
-				
-			}
+			rt = new ThreadGameRender(this.rcon);
 			
 		}
 		

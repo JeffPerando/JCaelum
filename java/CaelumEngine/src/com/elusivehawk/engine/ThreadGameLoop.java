@@ -2,7 +2,6 @@
 package com.elusivehawk.engine;
 
 import java.util.List;
-import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.util.Internal;
 import com.google.common.collect.Lists;
 
@@ -13,12 +12,10 @@ import com.google.common.collect.Lists;
  * @author Elusivehawk
  */
 @Internal
-public final class ThreadGameLoop extends ThreadCaelum implements IThreadContext
+public final class ThreadGameLoop extends ThreadCaelum
 {
 	private final List<Input> input = Lists.newArrayList();
 	private final Game game;
-	
-	private RenderContext rcon = null;//Only used for single-threaded rendering.
 	
 	@SuppressWarnings("unqualified-field-access")
 	public ThreadGameLoop(List<Input> inputMap, Game g)
@@ -31,22 +28,6 @@ public final class ThreadGameLoop extends ThreadCaelum implements IThreadContext
 			
 		}
 		
-	}
-	
-	@Override
-	public boolean initiate()
-	{
-		if (!super.initiate())
-		{
-			return false;
-		}
-		
-		if (this.rcon != null && !this.rcon.initContext())
-		{
-			return false;
-		}
-		
-		return true;
 	}
 	
 	@Override
@@ -64,25 +45,12 @@ public final class ThreadGameLoop extends ThreadCaelum implements IThreadContext
 		
 		this.game.update(delta);
 		
-		if (this.rcon != null)
-		{
-			this.rcon.update(delta);
-			this.rcon.getDisplay().updateDisplay();
-			
-		}
-		
 	}
 	
 	@Override
 	public int getTargetUpdateCount()
 	{
 		return this.game.getUpdateCount();
-	}
-	
-	@Override
-	public IContext getContext()
-	{
-		return this.rcon;
 	}
 	
 	@Override
@@ -97,23 +65,7 @@ public final class ThreadGameLoop extends ThreadCaelum implements IThreadContext
 	@Override
 	public void onThreadStopped(boolean failure)
 	{
-		if (this.rcon != null)
-		{
-			this.rcon.cleanup();
-			
-		}
-		
 		this.input.clear();
-		
-	}
-	
-	public void enableSingleThreadedRendering(RenderContext context)
-	{
-		if (this.rcon == null)
-		{
-			this.rcon = context;
-			
-		}
 		
 	}
 	
