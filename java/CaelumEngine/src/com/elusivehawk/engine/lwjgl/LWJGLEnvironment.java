@@ -88,7 +88,7 @@ public class LWJGLEnvironment implements IGameEnvironment
 	{
 		List<Input> ret = Lists.newArrayList();
 		
-		//ret.add(new LWJGLMouse());
+		ret.add(new LWJGLMouse());
 		ret.add(new LWJGLKeyboard());
 		
 		return ret;

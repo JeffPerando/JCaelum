@@ -97,8 +97,6 @@ public interface IMathObject<T extends Number> extends IStorable<T>
 	
 	default IMathObject<T> set(IMathObject<T> obj)
 	{
-		assert obj != null && !this.isImmutable();
-		
 		int l = Math.min(this.getSize(), obj.getSize());
 		
 		for (int c = 0; c < l; c++)

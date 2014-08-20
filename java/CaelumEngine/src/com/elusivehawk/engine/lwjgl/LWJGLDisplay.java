@@ -131,6 +131,7 @@ public class LWJGLDisplay implements IDisplay
 		try
 		{
 			Display.releaseContext();
+			
 		}
 		catch (LWJGLException e)
 		{
