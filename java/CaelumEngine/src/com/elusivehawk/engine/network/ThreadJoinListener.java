@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.concurrent.ThreadStoppable;
 
@@ -18,16 +19,23 @@ import com.elusivehawk.util.concurrent.ThreadStoppable;
 public class ThreadJoinListener extends ThreadStoppable
 {
 	protected final IHost svr;
-	protected final ServerSocketChannel chnl;
+	protected final int port;
+	protected ServerSocketChannel chnl;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public ThreadJoinListener(IHost server, int port)
+	public ThreadJoinListener(IHost server, int p)
 	{
 		assert server != null;
 		assert server.getSide().isServer();
 		
 		svr = server;
+		port = p;
 		
+	}
+	
+	@Override
+	public boolean initiate()
+	{
 		ServerSocketChannel ch = null;
 		
 		try
@@ -35,17 +43,18 @@ public class ThreadJoinListener extends ThreadStoppable
 			ch = ServerSocketChannel.open();
 			ch.configureBlocking(false);
 			
-			ch.bind(new InetSocketAddress(port));
+			ch.bind(new InetSocketAddress(this.port));
 			
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
-			
+			return false;
 		}
 		
-		chnl = ch;
+		this.chnl = ch;
 		
+		return true;
 	}
 	
 	@Override
@@ -64,12 +73,20 @@ public class ThreadJoinListener extends ThreadStoppable
 	@Override
 	public void onThreadStopped(boolean failure)
 	{
-		try
+		if (!failure)
 		{
-			this.chnl.close();
+			try
+			{
+				this.chnl.close();
+				
+			}
+			catch (IOException e)
+			{
+				CaelumEngine.log().err(e);
+				
+			}
 			
 		}
-		catch (IOException e){}
 		
 	}
 	

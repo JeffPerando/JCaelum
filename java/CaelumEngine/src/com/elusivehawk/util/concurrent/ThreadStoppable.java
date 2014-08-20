@@ -14,11 +14,7 @@ public abstract class ThreadStoppable extends Thread implements IThreadStoppable
 {
 	private boolean running = false, paused = false;
 	
-	public ThreadStoppable()
-	{
-		super();
-		
-	}
+	public ThreadStoppable(){}
 	
 	public ThreadStoppable(String name)
 	{

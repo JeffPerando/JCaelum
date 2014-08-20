@@ -7,7 +7,6 @@ import static com.elusivehawk.engine.EnumMouseClick.UP;
 import org.lwjgl.input.Mouse;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.EnumMouseClick;
-import com.elusivehawk.engine.MouseInput;
 import com.elusivehawk.engine.render.IDisplay;
 import com.elusivehawk.util.math.Vector;
 
@@ -17,7 +16,7 @@ import com.elusivehawk.util.math.Vector;
  * 
  * @author Elusivehawk
  */
-public class LWJGLMouse extends MouseInput
+public class LWJGLMouse extends com.elusivehawk.engine.Mouse
 {
 	protected EnumMouseClick[]
 			buttons = null,
@@ -118,7 +117,7 @@ public class LWJGLMouse extends MouseInput
 		Mouse.poll();
 		Mouse.updateCursor();
 		
-		IDisplay display = CaelumEngine.getDisplay();
+		IDisplay display = CaelumEngine.display();
 		int b;
 		
 		while (Mouse.next())

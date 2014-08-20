@@ -5,6 +5,8 @@ import java.util.List;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.IGameEnvironment;
 import com.elusivehawk.engine.Input;
+import com.elusivehawk.engine.render.DisplaySettings;
+import com.elusivehawk.engine.render.IDisplay;
 import com.elusivehawk.engine.render.IRenderEnvironment;
 import com.elusivehawk.util.CompInfo;
 import com.elusivehawk.util.EnumOS;
@@ -72,11 +74,21 @@ public class LWJGLEnvironment implements IGameEnvironment
 	}
 	
 	@Override
+	public IDisplay createDisplay(DisplaySettings settings)
+	{
+		LWJGLDisplay ret = new LWJGLDisplay();
+		
+		ret.updateSettings(settings);
+		
+		return ret;
+	}
+	
+	@Override
 	public List<Input> loadInputs()
 	{
 		List<Input> ret = Lists.newArrayList();
 		
-		ret.add(new LWJGLMouse());
+		//ret.add(new LWJGLMouse());
 		ret.add(new LWJGLKeyboard());
 		
 		return ret;

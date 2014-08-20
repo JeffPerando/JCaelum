@@ -19,6 +19,14 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 	
 	private Timer timer = new Timer();
 	
+	public ThreadTimed(){}
+	
+	public ThreadTimed(String name)
+	{
+		super(name);
+		
+	}
+	
 	@Override
 	public boolean initiate()
 	{
@@ -85,8 +93,6 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 		}
 		
 		this.timer.stop();//Stop the timer
-		
-		System.out.println(String.format("Time: %s; Last Time: %s", this.time, this.lastTime));
 		
 		this.timeUsed += this.timer.time();
 		

@@ -5,7 +5,6 @@ import java.util.List;
 import org.lwjgl.input.Keyboard;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.Key;
-import com.elusivehawk.engine.KeyboardInput;
 import com.google.common.collect.Lists;
 
 /**
@@ -14,7 +13,7 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-public class LWJGLKeyboard extends KeyboardInput
+public class LWJGLKeyboard extends com.elusivehawk.engine.Keyboard
 {
 	public static final Key[] LWJGL_TO_ENUM = new Key[Keyboard.KEYBOARD_SIZE];
 	
@@ -178,6 +177,11 @@ public class LWJGLKeyboard extends KeyboardInput
 		while (Keyboard.next())
 		{
 			key = LWJGL_TO_ENUM[Keyboard.getEventKey()];
+			
+			if (key == null)
+			{
+				continue;
+			}
 			
 			this.downKeys[key.ordinal()] = Keyboard.getEventKeyState();//TODO See how this affects caps lock
 			

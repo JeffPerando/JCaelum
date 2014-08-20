@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
+import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.IContext;
 import com.elusivehawk.engine.IThreadContext;
 import com.elusivehawk.engine.ThreadCaelum;
@@ -23,6 +24,8 @@ public class ThreadGameRender extends ThreadCaelum implements IThreadContext
 	@SuppressWarnings("unqualified-field-access")
 	public ThreadGameRender(RenderContext con)
 	{
+		super("Thread-Render");
+		
 		rcon = con;
 		
 	}
@@ -30,7 +33,7 @@ public class ThreadGameRender extends ThreadCaelum implements IThreadContext
 	@Override
 	public boolean initiate()
 	{
-		if (!super.initiate())
+		if (!CaelumEngine.display().makeCurrent())
 		{
 			return false;
 		}
@@ -42,22 +45,25 @@ public class ThreadGameRender extends ThreadCaelum implements IThreadContext
 		
 		this.fps = this.rcon.getFPS();
 		
-		return true;
+		return super.initiate();
 	}
 	
 	@Override
 	public void update(double delta) throws Throwable
 	{
-		if (this.rcon.getDisplay().isCloseRequested())
+		IDisplay display = CaelumEngine.display();
+		
+		if (display.isCloseRequested())
 		{
-			this.rcon.onDisplayClosed(this.rcon.getDisplay());
+			this.rcon.onDisplayClosed(display);
 			
 			ShutdownHelper.exit(0);
 			
+			return;
 		}
 		
 		this.rcon.update(delta);
-		this.rcon.getDisplay().updateDisplay();
+		display.updateDisplay();
 		
 	}
 	

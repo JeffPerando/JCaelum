@@ -30,14 +30,24 @@ public final class TestGame extends Game
 	@Override
 	protected void initiateGame(GameArguments args)
 	{
-		// TODO Auto-generated method stub
+		CaelumEngine.addInputListener(Keyboard.class, ((delta, input) ->
+		{
+			Keyboard kb = (Keyboard)input;
+			
+			for (Key key : kb.getPushedKeys())
+			{
+				CaelumEngine.log().log(EnumLogType.VERBOSE, "Key type: %s", key);
+				
+			}
+			
+		}));
 		
 	}
 	
 	@Override
 	protected void tick(double delta) throws Throwable
 	{
-		CaelumEngine.log().log(EnumLogType.INFO, "Test: %s", delta);
+		//CaelumEngine.log().log(EnumLogType.INFO, "Test: %s", delta);
 		
 		// TODO Auto-generated method stub
 		

@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine;
 
+import java.util.Iterator;
 import java.util.List;
 import com.elusivehawk.util.Internal;
 import com.google.common.collect.Lists;
@@ -20,6 +21,8 @@ public final class ThreadGameLoop extends ThreadCaelum
 	@SuppressWarnings("unqualified-field-access")
 	public ThreadGameLoop(List<Input> inputMap, Game g)
 	{
+		super("Thread-GameLoop");
+		
 		game = g;
 		
 		if (inputMap != null)
@@ -28,6 +31,27 @@ public final class ThreadGameLoop extends ThreadCaelum
 			
 		}
 		
+	}
+	
+	@Override
+	public boolean initiate()
+	{
+		Iterator<Input> itr = this.input.iterator();
+		Input in;
+		
+		while (itr.hasNext())
+		{
+			in = itr.next();
+			
+			if (!in.initiateInput())
+			{
+				itr.remove();
+				
+			}
+			
+		}
+		
+		return true;
 	}
 	
 	@Override

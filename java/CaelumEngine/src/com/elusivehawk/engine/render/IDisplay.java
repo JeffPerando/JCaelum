@@ -51,4 +51,6 @@ public interface IDisplay extends Closeable
 	
 	public void updateSettings(DisplaySettings settings);
 	
+	public boolean makeCurrent();
+	
 }

@@ -13,6 +13,14 @@ import com.elusivehawk.util.concurrent.ThreadTimed;
 @Internal
 public abstract class ThreadCaelum extends ThreadTimed
 {
+	public ThreadCaelum(){}
+	
+	public ThreadCaelum(String name)
+	{
+		super(name);
+		
+	}
+	
 	@Override
 	public void handleException(Throwable e)
 	{

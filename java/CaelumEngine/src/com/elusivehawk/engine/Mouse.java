@@ -9,7 +9,7 @@ import com.elusivehawk.util.math.Vector;
  * 
  * @author Elusivehawk
  */
-public abstract class MouseInput extends Input
+public abstract class Mouse extends Input
 {
 	public abstract Vector getMousePos();
 	

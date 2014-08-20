@@ -4,8 +4,8 @@ package com.elusivehawk.engine;
 import java.util.List;
 import com.elusivehawk.engine.assets.AssetManager;
 import com.elusivehawk.engine.physics.IPhysicsSimulator;
+import com.elusivehawk.engine.render.DisplaySettings;
 import com.elusivehawk.engine.render.RenderContext;
-import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.old.IRenderHUB;
 import com.elusivehawk.util.IPausable;
 import com.elusivehawk.util.Version;
@@ -73,21 +73,7 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 		
 	}
 	
-	@Override
-	public void render(RenderContext rcon, double delta)
-	{
-		if (this.state == null)
-		{
-			super.render(rcon, delta);
-			
-		}
-		else
-		{
-			this.state.render(rcon, delta);
-			
-		}
-		
-	}
+	//XXX Getters
 	
 	/**
 	 * 
@@ -100,6 +86,8 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 	{
 		return this.state == null ? null : this.state.getPhysicsSimulator();
 	}
+	
+	//XXX Overridden methods
 	
 	@Override
 	public final void update(double delta) throws GameTickException
@@ -165,6 +153,22 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 	}
 	
 	@Override
+	public void render(RenderContext rcon, double delta)
+	{
+		if (this.state == null)
+		{
+			super.render(rcon, delta);
+			
+		}
+		else
+		{
+			this.state.render(rcon, delta);
+			
+		}
+		
+	}
+	
+	@Override
 	public String getFormattedName()
 	{
 		return this.getGameVersion() == null ? this.name : String.format("%s %s", this.name, this.getGameVersion());
@@ -203,6 +207,11 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 	public int getUpdateCount()
 	{
 		return 30;
+	}
+	
+	public DisplaySettings getDisplaySettings()
+	{
+		return null;
 	}
 	
 	//XXX Game state stuff

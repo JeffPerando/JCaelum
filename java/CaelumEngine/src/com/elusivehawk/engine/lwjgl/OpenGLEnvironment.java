@@ -1,8 +1,6 @@
 
 package com.elusivehawk.engine.lwjgl;
 
-import com.elusivehawk.engine.render.DisplaySettings;
-import com.elusivehawk.engine.render.IDisplay;
 import com.elusivehawk.engine.render.IRenderEnvironment;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.util.concurrent.IThreadStoppable;
@@ -37,16 +35,6 @@ public class OpenGLEnvironment implements IRenderEnvironment
 			default: return null;
 		}
 		
-	}
-	
-	@Override
-	public IDisplay createDisplay(DisplaySettings settings)
-	{
-		LWJGLDisplay ret = new LWJGLDisplay();
-		
-		ret.updateSettings(settings);
-		
-		return ret;
 	}
 	
 	@Override

@@ -29,15 +29,6 @@ public interface IRenderEnvironment
 	 */
 	public Object getGL(int version);
 	
-	/**
-	 * 
-	 * Called during startup.
-	 * 
-	 * @param settings The settings to create the display under.
-	 * @return The display created.
-	 */
-	public IDisplay createDisplay(DisplaySettings settings);
-	
 	public IThreadStoppable createRenderThread(RenderContext rcon);
 	
 }

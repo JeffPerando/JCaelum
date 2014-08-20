@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import com.elusivehawk.engine.assets.AssetManager;
+import com.elusivehawk.engine.render.DisplaySettings;
 import com.elusivehawk.engine.render.IDisplay;
 import com.elusivehawk.engine.render.IRenderEnvironment;
 import com.elusivehawk.engine.render.RenderContext;
@@ -57,6 +58,7 @@ public final class CaelumEngine
 	private IGameEnvironment env = null;
 	private IRenderEnvironment renv = null;
 	private JsonObject envConfig = null;
+	private IDisplay display = null;
 	
 	private GameFactory factory = null;
 	private Game game = null;
@@ -134,9 +136,9 @@ public final class CaelumEngine
 		return instance().gameargs;
 	}
 	
-	public static IDisplay getDisplay()
+	public static IDisplay display()
 	{
-		return instance().rcon.getDisplay();
+		return instance().display;
 	}
 	
 	public static IContext getContext(boolean safe)
@@ -169,7 +171,7 @@ public final class CaelumEngine
 		
 	}
 	
-	public static void addInputListener(Class<Input> type, IInputListener lis)
+	public static void addInputListener(Class<? extends Input> type, IInputListener lis)
 	{
 		instance().inputs.forEach((input) ->
 		{
@@ -346,6 +348,7 @@ public final class CaelumEngine
 				this.log.log(EnumLogType.ERROR, "Unable to load environment: Instance couldn't be created. Class: %s", clazz == null ? "NULL" : clazz.getCanonicalName());
 				ShutdownHelper.exit("NO-ENVIRONMENT-FOUND");
 				
+				return;
 			}
 			
 			if (!env.isCompatible(CompInfo.OS))
@@ -353,6 +356,7 @@ public final class CaelumEngine
 				this.log.log(EnumLogType.ERROR, "Unable to load environment: Current OS is incompatible. Class: %s; OS: %s", clazz == null ? "NULL" : clazz.getCanonicalName(), CompInfo.OS);
 				ShutdownHelper.exit("NO-ENVIRONMENT-FOUND");
 				
+				return;
 			}
 			
 			env.initiate(this.envConfig, args);
@@ -426,12 +430,10 @@ public final class CaelumEngine
 				this.log.log(EnumLogType.ERROR, "Game factory not found: Factory not provided");
 				ShutdownHelper.exit("NO-FACTORY-FOUND");
 				
+				return;
 			}
-			else
-			{
-				this.factory = (GameFactory)ReflectionHelper.newInstance(gamefac, new Class<?>[]{GameFactory.class}, null);
-				
-			}
+			
+			this.factory = (GameFactory)ReflectionHelper.newInstance(gamefac, new Class<?>[]{GameFactory.class}, null);
 			
 		}
 		
@@ -447,6 +449,7 @@ public final class CaelumEngine
 			this.log.log(EnumLogType.ERROR, "Game factory not found: Factory not provided");
 			ShutdownHelper.exit("NO-FACTORY-FOUND");
 			
+			return;
 		}
 		
 		Game g = this.factory.createGame();
@@ -456,6 +459,7 @@ public final class CaelumEngine
 			this.log.log(EnumLogType.ERROR, "Could not load game");
 			ShutdownHelper.exit("NO-GAME-FOUND");
 			
+			return;
 		}
 		
 		this.tasks.start();
@@ -480,10 +484,47 @@ public final class CaelumEngine
 		catch (Throwable e)
 		{
 			this.log.err("Game failed to load!", e);
-			
 			ShutdownHelper.exit("GAME-LOAD-FAILURE");
 			
+			return;
 		}
+		
+		//XXX Create display
+		
+		DisplaySettings settings = this.game.getDisplaySettings();
+		
+		if (settings == null)
+		{
+			settings = new DisplaySettings();
+			
+		}
+		
+		IDisplay d = this.env.createDisplay(settings);
+		
+		if (d == null)
+		{
+			this.log.log(EnumLogType.ERROR, "Display could not be created: Display is null");
+			ShutdownHelper.exit("DISPLAY-NOT-MADE");
+			
+			return;
+		}
+		
+		try
+		{
+			d.createDisplay();
+			
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			
+			this.log.log(EnumLogType.ERROR, "Display could not be created: Display threw an error");
+			ShutdownHelper.exit("DISPLAY-NOT-MADE");
+			
+			return;
+		}
+		
+		this.display = d;
 		
 		//XXX Creating game threads
 		

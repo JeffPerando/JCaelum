@@ -37,7 +37,6 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 {
 	private final IRenderEnvironment renv;
 	
-	private IDisplay display = null;
 	private IRenderHUB hub = null;
 	private int fps;
 	private boolean paused = false;
@@ -95,27 +94,6 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 			return false;
 		}
 		
-		IDisplay d = this.renv.createDisplay(this.settings);
-		
-		if (d == null)
-		{
-			return false;
-			
-		}
-		
-		try
-		{
-			d.createDisplay();
-			
-		}
-		catch (Exception e)
-		{
-			CaelumEngine.log().err(e);
-			return false;
-		}
-		
-		this.display = d;
-		
 		this.gl1 = (IGL1)this.renv.getGL(IRenderEnvironment.GL_1);
 		this.gl2 = (IGL2)this.renv.getGL(IRenderEnvironment.GL_2);
 		this.gl3 = (IGL3)this.renv.getGL(IRenderEnvironment.GL_3);
@@ -169,7 +147,7 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 		{
 			CaelumEngine.log().log(EnumLogType.WARN, "Rendering using render HUB system! Override Game.render() instead!");
 			
-			this.hub.initiate(d);
+			this.hub.initiate(CaelumEngine.display());
 			
 		}
 		
@@ -232,7 +210,7 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 				
 			}
 			
-			this.display.updateSettings(this.settings);
+			CaelumEngine.display().updateSettings(this.settings);
 			
 		}
 		
@@ -380,11 +358,6 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 	public IGL3 getGL3()
 	{
 		return this.gl3;
-	}
-	
-	public IDisplay getDisplay()
-	{
-		return this.display;
 	}
 	
 	public int getFPS()

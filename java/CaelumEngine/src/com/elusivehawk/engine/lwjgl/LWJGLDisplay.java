@@ -100,4 +100,22 @@ public class LWJGLDisplay implements IDisplay
 		
 	}
 	
+	@Override
+	public boolean makeCurrent()
+	{
+		try
+		{
+			Display.makeCurrent();
+			
+		}
+		catch (LWJGLException e)
+		{
+			CaelumEngine.log().err(e);
+			
+			return false;
+		}
+		
+		return true;
+	}
+	
 }
