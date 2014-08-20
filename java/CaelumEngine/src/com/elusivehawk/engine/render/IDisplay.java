@@ -49,8 +49,12 @@ public interface IDisplay extends Closeable
 	 */
 	public void updateDisplay();
 	
+	public void processMessages();
+	
 	public void updateSettings(DisplaySettings settings);
 	
 	public boolean makeCurrent();
+	
+	public boolean releaseContext();
 	
 }

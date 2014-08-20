@@ -74,6 +74,13 @@ public class LWJGLDisplay implements IDisplay
 	}
 	
 	@Override
+	public void processMessages()
+	{
+		Display.processMessages();
+		
+	}
+	
+	@Override
 	public void updateSettings(DisplaySettings settings)
 	{
 		try
@@ -107,6 +114,23 @@ public class LWJGLDisplay implements IDisplay
 		{
 			Display.makeCurrent();
 			
+		}
+		catch (LWJGLException e)
+		{
+			CaelumEngine.log().err(e);
+			
+			return false;
+		}
+		
+		return true;
+	}
+	
+	@Override
+	public boolean releaseContext()
+	{
+		try
+		{
+			Display.releaseContext();
 		}
 		catch (LWJGLException e)
 		{

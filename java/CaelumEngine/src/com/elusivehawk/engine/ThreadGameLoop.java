@@ -36,6 +36,8 @@ public final class ThreadGameLoop extends ThreadCaelum
 	@Override
 	public boolean initiate()
 	{
+		CaelumEngine.display().processMessages();
+		
 		Iterator<Input> itr = this.input.iterator();
 		Input in;
 		

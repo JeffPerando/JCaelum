@@ -524,6 +524,14 @@ public final class CaelumEngine
 			return;
 		}
 		
+		if (!d.releaseContext())
+		{
+			this.log.log(EnumLogType.ERROR, "Display could not be created: Display cannot release context");
+			ShutdownHelper.exit("DISPLAY-NOT-MADE");
+			
+			return;
+		}
+		
 		this.display = d;
 		
 		//XXX Creating game threads

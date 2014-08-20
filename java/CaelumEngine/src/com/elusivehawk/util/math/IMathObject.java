@@ -51,8 +51,8 @@ public interface IMathObject<T extends Number> extends IStorable<T>
 			return new Float[0];
 		}
 		
-		count = 0;
 		Number[] ret = new Number[count];
+		count = 0;
 		
 		for (int c = 0; c < MathConst.BITMASKS.length; c++)
 		{
