@@ -187,6 +187,11 @@ public class SyncList<T> implements List<T>
 		return this.l.toArray(arg0);
 	}
 	
+	public static <T> SyncList<T> newList()
+	{
+		return new SyncList<T>();
+	}
+	
 	public static class SyncListItr<T> implements ListIterator<T>
 	{
 		protected final SyncList<T> l;

@@ -166,9 +166,9 @@ public class Model implements IAssetReceiver
 		this.indices = t.getIndices();
 		this.indiceCount = maxInd;
 		
-		VertexBuffer vtx = new VertexBuffer(GLConst.GL_ARRAY_BUFFER, t.getPolygons(), GLConst.GL_STATIC_DRAW/*TODO Review usage*/);
-		VertexBuffer ind = new VertexBuffer(GLConst.GL_INDEX_ARRAY, this.indices, GLConst.GL_STATIC_DRAW);
-		VertexBuffer mat = new VertexBuffer(GLConst.GL_ARRAY_BUFFER, BufferHelper.makeIntBuffer(matIndices), GLConst.GL_STATIC_DRAW);
+		VertexBuffer vtx = new VertexBuffer(GLConst.GL_ARRAY_BUFFER, GLConst.GL_STATIC_DRAW/*TODO Review usage*/, t.getPolygons());
+		VertexBuffer ind = new VertexBuffer(GLConst.GL_INDEX_ARRAY, GLConst.GL_STATIC_DRAW, this.indices);
+		VertexBuffer mat = new VertexBuffer(GLConst.GL_ARRAY_BUFFER, GLConst.GL_STATIC_DRAW, BufferHelper.makeIntBuffer(matIndices));
 		
 		this.fin = Few.createFew(vtx, ind, mat);
 		

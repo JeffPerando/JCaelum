@@ -626,15 +626,15 @@ public class OpenGL2 extends OpenGL1 implements IGL2
 	}
 	
 	@Override
-	public void glVertexAttribPointer(int index, int size, int type, boolean normalized, int stride, Buffer buffer) throws GLException
+	public void glVertexAttribPointer(int index, int size, int type, boolean unsigned, boolean normalized, int stride, Buffer buffer) throws GLException
 	{
 		switch (type)
 		{
-			case GLConst.GL_BYTE: GL20.glVertexAttribPointer(index, size, false, normalized, stride, (ByteBuffer)buffer); break;
-			case GLConst.GL_SHORT: GL20.glVertexAttribPointer(index, size, false, normalized, stride, (ShortBuffer)buffer); break;
-			case GLConst.GL_INT: GL20.glVertexAttribPointer(index, size, false, normalized, stride, (IntBuffer)buffer); break;
-			case GLConst.GL_FLOAT: GL20.glVertexAttribPointer(index, size, false, stride, (FloatBuffer)buffer); break;
-			case GLConst.GL_DOUBLE: GL20.glVertexAttribPointer(index, size, false, stride, (DoubleBuffer)buffer); break;
+			case GLConst.GL_BYTE: GL20.glVertexAttribPointer(index, size, unsigned, normalized, stride, (ByteBuffer)buffer); break;
+			case GLConst.GL_SHORT: GL20.glVertexAttribPointer(index, size, unsigned, normalized, stride, (ShortBuffer)buffer); break;
+			case GLConst.GL_INT: GL20.glVertexAttribPointer(index, size, unsigned, normalized, stride, (IntBuffer)buffer); break;
+			case GLConst.GL_FLOAT: GL20.glVertexAttribPointer(index, size, unsigned, stride, (FloatBuffer)buffer); break;
+			case GLConst.GL_DOUBLE: GL20.glVertexAttribPointer(index, size, unsigned, stride, (DoubleBuffer)buffer); break;
 			
 		}
 		

@@ -1,12 +1,13 @@
 
 package com.elusivehawk.engine.render.opengl;
 
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
+import java.nio.Buffer;
+import java.util.Iterator;
+import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
-import com.elusivehawk.util.BufferHelper;
-import com.elusivehawk.util.storage.Buffer;
+import com.elusivehawk.util.storage.SyncList;
+import com.elusivehawk.util.storage.Tuple;
 
 /**
  * 
@@ -16,182 +17,112 @@ import com.elusivehawk.util.storage.Buffer;
  */
 public class VertexBuffer implements IGLBindable
 {
-	public final int id, t, loadMode;
+	private final int t, loadMode;
+	private final GLEnumDataType dataType;
+	
+	private int id = 0;
+	private boolean initiated = false;
+	private Buffer initBuf = null;
+	
+	private final SyncList<Tuple<Buffer, Integer>> uploads = SyncList.newList();
+	
+	public VertexBuffer(int target, int mode, Buffer buf)
+	{
+		this(target, mode, GLEnumDataType.GL_FLOAT, buf);
+		
+	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	private VertexBuffer(int vbo, int target, int mode)
+	private VertexBuffer(int target, int mode, GLEnumDataType type, Buffer buf)
 	{
-		RenderContext con = RenderHelper.renderContext();
+		this(target, mode, type);
+		initBuf = buf;
 		
+	}
+	
+	public VertexBuffer(int target, int mode)
+	{
+		this(target, mode, GLEnumDataType.GL_FLOAT);
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public VertexBuffer(int target, int mode, GLEnumDataType type)
+	{
 		t = target;
-		id = con.getGL1().glIsBuffer(vbo) ? vbo : con.getGL1().glGenBuffers();
 		loadMode = mode;
-		
-		con.registerCleanable(this);
-		
-	}
-	
-	public VertexBuffer(int target, FloatBuffer buf, int mode)
-	{
-		this(RenderHelper.gl1().glGenBuffers(), target, buf, mode);
-		
-	}
-	
-	public VertexBuffer(int target, IntBuffer buf, int mode)
-	{
-		this(RenderHelper.gl1().glGenBuffers(), target, buf, mode);
-		
-	}
-	
-	public VertexBuffer(int vbo, int target, FloatBuffer buf, int mode)
-	{
-		this(vbo, target, mode);
-		loadData(buf);
-		
-	}
-	
-	public VertexBuffer(int vbo, int target, IntBuffer buf, int mode)
-	{
-		this(vbo, target, mode);
-		loadData(buf);
-		
-	}
-	
-	protected void loadData(FloatBuffer buf)
-	{
-		RenderContext con = RenderHelper.renderContext();
-		
-		IGL1 gl1 = con.getGL1();
-		
-		int vba = gl1.glGetInteger(GLConst.GL_VERTEX_ARRAY_BINDING);
-		
-		if (vba != 0)
-		{
-			con.getGL3().glBindVertexArray(0);
-			
-		}
-		
-		gl1.glBindBuffer(this);
-		gl1.glBufferData(this.id, GLConst.GL_FLOAT, buf, this.loadMode);
-		gl1.glBindBuffer(this.t, 0);
-		
-		if (vba != 0)
-		{
-			con.getGL3().glBindVertexArray(vba);
-			
-		}
-		
-	}
-	
-	protected void loadData(IntBuffer buf)
-	{
-		RenderContext con = RenderHelper.renderContext();
-		
-		int vba = con.getGL1().glGetInteger(GLConst.GL_VERTEX_ARRAY_BINDING);
-		
-		if (vba != 0)
-		{
-			con.getGL3().glBindVertexArray(0);
-			
-		}
-		
-		IGL1 gl1 = con.getGL1();
-		
-		gl1.glBindBuffer(this);
-		gl1.glBufferData(this.t, GLConst.GL_INT, buf, this.loadMode);
-		gl1.glBindBuffer(this.t, 0);
-		
-		if (vba != 0)
-		{
-			con.getGL3().glBindVertexArray(vba);
-			
-		}
-		
-	}
-	
-	public void updateEntireVBO(FloatBuffer buf)
-	{
-		IGL1 gl1 = RenderHelper.gl1();
-		
-		gl1.glBindBuffer(this);
-		gl1.glBufferSubData(this.t, 0, GLConst.GL_FLOAT, buf);
-		gl1.glBindBuffer(this.t, 0);
-		
-	}
-	
-	public void updateEntireVBO(IntBuffer buf)
-	{
-		IGL1 gl1 = RenderHelper.gl1();
-		
-		gl1.glBindBuffer(this);
-		gl1.glBufferSubData(this.t, 0, GLConst.GL_INT, buf);
-		gl1.glBindBuffer(this.t, 0);
-		
-	}
-	
-	public void updateVBOf(Buffer<Float> buf, int offset)
-	{
-		FloatBuffer nio = BufferHelper.createFloatBuffer(buf.remaining());
-		
-		for (float f : buf)
-		{
-			nio.put(f);
-			
-		}
-		
-		this.updateVBO(nio, offset);
-		
-	}
-	
-	public void updateVBOi(Buffer<Integer> buf, int offset)
-	{
-		IntBuffer nio = BufferHelper.createIntBuffer(buf.remaining());
-		
-		for (int i : buf)
-		{
-			nio.put(i);
-			
-		}
-		
-		this.updateVBO(nio, offset);
-		
-	}
-	
-	public void updateVBO(FloatBuffer buf, int offset)
-	{
-		IGL1 gl1 = RenderHelper.gl1();
-		
-		gl1.glBindBuffer(this);
-		gl1.glBufferSubData(this.t, offset * 4, GLConst.GL_FLOAT, buf);
-		gl1.glBindBuffer(this.t, 0);
-		
-	}
-	
-	public void updateVBO(IntBuffer buf, int offset)
-	{
-		IGL1 gl1 = RenderHelper.gl1();
-		
-		gl1.glBindBuffer(this);
-		gl1.glBufferSubData(this.t, offset * 4, GLConst.GL_INT, buf);
-		gl1.glBindBuffer(this.t, 0);
+		dataType = type;
 		
 	}
 	
 	@Override
-	public boolean bind(RenderContext con)
+	public boolean bind(RenderContext rcon)
 	{
-		IGL1 gl1 = con.getGL1();
+		IGL1 gl1 = rcon.getGL1();
+		
+		if (this.id == 0)
+		{
+			this.id = gl1.glGenBuffers();
+			
+		}
 		
 		gl1.glBindBuffer(this);
+		
+		if (!this.initiated)
+		{
+			if (this.initBuf != null)
+			{
+				IGL3 gl3 = rcon.getGL3();
+				
+				int vba = gl1.glGetInteger(GLConst.GL_VERTEX_ARRAY_BINDING);
+				
+				if (vba != 0)
+				{
+					gl3.glBindVertexArray(0);
+					
+				}
+				
+				gl1.glBufferData(this.id, this.dataType, this.initBuf, this.loadMode);
+				
+				if (vba != 0)
+				{
+					gl3.glBindVertexArray(vba);
+					
+				}
+				
+				this.initBuf = null;
+				
+			}
+			
+			this.initiated = true;
+		}
+		
+		if (!this.uploads.isEmpty())
+		{
+			Iterator<Tuple<Buffer, Integer>> itr = this.uploads.iterator();
+			Tuple<Buffer, Integer> pair;
+			
+			while (itr.hasNext())
+			{
+				pair = itr.next();
+				
+				gl1.glBufferSubData(this.getTarget(), pair.two, this.dataType, pair.one);
+				
+				itr.remove();
+			}
+			
+		}
 		
 		try
 		{
 			RenderHelper.checkForGLError(gl1);
 			
 		}
-		catch (Exception e)
+		catch (GLException e)
 		{
-			this.unbind(con);
+			CaelumEngine.log().err(e);
+			
+			this.unbind(rcon);
 			
 			return false;
 		}
@@ -200,16 +131,36 @@ public class VertexBuffer implements IGLBindable
 	}
 	
 	@Override
-	public void unbind(RenderContext con)
+	public void unbind(RenderContext rcon)
 	{
-		con.getGL1().glBindBuffer(this.t, 0);
+		rcon.getGL1().glBindBuffer(this.t, 0);
 		
 	}
 	
 	@Override
-	public void delete(RenderContext con)
+	public void delete(RenderContext rcon)
 	{
-		con.getGL1().glDeleteBuffers(this);
+		if (this.id != 0)
+		{
+			rcon.getGL1().glDeleteBuffers(this);
+			
+		}
+		
+	}
+	
+	public int getTarget()
+	{
+		return this.t;
+	}
+	
+	public int getId()
+	{
+		return this.id;
+	}
+	
+	public void updateVBO(Buffer buf, int offset)
+	{
+		this.uploads.add(Tuple.create(buf, offset));
 		
 	}
 	

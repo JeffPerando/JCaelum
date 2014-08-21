@@ -19,8 +19,6 @@ import com.elusivehawk.engine.render.IDisplay;
  */
 public class LWJGLDisplay implements IDisplay
 {
-	private int framerate = 30;
-	
 	@Override
 	public void close() throws IOException
 	{
@@ -68,7 +66,7 @@ public class LWJGLDisplay implements IDisplay
 	@Override
 	public void updateDisplay()
 	{
-		Display.sync(this.framerate);
+		//Display.sync(this.framerate);
 		Display.update(false);
 		
 	}
@@ -95,8 +93,6 @@ public class LWJGLDisplay implements IDisplay
 			
 			Display.setTitle(settings.title);
 			Display.setVSyncEnabled(settings.vsync);
-			
-			this.framerate = settings.targetFPS;
 			
 		}
 		catch (LWJGLException e)

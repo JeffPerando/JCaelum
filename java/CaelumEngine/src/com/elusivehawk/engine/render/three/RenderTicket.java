@@ -137,7 +137,7 @@ public class RenderTicket extends Filterable implements IAssetReceiver, IDirty, 
 			}
 			
 			this.buf = BufferHelper.createFloatBuffer(this.m.getIndiceCount() * 16);
-			this.vbo = new VertexBuffer(GLConst.GL_ARRAY_BUFFER, this.buf, GLConst.GL_STREAM_DRAW);
+			this.vbo = new VertexBuffer(GLConst.GL_ARRAY_BUFFER, GLConst.GL_STREAM_DRAW, this.buf);
 			
 			this.p.attachModel(this.m);
 			this.p.attachVBO(this.vbo, Arrays.asList(3));

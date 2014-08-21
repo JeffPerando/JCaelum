@@ -41,7 +41,7 @@ public class ParticleScene implements ILogicalRender
 		particleCount = maxParticles;
 		
 		p = new GLProgram(); //TODO Create default particle shaders.
-		vbo = new VertexBuffer(GLConst.GL_ARRAY_BUFFER, buf, GLConst.GL_STREAM_DRAW);
+		vbo = new VertexBuffer(GLConst.GL_ARRAY_BUFFER, GLConst.GL_STREAM_DRAW, buf);
 		
 		RenderContext con = RenderHelper.renderContext();
 		

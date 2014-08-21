@@ -442,7 +442,7 @@ public final class CaelumEngine
 	@Internal
 	public void startGame()
 	{
-		//XXX Loading the game itself
+		//XXX Creating the game itself
 		
 		if (this.factory == null)
 		{
@@ -475,19 +475,6 @@ public final class CaelumEngine
 		}
 		
 		this.game = g;
-		
-		try
-		{
-			g.initiateGame(this.gameargs);
-			
-		}
-		catch (Throwable e)
-		{
-			this.log.err("Game failed to load!", e);
-			ShutdownHelper.exit("GAME-LOAD-FAILURE");
-			
-			return;
-		}
 		
 		//XXX Create display
 		
@@ -524,6 +511,35 @@ public final class CaelumEngine
 			return;
 		}
 		
+		this.display = d;
+		this.rcon = new RenderContext(this.renv);
+		
+		this.rcon.preInit();
+		
+		if (this.assets == null)
+		{
+			this.assets = new AssetManager();
+			
+		}
+		
+		try
+		{
+			g.initiateGame(this.gameargs);
+			
+		}
+		catch (Throwable e)
+		{
+			this.log.err("Game failed to load!", e);
+			ShutdownHelper.exit("GAME-LOAD-FAILURE");
+			
+			return;
+		}
+		
+		this.game.loadAssets(this.assets);
+		this.assets.initiate();
+		
+		//TODO Implement a proper loading system.
+		
 		if (!d.releaseContext())
 		{
 			this.log.log(EnumLogType.ERROR, "Display could not be created: Display cannot release context");
@@ -532,33 +548,17 @@ public final class CaelumEngine
 			return;
 		}
 		
-		this.display = d;
-		
 		//XXX Creating game threads
-		
-		if (this.assets == null)
-		{
-			this.assets = new AssetManager();
-			
-		}
-		
-		this.game.loadAssets(this.assets);
-		this.assets.initiate();
 		
 		ThreadGameLoop gameloop = new ThreadGameLoop(this.inputs, this.game);
 		
 		this.threads.put(EnumEngineFeature.LOGIC, gameloop);
 		
-		IRenderHUB hub = this.game.getRenderHUB();
+		IRenderHUB rhub = this.game.getRenderHUB();
 		
-		if (hub == null)
+		if (rhub != null)
 		{
-			this.rcon = new RenderContext(this.renv);
-			
-		}
-		else
-		{
-			this.rcon = new RenderContext(this.renv, hub);
+			this.rcon.setRenderHUB(rhub);
 			this.log.log(EnumLogType.WARN, "Game %s is using the rendering HUB system!!", this.game);
 			
 		}

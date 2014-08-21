@@ -20,7 +20,7 @@ public interface IGL1
 	
 	default void glBindBuffer(VertexBuffer vbo)
 	{
-		this.glBindBuffer(vbo.t, vbo.id);
+		this.glBindBuffer(vbo.getTarget(), vbo.getId());
 		
 	}
 	
@@ -36,7 +36,19 @@ public interface IGL1
 	
 	public void glBlendFunc(int sfactor, int dfactor) throws GLException;
 	
+	default void glBufferData(int target, GLEnumDataType type, java.nio.Buffer data, int usage) throws GLException
+	{
+		this.glBufferData(target, type.getGLId(), data, usage);
+		
+	}
+	
 	public void glBufferData(int target, int type, java.nio.Buffer data, int usage) throws GLException;
+	
+	default void glBufferSubData(int target, int offset, GLEnumDataType type, java.nio.Buffer data) throws GLException
+	{
+		this.glBufferSubData(target, offset, type.getGLId(), data);
+		
+	}
 	
 	public void glBufferSubData(int target, int offset, int type, java.nio.Buffer data) throws GLException;
 	
@@ -68,7 +80,7 @@ public interface IGL1
 		
 		for (VertexBuffer vb : buffers)
 		{
-			bufs.put(vb.id);
+			bufs.put(vb.getId());
 			
 		}
 		

@@ -36,6 +36,7 @@ import com.google.common.collect.Maps;
 public final class RenderContext implements IUpdatable, IPausable, IGameStateListener, IContext
 {
 	private final IRenderEnvironment renv;
+	private final IDisplay display;
 	
 	private IRenderHUB hub = null;
 	private int fps;
@@ -65,33 +66,18 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 	public RenderContext(IRenderEnvironment renderEnv)
 	{
 		renv = renderEnv;
-		
-	}
-	
-	@Deprecated
-	@SuppressWarnings("unqualified-field-access")
-	public RenderContext(IRenderEnvironment renderEnv, IRenderHUB rhub)
-	{
-		this(renderEnv);
-		
-		hub = rhub;
-		CaelumEngine.game().addGameStateListener(this);
+		display = CaelumEngine.display();
 		
 	}
 	
 	@Override
-	public boolean initContext()
+	public void preInit()
 	{
-		if (this.initiated)
-		{
-			return false;
-		}
-		
 		if (!this.renv.initiate())
 		{
 			CaelumEngine.log().log(EnumLogType.ERROR, "Unable to load render environment.");
 			
-			return false;
+			return;
 		}
 		
 		this.gl1 = (IGL1)this.renv.getGL(IRenderEnvironment.GL_1);
@@ -115,6 +101,16 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 		}
 		
 		this.shaders = new ImmutableArray<Shader>(shs);
+		
+	}
+	
+	@Override
+	public boolean initContext()
+	{
+		if (this.initiated)
+		{
+			return false;
+		}
 		
 		PixelGrid ntf = new PixelGrid(32, 32, ColorFormat.RGBA);
 		
@@ -147,7 +143,7 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 		{
 			CaelumEngine.log().log(EnumLogType.WARN, "Rendering using render HUB system! Override Game.render() instead!");
 			
-			this.hub.initiate(CaelumEngine.display());
+			this.hub.initiate(this.display);
 			
 		}
 		
@@ -210,15 +206,35 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 				
 			}
 			
-			CaelumEngine.display().updateSettings(this.settings);
+			this.display.updateSettings(this.settings);
 			
 		}
 		
+		this.renderGame(delta);
+		this.display.updateDisplay();
+		
+	}
+	
+	private void renderGame(double delta)
+	{
 		this.preRender();
 		
 		CaelumEngine.game().render(this, delta);
 		
 		this.postRender();
+		
+	}
+	
+	public void setRenderHUB(IRenderHUB rhub)
+	{
+		if (this.hub != null)
+		{
+			return;
+		}
+		
+		this.hub = rhub;
+		
+		CaelumEngine.game().addGameStateListener(this);
 		
 	}
 	
