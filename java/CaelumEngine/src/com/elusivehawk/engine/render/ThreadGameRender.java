@@ -63,7 +63,6 @@ public class ThreadGameRender extends ThreadCaelum implements IThreadContext
 		}
 		
 		this.rcon.update(delta);
-		display.updateDisplay();
 		
 	}
 	
