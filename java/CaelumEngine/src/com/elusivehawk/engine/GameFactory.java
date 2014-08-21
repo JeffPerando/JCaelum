@@ -7,8 +7,9 @@ package com.elusivehawk.engine;
  * 
  * @author Elusivehawk
  */
-public abstract class GameFactory
+@FunctionalInterface
+public interface GameFactory
 {
-	public abstract Game createGame();
+	public Game createGame();
 	
 }
