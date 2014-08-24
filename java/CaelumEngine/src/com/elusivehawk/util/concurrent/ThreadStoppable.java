@@ -58,6 +58,8 @@ public abstract class ThreadStoppable extends Thread implements IThreadStoppable
 					
 				}
 				
+				this.onPostUpdate();
+				
 			}
 			
 		}
@@ -103,9 +105,11 @@ public abstract class ThreadStoppable extends Thread implements IThreadStoppable
 		return true;
 	}
 	
-	public abstract void rawUpdate() throws Throwable;
+	protected abstract void rawUpdate() throws Throwable;
 	
-	public void firstUpdate() throws Throwable{}
+	protected void firstUpdate() throws Throwable{}
+	
+	protected void onPostUpdate(){};
 	
 	@SuppressWarnings("unused")
 	public void onThreadStopped(boolean failed){}

@@ -95,6 +95,7 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 			
 			//Zero out the timed used for the new second.
 			
+			this.timeSpent = 0;
 			this.timeUsed = 0;
 			return;
 		}
@@ -131,6 +132,11 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 			
 		}
 		
+	}
+	
+	@Override
+	protected void onPostUpdate()
+	{
 		this.timeUsed += this.timeSpent;
 		
 	}
