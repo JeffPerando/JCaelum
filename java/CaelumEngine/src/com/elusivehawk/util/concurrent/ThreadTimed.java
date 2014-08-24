@@ -14,10 +14,36 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 {
 	public static final int MILI_SEC = 1000;
 	
-	private int updates = 0, updateCount = 0;
-	private double time = 0, lastTime, timeUsed = 0, delta;
+	private double time = 0, lastTime, timeUsed = 0, delta, deltaTime = 0, timeSpent = 0;
 	
 	private Timer timer = new Timer();
+	private final Runnable update = (() ->
+	{
+		try
+		{
+			this.update(this.deltaTime);
+			
+		}
+		catch (Throwable e)
+		{
+			this.handleException(e);
+			
+		}
+		
+	}), postUpdate = (() ->
+	{
+		try
+		{
+			this.postUpdate(this.deltaTime);
+			
+		}
+		catch (Throwable e)
+		{
+			this.handleException(e);
+			
+		}
+		
+	});
 	
 	public ThreadTimed(){}
 	
@@ -30,8 +56,7 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 	@Override
 	public boolean initiate()
 	{
-		this.updateCount = this.getTargetUpdateCount();
-		this.delta = (Timer.NANO_SEC / this.updateCount) / Timer.NANO_SEC;
+		this.delta = (Timer.NANO_SEC / this.getTargetUpdateCount()) / Timer.NANO_SEC;
 		
 		return true;
 	}
@@ -39,19 +64,19 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 	@Override
 	public final void firstUpdate()
 	{
-		this.time = System.nanoTime() / Timer.NANO_SEC;
-		
 		this.timer.start();
 		this.timer.stop();
+		
+		this.time = System.nanoTime() / Timer.NANO_SEC;
 		
 	}
 	
 	@Override
 	public final void rawUpdate()
 	{
-		if (this.timeUsed > 1.0 || this.updates == this.updateCount)//Have we run out of time?
+		if (this.timeUsed + this.delta > 1.0)//Have we run out of time?
 		{
-			long sleep = (long)(MILI_SEC - (Math.abs(this.timeUsed - 1.0) * MILI_SEC));
+			long sleep = (long)(MILI_SEC * (1.0 - this.timeUsed));
 			
 			if (sleep > 0)
 			{
@@ -71,36 +96,31 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 			//Zero out both timers for the new second.
 			
 			this.timeUsed = 0;
-			this.updates = 0;
 			return;
 		}
 		
 		this.lastTime = this.time;
 		this.time = System.nanoTime() / Timer.NANO_SEC;
-		this.updates++;
+		this.deltaTime = this.time - this.lastTime;
 		
-		this.timer.start();//Start the timer
+		this.timeSpent = this.timer.timeCall(this.update);//Updates, and tracks how much time has been spent.
 		
-		try
+		if (this.timeSpent < this.delta)//What if we actually have MORE time than we know what to do with?
 		{
-			this.update(this.time - this.lastTime);//Update the thread
+			if (this.doPostUpdate())
+			{
+				this.timeSpent += this.timer.timeCall(this.postUpdate);//Times a post update.
+				
+				if (this.timeSpent >= this.delta)//Do we STILL have more time?!
+				{
+					return;
+				}
+				
+			}
 			
-		}
-		catch (Throwable e)
-		{
-			this.handleException(e);
-			
-		}
-		
-		this.timer.stop();//Stop the timer
-		
-		this.timeUsed += this.timer.time();
-		
-		if (this.timer.time() < this.delta)//What if we actually have MORE time than we know what to do with?
-		{
 			try
 			{
-				Thread.sleep((long)((this.delta - this.timer.time()) * MILI_SEC));//Sleep for the remaining time.
+				Thread.sleep((long)((this.delta - this.timeUsed) * MILI_SEC));//Sleep for the remaining time.
 				
 			}
 			catch (InterruptedException e)
@@ -111,8 +131,19 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 			
 		}
 		
+		this.timeUsed += this.timeSpent;
+		
 	}
 	
 	public abstract int getTargetUpdateCount();
+	
+	@SuppressWarnings("static-method")
+	public boolean doPostUpdate()
+	{
+		return false;
+	}
+	
+	@SuppressWarnings("unused")
+	public void postUpdate(double delta) throws Throwable{};
 	
 }

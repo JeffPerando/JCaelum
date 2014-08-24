@@ -43,4 +43,15 @@ public class Timer
 		return this.started ? 0 : this.time;
 	}
 	
+	public double timeCall(Runnable r)
+	{
+		this.start();
+		
+		r.run();
+		
+		this.stop();
+		
+		return this.time;
+	}
+	
 }

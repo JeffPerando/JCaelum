@@ -418,10 +418,7 @@ public final class CaelumEngine
 		
 		if (DEBUG)
 		{
-			this.factory = (() ->
-			{
-				return new TestGame();
-			});
+			this.factory = (() -> {return new TestGame();});
 			
 		}
 		else if (this.factory == null)
