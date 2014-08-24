@@ -113,7 +113,7 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 				
 				if (this.timeSpent >= this.delta)//Do we STILL have more time?!
 				{
-					return;
+					return;//No? Good.
 				}
 				
 			}
