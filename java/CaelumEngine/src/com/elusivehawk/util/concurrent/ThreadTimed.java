@@ -87,13 +87,13 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 				}
 				catch (InterruptedException e)
 				{
-					e.printStackTrace();
+					this.handleException(e);
 					
 				}
 				
 			}
 			
-			//Zero out both timers for the new second.
+			//Zero out the timed used for the new second.
 			
 			this.timeUsed = 0;
 			return;
@@ -125,7 +125,7 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 			}
 			catch (InterruptedException e)
 			{
-				e.printStackTrace();
+				this.handleException(e);
 				
 			}
 			
