@@ -21,11 +21,7 @@ public abstract class Input implements IUpdatable, Closeable
 	{
 		this.poll();
 		
-		this.listeners.forEach((lis) ->
-		{
-			lis.onInputReceived(delta, this);
-			
-		});
+		this.listeners.forEach(((lis) -> {lis.onInputReceived(delta, this);}));
 		
 		this.postUpdate();
 		

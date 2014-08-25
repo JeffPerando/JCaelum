@@ -66,7 +66,6 @@ public class LWJGLDisplay implements IDisplay
 	@Override
 	public void updateDisplay()
 	{
-		//Display.sync(this.framerate);
 		Display.update(false);
 		
 	}

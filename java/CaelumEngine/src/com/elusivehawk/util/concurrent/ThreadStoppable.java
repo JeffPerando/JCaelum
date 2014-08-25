@@ -62,10 +62,11 @@ public abstract class ThreadStoppable extends Thread implements IThreadStoppable
 				
 			}
 			
+			this.running = false;
+			
 		}
 		
 		this.onThreadStopped(failure);
-		this.stopThread();
 		
 	}
 	

@@ -61,6 +61,17 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 	}
 	
 	@Override
+	public void render(RenderContext rcon, double delta)
+	{
+		if (this.state != null)
+		{
+			this.state.render(rcon, delta);
+			
+		}
+		
+	}
+	
+	@Override
 	public final void onShutdown()
 	{
 		this.onGameShutdown();
@@ -147,22 +158,6 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 				}
 				
 			}
-			
-		}
-		
-	}
-	
-	@Override
-	public void render(RenderContext rcon, double delta)
-	{
-		if (this.state == null)
-		{
-			super.render(rcon, delta);
-			
-		}
-		else
-		{
-			this.state.render(rcon, delta);
 			
 		}
 		

@@ -1,5 +1,5 @@
 
-package com.elusivehawk.engine.render;
+package com.elusivehawk.engine.render.three;
 
 import java.io.File;
 import com.elusivehawk.engine.assets.Asset;

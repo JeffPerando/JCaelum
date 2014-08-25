@@ -13,6 +13,7 @@ public final class RenderConst
 {
 	private RenderConst(){}
 	
+	@Deprecated
 	public static final String INCLUDE = "#include";
 	
 	public static final int MATERIAL_CAP = 16;

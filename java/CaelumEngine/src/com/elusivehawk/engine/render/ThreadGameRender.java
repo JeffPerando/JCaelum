@@ -19,8 +19,6 @@ public class ThreadGameRender extends ThreadCaelum implements IThreadContext
 {
 	protected final RenderContext rcon;
 	
-	protected int fps = 30;
-	
 	@SuppressWarnings("unqualified-field-access")
 	public ThreadGameRender(RenderContext con)
 	{
@@ -42,8 +40,6 @@ public class ThreadGameRender extends ThreadCaelum implements IThreadContext
 		{
 			return false;
 		}
-		
-		this.fps = this.rcon.getFPS();
 		
 		return super.initiate();
 	}
@@ -77,7 +73,7 @@ public class ThreadGameRender extends ThreadCaelum implements IThreadContext
 	@Override
 	public int getTargetUpdateCount()
 	{
-		return this.fps;
+		return this.rcon.getFPS();
 	}
 	
 	@Override

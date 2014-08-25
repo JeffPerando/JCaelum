@@ -9,7 +9,6 @@ import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.render.Filterable;
 import com.elusivehawk.engine.render.ILogicalRender;
 import com.elusivehawk.engine.render.Material;
-import com.elusivehawk.engine.render.Model;
 import com.elusivehawk.engine.render.RenderConst;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;

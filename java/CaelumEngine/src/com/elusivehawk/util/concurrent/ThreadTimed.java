@@ -121,7 +121,7 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 			
 			try
 			{
-				Thread.sleep((long)((this.delta - this.timeUsed) * MILI_SEC));//Sleep for the remaining time.
+				Thread.sleep((long)((this.delta - this.timeSpent) * MILI_SEC));//Sleep for the remaining time.
 				
 			}
 			catch (InterruptedException e)

@@ -2,6 +2,8 @@
 package com.elusivehawk.engine;
 
 import com.elusivehawk.engine.physics.IPhysicsSimulator;
+import com.elusivehawk.engine.render.RenderContext;
+import com.elusivehawk.engine.render.RenderException;
 
 /**
  * 
@@ -30,6 +32,9 @@ public class GameState extends AbstractGameComponent
 	
 	@Override
 	public void initiate(GameArguments args) throws Throwable{}
+	
+	@Override
+	public void render(RenderContext rcon, double delta) throws RenderException{}
 	
 	@Override
 	public void onShutdown(){}

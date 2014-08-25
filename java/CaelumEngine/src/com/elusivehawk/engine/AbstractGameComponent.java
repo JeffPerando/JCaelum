@@ -134,8 +134,6 @@ public abstract class AbstractGameComponent implements IUpdatable
 	
 	public abstract void initiate(GameArguments args) throws Throwable;
 	
-	public abstract void onShutdown();
-	
 	/**
 	 * 
 	 * NOTICE: THIS IS NOT THREAD SAFE!<br>
@@ -148,42 +146,9 @@ public abstract class AbstractGameComponent implements IUpdatable
 	 * 
 	 * @see RenderHelper
 	 */
-	@SuppressWarnings("static-method")
-	public void render(RenderContext rcon, double delta) throws RenderException
-	{
-		IRenderHUB hub = rcon.getHUB();
-		IGL1 gl1 = rcon.getGL1();
-		
-		if (hub != null)
-		{
-			Collection<IRenderEngine> engines = hub.getRenderEngines();
-			
-			if (engines != null && !engines.isEmpty())
-			{
-				gl1.glClear(GLConst.GL_COLOR_BUFFER_BIT | GLConst.GL_DEPTH_BUFFER_BIT);
-				
-				for (IRenderEngine engine : engines)
-				{
-					engine.render(rcon, hub, delta);
-					
-					int tex = 0;
-					
-					for (int c = 0; c < rcon.getMaxTextureCount(); c++)
-					{
-						gl1.glActiveTexture(GLConst.GL_TEXTURE0 + c);
-						gl1.glBindTexture(GLEnumTexture.GL_TEXTURE_2D, 0);
-						
-					}
-					
-					RenderHelper.checkForGLError(gl1);
-					
-				}
-				
-			}
-			
-		}
-		
-	}
+	public abstract void render(RenderContext rcon, double delta) throws RenderException;
+	
+	public abstract void onShutdown();
 	
 	public abstract IPhysicsSimulator getPhysicsSimulator();
 	

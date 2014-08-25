@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.Map.Entry;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
-import com.elusivehawk.engine.render.Model;
 import com.elusivehawk.engine.render.RenderConst;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.Shader;
+import com.elusivehawk.engine.render.three.Model;
 import com.elusivehawk.util.ArrayHelper;
 import com.elusivehawk.util.storage.Few;
 

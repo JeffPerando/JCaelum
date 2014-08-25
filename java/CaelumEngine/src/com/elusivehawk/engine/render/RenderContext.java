@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.render;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import com.elusivehawk.engine.CaelumEngine;
@@ -10,10 +11,12 @@ import com.elusivehawk.engine.GameState;
 import com.elusivehawk.engine.IContext;
 import com.elusivehawk.engine.IGameStateListener;
 import com.elusivehawk.engine.render.old.EnumRenderMode;
+import com.elusivehawk.engine.render.old.IRenderEngine;
 import com.elusivehawk.engine.render.old.IRenderHUB;
 import com.elusivehawk.engine.render.old.RenderTask;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLEnumShader;
+import com.elusivehawk.engine.render.opengl.GLEnumTexture;
 import com.elusivehawk.engine.render.opengl.GLException;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGL1;
@@ -112,7 +115,7 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 			return false;
 		}
 		
-		PixelGrid ntf = new PixelGrid(32, 32, ColorFormat.RGBA);
+		/*PixelGrid ntf = new PixelGrid(32, 32, ColorFormat.RGBA);
 		
 		for (int x = 0; x < ntf.getWidth(); x++)
 		{
@@ -133,7 +136,7 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 		{
 			CaelumEngine.log().err(e);
 			
-		}
+		}*/
 		
 		this.maxTexCount = this.gl1.glGetInteger(GLConst.GL_MAX_TEXTURE_UNITS);
 		
@@ -155,7 +158,7 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 	@Override
 	public void cleanup()
 	{
-		this.gl1.glDeleteTextures(this.notex);
+		//this.gl1.glDeleteTextures(this.notex);
 		
 		for (IGLDeletable gl : this.cleanables)
 		{
@@ -210,6 +213,7 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 			
 		}
 		
+		this.gl1.glClear(0b0100010100000000);
 		this.renderGame(delta);
 		this.display.updateDisplay();
 		
@@ -218,6 +222,8 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 	private void renderGame(double delta)
 	{
 		this.preRender();
+		
+		this.renderGameDepre(delta);
 		
 		CaelumEngine.game().render(this, delta);
 		
@@ -293,6 +299,36 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 				for (IGLManipulator glm : mani)
 				{
 					glm.updateUniforms(this);
+					
+				}
+				
+			}
+			
+		}
+		
+	}
+	
+	@Deprecated
+	private void renderGameDepre(double delta)
+	{
+		if (this.hub != null)
+		{
+			Collection<IRenderEngine> engines = this.hub.getRenderEngines();
+			
+			if (engines != null && !engines.isEmpty())
+			{
+				for (IRenderEngine engine : engines)
+				{
+					engine.render(this, this.hub, delta);
+					
+					for (int c = 0; c < this.getMaxTextureCount(); c++)
+					{
+						this.gl1.glActiveTexture(GLConst.GL_TEXTURE0 + c);
+						this.gl1.glBindTexture(GLEnumTexture.GL_TEXTURE_2D, 0);
+						
+					}
+					
+					RenderHelper.checkForGLError(this.gl1);
 					
 				}
 				
