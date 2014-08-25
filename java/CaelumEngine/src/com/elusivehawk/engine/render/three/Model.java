@@ -11,6 +11,8 @@ import com.elusivehawk.engine.render.RenderConst;
 import com.elusivehawk.engine.render.RenderException;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.opengl.GLConst;
+import com.elusivehawk.engine.render.opengl.GLEnumBufferTarget;
+import com.elusivehawk.engine.render.opengl.GLEnumDataUsage;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
 import com.elusivehawk.util.BufferHelper;
@@ -186,9 +188,9 @@ public class Model implements IAssetReceiver, IPopulator<GLProgram>
 		this.indices = t.getIndices();
 		this.indiceCount = maxInd;
 		
-		VertexBuffer vtx = new VertexBuffer(GLConst.GL_ARRAY_BUFFER, GLConst.GL_STATIC_DRAW/*TODO Review usage*/, t.getPolygons());
-		VertexBuffer ind = new VertexBuffer(GLConst.GL_INDEX_ARRAY, GLConst.GL_STATIC_DRAW, this.indices);
-		VertexBuffer mat = new VertexBuffer(GLConst.GL_ARRAY_BUFFER, GLConst.GL_STATIC_DRAW, BufferHelper.makeIntBuffer(matIndices));
+		VertexBuffer vtx = new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_STATIC_DRAW/*TODO Review usage*/, t.getPolygons());
+		VertexBuffer ind = new VertexBuffer(GLEnumBufferTarget.GL_ELEMENT_ARRAY_BUFFER, GLEnumDataUsage.GL_STATIC_DRAW, this.indices);
+		VertexBuffer mat = new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_STATIC_DRAW, BufferHelper.makeIntBuffer(matIndices));
 		
 		this.fin = Few.createFew(vtx, ind, mat);
 		

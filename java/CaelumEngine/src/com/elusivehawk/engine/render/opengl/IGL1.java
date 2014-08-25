@@ -24,6 +24,12 @@ public interface IGL1
 		
 	}
 	
+	default void glBindBuffer(GLEnumBufferTarget target, int buffer) throws GLException
+	{
+		this.glBindBuffer(target.getGLId(), buffer);
+		
+	}
+	
 	public void glBindBuffer(int target, int buffer) throws GLException;
 	
 	default void glBindTexture(GLEnumTexture target, Texture texture)
@@ -36,17 +42,17 @@ public interface IGL1
 	
 	public void glBlendFunc(int sfactor, int dfactor) throws GLException;
 	
-	default void glBufferData(int target, GLEnumDataType type, java.nio.Buffer data, int usage) throws GLException
+	default void glBufferData(GLEnumBufferTarget target, GLEnumDataType type, java.nio.Buffer data, GLEnumDataUsage usage) throws GLException
 	{
-		this.glBufferData(target, type.getGLId(), data, usage);
+		this.glBufferData(target.getGLId(), type.getGLId(), data, usage.getGLId());
 		
 	}
 	
 	public void glBufferData(int target, int type, java.nio.Buffer data, int usage) throws GLException;
 	
-	default void glBufferSubData(int target, int offset, GLEnumDataType type, java.nio.Buffer data) throws GLException
+	default void glBufferSubData(GLEnumBufferTarget target, int offset, GLEnumDataType type, java.nio.Buffer data) throws GLException
 	{
-		this.glBufferSubData(target, offset, type.getGLId(), data);
+		this.glBufferSubData(target.getGLId(), offset, type.getGLId(), data);
 		
 	}
 	

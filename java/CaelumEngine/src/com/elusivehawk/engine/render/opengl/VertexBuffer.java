@@ -17,7 +17,8 @@ import com.elusivehawk.util.storage.Tuple;
  */
 public class VertexBuffer implements IGLBindable
 {
-	private final int t, loadMode;
+	private final GLEnumBufferTarget t;
+	private final GLEnumDataUsage loadMode;
 	private final GLEnumDataType dataType;
 	
 	private int id = 0;
@@ -26,28 +27,28 @@ public class VertexBuffer implements IGLBindable
 	
 	private final SyncList<Tuple<Buffer, Integer>> uploads = SyncList.newList();
 	
-	public VertexBuffer(int target, int mode, Buffer buf)
+	public VertexBuffer(GLEnumBufferTarget target, GLEnumDataUsage mode, Buffer buf)
 	{
 		this(target, mode, GLEnumDataType.GL_FLOAT, buf);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	private VertexBuffer(int target, int mode, GLEnumDataType type, Buffer buf)
+	private VertexBuffer(GLEnumBufferTarget target, GLEnumDataUsage mode, GLEnumDataType type, Buffer buf)
 	{
 		this(target, mode, type);
 		initBuf = buf;
 		
 	}
 	
-	public VertexBuffer(int target, int mode)
+	public VertexBuffer(GLEnumBufferTarget target, GLEnumDataUsage mode)
 	{
 		this(target, mode, GLEnumDataType.GL_FLOAT);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public VertexBuffer(int target, int mode, GLEnumDataType type)
+	public VertexBuffer(GLEnumBufferTarget target, GLEnumDataUsage mode, GLEnumDataType type)
 	{
 		t = target;
 		loadMode = mode;
@@ -82,7 +83,7 @@ public class VertexBuffer implements IGLBindable
 					
 				}
 				
-				gl1.glBufferData(this.id, this.dataType, this.initBuf, this.loadMode);
+				gl1.glBufferData(this.t, this.dataType, this.initBuf, this.loadMode);
 				
 				if (vba != 0)
 				{
@@ -148,7 +149,7 @@ public class VertexBuffer implements IGLBindable
 		
 	}
 	
-	public int getTarget()
+	public GLEnumBufferTarget getTarget()
 	{
 		return this.t;
 	}

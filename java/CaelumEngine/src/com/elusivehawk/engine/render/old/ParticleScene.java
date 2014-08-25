@@ -5,12 +5,13 @@ import java.nio.FloatBuffer;
 import java.util.Arrays;
 import java.util.List;
 import com.elusivehawk.engine.render.Color;
-import com.elusivehawk.engine.render.ColorFormat;
 import com.elusivehawk.engine.render.ColorFilter;
+import com.elusivehawk.engine.render.ColorFormat;
 import com.elusivehawk.engine.render.ILogicalRender;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
-import com.elusivehawk.engine.render.opengl.GLConst;
+import com.elusivehawk.engine.render.opengl.GLEnumBufferTarget;
+import com.elusivehawk.engine.render.opengl.GLEnumDataUsage;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
 import com.elusivehawk.util.BufferHelper;
@@ -41,7 +42,7 @@ public class ParticleScene implements ILogicalRender
 		particleCount = maxParticles;
 		
 		p = new GLProgram(); //TODO Create default particle shaders.
-		vbo = new VertexBuffer(GLConst.GL_ARRAY_BUFFER, GLConst.GL_STREAM_DRAW, buf);
+		vbo = new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_STREAM_DRAW, buf);
 		
 		RenderContext con = RenderHelper.renderContext();
 		

@@ -14,7 +14,8 @@ import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.Shader;
 import com.elusivehawk.engine.render.Texture;
-import com.elusivehawk.engine.render.opengl.GLConst;
+import com.elusivehawk.engine.render.opengl.GLEnumBufferTarget;
+import com.elusivehawk.engine.render.opengl.GLEnumDataUsage;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
 import com.elusivehawk.util.BufferHelper;
@@ -136,7 +137,7 @@ public class RenderTicket extends Filterable implements IAssetReceiver, IDirty, 
 			}
 			
 			this.buf = BufferHelper.createFloatBuffer(this.m.getIndiceCount() * 16);
-			this.vbo = new VertexBuffer(GLConst.GL_ARRAY_BUFFER, GLConst.GL_STREAM_DRAW, this.buf);
+			this.vbo = new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_STREAM_DRAW, this.buf);
 			
 			this.m.populate(this.p);
 			this.p.attachVBO(this.vbo, Arrays.asList(3));

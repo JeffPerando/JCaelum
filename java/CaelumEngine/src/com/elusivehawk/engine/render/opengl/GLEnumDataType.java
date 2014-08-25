@@ -22,13 +22,13 @@ public enum GLEnumDataType
 	GL_INT(GLConst.GL_INT, 4, IntBuffer.class),
 	GL_SHORT(GLConst.GL_SHORT, 2, ShortBuffer.class);
 	
-	private final int gl, bytes;
+	private final int glCode, bytes;
 	private final Class<? extends Buffer> bufType;
 	
 	@SuppressWarnings("unqualified-field-access")
-	GLEnumDataType(int glType, int byteCount, Class<? extends Buffer> type)
+	GLEnumDataType(int gl, int byteCount, Class<? extends Buffer> type)
 	{
-		gl = glType;
+		glCode = gl;
 		bytes = byteCount;
 		bufType = type;
 		
@@ -36,7 +36,7 @@ public enum GLEnumDataType
 	
 	public int getGLId()
 	{
-		return this.gl;
+		return this.glCode;
 	}
 	
 	public int getByteCount()
