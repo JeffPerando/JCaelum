@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.render.three;
 
 import java.nio.IntBuffer;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import com.elusivehawk.engine.assets.Asset;
@@ -10,8 +11,10 @@ import com.elusivehawk.engine.render.RenderConst;
 import com.elusivehawk.engine.render.RenderException;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.opengl.GLConst;
+import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
 import com.elusivehawk.util.BufferHelper;
+import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.storage.Few;
 import com.google.common.collect.Lists;
@@ -25,7 +28,7 @@ import com.google.common.collect.Lists;
  * @see IAssetReceiver
  * @see Tessellator
  */
-public class Model implements IAssetReceiver
+public class Model implements IAssetReceiver, IPopulator<GLProgram>
 {
 	protected final List<ModelSection> sections = Lists.newArrayList();
 	protected String name;
@@ -44,6 +47,21 @@ public class Model implements IAssetReceiver
 	public Model(String mname)
 	{
 		name = mname;
+		
+	}
+	
+	@Override
+	public void populate(GLProgram p)
+	{
+		Few<VertexBuffer> vbos = this.getVBOs();
+		
+		if (vbos != null)
+		{
+			p.attachVBO(vbos.one, Arrays.asList(0, 1, 2));
+			p.attachVBO(vbos.two, null);
+			p.attachVBO(vbos.three, Arrays.asList(4));
+			
+		}
 		
 	}
 	

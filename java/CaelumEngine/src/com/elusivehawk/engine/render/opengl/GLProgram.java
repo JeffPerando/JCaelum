@@ -4,7 +4,6 @@ package com.elusivehawk.engine.render.opengl;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -14,9 +13,8 @@ import com.elusivehawk.engine.render.RenderConst;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.Shader;
-import com.elusivehawk.engine.render.three.Model;
 import com.elusivehawk.util.ArrayHelper;
-import com.elusivehawk.util.storage.Few;
+import com.elusivehawk.util.IPopulator;
 
 /**
  * 
@@ -32,9 +30,11 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 	private int id = -1, vba = -1, shaderCount = 0;
 	private boolean bound = false, relink = true;
 	
-	public GLProgram()
+	public GLProgram(){}
+	
+	public GLProgram(IPopulator<GLProgram> pop)
 	{
-		this(null);
+		pop.populate(this);
 		
 	}
 	
@@ -269,16 +269,6 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 		
 	}
 	
-	public void attachModel(Model m)
-	{
-		Few<VertexBuffer> vbos = m.getVBOs();
-		
-		this.attachVBO(vbos.one, Arrays.asList(0, 1, 2));
-		this.attachVBO(vbos.two, null);
-		this.attachVBO(vbos.three, Arrays.asList(4));
-		
-	}
-	
 	public synchronized boolean attachShader(Shader sh)
 	{
 		if (sh == null)
@@ -348,18 +338,18 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 		return this.shaders[type.ordinal()];
 	}
 	
+	@Override
+	public int hashCode()
+	{
+		return this.getId();
+	}
+	
 	private static interface IUniformType
 	{
 		public void loadUniform(int loc, FloatBuffer buf);
 		
 		public void loadUniform(int loc, IntBuffer buf);
 		
-	}
-	
-	@Override
-	public int hashCode()
-	{
-		return this.getId();
 	}
 	
 	public static enum EnumUniformType implements IUniformType
