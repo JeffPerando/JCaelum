@@ -17,7 +17,6 @@ import com.elusivehawk.engine.render.old.RenderTask;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLEnumShader;
 import com.elusivehawk.engine.render.opengl.GLEnumTexture;
-import com.elusivehawk.engine.render.opengl.GLException;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
@@ -41,6 +40,7 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 	private final IRenderEnvironment renv;
 	private final IDisplay display;
 	
+	@Deprecated
 	private IRenderHUB hub = null;
 	private int fps;
 	private boolean paused = false;

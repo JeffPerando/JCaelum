@@ -371,11 +371,6 @@ public final class RenderHelper
 		return ret;
 	}
 	
-	public static Material[] createMaterials()
-	{
-		return new Material[RenderConst.MATERIAL_CAP];
-	}
-	
 	public static Shader[] createShaders()
 	{
 		return new Shader[GLEnumShader.values().length];

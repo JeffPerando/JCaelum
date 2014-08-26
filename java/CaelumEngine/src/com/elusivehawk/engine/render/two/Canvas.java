@@ -1,60 +1,59 @@
 
 package com.elusivehawk.engine.render.two;
 
+import com.elusivehawk.engine.render.Filterable;
+
 /**
  * 
  * 
  * 
  * @author Elusivehawk
  */
-public class Canvas
+public class Canvas extends Filterable
 {
-	protected final CanvasLayer[] layers;
-	protected CanvasLayer currLayer = null;
+	private SubCanvas sub = null;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Canvas(int layerCount)
+	public Canvas(int imgs)
 	{
-		layers = new CanvasLayer[layerCount];
 		
 	}
 	
-	public Canvas(int layerCount, int imgs)
+	public void createSubCanvas(float xmin, float ymin, float xmax, float ymax)
 	{
-		this(layerCount);
-		setLayers(imgs);
-		
-	}
-	
-	public void setLayer(int layer, int imgs)
-	{
-		if (this.layers[layer] == null)
+		if (this.sub == null)
 		{
-			this.layers[layer] = new CanvasLayer(imgs);
+			this.sub = new SubCanvas(xmin, ymin, xmax, ymax);
+			
+		}
+		else
+		{
+			this.sub.createSubCanvas(xmin, ymin, xmax, ymax);
 			
 		}
 		
 	}
 	
-	public void setLayers(int imgs)
+	public boolean destroySubCanvas()
 	{
-		for (int c = 0; c < this.layers.length; c++)
+		if (this.sub == null)
 		{
-			this.setLayer(c, imgs);
+			return false;
+		}
+		
+		if (!this.sub.destroySubCanvas())
+		{
+			this.sub = null;
 			
 		}
 		
+		return true;
 	}
 	
-	public void setActiveLayer(int layer)
+	public void drawImage(float x, float y, float z, float w, Icon icon)
 	{
-		this.currLayer = this.layers[layer];
 		
-	}
-	
-	public int getLayerCount()
-	{
-		return this.layers.length;
+		
 	}
 	
 }

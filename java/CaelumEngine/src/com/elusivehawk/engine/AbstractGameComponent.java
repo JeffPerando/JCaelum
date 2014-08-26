@@ -1,18 +1,11 @@
 
 package com.elusivehawk.engine;
 
-import java.util.Collection;
 import java.util.List;
 import com.elusivehawk.engine.assets.AssetManager;
 import com.elusivehawk.engine.physics.IPhysicsSimulator;
-import com.elusivehawk.engine.render.RenderContext;
-import com.elusivehawk.engine.render.RenderException;
-import com.elusivehawk.engine.render.RenderHelper;
-import com.elusivehawk.engine.render.old.IRenderEngine;
+import com.elusivehawk.engine.render.IRenderable;
 import com.elusivehawk.engine.render.old.IRenderHUB;
-import com.elusivehawk.engine.render.opengl.GLConst;
-import com.elusivehawk.engine.render.opengl.GLEnumTexture;
-import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.StringHelper;
 import com.google.common.collect.Lists;
@@ -28,7 +21,7 @@ import com.google.common.collect.Lists;
  * @see GameState
  * @see IUpdatable
  */
-public abstract class AbstractGameComponent implements IUpdatable
+public abstract class AbstractGameComponent implements IUpdatable, IRenderable
 {
 	private final AbstractGameComponent master;
 	
@@ -133,20 +126,6 @@ public abstract class AbstractGameComponent implements IUpdatable
 	}
 	
 	public abstract void initiate(GameArguments args) throws Throwable;
-	
-	/**
-	 * 
-	 * NOTICE: THIS IS NOT THREAD SAFE!<br>
-	 * I mean it people, sync your entities and crap!
-	 * 
-	 * @param rcon
-	 * @param delta
-	 * 
-	 * @throws RenderException
-	 * 
-	 * @see RenderHelper
-	 */
-	public abstract void render(RenderContext rcon, double delta) throws RenderException;
 	
 	public abstract void onShutdown();
 	

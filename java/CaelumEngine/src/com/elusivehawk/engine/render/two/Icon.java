@@ -1,6 +1,8 @@
 
 package com.elusivehawk.engine.render.two;
 
+import com.elusivehawk.util.math.Vector;
+
 /**
  * 
  * 
@@ -9,28 +11,21 @@ package com.elusivehawk.engine.render.two;
  */
 public class Icon
 {
-	private final float[] info = new float[8];
+	private final Vector[] corners = new Vector[4];
 	
 	@SuppressWarnings("unqualified-field-access")
 	public Icon(float x, float y, float z, float w)
 	{
-		info[0] = x;
-		info[1] = y;
-		
-		info[2] = z;
-		info[3] = y;
-		
-		info[4] = x;
-		info[5] = w;
-		
-		info[6] = z;
-		info[7] = w;
+		corners[0] = new Vector(x, y);
+		corners[1] = new Vector(z, y);
+		corners[2] = new Vector(x, w);
+		corners[3] = new Vector(z, w);
 		
 	}
 	
-	public float[] getInfo()
+	public Vector[] getCorners()
 	{
-		return this.info;
+		return this.corners;
 	}
 	
 }

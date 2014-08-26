@@ -9,9 +9,8 @@ import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.render.Filterable;
 import com.elusivehawk.engine.render.ILogicalRender;
 import com.elusivehawk.engine.render.Material;
-import com.elusivehawk.engine.render.RenderConst;
+import com.elusivehawk.engine.render.MaterialSet;
 import com.elusivehawk.engine.render.RenderContext;
-import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.Shader;
 import com.elusivehawk.engine.render.Texture;
 import com.elusivehawk.engine.render.opengl.GLEnumBufferTarget;
@@ -22,7 +21,6 @@ import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.IDirty;
 import com.elusivehawk.util.math.IQuaternionListener;
 import com.elusivehawk.util.math.IVectorListener;
-import com.elusivehawk.util.math.MathHelper;
 import com.elusivehawk.util.math.Matrix;
 import com.elusivehawk.util.math.MatrixHelper;
 import com.elusivehawk.util.math.Quaternion;
@@ -52,16 +50,16 @@ public class RenderTicket extends Filterable implements IAssetReceiver, IDirty, 
 			rot = new Quaternion();
 	
 	protected final GLProgram p;
-	protected final Material[] mats = RenderHelper.createMaterials();
 	
-	protected Model m;
+	protected MaterialSet matSet = null;
+	protected Model m = null;
 	protected FloatBuffer buf = null;
 	protected VertexBuffer vbo = null;
 	
 	protected boolean dirty = true, zBuffer = true, initiated = false;//, animPause = false;
 	//protected int frame = 0;
 	//protected IModelAnimation anim = null, lastAnim = null;
-	protected int matCount = 0, texFrame = 0;
+	protected int texFrame = 0;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public RenderTicket(Vector off, Quaternion roff)
@@ -214,12 +212,7 @@ public class RenderTicket extends Filterable implements IAssetReceiver, IDirty, 
 		}
 		else if (a instanceof Texture)
 		{
-			if (this.matCount == RenderConst.MATERIAL_CAP)
-			{
-				return;
-			}
-			
-			this.addMaterials(new Material(/*String.format("mat-%s", this.matCount + 1),*/(Texture)a));
+			this.addMaterials(new Material((Texture)a));
 			
 		}
 		
@@ -259,40 +252,23 @@ public class RenderTicket extends Filterable implements IAssetReceiver, IDirty, 
 		
 	}
 	
-	public synchronized boolean addMaterials(Material... materials)
+	public synchronized void setMaterials(MaterialSet ms)
 	{
-		if (this.matCount == RenderConst.MATERIAL_CAP)
-		{
-			return false;
-		}
+		assert ms != null;
 		
-		for (Material mat : materials)
-		{
-			if (this.matCount == RenderConst.MATERIAL_CAP)
-			{
-				break;
-			}
-			
-			this.mats[this.matCount++] = mat;
-			this.setIsDirty(true);
-			
-		}
+		this.matSet = ms;
 		
-		return true;
 	}
 	
-	public synchronized void setMaterial(int i, Material m)
+	public synchronized boolean addMaterials(Material... mats)
 	{
-		assert MathHelper.bounds(i, 0, 15);
-		
-		if (this.mats[i] == null)
+		if (this.matSet == null)
 		{
-			this.matCount++;
+			this.matSet = new MaterialSet();
 			
 		}
 		
-		this.mats[i] = m;
-		
+		return this.matSet.addMaterials(mats);
 	}
 	
 	/**
