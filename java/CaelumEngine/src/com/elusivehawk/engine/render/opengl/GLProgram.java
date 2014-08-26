@@ -53,17 +53,17 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 	}
 	
 	@Override
-	public void delete(RenderContext con)
+	public void delete(RenderContext rcon)
 	{
 		if (this.bound)
 		{
-			this.unbind(con);
+			this.unbind(rcon);
 			
 		}
 		
-		IGL2 gl2 = con.getGL2();
+		IGL2 gl2 = rcon.getGL2();
 		
-		con.getGL3().glDeleteVertexArrays(this.vba);
+		rcon.getGL3().glDeleteVertexArrays(this.vba);
 		
 		for (Shader s : this.shaders)
 		{
@@ -82,11 +82,11 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 	}
 	
 	@Override
-	public boolean bind(RenderContext con)
+	public boolean bind(RenderContext rcon)
 	{
 		if (this.shaderCount == 0)
 		{
-			for (Shader sh : con.getDefaultShaders())
+			for (Shader sh : rcon.getDefaultShaders())
 			{
 				this.attachShader(sh);
 				
@@ -96,18 +96,18 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 		
 		if (this.id == -1)
 		{
-			this.id = con.getGL2().glCreateProgram();
-			this.vba = con.getGL3().glGenVertexArrays();
+			this.id = rcon.getGL2().glCreateProgram();
+			this.vba = rcon.getGL3().glGenVertexArrays();
 			
-			con.registerCleanable(this);
+			rcon.registerCleanable(this);
 			
-			RenderHelper.checkForGLError(con);
+			RenderHelper.checkForGLError(rcon);
 			
 		}
 		
 		if (this.relink)
 		{
-			IGL2 gl2 = con.getGL2();
+			IGL2 gl2 = rcon.getGL2();
 			
 			for (Shader s : this.shaders)
 			{
@@ -124,7 +124,7 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 			
 			try
 			{
-				RenderHelper.checkForGLError(con);
+				RenderHelper.checkForGLError(rcon);
 				
 				this.relink = false;
 				
@@ -133,9 +133,9 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 			
 		}
 		
-		if (!this.bind0(con))
+		if (!this.bind0(rcon))
 		{
-			this.unbind(con);
+			this.unbind(rcon);
 			
 			return false;
 		}
@@ -143,33 +143,33 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 		return true;
 	}
 	
-	private boolean bind0(RenderContext con)
+	private boolean bind0(RenderContext rcon)
 	{
 		if (this.bound)
 		{
 			return true;
 		}
 		
-		if (con.getGL1().glGetInteger(GLConst.GL_CURRENT_PROGRAM) != 0)
+		if (rcon.getGL1().glGetInteger(GLConst.GL_CURRENT_PROGRAM) != 0)
 		{
 			return false;
 		}
 		
-		con.getGL2().glUseProgram(this);
+		rcon.getGL2().glUseProgram(this);
 		
-		con.getGL3().glBindVertexArray(this.vba);
+		rcon.getGL3().glBindVertexArray(this.vba);
 		
 		if (!this.vbos.isEmpty())
 		{
 			for (Entry<VertexBuffer, List<Integer>> entry : this.vbos.entrySet())
 			{
-				con.getGL1().glBindBuffer(entry.getKey());
+				rcon.getGL1().glBindBuffer(entry.getKey());
 				
 				if (entry.getValue() != null)
 				{
 					for (int attrib : entry.getValue())
 					{
-						con.getGL2().glEnableVertexAttribArray(attrib);
+						rcon.getGL2().glEnableVertexAttribArray(attrib);
 						
 					}
 					

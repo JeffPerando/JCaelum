@@ -7,7 +7,7 @@ import java.util.List;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.EnumLogType;
 import com.elusivehawk.engine.render.RenderException;
-import com.elusivehawk.engine.render.RenderHelper;
+import com.elusivehawk.engine.render.opengl.GLEnumPolyType;
 import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.math.MathConst;
 import com.elusivehawk.util.math.Vector;
@@ -26,16 +26,16 @@ public final class Tessellator
 	
 	private final List<ModelPoint> polys = Lists.newArrayList();
 	
-	private int glMode = -1;
+	private GLEnumPolyType glMode = null;
 	
-	public void begin(int gl) throws RenderException
+	public void begin(GLEnumPolyType gl) throws RenderException
 	{
 		if (this.isWorking())
 		{
 			throw new RenderException("Already tessellating! *trollface*");
 		}
 		
-		if (RenderHelper.getPointCount(gl) == 0)
+		if (gl.getPointCount() == 0)
 		{
 			throw new RenderException("Invalid GL mode!");
 			
@@ -114,12 +114,12 @@ public final class Tessellator
 			throw new RenderException("Not tessellating! *trollface*");
 		}
 		
-		if (this.polys.size() % RenderHelper.getPointCount(this.glMode) != 0)
+		if (this.polys.size() % this.glMode.getPointCount() != 0)
 		{
 			throw new RenderException(String.format("Odd number of vectors (%s) loaded in mode %s", this.polys.size(), this.glMode));
 		}
 		
-		this.glMode = -1;
+		this.glMode = null;
 		
 	}
 	
@@ -202,7 +202,7 @@ public final class Tessellator
 	
 	public boolean isWorking()
 	{
-		return this.glMode != -1;
+		return this.glMode != null;
 	}
 	
 }

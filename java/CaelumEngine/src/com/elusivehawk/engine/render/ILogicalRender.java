@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
+import com.elusivehawk.engine.render.opengl.GLEnumPolyType;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 
 /**
@@ -11,8 +12,12 @@ import com.elusivehawk.engine.render.opengl.GLProgram;
  */
 public interface ILogicalRender
 {
-	public boolean updateBeforeRender(RenderContext con, double delta);
+	public boolean updateBeforeRender(RenderContext rcon, double delta);
 	
 	public GLProgram getProgram();
+	
+	public GLEnumPolyType getPolygonType();
+	
+	public int getPolyCount();
 	
 }

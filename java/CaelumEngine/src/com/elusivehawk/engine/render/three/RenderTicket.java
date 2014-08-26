@@ -15,6 +15,7 @@ import com.elusivehawk.engine.render.Shader;
 import com.elusivehawk.engine.render.Texture;
 import com.elusivehawk.engine.render.opengl.GLEnumBufferTarget;
 import com.elusivehawk.engine.render.opengl.GLEnumDataUsage;
+import com.elusivehawk.engine.render.opengl.GLEnumPolyType;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
 import com.elusivehawk.util.BufferHelper;
@@ -187,6 +188,20 @@ public class RenderTicket extends Filterable implements IAssetReceiver, IDirty, 
 	public GLProgram getProgram()
 	{
 		return this.p;
+	}
+	
+	@Override
+	public GLEnumPolyType getPolygonType()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public int getPolyCount()
+	{
+		// TODO Auto-generated method stub
+		return 0;
 	}
 	
 	@Override

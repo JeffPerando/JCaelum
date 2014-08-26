@@ -4,7 +4,6 @@ package com.elusivehawk.engine.render;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 import java.util.List;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -13,9 +12,11 @@ import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.EnumLogType;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLEnumError;
+import com.elusivehawk.engine.render.opengl.GLEnumPolyType;
 import com.elusivehawk.engine.render.opengl.GLEnumShader;
 import com.elusivehawk.engine.render.opengl.GLEnumTexture;
 import com.elusivehawk.engine.render.opengl.GLException;
+import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
@@ -289,29 +290,14 @@ public final class RenderHelper
 		return ret;
 	}
 	
-	public static int getPointCount(int gl)
+	public static int getPolygonCount(int points, GLEnumPolyType poly)
 	{
-		switch (gl)
-		{
-			case GLConst.GL_POINTS: return 1;
-			case GLConst.GL_LINES: return 2;
-			case GLConst.GL_TRIANGLES: return 3;
-			case GLConst.GL_QUADS: return 4;
-			case GLConst.GL_TRIANGLE_FAN: return 5;
-			
-		}
-		
-		return 0;
+		return poly == GLEnumPolyType.GL_TRIANGLE_STRIP ? points - 2 : points / poly.getPointCount();
 	}
 	
-	public static int getPolygonCount(int points, int gl)
+	public static int getPointCount(int polycount, GLEnumPolyType poly)
 	{
-		return gl == GLConst.GL_TRIANGLE_STRIP ? points - 2 : points / getPointCount(gl);
-	}
-	
-	public static int getPointCount(int polycount, int gl)
-	{
-		return gl == GLConst.GL_TRIANGLE_STRIP ? polycount + 2 : polycount * getPointCount(gl);
+		return poly == GLEnumPolyType.GL_TRIANGLE_STRIP ? polycount + 2 : polycount * poly.getPointCount();
 	}
 	
 	public static void checkForGLError() throws GLException
@@ -352,28 +338,37 @@ public final class RenderHelper
 		return ret;
 	}
 	
-	public static int[] createVBOs(int count)
-	{
-		IntBuffer buf = BufferHelper.createIntBuffer(count);
-		
-		gl1().glGenBuffers(buf);
-		
-		buf.rewind();
-		
-		int[] ret = new int[count];
-		
-		for (int c = 0; c < count; c++)
-		{
-			ret[c] = buf.get();
-			
-		}
-		
-		return ret;
-	}
-	
 	public static Shader[] createShaders()
 	{
 		return new Shader[GLEnumShader.values().length];
+	}
+	
+	public static boolean render(ILogicalRender lr, double delta)
+	{
+		return render(renderContext(), lr, delta);
+	}
+	
+	public static boolean render(RenderContext rcon, ILogicalRender lr, double delta)
+	{
+		if (!lr.updateBeforeRender(rcon, delta))
+		{
+			return false;
+		}
+		
+		GLProgram p = lr.getProgram();
+		
+		if (!p.bind(rcon))
+		{
+			return false;
+		}
+		
+		IGL1 gl1 = rcon.getGL1();
+		
+		gl1.glDrawElements(lr.getPolygonType(), lr.getPolyCount(), GLConst.GL_UNSIGNED_INT, 0);
+		
+		p.unbind(rcon);
+		
+		return true;
 	}
 	
 }

@@ -10,9 +10,9 @@ import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.render.RenderConst;
 import com.elusivehawk.engine.render.RenderException;
 import com.elusivehawk.engine.render.RenderHelper;
-import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLEnumBufferTarget;
 import com.elusivehawk.engine.render.opengl.GLEnumDataUsage;
+import com.elusivehawk.engine.render.opengl.GLEnumPolyType;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
 import com.elusivehawk.util.BufferHelper;
@@ -38,11 +38,10 @@ public class Model implements IAssetReceiver, IPopulator<GLProgram>
 	protected ModelSection sec = null;
 	protected Few<VertexBuffer> fin = null;
 	protected int
-			glmode = GLConst.GL_TRIANGLES,
 			polyCount = 0,
 			pointCount = 0,
 			indiceCount = -1;
-	
+	protected GLEnumPolyType glmode = GLEnumPolyType.GL_TRIANGLES;
 	protected IntBuffer indices = null;
 	
 	@SuppressWarnings("unqualified-field-access")
@@ -149,7 +148,7 @@ public class Model implements IAssetReceiver, IPopulator<GLProgram>
 		
 		Tessellator t = new Tessellator();
 		
-		t.begin(GLConst.GL_TRIANGLES);//TODO Implement an indice efficiency... thing
+		t.begin(GLEnumPolyType.GL_TRIANGLES);//TODO Implement an indice efficiency... thing
 		
 		int i = 0, matIn = 0, maxInd =-1;
 		
@@ -211,7 +210,7 @@ public class Model implements IAssetReceiver, IPopulator<GLProgram>
 		return this.fin;
 	}
 	
-	public int getDrawMode()
+	public GLEnumPolyType getPolygonType()
 	{
 		return this.glmode;
 	}

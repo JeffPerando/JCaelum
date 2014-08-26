@@ -135,7 +135,7 @@ public class RenderEngine3D implements IRenderEngine
 					
 				}
 				
-				gl1.glDrawElements(m.getDrawMode(), 0, GLConst.GL_UNSIGNED_INT, m.getPolyCount());
+				gl1.glDrawElements(m.getPolygonType(), 0, GLConst.GL_UNSIGNED_INT, m.getPolyCount());
 				
 				RenderHelper.checkForGLError(gl1);
 				
