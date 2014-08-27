@@ -16,7 +16,6 @@ import com.elusivehawk.util.IDirty;
 public class Shaders implements IDirty, IAssetReceiver
 {
 	private final Shader[] shaders = new Shader[RenderConst.SHADER_COUNT];
-	private final boolean[] bound = new boolean[RenderConst.SHADER_COUNT];
 	private int shCount = 0;
 	private boolean dirty = false;
 	
@@ -62,12 +61,7 @@ public class Shaders implements IDirty, IAssetReceiver
 				continue;
 			}
 			
-			if (!this.bound[c])
-			{
-				rcon.getGL2().glAttachShader(p, sh);
-				this.bound[c] = true;
-				
-			}
+			rcon.getGL2().glAttachShader(p, sh);
 			
 		}
 		
