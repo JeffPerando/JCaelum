@@ -19,40 +19,42 @@ public class VertexBuffer implements IGLBindable
 {
 	private final GLEnumBufferTarget t;
 	private final GLEnumDataUsage loadMode;
-	private final GLEnumDataType dataType;
+	
+	private GLEnumDataType dataType = GLEnumDataType.GL_FLOAT;
+	private Buffer initBuf = null;
 	
 	private int id = 0;
-	private boolean initiated = false;
-	private Buffer initBuf = null;
+	private boolean initiated = false, reupload = false;
 	
 	private final SyncList<Tuple<Buffer, Integer>> uploads = SyncList.newList();
 	
+	@SuppressWarnings("unqualified-field-access")
 	public VertexBuffer(GLEnumBufferTarget target, GLEnumDataUsage mode, Buffer buf)
 	{
-		this(target, mode, GLEnumDataType.GL_FLOAT, buf);
+		this(target, mode);
 		
-	}
-	
-	@SuppressWarnings("unqualified-field-access")
-	private VertexBuffer(GLEnumBufferTarget target, GLEnumDataUsage mode, GLEnumDataType type, Buffer buf)
-	{
-		this(target, mode, type);
+		dataType = GLEnumDataType.findCompatibleType(buf);
 		initBuf = buf;
 		
 	}
 	
-	public VertexBuffer(GLEnumBufferTarget target, GLEnumDataUsage mode)
+	@SuppressWarnings("unqualified-field-access")
+	public VertexBuffer(GLEnumBufferTarget target, GLEnumDataUsage mode, GLEnumDataType type, Buffer buf)
 	{
-		this(target, mode, GLEnumDataType.GL_FLOAT);
+		this(target, mode);
+		
+		assert type.isCompatible(buf);
+		
+		dataType = type;
+		initBuf = buf;
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public VertexBuffer(GLEnumBufferTarget target, GLEnumDataUsage mode, GLEnumDataType type)
+	public VertexBuffer(GLEnumBufferTarget target, GLEnumDataUsage mode)
 	{
 		t = target;
 		loadMode = mode;
-		dataType = type;
 		
 	}
 	
@@ -69,7 +71,7 @@ public class VertexBuffer implements IGLBindable
 		
 		gl1.glBindBuffer(this);
 		
-		if (!this.initiated)
+		if (!this.initiated || this.reupload)
 		{
 			if (this.initBuf != null)
 			{
@@ -96,6 +98,8 @@ public class VertexBuffer implements IGLBindable
 			}
 			
 			this.initiated = true;
+			this.reupload = false;
+			
 		}
 		
 		if (!this.uploads.isEmpty())
@@ -107,7 +111,7 @@ public class VertexBuffer implements IGLBindable
 			{
 				pair = itr.next();
 				
-				gl1.glBufferSubData(this.getTarget(), pair.two, this.dataType, pair.one);
+				gl1.glBufferSubData(this.getTarget(), pair.two * this.dataType.getByteCount(), this.dataType, pair.one);
 				
 				itr.remove();
 			}
@@ -154,6 +158,11 @@ public class VertexBuffer implements IGLBindable
 		return this.t;
 	}
 	
+	public GLEnumDataType getDataType()
+	{
+		return this.dataType;
+	}
+	
 	public int getId()
 	{
 		return this.id;
@@ -162,6 +171,13 @@ public class VertexBuffer implements IGLBindable
 	public void updateVBO(Buffer buf, int offset)
 	{
 		this.uploads.add(Tuple.create(buf, offset));
+		
+	}
+	
+	public synchronized void reUploadVBO(Buffer buf)
+	{
+		this.initBuf = buf;
+		this.reupload = true;
 		
 	}
 	

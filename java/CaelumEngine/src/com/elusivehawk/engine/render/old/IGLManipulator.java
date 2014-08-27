@@ -1,7 +1,8 @@
 
-package com.elusivehawk.engine.render.opengl;
+package com.elusivehawk.engine.render.old;
 
 import com.elusivehawk.engine.render.RenderContext;
+import com.elusivehawk.engine.render.opengl.GLProgram;
 
 /**
  * 

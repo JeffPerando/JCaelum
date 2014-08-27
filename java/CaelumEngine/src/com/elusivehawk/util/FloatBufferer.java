@@ -122,6 +122,13 @@ public class FloatBufferer implements IDirty
 		
 	}
 	
+	public void rewind()
+	{
+		this.buf.rewind();
+		this.indices.rewind();
+		
+	}
+	
 	public void reset()
 	{
 		this.buf.clear();

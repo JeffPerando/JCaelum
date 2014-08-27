@@ -6,6 +6,7 @@ import com.elusivehawk.engine.CaelumException;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.render.opengl.GLEnumBufferTarget;
+import com.elusivehawk.engine.render.opengl.GLEnumDataType;
 import com.elusivehawk.engine.render.opengl.GLEnumDataUsage;
 import com.elusivehawk.engine.render.opengl.GLEnumPolyType;
 import com.elusivehawk.engine.render.opengl.GLProgram;
@@ -128,7 +129,7 @@ public class RenderTicket extends Filterable implements IAssetReceiver, IDirty, 
 			}
 			
 			this.buf = BufferHelper.createFloatBuffer(this.m.getIndiceCount() * 16);
-			this.vbo = new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_STREAM_DRAW, this.buf);
+			this.vbo = new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_STREAM_DRAW, GLEnumDataType.GL_FLOAT, this.buf);
 			
 			this.m.populate(this.p);
 			this.p.attachVBO(this.vbo, 3);

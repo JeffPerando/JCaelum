@@ -127,7 +127,14 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 			return true;
 		}
 		
-		if (rcon.getGL1().glGetInteger(GLConst.GL_CURRENT_PROGRAM) != 0)
+		int bp = rcon.getGL1().glGetInteger(GLConst.GL_CURRENT_PROGRAM);
+		
+		if (bp == this.id)
+		{
+			return true;
+		}
+		
+		if (bp != 0)
 		{
 			return false;
 		}

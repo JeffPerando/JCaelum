@@ -1,9 +1,11 @@
 
 package com.elusivehawk.engine.render;
 
+import com.elusivehawk.engine.assets.Asset;
+import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.render.opengl.GLEnumBufferTarget;
+import com.elusivehawk.engine.render.opengl.GLEnumDataType;
 import com.elusivehawk.engine.render.opengl.GLEnumDataUsage;
-import com.elusivehawk.engine.render.opengl.GLEnumPolyType;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
 import com.elusivehawk.util.FloatBufferer;
@@ -14,11 +16,11 @@ import com.elusivehawk.util.FloatBufferer;
  * 
  * @author Elusivehawk
  */
-public class Canvas extends Filterable implements ILogicalRender
+public class Canvas extends Filterable implements IRenderable, IAssetReceiver
 {
 	private final GLProgram p = new GLProgram();
-	private final VertexBuffer floatbuf = new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW);
-	private final VertexBuffer indbuf = new VertexBuffer(GLEnumBufferTarget.GL_ELEMENT_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW);
+	private final VertexBuffer floatbuf;
+	private final VertexBuffer indbuf;
 	
 	private final FloatBufferer buffer;
 	private final int imgLimit;
@@ -32,33 +34,33 @@ public class Canvas extends Filterable implements ILogicalRender
 		imgLimit = imgs;
 		buffer = new FloatBufferer(4, imgLimit * 6);
 		
+		floatbuf = new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW, GLEnumDataType.GL_FLOAT, buffer.getBuffer());
+		indbuf = new VertexBuffer(GLEnumBufferTarget.GL_ELEMENT_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW, GLEnumDataType.GL_INT, buffer.getIndices());
+		
 		p.attachVBO(floatbuf, 0, 1);
 		p.attachVBO(indbuf, null);
 		
 	}
 	
 	@Override
-	public boolean updateBeforeRender(RenderContext rcon, double delta)
+	public void onAssetLoaded(Asset a)
 	{
-		return true;
+		this.p.onAssetLoaded(a);
+		
 	}
 	
 	@Override
-	public GLProgram getProgram()
+	public void render(RenderContext rcon, double delta) throws RenderException
 	{
-		return this.p;
-	}
-	
-	@Override
-	public GLEnumPolyType getPolygonType()
-	{
-		return GLEnumPolyType.GL_TRIANGLES;
-	}
-	
-	@Override
-	public int getPolyCount()
-	{
-		return this.images * 2;
+		if (!this.p.bind(rcon))
+		{
+			return;
+		}
+		
+		
+		
+		this.p.unbind(rcon);
+		
 	}
 	
 	public void createSubCanvas(float xmin, float ymin, float xmax, float ymax)
@@ -109,12 +111,24 @@ public class Canvas extends Filterable implements ILogicalRender
 		}
 		
 		float[][] img = new float[][]
+				{{x, y, 0, 0},
+				{w, y, 0, 0},
+				{x, h, 0, 0},
+				{w, h, 0, 0}};
+		
+		if (icon != null)
+		{
+			for (int c = 0; c < 4; c++)
+			{
+				for (int i = 0; i < 2; i++)
 				{
-					{x, y, icon.getCorner(0)[0], icon.getCorner(0)[1]},
-					{w, y, icon.getCorner(1)[0], icon.getCorner(1)[1]},
-					{x, h, icon.getCorner(2)[0], icon.getCorner(2)[1]},
-					{w, h, icon.getCorner(3)[0], icon.getCorner(3)[2]}
-				};
+					img[c][i + 2] = icon.getCorner(c)[i];
+					
+				}
+				
+			}
+			
+		}
 		
 		int[] ind = this.buffer.getOrCreateIndices(img);
 		

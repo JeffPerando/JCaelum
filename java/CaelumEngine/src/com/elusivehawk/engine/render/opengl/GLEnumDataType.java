@@ -49,4 +49,18 @@ public enum GLEnumDataType
 		return this.bufType.isInstance(buf);
 	}
 	
+	public static GLEnumDataType findCompatibleType(Buffer buf)
+	{
+		for (GLEnumDataType dt : values())
+		{
+			if (dt.isCompatible(buf))
+			{
+				return dt;
+			}
+			
+		}
+		
+		return null;
+	}
+	
 }
