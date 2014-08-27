@@ -1,9 +1,6 @@
 
-package com.elusivehawk.engine.render.two;
+package com.elusivehawk.engine.render;
 
-import com.elusivehawk.engine.render.Filterable;
-import com.elusivehawk.engine.render.ILogicalRender;
-import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.opengl.GLEnumBufferTarget;
 import com.elusivehawk.engine.render.opengl.GLEnumDataUsage;
 import com.elusivehawk.engine.render.opengl.GLEnumPolyType;

@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.render.old;
 
-import com.elusivehawk.engine.render.three.RenderTicket;
+import com.elusivehawk.engine.render.RenderTicket;
 import com.elusivehawk.util.storage.SyncList;
 
 /**

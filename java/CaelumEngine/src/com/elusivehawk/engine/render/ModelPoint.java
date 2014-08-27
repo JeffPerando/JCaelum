@@ -1,5 +1,5 @@
 
-package com.elusivehawk.engine.render.three;
+package com.elusivehawk.engine.render;
 
 import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.math.Vector;

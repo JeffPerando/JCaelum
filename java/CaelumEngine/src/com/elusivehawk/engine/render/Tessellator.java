@@ -1,12 +1,11 @@
 
-package com.elusivehawk.engine.render.three;
+package com.elusivehawk.engine.render;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.EnumLogType;
-import com.elusivehawk.engine.render.RenderException;
 import com.elusivehawk.engine.render.opengl.GLEnumPolyType;
 import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.math.MathConst;

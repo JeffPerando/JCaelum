@@ -1,17 +1,10 @@
 
-package com.elusivehawk.engine.render.three;
+package com.elusivehawk.engine.render;
 
 import java.nio.FloatBuffer;
 import com.elusivehawk.engine.CaelumException;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
-import com.elusivehawk.engine.render.Filterable;
-import com.elusivehawk.engine.render.ILogicalRender;
-import com.elusivehawk.engine.render.Material;
-import com.elusivehawk.engine.render.MaterialSet;
-import com.elusivehawk.engine.render.RenderContext;
-import com.elusivehawk.engine.render.Shader;
-import com.elusivehawk.engine.render.Texture;
 import com.elusivehawk.engine.render.opengl.GLEnumBufferTarget;
 import com.elusivehawk.engine.render.opengl.GLEnumDataUsage;
 import com.elusivehawk.engine.render.opengl.GLEnumPolyType;
