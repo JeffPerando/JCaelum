@@ -16,13 +16,18 @@ public enum GLEnumShader
 	FRAG(GLConst.GL_FRAGMENT_SHADER),
 	COMP(GLConst.GL_COMPUTE_SHADER);
 	
-	public final int gl;
+	private final int gl;
 	
 	@SuppressWarnings("unqualified-field-access")
 	GLEnumShader(int glenum)
 	{
 		gl = glenum;
 		
+	}
+	
+	public int getGLId()
+	{
+		return this.gl;
 	}
 	
 }

@@ -2,7 +2,6 @@
 package com.elusivehawk.engine.render.three;
 
 import java.nio.FloatBuffer;
-import java.util.Arrays;
 import com.elusivehawk.engine.CaelumException;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
@@ -139,7 +138,7 @@ public class RenderTicket extends Filterable implements IAssetReceiver, IDirty, 
 			this.vbo = new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_STREAM_DRAW, this.buf);
 			
 			this.m.populate(this.p);
-			this.p.attachVBO(this.vbo, Arrays.asList(3));
+			this.p.attachVBO(this.vbo, 3);
 			
 			this.initiated = true;
 			

@@ -338,11 +338,6 @@ public final class RenderHelper
 		return ret;
 	}
 	
-	public static Shader[] createShaders()
-	{
-		return new Shader[GLEnumShader.values().length];
-	}
-	
 	public static boolean render(ILogicalRender lr, double delta)
 	{
 		return render(renderContext(), lr, delta);

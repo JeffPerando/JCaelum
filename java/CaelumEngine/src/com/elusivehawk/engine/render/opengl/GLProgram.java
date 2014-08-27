@@ -3,18 +3,18 @@ package com.elusivehawk.engine.render.opengl;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
-import com.elusivehawk.engine.render.RenderConst;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.Shader;
+import com.elusivehawk.engine.render.Shaders;
 import com.elusivehawk.util.ArrayHelper;
 import com.elusivehawk.util.IPopulator;
+import com.google.common.collect.Lists;
 
 /**
  * 
@@ -24,10 +24,10 @@ import com.elusivehawk.util.IPopulator;
  */
 public final class GLProgram implements IGLBindable, IAssetReceiver
 {
-	private final Shader[] shaders = RenderHelper.createShaders();
+	private final Shaders shaders = new Shaders();
 	private final HashMap<VertexBuffer, List<Integer>> vbos = new HashMap<VertexBuffer, List<Integer>>();
 	
-	private int id = -1, vba = -1, shaderCount = 0;
+	private int id = -1, vba = -1;
 	private boolean bound = false, relink = true;
 	
 	public GLProgram(){}
@@ -65,17 +65,7 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 		
 		rcon.getGL3().glDeleteVertexArrays(this.vba);
 		
-		for (Shader s : this.shaders)
-		{
-			if (s == null)
-			{
-				continue;
-			}
-			
-			gl2.glDetachShader(this, s);
-			gl2.glDeleteShader(s);
-			
-		}
+		this.shaders.deleteShaders(rcon, this);
 		
 		gl2.glDeleteProgram(this);
 		
@@ -84,16 +74,6 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 	@Override
 	public boolean bind(RenderContext rcon)
 	{
-		if (this.shaderCount == 0)
-		{
-			for (Shader sh : rcon.getDefaultShaders())
-			{
-				this.attachShader(sh);
-				
-			}
-			
-		}
-		
 		if (this.id == -1)
 		{
 			this.id = rcon.getGL2().glCreateProgram();
@@ -107,17 +87,9 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 		
 		if (this.relink)
 		{
-			IGL2 gl2 = rcon.getGL2();
+			this.shaders.attachShaders(rcon, this);
 			
-			for (Shader s : this.shaders)
-			{
-				if (s != null)
-				{
-					gl2.glAttachShader(this, s);
-					
-				}
-				
-			}
+			IGL2 gl2 = rcon.getGL2();
 			
 			gl2.glLinkProgram(this);
 			gl2.glValidateProgram(this);
@@ -130,6 +102,11 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 				
 			}
 			catch (Exception e){}
+			
+		}
+		else if (this.shaders.isDirty())
+		{
+			this.shaders.attachShaders(rcon, this);
 			
 		}
 		
@@ -223,69 +200,66 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 	@Override
 	public synchronized void onAssetLoaded(Asset a)
 	{
-		if (this.shaderCount < RenderConst.SHADER_COUNT)
-		{
-			if (a instanceof Shader)
-			{
-				this.attachShader((Shader)a);
-				
-			}
-			
-		}
+		this.shaders.onAssetLoaded(a);
 		
 	}
 	
-	public void attachVBO(VertexBuffer vbo, List<Integer> attribs)
+	@Override
+	public int hashCode()
 	{
-		if (attribs == null || attribs.size() == 0)
+		return this.getId();
+	}
+	
+	public void attachVBO(VertexBuffer vbo, int... attribs)
+	{
+		if (attribs == null || attribs.length == 0)
 		{
 			this.vbos.put(vbo, null);
 			
 			return;
 		}
 		
-		List<Integer> valid = new ArrayList<Integer>(attribs);
+		List<Integer> valid = Lists.newArrayList();
 		
-		for (Entry<VertexBuffer, List<Integer>> entry : this.vbos.entrySet())
+		for (int a : attribs)
 		{
-			for (int a : attribs)
+			boolean found = false;
+			
+			for (List<Integer> l : this.vbos.values())
 			{
-				if (entry.getValue().contains(a))
+				if (l != null && l.contains(a))
 				{
-					valid.remove((Integer)a);
+					found = true;
 					
 				}
 				
 			}
 			
+			if (!found)
+			{
+				valid.add(a);
+				
+			}
+			
 		}
 		
-		if (valid.isEmpty())
+		if (!valid.isEmpty())
 		{
-			return;
+			this.vbos.put(vbo, valid);
+			
 		}
-		
-		this.vbos.put(vbo, valid);
 		
 	}
 	
 	public synchronized boolean attachShader(Shader sh)
 	{
-		if (sh == null)
+		if (this.shaders.addShader(sh))
 		{
-			return false;
+			this.relink = true;
+			return true;
 		}
 		
-		if (this.shaders[sh.gltype.ordinal()] == null)
-		{
-			this.shaderCount++;
-			
-		}
-		
-		this.shaders[sh.gltype.ordinal()] = sh;
-		this.relink = true;
-		
-		return true;
+		return false;
 	}
 	
 	public void attachUniform(String name, FloatBuffer info, EnumUniformType type)
@@ -331,17 +305,6 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 	public int getId()
 	{
 		return this.id;
-	}
-	
-	public Shader getShader(GLEnumShader type)
-	{
-		return this.shaders[type.ordinal()];
-	}
-	
-	@Override
-	public int hashCode()
-	{
-		return this.getId();
 	}
 	
 	private static interface IUniformType

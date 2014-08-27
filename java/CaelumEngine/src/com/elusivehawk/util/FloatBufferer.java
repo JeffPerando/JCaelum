@@ -59,11 +59,11 @@ public class FloatBufferer implements IDirty
 		
 	}
 	
-	public int getOrCreateIndex(float... fs)
+	public int getIndex(float... fs)
 	{
 		assert fs.length == this.fpi;
 		
-		int in = -1;
+		int ret = -1;
 		
 		floatitr: for (int c = 0; c < this.indicecount; c++)
 		{
@@ -76,9 +76,16 @@ public class FloatBufferer implements IDirty
 				
 			}
 			
-			in = c;
+			ret = c;
 			break;
 		}
+		
+		return ret;
+	}
+	
+	public int getOrCreateIndex(float... fs)
+	{
+		int in = this.getIndex(fs);
 		
 		if (in == -1)
 		{
@@ -90,6 +97,20 @@ public class FloatBufferer implements IDirty
 		}
 		
 		return in;
+	}
+	
+	public int[] getOrCreateIndices(float[]... fss)
+	{
+		int[] ret = new int[fss.length];
+		int i = 0;
+		
+		for (float[] fs : fss)
+		{
+			ret[i++] = this.getOrCreateIndex(fs);
+			
+		}
+		
+		return ret;
 	}
 	
 	public void addIndex(int i)

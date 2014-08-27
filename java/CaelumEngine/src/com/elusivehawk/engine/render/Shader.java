@@ -30,7 +30,14 @@ public class Shader extends GraphicAsset
 	}
 	
 	@Override
-	protected boolean readAsset(File asset)
+	public void delete(RenderContext rcon)
+	{
+		rcon.getGL2().glDeleteShader(this);
+		
+	}
+	
+	@Override
+	protected boolean readAsset(File asset) throws Throwable
 	{
 		String src = RenderHelper.formatShaderSource(StringHelper.readToOneLine(asset), asset.getParentFile());
 		
@@ -51,18 +58,11 @@ public class Shader extends GraphicAsset
 		
 		this.glId = ((RTaskUploadShader)task).getGLId();
 		
-		if (this.glId != -1)//TODO Check to see if this is the proper "blank" value; Might be 0...
+		if (this.glId != 0)
 		{
 			this.loaded = true;
 			
 		}
-		
-	}
-	
-	@Override
-	public void delete(RenderContext rcon)
-	{
-		rcon.getGL2().glDeleteShader(this.glId);
 		
 	}
 	

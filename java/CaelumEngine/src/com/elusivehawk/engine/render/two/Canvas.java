@@ -4,8 +4,11 @@ package com.elusivehawk.engine.render.two;
 import com.elusivehawk.engine.render.Filterable;
 import com.elusivehawk.engine.render.ILogicalRender;
 import com.elusivehawk.engine.render.RenderContext;
+import com.elusivehawk.engine.render.opengl.GLEnumBufferTarget;
+import com.elusivehawk.engine.render.opengl.GLEnumDataUsage;
 import com.elusivehawk.engine.render.opengl.GLEnumPolyType;
 import com.elusivehawk.engine.render.opengl.GLProgram;
+import com.elusivehawk.engine.render.opengl.VertexBuffer;
 import com.elusivehawk.util.FloatBufferer;
 
 /**
@@ -17,7 +20,11 @@ import com.elusivehawk.util.FloatBufferer;
 public class Canvas extends Filterable implements ILogicalRender
 {
 	private final GLProgram p = new GLProgram();
+	private final VertexBuffer floatbuf = new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW);
+	private final VertexBuffer indbuf = new VertexBuffer(GLEnumBufferTarget.GL_ELEMENT_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW);
+	
 	private final FloatBufferer buffer;
+	private final int imgLimit;
 	
 	private SubCanvas sub = null;
 	private int images = 0;
@@ -25,7 +32,11 @@ public class Canvas extends Filterable implements ILogicalRender
 	@SuppressWarnings("unqualified-field-access")
 	public Canvas(int imgs)
 	{
-		buffer = new FloatBufferer(4, imgs * 6);
+		imgLimit = imgs;
+		buffer = new FloatBufferer(4, imgLimit * 6);
+		
+		p.attachVBO(floatbuf, 0, 1);
+		p.attachVBO(indbuf, null);
 		
 	}
 	
@@ -86,6 +97,11 @@ public class Canvas extends Filterable implements ILogicalRender
 	
 	public void drawImage(float x, float y, float w, float h, Icon icon)
 	{
+		if (this.images == this.imgLimit)
+		{
+			return;
+		}
+		
 		if (this.sub != null)
 		{
 			x = this.sub.interpolateX(x);
@@ -95,7 +111,23 @@ public class Canvas extends Filterable implements ILogicalRender
 			
 		}
 		
+		float[][] img = new float[][]
+				{
+					{x, y, icon.getCorner(0)[0], icon.getCorner(0)[1]},
+					{w, y, icon.getCorner(1)[0], icon.getCorner(1)[1]},
+					{x, h, icon.getCorner(2)[0], icon.getCorner(2)[1]},
+					{w, h, icon.getCorner(3)[0], icon.getCorner(3)[2]}
+				};
 		
+		int[] ind = this.buffer.getOrCreateIndices(img);
+		
+		this.buffer.addIndex(ind[0]);
+		this.buffer.addIndex(ind[1]);
+		this.buffer.addIndex(ind[2]);
+		
+		this.buffer.addIndex(ind[1]);
+		this.buffer.addIndex(ind[2]);
+		this.buffer.addIndex(ind[3]);
 		
 		this.images++;
 		

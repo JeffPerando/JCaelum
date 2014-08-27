@@ -9,21 +9,18 @@ package com.elusivehawk.engine.render.two;
  */
 public class Icon
 {
-	private final float[][] corners = new float[2][4];
+	private final float[][] corners;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Icon(float x, float y, float z, float w)
+	public Icon(float x, float y, float w, float h)
 	{
-		corners[0] = new float[]{x, y};
-		corners[1] = new float[]{z, y};
-		corners[2] = new float[]{x, w};
-		corners[3] = new float[]{z, w};
+		corners = new float[][]{{x, y}, {w, y}, {x, h}, {w, h}};
 		
 	}
 	
-	public float[][] getCorners()
+	public float[] getCorner(int c)
 	{
-		return this.corners;
+		return this.corners[c];
 	}
 	
 }

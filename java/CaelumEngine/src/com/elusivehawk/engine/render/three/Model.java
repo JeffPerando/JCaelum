@@ -2,7 +2,6 @@
 package com.elusivehawk.engine.render.three;
 
 import java.nio.IntBuffer;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import com.elusivehawk.engine.assets.Asset;
@@ -58,9 +57,9 @@ public class Model implements IAssetReceiver, IPopulator<GLProgram>
 		
 		if (vbos != null)
 		{
-			p.attachVBO(vbos.one, Arrays.asList(0, 1, 2));
+			p.attachVBO(vbos.one, 0, 1, 2);
 			p.attachVBO(vbos.two, null);
-			p.attachVBO(vbos.three, Arrays.asList(4));
+			p.attachVBO(vbos.three, 4);
 			
 		}
 		

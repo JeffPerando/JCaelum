@@ -119,6 +119,7 @@ public abstract class AbstractGameComponent implements IUpdatable, IRenderable
 	@SuppressWarnings("unused")
 	public void loadAssets(AssetManager mgr){}
 	
+	@SuppressWarnings("static-method")
 	@Deprecated
 	public IRenderHUB getRenderHUB()
 	{

@@ -25,7 +25,6 @@ import com.elusivehawk.engine.render.opengl.IGLDeletable;
 import com.elusivehawk.engine.render.opengl.IGLManipulator;
 import com.elusivehawk.util.IPausable;
 import com.elusivehawk.util.IUpdatable;
-import com.elusivehawk.util.storage.ImmutableArray;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -51,7 +50,7 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 	
 	private int notex, maxTexCount;
 	
-	private ImmutableArray<Shader> shaders = null;
+	private Shaders shaders = new Shaders();
 	
 	private final List<IGLDeletable> cleanables = Lists.newArrayList();
 	@Deprecated
@@ -87,23 +86,17 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 		this.gl2 = (IGL2)this.renv.getGL(IRenderEnvironment.GL_2);
 		this.gl3 = (IGL3)this.renv.getGL(IRenderEnvironment.GL_3);
 		
-		Shader[] shs = RenderHelper.createShaders();
-		
 		for (GLEnumShader sh : GLEnumShader.values())
 		{
 			String loc = String.format("/%s.glsl", sh.name().toLowerCase());
 			
 			if (new File(".", loc).exists())
 			{
-				Shader s = new Shader(loc, sh);
-				
-				shs[sh.ordinal()] = s;
+				this.shaders.addShader(new Shader(loc, sh));
 				
 			}
 			
 		}
-		
-		this.shaders = new ImmutableArray<Shader>(shs);
 		
 	}
 	
@@ -417,7 +410,7 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 		return this.fps;
 	}
 	
-	public ImmutableArray<Shader> getDefaultShaders()
+	public Shaders getDefaultShaders()
 	{
 		return this.shaders;
 	}

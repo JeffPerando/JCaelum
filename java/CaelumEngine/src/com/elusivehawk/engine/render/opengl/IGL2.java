@@ -38,7 +38,7 @@ public interface IGL2
 	
 	default int glCreateShader(GLEnumShader type) throws GLException
 	{
-		return this.glCreateShader(type.gl);
+		return this.glCreateShader(type.getGLId());
 	}
 	
 	public int glCreateShader(int type) throws GLException;
