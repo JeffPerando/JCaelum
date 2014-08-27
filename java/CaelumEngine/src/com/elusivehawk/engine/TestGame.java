@@ -1,7 +1,9 @@
 
 package com.elusivehawk.engine;
 
+import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.Internal;
+import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.Version;
 
 /**
@@ -36,7 +38,7 @@ public final class TestGame extends Game
 			
 			for (Key key : kb.getPushedKeys())
 			{
-				CaelumEngine.log().log(EnumLogType.VERBOSE, "Key type: %s", key);
+				Logger.log().log(EnumLogType.VERBOSE, "Key type: %s", key);
 				
 			}
 			

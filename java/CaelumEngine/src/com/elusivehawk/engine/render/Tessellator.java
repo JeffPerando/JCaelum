@@ -4,10 +4,10 @@ package com.elusivehawk.engine.render;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
-import com.elusivehawk.engine.CaelumEngine;
-import com.elusivehawk.engine.EnumLogType;
 import com.elusivehawk.engine.render.opengl.GLEnumPolyType;
 import com.elusivehawk.util.BufferHelper;
+import com.elusivehawk.util.EnumLogType;
+import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.math.MathConst;
 import com.elusivehawk.util.math.Vector;
 import com.google.common.collect.Lists;
@@ -146,7 +146,7 @@ public final class Tessellator
 			
 			if (p == null)
 			{
-				CaelumEngine.log().log(EnumLogType.WARN, "Skipping indice %s at location %s", i, c);
+				Logger.log().log(EnumLogType.WARN, "Skipping indice %s at location %s", i, c);
 				
 				continue;
 			}

@@ -2,6 +2,7 @@
 package com.elusivehawk.util;
 
 import java.io.File;
+import java.lang.management.ManagementFactory;
 import java.util.Arrays;
 import com.google.common.collect.ImmutableList;
 
@@ -14,6 +15,8 @@ import com.google.common.collect.ImmutableList;
 public final class CompInfo
 {
 	private CompInfo(){}
+	
+	public static final boolean DEBUG = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().contains("-agentlib:jdwp");
 	
 	public static final String
 			JAVA_VERSION = System.getProperty("java.vm.specification.version"),

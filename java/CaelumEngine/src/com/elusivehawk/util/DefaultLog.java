@@ -1,11 +1,8 @@
 
-package com.elusivehawk.engine;
+package com.elusivehawk.util;
 
 import java.util.Calendar;
 import java.util.List;
-import com.elusivehawk.util.FileHelper;
-import com.elusivehawk.util.RNG;
-import com.elusivehawk.util.StringHelper;
 
 /**
  * 
@@ -13,7 +10,7 @@ import com.elusivehawk.util.StringHelper;
  * 
  * @author Elusivehawk
  */
-public class GameLog implements ILog
+public class DefaultLog implements ILog
 {
 	protected final List<String> crashDialog = StringHelper.read(FileHelper.createFile("CrashReportDialog.txt"));
 	
@@ -27,7 +24,7 @@ public class GameLog implements ILog
 			return;
 		}
 		
-		if (!CaelumEngine.DEBUG && type == EnumLogType.DEBUG)
+		if (!CompInfo.DEBUG && type == EnumLogType.DEBUG)
 		{
 			return;
 		}

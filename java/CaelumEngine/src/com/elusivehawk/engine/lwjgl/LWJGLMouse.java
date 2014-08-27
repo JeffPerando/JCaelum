@@ -8,6 +8,7 @@ import org.lwjgl.input.Mouse;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.EnumMouseClick;
 import com.elusivehawk.engine.render.IDisplay;
+import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.math.Vector;
 
 /**
@@ -93,7 +94,7 @@ public class LWJGLMouse extends com.elusivehawk.engine.Mouse
 		}
 		catch (Exception e)
 		{
-			CaelumEngine.log().err(e);
+			Logger.log().err(e);
 			
 			return false;
 		}

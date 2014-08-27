@@ -2,7 +2,6 @@
 package com.elusivehawk.engine;
 
 import java.io.File;
-import java.lang.management.ManagementFactory;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -16,10 +15,12 @@ import com.elusivehawk.engine.render.ThreadGameRender;
 import com.elusivehawk.engine.render.old.IRenderHUB;
 import com.elusivehawk.engine.render.old.RenderTask;
 import com.elusivehawk.util.CompInfo;
+import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.EnumOS;
 import com.elusivehawk.util.FileHelper;
 import com.elusivehawk.util.IPausable;
 import com.elusivehawk.util.Internal;
+import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.ReflectionHelper;
 import com.elusivehawk.util.ShutdownHelper;
 import com.elusivehawk.util.StringHelper;
@@ -45,7 +46,6 @@ public final class CaelumEngine
 {
 	private static final CaelumEngine INSTANCE = new CaelumEngine();
 	
-	public static final boolean DEBUG = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().contains("-agentlib:jdwp");
 	public static final Version VERSION = new Version(Version.ALPHA, 1, 0, 0, 0);
 	
 	private final Map<EnumEngineFeature, IThreadStoppable> threads = Maps.newEnumMap(EnumEngineFeature.class);
@@ -54,7 +54,6 @@ public final class CaelumEngine
 	private final TaskManager tasks = new TaskManager();
 	private final List<String> startupPrefixes = Lists.newArrayList();
 	
-	private ILog log = new GameLog();
 	private IGameEnvironment env = null;
 	private IRenderEnvironment renv = null;
 	private JsonObject envConfig = null;
@@ -92,7 +91,7 @@ public final class CaelumEngine
 			
 			if (!prefix.endsWith(":"))
 			{
-				this.log.log(EnumLogType.WTF, "Prefix is missing colon: %s", prefix);
+				Logger.log().log(EnumLogType.WTF, "Prefix is missing colon: %s", prefix);
 				itr.remove();
 				
 			}
@@ -119,11 +118,6 @@ public final class CaelumEngine
 	public static IGameEnvironment environment()
 	{
 		return instance().env;
-	}
-	
-	public static ILog log()
-	{
-		return instance().log;
 	}
 	
 	public static TaskManager tasks()
@@ -273,13 +267,13 @@ public final class CaelumEngine
 		this.startargs.putAll(strs);
 		this.gameargs = new GameArguments(gargs);
 		
-		this.log.log(EnumLogType.INFO, "Starting Caelum Engine %s on %s.", VERSION, CompInfo.OS);
+		Logger.log().log(EnumLogType.INFO, "Starting Caelum Engine %s on %s.", VERSION, CompInfo.OS);
 		
 		boolean verbose = !"false".equalsIgnoreCase(this.startargs.get("verbose"));
 		
-		this.log.setEnableVerbosity(verbose);
+		Logger.log().setEnableVerbosity(verbose);
 		
-		this.log.log(EnumLogType.INFO, "Verbosity is set to \'%s\'", verbose);
+		Logger.log().log(EnumLogType.INFO, "Verbosity is set to \'%s\'", verbose);
 		
 		/*if (DEBUG)
 		{
@@ -317,7 +311,7 @@ public final class CaelumEngine
 			
 			if (clazz == null)
 			{
-				this.log.log(EnumLogType.VERBOSE, "Loading default game environment.");
+				Logger.log().log(EnumLogType.VERBOSE, "Loading default game environment.");
 				
 				try
 				{
@@ -327,7 +321,7 @@ public final class CaelumEngine
 						case MAC:
 						case LINUX: clazz = Class.forName("com.elusivehawk.engine.lwjgl.LWJGLEnvironment"); break;
 						case ANDROID: clazz = Class.forName("com.elusivehawk.engine.android.AndroidEnvironment"); break;
-						default: this.log.log(EnumLogType.WTF, "Unsupported OS! Enum: %s; OS: %s", CompInfo.OS, System.getProperty("os.name"));
+						default: Logger.log().log(EnumLogType.WTF, "Unsupported OS! Enum: %s; OS: %s", CompInfo.OS, System.getProperty("os.name"));
 						
 					}
 					
@@ -337,7 +331,7 @@ public final class CaelumEngine
 			}
 			else
 			{
-				this.log.log(EnumLogType.WARN, "Loading custom game environment, this is gonna suck...");
+				Logger.log().log(EnumLogType.WARN, "Loading custom game environment, this is gonna suck...");
 				
 			}
 			
@@ -345,7 +339,7 @@ public final class CaelumEngine
 			
 			if (env == null)
 			{
-				this.log.log(EnumLogType.ERROR, "Unable to load environment: Instance couldn't be created. Class: %s", clazz == null ? "NULL" : clazz.getCanonicalName());
+				Logger.log().log(EnumLogType.ERROR, "Unable to load environment: Instance couldn't be created. Class: %s", clazz == null ? "NULL" : clazz.getCanonicalName());
 				ShutdownHelper.exit("NO-ENVIRONMENT-FOUND");
 				
 				return;
@@ -353,7 +347,7 @@ public final class CaelumEngine
 			
 			if (!env.isCompatible(CompInfo.OS))
 			{
-				this.log.log(EnumLogType.ERROR, "Unable to load environment: Current OS is incompatible. Class: %s; OS: %s", clazz == null ? "NULL" : clazz.getCanonicalName(), CompInfo.OS);
+				Logger.log().log(EnumLogType.ERROR, "Unable to load environment: Current OS is incompatible. Class: %s; OS: %s", clazz == null ? "NULL" : clazz.getCanonicalName(), CompInfo.OS);
 				ShutdownHelper.exit("NO-ENVIRONMENT-FOUND");
 				
 				return;
@@ -363,16 +357,6 @@ public final class CaelumEngine
 			
 			this.env = env;
 			this.renv = env.getRenderEnv();
-			
-			ILog l = this.env.getLog();
-			
-			if (l != null)
-			{
-				this.log = l;
-				
-				l.setEnableVerbosity(verbose);
-				
-			}
 			
 		}
 		
@@ -389,7 +373,7 @@ public final class CaelumEngine
 			}
 			catch (ClassFormatError e)
 			{
-				this.log.err(e);
+				Logger.log().err(e);
 				
 			}
 			finally
@@ -397,7 +381,7 @@ public final class CaelumEngine
 
 				if (inputList == null || inputList.isEmpty())
 				{
-					this.log.log(EnumLogType.WARN, "Unable to load input");
+					Logger.log().log(EnumLogType.WARN, "Unable to load input");
 					
 				}
 				else
@@ -406,7 +390,7 @@ public final class CaelumEngine
 					{
 						this.inputs.add(input);
 						
-						this.log.log(EnumLogType.DEBUG, "Loaded input: %s", input.getClass().getCanonicalName());
+						Logger.log().log(EnumLogType.DEBUG, "Loaded input: %s", input.getClass().getCanonicalName());
 						
 					}
 					
@@ -416,7 +400,7 @@ public final class CaelumEngine
 			
 		}
 		
-		if (DEBUG)
+		if (CompInfo.DEBUG)
 		{
 			this.factory = (() -> {return new TestGame();});
 			
@@ -427,7 +411,7 @@ public final class CaelumEngine
 			
 			if (gamefac == null)
 			{
-				this.log.log(EnumLogType.ERROR, "Game factory not found: Factory not provided");
+				Logger.log().log(EnumLogType.ERROR, "Game factory not found: Factory not provided");
 				ShutdownHelper.exit("NO-FACTORY-FOUND");
 				
 				return;
@@ -446,7 +430,7 @@ public final class CaelumEngine
 		
 		if (this.factory == null)
 		{
-			this.log.log(EnumLogType.ERROR, "Game factory not found: Factory not provided");
+			Logger.log().log(EnumLogType.ERROR, "Game factory not found: Factory not provided");
 			ShutdownHelper.exit("NO-FACTORY-FOUND");
 			
 			return;
@@ -456,7 +440,7 @@ public final class CaelumEngine
 		
 		if (g == null)
 		{
-			this.log.log(EnumLogType.ERROR, "Could not load game");
+			Logger.log().log(EnumLogType.ERROR, "Could not load game");
 			ShutdownHelper.exit("NO-GAME-FOUND");
 			
 			return;
@@ -466,11 +450,11 @@ public final class CaelumEngine
 		
 		g.preInit(this.gameargs);
 		
-		this.log.log(EnumLogType.INFO,"Loading %s", g);
+		Logger.log().log(EnumLogType.INFO,"Loading %s", g);
 		
 		if (g.getGameVersion() == null)
 		{
-			this.log.log(EnumLogType.WARN, "The game is missing a Version object!");
+			Logger.log().log(EnumLogType.WARN, "The game is missing a Version object!");
 			
 		}
 		
@@ -490,7 +474,7 @@ public final class CaelumEngine
 		
 		if (d == null)
 		{
-			this.log.log(EnumLogType.ERROR, "Display could not be created: Display is null");
+			Logger.log().log(EnumLogType.ERROR, "Display could not be created: Display is null");
 			ShutdownHelper.exit("DISPLAY-NOT-MADE");
 			
 			return;
@@ -505,7 +489,7 @@ public final class CaelumEngine
 		{
 			e.printStackTrace();
 			
-			this.log.log(EnumLogType.ERROR, "Display could not be created: Display threw an error");
+			Logger.log().log(EnumLogType.ERROR, "Display could not be created: Display threw an error");
 			ShutdownHelper.exit("DISPLAY-NOT-MADE");
 			
 			return;
@@ -529,7 +513,7 @@ public final class CaelumEngine
 		}
 		catch (Throwable e)
 		{
-			this.log.err("Game failed to load!", e);
+			Logger.log().err("Game failed to load!", e);
 			ShutdownHelper.exit("GAME-LOAD-FAILURE");
 			
 			return;
@@ -542,7 +526,7 @@ public final class CaelumEngine
 		
 		if (!d.releaseContext())
 		{
-			this.log.log(EnumLogType.ERROR, "Display could not be created: Display cannot release context");
+			Logger.log().log(EnumLogType.ERROR, "Display could not be created: Display cannot release context");
 			ShutdownHelper.exit("DISPLAY-NOT-MADE");
 			
 			return;
@@ -559,7 +543,7 @@ public final class CaelumEngine
 		if (rhub != null)
 		{
 			this.rcon.setRenderHUB(rhub);
-			this.log.log(EnumLogType.WARN, "Game %s is using the rendering HUB system!!", this.game);
+			Logger.log().log(EnumLogType.WARN, "Game %s is using the rendering HUB system!!", this.game);
 			
 		}
 		
@@ -683,7 +667,6 @@ public final class CaelumEngine
 		this.env = null;
 		this.renv = null;
 		this.envConfig = null;
-		this.log = new GameLog();
 		
 		this.gameargs = null;
 		this.assets = null;

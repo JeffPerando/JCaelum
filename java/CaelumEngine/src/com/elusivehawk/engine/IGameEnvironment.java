@@ -43,9 +43,4 @@ public interface IGameEnvironment
 	
 	public List<Input> loadInputs();
 	
-	default ILog getLog()
-	{
-		return null;
-	}
-	
 }

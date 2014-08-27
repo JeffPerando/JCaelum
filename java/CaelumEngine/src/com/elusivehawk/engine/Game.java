@@ -8,6 +8,7 @@ import com.elusivehawk.engine.render.DisplaySettings;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.old.IRenderHUB;
 import com.elusivehawk.util.IPausable;
+import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.Version;
 import com.google.common.collect.Lists;
 
@@ -141,7 +142,7 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 				}
 				catch (Throwable e)
 				{
-					CaelumEngine.log().err("Error caught during game state initiation:", new GameTickException(e));
+					Logger.log().err("Error caught during game state initiation:", new GameTickException(e));
 					
 				}
 				

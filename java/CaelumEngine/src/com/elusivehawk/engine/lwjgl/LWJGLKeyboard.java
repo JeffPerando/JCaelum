@@ -3,8 +3,8 @@ package com.elusivehawk.engine.lwjgl;
 
 import java.util.List;
 import org.lwjgl.input.Keyboard;
-import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.Key;
+import com.elusivehawk.util.Logger;
 import com.google.common.collect.Lists;
 
 /**
@@ -162,7 +162,7 @@ public class LWJGLKeyboard extends com.elusivehawk.engine.Keyboard
 		}
 		catch (Exception e)
 		{
-			CaelumEngine.log().err(e);
+			Logger.log().err(e);
 			return false;
 		}
 		

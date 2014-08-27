@@ -2,7 +2,6 @@
 package com.elusivehawk.engine.lwjgl;
 
 import java.util.List;
-import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.IGameEnvironment;
 import com.elusivehawk.engine.Input;
 import com.elusivehawk.engine.render.DisplaySettings;
@@ -39,7 +38,7 @@ public class LWJGLEnvironment implements IGameEnvironment
 		
 		String lib = null;
 		
-		if (CaelumEngine.DEBUG && json != null)
+		if (CompInfo.DEBUG && json != null)
 		{
 			JsonData val = json.getValue("debugNativeLocation");
 			
@@ -98,7 +97,7 @@ public class LWJGLEnvironment implements IGameEnvironment
 	{
 		//TODO: this only works on Debian... but we'll try it for now.
 		
-		return (CompInfo.OS == EnumOS.LINUX && FileHelper.createFile("/usr/lib/jni/liblwjgl.so").exists()) ? "/usr/lib/jni" : FileHelper.createFile(CaelumEngine.DEBUG ? "lib" : ".", String.format("/lwjgl/native/%s", CompInfo.OS.toString())).getAbsolutePath();
+		return (CompInfo.OS == EnumOS.LINUX && FileHelper.createFile("/usr/lib/jni/liblwjgl.so").exists()) ? "/usr/lib/jni" : FileHelper.createFile(CompInfo.DEBUG ? "lib" : ".", String.format("/lwjgl/native/%s", CompInfo.OS.toString())).getAbsolutePath();
 	}
 	
 }

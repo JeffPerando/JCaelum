@@ -4,6 +4,7 @@ package com.elusivehawk.engine;
 import java.util.Iterator;
 import java.util.List;
 import com.elusivehawk.util.Internal;
+import com.elusivehawk.util.concurrent.ThreadTimed;
 import com.google.common.collect.Lists;
 
 /**
@@ -13,7 +14,7 @@ import com.google.common.collect.Lists;
  * @author Elusivehawk
  */
 @Internal
-public final class ThreadGameLoop extends ThreadCaelum
+public final class ThreadGameLoop extends ThreadTimed
 {
 	private final List<Input> input = Lists.newArrayList();
 	private final Game game;

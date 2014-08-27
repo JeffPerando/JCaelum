@@ -4,9 +4,9 @@ package com.elusivehawk.engine.render;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.IContext;
 import com.elusivehawk.engine.IThreadContext;
-import com.elusivehawk.engine.ThreadCaelum;
 import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.ShutdownHelper;
+import com.elusivehawk.util.concurrent.ThreadTimed;
 
 /**
  * 
@@ -15,7 +15,7 @@ import com.elusivehawk.util.ShutdownHelper;
  * @author Elusivehawk
  */
 @Internal
-public class ThreadGameRender extends ThreadCaelum implements IThreadContext
+public class ThreadGameRender extends ThreadTimed implements IThreadContext
 {
 	protected final RenderContext rcon;
 	

@@ -5,11 +5,11 @@ import java.io.IOException;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.render.Color;
-import com.elusivehawk.engine.render.DisplaySettings;
 import com.elusivehawk.engine.render.ColorFilter;
+import com.elusivehawk.engine.render.DisplaySettings;
 import com.elusivehawk.engine.render.IDisplay;
+import com.elusivehawk.util.Logger;
 
 /**
  * 
@@ -96,7 +96,7 @@ public class LWJGLDisplay implements IDisplay
 		}
 		catch (LWJGLException e)
 		{
-			CaelumEngine.log().err(e);
+			Logger.log().err(e);
 			
 		}
 		
@@ -112,7 +112,7 @@ public class LWJGLDisplay implements IDisplay
 		}
 		catch (LWJGLException e)
 		{
-			CaelumEngine.log().err(e);
+			Logger.log().err(e);
 			
 			return false;
 		}
@@ -130,7 +130,7 @@ public class LWJGLDisplay implements IDisplay
 		}
 		catch (LWJGLException e)
 		{
-			CaelumEngine.log().err(e);
+			Logger.log().err(e);
 			
 			return false;
 		}

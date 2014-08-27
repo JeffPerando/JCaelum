@@ -1,10 +1,10 @@
 
 package com.elusivehawk.engine.render.old;
 
-import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderException;
 import com.elusivehawk.engine.render.RenderHelper;
+import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.task.ITaskListener;
 import com.elusivehawk.util.task.Task;
 
@@ -41,7 +41,7 @@ public abstract class RenderTask extends Task
 		{
 			ret = false;
 			
-			CaelumEngine.log().err(null, e);
+			Logger.log().err(null, e);
 			
 		}
 		

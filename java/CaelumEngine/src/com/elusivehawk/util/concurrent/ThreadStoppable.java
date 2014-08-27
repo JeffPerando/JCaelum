@@ -1,6 +1,8 @@
 
 package com.elusivehawk.util.concurrent;
 
+import com.elusivehawk.util.Logger;
+
 /**
  * 
  * Abstract class for quick 'n dirty threading.
@@ -117,7 +119,7 @@ public abstract class ThreadStoppable extends Thread implements IThreadStoppable
 	
 	public void handleException(Throwable e)
 	{
-		e.printStackTrace();
+		Logger.log().err(e);
 		
 	}
 	

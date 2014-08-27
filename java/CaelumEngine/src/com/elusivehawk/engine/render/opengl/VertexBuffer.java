@@ -3,9 +3,9 @@ package com.elusivehawk.engine.render.opengl;
 
 import java.nio.Buffer;
 import java.util.Iterator;
-import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
+import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.storage.SyncList;
 import com.elusivehawk.util.storage.Tuple;
 
@@ -125,7 +125,7 @@ public class VertexBuffer implements IGLBindable
 		}
 		catch (GLException e)
 		{
-			CaelumEngine.log().err(e);
+			Logger.log().err(e);
 			
 			this.unbind(rcon);
 			

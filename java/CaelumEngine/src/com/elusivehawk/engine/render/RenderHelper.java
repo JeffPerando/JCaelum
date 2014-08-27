@@ -9,7 +9,6 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import com.elusivehawk.engine.CaelumEngine;
-import com.elusivehawk.engine.EnumLogType;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLEnumError;
 import com.elusivehawk.engine.render.opengl.GLEnumPolyType;
@@ -21,7 +20,9 @@ import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
 import com.elusivehawk.util.BufferHelper;
+import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.FileHelper;
+import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.StringHelper;
 import com.elusivehawk.util.io.ByteBuffers;
 import com.elusivehawk.util.storage.Buffer;
@@ -92,7 +93,7 @@ public final class RenderHelper
 			}
 			catch (Exception e)
 			{
-				CaelumEngine.log().err(null, e);
+				Logger.log().err(null, e);
 				
 			}
 			
@@ -125,7 +126,7 @@ public final class RenderHelper
 		}
 		catch (Exception e)
 		{
-			CaelumEngine.log().err(null, e);
+			Logger.log().err(null, e);
 			
 		}
 		
@@ -224,7 +225,7 @@ public final class RenderHelper
 			
 			if (split != null && split.length == 2)
 			{
-				CaelumEngine.log().log(EnumLogType.DEBUG, "#include found: %s", include);
+				Logger.log().log(EnumLogType.DEBUG, "#include found: %s", include);
 				
 				String loc = split[1];
 				
@@ -260,7 +261,7 @@ public final class RenderHelper
 		}
 		catch (Exception e)
 		{
-			CaelumEngine.log().err(null, e);
+			Logger.log().err(null, e);
 			
 			return 0;
 		}

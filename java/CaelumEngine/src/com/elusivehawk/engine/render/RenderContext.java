@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import com.elusivehawk.engine.CaelumEngine;
-import com.elusivehawk.engine.EnumLogType;
 import com.elusivehawk.engine.GameState;
 import com.elusivehawk.engine.IContext;
 import com.elusivehawk.engine.IGameStateListener;
@@ -23,8 +22,10 @@ import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
 import com.elusivehawk.engine.render.opengl.IGLDeletable;
+import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.IPausable;
 import com.elusivehawk.util.IUpdatable;
+import com.elusivehawk.util.Logger;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -77,7 +78,7 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 	{
 		if (!this.renv.initiate())
 		{
-			CaelumEngine.log().log(EnumLogType.ERROR, "Unable to load render environment.");
+			Logger.log().log(EnumLogType.ERROR, "Unable to load render environment.");
 			
 			return;
 		}
@@ -137,7 +138,7 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 		
 		if (this.hub != null)
 		{
-			CaelumEngine.log().log(EnumLogType.WARN, "Rendering using render HUB system! Override Game.render() instead!");
+			Logger.log().log(EnumLogType.WARN, "Rendering using render HUB system! Override Game.render() instead!");
 			
 			this.hub.initiate(this.display);
 			
@@ -257,7 +258,7 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 			}
 			catch (Throwable e)
 			{
-				CaelumEngine.log().err("Error caught whilst finishing render task:", e);
+				Logger.log().err("Error caught whilst finishing render task:", e);
 				
 			}
 			

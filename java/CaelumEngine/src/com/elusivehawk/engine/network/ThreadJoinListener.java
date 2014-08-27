@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.util.Internal;
+import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.concurrent.ThreadStoppable;
 
 /**
@@ -82,7 +82,7 @@ public class ThreadJoinListener extends ThreadStoppable
 			}
 			catch (IOException e)
 			{
-				CaelumEngine.log().err(e);
+				Logger.log().err(e);
 				
 			}
 			

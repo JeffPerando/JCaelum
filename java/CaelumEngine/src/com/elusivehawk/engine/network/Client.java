@@ -4,7 +4,7 @@ package com.elusivehawk.engine.network;
 import java.nio.channels.spi.AbstractSelectableChannel;
 import java.security.Key;
 import java.util.UUID;
-import com.elusivehawk.engine.CaelumEngine;
+import com.elusivehawk.util.Logger;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -56,7 +56,7 @@ public class Client implements IHost
 		}
 		catch (NetworkException e)
 		{
-			CaelumEngine.log().err("Could not connect.", e);
+			Logger.log().err("Could not connect.", e);
 			
 		}
 		
