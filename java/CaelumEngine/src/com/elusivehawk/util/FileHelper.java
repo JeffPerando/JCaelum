@@ -239,4 +239,28 @@ public final class FileHelper
 		return StringHelper.splitLast(name, ".").one;
 	}
 	
+	public static File getChild(String name, File folder)
+	{
+		return getChild(name, getFiles(folder));
+	}
+	
+	public static File getChild(String name, List<File> files)
+	{
+		if (files == null || files.isEmpty())
+		{
+			return null;
+		}
+		
+		for (File file : files)
+		{
+			if (file.getPath().endsWith(name))
+			{
+				return file;
+			}
+			
+		}
+		
+		return null;
+	}
+	
 }

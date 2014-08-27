@@ -199,6 +199,7 @@ public final class RenderHelper
 	public static String formatShaderSource(String src, File parentDir)
 	{
 		List<String> inc = Lists.newArrayList();
+		List<File> files = FileHelper.getFiles(parentDir);
 		int in;
 		
 		while ((in = src.indexOf(RenderConst.INCLUDE)) != -1)
@@ -229,7 +230,7 @@ public final class RenderHelper
 				
 				if (!inc.contains(loc))
 				{
-					rep = StringHelper.readToOneLine(new File(parentDir, loc));
+					rep = StringHelper.readToOneLine(FileHelper.getChild(loc, files));
 					
 					inc.add(loc);
 					
