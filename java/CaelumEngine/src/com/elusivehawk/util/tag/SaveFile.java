@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import com.elusivehawk.util.FileHelper;
+import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.io.ByteStreams;
 import com.elusivehawk.util.io.IByteReader;
 import com.elusivehawk.util.io.IByteWriter;
@@ -73,7 +74,7 @@ public class SaveFile extends TagList
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			Logger.log().err(e);
 			
 		}
 		
@@ -84,7 +85,7 @@ public class SaveFile extends TagList
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Logger.log().err(e);
 			
 		}
 		
@@ -121,7 +122,7 @@ public class SaveFile extends TagList
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			Logger.log().err(e);
 			
 		}
 		

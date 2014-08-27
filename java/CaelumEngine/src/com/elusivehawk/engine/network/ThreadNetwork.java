@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.UUID;
 import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.Internal;
+import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.concurrent.ThreadStoppable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -298,7 +299,7 @@ public class ThreadNetwork extends ThreadStoppable
 			}
 			catch (IOException e)
 			{
-				e.printStackTrace();
+				Logger.log().err(e);
 				
 			}
 			

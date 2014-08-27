@@ -38,7 +38,7 @@ public final class ReflectionHelper
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Logger.log().err(e);
 			
 		}
 		
@@ -98,7 +98,7 @@ public final class ReflectionHelper
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Logger.log().err(e);
 			
 		}
 		
@@ -141,7 +141,7 @@ public final class ReflectionHelper
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
+				Logger.log().err(e);
 				
 			}
 			
@@ -166,7 +166,7 @@ public final class ReflectionHelper
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Logger.log().err(e);
 			
 		}
 		
@@ -230,7 +230,7 @@ public final class ReflectionHelper
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Logger.log().err(e);
 			
 		}
 		
@@ -306,7 +306,7 @@ public final class ReflectionHelper
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Logger.log().err(e);
 			
 		}
 		

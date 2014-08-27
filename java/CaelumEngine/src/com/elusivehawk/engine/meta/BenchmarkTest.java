@@ -1,6 +1,8 @@
 
 package com.elusivehawk.engine.meta;
 
+import com.elusivehawk.util.Logger;
+
 /**
  * 
  * Test log:
@@ -47,7 +49,7 @@ public class BenchmarkTest
 			}
 			catch (InterruptedException e)
 			{
-				e.printStackTrace();
+				Logger.log().err(e);
 				
 			}
 			

@@ -8,6 +8,7 @@ import java.nio.channels.DatagramChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.AbstractSelectableChannel;
 import javax.net.SocketFactory;
+import com.elusivehawk.util.Logger;
 
 /**
  * 
@@ -92,7 +93,7 @@ public final class IP
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Logger.log().err(e);
 			
 		}
 		
@@ -121,7 +122,7 @@ public final class IP
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Logger.log().err(e);
 			
 		}
 		

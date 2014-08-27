@@ -92,7 +92,7 @@ public final class StringHelper
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
+				Logger.log().err(e);
 				
 			}
 			finally
@@ -104,7 +104,7 @@ public final class StringHelper
 				}
 				catch (IOException e)
 				{
-					e.printStackTrace();
+					Logger.log().err(e);
 					
 				}
 				
@@ -145,7 +145,7 @@ public final class StringHelper
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
+				Logger.log().err(e);
 				
 			}
 			finally
@@ -157,7 +157,7 @@ public final class StringHelper
 				}
 				catch (IOException e)
 				{
-					e.printStackTrace();
+					Logger.log().err(e);
 					
 				}
 				
@@ -194,7 +194,7 @@ public final class StringHelper
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
+				Logger.log().err(e);
 				
 				return false;
 			}
@@ -223,7 +223,7 @@ public final class StringHelper
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Logger.log().err(e);
 			
 		}
 		finally
@@ -235,7 +235,7 @@ public final class StringHelper
 			}
 			catch (IOException e)
 			{
-				e.printStackTrace();
+				Logger.log().err(e);
 				
 			}
 			

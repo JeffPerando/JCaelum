@@ -2,6 +2,7 @@
 package com.elusivehawk.util.tag;
 
 import java.util.List;
+import com.elusivehawk.util.Logger;
 
 /**
  * 
@@ -77,7 +78,7 @@ public class TagList implements ITagList
 				}
 				catch (ClassCastException e)
 				{
-					e.printStackTrace();
+					Logger.log().err(e);
 					
 				}
 				
@@ -101,7 +102,7 @@ public class TagList implements ITagList
 		}
 		catch(ClassCastException e)
 		{
-			e.printStackTrace();
+			Logger.log().err(e);
 			
 		}
 		

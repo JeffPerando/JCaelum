@@ -4,6 +4,7 @@ package com.elusivehawk.engine.render;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import com.elusivehawk.util.BufferHelper;
+import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.io.ByteArray;
 import com.elusivehawk.util.io.IByteReader;
 
@@ -93,7 +94,7 @@ public class Color
 			}
 			catch (Throwable e)
 			{
-				e.printStackTrace();
+				Logger.log().err(e);
 				break;
 			}
 			

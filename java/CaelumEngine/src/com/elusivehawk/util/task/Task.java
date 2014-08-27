@@ -1,6 +1,8 @@
 
 package com.elusivehawk.util.task;
 
+import com.elusivehawk.util.Logger;
+
 /**
  * 
  * 
@@ -45,7 +47,7 @@ public abstract class Task
 		}
 		catch (Throwable e)
 		{
-			e.printStackTrace();
+			Logger.log().err(e);
 			
 		}
 		

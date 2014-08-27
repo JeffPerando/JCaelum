@@ -48,7 +48,7 @@ public class ThreadJoinListener extends ThreadStoppable
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			Logger.log().err(e);
 			return false;
 		}
 		

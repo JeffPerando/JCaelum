@@ -5,6 +5,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import com.elusivehawk.util.Logger;
 
 /**
  * 
@@ -63,7 +64,7 @@ public class ByteStreams implements IByteReader, IByteWriter, Closeable
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			Logger.log().err(e);
 			
 		}
 		
@@ -85,7 +86,7 @@ public class ByteStreams implements IByteReader, IByteWriter, Closeable
 			}
 			catch (IOException e)
 			{
-				e.printStackTrace();
+				Logger.log().err(e);
 				
 			}
 			
@@ -107,7 +108,7 @@ public class ByteStreams implements IByteReader, IByteWriter, Closeable
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			Logger.log().err(e);
 			
 		}
 		

@@ -2,6 +2,7 @@
 package com.elusivehawk.util.io;
 
 import java.util.UUID;
+import com.elusivehawk.util.Logger;
 
 /**
  * 
@@ -30,7 +31,7 @@ public final class Serializers
 					}
 					catch (Throwable e)
 					{
-						e.printStackTrace();
+						Logger.log().err(e);
 						
 					}
 					
@@ -55,7 +56,8 @@ public final class Serializers
 					}
 					catch (Throwable e)
 					{
-						e.printStackTrace();
+						Logger.log().err(e);
+						
 					}
 					
 					return null;
@@ -79,7 +81,7 @@ public final class Serializers
 					}
 					catch (Throwable e)
 					{
-						e.printStackTrace();
+						Logger.log().err(e);
 						
 					}
 					
@@ -122,7 +124,7 @@ public final class Serializers
 						}
 						catch (Throwable e)
 						{
-							e.printStackTrace();
+							Logger.log().err(e);
 							break;
 						}
 						
@@ -167,7 +169,7 @@ public final class Serializers
 						}
 						catch (Throwable e)
 						{
-							e.printStackTrace();
+							Logger.log().err(e);
 							break;
 						}
 						

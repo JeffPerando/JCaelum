@@ -487,7 +487,7 @@ public final class CaelumEngine
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Logger.log().err(e);
 			
 			Logger.log().log(EnumLogType.ERROR, "Display could not be created: Display threw an error");
 			ShutdownHelper.exit("DISPLAY-NOT-MADE");

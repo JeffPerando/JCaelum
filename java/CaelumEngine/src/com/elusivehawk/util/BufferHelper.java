@@ -122,7 +122,7 @@ public final class BufferHelper
 		}
 		catch (Throwable e)
 		{
-			e.printStackTrace();
+			Logger.log().err(e);
 			
 		}
 		

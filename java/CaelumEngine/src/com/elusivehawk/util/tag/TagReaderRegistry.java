@@ -1,6 +1,7 @@
 
 package com.elusivehawk.util.tag;
 
+import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.io.IByteReader;
 import com.elusivehawk.util.io.IByteWriter;
 import com.elusivehawk.util.io.Serializer;
@@ -60,7 +61,7 @@ public final class TagReaderRegistry implements Serializer<Tag<?>>
 		}
 		catch (Throwable e)
 		{
-			e.printStackTrace();
+			Logger.log().err(e);
 			return null;
 		}
 		
@@ -79,7 +80,7 @@ public final class TagReaderRegistry implements Serializer<Tag<?>>
 		}
 		catch (ClassCastException e)
 		{
-			e.printStackTrace();
+			Logger.log().err(e);
 			
 		}
 		

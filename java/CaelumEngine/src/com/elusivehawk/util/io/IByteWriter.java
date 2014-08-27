@@ -1,6 +1,8 @@
 
 package com.elusivehawk.util.io;
 
+import com.elusivehawk.util.Logger;
+
 /**
  * 
  * Convenience interface for writing bytes.
@@ -26,7 +28,7 @@ public interface IByteWriter
 		}
 		catch (Throwable e)
 		{
-			e.printStackTrace();
+			Logger.log().err(e);
 			
 		}
 		

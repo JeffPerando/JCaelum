@@ -1,5 +1,7 @@
 //Line down, then package.
 package com.elusivehawk.engine.meta;
+
+import com.elusivehawk.util.Logger;
 //Then another line down before the imports.
 //Note: No "organizing" imports, or more specifically, "grouping" them using line downs.
 
@@ -73,7 +75,7 @@ public final class RepoCodeStyle
 		}
 		catch (Exception e) //Only catch Exception/Throwable, that way there are less imports to fuss with. However, you can catch different exceptions to make for a cheap instanceof check.
 		{
-			e.printStackTrace();
+			Logger.log().err(e);
 			
 		}
 		
