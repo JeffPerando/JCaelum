@@ -1,6 +1,8 @@
 
 package com.elusivehawk.engine;
 
+import com.elusivehawk.engine.input.Key;
+import com.elusivehawk.engine.input.Keyboard;
 import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.Logger;

@@ -1,12 +1,12 @@
 
 package com.elusivehawk.engine.lwjgl;
 
-import static com.elusivehawk.engine.EnumMouseClick.DOWN;
-import static com.elusivehawk.engine.EnumMouseClick.DRAG;
-import static com.elusivehawk.engine.EnumMouseClick.UP;
+import static com.elusivehawk.engine.input.EnumMouseClick.DOWN;
+import static com.elusivehawk.engine.input.EnumMouseClick.DRAG;
+import static com.elusivehawk.engine.input.EnumMouseClick.UP;
 import org.lwjgl.input.Mouse;
 import com.elusivehawk.engine.CaelumEngine;
-import com.elusivehawk.engine.EnumMouseClick;
+import com.elusivehawk.engine.input.EnumMouseClick;
 import com.elusivehawk.engine.render.IDisplay;
 import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.math.Vector;
@@ -17,7 +17,7 @@ import com.elusivehawk.util.math.Vector;
  * 
  * @author Elusivehawk
  */
-public class LWJGLMouse extends com.elusivehawk.engine.Mouse
+public class LWJGLMouse extends com.elusivehawk.engine.input.Mouse
 {
 	protected EnumMouseClick[]
 			buttons = null,

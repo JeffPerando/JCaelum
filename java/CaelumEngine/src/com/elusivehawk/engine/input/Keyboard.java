@@ -1,5 +1,5 @@
 
-package com.elusivehawk.engine;
+package com.elusivehawk.engine.input;
 
 import java.util.List;
 

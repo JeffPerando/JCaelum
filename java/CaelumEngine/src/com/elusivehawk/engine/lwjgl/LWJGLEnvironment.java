@@ -3,7 +3,7 @@ package com.elusivehawk.engine.lwjgl;
 
 import java.util.List;
 import com.elusivehawk.engine.IGameEnvironment;
-import com.elusivehawk.engine.Input;
+import com.elusivehawk.engine.input.Input;
 import com.elusivehawk.engine.render.DisplaySettings;
 import com.elusivehawk.engine.render.IDisplay;
 import com.elusivehawk.engine.render.IRenderEnvironment;

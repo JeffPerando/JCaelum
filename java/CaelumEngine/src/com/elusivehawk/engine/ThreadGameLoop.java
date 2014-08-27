@@ -3,6 +3,7 @@ package com.elusivehawk.engine;
 
 import java.util.Iterator;
 import java.util.List;
+import com.elusivehawk.engine.input.Input;
 import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.concurrent.ThreadTimed;
 import com.google.common.collect.Lists;

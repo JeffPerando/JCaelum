@@ -2,6 +2,7 @@
 package com.elusivehawk.engine;
 
 import java.util.List;
+import com.elusivehawk.engine.input.Input;
 import com.elusivehawk.engine.render.DisplaySettings;
 import com.elusivehawk.engine.render.IDisplay;
 import com.elusivehawk.engine.render.IRenderEnvironment;

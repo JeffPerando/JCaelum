@@ -1,7 +1,7 @@
 
-package com.elusivehawk.engine;
+package com.elusivehawk.engine.input;
 
-import static com.elusivehawk.engine.EnumKeyType.*;
+import static com.elusivehawk.engine.input.EnumKeyType.*;
 
 /**
  * 

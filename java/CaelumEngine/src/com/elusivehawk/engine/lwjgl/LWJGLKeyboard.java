@@ -3,7 +3,7 @@ package com.elusivehawk.engine.lwjgl;
 
 import java.util.List;
 import org.lwjgl.input.Keyboard;
-import com.elusivehawk.engine.Key;
+import com.elusivehawk.engine.input.Key;
 import com.elusivehawk.util.Logger;
 import com.google.common.collect.Lists;
 
@@ -13,7 +13,7 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-public class LWJGLKeyboard extends com.elusivehawk.engine.Keyboard
+public class LWJGLKeyboard extends com.elusivehawk.engine.input.Keyboard
 {
 	public static final Key[] LWJGL_TO_ENUM = new Key[Keyboard.KEYBOARD_SIZE];
 	
