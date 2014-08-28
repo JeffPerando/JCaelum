@@ -48,7 +48,7 @@ public final class CaelumEngine
 {
 	private static final CaelumEngine INSTANCE = new CaelumEngine();
 	
-	public static final Version VERSION = new Version(Version.ALPHA, 1, 0, 0, 0);
+	public static final Version VERSION = new Version(Version.ALPHA, 1, 0, 0, 1);
 	
 	private final Map<EnumEngineFeature, IThreadStoppable> threads = Maps.newEnumMap(EnumEngineFeature.class);
 	private final List<Input> inputs = Lists.newArrayList();

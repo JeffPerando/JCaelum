@@ -11,7 +11,7 @@ sourceSets
 {
 	main
 	{
-		output.resourcesDir = 'java/CaelumEngine/bin/'
+		output.resourcesDir = 'java/CaelumEngine/'
 		output.classesDir = 'java/CaelumEngine/bin/'
 	}
 }
@@ -27,7 +27,7 @@ dependencies
 jar
 {
 	destinationDir = file('builds')
-	version = '1.0.0.0-alpha'
+	version = '1.0.0.1-alpha'
 
 	manifest
 	{
@@ -40,7 +40,14 @@ jar
 	{
 		from fileTree("java/CaelumEngine/lib/lwjgl/native")
 	}
-
+	
+	exclude ".settings"
+	exclude "bin"
+	exclude "lib"
+	exclude "src"
+	exclude ".classpath"
+	exclude ".project"
+	
 	exclude "BenchmarkTest.class"
 	exclude "RepoCodeStyle.class"
 	exclude "LICENSE"
