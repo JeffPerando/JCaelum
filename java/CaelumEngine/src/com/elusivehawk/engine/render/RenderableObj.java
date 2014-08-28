@@ -159,9 +159,11 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 	@Override
 	public synchronized void setIsDirty(boolean b)
 	{
-		this.dirty = b;
-		
-		this.dirts.forEach(((d) -> {d.setIsDirty(b);}));
+		if (!(this.dirty = b))
+		{
+			this.dirts.forEach(((d) -> {d.setIsDirty(false);}));
+			
+		}
 		
 	}
 	

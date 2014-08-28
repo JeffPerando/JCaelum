@@ -217,7 +217,7 @@ public final class StringHelper
 		
 		if (!file.canWrite())
 		{
-			System.err.println(String.format("File with path %s cannot be written to! This is a bug!", file));
+			Logger.log().log(EnumLogType.ERROR, "File with path %s cannot be written to! This is a bug!", file);
 			
 			return false;
 		}
@@ -264,7 +264,7 @@ public final class StringHelper
 		
 		if (lastIn == -1)
 		{
-			System.err.println(String.format("Failed to remove last instance of %s from %s", textToRemove, str));
+			Logger.log().log(EnumLogType.ERROR, "Failed to remove last instance of %s from %s", textToRemove, str);
 			
 			return str;
 		}
