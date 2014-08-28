@@ -41,12 +41,8 @@ jar
 		from fileTree("java/CaelumEngine/lib/lwjgl/native")
 	}
 	
-	exclude ".settings"
-	exclude "bin"
-	exclude "lib"
-	exclude "src"
-	exclude ".classpath"
-	exclude ".project"
+	include "bin"
+	include "CrashReportDialog.txt"
 	
 	exclude "BenchmarkTest.class"
 	exclude "RepoCodeStyle.class"
