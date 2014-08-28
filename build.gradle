@@ -1,7 +1,5 @@
 apply plugin: 'java'
 
-ext{}
-
 repositories
 {
 	mavenCentral()
@@ -11,8 +9,12 @@ sourceSets
 {
 	main
 	{
-		output.resourcesDir = 'java/CaelumEngine/'
-		output.classesDir = 'java/CaelumEngine/'
+        java
+        {
+            srcDir 'java/CaelumEngine/src/'
+        }
+		output.resourcesDir = 'java/CaelumEngine/res/'
+		output.classesDir = 'java/CaelumEngine/bin/'
 	}
 }
 
@@ -26,23 +28,20 @@ dependencies
 
 jar
 {
-	destinationDir = file('builds')
+	from configurations.compile.collect {it.isDirectory() ? it : zipTree(it)}
+	
 	version = '1.0.0.1-alpha'
+	destinationDir = file('builds')
 
 	manifest
 	{
 		attributes('Main-class': 'com.elusivehawk.engine.CaelumEngine')
 	}
 
-	from configurations.compile.collect {it.isDirectory() ? it : zipTree(it)}
-	
-	include "bin/"
-	include "CrashReportDialog.txt"
-	
-	exclude "BenchmarkTest.class"
-	exclude "RepoCodeStyle.class"
-	exclude "LICENSE"
-	exclude "README.md"
+    exclude "BenchmarkTest.class"
+    exclude "RepoCodeStyle.class"
+    exclude "LICENSE"
+    exclude "README.md"
 
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
