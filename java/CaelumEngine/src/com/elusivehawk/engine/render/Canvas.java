@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
+import java.util.UUID;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.render.opengl.GLEnumBufferTarget;
@@ -9,6 +10,7 @@ import com.elusivehawk.engine.render.opengl.GLEnumDataUsage;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
 import com.elusivehawk.util.FloatBufferer;
+import com.elusivehawk.util.IDirty;
 
 /**
  * 
@@ -16,7 +18,7 @@ import com.elusivehawk.util.FloatBufferer;
  * 
  * @author Elusivehawk
  */
-public class Canvas extends Filterable implements IRenderable, IAssetReceiver
+public class Canvas implements IFilterable, IRenderable, IAssetReceiver, IDirty
 {
 	private final GLProgram p = new GLProgram();
 	private final VertexBuffer floatbuf;
@@ -27,6 +29,9 @@ public class Canvas extends Filterable implements IRenderable, IAssetReceiver
 	
 	private SubCanvas sub = null;
 	private int images = 0;
+	private volatile boolean dirty = true;
+	
+	private Filters filters = null;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public Canvas(int imgs)
@@ -39,6 +44,25 @@ public class Canvas extends Filterable implements IRenderable, IAssetReceiver
 		
 		p.attachVBO(floatbuf, 0, 1);
 		p.attachVBO(indbuf, null);
+		
+	}
+	
+	@Override
+	public boolean isDirty()
+	{
+		return this.dirty || (this.filters != null && this.filters.isDirty());
+	}
+	
+	@Override
+	public void setIsDirty(boolean b)
+	{
+		this.dirty = b;
+		
+		if (this.filters != null)
+		{
+			this.filters.setIsDirty(b);
+			
+		}
 		
 	}
 	
@@ -57,9 +81,41 @@ public class Canvas extends Filterable implements IRenderable, IAssetReceiver
 			return;
 		}
 		
+		if (this.isDirty())
+		{
+			if (this.filters != null)
+			{
+				this.filters.filter(rcon, this.p);
+				
+			}
+			
+			this.setIsDirty(false);
+			
+		}
 		
+		//TODO Finish
 		
 		this.p.unbind(rcon);
+		
+	}
+	
+	@Override
+	public int addFilter(UUID type, IFilter f)
+	{
+		return 0;
+	}
+	
+	@Override
+	public void removeFilter(UUID type, IFilter f)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void removeFilter(UUID type, int i)
+	{
+		// TODO Auto-generated method stub
 		
 	}
 	

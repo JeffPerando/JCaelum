@@ -73,4 +73,9 @@ public class MaterialSet implements IDirty
 		
 	}
 	
+	public int matCount()
+	{
+		return this.matCount;
+	}
+	
 }

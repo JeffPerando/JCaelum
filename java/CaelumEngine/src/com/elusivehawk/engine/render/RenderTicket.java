@@ -2,6 +2,8 @@
 package com.elusivehawk.engine.render;
 
 import java.nio.FloatBuffer;
+import java.util.List;
+import java.util.UUID;
 import com.elusivehawk.engine.CaelumException;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
@@ -19,6 +21,7 @@ import com.elusivehawk.util.math.Matrix;
 import com.elusivehawk.util.math.MatrixHelper;
 import com.elusivehawk.util.math.Quaternion;
 import com.elusivehawk.util.math.Vector;
+import com.google.common.collect.Lists;
 
 /**
  * 
@@ -26,7 +29,7 @@ import com.elusivehawk.util.math.Vector;
  * 
  * @author Elusivehawk
  * 
- * @see Filterable
+ * @see Filters
  * @see Model
  * @see IAssetReceiver
  * @see IDirty
@@ -34,23 +37,29 @@ import com.elusivehawk.util.math.Vector;
  * @see IQuaternionListener
  * @see IVectorListener
  */
-public class RenderTicket extends Filterable implements IAssetReceiver, IDirty, ILogicalRender, IQuaternionListener, IVectorListener
+public class RenderTicket implements IFilterable, IAssetReceiver, IDirty, ILogicalRender, IQuaternionListener, IVectorListener
 {
-	protected final Vector offset = new Vector(),
+	protected final Vector
+			offset = new Vector(),
 			pos = new Vector(),
 			scale = new Vector(1f, 1f, 1f);
 	
-	protected final Quaternion rotOff = new Quaternion(),
+	protected final Quaternion
+			rotOff = new Quaternion(),
 			rot = new Quaternion();
 	
-	protected final GLProgram p;
+	protected final List<IDirty> dirts = Lists.newArrayList();
 	
-	protected MaterialSet matSet = null;
-	protected Model m = null;
+	protected final GLProgram p;
 	protected FloatBuffer buf = null;
 	protected VertexBuffer vbo = null;
 	
-	protected boolean dirty = true, zBuffer = true, initiated = false;//, animPause = false;
+	protected Filters filters = null;
+	protected MaterialSet matSet = null;
+	protected Model m = null;
+	
+	protected volatile boolean dirty = true;
+	protected boolean zBuffer = true, initiated = false;//, animPause = false;
 	//protected int frame = 0;
 	//protected IModelAnimation anim = null, lastAnim = null;
 	protected int texFrame = 0;
@@ -92,7 +101,11 @@ public class RenderTicket extends Filterable implements IAssetReceiver, IDirty, 
 	@SuppressWarnings("unqualified-field-access")
 	public RenderTicket(GLProgram program)
 	{
+		assert program != null;
+		
 		p = program;
+		
+		dirts.add(program);
 		
 	}
 	
@@ -113,7 +126,7 @@ public class RenderTicket extends Filterable implements IAssetReceiver, IDirty, 
 	}
 	
 	@Override
-	public boolean updateBeforeRender(RenderContext con, double delta)
+	public boolean updateBeforeRender(RenderContext rcon, double delta)
 	{
 		if (!this.initiated)
 		{
@@ -170,6 +183,12 @@ public class RenderTicket extends Filterable implements IAssetReceiver, IDirty, 
 			
 			//TODO Load materials into program
 			
+			if (this.filters != null)
+			{
+				this.filters.filter(rcon, this.getProgram());
+				
+			}
+			
 			this.setIsDirty(false);
 			
 		}
@@ -200,6 +219,20 @@ public class RenderTicket extends Filterable implements IAssetReceiver, IDirty, 
 	@Override
 	public boolean isDirty()
 	{
+		if (!this.dirty)
+		{
+			for (IDirty d : this.dirts)
+			{
+				if (d.isDirty())
+				{
+					this.dirty = true;
+					break;
+				}
+				
+			}
+			
+		}
+		
 		return this.dirty;
 	}
 	
@@ -207,6 +240,8 @@ public class RenderTicket extends Filterable implements IAssetReceiver, IDirty, 
 	public synchronized void setIsDirty(boolean b)
 	{
 		this.dirty = b;
+		
+		this.dirts.forEach(((d) -> {d.setIsDirty(b);}));
 		
 	}
 	
@@ -221,6 +256,40 @@ public class RenderTicket extends Filterable implements IAssetReceiver, IDirty, 
 		else if (a instanceof Texture)
 		{
 			this.addMaterials(new Material((Texture)a));
+			
+		}
+		
+	}
+	
+	@Override
+	public int addFilter(UUID type, IFilter f)
+	{
+		if (this.filters == null)
+		{
+			this.setFilters(new Filters());
+			
+		}
+		
+		return this.filters.addFilter(type, f);
+	}
+	
+	@Override
+	public void removeFilter(UUID type, IFilter f)
+	{
+		if (this.filters != null)
+		{
+			this.filters.removeFilter(type, f);
+			
+		}
+		
+	}
+	
+	@Override
+	public void removeFilter(UUID type, int i)
+	{
+		if (this.filters != null)
+		{
+			this.filters.removeFilter(type, i);
 			
 		}
 		
@@ -264,7 +333,14 @@ public class RenderTicket extends Filterable implements IAssetReceiver, IDirty, 
 	{
 		assert ms != null;
 		
+		if (this.matSet != null)
+		{
+			this.dirts.remove(this.matSet);
+			
+		}
+		
 		this.matSet = ms;
+		this.dirts.add(ms);
 		
 	}
 	
@@ -272,33 +348,41 @@ public class RenderTicket extends Filterable implements IAssetReceiver, IDirty, 
 	{
 		if (this.matSet == null)
 		{
-			this.matSet = new MaterialSet();
+			this.setMaterials(new MaterialSet());
 			
 		}
 		
 		return this.matSet.addMaterials(mats);
 	}
 	
-	/**
-	 * 
-	 * 
-	 * 
-	 * @param pos
-	 * @param m
-	 */
-	public synchronized void setIndice(int pos, Matrix m)
+	public synchronized void setFilters(Filters fs)
 	{
-		this.buf.position(this.m.getIndice(pos) * 16);
+		if (this.filters != null)
+		{
+			this.dirts.remove(this.filters);
+			
+		}
 		
-		m.save(this.buf);
+		this.filters = fs;
+		
+		if (fs != null)
+		{
+			this.dirts.add(fs);
+			
+		}
 		
 		this.setIsDirty(true);
 		
 	}
 	
-	public FloatBuffer getBuffer()
+	public synchronized void setIndice(int i, Matrix m)
 	{
-		return this.buf;
+		this.buf.position(i * 16);
+		
+		m.save(this.buf);
+		
+		this.setIsDirty(true);
+		
 	}
 	
 	public Model getModel()
@@ -319,6 +403,11 @@ public class RenderTicket extends Filterable implements IAssetReceiver, IDirty, 
 	public boolean enableZBuffering()
 	{
 		return this.zBuffer;
+	}
+	
+	public int getMaterialCount()
+	{
+		return this.matSet == null ? 0 : this.matSet.matCount();
 	}
 	
 	public synchronized void setPosOffset(Vector off)

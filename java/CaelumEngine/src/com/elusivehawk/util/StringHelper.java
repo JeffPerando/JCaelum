@@ -79,13 +79,12 @@ public final class StringHelper
 		if (r != null)
 		{
 			BufferedReader br = (r instanceof BufferedReader) ? (BufferedReader)r : new BufferedReader(r);
-			int l = 0;
 			
 			try
 			{
 				for (String line = br.readLine(); line != null; line = br.readLine())
 				{
-					text.add(filter == null ? line : filter.filter(l++, line));
+					text.add(line);
 					
 				}
 				
@@ -95,16 +94,23 @@ public final class StringHelper
 				Logger.log().err(e);
 				
 			}
-			finally
+			
+			try
 			{
-				try
+				br.close();
+				
+			}
+			catch (IOException e)
+			{
+				Logger.log().err(e);
+				
+			}
+			
+			if (filter != null)
+			{
+				for (int c = 0; c < text.size(); c++)
 				{
-					br.close();
-					
-				}
-				catch (IOException e)
-				{
-					Logger.log().err(e);
+					text.set(c, filter.filter(c, text.get(c)));
 					
 				}
 				
@@ -132,13 +138,24 @@ public final class StringHelper
 		if (r != null)
 		{
 			BufferedReader br = (r instanceof BufferedReader) ? (BufferedReader)r : new BufferedReader(r);
+			boolean prev = false;
 			
 			try
 			{
 				for (String line = br.readLine(); line != null; line = br.readLine())
 				{
+					if (prev)
+					{
+						b.append("\n");
+						
+					}
+					else
+					{
+						prev = true;
+						
+					}
+					
 					b.append(line);
-					b.append("\n");
 					
 				}
 				
@@ -148,24 +165,21 @@ public final class StringHelper
 				Logger.log().err(e);
 				
 			}
-			finally
+			
+			try
 			{
-				try
-				{
-					br.close();
-					
-				}
-				catch (IOException e)
-				{
-					Logger.log().err(e);
-					
-				}
+				br.close();
+				
+			}
+			catch (IOException e)
+			{
+				Logger.log().err(e);
 				
 			}
 			
 		}
 		
-		return replaceLast(b.toString(), "\n", "");
+		return b.toString();
 	}
 	
 	public static boolean write(String path, boolean append, boolean makeFileIfNotFound, String... text)

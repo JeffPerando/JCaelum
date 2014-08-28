@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
+import com.elusivehawk.engine.render.opengl.GLException;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 
 /**
@@ -12,6 +13,6 @@ import com.elusivehawk.engine.render.opengl.GLProgram;
 @FunctionalInterface
 public interface IFilter
 {
-	public void filter(RenderContext rcon, GLProgram p) throws RenderException;
+	public void filter(RenderContext rcon, GLProgram p) throws GLException;
 	
 }

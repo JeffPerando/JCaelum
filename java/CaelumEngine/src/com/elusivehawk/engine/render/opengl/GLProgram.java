@@ -13,6 +13,7 @@ import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.Shader;
 import com.elusivehawk.engine.render.Shaders;
 import com.elusivehawk.util.ArrayHelper;
+import com.elusivehawk.util.IDirty;
 import com.elusivehawk.util.IPopulator;
 import com.google.common.collect.Lists;
 
@@ -22,7 +23,7 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-public final class GLProgram implements IGLBindable, IAssetReceiver
+public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 {
 	private final Shaders shaders = new Shaders();
 	private final HashMap<VertexBuffer, List<Integer>> vbos = new HashMap<VertexBuffer, List<Integer>>();
@@ -49,6 +50,26 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 			}
 			
 		}
+		
+	}
+	
+	@Override
+	public boolean isDirty()
+	{
+		return this.shaders.isDirty();
+	}
+	
+	@Override
+	public void setIsDirty(boolean b)
+	{
+		this.shaders.setIsDirty(b);
+		
+	}
+	
+	@Override
+	public synchronized void onAssetLoaded(Asset a)
+	{
+		this.shaders.onAssetLoaded(a);
 		
 	}
 	
@@ -201,13 +222,6 @@ public final class GLProgram implements IGLBindable, IAssetReceiver
 		rcon.getGL2().glUseProgram(0);
 		
 		this.bound = false;
-		
-	}
-	
-	@Override
-	public synchronized void onAssetLoaded(Asset a)
-	{
-		this.shaders.onAssetLoaded(a);
 		
 	}
 	
