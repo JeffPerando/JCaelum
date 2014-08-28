@@ -11,8 +11,8 @@ sourceSets
 {
 	main
 	{
-		output.resourcesDir = 'java/CaelumEngine/'
-		output.classesDir = 'java/CaelumEngine/'
+		output.resourcesDir = 'java/CaelumEngine/bin/'
+		output.classesDir = 'java/CaelumEngine/bin/'
 	}
 }
 
