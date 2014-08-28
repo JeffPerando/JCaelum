@@ -10,6 +10,12 @@ package com.elusivehawk.engine.render;
 @FunctionalInterface
 public interface IRenderable
 {
+	@SuppressWarnings("unused")
+	default boolean updateBeforeRender(RenderContext rcon, double delta)
+	{
+		return true;
+	}
+	
 	/**
 	 * 
 	 * @param rcon

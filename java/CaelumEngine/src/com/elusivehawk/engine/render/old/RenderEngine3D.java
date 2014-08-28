@@ -1,16 +1,6 @@
 
 package com.elusivehawk.engine.render.old;
 
-import java.util.Collection;
-import java.util.List;
-import com.elusivehawk.engine.render.Model;
-import com.elusivehawk.engine.render.RenderHelper;
-import com.elusivehawk.engine.render.RenderContext;
-import com.elusivehawk.engine.render.RenderTicket;
-import com.elusivehawk.engine.render.opengl.GLConst;
-import com.elusivehawk.engine.render.opengl.GLProgram;
-import com.elusivehawk.engine.render.opengl.IGL1;
-
 /**
  * 
  * Renders entities in the game world.
@@ -18,16 +8,11 @@ import com.elusivehawk.engine.render.opengl.IGL1;
  * @author Elusivehawk
  */
 @Deprecated
-public class RenderEngine3D implements IRenderEngine
+public class RenderEngine3D// implements IRenderEngine
 {
-	@Override
+	/*@Override
 	public void render(RenderContext rcon, IRenderHUB hub, double delta)
 	{
-		if (!hub.getRenderMode().is3D())
-		{
-			return;
-		}
-		
 		IScene scene = hub.getScene();
 		
 		if (scene == null)
@@ -77,17 +62,15 @@ public class RenderEngine3D implements IRenderEngine
 					continue;
 				}
 				
-				if (!p.bind(rcon))
-				{
-					continue;
-				}
-				
 				if (!tkt.updateBeforeRender(rcon, delta))
 				{
 					continue;
 				}
 				
-				rcon.manipulateProgram(EnumRenderMode.MODE_3D, p);
+				if (!p.bind(rcon))
+				{
+					continue;
+				}
 				
 				try
 				{
@@ -101,7 +84,7 @@ public class RenderEngine3D implements IRenderEngine
 					throw e;
 				}
 				
-				/*tex = tkt.getTexture() == null ? con.getDefaultTexture() : tkt.getTexture().getTexId(tkt.getCurrentTexFrame());
+				tex = tkt.getTexture() == null ? con.getDefaultTexture() : tkt.getTexture().getTexId(tkt.getCurrentTexFrame());
 				
 				if (currTex != tex)
 				{
@@ -114,7 +97,7 @@ public class RenderEngine3D implements IRenderEngine
 					gl1.glBindTexture(GLConst.GL_TEXTURE0, tex);
 					currTex = tex;
 					
-				}*/
+				}
 				
 				if (zBuffer != tkt.enableZBuffering())
 				{
@@ -136,8 +119,6 @@ public class RenderEngine3D implements IRenderEngine
 				
 				gl1.glDrawElements(m.getPolygonType(), 0, GLConst.GL_UNSIGNED_INT, m.getPolyCount());
 				
-				RenderHelper.checkForGLError(gl1);
-				
 				p.unbind(rcon);
 				
 			}
@@ -152,6 +133,6 @@ public class RenderEngine3D implements IRenderEngine
 			
 		}
 		
-	}
+	}*/
 	
 }

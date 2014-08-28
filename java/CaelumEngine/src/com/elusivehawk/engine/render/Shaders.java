@@ -92,14 +92,14 @@ public class Shaders implements IDirty, IAssetReceiver
 			return false;
 		}
 		
-		if (this.shaders[sh.gltype.ordinal()] == null)
+		if (this.shaders[sh.gltype.ordinal()] != null)
 		{
-			this.shCount++;
-			
+			return false;
 		}
 		
 		this.shaders[sh.gltype.ordinal()] = sh;
 		this.dirty = true;
+		this.shCount++;
 		
 		return true;
 	}

@@ -15,7 +15,6 @@ import com.elusivehawk.engine.render.opengl.GLEnumPolyType;
 import com.elusivehawk.engine.render.opengl.GLEnumShader;
 import com.elusivehawk.engine.render.opengl.GLEnumTexture;
 import com.elusivehawk.engine.render.opengl.GLException;
-import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
@@ -338,34 +337,6 @@ public final class RenderHelper
 		ret.rewind();
 		
 		return ret;
-	}
-	
-	public static boolean render(ILogicalRender lr, double delta)
-	{
-		return render(renderContext(), lr, delta);
-	}
-	
-	public static boolean render(RenderContext rcon, ILogicalRender lr, double delta)
-	{
-		if (!lr.updateBeforeRender(rcon, delta))
-		{
-			return false;
-		}
-		
-		GLProgram p = lr.getProgram();
-		
-		if (!p.bind(rcon))
-		{
-			return false;
-		}
-		
-		IGL1 gl1 = rcon.getGL1();
-		
-		gl1.glDrawElements(lr.getPolygonType(), lr.getPolyCount(), GLConst.GL_UNSIGNED_INT, 0);
-		
-		p.unbind(rcon);
-		
-		return true;
 	}
 	
 }

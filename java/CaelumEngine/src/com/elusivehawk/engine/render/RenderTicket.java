@@ -2,15 +2,11 @@
 package com.elusivehawk.engine.render;
 
 import java.nio.FloatBuffer;
-import java.util.List;
-import java.util.UUID;
 import com.elusivehawk.engine.CaelumException;
-import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
+import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLEnumBufferTarget;
-import com.elusivehawk.engine.render.opengl.GLEnumDataType;
 import com.elusivehawk.engine.render.opengl.GLEnumDataUsage;
-import com.elusivehawk.engine.render.opengl.GLEnumPolyType;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
 import com.elusivehawk.util.BufferHelper;
@@ -21,7 +17,6 @@ import com.elusivehawk.util.math.Matrix;
 import com.elusivehawk.util.math.MatrixHelper;
 import com.elusivehawk.util.math.Quaternion;
 import com.elusivehawk.util.math.Vector;
-import com.google.common.collect.Lists;
 
 /**
  * 
@@ -37,7 +32,7 @@ import com.google.common.collect.Lists;
  * @see IQuaternionListener
  * @see IVectorListener
  */
-public class RenderTicket implements IFilterable, IAssetReceiver, IDirty, ILogicalRender, IQuaternionListener, IVectorListener
+public class RenderTicket extends RenderableObj implements IQuaternionListener, IVectorListener
 {
 	protected final Vector
 			offset = new Vector(),
@@ -48,18 +43,12 @@ public class RenderTicket implements IFilterable, IAssetReceiver, IDirty, ILogic
 			rotOff = new Quaternion(),
 			rot = new Quaternion();
 	
-	protected final List<IDirty> dirts = Lists.newArrayList();
-	
-	protected final GLProgram p;
-	protected FloatBuffer buf = null;
-	protected VertexBuffer vbo = null;
-	
-	protected Filters filters = null;
-	protected MaterialSet matSet = null;
 	protected Model m = null;
+	protected FloatBuffer buf = null;
 	
-	protected volatile boolean dirty = true;
-	protected boolean zBuffer = true, initiated = false;//, animPause = false;
+	protected final VertexBuffer vbo = new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW);
+	
+	protected boolean zBuffer = true;//, animPause = false;
 	//protected int frame = 0;
 	//protected IModelAnimation anim = null, lastAnim = null;
 	protected int texFrame = 0;
@@ -94,18 +83,44 @@ public class RenderTicket implements IFilterable, IAssetReceiver, IDirty, ILogic
 	
 	public RenderTicket()
 	{
-		this(new GLProgram());
+		super();
 		
 	}
 	
-	@SuppressWarnings("unqualified-field-access")
 	public RenderTicket(GLProgram program)
 	{
-		assert program != null;
+		super(program);
 		
-		p = program;
+	}
+	
+	@Override
+	protected boolean initiate(RenderContext rcon)
+	{
+		if (this.m == null)
+		{
+			return false;
+		}
 		
-		dirts.add(program);
+		if (!this.m.isModelFinished())
+		{
+			this.m.finishModel();
+			
+		}
+		
+		this.buf = BufferHelper.createFloatBuffer(this.m.getIndiceCount() * 16);
+		
+		this.vbo.uploadBuffer(this.buf);
+		
+		this.m.populate(this.p);
+		this.p.attachVBO(this.vbo, 3);
+		
+		return true;
+	}
+	
+	@Override
+	protected void doRender(RenderContext rcon, double delta) throws RenderException
+	{
+		rcon.getGL1().glDrawElements(this.m.getPolygonType(), this.m.getPolyCount(), GLConst.GL_UNSIGNED_INT, 0);
 		
 	}
 	
@@ -128,29 +143,6 @@ public class RenderTicket implements IFilterable, IAssetReceiver, IDirty, ILogic
 	@Override
 	public boolean updateBeforeRender(RenderContext rcon, double delta)
 	{
-		if (!this.initiated)
-		{
-			if (this.m == null)
-			{
-				return false;
-			}
-			
-			if (!this.m.isModelFinished())
-			{
-				this.m.finishModel();
-				
-			}
-			
-			this.buf = BufferHelper.createFloatBuffer(this.m.getIndiceCount() * 16);
-			this.vbo = new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_STREAM_DRAW, GLEnumDataType.GL_FLOAT, this.buf);
-			
-			this.m.populate(this.p);
-			this.p.attachVBO(this.vbo, 3);
-			
-			this.initiated = true;
-			
-		}
-		
 		/*if (this.anim != null && !this.isAnimationPaused())
 		{
 			boolean usedBefore = this.anim == this.lastAnim;
@@ -175,124 +167,15 @@ public class RenderTicket implements IFilterable, IAssetReceiver, IDirty, ILogic
 			
 		}*/
 		
-		if (this.isDirty())
-		{
-			Matrix m = MatrixHelper.createHomogenousMatrix(this.rot, this.scale, this.pos);
-			
-			this.p.attachUniform("model", m.asBuffer(), GLProgram.EnumUniformType.M_FOUR);
-			
-			//TODO Load materials into program
-			
-			if (this.filters != null)
-			{
-				this.filters.filter(rcon, this.getProgram());
-				
-			}
-			
-			this.setIsDirty(false);
-			
-		}
+		Matrix m = MatrixHelper.createHomogenousMatrix(this.rot, this.scale, this.pos);
+		
+		this.p.attachUniform("model", m.asBuffer(), GLProgram.EnumUniformType.M_FOUR);
+		
+		//TODO Load materials into program
+		
+		this.setIsDirty(false);
 		
 		return true;
-	}
-	
-	@Override
-	public GLProgram getProgram()
-	{
-		return this.p;
-	}
-	
-	@Override
-	public GLEnumPolyType getPolygonType()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public int getPolyCount()
-	{
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	
-	@Override
-	public boolean isDirty()
-	{
-		if (!this.dirty)
-		{
-			for (IDirty d : this.dirts)
-			{
-				if (d.isDirty())
-				{
-					this.dirty = true;
-					break;
-				}
-				
-			}
-			
-		}
-		
-		return this.dirty;
-	}
-	
-	@Override
-	public synchronized void setIsDirty(boolean b)
-	{
-		this.dirty = b;
-		
-		this.dirts.forEach(((d) -> {d.setIsDirty(b);}));
-		
-	}
-	
-	@Override
-	public void onAssetLoaded(Asset a)
-	{
-		if (a instanceof Shader)
-		{
-			this.p.attachShader((Shader)a);
-			
-		}
-		else if (a instanceof Texture)
-		{
-			this.addMaterials(new Material((Texture)a));
-			
-		}
-		
-	}
-	
-	@Override
-	public int addFilter(UUID type, IFilter f)
-	{
-		if (this.filters == null)
-		{
-			this.setFilters(new Filters());
-			
-		}
-		
-		return this.filters.addFilter(type, f);
-	}
-	
-	@Override
-	public void removeFilter(UUID type, IFilter f)
-	{
-		if (this.filters != null)
-		{
-			this.filters.removeFilter(type, f);
-			
-		}
-		
-	}
-	
-	@Override
-	public void removeFilter(UUID type, int i)
-	{
-		if (this.filters != null)
-		{
-			this.filters.removeFilter(type, i);
-			
-		}
-		
 	}
 	
 	@Override
@@ -329,6 +212,7 @@ public class RenderTicket implements IFilterable, IAssetReceiver, IDirty, ILogic
 		
 	}
 	
+	@Override
 	public synchronized void setMaterials(MaterialSet ms)
 	{
 		assert ms != null;
@@ -339,22 +223,13 @@ public class RenderTicket implements IFilterable, IAssetReceiver, IDirty, ILogic
 			
 		}
 		
-		this.matSet = ms;
+		super.setMaterials(ms);
+		
 		this.dirts.add(ms);
 		
 	}
 	
-	public synchronized boolean addMaterials(Material... mats)
-	{
-		if (this.matSet == null)
-		{
-			this.setMaterials(new MaterialSet());
-			
-		}
-		
-		return this.matSet.addMaterials(mats);
-	}
-	
+	@Override
 	public synchronized void setFilters(Filters fs)
 	{
 		if (this.filters != null)
@@ -363,7 +238,7 @@ public class RenderTicket implements IFilterable, IAssetReceiver, IDirty, ILogic
 			
 		}
 		
-		this.filters = fs;
+		super.setFilters(fs);
 		
 		if (fs != null)
 		{
@@ -403,11 +278,6 @@ public class RenderTicket implements IFilterable, IAssetReceiver, IDirty, ILogic
 	public boolean enableZBuffering()
 	{
 		return this.zBuffer;
-	}
-	
-	public int getMaterialCount()
-	{
-		return this.matSet == null ? 0 : this.matSet.matCount();
 	}
 	
 	public synchronized void setPosOffset(Vector off)

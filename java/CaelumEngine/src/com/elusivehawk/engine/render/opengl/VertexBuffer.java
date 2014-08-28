@@ -29,24 +29,31 @@ public class VertexBuffer implements IGLBindable
 	private final SyncList<Tuple<Buffer, Integer>> uploads = SyncList.newList();
 	
 	@SuppressWarnings("unqualified-field-access")
-	public VertexBuffer(GLEnumBufferTarget target, GLEnumDataUsage mode, Buffer buf)
+	public VertexBuffer(GLEnumBufferTarget target, GLEnumDataUsage mode, GLEnumDataType type, Buffer buf)
 	{
-		this(target, mode);
+		this(target, mode, type);
 		
-		dataType = GLEnumDataType.findCompatibleType(buf);
+		assert type.isCompatible(buf);
+		
 		initBuf = buf;
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public VertexBuffer(GLEnumBufferTarget target, GLEnumDataUsage mode, GLEnumDataType type, Buffer buf)
+	public VertexBuffer(GLEnumBufferTarget target, GLEnumDataUsage mode, Buffer buf)
+	{
+		this(target, mode, GLEnumDataType.findCompatibleType(buf));
+		
+		initBuf = buf;
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public VertexBuffer(GLEnumBufferTarget target, GLEnumDataUsage mode, GLEnumDataType type)
 	{
 		this(target, mode);
 		
-		assert type.isCompatible(buf);
-		
 		dataType = type;
-		initBuf = buf;
 		
 	}
 	
@@ -174,7 +181,7 @@ public class VertexBuffer implements IGLBindable
 		
 	}
 	
-	public synchronized void reUploadVBO(Buffer buf)
+	public synchronized void uploadBuffer(Buffer buf)
 	{
 		this.initBuf = buf;
 		this.reupload = true;

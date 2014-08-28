@@ -39,14 +39,6 @@ public interface IRenderHUB
 	public void updateHUB(double delta);
 	
 	/**
-	 * 
-	 * Note: It's recommended to not return null.
-	 * 
-	 * @return The mode for this HUB.
-	 */
-	public EnumRenderMode getRenderMode();
-	
-	/**
 	 * @return True to update the current display's settings.
 	 */
 	public boolean updateDisplay();

@@ -328,6 +328,11 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 		return this.id;
 	}
 	
+	public int shaderCount()
+	{
+		return this.shaders.getShaderCount();
+	}
+	
 	private static interface IUniformType
 	{
 		public void loadUniform(int loc, FloatBuffer buf);

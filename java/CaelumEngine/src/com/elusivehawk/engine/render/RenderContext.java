@@ -4,20 +4,16 @@ package com.elusivehawk.engine.render;
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.GameState;
 import com.elusivehawk.engine.IContext;
 import com.elusivehawk.engine.IGameStateListener;
-import com.elusivehawk.engine.render.old.EnumRenderMode;
-import com.elusivehawk.engine.render.old.IGLManipulator;
 import com.elusivehawk.engine.render.old.IRenderEngine;
 import com.elusivehawk.engine.render.old.IRenderHUB;
 import com.elusivehawk.engine.render.old.RenderTask;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLEnumShader;
 import com.elusivehawk.engine.render.opengl.GLEnumTexture;
-import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
@@ -27,7 +23,6 @@ import com.elusivehawk.util.IPausable;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.Logger;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 /**
  * 
@@ -56,8 +51,6 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 	private final List<IGLDeletable> cleanables = Lists.newArrayList();
 	@Deprecated
 	private final List<RenderTask> rtasks = Lists.newArrayList();
-	@Deprecated
-	private final Map<EnumRenderMode, List<IGLManipulator>> manipulators = Maps.newHashMapWithExpectedSize(3);
 	
 	private DisplaySettings settings = new DisplaySettings();
 	private boolean //Hey, I sorta like this...
@@ -238,11 +231,7 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 		
 	}
 	
-	private void preRender()
-	{
-		this.preRenderDepr();
-		
-	}
+	private void preRender(){}
 	
 	private void postRender()
 	{
@@ -265,36 +254,6 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 			if (rem)
 			{
 				this.rtasks.remove(0);
-				
-			}
-			
-		}
-		
-		this.postRenderDepr();
-		
-	}
-	
-	@Deprecated
-	private void preRenderDepr()
-	{
-		if (!this.manipulators.isEmpty())
-		{
-			List<IGLManipulator> mani;
-			
-			for (EnumRenderMode mode : EnumRenderMode.values())
-			{
-				mani = this.manipulators.get(mode);
-				
-				if (mani == null || mani.isEmpty())
-				{
-					continue;
-				}
-				
-				for (IGLManipulator glm : mani)
-				{
-					glm.updateUniforms(this);
-					
-				}
 				
 			}
 			
@@ -323,34 +282,6 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 					}
 					
 					RenderHelper.checkForGLError(this.gl1);
-					
-				}
-				
-			}
-			
-		}
-		
-	}
-	
-	@Deprecated
-	private void postRenderDepr()
-	{
-		if (!this.manipulators.isEmpty())
-		{
-			List<IGLManipulator> mani;
-			
-			for (EnumRenderMode mode : EnumRenderMode.values())
-			{
-				mani = this.manipulators.get(mode);
-				
-				if (mani == null || mani.isEmpty())
-				{
-					continue;
-				}
-				
-				for (IGLManipulator glm : mani)
-				{
-					glm.postRender();
 					
 				}
 				
@@ -448,41 +379,6 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 		}
 		
 		this.cleanables.add(gl);
-		
-	}
-	
-	@Deprecated
-	public void attachManipulator(EnumRenderMode mode, IGLManipulator glm)
-	{
-		List<IGLManipulator> mani = this.manipulators.get(mode);
-		
-		if (mani == null)
-		{
-			mani = Lists.newArrayList();
-			
-			this.manipulators.put(mode, mani);
-			
-		}
-		
-		mani.add(glm);
-		
-	}
-	
-	@Deprecated
-	public void manipulateProgram(EnumRenderMode mode, GLProgram p)
-	{
-		List<IGLManipulator> mani = this.manipulators.get(mode);
-		
-		if (mani == null || mani.isEmpty())
-		{
-			return;
-		}
-		
-		for (IGLManipulator glm : mani)
-		{
-			glm.manipulateUniforms(this, p);
-			
-		}
 		
 	}
 	

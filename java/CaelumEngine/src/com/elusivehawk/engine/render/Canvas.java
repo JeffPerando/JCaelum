@@ -1,16 +1,12 @@
 
 package com.elusivehawk.engine.render;
 
-import java.util.UUID;
-import com.elusivehawk.engine.assets.Asset;
-import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.render.opengl.GLEnumBufferTarget;
 import com.elusivehawk.engine.render.opengl.GLEnumDataType;
 import com.elusivehawk.engine.render.opengl.GLEnumDataUsage;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
 import com.elusivehawk.util.FloatBufferer;
-import com.elusivehawk.util.IDirty;
 
 /**
  * 
@@ -18,24 +14,30 @@ import com.elusivehawk.util.IDirty;
  * 
  * @author Elusivehawk
  */
-public class Canvas implements IFilterable, IRenderable, IAssetReceiver, IDirty
+public class Canvas extends RenderableObj
 {
-	private final GLProgram p = new GLProgram();
+	private final int imgLimit;
+	private final FloatBufferer buffer;
+	
 	private final VertexBuffer floatbuf;
 	private final VertexBuffer indbuf;
 	
-	private final FloatBufferer buffer;
-	private final int imgLimit;
-	
 	private SubCanvas sub = null;
 	private int images = 0;
-	private volatile boolean dirty = true;
 	
-	private Filters filters = null;
-	
-	@SuppressWarnings("unqualified-field-access")
 	public Canvas(int imgs)
 	{
+		this(imgs, new GLProgram());
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public Canvas(int imgs, GLProgram program)
+	{
+		super(program);
+		
+		assert imgs > 0;
+		
 		imgLimit = imgs;
 		buffer = new FloatBufferer(4, imgLimit * 6);
 		
@@ -48,72 +50,13 @@ public class Canvas implements IFilterable, IRenderable, IAssetReceiver, IDirty
 	}
 	
 	@Override
-	public boolean isDirty()
+	protected boolean initiate(RenderContext rcon)
 	{
-		return this.dirty || (this.filters != null && this.filters.isDirty());
+		return true;
 	}
 	
 	@Override
-	public void setIsDirty(boolean b)
-	{
-		this.dirty = b;
-		
-		if (this.filters != null)
-		{
-			this.filters.setIsDirty(b);
-			
-		}
-		
-	}
-	
-	@Override
-	public void onAssetLoaded(Asset a)
-	{
-		this.p.onAssetLoaded(a);
-		
-	}
-	
-	@Override
-	public void render(RenderContext rcon, double delta) throws RenderException
-	{
-		if (!this.p.bind(rcon))
-		{
-			return;
-		}
-		
-		if (this.isDirty())
-		{
-			if (this.filters != null)
-			{
-				this.filters.filter(rcon, this.p);
-				
-			}
-			
-			this.setIsDirty(false);
-			
-		}
-		
-		//TODO Finish
-		
-		this.p.unbind(rcon);
-		
-	}
-	
-	@Override
-	public int addFilter(UUID type, IFilter f)
-	{
-		return 0;
-	}
-	
-	@Override
-	public void removeFilter(UUID type, IFilter f)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
-	public void removeFilter(UUID type, int i)
+	protected void doRender(RenderContext rcon, double delta) throws RenderException
 	{
 		// TODO Auto-generated method stub
 		

@@ -14,7 +14,7 @@ import com.elusivehawk.util.storage.DirtableStorage;
  * @author Elusivehawk
  */
 @Deprecated
-public class Camera3D implements IGLManipulator
+public class Camera3D
 {
 	private DirtableStorage<Boolean> grabMouse = new DirtableStorage<Boolean>(true);
 	private boolean dirty = true;
@@ -27,7 +27,6 @@ public class Camera3D implements IGLManipulator
 		
 	}
 	
-	@Override
 	public void updateUniforms(RenderContext con)
 	{
 		/*if (!con.getRenderMode().is3D())
@@ -72,7 +71,6 @@ public class Camera3D implements IGLManipulator
 		
 	}
 	
-	@Override
 	public void manipulateUniforms(RenderContext con, GLProgram p)
 	{
 		if (!this.dirty)
@@ -84,7 +82,6 @@ public class Camera3D implements IGLManipulator
 		
 	}
 	
-	@Override
 	public void postRender()
 	{
 		this.dirty = false;
