@@ -275,6 +275,11 @@ public final class StringHelper
 		return b.toString();
 	}
 	
+	public static String concat(String separator, String d, String... strs)
+	{
+		return concat(separator, "", d, strs);
+	}
+	
 	public static String concat(String separator, String endWith, String d, String... strs)
 	{
 		if (strs == null || strs.length == 0)
@@ -292,6 +297,11 @@ public final class StringHelper
 		}
 		
 		return b.toString();
+	}
+	
+	public static String concat(List<String> strs, String separator, String d)
+	{
+		return concat(strs, separator, "", d);
 	}
 	
 	public static String concat(List<String> strs, String separator, String endWith, String d)
