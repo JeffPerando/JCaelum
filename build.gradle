@@ -12,16 +12,16 @@ sourceSets
 	main
 	{
 		output.resourcesDir = 'java/CaelumEngine/'
-		output.classesDir = 'java/CaelumEngine/bin/'
+		output.classesDir = 'java/CaelumEngine/'
 	}
 }
 
 dependencies
 {
-	compile 'org.lwjgl.lwjgl:lwjgl:2.9.1'
-	compile 'com.google.guava:guava:16.0.1'
-	compile 'org.jdom:jdom2:2.0.5'
-	compile files("java/CaelumEngine/lib/PNGDecoder.jar")
+	compile group: 'org.lwjgl.lwjgl', name: 'lwjgl', version: '2.9.1'
+	compile group: 'com.google.guava', name: 'guava', version: '16.0.1'
+	compile group: 'org.jdom', name: 'jdom2', version: '2.0.5'
+	compile group: 'org.l33tlabs.twl', name: 'pngdecoder', version: '1.0'
 }
 
 jar
@@ -35,13 +35,8 @@ jar
 	}
 
 	from configurations.compile.collect {it.isDirectory() ? it : zipTree(it)}
-
-	into ("natives")
-	{
-		from fileTree("java/CaelumEngine/lib/lwjgl/native")
-	}
 	
-	include "bin"
+	include "bin/"
 	include "CrashReportDialog.txt"
 	
 	exclude "BenchmarkTest.class"
