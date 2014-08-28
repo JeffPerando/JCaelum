@@ -52,7 +52,7 @@ public interface IGL1
 	
 	default void glBufferSubData(GLEnumBufferTarget target, int offset, GLEnumDataType type, java.nio.Buffer data) throws GLException
 	{
-		this.glBufferSubData(target.getGLId(), offset, type.getGLId(), data);
+		this.glBufferSubData(target.getGLId() * type.getByteCount(), offset, type.getGLId(), data);
 		
 	}
 	
