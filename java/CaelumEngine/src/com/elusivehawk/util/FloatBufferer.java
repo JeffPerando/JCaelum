@@ -24,6 +24,7 @@ public class FloatBufferer implements IDirty
 	
 	private boolean dirty = false;
 	private int indicecount = 0;
+	private Pair<Integer> fDiff = null;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public FloatBufferer(int floatsPerIndice, int indiceCount)
@@ -89,10 +90,47 @@ public class FloatBufferer implements IDirty
 		
 		if (in == -1)
 		{
+			if (this.buf.remaining() == 0)
+			{
+				//TODO Write buffer expander doohickey.
+				
+			}
+			
 			in = this.indicecount;
 			this.indicecount++;
 			
 			this.buf.put(fs);
+			
+			this.buf.position(this.buf.position() - this.fpi);
+			this.prev.position(this.buf.position());
+			
+			int pos = this.buf.position();
+			
+			for (int c = 0; c < this.fpi; c++)
+			{
+				if (this.buf.get() == this.prev.get())
+				{
+					if (this.fDiff != null)
+					{
+						this.floatDiff.add(this.fDiff);
+						this.fDiff = null;
+						
+					}
+					
+				}
+				else
+				{
+					if (this.fDiff == null)
+					{
+						this.fDiff = new Pair<Integer>(pos + c, 0);
+						
+					}
+					
+					this.fDiff.two++;
+					
+				}
+				
+			}
 			
 		}
 		
@@ -134,8 +172,15 @@ public class FloatBufferer implements IDirty
 		this.buf.clear();
 		this.indices.clear();
 		
-		this.prev.rewind();
-		this.indPrev.rewind();
+		this.prev.clear();
+		this.indPrev.clear();
+		
+		if (this.fDiff != null)
+		{
+			this.floatDiff.add(this.fDiff);
+			this.fDiff = null;
+			
+		}
 		
 		while (this.buf.remaining() > 0)
 		{
@@ -162,56 +207,6 @@ public class FloatBufferer implements IDirty
 		while (this.indices.remaining() > 0)
 		{
 			this.indices.put(0);
-			
-		}
-		
-	}
-	
-	public void genDiffs()
-	{
-		Pair<Integer> diff = null;
-		
-		for (int c = 0; c < this.buf.capacity(); c++)
-		{
-			if (this.buf.get(c) != this.prev.get(c))
-			{
-				if (diff == null)
-				{
-					diff = new Pair<Integer>(c, 0);
-					
-				}
-				
-				diff.two++;
-				
-			}
-			else
-			{
-				this.floatDiff.add(diff);
-				diff = null;
-				
-			}
-			
-		}
-		
-		for (int c = 0; c < this.indices.capacity(); c++)
-		{
-			if (this.indices.get(c) != this.indPrev.get(c))
-			{
-				if (diff == null)
-				{
-					diff = new Pair<Integer>(c, 0);
-					
-				}
-				
-				diff.two++;
-				
-			}
-			else
-			{
-				this.intDiff.add(diff);
-				diff = null;
-				
-			}
 			
 		}
 		
