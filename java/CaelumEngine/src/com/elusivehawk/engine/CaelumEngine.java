@@ -271,6 +271,11 @@ public final class CaelumEngine
 		
 		Logger.log().log(EnumLogType.INFO, "Starting Caelum Engine %s on %s.", VERSION, CompInfo.OS);
 		
+		if (true)
+		{
+			return;
+		}
+		
 		boolean verbose = !"false".equalsIgnoreCase(this.startargs.get("verbose"));
 		
 		Logger.log().setEnableVerbosity(verbose);
