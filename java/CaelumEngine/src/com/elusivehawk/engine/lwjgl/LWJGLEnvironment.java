@@ -101,7 +101,7 @@ public class LWJGLEnvironment implements IGameEnvironment
 	{
 		//TODO: this only works on Debian... but we'll try it for now.
 		
-		return (CompInfo.OS == EnumOS.LINUX && FileHelper.createFile("/usr/lib/jni/liblwjgl.so").exists()) ? "/usr/lib/jni" : FileHelper.createFile(CompInfo.DEBUG && FileHelper.createFile("lib").exists() ? "lib/lwjgl/native" : ".", String.format("/%s", CompInfo.OS.toString())).getAbsolutePath();
+		return (CompInfo.OS == EnumOS.LINUX && FileHelper.createFile("/usr/lib/jni/liblwjgl.so").exists()) ? "/usr/lib/jni" : FileHelper.createFile(CompInfo.DEBUG && FileHelper.createFile("lib/lwjgl/native").exists() ? "lib/lwjgl/native" : ".", String.format("/%s", CompInfo.OS.toString())).getAbsolutePath();
 	}
 	
 }
