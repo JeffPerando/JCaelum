@@ -14,10 +14,7 @@ sourceSets
 		{
 			srcDir 'java/CaelumEngine/src/'
 		}
-		resources
-		{
-			srcDir 'java/CaelumEngine/res'
-		}
+		output.resourcesDir = 'java/CaelumEngine/'
 		output.classesDir = 'java/CaelumEngine/bin/'
 	}
 }
@@ -45,6 +42,13 @@ jar
 	exclude "BenchmarkTest.class"
 	exclude "RepoCodeStyle.class"
 	exclude "README.md"
-
+	
+	exclude '.settings'
+	exclude '.classpath'
+	exclude '.project'
+	exclude 'bin'
+	exclude 'lib'
+	exclude 'src'
+	
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
