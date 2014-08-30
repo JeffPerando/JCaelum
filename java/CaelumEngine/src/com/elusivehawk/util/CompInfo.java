@@ -26,7 +26,6 @@ public final class CompInfo
 	public static final ImmutableList<String> PATH = ImmutableList.copyOf(Arrays.asList(System.getProperty("java.library.path").split(System.getProperty("path.separator"))));
 	public static final EnumOS OS = EnumOS.getCurrentOS();
 	public static final int CORES = Runtime.getRuntime().availableProcessors();
-	public static final EnumVideoCard VIDEO_CARD = EnumVideoCard.getCurrentVC();
 	public static final File
 			JAR_DIR = new File("."),
 			USER_DIR = new File(System.getProperty("user.home")),
