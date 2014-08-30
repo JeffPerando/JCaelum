@@ -10,11 +10,14 @@ sourceSets
 {
 	main
 	{
-        java
-        {
-            srcDir 'java/CaelumEngine/src/'
-        }
-		output.resourcesDir = 'java/CaelumEngine/res/'
+		java
+		{
+			srcDir 'java/CaelumEngine/src/'
+		}
+		resources
+		{
+			srcDir 'java/CaelumEngine/res'
+		}
 		output.classesDir = 'java/CaelumEngine/bin/'
 	}
 }
@@ -38,7 +41,7 @@ jar
 	{
 		attributes('Main-class': 'com.elusivehawk.engine.CaelumEngine')
 	}
-
+	
 	exclude "BenchmarkTest.class"
 	exclude "RepoCodeStyle.class"
 	exclude "README.md"
