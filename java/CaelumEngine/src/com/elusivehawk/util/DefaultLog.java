@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class DefaultLog implements ILog
 {
-	protected final List<String> crashDialog = StringHelper.read(FileHelper.createFile(".", "CrashReportDialog.txt"));
+	protected final List<String> crashDialog = StringHelper.read(FileHelper.createFile("res/CrashReportDialog.txt"));
 	
 	private boolean enableVerbosity = true;
 	
