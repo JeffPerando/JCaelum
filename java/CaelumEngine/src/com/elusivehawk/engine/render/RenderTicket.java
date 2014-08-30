@@ -169,7 +169,7 @@ public class RenderTicket extends RenderableObj implements IQuaternionListener, 
 		
 		Matrix m = MatrixHelper.createHomogenousMatrix(this.rot, this.scale, this.pos);
 		
-		this.p.attachUniform("model", m.asBuffer(), GLProgram.EnumUniformType.M_FOUR);
+		this.p.attachUniform(rcon, "model", m.asBuffer(), GLProgram.EnumUniformType.M_FOUR);
 		
 		//TODO Load materials into program
 		

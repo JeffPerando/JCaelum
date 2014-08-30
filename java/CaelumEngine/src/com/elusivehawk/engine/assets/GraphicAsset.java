@@ -15,7 +15,7 @@ import com.elusivehawk.util.task.Task;
  */
 public abstract class GraphicAsset extends Asset implements ITaskListener, IGLDeletable
 {
-	protected volatile boolean loaded = false;
+	protected volatile boolean loaded = false, registered = false;
 	
 	public GraphicAsset(String path)
 	{
@@ -26,9 +26,10 @@ public abstract class GraphicAsset extends Asset implements ITaskListener, IGLDe
 	@Override
 	public void onTaskComplete(Task task)
 	{
-		if (task instanceof RenderTask)//TODO Remove this come OpenGL NG
+		if (!this.registered && task instanceof RenderTask)//TODO Remove this come OpenGL NG
 		{
 			RenderHelper.renderContext().registerCleanable(this);
+			this.registered = true;
 			
 		}
 		

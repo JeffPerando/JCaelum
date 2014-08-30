@@ -7,6 +7,7 @@ import com.elusivehawk.engine.render.opengl.GLEnumDataUsage;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
 import com.elusivehawk.util.FloatBufferer;
+import com.elusivehawk.util.storage.IGettable;
 
 /**
  * 
@@ -91,6 +92,12 @@ public class Canvas extends RenderableObj
 		}
 		
 		return true;
+	}
+	
+	public void drawImage(float x, float y, float w, float h, IGettable<Icon> icon)
+	{
+		this.drawImage(x, y, w, h, icon.get());
+		
 	}
 	
 	public void drawImage(float x, float y, float w, float h, Icon icon)

@@ -12,8 +12,8 @@ import com.elusivehawk.util.IDirty;
 public class MaterialSet implements IDirty
 {
 	private final Material[] mats = new Material[RenderConst.MATERIAL_CAP];
-	private int matCount = 0;
-	private boolean dirty = false, finished = false;
+	private volatile int matCount = 0;
+	private volatile boolean dirty = false, finished = false;
 	
 	@Override
 	public boolean isDirty()

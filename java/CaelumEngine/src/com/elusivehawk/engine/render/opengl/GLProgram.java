@@ -283,43 +283,37 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 		return false;
 	}
 	
-	public void attachUniform(String name, FloatBuffer info, EnumUniformType type)
+	public void attachUniform(RenderContext rcon, String name, FloatBuffer info, EnumUniformType type)
 	{
-		RenderContext con = RenderHelper.renderContext();
-		
-		if (!this.bound && !this.bind(con))
+		if (!this.bound)
 		{
 			return;
 		}
 		
-		int loc = con.getGL2().glGetUniformLocation(this.id, name);
+		int loc = rcon.getGL2().glGetUniformLocation(this.id, name);
 		
-		if (loc == 0)
+		if (loc != 0)
 		{
-			return;
+			type.loadUniform(rcon, loc, info);
+			
 		}
-		
-		type.loadUniform(loc, info);
 		
 	}
 	
-	public void attachUniform(String name, IntBuffer info, EnumUniformType type)
+	public void attachUniform(RenderContext rcon, String name, IntBuffer info, EnumUniformType type)
 	{
-		RenderContext con = RenderHelper.renderContext();
-		
-		if (!this.bound && !this.bind(con))
+		if (!this.bound)
 		{
 			return;
 		}
 		
-		int loc = con.getGL2().glGetUniformLocation(this.id, name);
+		int loc = rcon.getGL2().glGetUniformLocation(this.id, name);
 		
-		if (loc == 0)
+		if (loc != 0)
 		{
-			return;
+			type.loadUniform(rcon, loc, info);
+			
 		}
-		
-		type.loadUniform(loc, info);
 		
 	}
 	
@@ -335,9 +329,9 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 	
 	private static interface IUniformType
 	{
-		public void loadUniform(int loc, FloatBuffer buf);
+		public void loadUniform(RenderContext rcon, int loc, FloatBuffer buf);
 		
-		public void loadUniform(int loc, IntBuffer buf);
+		public void loadUniform(RenderContext rcon, int loc, IntBuffer buf);
 		
 	}
 	
@@ -346,16 +340,16 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 		ONE
 		{
 			@Override
-			public void loadUniform(int loc, FloatBuffer buf)
+			public void loadUniform(RenderContext rcon, int loc, FloatBuffer buf)
 			{
-				RenderHelper.gl2().glUniform1f(loc, buf.get());
+				rcon.getGL2().glUniform1f(loc, buf.get());
 				
 			}
 			
 			@Override
-			public void loadUniform(int loc, IntBuffer buf)
+			public void loadUniform(RenderContext rcon, int loc, IntBuffer buf)
 			{
-				RenderHelper.gl2().glUniform1i(loc, buf.get());
+				rcon.getGL2().glUniform1i(loc, buf.get());
 				
 			}
 			
@@ -363,16 +357,16 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 		TWO
 		{
 			@Override
-			public void loadUniform(int loc, FloatBuffer buf)
+			public void loadUniform(RenderContext rcon, int loc, FloatBuffer buf)
 			{
-				RenderHelper.gl2().glUniform2f(loc, buf.get(), buf.get());
+				rcon.getGL2().glUniform2f(loc, buf.get(), buf.get());
 				
 			}
 			
 			@Override
-			public void loadUniform(int loc, IntBuffer buf)
+			public void loadUniform(RenderContext rcon, int loc, IntBuffer buf)
 			{
-				RenderHelper.gl2().glUniform2i(loc, buf.get(), buf.get());
+				rcon.getGL2().glUniform2i(loc, buf.get(), buf.get());
 				
 			}
 			
@@ -380,16 +374,16 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 		THREE
 		{
 			@Override
-			public void loadUniform(int loc, FloatBuffer buf)
+			public void loadUniform(RenderContext rcon, int loc, FloatBuffer buf)
 			{
-				RenderHelper.gl2().glUniform3f(loc, buf.get(), buf.get(), buf.get());
+				rcon.getGL2().glUniform3f(loc, buf.get(), buf.get(), buf.get());
 				
 			}
 			
 			@Override
-			public void loadUniform(int loc, IntBuffer buf)
+			public void loadUniform(RenderContext rcon, int loc, IntBuffer buf)
 			{
-				RenderHelper.gl2().glUniform3i(loc, buf.get(), buf.get(), buf.get());
+				rcon.getGL2().glUniform3i(loc, buf.get(), buf.get(), buf.get());
 				
 			}
 			
@@ -397,16 +391,16 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 		FOUR
 		{
 			@Override
-			public void loadUniform(int loc, FloatBuffer buf)
+			public void loadUniform(RenderContext rcon, int loc, FloatBuffer buf)
 			{
-				RenderHelper.gl2().glUniform4f(loc, buf.get(), buf.get(), buf.get(), buf.get());
+				rcon.getGL2().glUniform4f(loc, buf.get(), buf.get(), buf.get(), buf.get());
 				
 			}
 			
 			@Override
-			public void loadUniform(int loc, IntBuffer buf)
+			public void loadUniform(RenderContext rcon, int loc, IntBuffer buf)
 			{
-				RenderHelper.gl2().glUniform4i(loc, buf.get(), buf.get(), buf.get(), buf.get());
+				rcon.getGL2().glUniform4i(loc, buf.get(), buf.get(), buf.get(), buf.get());
 				
 			}
 			
@@ -414,40 +408,40 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 		M_TWO
 		{
 			@Override
-			public void loadUniform(int loc, FloatBuffer buf)
+			public void loadUniform(RenderContext rcon, int loc, FloatBuffer buf)
 			{
-				RenderHelper.gl2().glUniformMatrix2fv(loc, 1, false, buf);
+				rcon.getGL2().glUniformMatrix2fv(loc, 1, false, buf);
 				
 			}
 			
 			@Override
-			public void loadUniform(int loc, IntBuffer buf){}
+			public void loadUniform(RenderContext rcon, int loc, IntBuffer buf){}
 			
 		},
 		M_THREE
 		{
 			@Override
-			public void loadUniform(int loc, FloatBuffer buf)
+			public void loadUniform(RenderContext rcon, int loc, FloatBuffer buf)
 			{
-				RenderHelper.gl2().glUniformMatrix3fv(loc, 1, false, buf);
+				rcon.getGL2().glUniformMatrix3fv(loc, 1, false, buf);
 				
 			}
 			
 			@Override
-			public void loadUniform(int loc, IntBuffer buf){}
+			public void loadUniform(RenderContext rcon, int loc, IntBuffer buf){}
 			
 		},
 		M_FOUR
 		{
 			@Override
-			public void loadUniform(int loc, FloatBuffer buf)
+			public void loadUniform(RenderContext rcon, int loc, FloatBuffer buf)
 			{
-				RenderHelper.gl2().glUniformMatrix4fv(loc, 1, false, buf);
+				rcon.getGL2().glUniformMatrix4fv(loc, 1, false, buf);
 				
 			}
 			
 			@Override
-			public void loadUniform(int loc, IntBuffer buf){}
+			public void loadUniform(RenderContext rcon, int loc, IntBuffer buf){}
 			
 		};
 		

@@ -169,13 +169,37 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 	
 	public synchronized void setFilters(Filters fs)
 	{
+		if (this.filters != null)
+		{
+			this.dirts.remove(this.filters);
+			
+		}
+		
 		this.filters = fs;
+		
+		if (fs != null)
+		{
+			this.dirts.add(fs);
+			
+		}
 		
 	}
 	
 	public synchronized void setMaterials(MaterialSet ms)
 	{
+		if (this.matSet != null)
+		{
+			this.dirts.remove(this.matSet);
+			
+		}
+		
 		this.matSet = ms;
+		
+		if (ms != null)
+		{
+			this.dirts.add(ms);
+			
+		}
 		
 	}
 	

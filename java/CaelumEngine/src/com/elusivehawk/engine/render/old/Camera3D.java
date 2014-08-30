@@ -71,14 +71,14 @@ public class Camera3D
 		
 	}
 	
-	public void manipulateUniforms(RenderContext con, GLProgram p)
+	public void manipulateUniforms(RenderContext rcon, GLProgram p)
 	{
 		if (!this.dirty)
 		{
 			return;
 		}
 		
-		p.attachUniform("proj", this.camMat.asBuffer(), GLProgram.EnumUniformType.M_FOUR);
+		p.attachUniform(rcon, "proj", this.camMat.asBuffer(), GLProgram.EnumUniformType.M_FOUR);
 		
 	}
 	
