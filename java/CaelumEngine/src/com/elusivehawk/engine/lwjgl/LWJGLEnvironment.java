@@ -38,13 +38,17 @@ public class LWJGLEnvironment implements IGameEnvironment
 		
 		String lib = null;
 		
-		if (CompInfo.DEBUG && json != null)
+		if (json != null)
 		{
 			JsonData val = json.getValue("debugNativeLocation");
 			
-			if (val.type == EnumJsonType.STRING)
+			if (val != null)
 			{
-				lib = val.value;
+				if (val.type == EnumJsonType.STRING)
+				{
+					lib = val.value;
+					
+				}
 				
 			}
 			
@@ -97,7 +101,7 @@ public class LWJGLEnvironment implements IGameEnvironment
 	{
 		//TODO: this only works on Debian... but we'll try it for now.
 		
-		return (CompInfo.OS == EnumOS.LINUX && FileHelper.createFile("/usr/lib/jni/liblwjgl.so").exists()) ? "/usr/lib/jni" : FileHelper.createFile(CompInfo.DEBUG ? "lib" : ".", String.format("/lwjgl/native/%s", CompInfo.OS.toString())).getAbsolutePath();
+		return (CompInfo.OS == EnumOS.LINUX && FileHelper.createFile("/usr/lib/jni/liblwjgl.so").exists()) ? "/usr/lib/jni" : FileHelper.createFile(CompInfo.DEBUG && FileHelper.createFile("lib").exists() ? "lib/lwjgl/native" : ".", String.format("/%s", CompInfo.OS.toString())).getAbsolutePath();
 	}
 	
 }

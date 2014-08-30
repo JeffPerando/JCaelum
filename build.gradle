@@ -31,7 +31,7 @@ jar
 {
 	from configurations.compile.collect {it.isDirectory() ? it : zipTree(it)}
 
-	version = '1.0.0.1-alpha-314159'
+	version = '1.0.0.1-alpha'
 	destinationDir = file('builds')
 
 	manifest

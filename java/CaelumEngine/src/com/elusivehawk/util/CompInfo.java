@@ -28,6 +28,7 @@ public final class CompInfo
 	public static final int CORES = Runtime.getRuntime().availableProcessors();
 	public static final EnumVideoCard VIDEO_CARD = EnumVideoCard.getCurrentVC();
 	public static final File
+			JAR_DIR = new File("."),
 			USER_DIR = new File(System.getProperty("user.home")),
 			TMP_DIR = new File(System.getProperty("java.io.tmpdir"));
 	
