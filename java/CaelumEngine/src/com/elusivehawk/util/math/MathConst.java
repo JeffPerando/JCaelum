@@ -14,6 +14,12 @@ public final class MathConst
 	public static final int Z = 2, C = 2;
 	public static final int W = 3, D = 3;
 	
+	public static final int[] XZY = {X, Z, Y};
+	public static final int[] ZXY = {Z, X, Y};
+	public static final int[] ZYX = {Z, Y, X};
+	public static final int[] YZX = {Y, Z, X};
+	public static final int[] YXZ = {Y, X, Z};
+	
 	public static final int X_BITMASK = 0b0001;
 	public static final int Y_BITMASK = 0b0010;
 	public static final int Z_BITMASK = 0b0100;

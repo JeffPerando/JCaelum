@@ -45,9 +45,17 @@ public final class MathHelper
 			
 		}
 		
-		norm.set(X, (v1[Y] * v2[Z]) - ((v1[Z] * v2[Y])), false);
-		norm.set(Y, -((v2[Z] * v1[X]) - (v2[X] * v1[Z])), false);
-		norm.set(Z, (v1[X] * v2[Y]) - (v1[Y] * v2[X]), false);
+		for (int c = 0; c < 3; c++)
+		{
+			norm.set(c, (v1[YZX[c]] * v2[ZXY[c]]) - (v1[ZXY[c]] * v2[YZX[c]]), false);
+			
+			if (c == Y)
+			{
+				norm.set(c, -norm.get(c), false);
+				
+			}
+			
+		}
 		
 		return norm;
 	}
