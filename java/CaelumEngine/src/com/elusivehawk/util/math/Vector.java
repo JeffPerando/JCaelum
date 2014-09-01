@@ -141,23 +141,17 @@ public class Vector implements IMathObject<Float>, IDirty
 	@Override
 	public void normalize(IMathObject<Float> dest)
 	{
-		float f = 0f;
-		
-		for (int c = 0; c < this.getSize(); c++)
-		{
-			f += MathHelper.square(this.get(c));
-			
-		}
-		
-		f = (float)(1.0 / Math.sqrt(f));
+		float f = MathHelper.length(this);
 		
 		int length = Math.min(this.getSize(), dest.getSize());
 		
 		for (int c = 0; c < length; c++)
 		{
-			dest.set(c, dest.get(c) * f, c == (length - 1));
+			dest.set(c, dest.get(c) / f, false);
 			
 		}
+		
+		dest.onChanged();
 		
 	}
 	

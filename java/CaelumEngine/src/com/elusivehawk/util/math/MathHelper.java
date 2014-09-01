@@ -2,6 +2,7 @@
 package com.elusivehawk.util.math;
 
 import com.elusivehawk.util.RNG;
+import static com.elusivehawk.util.math.MathConst.*;
 
 /**
  * 
@@ -30,6 +31,27 @@ public final class MathHelper
 		return clamp(l, min, max) == l;
 	}
 	
+	public static Vector calcNormal(Vector... vtx)
+	{
+		Vector norm = new Vector();
+		float[]
+				v1 = new float[3],
+				v2 = new float[3];
+		
+		for (int c = 0; c < 3; c++)
+		{
+			v1[c] = (vtx[1].get(c) - vtx[0].get(c));
+			v2[c] = (vtx[2].get(c) - vtx[0].get(c));
+			
+		}
+		
+		norm.set(X, (v1[Y] * v2[Z]) - ((v1[Z] * v2[Y])), false);
+		norm.set(Y, -((v2[Z] * v1[X]) - (v2[X] * v1[Z])), false);
+		norm.set(Z, (v1[X] * v2[Y]) - (v1[Y] * v2[X]), false);
+		
+		return norm;
+	}
+	
 	public static float clamp(float f, float min, float max)
 	{
 		return Math.min(max, Math.max(f, min));
@@ -49,13 +71,13 @@ public final class MathHelper
 	{
 		assert one.getSize() <= 3 && two.getSize() <= 3;
 		
-		float ax = one.get(MathConst.X);
-		float ay = one.get(MathConst.Y);
-		float az = one.get(MathConst.Z);
+		float ax = one.get(X);
+		float ay = one.get(Y);
+		float az = one.get(Z);
 		
-		float bx = two.get(MathConst.X);
-		float by = two.get(MathConst.Y);
-		float bz = two.get(MathConst.Z);
+		float bx = two.get(X);
+		float by = two.get(Y);
+		float bz = two.get(Z);
 		
 		return new Vector((ay * bz) - (az * by),
 				(az * bx) - (ax * bz),
