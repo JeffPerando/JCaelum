@@ -60,37 +60,37 @@ public final class BufferHelper
 		return createByteBuffer(size << 1).asShortBuffer();
 	}
 	
-	public static ByteBuffer createByteWrapper(byte[] bs)
+	public static ByteBuffer createWrapper(byte[] bs)
 	{
 		return ByteBuffer.wrap(bs);
 	}
 	
-	public static CharBuffer createCharWrapper(char[] bs)
+	public static CharBuffer createWrapper(char[] bs)
 	{
 		return CharBuffer.wrap(bs);
 	}
 	
-	public static DoubleBuffer createDoubleWrapper(double[] bs)
+	public static DoubleBuffer createWrapper(double[] bs)
 	{
 		return DoubleBuffer.wrap(bs);
 	}
 	
-	public static FloatBuffer createFloatWrapper(float[] bs)
+	public static FloatBuffer createWrapper(float[] bs)
 	{
 		return FloatBuffer.wrap(bs);
 	}
 	
-	public static IntBuffer createIntWrapper(int[] bs)
+	public static IntBuffer createWrapper(int[] bs)
 	{
 		return IntBuffer.wrap(bs);
 	}
 	
-	public static LongBuffer createLongWrapper(long[] bs)
+	public static LongBuffer createWrapper(long[] bs)
 	{
 		return LongBuffer.wrap(bs);
 	}
 	
-	public static ShortBuffer createShortWrapper(short[] bs)
+	public static ShortBuffer createWrapper(short[] bs)
 	{
 		return ShortBuffer.wrap(bs);
 	}
