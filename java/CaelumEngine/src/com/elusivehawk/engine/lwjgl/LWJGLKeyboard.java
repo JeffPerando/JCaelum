@@ -17,7 +17,7 @@ public class LWJGLKeyboard extends com.elusivehawk.engine.input.Keyboard
 {
 	public static final Key[] LWJGL_TO_ENUM = new Key[Keyboard.KEYBOARD_SIZE];
 	
-	protected final boolean[] downKeys = new boolean[LWJGL_TO_ENUM.length];
+	protected final boolean[] downKeys = new boolean[Key.values().length];
 	protected final List<Key> downKeyList = Lists.newArrayList();
 	
 	static
@@ -131,6 +131,16 @@ public class LWJGLKeyboard extends com.elusivehawk.engine.input.Keyboard
 		LWJGL_TO_ENUM[Keyboard.KEY_SPACE] = Key.SPACE;
 		LWJGL_TO_ENUM[Keyboard.KEY_TAB] = Key.TAB;
 		
+		for (int c = 0; c < LWJGL_TO_ENUM.length; c++)
+		{
+			if (LWJGL_TO_ENUM[c] == null)
+			{
+				LWJGL_TO_ENUM[c] = Key.UNKNOWN;
+				
+			}
+			
+		}
+		
 	}
 	
 	@Override
@@ -178,14 +188,12 @@ public class LWJGLKeyboard extends com.elusivehawk.engine.input.Keyboard
 		{
 			key = LWJGL_TO_ENUM[Keyboard.getEventKey()];
 			
-			if (key == null)
+			if (key == Key.UNKNOWN)
 			{
 				continue;
 			}
 			
-			this.downKeys[key.ordinal()] = Keyboard.getEventKeyState();//TODO See how this affects caps lock
-			
-			if (this.isKeyDown(key))
+			if (this.downKeys[key.ordinal()] = Keyboard.getEventKeyState())//TODO See how this affects caps lock
 			{
 				this.downKeyList.add(key);
 				

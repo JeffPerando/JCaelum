@@ -104,7 +104,9 @@ public enum Key
 	NUM_LOCK(MISC, true),
 	SCROLL_LOCK(MISC, true),
 	SPACE(MISC, ' '),
-	TAB(MISC, '\t');
+	TAB(MISC, '\t'),
+	
+	UNKNOWN(MISC);
 	
 	public final EnumKeyType keyType;
 	
