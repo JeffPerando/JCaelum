@@ -17,8 +17,8 @@ import com.google.common.collect.Lists;
 public class FloatBufferer implements IDirty
 {
 	private final int fpi;
-	private final FloatBuffer buf, prev;
-	private final IntBuffer indices, indPrev;
+	private FloatBuffer buf, prev;
+	private IntBuffer indices, indPrev;
 	private final List<Pair<Integer>> floatDiff = Lists.newArrayList(),
 			intDiff = Lists.newArrayList();
 	
@@ -92,7 +92,7 @@ public class FloatBufferer implements IDirty
 		{
 			if (this.buf.remaining() == 0)
 			{
-				//TODO Write buffer expander doohickey.
+				this.buf = BufferHelper.expand(this.buf, this.fpi * 12);
 				
 			}
 			
@@ -133,6 +133,9 @@ public class FloatBufferer implements IDirty
 			}
 			
 		}
+		
+		this.buf.rewind();
+		this.prev.rewind();
 		
 		return in;
 	}

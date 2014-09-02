@@ -60,6 +60,41 @@ public final class BufferHelper
 		return createByteBuffer(size << 1).asShortBuffer();
 	}
 	
+	public static ByteBuffer expand(ByteBuffer buf, int count)
+	{
+		return (ByteBuffer)createByteBuffer(buf.capacity() + count).put(((ByteBuffer)buf.rewind())).rewind();
+	}
+	
+	public static CharBuffer expand(CharBuffer buf, int count)
+	{
+		return (CharBuffer)createCharBuffer(buf.capacity() + count).put((CharBuffer)buf.rewind()).rewind();
+	}
+	
+	public static DoubleBuffer expand(DoubleBuffer buf, int count)
+	{
+		return (DoubleBuffer)createDoubleBuffer(buf.capacity() + count).put((DoubleBuffer)buf.rewind()).rewind();
+	}
+	
+	public static FloatBuffer expand(FloatBuffer buf, int count)
+	{
+		return (FloatBuffer)createFloatBuffer(buf.capacity() + count).put((FloatBuffer)buf.rewind()).rewind();
+	}
+	
+	public static IntBuffer expand(IntBuffer buf, int count)
+	{
+		return (IntBuffer)createIntBuffer(buf.capacity() + count).put((IntBuffer)buf.rewind()).rewind();
+	}
+	
+	public static LongBuffer expand(LongBuffer buf, int count)
+	{
+		return (LongBuffer)createLongBuffer(buf.capacity() + count).put((LongBuffer)buf.rewind()).rewind();
+	}
+	
+	public static ShortBuffer expand(ShortBuffer buf, int count)
+	{
+		return (ShortBuffer)createShortBuffer(buf.capacity() + count).put((ShortBuffer)buf.rewind()).rewind();
+	}
+	
 	public static ByteBuffer makeByteBuffer(byte... data)
 	{
 		return makeByteBuffer(data.length, data);
