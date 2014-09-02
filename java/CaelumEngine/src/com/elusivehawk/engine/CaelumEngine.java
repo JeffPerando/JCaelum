@@ -11,7 +11,6 @@ import com.elusivehawk.engine.input.IInputListener;
 import com.elusivehawk.engine.input.Input;
 import com.elusivehawk.engine.render.DisplaySettings;
 import com.elusivehawk.engine.render.IDisplay;
-import com.elusivehawk.engine.render.IRenderEnvironment;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.ThreadGameRender;
 import com.elusivehawk.engine.render.old.IRenderHUB;
@@ -57,7 +56,6 @@ public final class CaelumEngine
 	private final List<String> startupPrefixes = Lists.newArrayList();
 	
 	private IGameEnvironment env = null;
-	private IRenderEnvironment renv = null;
 	private JsonObject envConfig = null;
 	private IDisplay display = null;
 	
@@ -71,12 +69,12 @@ public final class CaelumEngine
 	{
 		if (CompInfo.OS != EnumOS.ANDROID)
 		{
-			Runtime.getRuntime().addShutdownHook(new Thread(() ->
+			Runtime.getRuntime().addShutdownHook(new Thread((() ->
 			{
 				CaelumEngine.instance().shutDownGame();
 				CaelumEngine.instance().clearGameEnv();
 				
-			}));
+			})));
 			
 		}
 		
@@ -169,7 +167,7 @@ public final class CaelumEngine
 	
 	public static void addInputListener(Class<? extends Input> type, IInputListener lis)
 	{
-		instance().inputs.forEach((input) ->
+		instance().inputs.forEach(((input) ->
 		{
 			if (type.isInstance(input))
 			{
@@ -177,7 +175,7 @@ public final class CaelumEngine
 				
 			}
 			
-		});
+		}));
 		
 	}
 	
@@ -358,7 +356,6 @@ public final class CaelumEngine
 			env.initiate(this.envConfig, args);
 			
 			this.env = env;
-			this.renv = env.getRenderEnv();
 			
 		}
 		
@@ -482,25 +479,11 @@ public final class CaelumEngine
 			return;
 		}
 		
-		try
-		{
-			d.createDisplay();
-			
-		}
-		catch (Exception e)
-		{
-			Logger.log().err(e);
-			
-			Logger.log().log(EnumLogType.ERROR, "Display could not be created: Display threw an error");
-			ShutdownHelper.exit("DISPLAY-NOT-MADE");
-			
-			return;
-		}
-		
 		this.display = d;
-		this.rcon = new RenderContext(this.renv);
 		
-		this.rcon.preInit();
+		this.rcon = new RenderContext(this.env, d);
+		
+		this.rcon.setSettings(settings);
 		
 		if (this.assets == null)
 		{
@@ -524,16 +507,6 @@ public final class CaelumEngine
 		this.game.loadAssets(this.assets);
 		this.assets.initiate();
 		
-		//TODO Implement a proper loading system.
-		
-		if (!d.releaseContext())
-		{
-			Logger.log().log(EnumLogType.ERROR, "Display could not be created: Display cannot release context");
-			ShutdownHelper.exit("DISPLAY-NOT-MADE");
-			
-			return;
-		}
-		
 		//XXX Creating game threads
 		
 		ThreadGameLoop gameloop = new ThreadGameLoop(this.inputs, this.game);
@@ -549,7 +522,7 @@ public final class CaelumEngine
 			
 		}
 		
-		IThreadStoppable rt = this.renv.createRenderThread(this.rcon);
+		IThreadStoppable rt = this.env.createRenderThread(this.rcon);
 		
 		if (rt == null)
 		{
@@ -667,8 +640,8 @@ public final class CaelumEngine
 		this.startargs.clear();
 		
 		this.env = null;
-		this.renv = null;
 		this.envConfig = null;
+		this.display = null;
 		
 		this.gameargs = null;
 		this.assets = null;

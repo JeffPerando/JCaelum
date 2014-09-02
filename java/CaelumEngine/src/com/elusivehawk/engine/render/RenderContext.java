@@ -7,6 +7,7 @@ import java.util.List;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.GameState;
 import com.elusivehawk.engine.IContext;
+import com.elusivehawk.engine.IGameEnvironment;
 import com.elusivehawk.engine.IGameStateListener;
 import com.elusivehawk.engine.render.old.IRenderEngine;
 import com.elusivehawk.engine.render.old.IRenderHUB;
@@ -32,17 +33,18 @@ import com.google.common.collect.Lists;
  */
 public final class RenderContext implements IUpdatable, IPausable, IGameStateListener, IContext
 {
-	private final IRenderEnvironment renv;
+	private final IGameEnvironment env;
 	private final IDisplay display;
 	
 	@Deprecated
 	private IRenderHUB hub = null;
-	private int fps;
-	private boolean paused = false;
 	
 	private IGL1 gl1;
 	private IGL2 gl2;
 	private IGL3 gl3;
+	
+	private int fps;
+	private boolean paused = false;
 	
 	private int notex, maxTexCount;
 	
@@ -59,26 +61,40 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 			flipScreen = false;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public RenderContext(IRenderEnvironment renderEnv)
+	public RenderContext(IGameEnvironment gameEnv, IDisplay d)
 	{
-		renv = renderEnv;
-		display = CaelumEngine.display();
+		assert gameEnv != null;
+		assert d != null;
+		
+		env = gameEnv;
+		display = d;
 		
 	}
 	
 	@Override
-	public void preInit()
+	public boolean initContext()
 	{
-		if (!this.renv.initiate())
+		if (this.initiated)
 		{
-			Logger.log().log(EnumLogType.ERROR, "Unable to load render environment.");
-			
-			return;
+			return false;
 		}
 		
-		this.gl1 = (IGL1)this.renv.getGL(IRenderEnvironment.GL_1);
-		this.gl2 = (IGL2)this.renv.getGL(IRenderEnvironment.GL_2);
-		this.gl3 = (IGL3)this.renv.getGL(IRenderEnvironment.GL_3);
+		try
+		{
+			this.display.createDisplay();
+			
+		}
+		catch (Throwable e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+		
+		this.gl1 = (IGL1)this.env.getGL(1);
+		this.gl2 = (IGL2)this.env.getGL(2);
+		this.gl3 = (IGL3)this.env.getGL(3);
+		
+		this.gl1.glViewport(0, 0, this.display.getWidth(), this.display.getHeight());
 		
 		for (GLEnumShader sh : GLEnumShader.values())
 		{
@@ -90,16 +106,6 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 				
 			}
 			
-		}
-		
-	}
-	
-	@Override
-	public boolean initContext()
-	{
-		if (this.initiated)
-		{
-			return false;
 		}
 		
 		/*PixelGrid ntf = new PixelGrid(32, 32, ColorFormat.RGBA);
@@ -311,9 +317,9 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 		
 	}
 	
-	public IRenderEnvironment getRenderEnv()
+	public IDisplay getDisplay()
 	{
-		return this.renv;
+		return this.display;
 	}
 	
 	@Deprecated

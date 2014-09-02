@@ -1,7 +1,6 @@
 
 package com.elusivehawk.engine.render;
 
-import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.IContext;
 import com.elusivehawk.engine.IThreadContext;
 import com.elusivehawk.util.Internal;
@@ -31,11 +30,6 @@ public class ThreadGameRender extends ThreadTimed implements IThreadContext
 	@Override
 	public boolean initiate()
 	{
-		if (!CaelumEngine.display().makeCurrent())
-		{
-			return false;
-		}
-		
 		if (!this.rcon.initContext())
 		{
 			return false;
@@ -47,7 +41,7 @@ public class ThreadGameRender extends ThreadTimed implements IThreadContext
 	@Override
 	public void update(double delta) throws Throwable
 	{
-		IDisplay display = CaelumEngine.display();
+		IDisplay display = this.rcon.getDisplay();
 		
 		if (display.isCloseRequested())
 		{
