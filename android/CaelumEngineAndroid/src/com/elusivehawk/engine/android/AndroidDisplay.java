@@ -5,6 +5,7 @@ import java.awt.Canvas;
 import java.io.IOException;
 import android.view.View;
 import com.elusivehawk.engine.render.Color;
+import com.elusivehawk.engine.render.DisplaySettings;
 import com.elusivehawk.engine.render.IDisplay;
 
 /**
@@ -16,160 +17,96 @@ import com.elusivehawk.engine.render.IDisplay;
 @SuppressWarnings("unused")
 public class AndroidDisplay implements IDisplay
 {
-	private final String name;
 	private final View v;
 	
-	public AndroidDisplay(String nickname, View view)
+	public AndroidDisplay(View view)
 	{
-		name = nickname;
 		v = view;
 		
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.io.Closeable#close()
-	 */
+
 	@Override
 	public void close() throws IOException
 	{
-		this.v.setEnabled(false);
+		// TODO Auto-generated method stub
 		
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.elusivehawk.engine.render.IDisplay#getTitle()
-	 */
+
 	@Override
 	public String getTitle()
 	{
-		return null;//FIXME
+		// TODO Auto-generated method stub
+		return null;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.elusivehawk.engine.render.IDisplay#getName()
-	 */
+
 	@Override
-	public String getName()
+	public void createDisplay() throws Exception
 	{
-		return this.name;
+		// TODO Auto-generated method stub
+		
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.elusivehawk.engine.render.IDisplay#getFullscreen()
-	 */
+
 	@Override
 	public boolean getFullscreen()
 	{
-		return true;
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.elusivehawk.engine.render.IDisplay#getVSync()
-	 */
-	@Override
-	public boolean getVSync()
-	{
+		// TODO Auto-generated method stub
 		return false;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.elusivehawk.engine.render.IDisplay#canClose()
-	 */
-	@Override
-	public boolean canClose()
-	{
-		return true;
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.elusivehawk.engine.render.IDisplay#isCloseRequested()
-	 */
+
 	@Override
 	public boolean isCloseRequested()
 	{
-		return !this.v.isEnabled();
+		// TODO Auto-generated method stub
+		return false;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.elusivehawk.engine.render.IDisplay#getHeight()
-	 */
+
 	@Override
 	public int getHeight()
 	{
-		return this.v.getHeight();
+		// TODO Auto-generated method stub
+		return 0;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.elusivehawk.engine.render.IDisplay#getWidth()
-	 */
+
 	@Override
 	public int getWidth()
 	{
-		return this.v.getWidth();
+		// TODO Auto-generated method stub
+		return 0;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.elusivehawk.engine.render.IDisplay#getCanvas()
-	 */
+
 	@Override
-	public Canvas getCanvas()
+	public void updateDisplay()
 	{
-		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.elusivehawk.engine.render.IDisplay#setTitle(java.lang.String)
-	 */
-	@Override
-	public void setTitle(String title){}
-	
-	/* (non-Javadoc)
-	 * @see com.elusivehawk.engine.render.IDisplay#resize(int, int)
-	 */
-	@Override
-	public void resize(int height, int width)
-	{
+		// TODO Auto-generated method stub
 		
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.elusivehawk.engine.render.IDisplay#setCloseable(boolean)
-	 */
+
 	@Override
-	public void setCloseable(boolean close){}
-	
-	/* (non-Javadoc)
-	 * @see com.elusivehawk.engine.render.IDisplay#setFullscreen(boolean)
-	 */
-	@Override
-	public void setFullscreen(boolean full){}
-	
-	/* (non-Javadoc)
-	 * @see com.elusivehawk.engine.render.IDisplay#setVSync(boolean)
-	 */
-	@Override
-	public void setVSync(boolean vsync){}
-	
-	/* (non-Javadoc)
-	 * @see com.elusivehawk.engine.render.IDisplay#setFPS(int)
-	 */
-	@Override
-	public void setFPS(int fps){}
-	
-	/* (non-Javadoc)
-	 * @see com.elusivehawk.engine.render.IDisplay#updateDisplay()
-	 */
-	@Override
-	public void updateDisplay(){}
-	
-	/* (non-Javadoc)
-	 * @see com.elusivehawk.engine.render.IDisplay#setBackgroundColor(com.elusivehawk.engine.render.Color)
-	 */
-	@Override
-	public void setBackgroundColor(Color col)
+	public void processMessages()
 	{
-		this.v.setBackgroundColor(col.color);
+		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void updateSettings(DisplaySettings settings)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean makeCurrent()
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean releaseContext()
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 }

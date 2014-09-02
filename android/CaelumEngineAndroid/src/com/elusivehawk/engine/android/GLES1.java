@@ -9,9 +9,9 @@ import android.opengl.GLES10;
 import android.opengl.GLES11;
 import android.opengl.GLES30;
 import android.os.Build;
-import com.elusivehawk.engine.assets.Texture;
 import com.elusivehawk.engine.render.Color;
-import com.elusivehawk.engine.render.EnumColorFilter;
+import com.elusivehawk.engine.render.ColorFilter;
+import com.elusivehawk.engine.render.opengl.GLEnumError;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
 import com.elusivehawk.util.BufferHelper;
@@ -77,7 +77,7 @@ public class GLES1 implements IGL1
 	@Override
 	public void glClearColor(Color col)
 	{
-		this.glClearColor(col.getColorFloat(EnumColorFilter.RED), col.getColorFloat(EnumColorFilter.GREEN), col.getColorFloat(EnumColorFilter.BLUE), col.getColorFloat(EnumColorFilter.ALPHA));
+		this.glClearColor(col.getColorf(ColorFilter.RED), col.getColorf(ColorFilter.GREEN), col.getColorf(ColorFilter.BLUE), col.getColorf(ColorFilter.ALPHA));
 		
 	}
 	
@@ -142,7 +142,7 @@ public class GLES1 implements IGL1
 		
 		for (VertexBuffer vb : buffers)
 		{
-			bufs.put(vb.id);
+			bufs.put(vb.getId());
 			
 		}
 		
@@ -294,9 +294,9 @@ public class GLES1 implements IGL1
 	}
 	
 	@Override
-	public int glGetError()
+	public GLEnumError glGetError()
 	{
-		return GLES10.glGetError();
+		return GLEnumError.get(GLES10.glGetError());
 	}
 	
 	@Override

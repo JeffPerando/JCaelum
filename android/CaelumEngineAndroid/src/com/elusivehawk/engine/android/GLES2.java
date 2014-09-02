@@ -8,9 +8,6 @@ import java.nio.IntBuffer;
 import android.annotation.TargetApi;
 import android.opengl.GLES20;
 import android.os.Build;
-import com.elusivehawk.engine.assets.Shader;
-import com.elusivehawk.engine.render.opengl.GLEnumShader;
-import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.util.BufferHelper;
 

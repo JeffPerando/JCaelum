@@ -173,9 +173,9 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 	@Override
 	public void loadAssets(AssetManager mgr)
 	{
-		if (this.nextState != null)
+		if (this.state != null)
 		{
-			this.nextState.loadAssets(mgr);
+			this.state.loadAssets(mgr);
 			
 		}
 		

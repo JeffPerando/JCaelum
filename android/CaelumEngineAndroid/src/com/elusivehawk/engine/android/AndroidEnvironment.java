@@ -2,9 +2,10 @@
 package com.elusivehawk.engine.android;
 
 import java.util.List;
-import com.elusivehawk.engine.core.IGameEnvironment;
-import com.elusivehawk.engine.core.ILog;
-import com.elusivehawk.engine.core.Input;
+import com.elusivehawk.engine.IGameEnvironment;
+import com.elusivehawk.engine.input.Input;
+import com.elusivehawk.engine.render.DisplaySettings;
+import com.elusivehawk.engine.render.IDisplay;
 import com.elusivehawk.engine.render.IRenderEnvironment;
 import com.elusivehawk.util.EnumOS;
 import com.elusivehawk.util.json.JsonObject;
@@ -40,15 +41,16 @@ public class AndroidEnvironment implements IGameEnvironment
 	}
 	
 	@Override
-	public ILog getLog()
-	{
-		return new AndroidLog();
-	}
-	
-	@Override
 	public IRenderEnvironment getRenderEnv()
 	{
 		return this.renderEnviro;
+	}
+	
+	@Override
+	public IDisplay createDisplay(DisplaySettings settings)
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	@Override

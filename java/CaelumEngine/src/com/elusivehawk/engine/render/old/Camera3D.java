@@ -4,7 +4,6 @@ package com.elusivehawk.engine.render.old;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.util.math.Matrix;
-import com.elusivehawk.util.math.MatrixHelper;
 import com.elusivehawk.util.storage.DirtableStorage;
 
 /**
@@ -27,9 +26,9 @@ public class Camera3D
 		
 	}
 	
-	public void updateUniforms(RenderContext con)
+	/*public void updateUniforms(RenderContext con)
 	{
-		/*if (!con.getRenderMode().is3D())
+		if (!con.getRenderMode().is3D())
 		{
 			return;
 		}
@@ -64,12 +63,12 @@ public class Camera3D
 			}
 			
 		}
-		*/
 		
-		this.camMat = /*FIXME*/MatrixHelper.createProjectionMatrix(null, null, 0f, 0f, 0f, 0f);
+		
+		this.camMat = FIXMEMatrixHelper.createProjectionMatrix(null, null, 0f, 0f, 0f, 0f);
 		this.dirty = true;
 		
-	}
+	}*/
 	
 	public void manipulateUniforms(RenderContext rcon, GLProgram p)
 	{

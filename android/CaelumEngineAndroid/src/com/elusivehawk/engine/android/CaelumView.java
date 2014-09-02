@@ -5,7 +5,6 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
-import com.elusivehawk.engine.render.RenderSystem;
 
 /**
  * 
