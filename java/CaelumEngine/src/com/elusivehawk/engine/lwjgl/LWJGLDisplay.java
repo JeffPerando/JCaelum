@@ -78,14 +78,19 @@ public class LWJGLDisplay implements IDisplay
 	}
 	
 	@Override
-	public void updateSettings(DisplaySettings settings)
+	public synchronized void updateSettings(DisplaySettings settings)
 	{
 		try
 		{
 			Display.setTitle(settings.title);
 			Display.setDisplayMode(new DisplayMode(settings.width, settings.height));
 			Display.setFullscreen(settings.vsync);
-			Display.setIcon(settings.icons);
+			
+			if (settings.icons != null)
+			{
+				Display.setIcon(settings.icons);
+				
+			}
 			
 			Color bg = settings.bg;
 			Display.setInitialBackground(bg.getColorf(ColorFilter.RED), bg.getColorf(ColorFilter.GREEN), bg.getColorf(ColorFilter.BLUE));

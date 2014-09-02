@@ -6,6 +6,7 @@ import static com.elusivehawk.engine.input.EnumMouseClick.DRAG;
 import static com.elusivehawk.engine.input.EnumMouseClick.UP;
 import org.lwjgl.input.Mouse;
 import com.elusivehawk.engine.CaelumEngine;
+import com.elusivehawk.engine.CaelumException;
 import com.elusivehawk.engine.input.EnumMouseClick;
 import com.elusivehawk.engine.render.IDisplay;
 import com.elusivehawk.util.Logger;
@@ -99,6 +100,11 @@ public class LWJGLMouse extends com.elusivehawk.engine.input.Mouse
 			return false;
 		}
 		
+		if (!Mouse.isCreated())
+		{
+			return false;
+		}
+		
 		this.buttons = new EnumMouseClick[Mouse.getButtonCount()];
 		this.oldButtons = new EnumMouseClick[Mouse.getButtonCount()];
 		
@@ -115,8 +121,10 @@ public class LWJGLMouse extends com.elusivehawk.engine.input.Mouse
 	@Override
 	protected void poll()
 	{
-		Mouse.poll();
-		Mouse.updateCursor();
+		if (!Mouse.isCreated())
+		{
+			throw new CaelumException("Cannot poll keyboard: It wasn't created!");
+		}
 		
 		IDisplay display = CaelumEngine.display();
 		int b;

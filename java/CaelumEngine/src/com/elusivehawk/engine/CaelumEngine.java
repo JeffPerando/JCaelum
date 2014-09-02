@@ -383,13 +383,13 @@ public final class CaelumEngine
 					Logger.log().log(EnumLogType.WARN, "Unable to load input");
 					
 				}
-				else
+				else if (CompInfo.DEBUG)
 				{
 					for (Input input : inputList)
 					{
 						this.inputs.add(input);
 						
-						Logger.log().log(EnumLogType.DEBUG, "Loaded input: %s", input.getClass().getCanonicalName());
+						Logger.log().log(EnumLogType.DEBUG, "Input found: %s", input.getClass().getSimpleName());
 						
 					}
 					

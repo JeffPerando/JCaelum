@@ -1,10 +1,12 @@
 
 package com.elusivehawk.engine;
 
-import java.util.Iterator;
 import java.util.List;
 import com.elusivehawk.engine.input.Input;
+import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.Internal;
+import com.elusivehawk.util.Logger;
+import com.elusivehawk.util.ShutdownHelper;
 import com.elusivehawk.util.concurrent.ThreadTimed;
 import com.google.common.collect.Lists;
 
@@ -21,15 +23,15 @@ public final class ThreadGameLoop extends ThreadTimed
 	private final Game game;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public ThreadGameLoop(List<Input> inputMap, Game g)
+	public ThreadGameLoop(List<Input> inputList, Game g)
 	{
 		super("Thread-GameLoop");
 		
 		game = g;
 		
-		if (inputMap != null)
+		if (inputList != null)
 		{
-			input.addAll(inputMap);
+			input.addAll(inputList);
 			
 		}
 		
@@ -38,18 +40,32 @@ public final class ThreadGameLoop extends ThreadTimed
 	@Override
 	public boolean initiate()
 	{
-		CaelumEngine.display().processMessages();
+		super.initiate();
 		
-		Iterator<Input> itr = this.input.iterator();
-		Input in;
-		
-		while (itr.hasNext())
+		for (Input in : this.input)
 		{
-			in = itr.next();
+			boolean loaded = false;
 			
-			if (!in.initiateInput())
+			try
 			{
-				itr.remove();
+				loaded = in.initiateInput();
+				
+			}
+			catch (Exception e)
+			{
+				this.handleException(e);
+				
+			}
+			
+			if (loaded)
+			{
+				Logger.log().log(EnumLogType.VERBOSE, "Input successfully loaded: %s", in.getClass().getSimpleName());
+				
+			}
+			else
+			{
+				Logger.log().log(EnumLogType.WARN, "Input could not be loaded: %s", in.getClass().getSimpleName());
+				this.input.remove(in);
 				
 			}
 			
@@ -61,13 +77,25 @@ public final class ThreadGameLoop extends ThreadTimed
 	@Override
 	public void update(double delta) throws Throwable
 	{
+		CaelumEngine.display().processMessages();
+		
 		if (!this.input.isEmpty())
 		{
-			this.input.forEach((input) ->
+			this.input.forEach(((input) ->
 			{
-				input.update(delta);
+				try
+				{
+					input.update(delta);
+					
+				}
+				catch (Throwable e)
+				{
+					this.handleException(e);
+					ShutdownHelper.exit("INPUT-ERR");
+					
+				}
 				
-			});
+			}));
 			
 		}
 		
@@ -93,8 +121,24 @@ public final class ThreadGameLoop extends ThreadTimed
 	@Override
 	public void onThreadStopped(boolean failure)
 	{
-		this.input.clear();
-		
+		if (!this.input.isEmpty())
+		{
+			this.input.forEach(((input) ->
+			{
+				try
+				{
+					input.close();
+					
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+					
+				}
+				
+			}));
+			
+		}
 	}
 	
 }

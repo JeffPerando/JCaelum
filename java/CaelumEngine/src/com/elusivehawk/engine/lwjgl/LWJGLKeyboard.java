@@ -3,6 +3,7 @@ package com.elusivehawk.engine.lwjgl;
 
 import java.util.List;
 import org.lwjgl.input.Keyboard;
+import com.elusivehawk.engine.CaelumException;
 import com.elusivehawk.engine.input.Key;
 import com.elusivehawk.util.Logger;
 import com.google.common.collect.Lists;
@@ -176,12 +177,17 @@ public class LWJGLKeyboard extends com.elusivehawk.engine.input.Keyboard
 			return false;
 		}
 		
-		return true;
+		return Keyboard.isCreated();
 	}
 	
 	@Override
 	protected void poll()
 	{
+		if (!Keyboard.isCreated())
+		{
+			throw new CaelumException("Cannot poll keyboard: It wasn't created!");
+		}
+		
 		Key key;
 		
 		while (Keyboard.next())
