@@ -183,7 +183,7 @@ public class LWJGLKeyboard extends com.elusivehawk.engine.input.Keyboard
 	@Override
 	protected void poll()
 	{
-		if (!Keyboard.isCreated())
+		if (!Keyboard.isCreated() && !this.initiateInput())
 		{
 			throw new CaelumException("Cannot poll keyboard: It wasn't created!");
 		}

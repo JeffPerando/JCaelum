@@ -41,6 +41,14 @@ public class FloatBufferer implements IDirty
 		
 	}
 	
+	public FloatBufferer(int floatsPerIndice, int indiceCount, IPopulator<FloatBufferer> pop)
+	{
+		this(floatsPerIndice, indiceCount);
+		
+		pop.populate(this);
+		
+	}
+	
 	@Override
 	public boolean isDirty()
 	{

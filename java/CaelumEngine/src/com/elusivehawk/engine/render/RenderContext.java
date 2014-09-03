@@ -203,6 +203,7 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 			}
 			
 			this.display.updateSettings(this.settings);
+			this.gl1.glViewport(0, 0, this.display.getWidth(), this.display.getHeight());
 			this.refreshScreen = false;
 			
 		}

@@ -121,7 +121,7 @@ public class LWJGLMouse extends com.elusivehawk.engine.input.Mouse
 	@Override
 	protected void poll()
 	{
-		if (!Mouse.isCreated())
+		if (!Mouse.isCreated() && !this.initiateInput())
 		{
 			throw new CaelumException("Cannot poll keyboard: It wasn't created!");
 		}
