@@ -14,7 +14,7 @@ sourceSets
 		{
 			srcDir 'java/CaelumEngine/src/'
 		}
-		output.resourcesDir = 'java/CaelumEngine/'
+		output.resourcesDir = 'java/CaelumEngine/bin/'
 		output.classesDir = 'java/CaelumEngine/bin/'
 	}
 }
@@ -30,10 +30,10 @@ dependencies
 jar
 {
 	from configurations.compile.collect {it.isDirectory() ? it : zipTree(it)}
-
-	version = '1.0.0.2-alpha'
+	
+	version = '1.0.0.2-alpha-TEST'
 	destinationDir = file('builds')
-
+	
 	manifest
 	{
 		attributes('Main-class': 'com.elusivehawk.engine.CaelumEngine')
@@ -43,12 +43,15 @@ jar
 	exclude "RepoCodeStyle.class"
 	exclude "README.md"
 	
-	exclude '.settings'
-	exclude '.classpath'
-	exclude '.project'
-	exclude 'bin'
-	exclude 'lib'
-	exclude 'src'
+	into("natives")
+	{
+		from ("java/CaelumEngine/lib/lwjgl/native/")
+	}
+	
+	into("res")
+	{
+		from ("java/CaelumEngine/res/")
+	}
 	
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
