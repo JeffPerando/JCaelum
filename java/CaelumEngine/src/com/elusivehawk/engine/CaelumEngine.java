@@ -30,6 +30,7 @@ import com.elusivehawk.util.concurrent.IThreadStoppable;
 import com.elusivehawk.util.json.EnumJsonType;
 import com.elusivehawk.util.json.JsonData;
 import com.elusivehawk.util.json.JsonObject;
+import com.elusivehawk.util.json.JsonParseException;
 import com.elusivehawk.util.json.JsonParser;
 import com.elusivehawk.util.storage.Pair;
 import com.elusivehawk.util.storage.Tuple;
@@ -657,7 +658,18 @@ public final class CaelumEngine
 			return null;
 		}
 		
-		JsonData j = JsonParser.parse(jsonFile);
+		JsonData j = null;
+		
+		try
+		{
+			j = JsonParser.parse(jsonFile);
+			
+		}
+		catch (JsonParseException e)
+		{
+			Logger.log().err(e);
+			
+		}
 		
 		if (j == null)
 		{

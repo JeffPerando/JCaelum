@@ -17,13 +17,13 @@ public interface ILog
 	
 	default void log(EnumLogType type, String msg, Object... info)
 	{
-		this.log(type, String.format(msg, info));
+		this.log(type, info == null ? msg : String.format(msg, info));
 		
 	}
 	
 	default void err(Throwable e)
 	{
-		this.err("Error caught:", e);
+		this.err(null, e);
 		
 	}
 	

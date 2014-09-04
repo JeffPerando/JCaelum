@@ -9,6 +9,7 @@
 /builds/*
 /*/*/bin/*
 /cpp/*
+/TEST/*
 
 /.metadata/.log
 /.metadata/.plugins/*

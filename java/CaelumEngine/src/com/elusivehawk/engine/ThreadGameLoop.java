@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine;
 
+import java.util.Iterator;
 import java.util.List;
 import com.elusivehawk.engine.input.Input;
 import com.elusivehawk.util.EnumLogType;
@@ -42,8 +43,12 @@ public final class ThreadGameLoop extends ThreadTimed
 	{
 		super.initiate();
 		
-		for (Input in : this.input)
+		Iterator<Input> itr = this.input.iterator();
+		Input in;
+		
+		while (itr.hasNext())
 		{
+			in = itr.next();
 			boolean loaded = false;
 			
 			try

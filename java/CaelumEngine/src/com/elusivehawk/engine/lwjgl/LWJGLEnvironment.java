@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.lwjgl;
 
+import java.io.File;
 import java.util.List;
 import com.elusivehawk.engine.IGameEnvironment;
 import com.elusivehawk.engine.input.Input;
@@ -58,11 +59,11 @@ public class LWJGLEnvironment implements IGameEnvironment
 		
 		if (lib == null)
 		{
-			lib = determineLWJGLPath();
+			lib = determineLWJGLPath().getAbsolutePath();
 			
 		}
 		
-		System.setProperty("org.lwjgl.librarypath", lib);
+		System.setProperty("org.lwjgl.librarypath", FileHelper.fixPath(lib));
 		
 	}
 	
@@ -93,13 +94,6 @@ public class LWJGLEnvironment implements IGameEnvironment
 		return ret;
 	}
 	
-	public static String determineLWJGLPath()
-	{
-		//TODO: this only works on Debian... but we'll try it for now.
-		
-		return (CompInfo.OS == EnumOS.LINUX && FileHelper.createFile("/usr/lib/jni/liblwjgl.so").exists()) ? "/usr/lib/jni" : FileHelper.createFile(CompInfo.DEBUG && FileHelper.createFile("lib/lwjgl/native").exists() ? "lib/lwjgl/native" : ".", String.format("/%s", CompInfo.OS.toString())).getAbsolutePath();
-	}
-	
 	@Override
 	public Object getGL(int version)
 	{
@@ -118,6 +112,29 @@ public class LWJGLEnvironment implements IGameEnvironment
 	public IThreadStoppable createRenderThread(RenderContext rcon)
 	{
 		return null;
+	}
+	
+	public static File determineLWJGLPath()
+	{
+		String path = null;
+		
+		if ((CompInfo.OS == EnumOS.LINUX && new File("/usr/lib/jni/liblwjgl.so").exists()))
+		{
+			path = "usr/lib/jni";//TODO: this only works on Debian... but we'll try it for now.
+			
+		}
+		else if (FileHelper.createFile("lib/lwjgl/native").exists())
+		{
+			path = String.format("lib/lwjgl/native/%s", CompInfo.OS.toString());
+			
+		}
+		
+		if (path == null)
+		{
+			return FileHelper.getResource("res").getParentFile();
+		}
+		
+		return FileHelper.createFile(".", path);
 	}
 	
 }

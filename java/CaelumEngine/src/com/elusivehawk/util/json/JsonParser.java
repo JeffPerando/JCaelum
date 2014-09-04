@@ -95,7 +95,14 @@ public final class JsonParser
 	
 	public static JsonData parseContent(String name, Buffer<String> buf) throws JsonParseException
 	{
-		String str = buf.next(false).toLowerCase();
+		String str = buf.next(false);
+		
+		if (str == null)
+		{
+			throw new JsonParseException(new NullPointerException());
+		}
+		
+		str = str.toLowerCase();
 		
 		switch (str)
 		{

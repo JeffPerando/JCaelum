@@ -64,6 +64,11 @@ public final class StringHelper
 	
 	public static List<String> read(InputStream is, IObjFilter<String> filter)
 	{
+		if (is == null)
+		{
+			return Lists.newArrayList();
+		}
+		
 		return read(new BufferedReader(new InputStreamReader(is)), filter);
 	}
 	

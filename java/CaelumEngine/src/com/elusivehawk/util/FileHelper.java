@@ -2,10 +2,12 @@
 package com.elusivehawk.util;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.InputStream;
 import java.util.List;
 import com.google.common.collect.Lists;
 
@@ -18,6 +20,20 @@ import com.google.common.collect.Lists;
 public final class FileHelper
 {
 	public static final String FILE_SEP = System.getProperty("file.separator");
+	public static final FileFilter NATIVE_FILTER = ((file) ->
+	{
+		String ext = getExtension(file).toLowerCase();
+		
+		switch (ext)
+		{
+			case "dll":
+			case "so":
+			case "jnilib":
+			case "dylib": return true;
+			default: return file.isDirectory();
+		}
+		
+	});
 	
 	private FileHelper(){}
 	
@@ -29,6 +45,44 @@ public final class FileHelper
 	public static File createFile(String src, String path)
 	{
 		return new File(fixPath(src), fixPath(path));
+	}
+	
+	public static File getRootResDir()
+	{
+		try
+		{
+			String urlpath = FileHelper.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+			
+			if (urlpath != null)
+			{
+				return new File(urlpath);
+			}
+			
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			
+		}
+		
+		return null;
+	}
+	
+	public static File getResource(String path)
+	{
+		File root = getRootResDir();
+		
+		if (root != null)
+		{
+			return new File(root, path);
+		}
+		
+		return null;
+	}
+	
+	public static InputStream getResourceStream(String path)
+	{
+		return FileHelper.class.getResourceAsStream(path);
 	}
 	
 	public static FileInputStream createInStream(File file)
@@ -181,7 +235,17 @@ public final class FileHelper
 		return path.replace("/", FILE_SEP);
 	}
 	
+	public static String makePathGeneric(String path)
+	{
+		return path.replace(FILE_SEP, "/");
+	}
+	
 	public static List<File> getFiles(File file)
+	{
+		return getFiles(file, null);
+	}
+	
+	public static List<File> getFiles(File file, FileFilter f)
 	{
 		List<File> ret = Lists.newArrayList();
 		
@@ -195,14 +259,14 @@ public final class FileHelper
 			return ret;
 		}
 		
-		getFiles0(file, ret);
+		getFiles0(file, f, ret);
 		
 		return ret;
 	}
 	
-	private static void getFiles0(File file, List<File> filelist)
+	private static void getFiles0(File file, FileFilter filter, List<File> filelist)
 	{
-		File[] files = file.listFiles();
+		File[] files = file.listFiles(filter);
 		
 		if (files == null || files.length == 0)
 		{
@@ -213,7 +277,7 @@ public final class FileHelper
 		{
 			if (f.isDirectory())
 			{
-				getFiles0(f, filelist);
+				getFiles0(f, filter, filelist);
 				
 			}
 			else
@@ -239,6 +303,16 @@ public final class FileHelper
 		return StringHelper.splitLast(name, ".").one;
 	}
 	
+	public static String getExtension(File file)
+	{
+		if (file.isDirectory())
+		{
+			return "";
+		}
+		
+		return StringHelper.splitLast(file.getName(), ".").two;
+	}
+	
 	public static File getChild(String name, File folder)
 	{
 		return getChild(name, getFiles(folder));
@@ -261,6 +335,81 @@ public final class FileHelper
 		}
 		
 		return null;
+	}
+	
+	public static File asTemp(String path)
+	{
+		return asTemp(path, null);
+	}
+	
+	public static File asTemp(String path, FileFilter filter)
+	{
+		File file = null;
+		
+		if (path == null || path.length() == 0)
+		{
+			file = getRootResDir();
+			
+		}
+		else
+		{
+			file = getResource(path);
+			
+		}
+		
+		if (file.isDirectory())
+		{
+			List<File> files = getFiles(file, filter);
+			
+			for (File f : files)
+			{
+				asTemp0(f);
+				
+			}
+			
+			return CompInfo.TMP_DIR;
+		}
+		
+		return asTemp0(file);
+	}
+	
+	private static File asTemp0(File file)
+	{
+		assert file.isFile();
+		
+		try
+		{
+			FileInputStream in = createInStream(file);
+			File tmp = File.createTempFile(file.getName(), null);
+			FileOutputStream out = createOutStream(tmp, true);
+			
+			byte[] buf = new byte[1024];
+			int read = -1;
+			
+			while ((read = in.read(buf)) != -1)
+			{
+				out.write(buf, 0, read);
+				
+			}
+			
+			in.close();
+			out.close();
+			
+			return tmp;
+		}
+		catch (Throwable e)
+		{
+			e.printStackTrace();
+			
+		}
+		
+		return null;
+	}
+	
+	public static void loadNatives(String path)
+	{
+		System.loadLibrary(asTemp(path, NATIVE_FILTER).getAbsolutePath());
+		
 	}
 	
 }
