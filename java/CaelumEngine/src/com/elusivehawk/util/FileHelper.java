@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.InputStream;
 import java.util.List;
+import com.elusivehawk.util.storage.SemiFinalStorage;
 import com.google.common.collect.Lists;
 
 /**
@@ -250,7 +251,7 @@ public final class FileHelper
 		return getFiles(file, null);
 	}
 	
-	public static List<File> getFiles(File file, FileFilter f)
+	public static List<File> getFiles(File file, FileFilter filter)
 	{
 		List<File> ret = Lists.newArrayList();
 		
@@ -264,35 +265,18 @@ public final class FileHelper
 			return ret;
 		}
 		
-		getFiles0(file, f, ret);
-		
-		return ret;
-	}
-	
-	private static void getFiles0(File file, FileFilter filter, List<File> filelist)
-	{
-		File[] files = file.listFiles(filter);
-		
-		if (files == null || files.length == 0)
+		scanForFiles(file, ((f) ->
 		{
-			return;
-		}
-		
-		for (File f : files)
-		{
-			if (f.isDirectory())
+			if (filter.accept(f))
 			{
-				getFiles0(f, filter, filelist);
-				
-			}
-			else
-			{
-				filelist.add(f);
+				ret.add(f);
 				
 			}
 			
-		}
+			return true;
+		}));
 		
+		return ret;
 	}
 	
 	public static String getExtensionlessName(File file)
@@ -312,7 +296,25 @@ public final class FileHelper
 	
 	public static File getChild(String name, File folder)
 	{
-		return getChild(name, getFiles(folder));
+		return getChild(name, folder, false);
+	}
+	
+	public static File getChild(String name, File folder, boolean goDeep)
+	{
+		SemiFinalStorage<File> ret = SemiFinalStorage.create(null);
+		
+		scanForFiles(folder, goDeep, ((file) ->
+		{
+			if (file.getName().equals(name))
+			{
+				ret.set(file);
+				return false;
+			}
+			
+			return true;
+		}));
+		
+		return ret.get();
 	}
 	
 	public static File getChild(String name, List<File> files)
@@ -399,6 +401,50 @@ public final class FileHelper
 		}
 		
 		return false;
+	}
+	
+	public static void scanForFiles(File folder, IFileScanner sc)
+	{
+		scanForFiles(folder, true, sc);
+		
+	}
+	
+	public static void scanForFiles(File folder, boolean recursive, IFileScanner sc)
+	{
+		if (!isReal(folder) || !folder.isDirectory())
+		{
+			return;
+		}
+		
+		File[] files = folder.listFiles();
+		
+		if (files == null || files.length == 0)
+		{
+			return;
+		}
+		
+		for (File file : files)
+		{
+			if (file.isDirectory() && recursive)
+			{
+				scanForFiles(file, true, sc);
+				
+			}
+			
+			if (!sc.scan(file))
+			{
+				return;
+			}
+			
+		}
+		
+	}
+	
+	@FunctionalInterface
+	public static interface IFileScanner
+	{
+		public boolean scan(File file);
+		
 	}
 	
 }

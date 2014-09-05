@@ -43,12 +43,6 @@ public class NetworkException extends CaelumException
 		
 	}
 	
-	public NetworkException(Throwable e, String err, Object... args)
-	{
-		super(e, err, args);
-		
-	}
-	
 	public NetworkException(String err, Throwable e, boolean arg2, boolean arg3)
 	{
 		super(err, e, arg2, arg3);

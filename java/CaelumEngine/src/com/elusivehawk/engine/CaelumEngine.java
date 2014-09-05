@@ -661,11 +661,19 @@ public final class CaelumEngine
 			return;
 		}
 		
-		List<File> natives = FileHelper.getFiles(CompInfo.JAR_DIR, FileHelper.NATIVE_FILTER);
+		File nLoc = CompInfo.JAR_DIR;
+		
+		if (!CompInfo.BUILT)
+		{
+			nLoc = FileHelper.getChild("lib", nLoc.getParentFile());
+			
+		}
+		
+		List<File> natives = FileHelper.getFiles(nLoc, FileHelper.NATIVE_FILTER);
 		
 		if (natives.isEmpty())
 		{
-			throw new CaelumException("Could not load natives! THIS IS A BUG!");
+			throw new CaelumException("Could not load natives! THIS IS A BUG! Jar directory: %s", CompInfo.JAR_DIR.getAbsolutePath());
 		}
 		
 		File tmp = FileHelper.createFile(CompInfo.TMP_DIR, ".caelum/natives/");
