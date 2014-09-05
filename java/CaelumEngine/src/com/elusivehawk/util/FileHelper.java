@@ -297,15 +297,7 @@ public final class FileHelper
 	
 	public static String getExtensionlessName(File file)
 	{
-		String name = file.getName();
-		int ind = name.indexOf(".");
-		
-		if (ind == -1)
-		{
-			return name;
-		}
-		
-		return StringHelper.splitLast(name, ".").one;
+		return StringHelper.getPrefix(file.getName(), ".");
 	}
 	
 	public static String getExtension(File file)
@@ -315,7 +307,7 @@ public final class FileHelper
 			return "";
 		}
 		
-		return StringHelper.splitLast(file.getName(), ".").two;
+		return StringHelper.getSuffix(file.getName(), ".");
 	}
 	
 	public static File getChild(String name, File folder)

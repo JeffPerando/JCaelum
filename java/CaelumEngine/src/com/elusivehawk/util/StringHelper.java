@@ -382,6 +382,40 @@ public final class StringHelper
 		return new Pair<String>(str.substring(0, ind), str.substring(ind + out.length()));
 	}
 	
+	public static String getPrefix(String str, String out)
+	{
+		if (str == null || str.length() == 0)
+		{
+			return null;
+		}
+		
+		int i = str.indexOf(out);
+		
+		if (i == -1)
+		{
+			return str;
+		}
+		
+		return str.substring(0, i);
+	}
+	
+	public static String getSuffix(String str, String out)
+	{
+		if (str == null || str.length() == 0)
+		{
+			return null;
+		}
+		
+		int i = str.lastIndexOf(out);
+		
+		if (i == -1)
+		{
+			return null;
+		}
+		
+		return str.substring(i);
+	}
+	
 	public static String parseDate(Calendar cal, String dateSep, String timeSep)
 	{
 		StringBuilder b = newBuilder(16);

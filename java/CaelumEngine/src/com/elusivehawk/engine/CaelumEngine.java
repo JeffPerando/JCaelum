@@ -661,7 +661,7 @@ public final class CaelumEngine
 			return;
 		}
 		
-		List<File> natives = FileHelper.getFiles(FileHelper.getRootResDir(), FileHelper.NATIVE_FILTER);
+		List<File> natives = FileHelper.getFiles(CompInfo.JAR_DIR, FileHelper.NATIVE_FILTER);
 		
 		if (natives.isEmpty())
 		{

@@ -27,8 +27,10 @@ public final class CompInfo
 	public static final EnumOS OS = EnumOS.getCurrentOS();
 	public static final int CORES = Runtime.getRuntime().availableProcessors();
 	public static final File
-			JAR_DIR = new File("."),
+			JAR_DIR = FileHelper.getRootResDir(),
 			USER_DIR = new File(System.getProperty("user.home")),
 			TMP_DIR = new File(System.getProperty("java.io.tmpdir"));
+	
+	public static final boolean BUILT = FileHelper.getExtension(JAR_DIR) != null;
 	
 }
