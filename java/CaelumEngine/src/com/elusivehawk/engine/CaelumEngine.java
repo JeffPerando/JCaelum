@@ -677,7 +677,7 @@ public final class CaelumEngine
 			throw new CaelumException("Could not load natives! THIS IS A BUG! Native directory: %s", nLoc.getAbsolutePath());
 		}
 		
-		File tmp = FileHelper.createFile(CompInfo.TMP_DIR, ".caelum/natives/");
+		File tmp = FileHelper.createFile(CompInfo.TMP_DIR, String.format(".caelum/natives/%s", CompInfo.BUILT ? "" : "dev/"));
 		
 		if (!tmp.exists() && !tmp.mkdirs())
 		{
