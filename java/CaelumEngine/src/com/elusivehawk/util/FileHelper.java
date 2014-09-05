@@ -7,8 +7,15 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import com.elusivehawk.util.storage.SemiFinalStorage;
 import com.google.common.collect.Lists;
 
@@ -58,6 +65,42 @@ public final class FileHelper
 	public static File createFile(File src, String path)
 	{
 		return new File(src, fixPath(path));
+	}
+	
+	public static List<File> createFiles(List<URL> urls)
+	{
+		List<File> ret = Lists.newArrayListWithExpectedSize(urls.size());
+		
+		if (urls.isEmpty())
+		{
+			return ret;
+		}
+		
+		for (URL url : urls)
+		{
+			URI uri = null;
+			
+			try
+			{
+				uri = url.toURI();
+				
+			}
+			catch (Exception e)
+			{
+				Logger.log().err(e);
+				
+			}
+			
+			if (uri == null)
+			{
+				continue;
+			}
+			
+			ret.add(new File(uri));
+			
+		}
+		
+		return ret;
 	}
 	
 	public static File getRootResDir()
@@ -293,7 +336,14 @@ public final class FileHelper
 	
 	public static String getExtension(File file)
 	{
-		return StringHelper.getSuffix(file.getName(), ".");
+		String ret = StringHelper.getSuffix(file.getName(), ".");
+		
+		if (ret == null)
+		{
+			return null;
+		}
+		
+		return ret.toLowerCase();
 	}
 	
 	public static File getChild(String name, File folder)
@@ -411,32 +461,141 @@ public final class FileHelper
 		
 	}
 	
-	public static void scanForFiles(File folder, boolean recursive, IFileScanner sc)
+	public static void scanForFiles(File file, boolean recursive, IFileScanner sc)
 	{
-		assert isReal(folder) && folder.isDirectory();
+		assert isReal(file);
 		
-		File[] files = folder.listFiles();
+		File[] files = null;
+		
+		if (file.isDirectory())
+		{
+			files = file.listFiles();
+			
+		}
+		else
+		{
+			List<URL> zipFiles = readZip(file);
+			
+			if (!zipFiles.isEmpty())
+			{
+				files = new File[zipFiles.size()];
+				
+				for (int c = 0; c < zipFiles.size(); c++)
+				{
+					try
+					{
+						files[c] = new File(zipFiles.get(c).toURI());
+						
+					}
+					catch (Exception e)
+					{
+						Logger.log().err(e);
+						
+					}
+					
+				}
+				
+			}
+			
+		}
 		
 		if (files == null || files.length == 0)
 		{
 			return;
 		}
 		
-		for (File file : files)
+		for (File f : files)
 		{
-			if (file.isDirectory() && recursive)
+			if (f.isDirectory() && recursive)
 			{
-				scanForFiles(file, true, sc);
+				scanForFiles(f, true, sc);
 				
 			}
 			
-			if (!sc.scan(file))
+			if (!sc.scan(f))
 			{
 				return;
 			}
 			
 		}
 		
+	}
+	
+	public static List<File> readZipFiles(File file)
+	{
+		return createFiles(readZip(file));
+	}
+	
+	public static List<URL> readZip(File file)
+	{
+		List<URL> ret = Lists.newArrayList();
+		
+		if (!isReal(file))
+		{
+			return ret;
+		}
+		
+		if (file.isDirectory())
+		{
+			return ret;
+		}
+		
+		String ext = getExtension(file);
+		
+		ZipFile zip = null;
+		
+		try
+		{
+			if ("zip".equals(ext))
+			{
+				zip = new ZipFile(file);
+				
+			}
+			else if ("jar".equals(ext))
+			{
+				zip = new JarFile(file);
+				
+			}
+			
+		}
+		catch (Exception e)
+		{
+			Logger.log().err(e);
+			
+		}
+		
+		if (zip != null)
+		{
+			Enumeration<? extends ZipEntry> entries = zip.entries();
+			ZipEntry entry;
+			
+			while (entries.hasMoreElements())
+			{
+				entry = entries.nextElement();
+				
+				try
+				{
+					ret.add(new URL(String.format("jar:file:%s!/%s", zip.getName(), entry.getName())));
+					
+				}
+				catch (Exception e){}//Ignore this, because this will never throw an error.
+				
+			}
+			
+			try
+			{
+				zip.close();
+				
+			}
+			catch (IOException e)
+			{
+				Logger.log().err(e);
+				
+			}
+			
+		}
+		
+		return ret;
 	}
 	
 	@FunctionalInterface

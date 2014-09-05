@@ -247,8 +247,6 @@ public final class ReflectionHelper
 			
 			if (zip.size() == 0)
 			{
-				System.out.println("No entries found in: " + file.getAbsolutePath());
-				
 				zip.close();
 				
 				return ret;
@@ -267,7 +265,7 @@ public final class ReflectionHelper
 					continue;
 				}
 				
-				URL url = new URL("jar:file:" + zip.getName() + "!/" + entry.getName());
+				URL url = new URL(String.format("jar:file:%s!/%s", zip.getName(), entry.getName()));
 				
 				if (entry.getName().endsWith(".class"))
 				{
