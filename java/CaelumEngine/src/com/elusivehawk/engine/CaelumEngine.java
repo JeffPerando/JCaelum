@@ -56,7 +56,7 @@ public final class CaelumEngine
 	private final TaskManager tasks = new TaskManager();
 	private final List<String> startupPrefixes = Lists.newArrayList();
 	
-	private boolean loadedNatives = false;
+	private File nativeLocation = null;
 	private IGameEnvironment env = null;
 	private JsonObject envConfig = null;
 	private IDisplay display = null;
@@ -137,6 +137,11 @@ public final class CaelumEngine
 		return instance().display;
 	}
 	
+	public static File getNativeLocation()
+	{
+		return instance().nativeLocation;
+	}
+	
 	public static IContext getContext(boolean safe)
 	{
 		Thread t = Thread.currentThread();
@@ -160,6 +165,8 @@ public final class CaelumEngine
 		
 		return ((IPausable)t).isPaused();
 	}
+	
+	//XXX Hooks
 	
 	public static void scheduleRenderTask(RenderTask rt)
 	{
@@ -656,24 +663,23 @@ public final class CaelumEngine
 	
 	private void loadNatives()
 	{
-		if (this.loadedNatives)
+		if (this.nativeLocation != null)
 		{
 			return;
 		}
 		
-		File nLoc = CompInfo.JAR_DIR;
-		
-		if (!CompInfo.BUILT)
+		if (CompInfo.BUILT)
 		{
-			nLoc = FileHelper.getChild("lib", nLoc.getParentFile());
-			
+			System.out.println("BOO!!");
 		}
+		
+		File nLoc = CompInfo.BUILT ? CompInfo.JAR_DIR : FileHelper.getChild("lib", CompInfo.JAR_DIR.getParentFile());
 		
 		List<File> natives = FileHelper.getFiles(nLoc, FileHelper.NATIVE_FILTER);
 		
 		if (natives.isEmpty())
 		{
-			throw new CaelumException("Could not load natives! THIS IS A BUG! Jar directory: %s", CompInfo.JAR_DIR.getAbsolutePath());
+			throw new CaelumException("Could not load natives! THIS IS A BUG! Native directory: %s", nLoc.getAbsolutePath());
 		}
 		
 		File tmp = FileHelper.createFile(CompInfo.TMP_DIR, ".caelum/natives/");
@@ -693,7 +699,7 @@ public final class CaelumEngine
 			{
 				if (CompInfo.DEBUG)
 				{
-					Logger.log().log(EnumLogType.VERBOSE, "Not copying native: %s", n.getName());
+					Logger.log().log(EnumLogType.VERBOSE, "Not copying native: %s/%s", n.getParentFile().getName(), n.getName());
 				}
 				
 				continue;
@@ -703,22 +709,20 @@ public final class CaelumEngine
 			{
 				if (CompInfo.DEBUG)
 				{
-					Logger.log().log(EnumLogType.VERBOSE, "Succesfully copied native: %s", n.getName());
+					Logger.log().log(EnumLogType.VERBOSE, "Succesfully copied native: %s/s", n.getParentFile().getName(), n.getName());
 					
 				}
 				
 			}
 			else
 			{
-				Logger.log().log(EnumLogType.WARN, "Could not copy native: %s", n.getName());
+				Logger.log().log(EnumLogType.WARN, "Could not copy native: %s/%s", n.getParentFile().getName(), n.getName());
 				
 			}
 			
 		}
 		
-		System.loadLibrary(tmp.getAbsolutePath());
-		
-		this.loadedNatives = true;
+		this.nativeLocation = tmp;
 		
 	}
 	

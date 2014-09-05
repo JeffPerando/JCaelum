@@ -413,7 +413,7 @@ public final class StringHelper
 			return null;
 		}
 		
-		return str.substring(i);
+		return str.substring(i + out.length());
 	}
 	
 	public static String parseDate(Calendar cal, String dateSep, String timeSep)

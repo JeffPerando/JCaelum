@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.lwjgl;
 
 import java.util.List;
+import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.IGameEnvironment;
 import com.elusivehawk.engine.input.Input;
 import com.elusivehawk.engine.render.DisplaySettings;
@@ -34,7 +35,7 @@ public class LWJGLEnvironment implements IGameEnvironment
 	{
 		System.setProperty("org.lwjgl.opengl.Display.noinput", "true");
 		
-		//System.setProperty("org.lwjgl.librarypath", determineLWJGLPath().getAbsolutePath());
+		System.setProperty("org.lwjgl.librarypath", CaelumEngine.getNativeLocation().getAbsolutePath());
 		
 	}
 	

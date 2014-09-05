@@ -23,7 +23,14 @@ public final class FileHelper
 	public static final String FILE_SEP = System.getProperty("file.separator");
 	public static final FileFilter NATIVE_FILTER = ((file) ->
 	{
-		String ext = getExtension(file).toLowerCase();
+		String ext = getExtension(file);
+		
+		if (ext == null)
+		{
+			return false;
+		}
+		
+		ext = ext.toLowerCase();
 		
 		switch (ext)
 		{
@@ -31,7 +38,7 @@ public final class FileHelper
 			case "so":
 			case "jnilib":
 			case "dylib": return true;
-			default: return file.isDirectory();
+			default: return false;
 		}
 		
 	});
@@ -286,11 +293,6 @@ public final class FileHelper
 	
 	public static String getExtension(File file)
 	{
-		if (file.isDirectory())
-		{
-			return "";
-		}
-		
 		return StringHelper.getSuffix(file.getName(), ".");
 	}
 	
@@ -411,10 +413,7 @@ public final class FileHelper
 	
 	public static void scanForFiles(File folder, boolean recursive, IFileScanner sc)
 	{
-		if (!isReal(folder) || !folder.isDirectory())
-		{
-			return;
-		}
+		assert isReal(folder) && folder.isDirectory();
 		
 		File[] files = folder.listFiles();
 		
