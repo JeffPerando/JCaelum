@@ -305,16 +305,6 @@ public final class FileHelper
 	{
 		List<File> ret = Lists.newArrayList();
 		
-		if (!isReal(file))
-		{
-			return ret;
-		}
-		
-		if (!file.isDirectory())
-		{
-			return ret;
-		}
-		
 		scanForFiles(file, ((f) ->
 		{
 			if (filter.accept(f))

@@ -636,7 +636,6 @@ public final class CaelumEngine
 		}
 		
 		this.tasks.stop();
-		
 		this.threads.clear();
 		
 	}
@@ -704,7 +703,7 @@ public final class CaelumEngine
 			{
 				if (CompInfo.DEBUG)
 				{
-					Logger.log().log(EnumLogType.VERBOSE, "Succesfully copied native: %s/s", n.getParentFile().getName(), n.getName());
+					Logger.log().log(EnumLogType.VERBOSE, "Succesfully copied native: %s/%s", n.getParentFile().getName(), n.getName());
 					
 				}
 				
