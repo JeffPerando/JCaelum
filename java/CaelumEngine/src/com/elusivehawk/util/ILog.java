@@ -17,7 +17,7 @@ public interface ILog
 	
 	default void log(EnumLogType type, String msg, Object... info)
 	{
-		this.log(type, info == null ? msg : String.format(msg, info));
+		this.log(type, msg == null || info == null ? msg : String.format(msg, info));
 		
 	}
 	
