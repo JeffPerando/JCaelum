@@ -235,10 +235,6 @@ public final class CaelumEngine
 			return;
 		}
 		
-		//XXX Load natives
-		
-		this.loadNatives();
-		
 		//XXX Parsing the starting arguments
 		
 		List<String> gargs = Lists.newArrayList();
@@ -290,6 +286,10 @@ public final class CaelumEngine
 			}
 			
 		}*/
+		
+		//XXX Load natives
+		
+		this.loadNatives();
 		
 		//XXX Loading game environment
 		
@@ -675,8 +675,22 @@ public final class CaelumEngine
 			throw new CaelumException("Could not load natives: Unable to create natives directory");
 		}
 		
+		File nDest;
+		
 		for (File n : natives)
 		{
+			nDest = new File(tmp, n.getName());
+			
+			if (nDest.exists() && nDest.getTotalSpace() == n.getTotalSpace())
+			{
+				if (CompInfo.DEBUG)
+				{
+					Logger.log().log(EnumLogType.VERBOSE, "Not copying native: %s", n.getName());
+				}
+				
+				continue;
+			}
+			
 			if (!FileHelper.copy(n, tmp) && CompInfo.DEBUG)
 			{
 				Logger.log().log(EnumLogType.WARN, "Could not load native: %s", n.getAbsoluteFile());
