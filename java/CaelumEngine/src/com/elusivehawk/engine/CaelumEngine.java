@@ -668,11 +668,6 @@ public final class CaelumEngine
 			return;
 		}
 		
-		if (CompInfo.BUILT)
-		{
-			System.out.println("BOO!!");
-		}
-		
 		File nLoc = CompInfo.BUILT ? CompInfo.JAR_DIR : FileHelper.getChild("lib", CompInfo.JAR_DIR.getParentFile());
 		
 		List<File> natives = FileHelper.getFiles(nLoc, FileHelper.NATIVE_FILTER);
