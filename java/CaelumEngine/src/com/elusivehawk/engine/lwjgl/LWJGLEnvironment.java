@@ -1,19 +1,14 @@
 
 package com.elusivehawk.engine.lwjgl;
 
-import java.io.File;
 import java.util.List;
 import com.elusivehawk.engine.IGameEnvironment;
 import com.elusivehawk.engine.input.Input;
 import com.elusivehawk.engine.render.DisplaySettings;
 import com.elusivehawk.engine.render.IDisplay;
 import com.elusivehawk.engine.render.RenderContext;
-import com.elusivehawk.util.CompInfo;
 import com.elusivehawk.util.EnumOS;
-import com.elusivehawk.util.FileHelper;
 import com.elusivehawk.util.concurrent.IThreadStoppable;
-import com.elusivehawk.util.json.EnumJsonType;
-import com.elusivehawk.util.json.JsonData;
 import com.elusivehawk.util.json.JsonObject;
 import com.google.common.collect.Lists;
 
@@ -39,31 +34,7 @@ public class LWJGLEnvironment implements IGameEnvironment
 	{
 		System.setProperty("org.lwjgl.opengl.Display.noinput", "true");
 		
-		String lib = null;
-		
-		if (json != null)
-		{
-			JsonData val = json.getValue("debugNativeLocation");
-			
-			if (val != null)
-			{
-				if (val.type == EnumJsonType.STRING)
-				{
-					lib = val.value;
-					
-				}
-				
-			}
-			
-		}
-		
-		if (lib == null)
-		{
-			lib = determineLWJGLPath().getAbsolutePath();
-			
-		}
-		
-		System.setProperty("org.lwjgl.librarypath", FileHelper.fixPath(lib));
+		//System.setProperty("org.lwjgl.librarypath", determineLWJGLPath().getAbsolutePath());
 		
 	}
 	
@@ -114,7 +85,7 @@ public class LWJGLEnvironment implements IGameEnvironment
 		return null;
 	}
 	
-	public static File determineLWJGLPath()
+	/*public static File determineLWJGLPath()
 	{
 		String path = null;
 		
@@ -131,10 +102,10 @@ public class LWJGLEnvironment implements IGameEnvironment
 		
 		if (path == null)
 		{
-			return FileHelper.getResource("res").getParentFile();
+			return FileHelper.getRootResDir();
 		}
 		
 		return FileHelper.createFile(".", path);
-	}
+	}*/
 	
 }

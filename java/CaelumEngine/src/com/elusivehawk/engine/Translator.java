@@ -39,7 +39,7 @@ public class Translator
 		
 		for (File file : files)
 		{
-			if (!FileHelper.canReadFile(file))
+			if (!FileHelper.canRead(file))
 			{
 				continue;
 			}

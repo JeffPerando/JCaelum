@@ -16,6 +16,13 @@ public class ThreadTaskWorker extends ThreadStoppable
 {
 	protected final SyncList<Task> tasks = new SyncList<Task>();
 	
+	ThreadTaskWorker()
+	{
+		super();
+		setDaemon(true);
+		
+	}
+	
 	@Override
 	public void rawUpdate() throws Throwable
 	{

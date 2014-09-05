@@ -28,11 +28,15 @@ public class TaskURLRequest extends TaskURL
 		
 		con.connect();
 		
-		ByteStreams s = new ByteStreams(con.getInputStream());
-		
-		this.result = s.readAll();
-		
-		s.close();
+		if (con.getDoInput())
+		{
+			ByteStreams s = new ByteStreams(con.getInputStream());
+			
+			this.result = s.readAll();
+			
+			s.close();
+			
+		}
 		
 		return true;
 	}

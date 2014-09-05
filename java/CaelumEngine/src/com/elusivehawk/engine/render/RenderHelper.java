@@ -92,7 +92,7 @@ public final class RenderHelper
 			}
 			catch (Exception e)
 			{
-				Logger.log().err(null, e);
+				Logger.log().err(e);
 				
 			}
 			
@@ -125,7 +125,7 @@ public final class RenderHelper
 		}
 		catch (Exception e)
 		{
-			Logger.log().err(null, e);
+			Logger.log().err(e);
 			
 		}
 		

@@ -14,9 +14,12 @@ sourceSets
 		{
 			srcDir 'java/CaelumEngine/src/'
 		}
-		output.resourcesDir = 'java/CaelumEngine/bin/'
-		output.classesDir = 'java/CaelumEngine/bin/'
 	}
+}
+
+compileJava
+{
+	source = 'java/CaelumEngine/src/'
 }
 
 dependencies
@@ -43,14 +46,9 @@ jar
 	exclude "RepoCodeStyle.class"
 	exclude "README.md"
 	
-	into("natives")
-	{
-		from ("java/CaelumEngine/lib/lwjgl/native/")
-	}
-	
 	into("res")
 	{
-		from ("java/CaelumEngine/res/")
+		from("java/CaelumEngine/res/")
 	}
 	
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE

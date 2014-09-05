@@ -50,7 +50,7 @@ public class TaskLoadAsset extends Task
 		
 		File file = mgr.findFile(this.asset.filepath);
 		
-		if (!FileHelper.canReadFile(file))
+		if (!FileHelper.canRead(file))
 		{
 			return false;
 		}

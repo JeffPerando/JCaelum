@@ -14,13 +14,6 @@ public abstract class TaskURL extends Task
 	protected final URL url;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public TaskURL(URL adr)
-	{
-		url = adr;
-		
-	}
-	
-	@SuppressWarnings("unqualified-field-access")
 	public TaskURL(ITaskListener tlis, URL adr)
 	{
 		super(tlis);

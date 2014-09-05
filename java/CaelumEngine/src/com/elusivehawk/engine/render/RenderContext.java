@@ -96,7 +96,7 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 		
 		/*for (GLEnumShader sh : GLEnumShader.values())
 		{
-			String loc = String.format("res/%s.glsl", sh.name().toLowerCase());
+			String loc = String.format("res/shaders/%s.glsl", sh.name().toLowerCase());
 			
 			if (new File(loc).exists())
 			{

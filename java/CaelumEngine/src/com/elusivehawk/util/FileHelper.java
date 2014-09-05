@@ -47,6 +47,11 @@ public final class FileHelper
 		return new File(fixPath(src), fixPath(path));
 	}
 	
+	public static File createFile(File src, String path)
+	{
+		return new File(src, fixPath(path));
+	}
+	
 	public static File getRootResDir()
 	{
 		try
@@ -87,7 +92,7 @@ public final class FileHelper
 	
 	public static FileInputStream createInStream(File file)
 	{
-		if (!canReadFile(file))
+		if (!canRead(file))
 		{
 			return null;
 		}
@@ -106,7 +111,7 @@ public final class FileHelper
 	
 	public static FileReader createReader(File file)
 	{
-		if (!canReadFile(file))
+		if (!canRead(file))
 		{
 			return null;
 		}
@@ -220,14 +225,14 @@ public final class FileHelper
 		return ret;
 	}
 	
-	public static boolean isFileReal(File file)
+	public static boolean isReal(File file)
 	{
 		return file != null && file.exists();
 	}
 	
-	public static boolean canReadFile(File file)
+	public static boolean canRead(File file)
 	{
-		return isFileReal(file) && file.isFile() && file.canRead();
+		return isReal(file) && file.isFile() && file.canRead();
 	}
 	
 	public static String fixPath(String path)
@@ -249,7 +254,7 @@ public final class FileHelper
 	{
 		List<File> ret = Lists.newArrayList();
 		
-		if (!isFileReal(file))
+		if (!isReal(file))
 		{
 			return ret;
 		}
@@ -337,56 +342,54 @@ public final class FileHelper
 		return null;
 	}
 	
-	public static File asTemp(String path)
+	public static boolean copy(File file, File dest)
 	{
-		return asTemp(path, null);
-	}
-	
-	public static File asTemp(String path, FileFilter filter)
-	{
-		File file = null;
-		
-		if (path == null || path.length() == 0)
-		{
-			file = getRootResDir();
-			
-		}
-		else
-		{
-			file = getResource(path);
-			
-		}
-		
-		if (file.isDirectory())
-		{
-			List<File> files = getFiles(file, filter);
-			
-			for (File f : files)
-			{
-				asTemp0(f);
-				
-			}
-			
-			return CompInfo.TMP_DIR;
-		}
-		
-		return asTemp0(file);
-	}
-	
-	private static File asTemp0(File file)
-	{
-		assert file.isFile();
+		assert canRead(file);
 		
 		try
 		{
 			FileInputStream in = createInStream(file);
-			File tmp = File.createTempFile(file.getName(), null);
-			FileOutputStream out = createOutStream(tmp, true);
+			
+			File dst;
+			
+			if (!dest.exists())
+			{
+				if (dest.isDirectory())
+				{
+					if (!dest.mkdirs())
+					{
+						return false;
+					}
+					
+				}
+				else
+				{
+					if (!dest.createNewFile())
+					{
+						return false;
+					}
+					
+				}
+				
+			}
+			
+			if (dest.isDirectory())
+			{
+				dst = new File(dest, file.getName());
+				
+			}
+			else
+			{
+				dst = dest;
+				
+			}
+			
+			FileOutputStream out = createOutStream(dst, true);
 			
 			byte[] buf = new byte[1024];
 			int read = -1;
 			
-			while ((read = in.read(buf)) != -1)
+			while ((read = in.read(buf)) > 0)
 			{
 				out.write(buf, 0, read);
 				
@@ -395,21 +398,15 @@ public final class FileHelper
 			in.close();
 			out.close();
 			
-			return tmp;
+			return true;
 		}
 		catch (Throwable e)
 		{
-			e.printStackTrace();
+			Logger.log().err(e);
 			
 		}
 		
-		return null;
-	}
-	
-	public static void loadNatives(String path)
-	{
-		System.loadLibrary(asTemp(path, NATIVE_FILTER).getAbsolutePath());
-		
+		return false;
 	}
 	
 }

@@ -56,6 +56,7 @@ public final class CaelumEngine
 	private final TaskManager tasks = new TaskManager();
 	private final List<String> startupPrefixes = Lists.newArrayList();
 	
+	private boolean loadedNatives = false;
 	private IGameEnvironment env = null;
 	private JsonObject envConfig = null;
 	private IDisplay display = null;
@@ -233,6 +234,10 @@ public final class CaelumEngine
 		{
 			return;
 		}
+		
+		//XXX Load natives
+		
+		this.loadNatives();
 		
 		//XXX Parsing the starting arguments
 		
@@ -649,11 +654,48 @@ public final class CaelumEngine
 		
 	}
 	
+	private void loadNatives()
+	{
+		if (this.loadedNatives)
+		{
+			return;
+		}
+		
+		List<File> natives = FileHelper.getFiles(FileHelper.getRootResDir(), FileHelper.NATIVE_FILTER);
+		
+		if (natives.isEmpty())
+		{
+			throw new CaelumException("Could not load natives! THIS IS A BUG!");
+		}
+		
+		File tmp = FileHelper.createFile(CompInfo.TMP_DIR, ".caelum/natives/");
+		
+		if (!tmp.exists() && !tmp.mkdirs())
+		{
+			throw new CaelumException("Could not load natives: Unable to create natives directory");
+		}
+		
+		for (File n : natives)
+		{
+			if (!FileHelper.copy(n, tmp) && CompInfo.DEBUG)
+			{
+				Logger.log().log(EnumLogType.WARN, "Could not load native: %s", n.getAbsoluteFile());
+				
+			}
+			
+		}
+		
+		System.loadLibrary(tmp.getAbsolutePath());
+		
+		this.loadedNatives = true;
+		
+	}
+	
 	private Class<?> loadEnvironmentFromJson()
 	{
 		File jsonFile = FileHelper.createFile(".", "gameEnv.json");
 		
-		if (!FileHelper.isFileReal(jsonFile))
+		if (!FileHelper.isReal(jsonFile))
 		{
 			return null;
 		}
@@ -700,7 +742,7 @@ public final class CaelumEngine
 		
 		File envLibFile = FileHelper.createFile(envLoc.value);
 		
-		if (!FileHelper.canReadFile(envLibFile) || !envLibFile.getName().endsWith(".jar"))
+		if (!FileHelper.canRead(envLibFile) || !envLibFile.getName().endsWith(".jar"))
 		{
 			return null;
 		}
