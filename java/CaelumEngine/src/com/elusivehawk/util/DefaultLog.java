@@ -29,7 +29,7 @@ public class DefaultLog implements ILog
 			return;
 		}
 		
-		String fin = String.format("[%s] [%s]: %s\n", type, StringHelper.parseDate(Calendar.getInstance(), "-", ":"), type.err && msg == null ? this.crashDialog.get(RNG.rng().nextInt(this.crashDialog.size())) : msg);
+		String fin = String.format("[%s] [%s]: %s\n", type, StringHelper.parseDate(Calendar.getInstance(), "-", ":"), type.err && msg == null && !this.crashDialog.isEmpty() ? this.crashDialog.get(RNG.rng().nextInt(this.crashDialog.size())) : msg);
 		
 		if (type.err)
 		{
