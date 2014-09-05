@@ -691,9 +691,18 @@ public final class CaelumEngine
 				continue;
 			}
 			
-			if (!FileHelper.copy(n, tmp) && CompInfo.DEBUG)
+			if (FileHelper.copy(n, tmp))
 			{
-				Logger.log().log(EnumLogType.WARN, "Could not load native: %s", n.getAbsoluteFile());
+				if (CompInfo.DEBUG)
+				{
+					Logger.log().log(EnumLogType.VERBOSE, "Succesfully copied native: %s", n.getName());
+					
+				}
+				
+			}
+			else
+			{
+				Logger.log().log(EnumLogType.WARN, "Could not copy native: %s", n.getName());
 				
 			}
 			
