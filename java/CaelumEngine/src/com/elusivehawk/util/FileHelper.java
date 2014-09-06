@@ -96,7 +96,7 @@ public final class FileHelper
 				continue;
 			}
 			
-			ret.add(new File(uri));
+			ret.add(new File(uri.getPath()));
 			
 		}
 		
@@ -455,11 +455,17 @@ public final class FileHelper
 	{
 		assert isReal(file);
 		
-		File[] files = null;
+		List<File> files = Lists.newArrayList();
 		
 		if (file.isDirectory())
 		{
-			files = file.listFiles();
+			File[] fs = file.listFiles();
+			
+			for (File f : fs)
+			{
+				files.add(f);
+				
+			}
 			
 		}
 		else
@@ -468,13 +474,23 @@ public final class FileHelper
 			
 			if (!zipFiles.isEmpty())
 			{
-				files = new File[zipFiles.size()];
+				int count = 0;
+				String path;
 				
-				for (int c = 0; c < zipFiles.size(); c++)
+				for (URL url : zipFiles)
 				{
+					System.out.println(String.format("Consuming: %s", url));//XXX Remove
+					
 					try
 					{
-						files[c] = new File(zipFiles.get(c).toURI());
+						path = url.toURI().getPath();
+						
+						if (path != null)
+						{
+							files.add(new File(path));
+							count++;
+							
+						}
 						
 					}
 					catch (Exception e)
@@ -485,11 +501,16 @@ public final class FileHelper
 					
 				}
 				
+				if (count == 0)
+				{
+					return;
+				}
+				
 			}
 			
 		}
 		
-		if (files == null || files.length == 0)
+		if (files == null || files.size() == 0)
 		{
 			return;
 		}
@@ -520,7 +541,7 @@ public final class FileHelper
 	{
 		List<URL> ret = Lists.newArrayList();
 		
-		if (!isReal(file))
+		if (!canRead(file))
 		{
 			return ret;
 		}
@@ -547,6 +568,8 @@ public final class FileHelper
 				
 			}
 			
+			System.out.println(ext);
+			
 		}
 		catch (Exception e)
 		{
@@ -565,10 +588,14 @@ public final class FileHelper
 				
 				try
 				{
-					ret.add(new URL(String.format("jar:file:%s!/%s", zip.getName(), entry.getName())));
+					ret.add(new URL(String.format("jar:file:/%s!/%s", makePathGeneric(zip.getName()).replace("C:/", "C://"), entry.getName())));
 					
 				}
-				catch (Exception e){}//Ignore this, because this will never throw an error.
+				catch (Exception e)
+				{
+					Logger.log().err(e);
+					
+				}
 				
 			}
 			

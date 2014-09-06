@@ -33,6 +33,12 @@ public class LWJGLDisplay implements IDisplay
 	}
 	
 	@Override
+	public boolean isCreated()
+	{
+		return Display.isCreated();
+	}
+	
+	@Override
 	public void createDisplay() throws Exception
 	{
 		Display.create();
@@ -66,14 +72,7 @@ public class LWJGLDisplay implements IDisplay
 	@Override
 	public void updateDisplay()
 	{
-		Display.update(false);
-		
-	}
-	
-	@Override
-	public void processMessages()
-	{
-		Display.processMessages();
+		Display.update();
 		
 	}
 	

@@ -4,11 +4,13 @@ package com.elusivehawk.engine.lwjgl;
 import static com.elusivehawk.engine.input.EnumMouseClick.DOWN;
 import static com.elusivehawk.engine.input.EnumMouseClick.DRAG;
 import static com.elusivehawk.engine.input.EnumMouseClick.UP;
+import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Mouse;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.CaelumException;
 import com.elusivehawk.engine.input.EnumMouseClick;
 import com.elusivehawk.engine.render.IDisplay;
+import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.math.Vector;
 
@@ -24,14 +26,14 @@ public class LWJGLMouse extends com.elusivehawk.engine.input.Mouse
 			buttons = null,
 			oldButtons = null;
 	protected final Vector mousePos, mousePosDelta;
-			
+	
 	protected float wheel = 0f;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public LWJGLMouse()
 	{
-		mousePos = new Vector(0f, 0f);
-		mousePosDelta = new Vector(0f, 0f);
+		mousePos = new Vector(0f, 0f).setName("pos");
+		mousePosDelta = new Vector(0f, 0f).setName("posDelta");
 		
 	}
 	
@@ -88,6 +90,8 @@ public class LWJGLMouse extends com.elusivehawk.engine.input.Mouse
 	@Override
 	public boolean initiateInput()
 	{
+		super.initiateInput();
+		
 		try
 		{
 			Mouse.create();
@@ -121,9 +125,26 @@ public class LWJGLMouse extends com.elusivehawk.engine.input.Mouse
 	@Override
 	protected void poll()
 	{
-		if (!Mouse.isCreated() && !this.initiateInput())
+		if (!Mouse.isCreated())
 		{
-			throw new CaelumException("Cannot poll keyboard: It wasn't created!");
+			try
+			{
+				Mouse.create();
+				
+			}
+			catch (LWJGLException e)
+			{
+				e.printStackTrace();
+				
+			}
+			
+			if (!Mouse.isCreated())
+			{
+				throw new CaelumException("Cannot poll mouse: It wasn't created!");
+			}
+			
+			Logger.log().log(EnumLogType.WARN, "Mouse recreated; Let's not do anything stupid again...");
+			
 		}
 		
 		IDisplay display = CaelumEngine.display();
@@ -131,11 +152,18 @@ public class LWJGLMouse extends com.elusivehawk.engine.input.Mouse
 		
 		while (Mouse.next())
 		{
-			this.mousePos.set(Mouse.getEventX() / display.getWidth(), Mouse.getEventY() / display.getHeight());
-			this.mousePosDelta.set(Mouse.getEventDX() / display.getWidth(), Mouse.getEventDY() / display.getHeight());
-			this.wheel = Mouse.getEventDWheel() / display.getHeight();
+			this.mousePos.set(((float)Mouse.getEventX() / (float)display.getWidth()), 1.0f - ((float)Mouse.getEventY() / (float)display.getHeight()));
+			this.mousePosDelta.set(((float)Mouse.getEventDX() / (float)display.getWidth()), 1.0f - ((float)Mouse.getEventDY() / (float)display.getHeight()));
+			this.wheel = (float)Mouse.getEventDWheel() / (float)display.getHeight();
 			
-			EnumMouseClick cur = this.buttons[b = Mouse.getEventButton()];
+			b = Mouse.getEventButton();
+			
+			if (b == -1)
+			{
+				continue;
+			}
+			
+			EnumMouseClick cur = this.buttons[b];
 			
 			if (Mouse.getEventButtonState())
 			{

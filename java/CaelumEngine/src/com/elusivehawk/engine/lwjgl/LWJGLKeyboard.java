@@ -5,6 +5,7 @@ import java.util.List;
 import org.lwjgl.input.Keyboard;
 import com.elusivehawk.engine.CaelumException;
 import com.elusivehawk.engine.input.Key;
+import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.Logger;
 import com.google.common.collect.Lists;
 
@@ -18,6 +19,7 @@ public class LWJGLKeyboard extends com.elusivehawk.engine.input.Keyboard
 {
 	public static final Key[] LWJGL_TO_ENUM = new Key[Keyboard.KEYBOARD_SIZE];
 	
+	protected boolean dirty = false;
 	protected final boolean[] downKeys = new boolean[Key.values().length];
 	protected final List<Key> downKeyList = Lists.newArrayList();
 	
@@ -83,8 +85,8 @@ public class LWJGLKeyboard extends com.elusivehawk.engine.input.Keyboard
 		LWJGL_TO_ENUM[Keyboard.KEY_ESCAPE] = Key.ESCAPE;
 		LWJGL_TO_ENUM[Keyboard.KEY_HOME] = Key.HOME;
 		LWJGL_TO_ENUM[Keyboard.KEY_INSERT] = Key.INSERT;
-		LWJGL_TO_ENUM[Keyboard.KEY_PRIOR] = Key.PAGE_DOWN;
-		LWJGL_TO_ENUM[Keyboard.KEY_NEXT] = Key.PAGE_UP;
+		LWJGL_TO_ENUM[Keyboard.KEY_PRIOR] = Key.PAGE_UP;
+		LWJGL_TO_ENUM[Keyboard.KEY_NEXT] = Key.PAGE_DOWN;
 		LWJGL_TO_ENUM[Keyboard.KEY_RSHIFT] = Key.SHIFT;
 		LWJGL_TO_ENUM[Keyboard.KEY_LSHIFT] = Key.SHIFT;
 		LWJGL_TO_ENUM[Keyboard.KEY_LMETA] = Key.START;
@@ -166,6 +168,8 @@ public class LWJGLKeyboard extends com.elusivehawk.engine.input.Keyboard
 	@Override
 	public boolean initiateInput()
 	{
+		super.initiateInput();
+		
 		try
 		{
 			Keyboard.create();
@@ -183,9 +187,26 @@ public class LWJGLKeyboard extends com.elusivehawk.engine.input.Keyboard
 	@Override
 	protected void poll()
 	{
-		if (!Keyboard.isCreated() && !this.initiateInput())
+		if (!Keyboard.isCreated())
 		{
-			throw new CaelumException("Cannot poll keyboard: It wasn't created!");
+			try
+			{
+				Keyboard.create();
+				
+			}
+			catch (Exception e)
+			{
+				Logger.log().err(e);
+				
+			}
+			
+			if (!Keyboard.isCreated())
+			{
+				throw new CaelumException("Cannot poll keyboard: It wasn't created!");
+			}
+			
+			Logger.log().log(EnumLogType.WARN, "Keyboard recreated; Let's not do anything stupid again...");
+			
 		}
 		
 		Key key;
@@ -217,6 +238,7 @@ public class LWJGLKeyboard extends com.elusivehawk.engine.input.Keyboard
 	@Override
 	protected void postUpdate()
 	{
+		
 		
 	}
 	

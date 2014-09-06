@@ -238,15 +238,15 @@ public class Vector implements IMathObject<Float>, IDirty
 	@Override
 	public String toString()
 	{
-		StringBuilder b = new StringBuilder(10);
+		StringBuilder b = new StringBuilder(1 + (this.getSize() * 2));
 		
 		b.append(this.getName() == null ? "vector" : this.getName());
 		b.append(":[");
 		
-		for (int c = 0; c < 4; c++)
+		for (int c = 0; c < this.getSize(); c++)
 		{
 			b.append(this.get(c));
-			if (c < 3) b.append(", ");
+			if (c < (this.getSize() - 1)) b.append(", ");
 			
 		}
 		
@@ -305,7 +305,7 @@ public class Vector implements IMathObject<Float>, IDirty
 		
 	}
 	
-	public Vector name(String str)
+	public Vector setName(String str)
 	{
 		this.name = str;
 		

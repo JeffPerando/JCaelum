@@ -18,6 +18,8 @@ public interface IDisplay extends Closeable
 	
 	public void createDisplay() throws Throwable;
 	
+	public boolean isCreated();
+	
 	/**
 	 * 
 	 * @return If the display is in fullscreen.
@@ -48,8 +50,6 @@ public interface IDisplay extends Closeable
 	 * 
 	 */
 	public void updateDisplay();
-	
-	public void processMessages();
 	
 	public void updateSettings(DisplaySettings settings);
 	

@@ -1,13 +1,18 @@
 
 package com.elusivehawk.engine.render;
 
+import java.util.List;
 import com.elusivehawk.engine.render.opengl.GLEnumBufferTarget;
 import com.elusivehawk.engine.render.opengl.GLEnumDataType;
 import com.elusivehawk.engine.render.opengl.GLEnumDataUsage;
 import com.elusivehawk.engine.render.opengl.GLProgram;
+import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
 import com.elusivehawk.util.FloatBufferer;
+import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.storage.IGettable;
+import com.elusivehawk.util.storage.Pair;
+import com.google.common.collect.Lists;
 
 /**
  * 
@@ -17,30 +22,27 @@ import com.elusivehawk.util.storage.IGettable;
  */
 public class Canvas extends RenderableObj
 {
-	private final int imgLimit;
 	private final FloatBufferer buffer;
 	
 	private final VertexBuffer floatbuf;
 	private final VertexBuffer indbuf;
 	
+	private List<IPopulator<Canvas>> populators = null;
 	private SubCanvas sub = null;
 	private int images = 0;
 	
-	public Canvas(int imgs)
+	public Canvas()
 	{
-		this(imgs, new GLProgram());
+		this(new GLProgram());
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Canvas(int imgs, GLProgram program)
+	public Canvas(GLProgram program)
 	{
 		super(program);
 		
-		assert imgs > 0;
-		
-		imgLimit = imgs;
-		buffer = new FloatBufferer(4, imgLimit * 6);
+		buffer = new FloatBufferer(4, 12 * 6);
 		
 		floatbuf = new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW, GLEnumDataType.GL_FLOAT, buffer.getBuffer());
 		indbuf = new VertexBuffer(GLEnumBufferTarget.GL_ELEMENT_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW, GLEnumDataType.GL_INT, buffer.getIndices());
@@ -59,6 +61,36 @@ public class Canvas extends RenderableObj
 	@Override
 	protected void doRender(RenderContext rcon, double delta) throws RenderException
 	{
+		if (!this.populators.isEmpty())
+		{
+			this.populators.forEach(((pop) -> {pop.populate(this);}));
+			
+		}
+		
+		if (this.buffer.resizedRecently())
+		{
+			this.floatbuf.uploadBuffer(this.buffer.getBuffer());
+			this.indbuf.uploadBuffer(this.buffer.getIndices());
+			
+		}
+		else
+		{
+			List<Pair<Integer>> diffs = this.buffer.getFloatDiffs();
+			
+			if (!diffs.isEmpty())
+			{
+				IGL1 gl1 = rcon.getGL1();
+				
+				for (Pair<Integer> diff : diffs)
+				{
+					//TODO Finish
+					
+				}
+				
+			}
+			
+		}
+		
 		// TODO Auto-generated method stub
 		
 	}
@@ -68,11 +100,6 @@ public class Canvas extends RenderableObj
 		if (this.sub == null)
 		{
 			this.sub = new SubCanvas(xmin, ymin, xmax, ymax);
-			
-		}
-		else
-		{
-			this.sub.createSubCanvas(xmin, ymin, xmax, ymax);
 			
 		}
 		
@@ -85,11 +112,7 @@ public class Canvas extends RenderableObj
 			return false;
 		}
 		
-		if (!this.sub.destroySubCanvas())
-		{
-			this.sub = null;
-			
-		}
+		this.sub = null;
 		
 		return true;
 	}
@@ -102,11 +125,6 @@ public class Canvas extends RenderableObj
 	
 	public void drawImage(float x, float y, float w, float h, Icon icon)
 	{
-		if (this.images == this.imgLimit)
-		{
-			return;
-		}
-		
 		if (this.sub != null)
 		{
 			x = this.sub.interpolateX(x);
@@ -153,6 +171,18 @@ public class Canvas extends RenderableObj
 	public void clear()
 	{
 		this.buffer.reset();
+		
+	}
+	
+	public void addPopulator(IPopulator<Canvas> pop)
+	{
+		if (this.populators == null)
+		{
+			this.populators = Lists.newArrayList();
+			
+		}
+		
+		this.populators.add(pop);
 		
 	}
 	

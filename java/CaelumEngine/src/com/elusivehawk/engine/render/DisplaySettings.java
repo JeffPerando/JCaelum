@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.render;
 
 import java.nio.ByteBuffer;
+import com.elusivehawk.engine.Game;
 
 /**
  * 
@@ -11,7 +12,7 @@ import java.nio.ByteBuffer;
  */
 public class DisplaySettings
 {
-	public String title = "Caelum Engine Game (Now with even MORE deprecation!)";
+	public String title = "Caelum Engine Game (Now with less thread locking!)";
 	public int width = 800, height = 600;
 	public ByteBuffer[] icons = null;
 	@Deprecated
@@ -20,5 +21,24 @@ public class DisplaySettings
 	public boolean fullscreen = false;
 	public boolean vsync = false;
 	public Color bg = Color.BLACK;
+	
+	public DisplaySettings(){}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public DisplaySettings(Game game)
+	{
+		if (game != null)
+		{
+			String name = game.getFormattedName();
+			
+			if (name != null && !"".equals(name))
+			{
+				title = game.getFormattedName();
+				
+			}
+			
+		}
+		
+	}
 	
 }

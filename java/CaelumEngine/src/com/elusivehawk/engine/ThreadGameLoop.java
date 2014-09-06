@@ -43,6 +43,8 @@ public final class ThreadGameLoop extends ThreadTimed
 	{
 		super.initiate();
 		
+		CaelumEngine.waitForDisplay();//Guarantees that the display has been created.
+		
 		Iterator<Input> itr = this.input.iterator();
 		Input in;
 		
@@ -82,8 +84,6 @@ public final class ThreadGameLoop extends ThreadTimed
 	@Override
 	public void update(double delta) throws Throwable
 	{
-		CaelumEngine.display().processMessages();
-		
 		if (!this.input.isEmpty())
 		{
 			this.input.forEach(((input) ->

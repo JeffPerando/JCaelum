@@ -3,6 +3,7 @@ package com.elusivehawk.engine;
 
 import com.elusivehawk.engine.input.Key;
 import com.elusivehawk.engine.input.Keyboard;
+import com.elusivehawk.engine.input.Mouse;
 import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.Logger;
@@ -41,6 +42,22 @@ public final class TestGame extends Game
 			for (Key key : kb.getPushedKeys())
 			{
 				Logger.log().log(EnumLogType.VERBOSE, "Key type: %s", key);
+				
+			}
+			
+		}));
+		
+		CaelumEngine.addInputListener(Mouse.class, ((delta, input) ->
+		{
+			Mouse m = (Mouse)input;
+			
+			for (int c = 0; c < m.getButtonCount(); c++)
+			{
+				if (m.getClickStatus(c).isDown())
+				{
+					Logger.log().log(EnumLogType.VERBOSE, "Mouse click: #%s, pos: %s", c, m.getMousePos());
+					
+				}
 				
 			}
 			

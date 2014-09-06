@@ -1,6 +1,8 @@
 
 package com.elusivehawk.util;
 
+import java.io.PrintStream;
+
 
 /**
  * 
@@ -37,9 +39,12 @@ public final class ShutdownHelper
 		
 	}
 	
+	@SuppressWarnings("resource")
 	public static void exit(int err)
 	{
-		System.err.println(String.format("Exiting with err %s", err));
+		PrintStream ps = err == 0 ? System.out : System.err;
+		
+		ps.println(String.format("Exiting with error code #%s", err));
 		
 		exit0(err);
 		

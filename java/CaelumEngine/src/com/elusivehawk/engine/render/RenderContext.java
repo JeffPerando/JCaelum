@@ -84,7 +84,12 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 		}
 		catch (Throwable e)
 		{
-			e.printStackTrace();
+			Logger.log().err(e);
+			
+		}
+		
+		if (!this.display.isCreated())
+		{
 			return false;
 		}
 		

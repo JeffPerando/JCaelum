@@ -22,7 +22,7 @@ public class FloatBufferer implements IDirty
 	private final List<Pair<Integer>> floatDiff = Lists.newArrayList(),
 			intDiff = Lists.newArrayList();
 	
-	private boolean dirty = false;
+	private boolean dirty = false, resized = false;
 	private int indicecount = 0;
 	private Pair<Integer> fDiff = null;
 	
@@ -101,6 +101,9 @@ public class FloatBufferer implements IDirty
 			if (this.buf.remaining() == 0)
 			{
 				this.buf = BufferHelper.expand(this.buf, this.fpi * 12);
+				this.indices = BufferHelper.expand(this.indices, 12);
+				
+				this.resized = true;
 				
 			}
 			
@@ -173,6 +176,8 @@ public class FloatBufferer implements IDirty
 	
 	public void rewind()
 	{
+		this.resized = false;
+		
 		this.buf.rewind();
 		this.indices.rewind();
 		
@@ -185,6 +190,13 @@ public class FloatBufferer implements IDirty
 		
 		this.prev.clear();
 		this.indPrev.clear();
+		
+		if (this.resized)
+		{
+			this.prev = BufferHelper.expand(this.prev, 12 * this.fpi);
+			this.indPrev = BufferHelper.expand(this.indPrev, 12);
+			
+		}
 		
 		if (this.fDiff != null)
 		{
@@ -221,6 +233,8 @@ public class FloatBufferer implements IDirty
 			
 		}
 		
+		this.resized = false;
+		
 	}
 	
 	public FloatBuffer getBuffer()
@@ -241,6 +255,11 @@ public class FloatBufferer implements IDirty
 	public List<Pair<Integer>> getIntDiffs()
 	{
 		return this.intDiff;
+	}
+	
+	public boolean resizedRecently()
+	{
+		return this.resized;
 	}
 	
 }

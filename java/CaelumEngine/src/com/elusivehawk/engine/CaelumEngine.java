@@ -48,7 +48,7 @@ public final class CaelumEngine
 {
 	private static final CaelumEngine INSTANCE = new CaelumEngine();
 	
-	public static final Version VERSION = new Version(Version.ALPHA, 1, 0, 0, 2);
+	public static final Version VERSION = new Version(Version.ALPHA, 1, 0, 0, 0);
 	
 	private final Map<EnumEngineFeature, IThreadStoppable> threads = Maps.newEnumMap(EnumEngineFeature.class);
 	private final List<Input> inputs = Lists.newArrayList();
@@ -185,6 +185,26 @@ public final class CaelumEngine
 			}
 			
 		}));
+		
+	}
+	
+	@Internal
+	public static void waitForDisplay()
+	{
+		while (!display().isCreated())
+		{
+			try
+			{
+				Thread.sleep(2);//Would be 1, but there's potential for multiple threads to use this; Bad thread locking, bad!
+				
+			}
+			catch (InterruptedException e)
+			{
+				Logger.log().err(e);
+				
+			}
+			
+		}
 		
 	}
 	
@@ -478,7 +498,7 @@ public final class CaelumEngine
 		
 		if (settings == null)
 		{
-			settings = new DisplaySettings();
+			settings = new DisplaySettings(this.game);
 			
 		}
 		
