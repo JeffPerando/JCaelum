@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import com.elusivehawk.engine.assets.AssetManager;
-import com.elusivehawk.engine.input.IInputListener;
 import com.elusivehawk.engine.input.Input;
 import com.elusivehawk.engine.render.DisplaySettings;
 import com.elusivehawk.engine.render.IDisplay;
@@ -20,6 +19,7 @@ import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.EnumOS;
 import com.elusivehawk.util.FileHelper;
 import com.elusivehawk.util.IPausable;
+import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.ReflectionHelper;
@@ -175,7 +175,7 @@ public final class CaelumEngine
 		
 	}
 	
-	public static void addInputListener(Class<? extends Input> type, IInputListener lis)
+	public static void addInputListener(Class<? extends Input> type, IUpdatable lis)
 	{
 		instance().inputs.forEach(((input) ->
 		{

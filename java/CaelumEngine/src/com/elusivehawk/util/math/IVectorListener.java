@@ -10,6 +10,6 @@ package com.elusivehawk.util.math;
 @FunctionalInterface
 public interface IVectorListener
 {
-	public void onVectorChanged(Vector vec);
+	public void onVecChanged(Vector vec);
 	
 }

@@ -21,7 +21,7 @@ public class ThreadGameRender extends ThreadTimed implements IThreadContext
 	@SuppressWarnings("unqualified-field-access")
 	public ThreadGameRender(RenderContext con)
 	{
-		super("Thread-Render");
+		super("Renderer");
 		
 		rcon = con;
 		
@@ -39,7 +39,7 @@ public class ThreadGameRender extends ThreadTimed implements IThreadContext
 	}
 	
 	@Override
-	public void update(double delta) throws Throwable
+	public void update(double delta, Object... extra) throws Throwable
 	{
 		if (this.isPaused())
 		{
@@ -57,7 +57,7 @@ public class ThreadGameRender extends ThreadTimed implements IThreadContext
 			return;
 		}
 		
-		this.rcon.update(delta);
+		this.rcon.update(delta, extra);
 		
 		display.updateDisplay();
 		

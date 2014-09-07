@@ -16,9 +16,9 @@ public class ThreadTaskWorker extends ThreadStoppable
 {
 	protected final SyncList<Task> tasks = new SyncList<Task>();
 	
-	ThreadTaskWorker()
+	ThreadTaskWorker(int core)
 	{
-		super();
+		super(String.format("Worker-%s", core));
 		setDaemon(true);
 		
 	}

@@ -4,6 +4,7 @@ package com.elusivehawk.engine.render.old;
 import java.util.Collection;
 import com.elusivehawk.engine.render.DisplaySettings;
 import com.elusivehawk.engine.render.IDisplay;
+import com.elusivehawk.util.IUpdatable;
 
 /**
  * 
@@ -12,7 +13,7 @@ import com.elusivehawk.engine.render.IDisplay;
  * @author Elusivehawk
  */
 @Deprecated
-public interface IRenderHUB
+public interface IRenderHUB extends IUpdatable
 {
 	/**
 	 * 
@@ -29,14 +30,6 @@ public interface IRenderHUB
 	 * @param d The current display.
 	 */
 	public void onResize(IDisplay d);
-	
-	/**
-	 * 
-	 * Called once every frame.
-	 * 
-	 * @param delta
-	 */
-	public void updateHUB(double delta);
 	
 	/**
 	 * @return True to update the current display's settings.

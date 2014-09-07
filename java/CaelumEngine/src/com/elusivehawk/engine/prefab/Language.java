@@ -1,5 +1,5 @@
 
-package com.elusivehawk.engine;
+package com.elusivehawk.engine.prefab;
 
 import java.io.File;
 import java.util.List;

@@ -229,7 +229,7 @@ public class Vector implements IMathObject<Float>, IDirty
 		
 		for (IVectorListener lis : this.listeners)
 		{
-			lis.onVectorChanged(this);
+			lis.onVecChanged(this);
 			
 		}
 		

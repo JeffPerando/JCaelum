@@ -123,7 +123,7 @@ public class LWJGLMouse extends com.elusivehawk.engine.input.Mouse
 	}
 	
 	@Override
-	protected void poll()
+	protected boolean poll()
 	{
 		if (!Mouse.isCreated())
 		{
@@ -192,6 +192,7 @@ public class LWJGLMouse extends com.elusivehawk.engine.input.Mouse
 			
 		}
 		
+		return true;
 	}
 	
 	@Override

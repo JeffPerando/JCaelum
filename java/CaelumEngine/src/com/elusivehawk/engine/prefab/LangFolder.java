@@ -1,5 +1,5 @@
 
-package com.elusivehawk.engine;
+package com.elusivehawk.engine.prefab;
 
 import java.util.Map;
 import com.elusivehawk.util.IPopulator;

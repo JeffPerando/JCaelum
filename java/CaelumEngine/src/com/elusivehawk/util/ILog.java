@@ -15,9 +15,11 @@ public interface ILog
 	
 	public void setEnableVerbosity(boolean v);
 	
-	default void log(EnumLogType type, String msg, Object... info)
+	//XXX Default methods
+	
+	default void debug(String msg, Object... info)
 	{
-		this.log(type, msg == null || info == null ? msg : String.format(msg, info));
+		this.log(EnumLogType.DEBUG, msg, info);
 		
 	}
 	
@@ -31,6 +33,36 @@ public interface ILog
 	{
 		this.log(EnumLogType.ERROR, msg, info);
 		e.printStackTrace();
+		
+	}
+	
+	default void info(String msg, Object... info)
+	{
+		this.log(EnumLogType.INFO, msg, info);
+		
+	}
+	
+	default void verbose(String msg, Object... info)
+	{
+		this.log(EnumLogType.VERBOSE, msg, info);
+		
+	}
+	
+	default void warn(String msg, Object... info)
+	{
+		this.log(EnumLogType.WARN, msg, info);
+		
+	}
+	
+	default void wtf(String msg, Object... info)
+	{
+		this.log(EnumLogType.WTF, msg, info);
+		
+	}
+	
+	default void log(EnumLogType type, String msg, Object... info)
+	{
+		this.log(type, msg == null || info == null ? msg : String.format(msg, info));
 		
 	}
 	

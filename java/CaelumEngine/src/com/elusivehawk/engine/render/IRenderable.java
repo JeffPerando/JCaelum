@@ -16,6 +16,9 @@ public interface IRenderable
 		return true;
 	}
 	
+	@SuppressWarnings("unused")
+	default void postRender(RenderContext rcon){}
+	
 	/**
 	 * 
 	 * @param rcon

@@ -73,17 +73,17 @@ public abstract class AbstractGameComponent implements IUpdatable, IRenderable
 	}
 	
 	@Override
-	public void update(double delta) throws Throwable
+	public void update(double delta, Object... extra) throws Throwable
 	{
-		this.updateModules(delta);
+		this.updateModules(delta, extra);
 		
 	}
 	
-	protected final void updateModules(double delta) throws Throwable
+	protected final void updateModules(double delta, Object... extra) throws Throwable
 	{
 		for (IUpdatable m : this.modules)
 		{
-			m.update(delta);
+			m.update(delta, extra);
 			
 		}
 		

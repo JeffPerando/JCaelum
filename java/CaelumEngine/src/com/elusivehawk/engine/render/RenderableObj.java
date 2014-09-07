@@ -100,6 +100,8 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 			
 		}
 		
+		this.postRender(rcon);
+		
 	}
 	
 	@Override
@@ -185,7 +187,7 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 		
 	}
 	
-	public synchronized void setMaterials(MaterialSet ms)
+	public synchronized RenderableObj setMaterials(MaterialSet ms)
 	{
 		if (this.matSet != null)
 		{
@@ -201,6 +203,7 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 			
 		}
 		
+		return this;
 	}
 	
 	public synchronized boolean addMaterials(Material... ms)

@@ -26,7 +26,7 @@ public final class ThreadGameLoop extends ThreadTimed
 	@SuppressWarnings("unqualified-field-access")
 	public ThreadGameLoop(List<Input> inputList, Game g)
 	{
-		super("Thread-GameLoop");
+		super("GameLoop");
 		
 		game = g;
 		
@@ -82,7 +82,7 @@ public final class ThreadGameLoop extends ThreadTimed
 	}
 	
 	@Override
-	public void update(double delta) throws Throwable
+	public void update(double delta, Object... extra) throws Throwable
 	{
 		if (!this.input.isEmpty())
 		{
@@ -90,7 +90,7 @@ public final class ThreadGameLoop extends ThreadTimed
 			{
 				try
 				{
-					input.update(delta);
+					input.update(delta, extra);
 					
 				}
 				catch (Throwable e)
@@ -104,7 +104,7 @@ public final class ThreadGameLoop extends ThreadTimed
 			
 		}
 		
-		this.game.update(delta);
+		this.game.update(delta, extra);
 		
 	}
 	

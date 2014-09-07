@@ -10,8 +10,8 @@ package com.elusivehawk.util;
 public enum EnumLogType
 {
 	DEBUG(false),
-	INFO(false),
 	ERROR(true),
+	INFO(false),
 	VERBOSE(false),
 	WARN(true),
 	WTF(true);

@@ -102,18 +102,18 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 	//XXX Overridden methods
 	
 	@Override
-	public final void update(double delta) throws GameTickException
+	public final void update(double delta, Object... extra) throws GameTickException
 	{
 		try
 		{
 			if (this.state == null)
 			{
-				this.tick(delta);
+				this.tick(delta, extra);
 				
 			}
 			else
 			{
-				this.state.update(delta);
+				this.state.update(delta, extra);
 				
 			}
 			
@@ -231,9 +231,9 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 	 * @param delta
 	 * @throws Throwable
 	 */
-	protected void tick(double delta) throws Throwable
+	protected void tick(double delta, Object... extra) throws Throwable
 	{
-		this.updateModules(delta);
+		this.updateModules(delta, extra);
 		
 	}
 	

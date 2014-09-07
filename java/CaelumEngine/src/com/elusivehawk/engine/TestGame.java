@@ -35,9 +35,9 @@ public final class TestGame extends Game
 	@Override
 	protected void initiateGame(GameArguments args)
 	{
-		CaelumEngine.addInputListener(Keyboard.class, ((delta, input) ->
+		CaelumEngine.addInputListener(Keyboard.class, ((delta, extra) ->
 		{
-			Keyboard kb = (Keyboard)input;
+			Keyboard kb = (Keyboard)extra[0];
 			
 			for (Key key : kb.getPushedKeys())
 			{
@@ -47,9 +47,9 @@ public final class TestGame extends Game
 			
 		}));
 		
-		CaelumEngine.addInputListener(Mouse.class, ((delta, input) ->
+		CaelumEngine.addInputListener(Mouse.class, ((delta, extra) ->
 		{
-			Mouse m = (Mouse)input;
+			Mouse m = (Mouse)extra[0];
 			
 			for (int c = 0; c < m.getButtonCount(); c++)
 			{
@@ -66,7 +66,7 @@ public final class TestGame extends Game
 	}
 	
 	@Override
-	protected void tick(double delta) throws Throwable
+	protected void tick(double delta, Object... extra) throws Throwable
 	{
 		//CaelumEngine.log().log(EnumLogType.INFO, "Test: %s", delta);
 		

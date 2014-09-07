@@ -11,7 +11,7 @@ import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
 import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.IDirty;
-import com.elusivehawk.util.math.IQuaternionListener;
+import com.elusivehawk.util.math.IQuatListener;
 import com.elusivehawk.util.math.IVectorListener;
 import com.elusivehawk.util.math.Matrix;
 import com.elusivehawk.util.math.MatrixHelper;
@@ -29,10 +29,10 @@ import com.elusivehawk.util.math.Vector;
  * @see IAssetReceiver
  * @see IDirty
  * @see ILogicalRender
- * @see IQuaternionListener
+ * @see IQuatListener
  * @see IVectorListener
  */
-public class RenderTicket extends RenderableObj implements IQuaternionListener, IVectorListener
+public class RenderTicket extends RenderableObj implements IQuatListener, IVectorListener
 {
 	protected final Vector
 			offset = new Vector(),
@@ -48,7 +48,7 @@ public class RenderTicket extends RenderableObj implements IQuaternionListener, 
 	
 	protected final VertexBuffer vbo = new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW);
 	
-	protected boolean zBuffer = true;//, animPause = false;
+	protected volatile boolean zBuffer = true;//, animPause = false;
 	//protected int frame = 0;
 	//protected IModelAnimation anim = null, lastAnim = null;
 	protected int texFrame = 0;
@@ -125,7 +125,7 @@ public class RenderTicket extends RenderableObj implements IQuaternionListener, 
 	}
 	
 	@Override
-	public synchronized void onVectorChanged(Vector vec)
+	public synchronized void onVecChanged(Vector vec)
 	{
 		this.offset.add(vec, this.pos);
 		this.setIsDirty(true);
@@ -179,6 +179,13 @@ public class RenderTicket extends RenderableObj implements IQuaternionListener, 
 	}
 	
 	@Override
+	public void postRender(RenderContext rcon)
+	{
+		//TODO Z-buffering
+		
+	}
+	
+	@Override
 	public String toString()
 	{
 		return String.format("%s:%s-%s-%s", this.m.getName(), this.pos.toString(), this.scale.toString(), this.rot.toString());
@@ -206,14 +213,15 @@ public class RenderTicket extends RenderableObj implements IQuaternionListener, 
 		
 	}*/
 	
-	public synchronized void setEnableZBuffer(boolean b)
+	public RenderTicket setEnableZBuffer(boolean b)
 	{
 		this.zBuffer = b;
 		
+		return this;
 	}
 	
 	@Override
-	public synchronized void setMaterials(MaterialSet ms)
+	public synchronized RenderTicket setMaterials(MaterialSet ms)
 	{
 		assert ms != null;
 		
@@ -227,6 +235,7 @@ public class RenderTicket extends RenderableObj implements IQuaternionListener, 
 		
 		this.dirts.add(ms);
 		
+		return this;
 	}
 	
 	@Override
@@ -280,16 +289,17 @@ public class RenderTicket extends RenderableObj implements IQuaternionListener, 
 		return this.zBuffer;
 	}
 	
-	public synchronized void setPosOffset(Vector off)
+	public synchronized RenderTicket setPosOffset(Vector off)
 	{
 		this.offset.set(off);
 		this.pos.add(this.offset);
 		
 		this.setIsDirty(true);
 		
+		return this;
 	}
 	
-	public void setScale(Vector s)
+	public RenderTicket setScale(Vector s)
 	{
 		for (int c = 0; c < s.getSize(); c++)
 		{
@@ -307,15 +317,17 @@ public class RenderTicket extends RenderableObj implements IQuaternionListener, 
 			
 		}
 		
+		return this;
 	}
 	
-	public synchronized void setRotOffset(Quaternion qoff)
+	public synchronized RenderTicket setRotOffset(Quaternion qoff)
 	{
 		this.rotOff.set(qoff);
 		this.rot.add(this.rotOff);
 		
 		this.setIsDirty(true);
 		
+		return this;
 	}
 	
 }

@@ -30,16 +30,18 @@ public class DefaultLog implements ILog
 			return;
 		}
 		
-		String fin = String.format("[%s] [%s]: %s\n", type, StringHelper.parseDate(Calendar.getInstance(), "-", ":"), type.err && msg == null && !this.crashDialog.isEmpty() ? this.crashDialog.get(RNG.rng().nextInt(this.crashDialog.size())) : msg);
+		Thread thr = Thread.currentThread();
+		
+		String fin = String.format("[%s] [%s] [%s]: %s", type, thr.getName(), StringHelper.parseDate(Calendar.getInstance(), "-", ":"), type.err && (msg == null || "".equals(msg)) && !this.crashDialog.isEmpty() ? this.crashDialog.get(RNG.rng().nextInt(this.crashDialog.size())) : msg);
 		
 		if (type.err)
 		{
-			System.err.print(fin);
+			System.err.println(fin);
 			
 		}
 		else
 		{
-			System.out.print(fin);
+			System.out.println(fin);
 			
 		}
 		

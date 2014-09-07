@@ -185,7 +185,7 @@ public class LWJGLKeyboard extends com.elusivehawk.engine.input.Keyboard
 	}
 	
 	@Override
-	protected void poll()
+	protected boolean poll()
 	{
 		if (!Keyboard.isCreated())
 		{
@@ -233,6 +233,7 @@ public class LWJGLKeyboard extends com.elusivehawk.engine.input.Keyboard
 			
 		}
 		
+		return true;
 	}
 	
 	@Override

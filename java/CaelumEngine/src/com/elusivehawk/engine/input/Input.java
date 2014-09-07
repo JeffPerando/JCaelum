@@ -5,7 +5,9 @@ import java.io.Closeable;
 import java.util.List;
 import com.elusivehawk.engine.CaelumException;
 import com.elusivehawk.util.IUpdatable;
+import com.elusivehawk.util.Logger;
 import com.google.common.collect.Lists;
+
 
 /**
  * 
@@ -15,26 +17,41 @@ import com.google.common.collect.Lists;
  */
 public abstract class Input implements IUpdatable, Closeable
 {
-	private final List<IInputListener> listeners = Lists.newArrayList();
+	private final List<IUpdatable> listeners = Lists.newArrayList();
 	private boolean initiated = false;
 	
 	@Override
-	public void update(double delta)
+	public void update(double delta, Object... extra)
 	{
 		if (!this.initiated)
 		{
 			throw new CaelumException("Input %s has yet to be initiated.", this.getClass().getSimpleName());
 		}
 		
-		this.poll();
-		
-		this.listeners.forEach(((lis) -> {lis.onInputReceived(delta, this);}));
+		if (this.poll())
+		{
+			this.listeners.forEach(((lis) ->
+			{
+				try
+				{
+					lis.update(delta, this);
+					
+				}
+				catch (Throwable e)
+				{
+					Logger.log().err("[%s] Error caught:", e, this.getClass().getSimpleName());
+					
+				}
+				
+			}));
+			
+		}
 		
 		this.postUpdate();
 		
 	}
 	
-	public void addListener(IInputListener lis)
+	public void addListener(IUpdatable lis)
 	{
 		this.listeners.add(lis);
 		
@@ -47,7 +64,7 @@ public abstract class Input implements IUpdatable, Closeable
 		return true;
 	}
 	
-	protected abstract void poll();
+	protected abstract boolean poll();
 	
 	protected abstract void postUpdate();
 	

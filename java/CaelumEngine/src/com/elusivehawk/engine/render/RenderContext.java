@@ -187,13 +187,22 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 	}
 	
 	@Override
-	public void update(double delta) throws RenderException
+	public void update(double delta, Object... extra) throws RenderException
 	{
 		boolean useHub = (this.hub != null);
 		
 		if (useHub)
 		{
-			this.hub.updateHUB(delta);
+			try
+			{
+				this.hub.update(delta, extra);
+				
+			}
+			catch (Throwable e)
+			{
+				throw new RenderException(e);
+				
+			}
 			
 		}
 		

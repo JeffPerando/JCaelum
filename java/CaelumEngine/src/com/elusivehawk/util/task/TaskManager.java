@@ -18,7 +18,7 @@ public class TaskManager implements IPausable
 	
 	public TaskManager()
 	{
-		this(Runtime.getRuntime().availableProcessors());
+		this(CompInfo.CORES);
 		
 	}
 	
@@ -29,7 +29,7 @@ public class TaskManager implements IPausable
 		
 		for (int c = 0; c < threadCount; c++)
 		{
-			threads[c] = new ThreadTaskWorker();
+			threads[c] = new ThreadTaskWorker(c + 1);
 			
 		}
 		
