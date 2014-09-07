@@ -32,6 +32,7 @@ import com.elusivehawk.util.json.JsonData;
 import com.elusivehawk.util.json.JsonObject;
 import com.elusivehawk.util.json.JsonParseException;
 import com.elusivehawk.util.json.JsonParser;
+import com.elusivehawk.util.storage.DirtableStorage;
 import com.elusivehawk.util.storage.Pair;
 import com.elusivehawk.util.storage.Tuple;
 import com.elusivehawk.util.task.TaskManager;
@@ -687,50 +688,104 @@ public final class CaelumEngine
 			return;
 		}
 		
-		File nLoc = CompInfo.BUILT ? CompInfo.JAR_DIR : FileHelper.getChild("lib", CompInfo.JAR_DIR.getParentFile());
-		
-		List<File> natives = FileHelper.getFiles(nLoc, FileHelper.NATIVE_FILTER);
-		
-		if (natives.isEmpty())
-		{
-			throw new CaelumException("Could not load natives! THIS IS A BUG! Native directory: %s", nLoc.getAbsolutePath());
-		}
-		
-		File tmp = FileHelper.createFile(CompInfo.TMP_DIR, String.format(".caelum/natives/%s", CompInfo.BUILT ? "" : "dev/"));
+		File tmp = FileHelper.createFile(CompInfo.TMP_DIR, String.format(".caelum/%s/natives/%s", VERSION.formatted, CompInfo.BUILT ? "" : "dev/"));
 		
 		if (!tmp.exists() && !tmp.mkdirs())
 		{
 			throw new CaelumException("Could not load natives: Unable to create natives directory");
 		}
 		
-		File nDest;
-		
-		for (File n : natives)
+		if (CompInfo.BUILT)
 		{
-			nDest = new File(tmp, n.getName());
+			DirtableStorage<File> nDest = new DirtableStorage<File>();
 			
-			if (nDest.exists() && nDest.getTotalSpace() == n.getTotalSpace())
+			FileHelper.readZip(CompInfo.JAR_DIR, ((zip, entry, name) ->
 			{
-				if (CompInfo.DEBUG)
+				nDest.set(new File(tmp, name.contains("/") ? StringHelper.getSuffix(name, "/") : name));
+				
+				if (!FileHelper.NATIVE_FILTER.accept(nDest.get()))
 				{
-					Logger.log().log(EnumLogType.VERBOSE, "Not copying native: %s/%s", n.getParentFile().getName(), n.getName());
+					return;
 				}
 				
-				continue;
-			}
-			
-			if (FileHelper.copy(n, tmp))
-			{
-				if (CompInfo.DEBUG)
+				if (nDest.get().exists() && nDest.get().getTotalSpace() == entry.getSize())
 				{
-					Logger.log().log(EnumLogType.VERBOSE, "Succesfully copied native: %s/%s", n.getParentFile().getName(), n.getName());
+					if (CompInfo.DEBUG)
+					{
+						Logger.log().log(EnumLogType.VERBOSE, "Not copying jar native: %s", name);
+						
+					}
+					
+					return;
+				}
+				
+				try
+				{
+					if (FileHelper.copy(zip.getInputStream(entry), nDest.get()))
+					{
+						if (CompInfo.DEBUG)
+						{
+							Logger.log().log(EnumLogType.VERBOSE, "Succesfully copied jar native: %s", name);
+							
+						}
+						
+					}
+					else
+					{
+						Logger.log().log(EnumLogType.WARN, "Could not copy jar native: %s/%s", name);
+						
+					}
+					
+				}
+				catch (Exception e)
+				{
+					Logger.log().err(e);
 					
 				}
 				
-			}
-			else
+			}));
+			
+		}
+		else
+		{
+			File nLoc = FileHelper.getChild("lib", CompInfo.JAR_DIR.getParentFile());
+			List<File> natives = FileHelper.getFiles(nLoc, FileHelper.NATIVE_FILTER);
+			
+			if (natives.isEmpty())
 			{
-				Logger.log().log(EnumLogType.WARN, "Could not copy native: %s/%s", n.getParentFile().getName(), n.getName());
+				throw new CaelumException("Could not load natives! THIS IS A BUG! Native directory: %s", nLoc.getAbsolutePath());
+			}
+			
+			File nDest;
+			
+			for (File n : natives)
+			{
+				nDest = new File(tmp, n.getName());
+				
+				if (nDest.exists() && nDest.getTotalSpace() == n.getTotalSpace())
+				{
+					if (CompInfo.DEBUG)
+					{
+						Logger.log().log(EnumLogType.VERBOSE, "Not copying native: %s/%s", n.getParentFile().getName(), n.getName());
+					}
+					
+					continue;
+				}
+				
+				if (FileHelper.copy(n, nDest))
+				{
+					if (CompInfo.DEBUG)
+					{
+						Logger.log().log(EnumLogType.VERBOSE, "Succesfully copied native: %s/%s", n.getParentFile().getName(), n.getName());
+						
+					}
+					
+				}
+				else
+				{
+					Logger.log().log(EnumLogType.WARN, "Could not copy native: %s/%s", n.getParentFile().getName(), n.getName());
+					
+				}
 				
 			}
 			

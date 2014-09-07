@@ -1,6 +1,7 @@
 
 package com.elusivehawk.util;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
  */
 public class DefaultLog implements ILog
 {
-	protected final List<String> crashDialog = StringHelper.read(FileHelper.getResourceStream("res/CrashReportDialog.txt"));
+	protected final List<String> crashDialog = CompInfo.BUILT ? StringHelper.read(FileHelper.getResourceStream("/res/CrashReportDialog.txt")) : StringHelper.read(new File(CompInfo.JAR_DIR.getParentFile(), "/res/CrashReportDialog.txt"));
 	
 	private boolean enableVerbosity = true;
 	

@@ -263,19 +263,19 @@ public final class StringHelper
 		return false;
 	}
 	
-	public static String replaceLast(String str, String textToRemove, String replace)
+	public static String replaceLast(String str, String in, String out)
 	{
-		int lastIn = str.lastIndexOf(textToRemove);
+		int lastIn = str.lastIndexOf(in);
 		
 		if (lastIn == -1)
 		{
-			Logger.log().log(EnumLogType.ERROR, "Failed to remove last instance of %s from %s", textToRemove, str);
+			Logger.log().log(EnumLogType.ERROR, "Failed to remove last instance of %s from %s", in, str);
 			
 			return str;
 		}
 		
 		StringBuilder b = newBuilder(str);
-		b.replace(lastIn, lastIn + textToRemove.length(), replace);
+		b.replace(lastIn, lastIn + in.length(), out);
 		
 		return b.toString();
 	}

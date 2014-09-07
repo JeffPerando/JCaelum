@@ -1,16 +1,17 @@
 
 package com.elusivehawk.util;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URL;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarFile;
@@ -28,9 +29,9 @@ import com.google.common.collect.Lists;
 public final class FileHelper
 {
 	public static final String FILE_SEP = System.getProperty("file.separator");
-	public static final FileFilter NATIVE_FILTER = ((file) ->
+	public static final FilenameFilter NATIVE_NAME_FILTER = ((file, name) ->
 	{
-		String ext = getExtension(file);
+		String ext = StringHelper.getSuffix(name, ".");
 		
 		if (ext == null)
 		{
@@ -49,6 +50,7 @@ public final class FileHelper
 		}
 		
 	});
+	public static final FileFilter NATIVE_FILTER = new FilenameFilterWrapper(NATIVE_NAME_FILTER);
 	
 	private FileHelper(){}
 	
@@ -65,42 +67,6 @@ public final class FileHelper
 	public static File createFile(File src, String path)
 	{
 		return new File(src, fixPath(path));
-	}
-	
-	public static List<File> createFiles(List<URL> urls)
-	{
-		List<File> ret = Lists.newArrayListWithExpectedSize(urls.size());
-		
-		if (urls.isEmpty())
-		{
-			return ret;
-		}
-		
-		for (URL url : urls)
-		{
-			URI uri = null;
-			
-			try
-			{
-				uri = url.toURI();
-				
-			}
-			catch (Exception e)
-			{
-				Logger.log().err(e);
-				
-			}
-			
-			if (uri == null)
-			{
-				continue;
-			}
-			
-			ret.add(new File(uri.getPath()));
-			
-		}
-		
-		return ret;
 	}
 	
 	public static File getRootResDir()
@@ -382,12 +348,10 @@ public final class FileHelper
 	{
 		assert canRead(file);
 		
+		File dst = dest;
+		
 		try
 		{
-			FileInputStream in = createInStream(file);
-			
-			File dst;
-			
 			if (!dest.exists())
 			{
 				if (dest.isDirectory())
@@ -414,27 +378,7 @@ public final class FileHelper
 				dst = new File(dest, file.getName());
 				
 			}
-			else
-			{
-				dst = dest;
-				
-			}
 			
-			FileOutputStream out = createOutStream(dst, true);
-			
-			byte[] buf = new byte[1024];
-			int read = -1;
-			
-			while ((read = in.read(buf)) > 0)
-			{
-				out.write(buf, 0, read);
-				
-			}
-			
-			in.close();
-			out.close();
-			
-			return true;
 		}
 		catch (Throwable e)
 		{
@@ -442,7 +386,70 @@ public final class FileHelper
 			
 		}
 		
-		return false;
+		return copy(createInStream(file), dst);
+	}
+	
+	public static boolean copy(InputStream is, File dest)
+	{
+		assert dest.isFile();
+		
+		if (!dest.exists())
+		{
+			try
+			{
+				dest.createNewFile();
+				
+			}
+			catch (Exception e)
+			{
+				Logger.log().err(e);
+				
+			}
+			
+			if (!dest.exists())
+			{
+				return false;
+			}
+			
+		}
+		
+		BufferedInputStream in = new BufferedInputStream(is);
+		BufferedOutputStream out = new BufferedOutputStream(createOutStream(dest, true));
+		
+		byte[] buf = new byte[1024];
+		int read = -1;
+		
+		try
+		{
+			while ((read = in.read(buf)) > 0)
+			{
+				out.write(buf, 0, read);
+				
+			}
+			
+		}
+		catch (Exception e)
+		{
+			Logger.log().err(e);
+			
+		}
+		finally
+		{
+			try
+			{
+				in.close();
+				out.close();
+				
+			}
+			catch (Exception e)
+			{
+				Logger.log().err(e);
+				
+			}
+			
+		}
+		
+		return true;
 	}
 	
 	public static void scanForFiles(File folder, IFileScanner sc)
@@ -455,62 +462,9 @@ public final class FileHelper
 	{
 		assert isReal(file);
 		
-		List<File> files = Lists.newArrayList();
+		File[] files = file.listFiles();
 		
-		if (file.isDirectory())
-		{
-			File[] fs = file.listFiles();
-			
-			for (File f : fs)
-			{
-				files.add(f);
-				
-			}
-			
-		}
-		else
-		{
-			List<URL> zipFiles = readZip(file);
-			
-			if (!zipFiles.isEmpty())
-			{
-				int count = 0;
-				String path;
-				
-				for (URL url : zipFiles)
-				{
-					System.out.println(String.format("Consuming: %s", url));//XXX Remove
-					
-					try
-					{
-						path = url.toURI().getPath();
-						
-						if (path != null)
-						{
-							files.add(new File(path));
-							count++;
-							
-						}
-						
-					}
-					catch (Exception e)
-					{
-						Logger.log().err(e);
-						
-					}
-					
-				}
-				
-				if (count == 0)
-				{
-					return;
-				}
-				
-			}
-			
-		}
-		
-		if (files == null || files.size() == 0)
+		if (files == null || files.length == 0)
 		{
 			return;
 		}
@@ -532,23 +486,16 @@ public final class FileHelper
 		
 	}
 	
-	public static List<File> readZipFiles(File file)
+	public static void readZip(File file, IZipScanner sc)
 	{
-		return createFiles(readZip(file));
-	}
-	
-	public static List<URL> readZip(File file)
-	{
-		List<URL> ret = Lists.newArrayList();
-		
 		if (!canRead(file))
 		{
-			return ret;
+			return;
 		}
 		
 		if (file.isDirectory())
 		{
-			return ret;
+			return;
 		}
 		
 		String ext = getExtension(file);
@@ -568,8 +515,6 @@ public final class FileHelper
 				
 			}
 			
-			System.out.println(ext);
-			
 		}
 		catch (Exception e)
 		{
@@ -586,16 +531,12 @@ public final class FileHelper
 			{
 				entry = entries.nextElement();
 				
-				try
+				if (entry.isDirectory())
 				{
-					ret.add(new URL(String.format("jar:file:/%s!/%s", makePathGeneric(zip.getName()).replace("C:/", "C://"), entry.getName())));
-					
+					continue;
 				}
-				catch (Exception e)
-				{
-					Logger.log().err(e);
-					
-				}
+				
+				sc.take(zip, entry, entry.getName());
 				
 			}
 			
@@ -612,13 +553,37 @@ public final class FileHelper
 			
 		}
 		
-		return ret;
+	}
+	
+	public static class FilenameFilterWrapper implements FileFilter
+	{
+		private final FilenameFilter filter;
+		
+		@SuppressWarnings("unqualified-field-access")
+		public FilenameFilterWrapper(FilenameFilter f)
+		{
+			filter = f;
+			
+		}
+		
+		@Override
+		public boolean accept(File file)
+		{
+			return this.filter.accept(file, file.getName());
+		}
+		
 	}
 	
 	@FunctionalInterface
 	public static interface IFileScanner
 	{
 		public boolean scan(File file);
+		
+	}
+	
+	public static interface IZipScanner
+	{
+		public void take(ZipFile zip, ZipEntry entry, String name);
 		
 	}
 	
