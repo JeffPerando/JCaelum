@@ -2,6 +2,7 @@
 package com.elusivehawk.util;
 
 import java.util.List;
+import com.elusivehawk.util.storage.IArray;
 import com.google.common.collect.Lists;
 
 /**
@@ -106,6 +107,8 @@ public class ArrayHelper
 	
 	public static int sizeof(int start, Object[] arr)
 	{
+		assert start >= 0;
+		
 		int ret = 0;
 		
 		for (int c = start; c < arr.length; c++)
@@ -168,6 +171,162 @@ public class ArrayHelper
 		}
 		
 		return l;
+	}
+	
+	public static byte[] asBytes(List<? extends Number> nums)
+	{
+		byte[] ret = new byte[nums.size()];
+		
+		for (int c = 0; c < nums.size(); c++)
+		{
+			ret[c] = nums.get(c).byteValue();
+			
+		}
+		
+		return ret;
+	}
+	
+	public static byte[] asBytes(IArray<? extends Number> nums)
+	{
+		byte[] ret = new byte[nums.length()];
+		
+		for (int c = 0; c < ret.length; c++)
+		{
+			ret[c] = nums.get(c).byteValue();
+			
+		}
+		
+		return ret;
+	}
+	
+	public static double[] asDoubles(List<? extends Number> nums)
+	{
+		double[] ret = new double[nums.size()];
+		
+		for (int c = 0; c < nums.size(); c++)
+		{
+			ret[c] = nums.get(c).doubleValue();
+			
+		}
+		
+		return ret;
+	}
+	
+	public static double[] asDoubles(IArray<? extends Number> nums)
+	{
+		double[] ret = new double[nums.length()];
+		
+		for (int c = 0; c < ret.length; c++)
+		{
+			ret[c] = nums.get(c).doubleValue();
+			
+		}
+		
+		return ret;
+	}
+	
+	public static float[] asFloats(List<? extends Number> nums)
+	{
+		float[] ret = new float[nums.size()];
+		
+		for (int c = 0; c < nums.size(); c++)
+		{
+			ret[c] = nums.get(c).floatValue();
+			
+		}
+		
+		return ret;
+	}
+	
+	public static float[] asFloats(IArray<? extends Number> nums)
+	{
+		float[] ret = new float[nums.length()];
+		
+		for (int c = 0; c < ret.length; c++)
+		{
+			ret[c] = nums.get(c).floatValue();
+			
+		}
+		
+		return ret;
+	}
+	
+	public static int[] asInts(List<? extends Number> nums)
+	{
+		int[] ret = new int[nums.size()];
+		
+		for (int c = 0; c < nums.size(); c++)
+		{
+			ret[c] = nums.get(c).intValue();
+			
+		}
+		
+		return ret;
+	}
+	
+	public static int[] asInts(IArray<? extends Number> nums)
+	{
+		int[] ret = new int[nums.length()];
+		
+		for (int c = 0; c < ret.length; c++)
+		{
+			ret[c] = nums.get(c).intValue();
+			
+		}
+		
+		return ret;
+	}
+	
+	public static long[] asLongs(List<? extends Number> nums)
+	{
+		long[] ret = new long[nums.size()];
+		
+		for (int c = 0; c < nums.size(); c++)
+		{
+			ret[c] = nums.get(c).longValue();
+			
+		}
+		
+		return ret;
+	}
+	
+	public static long[] asLongs(IArray<? extends Number> nums)
+	{
+		long[] ret = new long[nums.length()];
+		
+		for (int c = 0; c < ret.length; c++)
+		{
+			ret[c] = nums.get(c).longValue();
+			
+		}
+		
+		return ret;
+	}
+	
+	public static short[] asShorts(List<? extends Number> nums)
+	{
+		short[] ret = new short[nums.size()];
+		
+		for (int c = 0; c < nums.size(); c++)
+		{
+			ret[c] = nums.get(c).shortValue();
+			
+		}
+		
+		return ret;
+	}
+	
+	public static short[] asShorts(IArray<? extends Number> nums)
+	{
+		short[] ret = new short[nums.length()];
+		
+		for (int c = 0; c < ret.length; c++)
+		{
+			ret[c] = nums.get(c).shortValue();
+			
+		}
+		
+		return ret;
 	}
 	
 }

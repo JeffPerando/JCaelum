@@ -2,6 +2,7 @@
 package com.elusivehawk.util.math;
 
 import com.elusivehawk.util.storage.Buffer;
+import com.elusivehawk.util.storage.IArray;
 import com.elusivehawk.util.storage.IStorable;
 
 /**
@@ -10,12 +11,12 @@ import com.elusivehawk.util.storage.IStorable;
  * 
  * @author Elusivehawk
  */
-public interface IMathObject<T extends Number> extends IStorable<T>
+public interface IMathObject<T extends Number> extends IStorable<T>, IArray<T>
 {
 	@Override
 	default void store(Buffer<T> buf)
 	{
-		for (int c = 0; c < this.getSize(); c++)
+		for (int c = 0; c < this.length(); c++)
 		{
 			buf.add(this.get(c));
 			
@@ -23,14 +24,10 @@ public interface IMathObject<T extends Number> extends IStorable<T>
 		
 	}
 	
-	public int getSize();
-	
 	default boolean isImmutable()
 	{
 		return false;
 	}
-	
-	public T get(int pos);
 	
 	default Number[] multiget(int bitmask)
 	{
@@ -77,7 +74,7 @@ public interface IMathObject<T extends Number> extends IStorable<T>
 	
 	default void setAll(T num)
 	{
-		for (int c = 0; c < this.getSize(); c++)
+		for (int c = 0; c < this.length(); c++)
 		{
 			this.set(c, num, false);
 			
@@ -97,7 +94,7 @@ public interface IMathObject<T extends Number> extends IStorable<T>
 	
 	default IMathObject<T> set(IMathObject<T> obj)
 	{
-		int l = Math.min(this.getSize(), obj.getSize());
+		int l = Math.min(this.length(), obj.length());
 		
 		for (int c = 0; c < l; c++)
 		{

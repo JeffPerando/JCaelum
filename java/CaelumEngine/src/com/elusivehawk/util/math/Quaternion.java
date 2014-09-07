@@ -27,13 +27,13 @@ public class Quaternion implements IMathObject<Float>
 	
 	public Quaternion(Quaternion q)
 	{
-		this(q.getSize());
+		this(q.length());
 		set(q);
 		
 	}
 	
 	@Override
-	public int getSize()
+	public int length()
 	{
 		return this.data.length;
 	}
@@ -41,7 +41,7 @@ public class Quaternion implements IMathObject<Float>
 	@Override
 	public Float get(int pos)
 	{
-		return MathHelper.bounds(pos, 0, this.getSize()) ? this.data[pos] : 0f;
+		return MathHelper.bounds(pos, 0, this.length()) ? this.data[pos] : 0f;
 	}
 	
 	@Override
@@ -54,9 +54,15 @@ public class Quaternion implements IMathObject<Float>
 	@Override
 	public void set(int pos, Float num, boolean notify)
 	{
-		if (MathHelper.bounds(pos, 0, this.getSize()))
+		if (MathHelper.bounds(pos, 0, this.length()))
 		{
 			this.data[pos] = num.floatValue();
+			
+		}
+		
+		if (notify)
+		{
+			this.onChanged();
 			
 		}
 		
@@ -67,7 +73,7 @@ public class Quaternion implements IMathObject<Float>
 	{
 		assert !dest.isImmutable();
 		
-		for (int c = 0; c < this.getSize(); c++)
+		for (int c = 0; c < this.length(); c++)
 		{
 			dest.set(c, (float)Math.sqrt(MathHelper.square(this.get(c))), false);
 			

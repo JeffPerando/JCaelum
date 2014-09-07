@@ -316,10 +316,10 @@ public final class FileHelper
 			if (file.getName().equals(name))
 			{
 				ret.set(file);
-				return false;
+				
 			}
 			
-			return true;
+			return !ret.locked();
 		}));
 		
 		return ret.get();

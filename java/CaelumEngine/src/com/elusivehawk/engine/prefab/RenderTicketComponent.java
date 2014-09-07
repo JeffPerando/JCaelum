@@ -17,15 +17,15 @@ import com.elusivehawk.util.math.Vector;
  */
 public class RenderTicketComponent extends RenderComponent implements IVectorListener, IQuatListener
 {
-	public RenderTicketComponent(ComponentGroup parent, RenderTicket tkt)
+	public RenderTicketComponent(Component parent, int p, RenderTicket tkt)
 	{
-		super(parent, tkt);
+		super(parent, p, tkt);
 		
 	}
 	
-	public RenderTicketComponent(ComponentGroup parent, RenderTicket tkt, IPopulator<Component> pop)
+	public RenderTicketComponent(Component parent, int p, RenderTicket tkt, IPopulator<Component> pop)
 	{
-		super(parent, tkt, pop);
+		super(parent, p, tkt, pop);
 		
 	}
 	

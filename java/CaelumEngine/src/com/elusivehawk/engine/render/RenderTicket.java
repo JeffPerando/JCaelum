@@ -301,7 +301,7 @@ public class RenderTicket extends RenderableObj implements IQuatListener, IVecto
 	
 	public RenderTicket setScale(Vector s)
 	{
-		for (int c = 0; c < s.getSize(); c++)
+		for (int c = 0; c < s.length(); c++)
 		{
 			if (s.get(c) > 0f)
 			{

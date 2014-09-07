@@ -11,7 +11,7 @@ import java.util.List;
  * 
  * @author Elusivehawk
  */
-public class ImmutableArray<T> implements Iterable<T>
+public class ImmutableArray<T> implements IArray<T>, Iterable<T>
 {
 	protected final T[] array;
 	
@@ -28,11 +28,13 @@ public class ImmutableArray<T> implements Iterable<T>
 		return new Buffer<T>(this.array);
 	}
 	
+	@Override
 	public int length()
 	{
 		return this.array.length;
 	}
 	
+	@Override
 	public T get(int i)
 	{
 		return this.array[i];

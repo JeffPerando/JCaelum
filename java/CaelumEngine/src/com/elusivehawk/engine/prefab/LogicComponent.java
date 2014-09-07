@@ -15,22 +15,34 @@ public class LogicComponent extends Component
 {
 	protected final IUpdatable logic;
 	
-	@SuppressWarnings("unqualified-field-access")
-	public LogicComponent(ComponentGroup parent, IUpdatable upd)
+	public LogicComponent(Component parent, IUpdatable upd)
 	{
-		super(parent);
+		this(parent, 0, upd);
+		
+	}
+	
+	public LogicComponent(Component parent, IUpdatable upd, IPopulator<Component> pop)
+	{
+		this(parent, 0, upd, pop);
+		
+	}
+	
+	public LogicComponent(Component parent, int p, IUpdatable upd, IPopulator<Component> pop)
+	{
+		this(parent, p, upd);
+		
+		pop.populate(this);
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public LogicComponent(Component parent, int p, IUpdatable upd)
+	{
+		super(parent, p);
 		
 		assert upd != null;
 		
 		logic = upd;
-		
-	}
-	
-	public LogicComponent(ComponentGroup parent, IUpdatable upd, IPopulator<Component> pop)
-	{
-		this(parent, upd);
-		
-		pop.populate(this);
 		
 	}
 	

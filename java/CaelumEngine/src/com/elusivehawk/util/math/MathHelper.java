@@ -69,7 +69,7 @@ public final class MathHelper
 	
 	public static Vector cross(Vector one, Vector two)
 	{
-		assert one.getSize() <= 3 && two.getSize() <= 3;
+		assert one.length() <= 3 && two.length() <= 3;
 		
 		float ax = one.get(X);
 		float ay = one.get(Y);
@@ -91,7 +91,7 @@ public final class MathHelper
 	
 	public static float distSquare(Vector from, Vector to)
 	{
-		int size = Math.min(from.getSize(), to.getSize());
+		int size = Math.min(from.length(), to.length());
 		float ret = 0f;
 		
 		for (int c = 0; c < size; c++)
@@ -105,7 +105,7 @@ public final class MathHelper
 	
 	public static float dot(Vector one, Vector two)
 	{
-		int size = Math.min(one.getSize(), two.getSize());
+		int size = Math.min(one.length(), two.length());
 		float ret = 0f;
 		
 		for (int c = 0; c < size; c++)
@@ -126,12 +126,12 @@ public final class MathHelper
 	
 	public static Vector interpolate(Vector one, Vector two, float factor)
 	{
-		return interpolate(one, two, factor, new Vector(Math.min(one.getSize(), two.getSize())));
+		return interpolate(one, two, factor, new Vector(Math.min(one.length(), two.length())));
 	}
 	
 	public static Vector interpolate(Vector one, Vector two, float factor, Vector dest)
 	{
-		for (int c = 0; c < dest.getSize(); c++)
+		for (int c = 0; c < dest.length(); c++)
 		{
 			dest.set(c, ((two.get(c) * factor) + ((1f - factor) * one.get(c))), false);
 			
@@ -154,7 +154,7 @@ public final class MathHelper
 	{
 		float ret = 0f;
 		
-		for (int c = 0; c < vec.getSize(); c++)
+		for (int c = 0; c < vec.length(); c++)
 		{
 			ret += square(vec.get(c));
 			
@@ -223,7 +223,7 @@ public final class MathHelper
 	{
 		Vector ret = new Vector(vec);
 		
-		for (int c = 0; c < ret.getSize(); c++)
+		for (int c = 0; c < ret.length(); c++)
 		{
 			ret.set(c, toRadians(ret.get(c)), false);
 			
