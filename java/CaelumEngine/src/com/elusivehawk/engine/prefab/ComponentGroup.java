@@ -24,6 +24,7 @@ public abstract class ComponentGroup implements IAssetReceiver, IRenderable, IUp
 	protected final ComponentGroup parent;
 	
 	protected Map<Integer, List<Component>> childMap = null;
+	protected List<Component> childList = null;
 	protected volatile int maxPriority = -1;
 	
 	public ComponentGroup()
@@ -56,7 +57,7 @@ public abstract class ComponentGroup implements IAssetReceiver, IRenderable, IUp
 	@Override
 	public void onAssetLoaded(Asset a)
 	{
-		this.forEveryChild(((child) -> {child.onAssetLoaded(a);}));
+		this.forEveryChild(false, ((child) -> {child.onAssetLoaded(a);}));
 		
 	}
 	
@@ -84,6 +85,14 @@ public abstract class ComponentGroup implements IAssetReceiver, IRenderable, IUp
 		
 		children.add(comp);
 		
+		if (this.childList == null)
+		{
+			this.childList = Lists.newArrayList();
+			
+		}
+		
+		this.childList.add(comp);
+		
 		this.maxPriority = Math.max(this.maxPriority, comp.getPriority()); 
 		
 		return this;
@@ -93,15 +102,17 @@ public abstract class ComponentGroup implements IAssetReceiver, IRenderable, IUp
 	{
 		boolean found = false;
 		
-		if (this.childMap != null)
+		if (this.childList != null)
+		{
+			found = this.childList.remove(comp);
+			
+		}
+		
+		if (found)
 		{
 			for (List<Component> children : this.childMap.values())
 			{
-				if (children.remove(comp))
-				{
-					found = true;
-					
-				}
+				children.remove(comp);
 				
 			}
 			
@@ -112,21 +123,34 @@ public abstract class ComponentGroup implements IAssetReceiver, IRenderable, IUp
 	
 	public void forEveryChild(Consumer<Component> consumer)
 	{
-		if (this.childMap == null)
-		{
-			return;
-		}
+		this.forEveryChild(true, consumer);
 		
-		for (int c = 0; c < this.maxPriority; c++)
+	}
+	
+	public void forEveryChild(boolean usePriority, Consumer<Component> consumer)
+	{
+		if (this.childList != null)
 		{
-			List<Component> children = this.childMap.get(c);
-			
-			if (children == null)
+			if (usePriority)
 			{
-				continue;
+				for (int c = 0; c < this.maxPriority; c++)
+				{
+					List<Component> children = this.childMap.get(c);
+					
+					if (children != null)
+					{
+						children.forEach(consumer);
+						
+					}
+					
+				}
+				
 			}
-			
-			children.forEach(consumer);
+			else
+			{
+				this.childList.forEach(consumer);
+				
+			}
 			
 		}
 		
