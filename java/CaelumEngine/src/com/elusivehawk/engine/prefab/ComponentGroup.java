@@ -25,7 +25,7 @@ public abstract class ComponentGroup implements IAssetReceiver, IRenderable, IUp
 	
 	protected Map<Integer, List<Component>> childMap = null;
 	protected List<Component> childList = null;
-	protected volatile int maxPriority = -1;
+	protected int maxPriority = -1;
 	
 	public ComponentGroup()
 	{
@@ -68,6 +68,13 @@ public abstract class ComponentGroup implements IAssetReceiver, IRenderable, IUp
 	
 	public ComponentGroup addComponent(Component comp)
 	{
+		assert comp != null;
+		
+		if (comp == this.parent)
+		{
+			return null;
+		}
+		
 		if (this.childMap == null)
 		{
 			this.childMap = Maps.newHashMap();
@@ -100,6 +107,11 @@ public abstract class ComponentGroup implements IAssetReceiver, IRenderable, IUp
 	
 	public boolean removeComponent(Component comp)
 	{
+		if (comp == null)
+		{
+			return false;
+		}
+		
 		boolean found = false;
 		
 		if (this.childList != null)
