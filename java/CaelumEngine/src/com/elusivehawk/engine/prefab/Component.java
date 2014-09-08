@@ -123,13 +123,14 @@ public abstract class Component implements IAssetReceiver, IRenderable, IUpdatab
 		return this.locked;
 	}
 	
-	public void lock()
+	public Component lock()
 	{
 		this.locked = true;
 		
+		return this;
 	}
 	
-	public void addComponent(Component comp)
+	public void addChild(Component comp)
 	{
 		if (this.locked)
 		{
@@ -169,7 +170,7 @@ public abstract class Component implements IAssetReceiver, IRenderable, IUpdatab
 		
 	}
 	
-	public boolean removeComponent(Component comp)
+	public boolean removeChild(Component comp)
 	{
 		if (this.locked)
 		{

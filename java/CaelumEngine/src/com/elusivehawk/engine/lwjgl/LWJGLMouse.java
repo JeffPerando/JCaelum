@@ -123,7 +123,7 @@ public class LWJGLMouse extends com.elusivehawk.engine.input.Mouse
 	}
 	
 	@Override
-	protected boolean poll()
+	protected boolean poll()//TODO Buffer mouse movements, clicks, etc.
 	{
 		if (!Mouse.isCreated())
 		{
@@ -148,6 +148,7 @@ public class LWJGLMouse extends com.elusivehawk.engine.input.Mouse
 		}
 		
 		IDisplay display = CaelumEngine.display();
+		boolean ret = false;
 		int b;
 		
 		while (Mouse.next())
@@ -155,6 +156,12 @@ public class LWJGLMouse extends com.elusivehawk.engine.input.Mouse
 			this.mousePos.set(((float)Mouse.getEventX() / (float)display.getWidth()), 1.0f - ((float)Mouse.getEventY() / (float)display.getHeight()));
 			this.mousePosDelta.set(((float)Mouse.getEventDX() / (float)display.getWidth()), 1.0f - ((float)Mouse.getEventDY() / (float)display.getHeight()));
 			this.wheel = (float)Mouse.getEventDWheel() / (float)display.getHeight();
+			
+			if (this.mousePos.isDirty() || this.mousePosDelta.isDirty())
+			{
+				ret = true;
+				
+			}
 			
 			b = Mouse.getEventButton();
 			
@@ -174,25 +181,28 @@ public class LWJGLMouse extends com.elusivehawk.engine.input.Mouse
 						{
 							this.oldButtons[b] = DOWN;
 							this.buttons[b] = DRAG;
-						};
+						}
 						break;
 					case UP:
 						this.oldButtons[b] = UP;
 						this.buttons[b] = DOWN;
+						ret = true;
 						break;
 				}
 				
 			}
-			else
+			else if (this.getClickStatus(b).isDown())
 			{
 				this.oldButtons[b] = cur;
 				this.buttons[b] = UP;
+				
+				ret = true;
 				
 			}
 			
 		}
 		
-		return true;
+		return ret;
 	}
 	
 	@Override

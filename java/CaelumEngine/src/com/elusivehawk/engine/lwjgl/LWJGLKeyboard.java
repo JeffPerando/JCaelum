@@ -210,6 +210,7 @@ public class LWJGLKeyboard extends com.elusivehawk.engine.input.Keyboard
 		}
 		
 		Key key;
+		boolean ret = false;
 		
 		while (Keyboard.next())
 		{
@@ -222,18 +223,24 @@ public class LWJGLKeyboard extends com.elusivehawk.engine.input.Keyboard
 			
 			if (this.downKeys[key.ordinal()] = Keyboard.getEventKeyState())//TODO See how this affects caps lock
 			{
-				this.downKeyList.add(key);
+				if (!this.downKeyList.contains(key))
+				{
+					this.downKeyList.add(key);
+					ret = true;
+					
+				}
 				
 			}
 			else
 			{
 				this.downKeyList.remove(key);
+				ret = true;
 				
 			}
 			
 		}
 		
-		return true;
+		return ret;
 	}
 	
 	@Override
