@@ -413,7 +413,7 @@ public final class FileHelper
 			
 		}
 		
-		BufferedInputStream in = new BufferedInputStream(is);
+		BufferedInputStream in = (is instanceof BufferedInputStream) ? (BufferedInputStream)is : new BufferedInputStream(is);
 		BufferedOutputStream out = new BufferedOutputStream(createOutStream(dest, true));
 		
 		byte[] buf = new byte[1024];

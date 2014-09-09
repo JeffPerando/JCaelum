@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import com.elusivehawk.engine.CaelumEngine;
@@ -12,7 +13,9 @@ import com.elusivehawk.engine.render.old.IRenderEngine;
 import com.elusivehawk.engine.render.old.IRenderHUB;
 import com.elusivehawk.engine.render.old.RenderTask;
 import com.elusivehawk.engine.render.opengl.GLConst;
+import com.elusivehawk.engine.render.opengl.GLEnumShader;
 import com.elusivehawk.engine.render.opengl.GLEnumTexture;
+import com.elusivehawk.engine.render.opengl.GLException;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
@@ -99,7 +102,7 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 		
 		this.gl1.glViewport(0, 0, this.display.getWidth(), this.display.getHeight());
 		
-		/*for (GLEnumShader sh : GLEnumShader.values())
+		for (GLEnumShader sh : GLEnumShader.values())
 		{
 			String loc = String.format("res/shaders/%s.glsl", sh.name().toLowerCase());
 			
@@ -130,9 +133,9 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 		}
 		catch (GLException e)
 		{
-			CaelumEngine.log().err(e);
+			Logger.log().err(e);
 			
-		}*/
+		}
 		
 		this.maxTexCount = this.gl1.glGetInteger(GLConst.GL_MAX_TEXTURE_UNITS);
 		

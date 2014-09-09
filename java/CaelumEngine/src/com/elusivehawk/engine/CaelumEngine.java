@@ -2,6 +2,7 @@
 package com.elusivehawk.engine;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -697,44 +698,16 @@ public final class CaelumEngine
 		
 		if (CompInfo.BUILT)
 		{
-			DirtableStorage<File> nDest = new DirtableStorage<File>();
-			
 			FileHelper.readZip(CompInfo.JAR_DIR, ((zip, entry, name) ->
 			{
-				nDest.set(new File(tmp, name.contains("/") ? StringHelper.getSuffix(name, "/") : name));
-				
-				if (!FileHelper.NATIVE_FILTER.accept(nDest.get()))
+				if (!FileHelper.NATIVE_NAME_FILTER.accept(null, entry.getName()))
 				{
-					return;
-				}
-				
-				if (nDest.get().exists() && nDest.get().getTotalSpace() == entry.getSize())
-				{
-					if (CompInfo.DEBUG)
-					{
-						Logger.log().log(EnumLogType.VERBOSE, "Not copying jar native: %s", name);
-						
-					}
-					
 					return;
 				}
 				
 				try
 				{
-					if (FileHelper.copy(zip.getInputStream(entry), nDest.get()))
-					{
-						if (CompInfo.DEBUG)
-						{
-							Logger.log().log(EnumLogType.VERBOSE, "Succesfully copied jar native: %s", name);
-							
-						}
-						
-					}
-					else
-					{
-						Logger.log().log(EnumLogType.WARN, "Could not copy jar native: %s/%s", name);
-						
-					}
+					copyNative(zip.getInputStream(entry), entry.getSize(), new File(tmp, name.contains("/") ? StringHelper.getSuffix(name, "/") : name));
 					
 				}
 				catch (Exception e)
@@ -756,42 +729,44 @@ public final class CaelumEngine
 				throw new CaelumException("Could not load natives! THIS IS A BUG! Native directory: %s", nLoc.getAbsolutePath());
 			}
 			
-			File nDest;
-			
 			for (File n : natives)
 			{
-				nDest = new File(tmp, n.getName());
-				
-				if (nDest.exists() && nDest.getTotalSpace() == n.getTotalSpace())
-				{
-					if (CompInfo.DEBUG)
-					{
-						Logger.log().log(EnumLogType.VERBOSE, "Not copying native: %s/%s", n.getParentFile().getName(), n.getName());
-					}
-					
-					continue;
-				}
-				
-				if (FileHelper.copy(n, nDest))
-				{
-					if (CompInfo.DEBUG)
-					{
-						Logger.log().log(EnumLogType.VERBOSE, "Succesfully copied native: %s/%s", n.getParentFile().getName(), n.getName());
-						
-					}
-					
-				}
-				else
-				{
-					Logger.log().log(EnumLogType.WARN, "Could not copy native: %s/%s", n.getParentFile().getName(), n.getName());
-					
-				}
+				copyNative(FileHelper.createInStream(n), n.getTotalSpace(), new File(tmp, n.getName()));
 				
 			}
 			
 		}
 		
 		this.nativeLocation = tmp;
+		
+	}
+	
+	private static void copyNative(InputStream is, long space, File dest)
+	{
+		if (dest.exists() && dest.getTotalSpace() == space)
+		{
+			if (CompInfo.DEBUG)
+			{
+				Logger.log().log(EnumLogType.VERBOSE, "Not copying native: %s", dest.getName());
+			}
+			
+			return;
+		}
+		
+		if (FileHelper.copy(is, dest))
+		{
+			if (CompInfo.DEBUG)
+			{
+				Logger.log().log(EnumLogType.VERBOSE, "Succesfully copied native: %s", dest.getName());
+				
+			}
+			
+		}
+		else
+		{
+			Logger.log().log(EnumLogType.WARN, "Could not copy native: %s", dest.getName());
+			
+		}
 		
 	}
 	
