@@ -10,7 +10,6 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.List;
@@ -344,114 +343,6 @@ public final class FileHelper
 		return null;
 	}
 	
-	public static boolean copy(File file, File dest)
-	{
-		assert canRead(file);
-		
-		File dst = dest;
-		
-		try
-		{
-			if (!dest.exists())
-			{
-				if (dest.isDirectory())
-				{
-					if (!dest.mkdirs())
-					{
-						return false;
-					}
-					
-				}
-				else
-				{
-					if (!dest.createNewFile())
-					{
-						return false;
-					}
-					
-				}
-				
-			}
-			
-			if (dest.isDirectory())
-			{
-				dst = new File(dest, file.getName());
-				
-			}
-			
-		}
-		catch (Throwable e)
-		{
-			Logger.log().err(e);
-			
-		}
-		
-		return copy(createInStream(file), dst);
-	}
-	
-	public static boolean copy(InputStream is, File dest)
-	{
-		assert dest.isFile();
-		
-		if (!dest.exists())
-		{
-			try
-			{
-				dest.createNewFile();
-				
-			}
-			catch (Exception e)
-			{
-				Logger.log().err(e);
-				
-			}
-			
-			if (!dest.exists())
-			{
-				return false;
-			}
-			
-		}
-		
-		BufferedInputStream in = (is instanceof BufferedInputStream) ? (BufferedInputStream)is : new BufferedInputStream(is);
-		BufferedOutputStream out = new BufferedOutputStream(createOutStream(dest, true));
-		
-		byte[] buf = new byte[1024];
-		int read = -1;
-		
-		try
-		{
-			while ((read = in.read(buf)) > 0)
-			{
-				out.write(buf, 0, read);
-				
-			}
-			
-		}
-		catch (Exception e)
-		{
-			Logger.log().err(e);
-			
-		}
-		finally
-		{
-			try
-			{
-				in.close();
-				out.close();
-				
-			}
-			catch (Exception e)
-			{
-				Logger.log().err(e);
-				
-			}
-			
-		}
-		
-		return true;
-	}
-	
 	public static void scanForFiles(File folder, IFileScanner sc)
 	{
 		scanForFiles(folder, true, sc);
@@ -545,7 +436,7 @@ public final class FileHelper
 				zip.close();
 				
 			}
-			catch (IOException e)
+			catch (Exception e)
 			{
 				Logger.log().err(e);
 				
@@ -553,6 +444,98 @@ public final class FileHelper
 			
 		}
 		
+	}
+	
+	public static byte[] readBytes(File file)
+	{
+		return readBytes(createInStream(file), true);
+	}
+	
+	public static byte[] readBytes(InputStream is)
+	{
+		return readBytes(is, true);
+	}
+	
+	public static byte[] readBytes(InputStream is, boolean close)
+	{
+		if (is == null)
+		{
+			return new byte[0];
+		}
+		
+		BufferedInputStream in = (is instanceof BufferedInputStream) ? (BufferedInputStream)is : new BufferedInputStream(is);
+		byte[] ret = null;
+		int off = 0;
+		int i = 0;
+		
+		try
+		{
+			ret = new byte[in.available()];
+			
+			while ((i = in.read(ret, off, Math.min(1024, ret.length - off))) > 0)
+			{
+				off += i;
+				
+			}
+			
+		}
+		catch (Exception e)
+		{
+			Logger.log().err(e);
+			
+		}
+		finally
+		{
+			if (close)
+			{
+				try
+				{
+					in.close();
+					
+				}
+				catch (Exception e)
+				{
+					Logger.log().err(e);
+					
+				}
+				
+			}
+			
+		}
+		
+		if (ret == null)
+		{
+			return new byte[0];
+		}
+		
+		return ret;
+	}
+	
+	public static boolean write(byte[] bytes, File dest)
+	{
+		FileOutputStream fos = createOutStream(dest, true);
+		
+		if (fos == null)
+		{
+			return false;
+		}
+		
+		BufferedOutputStream out = new BufferedOutputStream(fos);
+		
+		try
+		{
+			out.write(bytes);
+			out.flush();
+			
+		}
+		catch (Exception e)
+		{
+			Logger.log().err(e);
+			
+			return false;
+		}
+		
+		return true;
 	}
 	
 	public static class FilenameFilterWrapper implements FileFilter

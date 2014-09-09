@@ -3,6 +3,8 @@ package com.elusivehawk.engine;
 
 import java.io.File;
 import java.io.InputStream;
+import java.security.MessageDigest;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +35,6 @@ import com.elusivehawk.util.json.JsonData;
 import com.elusivehawk.util.json.JsonObject;
 import com.elusivehawk.util.json.JsonParseException;
 import com.elusivehawk.util.json.JsonParser;
-import com.elusivehawk.util.storage.DirtableStorage;
 import com.elusivehawk.util.storage.Pair;
 import com.elusivehawk.util.storage.Tuple;
 import com.elusivehawk.util.task.TaskManager;
@@ -707,7 +708,7 @@ public final class CaelumEngine
 				
 				try
 				{
-					copyNative(zip.getInputStream(entry), entry.getSize(), new File(tmp, name.contains("/") ? StringHelper.getSuffix(name, "/") : name));
+					copyNative(zip.getInputStream(entry), new File(tmp, name.contains("/") ? StringHelper.getSuffix(name, "/") : name));
 					
 				}
 				catch (Exception e)
@@ -731,7 +732,7 @@ public final class CaelumEngine
 			
 			for (File n : natives)
 			{
-				copyNative(FileHelper.createInStream(n), n.getTotalSpace(), new File(tmp, n.getName()));
+				copyNative(FileHelper.createInStream(n), new File(tmp, n.getName()));
 				
 			}
 			
@@ -741,30 +742,129 @@ public final class CaelumEngine
 		
 	}
 	
-	private static void copyNative(InputStream is, long space, File dest)
+	private static void copyNative(InputStream is, File dest)
 	{
-		if (dest.exists() && dest.getTotalSpace() == space)
+		MessageDigest md = null;
+		
+		try
+		{
+			md = MessageDigest.getInstance("SHA-256");
+			
+		}
+		catch (Exception e)
+		{
+			Logger.log().err(e);
+			
+		}
+		
+		if (md == null)
+		{
+			throw new CaelumException("Algorithm digest not found! THIS IS A BUG!!!");
+		}
+		
+		byte[] bytes = FileHelper.readBytes(is, false);
+		
+		if (bytes.length == 0)
+		{
+			return;
+		}
+		
+		String name = dest.getName();
+		
+		if (!dest.exists())
+		{
+			try
+			{
+				if (!dest.createNewFile())
+				{
+					return;
+				}
+				
+			}
+			catch (Exception e)
+			{
+				Logger.log().err(e);
+				
+			}
+			
+			if (!dest.exists())
+			{
+				if (CompInfo.DEBUG)
+				{
+					Logger.log().log(EnumLogType.VERBOSE, "Not copying native \"%s\", destination could not be created", name);
+				}
+				
+				return;
+			}
+			
+		}
+		
+		md.update(bytes);
+		byte[] sha1 = md.digest();
+		md.reset();
+		
+		if (sha1 == null || sha1.length == 0)
+		{
+			Logger.log().log(EnumLogType.ERROR, "Could not generate checksum for \"%s\"; THIS IS A BUG!", name);
+			
+			return;
+		}
+		
+		File sha1File = new File(dest.getParentFile(), String.format("%s.checksum", name));
+		
+		if ((sha1File.exists() || sha1File.getTotalSpace() != sha1.length) && !FileHelper.write(sha1, sha1File))
+		{
+			Logger.log().log(EnumLogType.WARN, "Could not copy checksum for native \"%s\", skipping", name);
+			
+			return;
+		}
+		
+		byte[] oldSHA1 = FileHelper.readBytes(sha1File);
+		
+		if (oldSHA1.length == 0)
+		{
+			Logger.log().log(EnumLogType.WARN, "Could not read checksum for \"%s\", it read as an empty checksum", name);
+			
+			if (!FileHelper.write(sha1, sha1File))
+			{
+				Logger.log().log(EnumLogType.WARN, "Could not write checksum for native \"%s\", skipping", name);
+				
+				return;
+			}
+			
+			oldSHA1 = sha1;
+			
+		}
+		
+		if (Arrays.equals(sha1, oldSHA1))
 		{
 			if (CompInfo.DEBUG)
 			{
-				Logger.log().log(EnumLogType.VERBOSE, "Not copying native: %s", dest.getName());
+				Logger.log().log(EnumLogType.VERBOSE, "Not copying file \"%s\", checksum matched", name);
+				
 			}
 			
 			return;
 		}
 		
-		if (FileHelper.copy(is, dest))
+		if (!FileHelper.write(sha1, sha1File))
+		{
+			Logger.log().log(EnumLogType.WARN, "Could not write checksum for native \"%s\"", name);
+			
+		}
+		
+		if (FileHelper.write(bytes, dest))
 		{
 			if (CompInfo.DEBUG)
 			{
-				Logger.log().log(EnumLogType.VERBOSE, "Succesfully copied native: %s", dest.getName());
+				Logger.log().log(EnumLogType.VERBOSE, "Succesfully copied native: \"%s\"", dest.getName());
 				
 			}
 			
 		}
 		else
 		{
-			Logger.log().log(EnumLogType.WARN, "Could not copy native: %s", dest.getName());
+			Logger.log().log(EnumLogType.WARN, "Could not copy native: \"%s\"", dest.getName());
 			
 		}
 		
