@@ -41,7 +41,13 @@ public final class TestGame extends Game
 			
 			for (Key key : kb.getPushedKeys())
 			{
-				Logger.log().log(EnumLogType.VERBOSE, "Key type: %s", key);
+				Logger.log().log(EnumLogType.VERBOSE, "Key down: %s", key);
+				
+			}
+			
+			for (Key key : kb.getOldPushedKeys())
+			{
+				Logger.log().log(EnumLogType.VERBOSE, "Key up: %s", key);
 				
 			}
 			
@@ -53,11 +59,7 @@ public final class TestGame extends Game
 			
 			for (int c = 0; c < m.getButtonCount(); c++)
 			{
-				if (m.getClickStatus(c).isDown())
-				{
-					Logger.log().log(EnumLogType.VERBOSE, "Mouse click: #%s, pos: %s", c, m.getMousePos());
-					
-				}
+				Logger.log().log(EnumLogType.VERBOSE, "Mouse click: #%s, type: %s, pos: %s", c, m.getClickStatus(c), m.getMousePos());
 				
 			}
 			

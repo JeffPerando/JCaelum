@@ -285,7 +285,7 @@ public final class StringHelper
 		return concat(separator, "", d, strs);
 	}
 	
-	public static String concat(String separator, String endWith, String d, String... strs)
+	public static String concat(String separator, String end, String d, String... strs)
 	{
 		if (strs == null || strs.length == 0)
 		{
@@ -293,13 +293,22 @@ public final class StringHelper
 		}
 		
 		StringBuilder b = newBuilder(strs.length * 2);
+		boolean prev = false;
 		
 		for (int c = 0; c < strs.length; ++c)
 		{
+			if (prev)
+			{
+				b.append(separator);
+				
+			}
+			else prev = true;
+			
 			b.append(strs[c]);
-			b.append(c == strs.length - 1 ? endWith : separator);
 			
 		}
+		
+		b.append(end);
 		
 		return b.toString();
 	}

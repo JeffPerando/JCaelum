@@ -142,19 +142,14 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 				}
 				catch (Throwable e)
 				{
-					Logger.log().err("Error caught during game state initiation:", new GameTickException(e));
-					
+					throw new GameTickException("Error caught during game state initiation:", e);
 				}
 				
 				this.state.loadAssets(CaelumEngine.assetManager());
 				
 				if (!this.listeners.isEmpty())
 				{
-					for (IGameStateListener gsl : this.listeners)
-					{
-						gsl.onGameStateSwitch(this.state);
-						
-					}
+					this.listeners.forEach(((lis) -> {lis.onGameStateSwitch(this.state);}));
 					
 				}
 				

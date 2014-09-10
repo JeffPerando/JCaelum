@@ -44,7 +44,6 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 	private IGL2 gl2;
 	private IGL3 gl3;
 	
-	private int fps;
 	private boolean paused = false;
 	
 	private int notex, maxTexCount;
@@ -139,8 +138,6 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 		
 		this.maxTexCount = this.gl1.glGetInteger(GLConst.GL_MAX_TEXTURE_UNITS);
 		
-		this.fps = this.settings.targetFPS;
-		
 		if (this.hub != null)
 		{
 			Logger.log().log(EnumLogType.WARN, "Rendering using render HUB system! Override Game.render() instead!");
@@ -192,9 +189,7 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 	@Override
 	public void update(double delta, Object... extra) throws RenderException
 	{
-		boolean useHub = (this.hub != null);
-		
-		if (useHub)
+		if (this.hub != null)
 		{
 			try
 			{
@@ -207,18 +202,19 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 				
 			}
 			
-		}
-		
-		if ((useHub && this.hub.updateDisplay()) || this.refreshScreen)
-		{
-			if (useHub)
+			if (this.hub.updateDisplay())
 			{
-				this.settings = this.hub.getSettings();
+				this.setSettings(this.hub.getSettings());
 				
 			}
 			
+		}
+		
+		if (this.refreshScreen)
+		{
 			this.display.updateSettings(this.settings);
 			this.gl1.glViewport(0, 0, this.display.getWidth(), this.display.getHeight());
+			
 			this.refreshScreen = false;
 			
 		}
@@ -361,7 +357,7 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 	
 	public int getFPS()
 	{
-		return this.fps;
+		return this.settings.targetFPS;
 	}
 	
 	public Shaders getDefaultShaders()

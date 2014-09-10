@@ -19,6 +19,9 @@ import com.elusivehawk.util.Logger;
  */
 public class LWJGLDisplay implements IDisplay
 {
+	private String title = "";
+	private int width = 800, height = 600;
+	
 	@Override
 	public void close() throws IOException
 	{
@@ -29,7 +32,7 @@ public class LWJGLDisplay implements IDisplay
 	@Override
 	public String getTitle()
 	{
-		return Display.getTitle();
+		return this.title;
 	}
 	
 	@Override
@@ -60,13 +63,13 @@ public class LWJGLDisplay implements IDisplay
 	@Override
 	public int getHeight()
 	{
-		return Display.getHeight();
+		return this.height;
 	}
 	
 	@Override
 	public int getWidth()
 	{
-		return Display.getWidth();
+		return this.width;
 	}
 	
 	@Override
@@ -103,6 +106,10 @@ public class LWJGLDisplay implements IDisplay
 			Logger.log().err(e);
 			
 		}
+		
+		this.title = Display.getTitle();
+		this.width = Display.getWidth();
+		this.height = Display.getHeight();
 		
 	}
 	

@@ -21,7 +21,9 @@ public class LWJGLKeyboard extends com.elusivehawk.engine.input.Keyboard
 	
 	protected boolean dirty = false;
 	protected final boolean[] downKeys = new boolean[Key.values().length];
-	protected final List<Key> downKeyList = Lists.newArrayList();
+	protected final List<Key>
+			downKeyList = Lists.newArrayList(),
+			upKeyList = Lists.newArrayList();
 	
 	static
 	{
@@ -166,6 +168,12 @@ public class LWJGLKeyboard extends com.elusivehawk.engine.input.Keyboard
 	}
 	
 	@Override
+	public List<Key> getOldPushedKeys()
+	{
+		return this.upKeyList;
+	}
+	
+	@Override
 	public boolean initiateInput()
 	{
 		super.initiateInput();
@@ -234,6 +242,7 @@ public class LWJGLKeyboard extends com.elusivehawk.engine.input.Keyboard
 			else
 			{
 				this.downKeyList.remove(key);
+				this.upKeyList.add(key);
 				ret = true;
 				
 			}
@@ -246,7 +255,7 @@ public class LWJGLKeyboard extends com.elusivehawk.engine.input.Keyboard
 	@Override
 	protected void postUpdate()
 	{
-		
+		this.upKeyList.clear();
 		
 	}
 	

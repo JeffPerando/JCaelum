@@ -15,7 +15,6 @@ public class DisplaySettings
 	public String title = "Caelum Engine Game (Now with less thread locking!)";
 	public int width = 800, height = 600;
 	public ByteBuffer[] icons = null;
-	@Deprecated
 	public int targetFPS = 30;
 	public boolean resize = false;
 	public boolean fullscreen = false;
@@ -39,6 +38,24 @@ public class DisplaySettings
 			
 		}
 		
+	}
+	
+	@Override
+	public Object clone()
+	{
+		DisplaySettings ret = new DisplaySettings();
+		
+		ret.title = this.title;
+		ret.width = this.width;
+		ret.height = this.height;
+		ret.icons = this.icons;
+		ret.targetFPS = this.targetFPS;
+		ret.resize = this.resize;
+		ret.fullscreen = this.fullscreen;
+		ret.vsync = this.vsync;
+		ret.bg = this.bg;
+		
+		return ret;
 	}
 	
 }

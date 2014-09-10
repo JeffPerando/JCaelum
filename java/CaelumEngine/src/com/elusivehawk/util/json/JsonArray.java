@@ -28,21 +28,20 @@ public class JsonArray extends JsonData
 		
 		b.append(super.toString(tabs, format));
 		
-		JsonData str;
+		boolean prev = false;
 		
 		for (int c = 0; c < this.array.length; c++)
 		{
-			str = this.array[c];
-			
-			if (format) b.append("\n");
-			
-			b.append(str.toString(tabs + 1, format));
-			
-			if (c < (this.array.length - 1))
+			if (prev)
 			{
 				b.append(", ");
 				
 			}
+			else prev = true;
+			
+			if (format) b.append("\n");
+			
+			b.append(this.array[c].toString(tabs + 1, format));
 			
 		}
 		

@@ -28,6 +28,7 @@ public class AssetManager implements ITaskListener
 			filesToScan = new SyncList<File>();
 	
 	protected boolean loaded = false;
+	protected String parent = ".";
 	
 	public AssetManager(){}
 	
@@ -65,7 +66,7 @@ public class AssetManager implements ITaskListener
 		
 	}
 	
-	public synchronized void addSearchDirectory(File dir)
+	public void addSearchDirectory(File dir)
 	{
 		if (!dir.exists())
 		{
@@ -77,7 +78,24 @@ public class AssetManager implements ITaskListener
 			return;
 		}
 		
-		this.filesToScan.add(dir);
+		if (this.loaded)
+		{
+			this.resLocs.addAll(FileHelper.getFiles(dir));
+			
+		}
+		else
+		{
+			this.filesToScan.add(dir);
+			
+		}
+		
+	}
+	
+	public void setDefaultResourceParent(String path)
+	{
+		assert path != null && !"".equals(path);
+		
+		this.parent = path;
 		
 	}
 	
@@ -138,7 +156,7 @@ public class AssetManager implements ITaskListener
 		return null;
 	}
 	
-	protected File findFile(String loc)
+	protected File getFile(String loc)
 	{
 		for (File file : this.resLocs)
 		{
@@ -149,7 +167,7 @@ public class AssetManager implements ITaskListener
 			
 		}
 		
-		return null;
+		return new File(this.parent, loc);
 	}
 	
 }

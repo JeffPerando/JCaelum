@@ -240,13 +240,20 @@ public class Vector implements IMathObject<Float>, IDirty
 	{
 		StringBuilder b = new StringBuilder(1 + (this.length() * 2));
 		
-		b.append(this.getName() == null ? "vector" : this.getName());
-		b.append(":[");
+		b.append(String.format("%s:[", this.getName() == null ? "vector" : this.getName()));
+		
+		boolean prev = false;
 		
 		for (int c = 0; c < this.length(); c++)
 		{
+			if (prev)
+			{
+				b.append(", ");
+				
+			}
+			else prev = true;
+			
 			b.append(this.get(c));
-			if (c < (this.length() - 1)) b.append(", ");
 			
 		}
 		
