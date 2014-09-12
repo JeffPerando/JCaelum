@@ -55,14 +55,14 @@ public class JsonObject extends JsonData implements Iterable<JsonData>
 		
 		for (int c = 0; c < this.jsons.size(); c++)
 		{
-			if (format) b.append("\n");
-			b.append(this.jsons.get(c).toString(tabs + 1, format));
-			
-			if (c < (this.jsons.size() - 1))
+			if (c > 0)
 			{
 				b.append(",");
 				
 			}
+			
+			if (format) b.append("\n");
+			b.append(this.jsons.get(c).toString(tabs + 1, format));
 			
 		}
 		

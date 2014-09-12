@@ -139,7 +139,7 @@ public class Vector implements IMathObject<Float>, IDirty
 	}
 	
 	@Override
-	public void normalize(IMathObject<Float> dest)
+	public IMathObject<Float> normalize(IMathObject<Float> dest)
 	{
 		float f = MathHelper.length(this);
 		
@@ -153,6 +153,7 @@ public class Vector implements IMathObject<Float>, IDirty
 		
 		dest.onChanged();
 		
+		return dest;
 	}
 	
 	@Override
@@ -242,16 +243,13 @@ public class Vector implements IMathObject<Float>, IDirty
 		
 		b.append(String.format("%s:[", this.getName() == null ? "vector" : this.getName()));
 		
-		boolean prev = false;
-		
 		for (int c = 0; c < this.length(); c++)
 		{
-			if (prev)
+			if (c > 0)
 			{
 				b.append(", ");
 				
 			}
-			else prev = true;
 			
 			b.append(this.get(c));
 			
@@ -514,6 +512,11 @@ public class Vector implements IMathObject<Float>, IDirty
 		return this;
 	}
 	
+	public Vector add(IMathObject<Float> obj, boolean local)
+	{
+		return (Vector)this.add(obj, local ? this : new Vector(this.length()));
+	}
+	
 	public Vector add(int pos, float f)
 	{
 		return this.add(pos, f, true);
@@ -524,6 +527,11 @@ public class Vector implements IMathObject<Float>, IDirty
 		this.set(pos, this.nums[pos] + f, notify);
 		
 		return this;
+	}
+	
+	public Vector div(IMathObject<Float> obj, boolean local)
+	{
+		return (Vector)this.div(obj, local ? this : new Vector(this.length()));
 	}
 	
 	public Vector div(int pos, float f)
@@ -538,6 +546,11 @@ public class Vector implements IMathObject<Float>, IDirty
 		return this;
 	}
 	
+	public Vector mul(IMathObject<Float> obj, boolean local)
+	{
+		return (Vector)this.mul(obj, local ? this : new Vector(this.length()));
+	}
+	
 	public Vector mul(int pos, float f)
 	{
 		return this.mul(pos, f, true);
@@ -548,6 +561,11 @@ public class Vector implements IMathObject<Float>, IDirty
 		this.set(pos, this.nums[pos] * f, notify);
 		
 		return this;
+	}
+	
+	public Vector sub(IMathObject<Float> obj, boolean local)
+	{
+		return (Vector)this.sub(obj, local ? this : new Vector(this.length()));
 	}
 	
 	public Vector sub(int pos, float f)

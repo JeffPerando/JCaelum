@@ -31,25 +31,9 @@ public final class MathHelper
 		return clamp(l, min, max) == l;
 	}
 	
-	public static Vector calcNormal(Vector... vtx)
+	public static Vector calcNormal(Vector one, Vector two, Vector three)
 	{
-		Vector norm = new Vector();
-		float[]
-				v1 = new float[3],
-				v2 = new float[3];
-		
-		for (int c = 0; c < 3; c++)
-		{
-			v1[c] = (vtx[1].get(c) - vtx[0].get(c));
-			v2[c] = (vtx[2].get(c) - vtx[0].get(c));
-			
-		}
-		
-		norm.set(X, (v1[Y] * v2[Z]) - ((v1[Z] * v2[Y])), false);
-		norm.set(Y, -((v2[Z] * v1[X]) - (v2[X] * v1[Z])), false);
-		norm.set(Z, (v1[X] * v2[Y]) - (v1[Y] * v2[X]), false);
-		
-		return norm;
+		return (Vector)cross(one.sub(two, false), one.sub(three, false)).normalize();
 	}
 	
 	public static float clamp(float f, float min, float max)

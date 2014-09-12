@@ -181,12 +181,12 @@ public class Matrix implements IMathObject<Float>
 	}
 	
 	@Override
-	public void normalize(IMathObject<Float> dest)
+	public IMathObject<Float> normalize(IMathObject<Float> dest)
 	{
 		assert !dest.isImmutable();
 		
 		
-		
+		return dest;
 	}
 	
 	@Override

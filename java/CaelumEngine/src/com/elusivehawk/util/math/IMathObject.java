@@ -84,13 +84,12 @@ public interface IMathObject<T extends Number> extends IStorable<T>, IArray<T>
 		
 	}
 	
-	default void normalize()
+	default IMathObject<T> normalize()
 	{
-		this.normalize(this);
-		
+		return this.normalize(this);
 	}
 	
-	public void normalize(IMathObject<T> dest);
+	public IMathObject<T> normalize(IMathObject<T> dest);
 	
 	default IMathObject<T> set(IMathObject<T> obj)
 	{
