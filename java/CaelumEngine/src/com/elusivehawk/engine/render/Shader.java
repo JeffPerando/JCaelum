@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
-import java.io.File;
+import java.io.BufferedInputStream;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.assets.GraphicAsset;
 import com.elusivehawk.engine.render.opengl.GLEnumShader;
@@ -37,9 +37,9 @@ public class Shader extends GraphicAsset
 	}
 	
 	@Override
-	protected boolean readAsset(File asset) throws Throwable
+	protected boolean readAsset(BufferedInputStream in) throws Throwable
 	{
-		String src = RenderHelper.formatShaderSource(StringHelper.readToOneLine(asset), asset.getParentFile());
+		String src = StringHelper.readToOneLine(in);
 		
 		if (src != null)
 		{

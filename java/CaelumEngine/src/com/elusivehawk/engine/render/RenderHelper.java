@@ -2,7 +2,9 @@
 package com.elusivehawk.engine.render;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.List;
 import javax.imageio.ImageIO;
@@ -70,17 +72,23 @@ public final class RenderHelper
 	
 	public static List<ILegibleImage> readImg(File img)
 	{
+		return readImg(new BufferedInputStream(FileHelper.createInStream(img)), img.getName().endsWith(".gif"));
+	}
+	
+	public static List<ILegibleImage> readImg(InputStream is, boolean isGif)
+	{
 		List<ILegibleImage> ret = null;
 		
-		if (img.getName().endsWith(".gif"))
+		if (isGif)
 		{
-			ret = readGifFile(img);
+			ret = readGifFile(is);
+			
 		}
 		else
 		{
 			try
 			{
-				PNGDecoder dec = new PNGDecoder(FileHelper.createInStream(img));
+				PNGDecoder dec = new PNGDecoder(is);
 				ByteBuffer buf = BufferHelper.createByteBuffer(dec.getWidth() * dec.getHeight() * 4);
 				
 				dec.decode(buf, dec.getWidth() * 4, PNGDecoder.Format.RGBA);
@@ -101,12 +109,12 @@ public final class RenderHelper
 		return ret;
 	}
 	
-	private static List<ILegibleImage> readGifFile(File gif)
+	private static List<ILegibleImage> readGifFile(InputStream is)
 	{
 		try
 		{
 			ImageReader r = ImageIO.getImageReadersByFormatName("gif").next();
-			ImageInputStream in = ImageIO.createImageInputStream(gif);
+			ImageInputStream in = ImageIO.createImageInputStream(is);
 			r.setInput(in, false);
 			
 			int imgs = r.getNumImages(true);

@@ -136,6 +136,11 @@ public final class StringHelper
 		return readToOneLine(FileHelper.createReader(file));
 	}
 	
+	public static String readToOneLine(InputStream is)
+	{
+		return readToOneLine(new InputStreamReader(is));
+	}
+	
 	public static String readToOneLine(Reader r)
 	{
 		StringBuilder b = newBuilder();

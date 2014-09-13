@@ -53,34 +53,6 @@ public class RenderTicket extends RenderableObj implements IQuatListener, IVecto
 	//protected IModelAnimation anim = null, lastAnim = null;
 	protected int texFrame = 0;
 	
-	@SuppressWarnings("unqualified-field-access")
-	public RenderTicket(Vector off, Quaternion roff)
-	{
-		this();
-		
-		offset.set(off);
-		rotOff.set(roff);
-		
-	}
-	
-	@SuppressWarnings("unqualified-field-access")
-	public RenderTicket(Quaternion roff)
-	{
-		this();
-		
-		rotOff.set(roff);
-		
-	}
-	
-	@SuppressWarnings("unqualified-field-access")
-	public RenderTicket(Vector off)
-	{
-		this();
-		
-		offset.set(off);
-		
-	}
-	
 	public RenderTicket()
 	{
 		super();
@@ -289,7 +261,7 @@ public class RenderTicket extends RenderableObj implements IQuatListener, IVecto
 		return this.zBuffer;
 	}
 	
-	public synchronized RenderTicket setPosOffset(Vector off)
+	public RenderTicket setPosOffset(Vector off)
 	{
 		this.offset.set(off);
 		this.pos.add(this.offset);
@@ -311,16 +283,12 @@ public class RenderTicket extends RenderableObj implements IQuatListener, IVecto
 			throw new CaelumException("[%s]: Vector %s has an invalid scaling float at position %s", this, s, c);
 		}
 		
-		synchronized (this)
-		{
-			this.scale.set(s);
-			
-		}
+		this.scale.set(s);
 		
 		return this;
 	}
 	
-	public synchronized RenderTicket setRotOffset(Quaternion qoff)
+	public RenderTicket setRotOffset(Quaternion qoff)
 	{
 		this.rotOff.set(qoff);
 		this.rot.add(this.rotOff);

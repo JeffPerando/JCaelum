@@ -1,9 +1,10 @@
 
 package com.elusivehawk.engine.render;
 
-import java.io.File;
+import java.io.BufferedInputStream;
 import java.util.List;
 import com.elusivehawk.engine.CaelumEngine;
+import com.elusivehawk.engine.CaelumException;
 import com.elusivehawk.engine.assets.GraphicAsset;
 import com.elusivehawk.util.task.Task;
 
@@ -15,19 +16,30 @@ import com.elusivehawk.util.task.Task;
  */
 public class Texture extends GraphicAsset
 {
+	protected final boolean animate;
+	
 	protected int[] frames = null;
 	protected int frameCount = -1;
 	
 	public Texture(String filepath)
 	{
+		this(filepath, filepath.endsWith(".gif"));
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public Texture(String filepath, boolean animated)
+	{
 		super(filepath);
+		
+		animate = animated;
 		
 	}
 	
 	@Override
-	protected boolean readAsset(File asset) throws Throwable
+	protected boolean readAsset(BufferedInputStream in) throws Throwable
 	{
-		List<ILegibleImage> imgs = RenderHelper.readImg(asset);
+		List<ILegibleImage> imgs = RenderHelper.readImg(in, this.animate);
 		
 		if (imgs == null || imgs.isEmpty())
 		{
@@ -51,7 +63,7 @@ public class Texture extends GraphicAsset
 	{
 		if (this.isLoaded())
 		{
-			throw new RenderException("We're already full up on frames, sir...");
+			throw new CaelumException("We're already full up on frames, sir...");
 		}
 		
 		super.onTaskComplete(task);

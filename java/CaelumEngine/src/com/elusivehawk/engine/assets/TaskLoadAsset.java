@@ -1,7 +1,9 @@
 
 package com.elusivehawk.engine.assets;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.util.FileHelper;
 import com.elusivehawk.util.Internal;
@@ -55,7 +57,14 @@ public class TaskLoadAsset extends Task
 			return false;
 		}
 		
-		if (this.asset.read(file))
+		FileInputStream fis = FileHelper.createInStream(file);
+		
+		if (fis == null)
+		{
+			return false;
+		}
+		
+		if (this.asset.read(new BufferedInputStream(fis)))
 		{
 			this.fin = this.asset;
 			

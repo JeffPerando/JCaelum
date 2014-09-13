@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
-import java.io.File;
+import java.io.BufferedInputStream;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.util.math.Vector;
 import com.elusivehawk.util.storage.ImmutableArray;
@@ -28,9 +28,9 @@ public class Mesh extends Asset
 	}
 	
 	@Override
-	protected boolean readAsset(File asset)
+	protected boolean readAsset(BufferedInputStream in)
 	{
-		return true;
+		return false;
 	}
 	
 }
