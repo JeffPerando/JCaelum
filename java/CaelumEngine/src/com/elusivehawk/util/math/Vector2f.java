@@ -53,7 +53,7 @@ public class Vector2f extends Vector
 	}
 	
 	@Override
-	public void set(int pos, Float f)
+	public Vector2f set(int pos, Float f)
 	{
 		switch (pos)
 		{
@@ -62,6 +62,7 @@ public class Vector2f extends Vector
 			
 		}
 		
+		return this;
 	}
 	
 	public void set(float a, float b)

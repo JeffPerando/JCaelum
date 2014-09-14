@@ -64,15 +64,14 @@ public interface IMathObject<T extends Number> extends IStorable<T>, IArray<T>
 		return ret;
 	}
 	
-	default void set(int pos, T num)
+	default IMathObject<T> set(int pos, T num)
 	{
-		this.set(pos, num, true);
-		
+		return this.set(pos, num, true);
 	}
 	
-	public void set(int pos, T num, boolean notify);
+	public IMathObject<T> set(int pos, T num, boolean notify);
 	
-	default void setAll(T num)
+	default IMathObject<T> setAll(T num)
 	{
 		for (int c = 0; c < this.length(); c++)
 		{
@@ -82,6 +81,7 @@ public interface IMathObject<T extends Number> extends IStorable<T>, IArray<T>
 		
 		this.onChanged();
 		
+		return this;
 	}
 	
 	default IMathObject<T> normalize()

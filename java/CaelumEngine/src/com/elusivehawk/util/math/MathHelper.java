@@ -129,18 +129,13 @@ public final class MathHelper
 		return (i & 1) == 1;
 	}
 	
-	public static float length(Vector vec)
-	{
-		return (float)Math.sqrt(lengthSquared(vec));
-	}
-	
-	public static float lengthSquared(Vector vec)
+	public static float length(IMathObject<Float> m)
 	{
 		float ret = 0f;
 		
-		for (int c = 0; c < vec.length(); c++)
+		for (int c = 0; c < m.length(); c++)
 		{
-			ret += square(vec.get(c));
+			ret += square(m.get(c));
 			
 		}
 		

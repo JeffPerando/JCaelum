@@ -52,7 +52,7 @@ public class Vector3f extends Vector2f
 	}
 	
 	@Override
-	public void set(int pos, Float f)
+	public Vector3f set(int pos, Float f)
 	{
 		if (pos == 2)
 		{
@@ -65,6 +65,7 @@ public class Vector3f extends Vector2f
 			
 		}
 		
+		return this;
 	}
 	
 	public void set(float a, float b, float c)

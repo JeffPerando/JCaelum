@@ -3,6 +3,7 @@ package com.elusivehawk.engine.render;
 
 import java.io.BufferedInputStream;
 import com.elusivehawk.engine.CaelumEngine;
+import com.elusivehawk.engine.assets.EnumAssetType;
 import com.elusivehawk.engine.assets.GraphicAsset;
 import com.elusivehawk.engine.render.opengl.GLEnumShader;
 import com.elusivehawk.util.StringHelper;
@@ -23,7 +24,7 @@ public class Shader extends GraphicAsset
 	@SuppressWarnings("unqualified-field-access")
 	public Shader(String filepath, GLEnumShader type)
 	{
-		super(filepath);
+		super(filepath, EnumAssetType.SHADER);
 		
 		gltype = type;
 		

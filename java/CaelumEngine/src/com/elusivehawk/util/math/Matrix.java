@@ -16,6 +16,12 @@ public class Matrix implements IMathObject<Float>
 	protected final float[] data;
 	public final int w, h;
 	
+	public Matrix()
+	{
+		this(4, 4);
+		
+	}
+	
 	public Matrix(int size)
 	{
 		this((int)Math.sqrt(size), (int)Math.sqrt(size));
@@ -68,35 +74,6 @@ public class Matrix implements IMathObject<Float>
 	{
 		this(m.data);
 		
-	}
-	
-	public Matrix load(FloatBuffer buf)
-	{
-		int l = Math.min(this.length(), buf.remaining());
-		
-		for (int c = 0; c < l; c++)
-		{
-			this.data[c] = buf.get();
-			
-		}
-		
-		return this;
-	}
-	
-	public Matrix save(FloatBuffer buf)
-	{
-		buf.put(this.data);
-		
-		return this;
-	}
-	
-	public FloatBuffer asBuffer()
-	{
-		FloatBuffer ret = BufferHelper.createFloatBuffer(this.w * this.h);
-		
-		this.save(ret);
-		
-		return ret;
 	}
 	
 	@Override
@@ -154,10 +131,17 @@ public class Matrix implements IMathObject<Float>
 	}
 	
 	@Override
-	public void set(int pos, Float num, boolean notify)
+	public Matrix set(int pos, Float num, boolean notify)
 	{
 		this.data[pos] = num.floatValue();
 		
+		if (notify)
+		{
+			this.onChanged();
+			
+		}
+		
+		return this;
 	}
 	
 	@Override
@@ -269,18 +253,59 @@ public class Matrix implements IMathObject<Float>
 		return dest;
 	}
 	
+	public Matrix load(FloatBuffer buf)
+	{
+		int l = Math.min(this.length(), buf.remaining());
+		
+		for (int c = 0; c < l; c++)
+		{
+			this.data[c] = buf.get();
+			
+		}
+		
+		return this;
+	}
+	
+	public Matrix save(FloatBuffer buf)
+	{
+		buf.put(this.data);
+		
+		return this;
+	}
+	
+	public FloatBuffer asBuffer()
+	{
+		FloatBuffer ret = BufferHelper.createFloatBuffer(this.w * this.h);
+		
+		this.save(ret);
+		
+		return ret;
+	}
+	
 	public float get(int x, int y)
 	{
 		return this.get(x + (y * this.h));
 	}
 	
-	public void set(int x, int y, float f)
+	public Matrix set(int x, int y, float f)
+	{
+		return this.set(x, y, f, true);
+	}
+	
+	public Matrix set(int x, int y, float f, boolean notify)
 	{
 		this.data[x + (y * this.h)] = f;
 		
+		if (notify)
+		{
+			this.onChanged();
+			
+		}
+		
+		return this;
 	}
 	
-	public void setRow(int r, float... fs)
+	public Matrix setRow(int r, float... fs)
 	{
 		int i = Math.min(this.w, fs.length);
 		
@@ -290,9 +315,10 @@ public class Matrix implements IMathObject<Float>
 			
 		}
 		
+		return this;
 	}
 	
-	public void setRow(int r, Vector vec)
+	public Matrix setRow(int r, Vector vec)
 	{
 		int i = Math.min(this.w, vec.length());
 		
@@ -302,34 +328,7 @@ public class Matrix implements IMathObject<Float>
 			
 		}
 		
-	}
-	
-	public void getColumn(int c, Vector col)
-	{
-		int l = Math.min(this.h, col.length());
-		
-		for (int i = 0; i < l; i++)
-		{
-			col.set(c, this.get(c, i), false);
-			
-		}
-		
-		col.onChanged();
-		
-	}
-	
-	public void getRow(int r, Vector row)
-	{
-		int i = Math.min(this.w, row.length());
-		
-		for (int c = 0; c < i; c++)
-		{
-			row.set(c, this.get(c, r), false);
-			
-		}
-		
-		row.onChanged();
-		
+		return this;
 	}
 	
 	public Matrix setIdentity()

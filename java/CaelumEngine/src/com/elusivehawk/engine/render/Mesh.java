@@ -3,6 +3,7 @@ package com.elusivehawk.engine.render;
 
 import java.io.BufferedInputStream;
 import com.elusivehawk.engine.assets.Asset;
+import com.elusivehawk.engine.assets.EnumAssetType;
 import com.elusivehawk.util.math.Vector;
 import com.elusivehawk.util.storage.ImmutableArray;
 
@@ -19,7 +20,7 @@ public class Mesh extends Asset
 	@SuppressWarnings("unqualified-field-access")
 	public Mesh(String filepath, Vector[] p, Vector[] tex, Vector[] norm)
 	{
-		super(filepath);
+		super(filepath, EnumAssetType.MESH);
 		
 		points = ImmutableArray.create(p);
 		texOffs = ImmutableArray.create(tex);

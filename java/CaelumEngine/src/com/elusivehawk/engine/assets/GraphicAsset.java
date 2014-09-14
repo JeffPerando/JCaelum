@@ -17,9 +17,9 @@ public abstract class GraphicAsset extends Asset implements ITaskListener, IGLDe
 {
 	protected volatile boolean loaded = false, registered = false;
 	
-	public GraphicAsset(String path)
+	public GraphicAsset(String path, EnumAssetType aType)
 	{
-		super(path);
+		super(path, aType);
 		
 	}
 	

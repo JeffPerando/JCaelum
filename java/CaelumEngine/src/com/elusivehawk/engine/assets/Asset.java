@@ -13,13 +13,21 @@ import com.elusivehawk.engine.CaelumEngine;
 public abstract class Asset
 {
 	public final String filepath;
+	public final EnumAssetType type;
 	
 	private boolean read = false;
 	
-	@SuppressWarnings("unqualified-field-access")
 	protected Asset(String path)
 	{
+		this(path, EnumAssetType.OTHER);
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	protected Asset(String path, EnumAssetType aType)
+	{
 		filepath = path;
+		type = aType;
 		
 		CaelumEngine.tasks().scheduleTask(new TaskLoadAsset(this));
 		
@@ -42,7 +50,5 @@ public abstract class Asset
 	}
 	
 	protected abstract boolean readAsset(BufferedInputStream in) throws Throwable;
-	
-	public void onRead(){}
 	
 }

@@ -1,12 +1,8 @@
 
 package com.elusivehawk.util.math;
 
-import static com.elusivehawk.util.math.MathConst.A;
-import static com.elusivehawk.util.math.MathConst.B;
-import static com.elusivehawk.util.math.MathConst.C;
-import static com.elusivehawk.util.math.MathConst.X;
-import static com.elusivehawk.util.math.MathConst.Y;
-import static com.elusivehawk.util.math.MathConst.Z;
+import static com.elusivehawk.util.math.MathConst.*;
+import static com.elusivehawk.util.math.MathHelper.*;
 
 /**
  * 
@@ -38,7 +34,7 @@ public final class MatrixHelper
 	{
 		float[] ret = new float[16];
 		
-		float yScale = 1 / (float)Math.tan(MathHelper.toRadians(fov / 2f));
+		float yScale = 1 / (float)Math.tan(toRadians(fov / 2f));
 		float xScale = yScale / aspect;
 		float frustumLength = zFar - zNear;
 		
@@ -62,20 +58,15 @@ public final class MatrixHelper
 	
 	public static Matrix createRotationMatrix(float x, float y, float z)
 	{
-		Matrix ret = new Matrix(4, 4);
-		
-		setEulerZYX(ret, x, y, z);
-		
-		return ret;
+		return setEulerZYX(new Matrix(), x, y, z);
 	}
 	
-	public static void setEulerZYX(Matrix mat, Vector euler)
+	public static Matrix setEulerZYX(Matrix mat, Vector euler)
 	{
-		setEulerZYX(mat, euler.get(X), euler.get(Y), euler.get(Z));
-		
+		return setEulerZYX(mat, euler.get(X), euler.get(Y), euler.get(Z));
 	}
 	
-	public static void setEulerZYX(Matrix mat, float eulerX, float eulerY, float eulerZ)
+	public static Matrix setEulerZYX(Matrix m, float eulerX, float eulerY, float eulerZ)
 	{
 		float cx = (float)Math.cos(eulerX);
 		float cy = (float)Math.cos(eulerY);
@@ -89,36 +80,39 @@ public final class MatrixHelper
 		float sxcz = sx * cz;
 		float sxz = sx * sz;
 		
-		mat.setRow(0, cy * cz, sy * sxcz - cxsz, sy * cxz + sxz);
-		mat.setRow(1, cy * sz, sy * sxz + cxz, sy * cxsz - sxcz);
-		mat.setRow(2, -sy, cy * sx, cy * cx);
+		m.setRow(0, cy * cz, sy * sxcz - cxsz, sy * cxz + sxz);
+		m.setRow(1, cy * sz, sy * sxz + cxz, sy * cxsz - sxcz);
+		m.setRow(2, -sy, cy * sx, cy * cx);
 		
+		return m;
 	}
 	
 	public static Matrix createRotationMatrix(Quaternion q)
 	{
-		float a = (float)Math.cos(q.get(A));
-		float b = (float)Math.sin(q.get(A));
-		float c = (float)Math.cos(q.get(B));
-		float d = (float)Math.sin(q.get(B));
-		float e = (float)Math.cos(q.get(C));
-		float f = (float)Math.sin(q.get(C));
+		return createRotationMatrix(q, createIdentityMatrix());
+	}
+	
+	public static Matrix createRotationMatrix(Quaternion q, Matrix dest)//TODO Convert into algorithm
+	{
+		q.normalize();
 		
-		float ad = a * d;
-		float bd = b * d;
+		float s = 2f / MathHelper.length(q);
 		
-		float[] buf = new float[16];
+		dest.set(0, 0, 1 - s * (square(q.get(Y)) + square(q.get(Z))), false);
+		dest.set(1, 0, s * (q.get(X) * q.get(Y) + q.get(W) * q.get(Z)), false);
+		dest.set(2, 0, s * (q.get(X) * q.get(Z) - q.get(W) * q.get(Y)), false);
 		
-		buf[0] = c * e; buf[1] = -c * f; buf[2] = d; buf[3] = 0f;
-		//-------------------------------------------------
-		buf[4] = bd * e + a * f; buf[5] = -bd * f + a * e; buf[6] = -b * c; buf[7] = 0f;
-		//-------------------------------------------------
-		buf[8] = -ad * e + b * f; buf[9] = ad * f + b * e; buf[10] = a * c; buf[11] = 0f;
-		//-------------------------------------------------
-		buf[12] = buf[13] = buf[14] = 0f; buf[15] = 1f;
-		//-------------------------------------------------
+		dest.set(0, 1, s * (q.get(X) * q.get(Y) - q.get(W) * q.get(Z)), false);
+		dest.set(1, 1, 1 - s * (square(q.get(X)) + square(q.get(Z))), false);
+		dest.set(2, 1, s * (q.get(Y) * q.get(Z) + q.get(W) * q.get(X)), false);
 		
-		return new Matrix(buf);
+		dest.set(0, 2, s * (q.get(X) * q.get(Z) + q.get(W) * q.get(Y)), false);
+		dest.set(1, 2, s * (q.get(Y) * q.get(Z) - q.get(W) * q.get(X)), false);
+		dest.set(2, 2, 1 - s * (square(q.get(X)) + square(q.get(Y))), false);
+		
+		dest.onChanged();
+		
+		return dest;
 	}
 	
 	public static Matrix createScalingMatrix(Vector vec)

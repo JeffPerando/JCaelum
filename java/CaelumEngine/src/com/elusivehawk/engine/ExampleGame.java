@@ -16,11 +16,11 @@ import com.elusivehawk.util.Version;
  * @author Elusivehawk
  */
 @Internal
-public final class TestGame extends Game
+public final class ExampleGame extends Game
 {
 	public static final Version VERSION = new Version(1, 0, 0);
 	
-	public TestGame()
+	public ExampleGame()
 	{
 		super("Example Game");
 		

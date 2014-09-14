@@ -5,6 +5,7 @@ import java.io.BufferedInputStream;
 import java.util.List;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.CaelumException;
+import com.elusivehawk.engine.assets.EnumAssetType;
 import com.elusivehawk.engine.assets.GraphicAsset;
 import com.elusivehawk.util.task.Task;
 
@@ -30,7 +31,7 @@ public class Texture extends GraphicAsset
 	@SuppressWarnings("unqualified-field-access")
 	public Texture(String filepath, boolean animated)
 	{
-		super(filepath);
+		super(filepath, EnumAssetType.TEXTURE);
 		
 		animate = animated;
 		

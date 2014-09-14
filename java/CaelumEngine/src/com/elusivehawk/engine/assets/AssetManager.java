@@ -4,12 +4,14 @@ package com.elusivehawk.engine.assets;
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import com.elusivehawk.engine.CaelumException;
 import com.elusivehawk.util.FileHelper;
 import com.elusivehawk.util.storage.SyncList;
 import com.elusivehawk.util.task.ITaskListener;
 import com.elusivehawk.util.task.Task;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * 
@@ -21,7 +23,7 @@ public class AssetManager implements ITaskListener
 {
 	protected final List<IAssetReceiver> receivers = new SyncList<IAssetReceiver>();
 	
-	protected final List<Asset> assets = new SyncList<Asset>();
+	protected final Map<EnumAssetType, List<Asset>> assets = Maps.newHashMap();
 	
 	protected final List<File>
 			resLocs = Lists.newArrayList(),
@@ -49,12 +51,22 @@ public class AssetManager implements ITaskListener
 			throw new NullPointerException("Asset is null!");
 		}
 		
-		if (this.assets.contains(a))
+		List<Asset> assetList = this.assets.get(a.type);
+		
+		if (assetList == null)
+		{
+			assetList = SyncList.newList();
+			
+			this.assets.put(a.type, assetList);
+			
+		}
+		
+		if (assetList.contains(a))
 		{
 			throw new CaelumException("Duplicate asset entry %s!", a);
 		}
 		
-		this.assets.add(a);
+		assetList.add(a);
 		
 		Iterator<IAssetReceiver> itr = this.receivers.iterator();
 		
@@ -138,11 +150,18 @@ public class AssetManager implements ITaskListener
 		
 	}
 	
-	protected Asset getExistingAsset(String filename)
+	protected Asset getExistingAsset(String filename, EnumAssetType type)
 	{
 		if (!this.assets.isEmpty())
 		{
-			for (Asset a : this.assets)
+			List<Asset> assetList = this.assets.get(type);
+			
+			if (assetList == null)
+			{
+				return null;
+			}
+			
+			for (Asset a : assetList)
 			{
 				if (filename.endsWith(a.filepath))
 				{
