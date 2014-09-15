@@ -199,7 +199,6 @@ public class Connection
 			catch (Throwable e)
 			{
 				throw new NetworkException("Error whilst reading public key:", e);
-				
 			}
 			
 			this.readPubKey = true;
@@ -228,7 +227,7 @@ public class Connection
 		return ret;
 	}
 	
-	public byte[] encryptData(byte[] in)
+	public byte[] encryptData(byte[] in) throws NetworkException
 	{
 		if (this.pub_rec == null)
 		{
@@ -252,8 +251,7 @@ public class Connection
 		}
 		catch (Exception e)
 		{
-			Logger.log().err(e);
-			
+			throw new NetworkException("Cannot encrypt data:", e);
 		}
 		
 		return ret;
