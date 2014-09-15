@@ -346,6 +346,24 @@ public final class StringHelper
 		return b.toString();
 	}
 	
+	public static String randomString()
+	{
+		return randomString(1024);
+	}
+	
+	public static String randomString(int limit)
+	{
+		char[] ch = new char[RNG.rng().nextInt(limit)];
+		
+		for (int c = 0; c < ch.length; c++)
+		{
+			ch[c] = (char)(RNG.rng().nextInt() & 0xFFFF);
+			
+		}
+		
+		return new String(ch);
+	}
+	
 	public static Pair<String> splitFirst(String str, String out)
 	{
 		if (str == null || "".equals(str))

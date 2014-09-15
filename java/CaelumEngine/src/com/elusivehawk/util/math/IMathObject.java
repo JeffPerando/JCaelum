@@ -1,6 +1,7 @@
 
 package com.elusivehawk.util.math;
 
+import com.elusivehawk.util.IDirty;
 import com.elusivehawk.util.storage.Buffer;
 import com.elusivehawk.util.storage.IArray;
 import com.elusivehawk.util.storage.IStorable;
@@ -11,8 +12,14 @@ import com.elusivehawk.util.storage.IStorable;
  * 
  * @author Elusivehawk
  */
-public interface IMathObject<T extends Number> extends IStorable<T>, IArray<T>
+public interface IMathObject<T extends Number> extends IDirty, IStorable<T>, IArray<T>
 {
+	@Override
+	default boolean isImmutable()
+	{
+		return false;
+	}
+	
 	@Override
 	default void store(Buffer<T> buf)
 	{
@@ -22,11 +29,6 @@ public interface IMathObject<T extends Number> extends IStorable<T>, IArray<T>
 			
 		}
 		
-	}
-	
-	default boolean isImmutable()
-	{
-		return false;
 	}
 	
 	default Number[] multiget(int bitmask)
@@ -64,6 +66,7 @@ public interface IMathObject<T extends Number> extends IStorable<T>, IArray<T>
 		return ret;
 	}
 	
+	@Override
 	default IMathObject<T> set(int pos, T num)
 	{
 		return this.set(pos, num, true);

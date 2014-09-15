@@ -35,9 +35,28 @@ public class ImmutableArray<T> implements IArray<T>, Iterable<T>
 	}
 	
 	@Override
+	public boolean isImmutable()
+	{
+		return true;
+	}
+	
+	@Override
 	public T get(int i)
 	{
 		return this.array[i];
+	}
+	
+	@Override
+	public IArray<T> set(int i, T obj)
+	{
+		if (this.isImmutable())
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		this.array[i] = obj;
+		
+		return this;
 	}
 	
 	public List<T> asList()

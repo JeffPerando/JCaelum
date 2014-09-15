@@ -16,6 +16,8 @@ public class Matrix implements IMathObject<Float>
 	protected final float[] data;
 	public final int w, h;
 	
+	protected boolean dirty = false;
+	
 	public Matrix()
 	{
 		this(4, 4);
@@ -77,39 +79,16 @@ public class Matrix implements IMathObject<Float>
 	}
 	
 	@Override
-	public String toString()
+	public boolean isDirty()
 	{
-		StringBuilder b = new StringBuilder(1 + ((this.h + 1) * ((this.w * 2) + 2)));
+		return this.dirty;
+	}
+	
+	@Override
+	public void setIsDirty(boolean b)
+	{
+		this.dirty = b;
 		
-		b.append("/n");
-		
-		for (int y = 0; y < this.h; y++)
-		{
-			b.append("[");
-			
-			for (int x = 0; x < this.w; x++)
-			{
-				b.append(this.get(x, y));
-				
-				if (x != (this.w - 1))
-				{
-					b.append(", ");
-					
-				}
-				
-			}
-			
-			b.append("]");
-			
-			if (y != (this.h - 1))
-			{
-				b.append("\n");
-				
-			}
-			
-		}
-		
-		return b.toString();
 	}
 	
 	@Override
@@ -125,12 +104,6 @@ public class Matrix implements IMathObject<Float>
 	}
 	
 	@Override
-	public Float[] multiget(int bitmask)
-	{
-		throw new UnsupportedOperationException("Matrices do not currently support multiget().");
-	}
-	
-	@Override
 	public Matrix set(int pos, Float num, boolean notify)
 	{
 		this.data[pos] = num.floatValue();
@@ -138,26 +111,6 @@ public class Matrix implements IMathObject<Float>
 		if (notify)
 		{
 			this.onChanged();
-			
-		}
-		
-		return this;
-	}
-	
-	@Override
-	public Matrix set(IMathObject<Float> obj)
-	{
-		Buffer<Float> buf = new Buffer<Float>(obj);
-		
-		for (int c = 0; c < this.length(); c++)
-		{
-			this.set(c, buf.next());
-			
-			if (!buf.hasNext())
-			{
-				buf.rewind();
-				
-			}
 			
 		}
 		
@@ -251,6 +204,68 @@ public class Matrix implements IMathObject<Float>
 		}
 		
 		return dest;
+	}
+	
+	@Override
+	public Float[] multiget(int bitmask)
+	{
+		throw new UnsupportedOperationException("Matrices do not currently support multiget().");
+	}
+	
+	@Override
+	public String toString()
+	{
+		StringBuilder b = new StringBuilder(1 + ((this.h + 1) * ((this.w * 2) + 2)));
+		
+		b.append("/n");
+		
+		for (int y = 0; y < this.h; y++)
+		{
+			b.append("[");
+			
+			for (int x = 0; x < this.w; x++)
+			{
+				b.append(this.get(x, y));
+				
+				if (x != (this.w - 1))
+				{
+					b.append(", ");
+					
+				}
+				
+			}
+			
+			b.append("]");
+			
+			if (y != (this.h - 1))
+			{
+				b.append("\n");
+				
+			}
+			
+		}
+		
+		return b.toString();
+	}
+	
+	@Override
+	public Matrix set(IMathObject<Float> obj)
+	{
+		Buffer<Float> buf = new Buffer<Float>(obj);
+		
+		for (int c = 0; c < this.length(); c++)
+		{
+			this.set(c, buf.next());
+			
+			if (!buf.hasNext())
+			{
+				buf.rewind();
+				
+			}
+			
+		}
+		
+		return this;
 	}
 	
 	public Matrix load(FloatBuffer buf)

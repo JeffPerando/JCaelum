@@ -9,25 +9,23 @@ package com.elusivehawk.util.math;
  */
 public class Quaternion implements IMathObject<Float>
 {
-	protected final float[] data;
+	protected final float[] data = new float[4];
+	protected Matrix matrix = MatrixHelper.createIdentityMatrix();
+	protected volatile boolean dirty = false;
 	
-	@SuppressWarnings("unqualified-field-access")
 	public Quaternion()
 	{
-		data = new float[4];
-		setAll(0f);
+		setIdentity();
 		
 	}
 	
 	public Quaternion(float[] angles)
 	{
-		this();
-		
 		int size = Math.min(angles.length, 3);
 		
 		for (int c = 0; c < size; c++)
 		{
-			rotate(MathConst.AXES[c], angles[c]);
+			rotateAxis(MathConst.AXES[c], angles[c]);
 			
 		}
 		
@@ -35,15 +33,27 @@ public class Quaternion implements IMathObject<Float>
 	
 	public Quaternion(Quaternion q)
 	{
-		this();
 		set(q);
+		
+	}
+	
+	@Override
+	public boolean isDirty()
+	{
+		return this.dirty;
+	}
+	
+	@Override
+	public void setIsDirty(boolean b)
+	{
+		this.dirty = b;
 		
 	}
 	
 	@Override
 	public int length()
 	{
-		return this.data.length;
+		return 4;
 	}
 	
 	@Override
@@ -58,6 +68,7 @@ public class Quaternion implements IMathObject<Float>
 		assert MathHelper.bounds(pos, 0, this.length());
 		
 		this.data[pos] = num.floatValue();
+		this.dirty = true;
 		
 		if (notify)
 		{
@@ -160,6 +171,22 @@ public class Quaternion implements IMathObject<Float>
 		return dest;
 	}
 	
+	@Override
+	public Quaternion clone()
+	{
+		return new Quaternion(this);
+	}
+	
+	public Quaternion setIdentity()
+	{
+		return this.setIdentity(true);
+	}
+	
+	public Quaternion setIdentity(boolean local)
+	{
+		return (Quaternion)((local ? this : this.clone()).setAll(0f).set(4, 1f));
+	}
+	
 	public Quaternion conjugate()
 	{
 		return this.conjugate(this);
@@ -183,27 +210,35 @@ public class Quaternion implements IMathObject<Float>
 		return dest;
 	}
 	
-	public Quaternion rotate(Vector axis, float angle)
+	public Quaternion rotateAxis(Vector axis, float angle)
 	{
-		return rotate(this, axis, angle);
+		return rotateAxis(this, axis, angle);
 	}
 	
-	public Quaternion rotate(Vector axis, float angle, boolean local)
+	public Quaternion rotateAxis(Vector axis, float angle, boolean local)
 	{
-		return rotate(local ? this : new Quaternion(), axis, angle);
+		return rotateAxis(local ? this : new Quaternion(), axis, angle);
 	}
 	
-	public static Quaternion rotate(Quaternion dest, Vector axis, float angle)
+	public static Quaternion rotateAxis(Quaternion dest, Vector axis, float angle)
 	{
-		float radian = MathHelper.toRadians(angle / 2);
+		float l = axis.len();
 		
+		if (l == 0)
+		{
+			return dest.setIdentity();
+		}
+		
+		l = 1 / l;
+		
+		float radian = MathHelper.toRadians(angle / 2);
 		float sin = (float)Math.sin(radian);
 		
 		for (int c = 0; c < 3; c++)
 		{
 			if (axis.get(c) > 0)
 			{
-				dest.set(c, axis.get(c) * sin, false);
+				dest.set(c, l * axis.get(c) * sin, false);
 				
 			}
 			

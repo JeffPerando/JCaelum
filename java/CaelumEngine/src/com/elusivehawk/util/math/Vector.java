@@ -2,7 +2,6 @@
 package com.elusivehawk.util.math;
 
 import java.util.List;
-import com.elusivehawk.util.IDirty;
 import com.elusivehawk.util.storage.Buffer;
 import com.google.common.collect.Lists;
 
@@ -12,7 +11,7 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-public class Vector implements IMathObject<Float>, IDirty
+public class Vector implements IMathObject<Float>
 {
 	protected final float[] nums;
 	protected List<IVectorListener> listeners = null;
@@ -358,7 +357,7 @@ public class Vector implements IMathObject<Float>, IDirty
 		return MathHelper.dot(this, other);
 	}
 	
-	public float calcLength()
+	public float len()
 	{
 		return MathHelper.length(this);
 	}
