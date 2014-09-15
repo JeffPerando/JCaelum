@@ -98,91 +98,91 @@ public class ThreadNetwork extends ThreadStoppable
 		{
 			key = itr.next();
 			
-			if (key.isValid())
+			if (!key.isValid())
 			{
-				io = (ByteChannel)key.channel();
-				
-				con = (Connection)key.attachment();
-				
-				if (key.isReadable())
+				continue;
+			}
+			
+			io = (ByteChannel)key.channel();
+			
+			con = (Connection)key.attachment();
+			
+			if (key.isReadable())
+			{
+				while ((bytesRead = io.read(this.bin_buf)) != -1)
 				{
-					while ((bytesRead = io.read(this.bin_buf)) != -1)
+					read = false;
+					
+					try
 					{
-						read = false;
+						b = con.decryptData(this.bin, bytesRead);
+						read = b != null;
 						
-						try
-						{
-							b = con.decryptData(this.bin, bytesRead);//Decrypt the data
-							read = b != null;
-							
-						}
-						catch (NetworkException e)
-						{
-							this.handleException(e);
-							
-						}
-						
-						if (read)
-						{
-							if (pkts == null)//Dynamically load the packet list with a soft limit of 32 packets.
-							{
-								pkts = Lists.newArrayListWithCapacity(32);
-								
-							}
-							
-							pkt = new Packet(b);
-							
-							//Schedule the packet to be sent to the game.
-							
-							pkts.add(pkt);
-							pkt.markForReading();
-							
-						}
-						
-						this.bin_buf.clear();//Clear the incoming bytes to prepare for the next packet.
+					}
+					catch (NetworkException e)
+					{
+						this.handleException(e);
 						
 					}
 					
-					if (pkts != null)
+					if (read)
 					{
-						this.handler.onPacketsReceived(con, ImmutableList.copyOf(pkts));
+						if (pkts == null)
+						{
+							pkts = Lists.newArrayListWithCapacity(32);
+							
+						}
+						
+						pkt = new Packet(b);
+						pkt.markForReading();
+						
+						pkts.add(pkt);
 						
 					}
+					
+					this.bin_buf.clear();//Clear the incoming bytes to prepare for the next packet.
 					
 				}
 				
-				if (key.isWritable())
+				if (pkts != null)
 				{
-					ImmutableList<Packet> outPkts = con.getOutgoingPackets();
+					this.handler.onPacketsReceived(con, ImmutableList.copyOf(pkts));
 					
-					if (outPkts != null && !outPkts.isEmpty())
+				}
+				
+			}
+			
+			if (key.isWritable())
+			{
+				ImmutableList<Packet> outPkts = con.getOutgoingPackets();
+				
+				if (outPkts == null || outPkts.isEmpty())
+				{
+					continue;
+				}
+				
+				pktItr = outPkts.iterator();
+				
+				while (pktItr.hasNext())
+				{
+					pkt = pktItr.next();
+					
+					if (pkt.canWrite())
 					{
-						pktItr = outPkts.iterator();
+						pktItr.remove();
 						
-						while (pktItr.hasNext())
-						{
-							pkt = pktItr.next();
-							
-							if (pkt.canWrite())
-							{
-								pktItr.remove();
-								
-								this.handler.onPacketDropped(pkt);
-								
-								continue;
-							}
-							
-							this.bout_buf.put(con.encryptData(pkt.getBytes()));
-							
-							con.flushPacket(pkt);
-							
-							this.bout_buf.flip();
-							io.write(this.bout_buf);
-							this.bout_buf.clear();
-							
-						}
+						this.handler.onPacketDropped(pkt);
 						
+						continue;
 					}
+					
+					this.bout_buf.put(con.encryptData(pkt.getBytes()));
+					
+					con.flushPacket(pkt);
+					
+					this.bout_buf.flip();
+					io.write(this.bout_buf);
+					this.bout_buf.clear();
 					
 				}
 				
