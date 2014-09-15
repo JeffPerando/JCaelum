@@ -243,10 +243,10 @@ public class Connection
 			
 			Cipher cipher = Cipher.getInstance("RSA");
 			
-			cipher.init(Cipher.ENCRYPT_MODE, this.priv);
+			cipher.init(Cipher.ENCRYPT_MODE, this.pub_rec);
 			tmp = cipher.doFinal(in);
 			
-			cipher.init(Cipher.ENCRYPT_MODE, this.pub_rec);
+			cipher.init(Cipher.ENCRYPT_MODE, this.priv);
 			ret = cipher.doFinal(tmp);
 			
 		}
