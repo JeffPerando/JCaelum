@@ -1,6 +1,12 @@
 
 package com.elusivehawk.util;
 
+import java.nio.ByteBuffer;
+import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.nio.LongBuffer;
+import java.nio.ShortBuffer;
 import java.util.List;
 import com.elusivehawk.util.storage.IArray;
 import com.google.common.collect.Lists;
@@ -173,6 +179,33 @@ public class ArrayHelper
 		return l;
 	}
 	
+	public static byte[] asBytes(IArray<? extends Number> nums)
+	{
+		byte[] ret = new byte[nums.size()];
+		
+		for (int c = 0; c < ret.length; c++)
+		{
+			ret[c] = nums.get(c).byteValue();
+			
+		}
+		
+		return ret;
+	}
+	
+	public static byte[] asBytes(ByteBuffer buf)
+	{
+		return asBytes(buf, buf.remaining());
+	}
+	
+	public static byte[] asBytes(ByteBuffer buf, int count)
+	{
+		byte[] ret = new byte[Math.min(count, buf.remaining())];
+		
+		buf.get(ret, buf.position(), ret.length);
+		
+		return ret;
+	}
+	
 	public static byte[] asBytes(List<? extends Number> nums)
 	{
 		byte[] ret = new byte[nums.size()];
@@ -185,14 +218,13 @@ public class ArrayHelper
 		
 		return ret;
 	}
-	
-	public static byte[] asBytes(IArray<? extends Number> nums)
+	public static double[] asDoubles(IArray<? extends Number> nums)
 	{
-		byte[] ret = new byte[nums.size()];
+		double[] ret = new double[nums.size()];
 		
 		for (int c = 0; c < ret.length; c++)
 		{
-			ret[c] = nums.get(c).byteValue();
+			ret[c] = nums.get(c).doubleValue();
 			
 		}
 		
@@ -212,13 +244,27 @@ public class ArrayHelper
 		return ret;
 	}
 	
-	public static double[] asDoubles(IArray<? extends Number> nums)
+	public static double[] asDoubles(DoubleBuffer buf)
 	{
-		double[] ret = new double[nums.size()];
+		return asDoubles(buf, buf.remaining());
+	}
+	
+	public static double[] asDoubles(DoubleBuffer buf, int count)
+	{
+		double[] ret = new double[Math.min(count, buf.remaining())];
+		
+		buf.get(ret, buf.position(), ret.length);
+		
+		return ret;
+	}
+	
+	public static float[] asFloats(IArray<? extends Number> nums)
+	{
+		float[] ret = new float[nums.size()];
 		
 		for (int c = 0; c < ret.length; c++)
 		{
-			ret[c] = nums.get(c).doubleValue();
+			ret[c] = nums.get(c).floatValue();
 			
 		}
 		
@@ -238,13 +284,27 @@ public class ArrayHelper
 		return ret;
 	}
 	
-	public static float[] asFloats(IArray<? extends Number> nums)
+	public static float[] asFloats(FloatBuffer buf)
 	{
-		float[] ret = new float[nums.size()];
+		return asFloats(buf, buf.remaining());
+	}
+	
+	public static float[] asFloats(FloatBuffer buf, int count)
+	{
+		float[] ret = new float[Math.min(count, buf.remaining())];
+		
+		buf.get(ret, buf.position(), ret.length);
+		
+		return ret;
+	}
+	
+	public static int[] asInts(IArray<? extends Number> nums)
+	{
+		int[] ret = new int[nums.size()];
 		
 		for (int c = 0; c < ret.length; c++)
 		{
-			ret[c] = nums.get(c).floatValue();
+			ret[c] = nums.get(c).intValue();
 			
 		}
 		
@@ -264,13 +324,27 @@ public class ArrayHelper
 		return ret;
 	}
 	
-	public static int[] asInts(IArray<? extends Number> nums)
+	public static int[] asInts(IntBuffer buf)
 	{
-		int[] ret = new int[nums.size()];
+		return asInts(buf, buf.remaining());
+	}
+	
+	public static int[] asInts(IntBuffer buf, int count)
+	{
+		int[] ret = new int[Math.min(count, buf.remaining())];
+		
+		buf.get(ret, buf.position(), ret.length);
+		
+		return ret;
+	}
+	
+	public static long[] asLongs(IArray<? extends Number> nums)
+	{
+		long[] ret = new long[nums.size()];
 		
 		for (int c = 0; c < ret.length; c++)
 		{
-			ret[c] = nums.get(c).intValue();
+			ret[c] = nums.get(c).longValue();
 			
 		}
 		
@@ -290,13 +364,27 @@ public class ArrayHelper
 		return ret;
 	}
 	
-	public static long[] asLongs(IArray<? extends Number> nums)
+	public static long[] asLongs(LongBuffer buf)
 	{
-		long[] ret = new long[nums.size()];
+		return asLongs(buf, buf.remaining());
+	}
+	
+	public static long[] asLongs(LongBuffer buf, int count)
+	{
+		long[] ret = new long[Math.min(count, buf.remaining())];
+		
+		buf.get(ret, buf.position(), ret.length);
+		
+		return ret;
+	}
+	
+	public static short[] asShorts(IArray<? extends Number> nums)
+	{
+		short[] ret = new short[nums.size()];
 		
 		for (int c = 0; c < ret.length; c++)
 		{
-			ret[c] = nums.get(c).longValue();
+			ret[c] = nums.get(c).shortValue();
 			
 		}
 		
@@ -316,15 +404,16 @@ public class ArrayHelper
 		return ret;
 	}
 	
-	public static short[] asShorts(IArray<? extends Number> nums)
+	public static short[] asShorts(ShortBuffer buf)
 	{
-		short[] ret = new short[nums.size()];
+		return asShorts(buf, buf.remaining());
+	}
+	
+	public static short[] asShorts(ShortBuffer buf, int count)
+	{
+		short[] ret = new short[Math.min(count, buf.remaining())];
 		
-		for (int c = 0; c < ret.length; c++)
-		{
-			ret[c] = nums.get(c).shortValue();
-			
-		}
+		buf.get(ret, buf.position(), ret.length);
 		
 		return ret;
 	}

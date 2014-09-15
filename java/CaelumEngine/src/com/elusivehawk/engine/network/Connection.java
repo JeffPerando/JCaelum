@@ -1,7 +1,6 @@
 
 package com.elusivehawk.engine.network;
 
-import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.AbstractSelectableChannel;
@@ -14,7 +13,7 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.List;
 import java.util.UUID;
 import javax.crypto.Cipher;
-import com.elusivehawk.util.BufferHelper;
+import com.elusivehawk.util.Logger;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
@@ -26,14 +25,16 @@ import com.google.common.collect.Lists;
  */
 public class Connection
 {
-	protected final IPacketHandler handler;
-	protected final UUID connectId;
+	private final IPacketHandler handler;
+	private final UUID connectId;
 	
-	protected final ConnectionType type;
-	protected final AbstractSelectableChannel channel;
+	private final ConnectionType type;
+	private final AbstractSelectableChannel channel;
 	
-	protected final PublicKey pub;
-	protected final PrivateKey priv;
+	private final PublicKey pub;
+	private final PrivateKey priv;
+	
+	private final Cipher cipher;
 	
 	protected PublicKey pub_rec = null;
 	protected boolean readPubKey = false;
@@ -89,6 +90,23 @@ public class Connection
 		pub = kp.getPublic();
 		priv = kp.getPrivate();
 		
+		Cipher ciph = null;
+		
+		try
+		{
+			ciph = Cipher.getInstance("RSA");
+			
+		}
+		catch (Exception e)
+		{
+			Logger.log().err(e);
+			
+		}
+		
+		assert ciph != null;
+		
+		cipher = ciph;
+		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
@@ -103,6 +121,8 @@ public class Connection
 		priv = con.priv;
 		pub_rec = con.pub_rec;
 		readPubKey = con.readPubKey;
+		
+		cipher = con.cipher;
 		
 	}
 	
@@ -158,7 +178,7 @@ public class Connection
 		
 	}
 	
-	public ByteBuffer decryptData(ByteBuffer buf) throws NetworkException
+	public byte[] decryptData(byte[] bytes) throws NetworkException
 	{
 		if (this.pub_rec == null)
 		{
@@ -168,7 +188,7 @@ public class Connection
 			}
 			
 			//TODO Investigate usage.
-			X509EncodedKeySpec keyspec = new X509EncodedKeySpec(buf.array());
+			X509EncodedKeySpec keyspec = new X509EncodedKeySpec(bytes);
 			
 			try
 			{
@@ -191,9 +211,15 @@ public class Connection
 		
 		try
 		{
-			Cipher cipher = Cipher.getInstance("RSA");
-			cipher.init(Cipher.DECRYPT_MODE, this.pub_rec);
-			ret = cipher.doFinal(buf.array());
+			byte[] tmp;
+			
+			this.cipher.init(Cipher.DECRYPT_MODE, this.pub_rec);
+			this.cipher.update(bytes);
+			tmp = this.cipher.doFinal();
+			
+			this.cipher.init(Cipher.DECRYPT_MODE, this.priv);
+			this.cipher.update(tmp);
+			ret = this.cipher.doFinal();
 			
 		}
 		catch (Throwable e)
@@ -201,20 +227,38 @@ public class Connection
 			throw new NetworkException("Cannot decrypt data:", e);
 		}
 		
-		return BufferHelper.makeByteBuffer(ret);
+		return ret;
 	}
 	
-	public void encryptData(ByteBuffer in, ByteBuffer out)
+	public byte[] encryptData(byte[] in)
 	{
+		if (this.pub_rec == null)
+		{
+			throw new NetworkException("Have not yet received public key, cannot encrypt!");
+		}
+		
+		byte[] ret = null;
+		
 		try
 		{
+			byte[] tmp;
+			
 			Cipher cipher = Cipher.getInstance("RSA");
+			
 			cipher.init(Cipher.ENCRYPT_MODE, this.priv);
-			cipher.doFinal(in, out);
+			tmp = cipher.doFinal(in);
+			
+			cipher.init(Cipher.ENCRYPT_MODE, this.pub_rec);
+			ret = cipher.doFinal(tmp);
 			
 		}
-		catch (Exception e){}
+		catch (Exception e)
+		{
+			Logger.log().err(e);
+			
+		}
 		
+		return ret;
 	}
 	
 	public Object getAttachment()

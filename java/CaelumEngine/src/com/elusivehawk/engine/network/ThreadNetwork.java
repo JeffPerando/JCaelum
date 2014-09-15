@@ -37,9 +37,13 @@ public class ThreadNetwork extends ThreadStoppable
 	
 	protected final Selector selector;
 	
-	protected final ByteBuffer bin = BufferHelper.createByteBuffer(NetworkConst.HEADER_LENGTH + NetworkConst.DATA_LENGTH * 4),
-			bout = BufferHelper.createByteBuffer(NetworkConst.HEADER_LENGTH + NetworkConst.DATA_LENGTH * NetworkConst.PKT_LIMIT),
-			tmp = BufferHelper.createByteBuffer(NetworkConst.HEADER_LENGTH + NetworkConst.DATA_LENGTH);
+	protected final byte[]
+			bin = new byte[NetworkConst.HEADER_LENGTH + NetworkConst.DATA_LENGTH * 4],
+			bout = new byte[NetworkConst.HEADER_LENGTH + NetworkConst.DATA_LENGTH * NetworkConst.PKT_LIMIT];
+	
+	protected final ByteBuffer
+			bin_buf = BufferHelper.createWrapper(this.bin),
+			bout_buf = BufferHelper.createWrapper(this.bout);
 	
 	@SuppressWarnings("unqualified-field-access")
 	public ThreadNetwork(IPacketHandler h, int playerCount)
@@ -67,11 +71,9 @@ public class ThreadNetwork extends ThreadStoppable
 	@Override
 	public void rawUpdate() throws Throwable
 	{
-		byte s;
-		int length;
 		boolean read = false;
 		
-		ByteBuffer b = null;
+		byte[] b = null;
 		List<Packet> pkts = null;
 		Packet pkt;
 		
@@ -97,7 +99,7 @@ public class ThreadNetwork extends ThreadStoppable
 					
 					if (key.isReadable())
 					{
-						if (io.read(this.bin) != -1)
+						while (io.read(this.bin_buf) != -1)
 						{
 							read = false;
 							
@@ -115,46 +117,28 @@ public class ThreadNetwork extends ThreadStoppable
 							
 							if (read)
 							{
-								while (b.remaining() > 0)
+								if (pkts == null)//Dynamically load the packet list with a soft limit of 32 packets.
 								{
-									s = b.get();
-									length = this.bin.getInt();//Get the packet's actual length
-									
-									if (!this.handler.getSide().canReceive(Side.values()[s]))//If the packet isn't meant for this side to receive it...
-									{
-										continue;
-									}
-									
-									if (pkts == null)//Dynamically load the packet list with a soft limit of 32 packets.
-									{
-										pkts = Lists.newArrayListWithCapacity(32);
-										
-									}
-									
-									pkt = new Packet(b);
-									
-									//Schedule the packet to be sent to the game.
-									
-									pkts.add(pkt);
-									pkt.markForReading();
-									
-									if (b.capacity() != length)//TODO Investigate this.
-									{
-										pkt.markPotentiallyCorrupt();
-										
-									}
+									pkts = Lists.newArrayListWithCapacity(32);
 									
 								}
 								
-								this.bin.clear();//Clear the incoming bytes to prepare for the next packet.
+								pkt = new Packet(b);
 								
-								if (pkts != null)
-								{
-									this.handler.onPacketsReceived(con, ImmutableList.copyOf(pkts));
-									
-								}
+								//Schedule the packet to be sent to the game.
+								
+								pkts.add(pkt);
+								pkt.markForReading();
 								
 							}
+							
+						}
+						
+						this.bin_buf.clear();//Clear the incoming bytes to prepare for the next packet.
+						
+						if (pkts != null)
+						{
+							this.handler.onPacketsReceived(con, ImmutableList.copyOf(pkts));
 							
 						}
 						
@@ -181,30 +165,22 @@ public class ThreadNetwork extends ThreadStoppable
 									continue;
 								}
 								
-								b = pkt.getBytes();
-								
-								this.tmp.put((byte)this.handler.getSide().ordinal());
-								this.tmp.putInt(b.capacity() - b.remaining());
-								this.tmp.put(b);
-								
-								con.encryptData(this.tmp, this.bout);
+								this.bout_buf.put(con.encryptData(pkt.getBytes()));
 								
 								con.flushPacket(pkt);
 								
-								this.tmp.clear();
-								
 							}
 							
-							this.bout.flip();
-							io.write(this.bout);
+							this.bout_buf.flip();
+							io.write(this.bout_buf);
 							
-							for (int c = 0; c < this.bout.limit(); c++)
+							for (int c = 0; c < this.bout.length; c++)
 							{
-								this.bout.put(c, (byte)0);
+								this.bout[c] = 0;
 								
 							}
 							
-							this.bout.clear();
+							this.bout_buf.clear();
 							
 						}
 						

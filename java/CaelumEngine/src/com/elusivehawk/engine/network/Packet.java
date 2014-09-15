@@ -3,11 +3,9 @@ package com.elusivehawk.engine.network;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.UUID;
-import com.elusivehawk.util.BufferHelper;
+import com.elusivehawk.util.ArrayHelper;
 import com.elusivehawk.util.io.IByteReader;
 import com.elusivehawk.util.io.IByteWriter;
-import com.elusivehawk.util.io.Serializers;
 import com.elusivehawk.util.math.MathHelper;
 
 /**
@@ -18,12 +16,22 @@ import com.elusivehawk.util.math.MathHelper;
  */
 public class Packet implements IByteReader, IByteWriter
 {
-	private final ByteBuffer data;
+	private final byte[] data;
+	private int byteCount = 0;
 	private boolean potenCorrupt = false, write = true;
 	
 	public Packet(int size)
 	{
-		this(BufferHelper.createByteBuffer(size));
+		this(new byte[MathHelper.clamp(size, 1, NetworkConst.DATA_LENGTH)]);
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public Packet(byte[] b)
+	{
+		assert MathHelper.bounds(b.length, 1, NetworkConst.DATA_LENGTH);
+		
+		data = b;
 		
 	}
 	
@@ -32,7 +40,7 @@ public class Packet implements IByteReader, IByteWriter
 	{
 		assert MathHelper.bounds(info.remaining(), 1, NetworkConst.DATA_LENGTH);
 		
-		data = BufferHelper.makeByteBuffer(info.slice());
+		data = ArrayHelper.asBytes(info.slice());
 		
 	}
 	
@@ -44,17 +52,21 @@ public class Packet implements IByteReader, IByteWriter
 			return -1;
 		}
 		
-		int rem = this.data.remaining();
+		int ret = Math.min(bytes.length, this.remaining());
 		
-		this.data.put(bytes);
+		for (int c = 0; c < ret; c++)
+		{
+			this.data[this.byteCount++] = bytes[c];
+			
+		}
 		
-		return rem - this.data.remaining();
+		return ret;
 	}
 	
 	@Override
 	public int remaining()
 	{
-		return this.data.remaining();
+		return this.data.length - this.byteCount;
 	}
 	
 	@Override
@@ -65,104 +77,17 @@ public class Packet implements IByteReader, IByteWriter
 			throw new IOException("Cannot read bytes when in write mode!");
 		}
 		
-		return this.data.get();
+		return this.data[this.byteCount++];
 	}
 	
 	public int getDataSize()
 	{
-		return this.data.capacity();
+		return this.byteCount;
 	}
 	
-	public ByteBuffer getBytes()
+	public byte[] getBytes()
 	{
 		return this.data;
-	}
-	
-	public boolean readBool()
-	{
-		return this.data.get() == 1;
-	}
-	
-	public double readDouble()
-	{
-		return Serializers.DOUBLE.fromBytes(this);
-	}
-	
-	public float readFloat()
-	{
-		return Serializers.FLOAT.fromBytes(this);
-	}
-	
-	public int readInt()
-	{
-		return Serializers.INTEGER.fromBytes(this);
-	}
-	
-	public long readLong()
-	{
-		return Serializers.LONG.fromBytes(this);
-	}
-	
-	public short readShort()
-	{
-		return Serializers.SHORT.fromBytes(this);
-	}
-	
-	public String readString()
-	{
-		return Serializers.STRING.fromBytes(this);
-	}
-	
-	public UUID readUUID()
-	{
-		return Serializers.UUID.fromBytes(this);
-	}
-	
-	public void writeBool(boolean b)
-	{
-		this.data.put((byte)(b ? 1 : 0));
-		
-	}
-	
-	public void writeDouble(double d)
-	{
-		Serializers.DOUBLE.toBytes(this, d);
-		
-	}
-	
-	public void writeFloat(float f)
-	{
-		Serializers.FLOAT.toBytes(this, f);
-	}
-	
-	public void writeInt(int i)
-	{
-		Serializers.INTEGER.toBytes(this, i);
-		
-	}
-	
-	public void writeLong(long l)
-	{
-		Serializers.LONG.toBytes(this, l);
-		
-	}
-	
-	public void writeShort(short s)
-	{
-		Serializers.SHORT.toBytes(this, s);
-		
-	}
-	
-	public void writeString(String str)
-	{
-		Serializers.STRING.toBytes(this, str);
-		
-	}
-	
-	public void writeUUID(UUID uuid)
-	{
-		Serializers.UUID.toBytes(this, uuid);
-		
 	}
 	
 	public boolean mightBeCorrupt()
@@ -185,7 +110,13 @@ public class Packet implements IByteReader, IByteWriter
 	{
 		this.write = false;
 		
-		this.data.flip();
+		this.rewind();
+		
+	}
+	
+	public void rewind()
+	{
+		this.byteCount = 0;
 		
 	}
 	
