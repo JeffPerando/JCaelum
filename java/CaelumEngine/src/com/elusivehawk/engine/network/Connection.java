@@ -214,12 +214,10 @@ public class Connection
 			byte[] tmp;
 			
 			this.cipher.init(Cipher.DECRYPT_MODE, this.pub_rec);
-			this.cipher.update(bytes);
-			tmp = this.cipher.doFinal();
+			tmp = this.cipher.doFinal(bytes);
 			
 			this.cipher.init(Cipher.DECRYPT_MODE, this.priv);
-			this.cipher.update(tmp);
-			ret = this.cipher.doFinal();
+			ret = this.cipher.doFinal(tmp);
 			
 		}
 		catch (Throwable e)
