@@ -39,7 +39,7 @@ public class ThreadNetwork extends ThreadStoppable
 	
 	protected final byte[]
 			bin = new byte[NetworkConst.DATA_LENGTH * 4],
-			bout = new byte[NetworkConst.DATA_LENGTH * NetworkConst.PKT_LIMIT];
+			bout = new byte[NetworkConst.DATA_LENGTH];
 	
 	protected final ByteBuffer
 			bin_buf = BufferHelper.createWrapper(this.bin),
@@ -71,6 +71,22 @@ public class ThreadNetwork extends ThreadStoppable
 	@Override
 	public void rawUpdate() throws Throwable
 	{
+		int select = this.selector.selectNow();
+		
+		if (select == 0)
+		{
+			Thread.sleep(1);
+			return;
+		}
+		
+		Set<SelectionKey> keys = this.selector.selectedKeys();
+		Iterator<SelectionKey> itr = keys.iterator();
+		Iterator<Packet> pktItr;
+		
+		SelectionKey key;
+		ByteChannel io;
+		Connection con;
+		
 		boolean read = false;
 		int bytesRead = -1;
 		
@@ -78,109 +94,90 @@ public class ThreadNetwork extends ThreadStoppable
 		List<Packet> pkts = null;
 		Packet pkt;
 		
-		int select = this.selector.selectNow();
-		
-		if (select > 0)
+		while (itr.hasNext())
 		{
-			Set<SelectionKey> keys = this.selector.selectedKeys();
-			Iterator<SelectionKey> itr = keys.iterator();
-			SelectionKey key;
-			ByteChannel io;
-			Connection con;
+			key = itr.next();
 			
-			while (itr.hasNext())
+			if (key.isValid())
 			{
-				key = itr.next();
+				io = (ByteChannel)key.channel();
 				
-				if (key.isValid())
+				con = (Connection)key.attachment();
+				
+				if (key.isReadable())
 				{
-					io = (ByteChannel)key.channel();
-					
-					con = (Connection)key.attachment();
-					
-					if (key.isReadable())
+					while ((bytesRead = io.read(this.bin_buf)) != -1)
 					{
-						while ((bytesRead = io.read(this.bin_buf)) != -1)
+						read = false;
+						
+						try
 						{
-							read = false;
+							b = con.decryptData(this.bin, bytesRead);//Decrypt the data
+							read = b != null;
 							
-							try
-							{
-								b = con.decryptData(this.bin, bytesRead);//Decrypt the data
-								read = b != null;
-								
-							}
-							catch (NetworkException e)
-							{
-								this.handleException(e);
-								
-							}
-							
-							if (read)
-							{
-								if (pkts == null)//Dynamically load the packet list with a soft limit of 32 packets.
-								{
-									pkts = Lists.newArrayListWithCapacity(32);
-									
-								}
-								
-								pkt = new Packet(b);
-								
-								//Schedule the packet to be sent to the game.
-								
-								pkts.add(pkt);
-								pkt.markForReading();
-								
-							}
-							
-							this.bin_buf.clear();//Clear the incoming bytes to prepare for the next packet.
+						}
+						catch (NetworkException e)
+						{
+							this.handleException(e);
 							
 						}
 						
-						if (pkts != null)
+						if (read)
 						{
-							this.handler.onPacketsReceived(con, ImmutableList.copyOf(pkts));
+							if (pkts == null)//Dynamically load the packet list with a soft limit of 32 packets.
+							{
+								pkts = Lists.newArrayListWithCapacity(32);
+								
+							}
+							
+							pkt = new Packet(b);
+							
+							//Schedule the packet to be sent to the game.
+							
+							pkts.add(pkt);
+							pkt.markForReading();
 							
 						}
+						
+						this.bin_buf.clear();//Clear the incoming bytes to prepare for the next packet.
 						
 					}
 					
-					if (key.isWritable())
+					if (pkts != null)
 					{
-						ImmutableList<Packet> outPkts = con.getOutgoingPackets();
+						this.handler.onPacketsReceived(con, ImmutableList.copyOf(pkts));
 						
-						if (outPkts != null && !outPkts.isEmpty())
+					}
+					
+				}
+				
+				if (key.isWritable())
+				{
+					ImmutableList<Packet> outPkts = con.getOutgoingPackets();
+					
+					if (outPkts != null && !outPkts.isEmpty())
+					{
+						pktItr = outPkts.iterator();
+						
+						while (pktItr.hasNext())
 						{
-							Iterator<Packet> pktItr = outPkts.iterator();
+							pkt = pktItr.next();
 							
-							while (pktItr.hasNext())
+							if (pkt.canWrite())
 							{
-								pkt = pktItr.next();
+								pktItr.remove();
 								
-								if (pkt.canWrite())
-								{
-									pktItr.remove();
-									
-									this.handler.onPacketDropped(pkt);
-									
-									continue;
-								}
+								this.handler.onPacketDropped(pkt);
 								
-								this.bout_buf.put(con.encryptData(pkt.getBytes()));
-								
-								con.flushPacket(pkt);
-								
+								continue;
 							}
+							
+							this.bout_buf.put(con.encryptData(pkt.getBytes()));
+							
+							con.flushPacket(pkt);
 							
 							this.bout_buf.flip();
 							io.write(this.bout_buf);
-							
-							for (int c = 0; c < this.bout.length; c++)
-							{
-								this.bout[c] = 0;
-								
-							}
-							
 							this.bout_buf.clear();
 							
 						}
