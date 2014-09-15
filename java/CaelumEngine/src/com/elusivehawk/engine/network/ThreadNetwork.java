@@ -38,8 +38,8 @@ public class ThreadNetwork extends ThreadStoppable
 	protected final Selector selector;
 	
 	protected final byte[]
-			bin = new byte[NetworkConst.HEADER_LENGTH + NetworkConst.DATA_LENGTH * 4],
-			bout = new byte[NetworkConst.HEADER_LENGTH + NetworkConst.DATA_LENGTH * NetworkConst.PKT_LIMIT];
+			bin = new byte[NetworkConst.DATA_LENGTH * 4],
+			bout = new byte[NetworkConst.DATA_LENGTH * NetworkConst.PKT_LIMIT];
 	
 	protected final ByteBuffer
 			bin_buf = BufferHelper.createWrapper(this.bin),
