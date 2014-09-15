@@ -178,7 +178,7 @@ public class Connection
 		
 	}
 	
-	public byte[] decryptData(byte[] bytes) throws NetworkException
+	public final byte[] decryptData(byte[] bytes, int count) throws NetworkException
 	{
 		if (this.pub_rec == null)
 		{
@@ -213,7 +213,7 @@ public class Connection
 			byte[] tmp;
 			
 			this.cipher.init(Cipher.DECRYPT_MODE, this.pub_rec);
-			tmp = this.cipher.doFinal(bytes);
+			tmp = this.cipher.doFinal(bytes, 0, count);
 			
 			this.cipher.init(Cipher.DECRYPT_MODE, this.priv);
 			ret = this.cipher.doFinal(tmp);
@@ -227,7 +227,7 @@ public class Connection
 		return ret;
 	}
 	
-	public byte[] encryptData(byte[] in) throws NetworkException
+	public final byte[] encryptData(byte[] in) throws NetworkException
 	{
 		if (this.pub_rec == null)
 		{

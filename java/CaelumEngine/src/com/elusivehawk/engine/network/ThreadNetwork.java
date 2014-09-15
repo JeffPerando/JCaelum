@@ -72,6 +72,7 @@ public class ThreadNetwork extends ThreadStoppable
 	public void rawUpdate() throws Throwable
 	{
 		boolean read = false;
+		int bytesRead = -1;
 		
 		byte[] b = null;
 		List<Packet> pkts = null;
@@ -99,13 +100,13 @@ public class ThreadNetwork extends ThreadStoppable
 					
 					if (key.isReadable())
 					{
-						while (io.read(this.bin_buf) != -1)
+						while ((bytesRead = io.read(this.bin_buf)) != -1)
 						{
 							read = false;
 							
 							try
 							{
-								b = con.decryptData(this.bin);//Decrypt the data
+								b = con.decryptData(this.bin, bytesRead);//Decrypt the data
 								read = b != null;
 								
 							}
@@ -132,9 +133,9 @@ public class ThreadNetwork extends ThreadStoppable
 								
 							}
 							
+							this.bin_buf.clear();//Clear the incoming bytes to prepare for the next packet.
+							
 						}
-						
-						this.bin_buf.clear();//Clear the incoming bytes to prepare for the next packet.
 						
 						if (pkts != null)
 						{
