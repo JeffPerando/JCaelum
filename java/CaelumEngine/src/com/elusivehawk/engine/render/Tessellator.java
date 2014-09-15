@@ -87,7 +87,7 @@ public final class Tessellator
 			
 		}
 		
-		if (vtx.length() < 3 || t.length() < 2 || n.length() < 3)
+		if (vtx.size() < 3 || t.size() < 2 || n.size() < 3)
 		{
 			throw new RenderException("Your vector(s) are too small");
 		}

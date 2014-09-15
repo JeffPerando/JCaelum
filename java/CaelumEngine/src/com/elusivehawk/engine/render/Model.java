@@ -153,7 +153,7 @@ public class Model implements IAssetReceiver, IPopulator<GLProgram>
 		{
 			for (Mesh m : s)
 			{
-				for (int c = 0; c < m.points.length(); c++)
+				for (int c = 0; c < m.points.size(); c++)
 				{
 					i = t.point(m.points.get(c), m.texOffs.get(c), m.normals.get(c));
 					

@@ -92,7 +92,7 @@ public class Matrix implements IMathObject<Float>
 	}
 	
 	@Override
-	public int length()
+	public int size()
 	{
 		return this.w * this.h;
 	}
@@ -131,7 +131,7 @@ public class Matrix implements IMathObject<Float>
 	{
 		Buffer<Float> buf = new Buffer<Float>(obj);
 		
-		for (int c = 0; c < this.length(); c++)
+		for (int c = 0; c < this.size(); c++)
 		{
 			dest.set(c, this.get(c) + buf.next());
 			
@@ -151,7 +151,7 @@ public class Matrix implements IMathObject<Float>
 	{
 		Buffer<Float> buf = new Buffer<Float>(obj);
 		
-		for (int c = 0; c < this.length(); c++)
+		for (int c = 0; c < this.size(); c++)
 		{
 			dest.set(c, this.get(c) / buf.next());
 			
@@ -171,7 +171,7 @@ public class Matrix implements IMathObject<Float>
 	{
 		Buffer<Float> buf = new Buffer<Float>(obj);
 		
-		for (int c = 0; c < this.length(); c++)
+		for (int c = 0; c < this.size(); c++)
 		{
 			dest.set(c, this.get(c) - buf.next());
 			
@@ -191,7 +191,7 @@ public class Matrix implements IMathObject<Float>
 	{
 		Buffer<Float> buf = new Buffer<Float>(obj);
 		
-		for (int c = 0; c < this.length(); c++)
+		for (int c = 0; c < this.size(); c++)
 		{
 			dest.set(c, this.get(c) * buf.next());
 			
@@ -253,7 +253,7 @@ public class Matrix implements IMathObject<Float>
 	{
 		Buffer<Float> buf = new Buffer<Float>(obj);
 		
-		for (int c = 0; c < this.length(); c++)
+		for (int c = 0; c < this.size(); c++)
 		{
 			this.set(c, buf.next());
 			
@@ -270,7 +270,7 @@ public class Matrix implements IMathObject<Float>
 	
 	public Matrix load(FloatBuffer buf)
 	{
-		int l = Math.min(this.length(), buf.remaining());
+		int l = Math.min(this.size(), buf.remaining());
 		
 		for (int c = 0; c < l; c++)
 		{
@@ -335,7 +335,7 @@ public class Matrix implements IMathObject<Float>
 	
 	public Matrix setRow(int r, Vector vec)
 	{
-		int i = Math.min(this.w, vec.length());
+		int i = Math.min(this.w, vec.size());
 		
 		for (int c = 0; c < i; c++)
 		{
@@ -452,7 +452,7 @@ public class Matrix implements IMathObject<Float>
 	
 	public Vector transform(Vector vec, Vector dest)
 	{
-		float[] fl = new float[dest.length()];
+		float[] fl = new float[dest.size()];
 		
 		for (int x = 0; x < this.w; x++)
 		{

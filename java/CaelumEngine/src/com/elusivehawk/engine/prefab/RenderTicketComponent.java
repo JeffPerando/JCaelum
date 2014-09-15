@@ -5,7 +5,7 @@ import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.render.RenderTicket;
 import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.math.IQuatListener;
-import com.elusivehawk.util.math.IVectorListener;
+import com.elusivehawk.util.math.IVecListener;
 import com.elusivehawk.util.math.Quaternion;
 import com.elusivehawk.util.math.Vector;
 
@@ -15,7 +15,7 @@ import com.elusivehawk.util.math.Vector;
  * 
  * @author Elusivehawk
  */
-public class RenderTicketComponent extends RenderComponent implements IVectorListener, IQuatListener
+public class RenderTicketComponent extends RenderComponent implements IVecListener, IQuatListener
 {
 	public RenderTicketComponent(Component parent, int p, RenderTicket tkt)
 	{

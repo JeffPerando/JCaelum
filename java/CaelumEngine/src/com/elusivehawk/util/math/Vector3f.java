@@ -90,7 +90,7 @@ public class Vector3f extends Vector2f
 	
 	public void normalize(Vector v)//FIXME
 	{
-		int length = Math.min(this.length(), v.length());
+		int length = Math.min(this.size(), v.size());
 		
 		for (int c = 0; c < length; c++)
 		{

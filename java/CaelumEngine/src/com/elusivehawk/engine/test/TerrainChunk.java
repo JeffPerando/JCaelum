@@ -3,6 +3,7 @@ package com.elusivehawk.engine.test;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import com.elusivehawk.engine.EnumEngineFeature;
 import com.elusivehawk.util.BufferHelper;
 
 /**
@@ -11,6 +12,7 @@ import com.elusivehawk.util.BufferHelper;
  * 
  * @author Elusivehawk
  */
+@IntendedFor({EnumEngineFeature.PHYSICS, EnumEngineFeature.RENDER})
 public class TerrainChunk
 {
 	protected final int size;

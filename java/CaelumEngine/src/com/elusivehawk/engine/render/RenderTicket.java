@@ -12,7 +12,7 @@ import com.elusivehawk.engine.render.opengl.VertexBuffer;
 import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.IDirty;
 import com.elusivehawk.util.math.IQuatListener;
-import com.elusivehawk.util.math.IVectorListener;
+import com.elusivehawk.util.math.IVecListener;
 import com.elusivehawk.util.math.Matrix;
 import com.elusivehawk.util.math.MatrixHelper;
 import com.elusivehawk.util.math.Quaternion;
@@ -30,9 +30,9 @@ import com.elusivehawk.util.math.Vector;
  * @see IDirty
  * @see ILogicalRender
  * @see IQuatListener
- * @see IVectorListener
+ * @see IVecListener
  */
-public class RenderTicket extends RenderableObj implements IQuatListener, IVectorListener
+public class RenderTicket extends RenderableObj implements IQuatListener, IVecListener
 {
 	protected final Vector
 			offset = new Vector(),
@@ -273,7 +273,7 @@ public class RenderTicket extends RenderableObj implements IQuatListener, IVecto
 	
 	public RenderTicket setScale(Vector s)
 	{
-		for (int c = 0; c < s.length(); c++)
+		for (int c = 0; c < s.size(); c++)
 		{
 			if (s.get(c) > 0f)
 			{

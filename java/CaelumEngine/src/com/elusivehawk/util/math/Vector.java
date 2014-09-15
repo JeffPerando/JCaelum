@@ -13,9 +13,10 @@ import com.google.common.collect.Lists;
  */
 public class Vector implements IMathObject<Float>
 {
-	protected final float[] nums;
-	protected List<IVectorListener> listeners = null;
+	protected final float[] data;
+	protected List<IVecListener> listeners = null;
 	protected String name = null;
+	protected boolean immutable = false;
 	protected boolean dirty = false;
 	
 	public Vector()
@@ -28,7 +29,7 @@ public class Vector implements IMathObject<Float>
 	{
 		this(length);
 		
-		for (int c = 0; c < length(); c++)
+		for (int c = 0; c < size(); c++)
 		{
 			set(c, buf.next());
 			
@@ -63,9 +64,9 @@ public class Vector implements IMathObject<Float>
 	@SuppressWarnings("unqualified-field-access")
 	public Vector(Vector vec)
 	{
-		this(vec.length());
+		this(vec.size());
 		
-		for (int c = 0; c < nums.length; c++)
+		for (int c = 0; c < data.length; c++)
 		{
 			set(c, vec.get(c));
 			
@@ -80,7 +81,7 @@ public class Vector implements IMathObject<Float>
 	@SuppressWarnings("unqualified-field-access")
 	public Vector(int length)
 	{
-		nums = new float[Math.max(length, 1)];
+		data = new float[Math.max(length, 1)];
 		
 		setAll(0f);
 		
@@ -102,15 +103,15 @@ public class Vector implements IMathObject<Float>
 	}
 	
 	@Override
-	public int length()
+	public int size()
 	{
-		return this.nums.length;
+		return this.data.length;
 	}
 	
 	@Override
 	public Float get(int pos)
 	{
-		return MathHelper.bounds(pos, 0, this.length() - 1) ? this.nums[pos] : 0f;
+		return this.data[pos];
 	}
 	
 	@Override
@@ -118,7 +119,7 @@ public class Vector implements IMathObject<Float>
 	{
 		assert !this.isImmutable();
 		
-		if (this.nums[pos] != num.floatValue())
+		if (this.data[pos] != num.floatValue())
 		{
 			if (!this.isDirty())
 			{
@@ -126,7 +127,7 @@ public class Vector implements IMathObject<Float>
 				
 			}
 			
-			this.nums[pos] = num.floatValue();
+			this.data[pos] = num.floatValue();
 			
 			if (notify)
 			{
@@ -146,7 +147,7 @@ public class Vector implements IMathObject<Float>
 		
 		float f = MathHelper.length(this);
 		
-		int length = Math.min(this.length(), dest.length());
+		int length = Math.min(this.size(), dest.size());
 		
 		for (int c = 0; c < length; c++)
 		{
@@ -164,7 +165,7 @@ public class Vector implements IMathObject<Float>
 	{
 		assert !dest.isImmutable();
 		
-		int l = Math.min(this.length(), obj.length());
+		int l = Math.min(this.size(), obj.size());
 		
 		for (int c = 0; c < l; c++)
 		{
@@ -172,7 +173,7 @@ public class Vector implements IMathObject<Float>
 			
 		}
 		
-		this.onChanged();
+		dest.onChanged();
 		
 		return dest;
 	}
@@ -182,7 +183,7 @@ public class Vector implements IMathObject<Float>
 	{
 		assert !dest.isImmutable();
 		
-		int l = Math.min(this.length(), obj.length());
+		int l = Math.min(this.size(), obj.size());
 		
 		for (int c = 0; c < l; c++)
 		{
@@ -190,7 +191,7 @@ public class Vector implements IMathObject<Float>
 			
 		}
 		
-		this.onChanged();
+		dest.onChanged();
 		
 		return dest;
 	}
@@ -200,7 +201,7 @@ public class Vector implements IMathObject<Float>
 	{
 		assert !dest.isImmutable();
 		
-		int l = Math.min(this.length(), obj.length());
+		int l = Math.min(this.size(), obj.size());
 		
 		for (int c = 0; c < l; c++)
 		{
@@ -208,7 +209,7 @@ public class Vector implements IMathObject<Float>
 			
 		}
 		
-		this.onChanged();
+		dest.onChanged();
 		
 		return dest;
 	}
@@ -218,7 +219,7 @@ public class Vector implements IMathObject<Float>
 	{
 		assert !dest.isImmutable();
 		
-		int l = Math.min(this.length(), obj.length());
+		int l = Math.min(this.size(), obj.size());
 		
 		for (int c = 0; c < l; c++)
 		{
@@ -226,7 +227,7 @@ public class Vector implements IMathObject<Float>
 			
 		}
 		
-		this.onChanged();
+		dest.onChanged();
 		
 		return dest;
 	}
@@ -251,11 +252,11 @@ public class Vector implements IMathObject<Float>
 	@Override
 	public String toString()
 	{
-		StringBuilder b = new StringBuilder(1 + (this.length() * 2));
+		StringBuilder b = new StringBuilder(1 + (this.size() * 2));
 		
 		b.append(String.format("%s:[", this.getName() == null ? "vector" : this.getName()));
 		
-		for (int c = 0; c < this.length(); c++)
+		for (int c = 0; c < this.size(); c++)
 		{
 			if (c > 0)
 			{
@@ -282,12 +283,12 @@ public class Vector implements IMathObject<Float>
 		
 		Vector vec = (Vector)obj;
 		
-		if (vec.length() != this.length())
+		if (vec.size() != this.size())
 		{
 			return false;
 		}
 		
-		for (int c = 0; c < this.length(); c++)
+		for (int c = 0; c < this.size(); c++)
 		{
 			if (!vec.get(c).equals(this.get(c)))
 			{
@@ -299,7 +300,21 @@ public class Vector implements IMathObject<Float>
 		return true;
 	}
 	
-	public void registerListener(IVectorListener lis)
+	@Override
+	public Vector setImmutable()
+	{
+		this.immutable = true;
+		
+		return this;
+	}
+	
+	@Override
+	public boolean isImmutable()
+	{
+		return this.immutable;
+	}
+	
+	public void addListener(IVecListener lis)
 	{
 		assert lis != null;
 		
@@ -313,7 +328,7 @@ public class Vector implements IMathObject<Float>
 		
 	}
 	
-	public void removeListener(IVectorListener lis)
+	public void removeListener(IVecListener lis)
 	{
 		if (this.listeners != null)
 		{
@@ -353,14 +368,14 @@ public class Vector implements IMathObject<Float>
 		return MathHelper.dot(this, other);
 	}
 	
-	public float len()
+	public float length()
 	{
 		return MathHelper.length(this);
 	}
 	
 	public Vector scale(float f, Vector dest)
 	{
-		for (int c = 0; c < this.length(); c++)
+		for (int c = 0; c < this.size(); c++)
 		{
 			dest.set(c, this.get(c) * f, false);
 			
@@ -378,7 +393,7 @@ public class Vector implements IMathObject<Float>
 	
 	public Vector absolute(Vector dest)
 	{
-		int i = Math.min(this.length(), dest.length());
+		int i = Math.min(this.size(), dest.size());
 		
 		for (int c = 0; c < i; c++)
 		{
@@ -398,12 +413,12 @@ public class Vector implements IMathObject<Float>
 	
 	public Vector negate(boolean local)
 	{
-		return this.negate(local ? this : new Vector(this.length()));
+		return this.negate(local ? this : new Vector(this.size()));
 	}
 	
 	public Vector negate(Vector dest)
 	{
-		int length = Math.min(this.length(), dest.length());
+		int length = Math.min(this.size(), dest.size());
 		
 		for (int c = 0; c < length; c++)
 		{
@@ -429,7 +444,7 @@ public class Vector implements IMathObject<Float>
 	
 	public Vector addAll(float f, boolean notify)
 	{
-		for (int c = 0; c < this.length(); c++)
+		for (int c = 0; c < this.size(); c++)
 		{
 			this.add(c, f, false);
 			
@@ -451,7 +466,7 @@ public class Vector implements IMathObject<Float>
 	
 	public Vector divAll(float f, boolean notify)
 	{
-		for (int c = 0; c < this.length(); c++)
+		for (int c = 0; c < this.size(); c++)
 		{
 			this.div(c, f, false);
 			
@@ -473,7 +488,7 @@ public class Vector implements IMathObject<Float>
 	
 	public Vector mulAll(float f, boolean notify)
 	{
-		for (int c = 0; c < this.length(); c++)
+		for (int c = 0; c < this.size(); c++)
 		{
 			this.mul(c, f, false);
 			
@@ -495,7 +510,7 @@ public class Vector implements IMathObject<Float>
 	
 	public Vector subAll(float f, boolean notify)
 	{
-		for (int c = 0; c < this.length(); c++)
+		for (int c = 0; c < this.size(); c++)
 		{
 			this.sub(c, f, false);
 			
@@ -512,7 +527,7 @@ public class Vector implements IMathObject<Float>
 	
 	public Vector set(float... fs)
 	{
-		int length = Math.min(this.length(), fs.length);
+		int length = Math.min(this.size(), fs.length);
 		
 		for (int c = 0; c < length; c++)
 		{
@@ -527,7 +542,7 @@ public class Vector implements IMathObject<Float>
 	
 	public Vector add(IMathObject<Float> obj, boolean local)
 	{
-		return (Vector)this.add(obj, local ? this : new Vector(this.length()));
+		return (Vector)this.add(obj, local ? this : new Vector(this.size()));
 	}
 	
 	public Vector add(int pos, float f)
@@ -537,14 +552,14 @@ public class Vector implements IMathObject<Float>
 	
 	public Vector add(int pos, float f, boolean notify)
 	{
-		this.set(pos, this.nums[pos] + f, notify);
+		this.set(pos, this.data[pos] + f, notify);
 		
 		return this;
 	}
 	
 	public Vector div(IMathObject<Float> obj, boolean local)
 	{
-		return (Vector)this.div(obj, local ? this : new Vector(this.length()));
+		return (Vector)this.div(obj, local ? this : new Vector(this.size()));
 	}
 	
 	public Vector div(int pos, float f)
@@ -554,14 +569,14 @@ public class Vector implements IMathObject<Float>
 	
 	public Vector div(int pos, float f, boolean notify)
 	{
-		this.set(pos, this.nums[pos] / f, notify);
+		this.set(pos, this.data[pos] / f, notify);
 		
 		return this;
 	}
 	
 	public Vector mul(IMathObject<Float> obj, boolean local)
 	{
-		return (Vector)this.mul(obj, local ? this : new Vector(this.length()));
+		return (Vector)this.mul(obj, local ? this : new Vector(this.size()));
 	}
 	
 	public Vector mul(int pos, float f)
@@ -571,14 +586,14 @@ public class Vector implements IMathObject<Float>
 	
 	public Vector mul(int pos, float f, boolean notify)
 	{
-		this.set(pos, this.nums[pos] * f, notify);
+		this.set(pos, this.data[pos] * f, notify);
 		
 		return this;
 	}
 	
 	public Vector sub(IMathObject<Float> obj, boolean local)
 	{
-		return (Vector)this.sub(obj, local ? this : new Vector(this.length()));
+		return (Vector)this.sub(obj, local ? this : new Vector(this.size()));
 	}
 	
 	public Vector sub(int pos, float f)
@@ -588,7 +603,7 @@ public class Vector implements IMathObject<Float>
 	
 	public Vector sub(int pos, float f, boolean notify)
 	{
-		this.set(pos, this.nums[pos] - f, notify);
+		this.set(pos, this.data[pos] - f, notify);
 		
 		return this;
 	}

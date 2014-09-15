@@ -8,7 +8,7 @@ package com.elusivehawk.util.math;
  * @author Elusivehawk
  */
 @FunctionalInterface
-public interface IVectorListener
+public interface IVecListener
 {
 	public void onVecChanged(Vector vec);
 	

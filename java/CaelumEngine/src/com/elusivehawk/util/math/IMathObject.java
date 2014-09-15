@@ -14,21 +14,53 @@ import com.elusivehawk.util.storage.IStorable;
  */
 public interface IMathObject<T extends Number> extends IDirty, IStorable<T>, IArray<T>
 {
-	@Override
-	default boolean isImmutable()
-	{
-		return false;
-	}
+	public IMathObject<T> set(int pos, T num, boolean notify);
+	
+	public IMathObject<T> add(IMathObject<T> obj, IMathObject<T> dest);
+	
+	public IMathObject<T> div(IMathObject<T> obj, IMathObject<T> dest);
+	
+	public IMathObject<T> mul(IMathObject<T> obj, IMathObject<T> dest);
+	
+	public IMathObject<T> sub(IMathObject<T> obj, IMathObject<T> dest);
+	
+	public IMathObject<T> normalize(IMathObject<T> dest);
+	
+	//Default methods
 	
 	@Override
 	default void store(Buffer<T> buf)
 	{
-		for (int c = 0; c < this.length(); c++)
+		for (int c = 0; c < this.size(); c++)
 		{
 			buf.add(this.get(c));
 			
 		}
 		
+	}
+	
+	@Override
+	default IMathObject<T> set(int pos, T num)
+	{
+		return this.set(pos, num, true);
+	}
+	
+	default IMathObject<T> setAll(T num)
+	{
+		for (int c = 0; c < this.size(); c++)
+		{
+			this.set(c, num, false);
+			
+		}
+		
+		this.onChanged();
+		
+		return this;
+	}
+	
+	default IMathObject<T> normalize()
+	{
+		return this.normalize(this);
 	}
 	
 	default Number[] multiget(int bitmask)
@@ -66,37 +98,9 @@ public interface IMathObject<T extends Number> extends IDirty, IStorable<T>, IAr
 		return ret;
 	}
 	
-	@Override
-	default IMathObject<T> set(int pos, T num)
-	{
-		return this.set(pos, num, true);
-	}
-	
-	public IMathObject<T> set(int pos, T num, boolean notify);
-	
-	default IMathObject<T> setAll(T num)
-	{
-		for (int c = 0; c < this.length(); c++)
-		{
-			this.set(c, num, false);
-			
-		}
-		
-		this.onChanged();
-		
-		return this;
-	}
-	
-	default IMathObject<T> normalize()
-	{
-		return this.normalize(this);
-	}
-	
-	public IMathObject<T> normalize(IMathObject<T> dest);
-	
 	default IMathObject<T> set(IMathObject<T> obj)
 	{
-		int l = Math.min(this.length(), obj.length());
+		int l = Math.min(this.size(), obj.size());
 		
 		for (int c = 0; c < l; c++)
 		{
@@ -114,28 +118,20 @@ public interface IMathObject<T extends Number> extends IDirty, IStorable<T>, IAr
 		return this.add(obj, this);
 	}
 	
-	public IMathObject<T> add(IMathObject<T> obj, IMathObject<T> dest);
-	
 	default IMathObject<T> div(IMathObject<T> obj)
 	{
 		return this.div(obj, this);
 	}
-	
-	public IMathObject<T> div(IMathObject<T> obj, IMathObject<T> dest);
-	
-	default IMathObject<T> sub(IMathObject<T> obj)
-	{
-		return this.sub(obj, this);
-	}
-	
-	public IMathObject<T> sub(IMathObject<T> obj, IMathObject<T> dest);
 	
 	default IMathObject<T> mul(IMathObject<T> obj)
 	{
 		return this.mul(obj, this);
 	}
 	
-	public IMathObject<T> mul(IMathObject<T> obj, IMathObject<T> dest);
+	default IMathObject<T> sub(IMathObject<T> obj)
+	{
+		return this.sub(obj, this);
+	}
 	
 	default void onChanged(){}
 	

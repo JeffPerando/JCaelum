@@ -56,9 +56,9 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 	
 	private DisplaySettings settings = new DisplaySettings();
 	private boolean //Hey, I sorta like this...
-			initiated = false,
-			refreshScreen = false,
-			flipScreen = false;
+				initiated = false,
+				refreshScreen = false,
+				flipScreen = false;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public RenderContext(IGameEnvironment gameEnv, IDisplay d)

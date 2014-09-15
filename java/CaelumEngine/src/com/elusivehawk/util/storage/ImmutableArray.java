@@ -29,7 +29,7 @@ public class ImmutableArray<T> implements IArray<T>, Iterable<T>
 	}
 	
 	@Override
-	public int length()
+	public int size()
 	{
 		return this.array.length;
 	}

@@ -56,7 +56,7 @@ public class Quaternion implements IMathObject<Float>
 	}
 	
 	@Override
-	public int length()
+	public int size()
 	{
 		return 4;
 	}
@@ -64,13 +64,13 @@ public class Quaternion implements IMathObject<Float>
 	@Override
 	public Float get(int pos)
 	{
-		return MathHelper.bounds(pos, 0, this.length()) ? this.data[pos] : 0f;
+		return this.data[pos];
 	}
 	
 	@Override
 	public Quaternion set(int pos, Float num, boolean notify)
 	{
-		assert MathHelper.bounds(pos, 0, this.length());
+		assert MathHelper.bounds(pos, 0, this.size());
 		
 		this.data[pos] = num.floatValue();
 		this.dirty = true;
@@ -91,7 +91,7 @@ public class Quaternion implements IMathObject<Float>
 		
 		float f = MathHelper.length(this);
 		
-		int length = Math.min(this.length(), dest.length());
+		int length = Math.min(this.size(), dest.size());
 		
 		for (int c = 0; c < length; c++)
 		{
@@ -109,7 +109,7 @@ public class Quaternion implements IMathObject<Float>
 	{
 		assert !dest.isImmutable();
 		
-		int l = Math.min(this.length(), obj.length());
+		int l = Math.min(this.size(), obj.size());
 		
 		for (int c = 0; c < l; c++)
 		{
@@ -117,7 +117,7 @@ public class Quaternion implements IMathObject<Float>
 			
 		}
 		
-		this.onChanged();
+		dest.onChanged();
 		
 		return dest;
 	}
@@ -127,7 +127,7 @@ public class Quaternion implements IMathObject<Float>
 	{
 		assert !dest.isImmutable();
 		
-		int l = Math.min(this.length(), obj.length());
+		int l = Math.min(this.size(), obj.size());
 		
 		for (int c = 0; c < l; c++)
 		{
@@ -135,7 +135,7 @@ public class Quaternion implements IMathObject<Float>
 			
 		}
 		
-		this.onChanged();
+		dest.onChanged();
 		
 		return dest;
 	}
@@ -145,7 +145,7 @@ public class Quaternion implements IMathObject<Float>
 	{
 		assert !dest.isImmutable();
 		
-		int l = Math.min(this.length(), obj.length());
+		int l = Math.min(this.size(), obj.size());
 		
 		for (int c = 0; c < l; c++)
 		{
@@ -153,7 +153,7 @@ public class Quaternion implements IMathObject<Float>
 			
 		}
 		
-		this.onChanged();
+		dest.onChanged();
 		
 		return dest;
 	}
@@ -163,7 +163,7 @@ public class Quaternion implements IMathObject<Float>
 	{
 		assert !dest.isImmutable();
 		
-		int l = Math.min(this.length(), obj.length());
+		int l = Math.min(this.size(), obj.size());
 		
 		for (int c = 0; c < l; c++)
 		{
@@ -171,7 +171,7 @@ public class Quaternion implements IMathObject<Float>
 			
 		}
 		
-		this.onChanged();
+		dest.onChanged();
 		
 		return dest;
 	}
@@ -262,7 +262,7 @@ public class Quaternion implements IMathObject<Float>
 	
 	public static Quaternion rotateAxis(Quaternion dest, Vector axis, float angle)
 	{
-		float l = axis.len();
+		float l = axis.length();
 		
 		if (l == 0)
 		{
@@ -307,7 +307,7 @@ public class Quaternion implements IMathObject<Float>
 		vQuat.mul(this);
 		vQuat.mul(conj);
 		
-		int size = Math.min(3, dest.length());
+		int size = Math.min(3, dest.size());
 		
 		for (int c = 0; c < size; c++)
 		{

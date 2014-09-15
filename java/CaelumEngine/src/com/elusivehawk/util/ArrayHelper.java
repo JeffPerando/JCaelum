@@ -188,7 +188,7 @@ public class ArrayHelper
 	
 	public static byte[] asBytes(IArray<? extends Number> nums)
 	{
-		byte[] ret = new byte[nums.length()];
+		byte[] ret = new byte[nums.size()];
 		
 		for (int c = 0; c < ret.length; c++)
 		{
@@ -214,7 +214,7 @@ public class ArrayHelper
 	
 	public static double[] asDoubles(IArray<? extends Number> nums)
 	{
-		double[] ret = new double[nums.length()];
+		double[] ret = new double[nums.size()];
 		
 		for (int c = 0; c < ret.length; c++)
 		{
@@ -240,7 +240,7 @@ public class ArrayHelper
 	
 	public static float[] asFloats(IArray<? extends Number> nums)
 	{
-		float[] ret = new float[nums.length()];
+		float[] ret = new float[nums.size()];
 		
 		for (int c = 0; c < ret.length; c++)
 		{
@@ -266,7 +266,7 @@ public class ArrayHelper
 	
 	public static int[] asInts(IArray<? extends Number> nums)
 	{
-		int[] ret = new int[nums.length()];
+		int[] ret = new int[nums.size()];
 		
 		for (int c = 0; c < ret.length; c++)
 		{
@@ -292,7 +292,7 @@ public class ArrayHelper
 	
 	public static long[] asLongs(IArray<? extends Number> nums)
 	{
-		long[] ret = new long[nums.length()];
+		long[] ret = new long[nums.size()];
 		
 		for (int c = 0; c < ret.length; c++)
 		{
@@ -318,7 +318,7 @@ public class ArrayHelper
 	
 	public static short[] asShorts(IArray<? extends Number> nums)
 	{
-		short[] ret = new short[nums.length()];
+		short[] ret = new short[nums.size()];
 		
 		for (int c = 0; c < ret.length; c++)
 		{
