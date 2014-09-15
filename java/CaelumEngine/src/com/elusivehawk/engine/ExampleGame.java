@@ -35,9 +35,9 @@ public final class ExampleGame extends Game
 	@Override
 	protected void initiateGame(GameArguments args)
 	{
-		CaelumEngine.addInputListener(Keyboard.class, ((delta, extra) ->
+		CaelumEngine.addInputListener(Keyboard.class, ((in) ->
 		{
-			Keyboard kb = (Keyboard)extra[0];
+			Keyboard kb = (Keyboard)in;
 			
 			for (Key key : kb.getPushedKeys())
 			{
@@ -53,9 +53,9 @@ public final class ExampleGame extends Game
 			
 		}));
 		
-		CaelumEngine.addInputListener(Mouse.class, ((delta, extra) ->
+		CaelumEngine.addInputListener(Mouse.class, ((in) ->
 		{
-			Mouse m = (Mouse)extra[0];
+			Mouse m = (Mouse)in;
 			
 			for (int c = 0; c < m.getButtonCount(); c++)
 			{

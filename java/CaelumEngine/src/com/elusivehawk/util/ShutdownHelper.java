@@ -31,6 +31,12 @@ public final class ShutdownHelper
 	
 	public static void exit(String err)
 	{
+		if (err == null || "".equals(err))
+		{
+			exit(0);
+			return;
+		}
+		
 		int hash = err.hashCode();
 		
 		System.err.println(String.format("Exiting with err %s (%s)", hash, err));

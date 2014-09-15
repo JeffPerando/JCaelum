@@ -234,14 +234,9 @@ public class Vector implements IMathObject<Float>
 	@Override
 	public void onChanged()
 	{
-		if (this.listeners == null || this.listeners.isEmpty())
+		if (this.listeners != null)
 		{
-			return;
-		}
-		
-		for (IVectorListener lis : this.listeners)
-		{
-			lis.onVecChanged(this);
+			this.listeners.forEach(((lis) -> {lis.onVecChanged(this);}));
 			
 		}
 		
@@ -304,26 +299,27 @@ public class Vector implements IMathObject<Float>
 		return true;
 	}
 	
-	public void registerListener(IVectorListener veclis)
+	public void registerListener(IVectorListener lis)
 	{
+		assert lis != null;
+		
 		if (this.listeners == null)
 		{
 			this.listeners = Lists.newArrayList();
 			
 		}
 		
-		this.listeners.add(veclis);
+		this.listeners.add(lis);
 		
 	}
 	
-	public void removeListener(IVectorListener veclis)
+	public void removeListener(IVectorListener lis)
 	{
-		if (this.listeners == null || this.listeners.isEmpty())
+		if (this.listeners != null)
 		{
-			return;
+			this.listeners.remove(lis);
+			
 		}
-		
-		this.listeners.remove(veclis);
 		
 	}
 	

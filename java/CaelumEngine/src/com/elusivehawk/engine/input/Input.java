@@ -17,7 +17,7 @@ import com.google.common.collect.Lists;
  */
 public abstract class Input implements IUpdatable, Closeable
 {
-	private final List<IUpdatable> listeners = Lists.newArrayList();
+	private final List<IInputListener> listeners = Lists.newArrayList();
 	private boolean initiated = false;
 	
 	@Override
@@ -34,7 +34,7 @@ public abstract class Input implements IUpdatable, Closeable
 			{
 				try
 				{
-					lis.update(delta, this);
+					lis.onInputReceived(this);
 					
 				}
 				catch (Throwable e)
@@ -51,7 +51,7 @@ public abstract class Input implements IUpdatable, Closeable
 		
 	}
 	
-	public void addListener(IUpdatable lis)
+	public void addListener(IInputListener lis)
 	{
 		this.listeners.add(lis);
 		

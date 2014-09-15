@@ -1,6 +1,9 @@
 
 package com.elusivehawk.util.math;
 
+import java.util.List;
+import com.google.common.collect.Lists;
+
 /**
  * 
  * 
@@ -10,8 +13,10 @@ package com.elusivehawk.util.math;
 public class Quaternion implements IMathObject<Float>
 {
 	protected final float[] data = new float[4];
-	protected Matrix matrix = MatrixHelper.createIdentityMatrix();
 	protected volatile boolean dirty = false;
+	
+	protected List<IQuatListener> listeners = null;
+	protected Matrix matrix = MatrixHelper.createIdentityMatrix();
 	
 	public Quaternion()
 	{
@@ -175,6 +180,41 @@ public class Quaternion implements IMathObject<Float>
 	public Quaternion clone()
 	{
 		return new Quaternion(this);
+	}
+	
+	@Override
+	public void onChanged()
+	{
+		if (this.listeners != null)
+		{
+			this.listeners.forEach(((lis) -> {lis.onQuatChanged(this);}));
+			
+		}
+		
+	}
+	
+	public void addListener(IQuatListener lis)
+	{
+		assert lis != null;
+		
+		if (this.listeners == null)
+		{
+			this.listeners = Lists.newArrayList();
+			
+		}
+		
+		this.listeners.add(lis);
+		
+	}
+	
+	public void removeListener(IQuatListener lis)
+	{
+		if (this.listeners != null)
+		{
+			this.listeners.remove(lis);
+			
+		}
+		
 	}
 	
 	public Quaternion setIdentity()
