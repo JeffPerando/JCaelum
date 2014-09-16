@@ -6,9 +6,7 @@ import com.elusivehawk.engine.assets.AssetManager;
 import com.elusivehawk.engine.physics.IPhysicsSimulator;
 import com.elusivehawk.engine.render.DisplaySettings;
 import com.elusivehawk.engine.render.RenderContext;
-import com.elusivehawk.engine.render.old.IRenderHUB;
 import com.elusivehawk.util.IPausable;
-import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.Version;
 import com.google.common.collect.Lists;
 
@@ -174,21 +172,6 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 			
 		}
 		
-	}
-	
-	//XXX Getting the axe
-	
-	/**
-	 * 
-	 * Called during startup.
-	 * 
-	 * @return The rendering HUB to be used to render the game.
-	 */
-	@Override
-	@Deprecated
-	public IRenderHUB getRenderHUB()
-	{
-		return this.state == null ? null : this.state.getRenderHUB();
 	}
 	
 	//XXX Optional/technical methods

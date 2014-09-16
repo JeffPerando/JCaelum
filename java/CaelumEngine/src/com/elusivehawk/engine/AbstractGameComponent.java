@@ -5,7 +5,6 @@ import java.util.List;
 import com.elusivehawk.engine.assets.AssetManager;
 import com.elusivehawk.engine.physics.IPhysicsSimulator;
 import com.elusivehawk.engine.render.IRenderable;
-import com.elusivehawk.engine.render.old.IRenderHUB;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.StringHelper;
 import com.google.common.collect.Lists;
@@ -118,13 +117,6 @@ public abstract class AbstractGameComponent implements IUpdatable, IRenderable
 	
 	@SuppressWarnings("unused")
 	public void loadAssets(AssetManager mgr){}
-	
-	@SuppressWarnings("static-method")
-	@Deprecated
-	public IRenderHUB getRenderHUB()
-	{
-		return null;
-	}
 	
 	public abstract void initiate(GameArguments args) throws Throwable;
 	

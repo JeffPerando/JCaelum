@@ -31,7 +31,7 @@ public enum EnumOS
 			
 		}
 		
-		System.err.println(String.format("Unknown OS: %s", os));
+		Logger.log().log(EnumLogType.WARN, "Unknown OS: %s", os);
 		
 		return OTHER;
 	}

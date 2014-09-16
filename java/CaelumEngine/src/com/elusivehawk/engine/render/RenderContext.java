@@ -2,25 +2,18 @@
 package com.elusivehawk.engine.render;
 
 import java.io.File;
-import java.util.Collection;
 import java.util.List;
 import com.elusivehawk.engine.CaelumEngine;
-import com.elusivehawk.engine.GameState;
 import com.elusivehawk.engine.IContext;
 import com.elusivehawk.engine.IGameEnvironment;
-import com.elusivehawk.engine.IGameStateListener;
-import com.elusivehawk.engine.render.old.IRenderEngine;
-import com.elusivehawk.engine.render.old.IRenderHUB;
 import com.elusivehawk.engine.render.old.RenderTask;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLEnumShader;
-import com.elusivehawk.engine.render.opengl.GLEnumTexture;
 import com.elusivehawk.engine.render.opengl.GLException;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
 import com.elusivehawk.engine.render.opengl.IGLDeletable;
-import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.IPausable;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.Logger;
@@ -32,13 +25,10 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-public final class RenderContext implements IUpdatable, IPausable, IGameStateListener, IContext
+public final class RenderContext implements IUpdatable, IPausable, IContext
 {
 	private final IGameEnvironment env;
 	private final IDisplay display;
-	
-	@Deprecated
-	private IRenderHUB hub = null;
 	
 	private IGL1 gl1;
 	private IGL2 gl2;
@@ -138,14 +128,6 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 		
 		this.maxTexCount = this.gl1.glGetInteger(GLConst.GL_MAX_TEXTURE_UNITS);
 		
-		if (this.hub != null)
-		{
-			Logger.log().log(EnumLogType.WARN, "Rendering using render HUB system! Override Game.render() instead!");
-			
-			this.hub.initiate(this.display);
-			
-		}
-		
 		this.initiated = true;
 		
 		return true;
@@ -167,13 +149,6 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 	}
 	
 	@Override
-	public void onGameStateSwitch(GameState gs)
-	{
-		this.hub = gs.getRenderHUB();
-		
-	}
-	
-	@Override
 	public boolean isPaused()
 	{
 		return this.paused;
@@ -189,27 +164,6 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 	@Override
 	public void update(double delta, Object... extra) throws RenderException
 	{
-		if (this.hub != null)
-		{
-			try
-			{
-				this.hub.update(delta, extra);
-				
-			}
-			catch (Throwable e)
-			{
-				throw new RenderException(e);
-				
-			}
-			
-			if (this.hub.updateDisplay())
-			{
-				this.setSettings(this.hub.getSettings());
-				
-			}
-			
-		}
-		
 		if (this.refreshScreen)
 		{
 			this.display.updateSettings(this.settings);
@@ -228,24 +182,9 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 	{
 		this.preRender();
 		
-		this.renderGameDepre(delta);
-		
 		CaelumEngine.game().render(this, delta);
 		
 		this.postRender();
-		
-	}
-	
-	public void setRenderHUB(IRenderHUB rhub)
-	{
-		if (this.hub != null)
-		{
-			return;
-		}
-		
-		this.hub = rhub;
-		
-		CaelumEngine.game().addGameStateListener(this);
 		
 	}
 	
@@ -279,36 +218,6 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 		
 	}
 	
-	@Deprecated
-	private void renderGameDepre(double delta)
-	{
-		if (this.hub != null)
-		{
-			Collection<IRenderEngine> engines = this.hub.getRenderEngines();
-			
-			if (engines != null && !engines.isEmpty())
-			{
-				for (IRenderEngine engine : engines)
-				{
-					engine.render(this, this.hub, delta);
-					
-					for (int c = 0; c < this.getMaxTextureCount(); c++)
-					{
-						this.gl1.glActiveTexture(GLConst.GL_TEXTURE0 + c);
-						this.gl1.glBindTexture(GLEnumTexture.GL_TEXTURE_2D, 0);
-						
-					}
-					
-					RenderHelper.checkForGLError(this.gl1);
-					
-				}
-				
-			}
-			
-		}
-		
-	}
-	
 	@SuppressWarnings("unused")
 	public void onDisplayResized(IDisplay d)
 	{
@@ -332,12 +241,6 @@ public final class RenderContext implements IUpdatable, IPausable, IGameStateLis
 	public IDisplay getDisplay()
 	{
 		return this.display;
-	}
-	
-	@Deprecated
-	public IRenderHUB getHUB()
-	{
-		return this.hub;
 	}
 	
 	public IGL1 getGL1()

@@ -16,7 +16,6 @@ import com.elusivehawk.engine.render.DisplaySettings;
 import com.elusivehawk.engine.render.IDisplay;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.ThreadGameRender;
-import com.elusivehawk.engine.render.old.IRenderHUB;
 import com.elusivehawk.engine.render.old.RenderTask;
 import com.elusivehawk.util.CompInfo;
 import com.elusivehawk.util.EnumLogType;
@@ -548,15 +547,6 @@ public final class CaelumEngine
 		ThreadGameLoop gameloop = new ThreadGameLoop(this.inputs, this.game);
 		
 		this.threads.put(EnumEngineFeature.LOGIC, gameloop);
-		
-		IRenderHUB rhub = this.game.getRenderHUB();
-		
-		if (rhub != null)
-		{
-			this.rcon.setRenderHUB(rhub);
-			Logger.log().log(EnumLogType.WARN, "Game %s is using the rendering HUB system!!", this.game);
-			
-		}
 		
 		IThreadStoppable rt = this.env.createRenderThread(this.rcon);
 		
