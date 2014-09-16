@@ -14,7 +14,7 @@ import com.elusivehawk.util.storage.IStorable;
  */
 public interface IMathObject<T extends Number> extends IDirty, IStorable<T>, IArray<T>
 {
-	public IMathObject<T> set(int pos, T num, boolean notify);
+	public IMathObject<T> set(int pos, Number num, boolean notify);
 	
 	public IMathObject<T> add(IMathObject<T> obj, IMathObject<T> dest);
 	
@@ -131,6 +131,46 @@ public interface IMathObject<T extends Number> extends IDirty, IStorable<T>, IAr
 	default IMathObject<T> sub(IMathObject<T> obj)
 	{
 		return this.sub(obj, this);
+	}
+	
+	default IMathObject<T> cos()
+	{
+		return this.cos(this);
+	}
+	
+	default IMathObject<T> cos(IMathObject<T> dest)
+	{
+		int i = Math.min(this.size(), dest.size());
+	
+		for (int c = 0; c < i; c++)
+		{
+			dest.set(c, Math.cos(this.get(c).doubleValue()), false);
+			
+		}
+		
+		dest.onChanged();
+		
+		return dest;
+	}
+	
+	default IMathObject<T> sin()
+	{
+		return this.sin(this);
+	}
+	
+	default IMathObject<T> sin(IMathObject<T> dest)
+	{
+		int i = Math.min(this.size(), dest.size());
+		
+		for (int c = 0; c < i; c++)
+		{
+			dest.set(c, Math.sin(this.get(c).doubleValue()), false);
+			
+		}
+		
+		dest.onChanged();
+		
+		return dest;
 	}
 	
 	default void onChanged(){}

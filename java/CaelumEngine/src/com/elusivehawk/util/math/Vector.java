@@ -115,7 +115,7 @@ public class Vector implements IMathObject<Float>
 	}
 	
 	@Override
-	public Vector set(int pos, Float num, boolean notify)
+	public Vector set(int pos, Number num, boolean notify)
 	{
 		assert !this.isImmutable();
 		

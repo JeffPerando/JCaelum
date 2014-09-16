@@ -70,10 +70,10 @@ public final class MathHelper
 	
 	public static float dist(Vector from, Vector to)
 	{
-		return (float)Math.sqrt(distSquare(from, to));
+		return (float)Math.sqrt(distSquared(from, to));
 	}
 	
-	public static float distSquare(Vector from, Vector to)
+	public static float distSquared(Vector from, Vector to)
 	{
 		int size = Math.min(from.size(), to.size());
 		float ret = 0f;

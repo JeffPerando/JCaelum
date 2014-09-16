@@ -104,7 +104,7 @@ public class Matrix implements IMathObject<Float>
 	}
 	
 	@Override
-	public Matrix set(int pos, Float num, boolean notify)
+	public Matrix set(int pos, Number num, boolean notify)
 	{
 		this.data[pos] = num.floatValue();
 		

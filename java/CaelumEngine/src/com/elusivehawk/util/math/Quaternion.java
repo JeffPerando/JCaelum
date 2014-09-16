@@ -68,7 +68,7 @@ public class Quaternion implements IMathObject<Float>
 	}
 	
 	@Override
-	public Quaternion set(int pos, Float num, boolean notify)
+	public Quaternion set(int pos, Number num, boolean notify)
 	{
 		assert MathHelper.bounds(pos, 0, this.size());
 		

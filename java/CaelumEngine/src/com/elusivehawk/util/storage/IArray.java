@@ -13,9 +13,9 @@ public interface IArray<T>
 	
 	public T get(int i);
 	
-	public IArray<T> set(int i, T obj);
+	public IArray<? extends T> set(int i, T obj);
 	
-	default IArray<T> setImmutable()
+	default IArray<? extends T> setImmutable()
 	{
 		return this;
 	};

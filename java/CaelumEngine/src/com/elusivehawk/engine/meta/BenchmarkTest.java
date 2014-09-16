@@ -1,12 +1,16 @@
 
 package com.elusivehawk.engine.meta;
 
+import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.Logger;
+import com.elusivehawk.util.math.MathHelper;
+import com.elusivehawk.util.math.Vector;
 
 /**
  * 
  * Test log:
  * <p>
+ * MathHelper testing.<br>
  * Timer testing.<br>
  * File filterer.<br>
  * String index testing.<br>
@@ -34,34 +38,13 @@ public class BenchmarkTest
 	
 	public static void main(String[] args)
 	{
-		System.out.println("Beginning bench testing...");
+		Logger.log().log(EnumLogType.VERBOSE, "Beginning bench testing...");
 		
-		long time;
+		Vector one = new Vector(150, 150, 150), two = new Vector(50, 50, 50);
 		
-		for (int c = 0; c < TESTS; c++)
-		{
-			time = System.nanoTime();
-			
-			try
-			{
-				Thread.sleep(1000L);
-				
-			}
-			catch (InterruptedException e)
-			{
-				Logger.log().err(e);
-				
-			}
-			
-			time = System.nanoTime() - time;
-			
-			System.out.println(String.format("Test #%s: %s", c + 1, time / DIV));
-			
-		}
+		Logger.log().log(EnumLogType.INFO, "Test: %s", MathHelper.cross(one, two));
 		
-		//System.out.println(String.format("Final result: %s", MathHelper.avg(longs)));
-		
-		System.out.println("Th-th-th-th-That's all, folks!");
+		Logger.log().log(EnumLogType.VERBOSE, "Th-th-th-th-That's all, folks!");
 		
 	}
 	
