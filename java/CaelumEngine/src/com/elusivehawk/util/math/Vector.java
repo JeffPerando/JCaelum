@@ -11,7 +11,7 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-public class Vector implements IMathObject<Float>
+public class Vector implements IMathArray<Float>
 {
 	protected final float[] data;
 	protected List<IVecListener> listeners = null;
@@ -141,7 +141,7 @@ public class Vector implements IMathObject<Float>
 	}
 	
 	@Override
-	public IMathObject<Float> normalize(IMathObject<Float> dest)
+	public IMathArray<Float> normalize(IMathArray<Float> dest)
 	{
 		assert !dest.isImmutable();
 		
@@ -161,7 +161,7 @@ public class Vector implements IMathObject<Float>
 	}
 	
 	@Override
-	public IMathObject<Float> add(IMathObject<Float> obj, IMathObject<Float> dest)
+	public IMathArray<Float> add(IMathArray<Float> obj, IMathArray<Float> dest)
 	{
 		assert !dest.isImmutable();
 		
@@ -179,7 +179,7 @@ public class Vector implements IMathObject<Float>
 	}
 	
 	@Override
-	public IMathObject<Float> div(IMathObject<Float> obj, IMathObject<Float> dest)
+	public IMathArray<Float> div(IMathArray<Float> obj, IMathArray<Float> dest)
 	{
 		assert !dest.isImmutable();
 		
@@ -197,7 +197,7 @@ public class Vector implements IMathObject<Float>
 	}
 	
 	@Override
-	public IMathObject<Float> sub(IMathObject<Float> obj, IMathObject<Float> dest)
+	public IMathArray<Float> sub(IMathArray<Float> obj, IMathArray<Float> dest)
 	{
 		assert !dest.isImmutable();
 		
@@ -215,7 +215,7 @@ public class Vector implements IMathObject<Float>
 	}
 	
 	@Override
-	public IMathObject<Float> mul(IMathObject<Float> obj, IMathObject<Float> dest)
+	public IMathArray<Float> mul(IMathArray<Float> obj, IMathArray<Float> dest)
 	{
 		assert !dest.isImmutable();
 		
@@ -540,7 +540,7 @@ public class Vector implements IMathObject<Float>
 		return this;
 	}
 	
-	public Vector add(IMathObject<Float> obj, boolean local)
+	public Vector add(IMathArray<Float> obj, boolean local)
 	{
 		return (Vector)this.add(obj, local ? this : new Vector(this.size()));
 	}
@@ -557,7 +557,7 @@ public class Vector implements IMathObject<Float>
 		return this;
 	}
 	
-	public Vector div(IMathObject<Float> obj, boolean local)
+	public Vector div(IMathArray<Float> obj, boolean local)
 	{
 		return (Vector)this.div(obj, local ? this : new Vector(this.size()));
 	}
@@ -574,7 +574,7 @@ public class Vector implements IMathObject<Float>
 		return this;
 	}
 	
-	public Vector mul(IMathObject<Float> obj, boolean local)
+	public Vector mul(IMathArray<Float> obj, boolean local)
 	{
 		return (Vector)this.mul(obj, local ? this : new Vector(this.size()));
 	}
@@ -591,7 +591,7 @@ public class Vector implements IMathObject<Float>
 		return this;
 	}
 	
-	public Vector sub(IMathObject<Float> obj, boolean local)
+	public Vector sub(IMathArray<Float> obj, boolean local)
 	{
 		return (Vector)this.sub(obj, local ? this : new Vector(this.size()));
 	}

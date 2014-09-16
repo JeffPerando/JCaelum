@@ -129,7 +129,7 @@ public final class MathHelper
 		return (i & 1) == 1;
 	}
 	
-	public static float length(IMathObject<Float> m)
+	public static float length(IMathArray<Float> m)
 	{
 		float ret = 0f;
 		

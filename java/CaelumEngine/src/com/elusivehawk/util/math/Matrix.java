@@ -11,7 +11,7 @@ import com.elusivehawk.util.storage.Buffer;
  * 
  * @author Elusivehawk
  */
-public class Matrix implements IMathObject<Float>
+public class Matrix implements IMathArray<Float>
 {
 	protected final float[] data;
 	public final int w, h;
@@ -118,7 +118,7 @@ public class Matrix implements IMathObject<Float>
 	}
 	
 	@Override
-	public IMathObject<Float> normalize(IMathObject<Float> dest)
+	public IMathArray<Float> normalize(IMathArray<Float> dest)
 	{
 		assert !dest.isImmutable();
 		
@@ -127,7 +127,7 @@ public class Matrix implements IMathObject<Float>
 	}
 	
 	@Override
-	public IMathObject<Float> add(IMathObject<Float> obj, IMathObject<Float> dest)
+	public IMathArray<Float> add(IMathArray<Float> obj, IMathArray<Float> dest)
 	{
 		Buffer<Float> buf = new Buffer<Float>(obj);
 		
@@ -147,7 +147,7 @@ public class Matrix implements IMathObject<Float>
 	}
 	
 	@Override
-	public IMathObject<Float> div(IMathObject<Float> obj, IMathObject<Float> dest)
+	public IMathArray<Float> div(IMathArray<Float> obj, IMathArray<Float> dest)
 	{
 		Buffer<Float> buf = new Buffer<Float>(obj);
 		
@@ -167,7 +167,7 @@ public class Matrix implements IMathObject<Float>
 	}
 	
 	@Override
-	public IMathObject<Float> sub(IMathObject<Float> obj, IMathObject<Float> dest)
+	public IMathArray<Float> sub(IMathArray<Float> obj, IMathArray<Float> dest)
 	{
 		Buffer<Float> buf = new Buffer<Float>(obj);
 		
@@ -187,7 +187,7 @@ public class Matrix implements IMathObject<Float>
 	}
 	
 	@Override
-	public IMathObject<Float> mul(IMathObject<Float> obj, IMathObject<Float> dest)
+	public IMathArray<Float> mul(IMathArray<Float> obj, IMathArray<Float> dest)
 	{
 		Buffer<Float> buf = new Buffer<Float>(obj);
 		
@@ -249,7 +249,7 @@ public class Matrix implements IMathObject<Float>
 	}
 	
 	@Override
-	public Matrix set(IMathObject<Float> obj)
+	public Matrix set(IMathArray<Float> obj)
 	{
 		Buffer<Float> buf = new Buffer<Float>(obj);
 		

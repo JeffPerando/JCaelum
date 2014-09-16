@@ -10,7 +10,7 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-public class Quaternion implements IMathObject<Float>
+public class Quaternion implements IMathArray<Float>
 {
 	protected final float[] data = new float[4];
 	protected volatile boolean dirty = false;
@@ -85,7 +85,7 @@ public class Quaternion implements IMathObject<Float>
 	}
 	
 	@Override
-	public IMathObject<Float> normalize(IMathObject<Float> dest)
+	public IMathArray<Float> normalize(IMathArray<Float> dest)
 	{
 		assert !dest.isImmutable();
 		
@@ -105,7 +105,7 @@ public class Quaternion implements IMathObject<Float>
 	}
 	
 	@Override
-	public IMathObject<Float> add(IMathObject<Float> obj, IMathObject<Float> dest)
+	public IMathArray<Float> add(IMathArray<Float> obj, IMathArray<Float> dest)
 	{
 		assert !dest.isImmutable();
 		
@@ -123,7 +123,7 @@ public class Quaternion implements IMathObject<Float>
 	}
 	
 	@Override
-	public IMathObject<Float> div(IMathObject<Float> obj, IMathObject<Float> dest)
+	public IMathArray<Float> div(IMathArray<Float> obj, IMathArray<Float> dest)
 	{
 		assert !dest.isImmutable();
 		
@@ -141,7 +141,7 @@ public class Quaternion implements IMathObject<Float>
 	}
 	
 	@Override
-	public IMathObject<Float> sub(IMathObject<Float> obj, IMathObject<Float> dest)
+	public IMathArray<Float> sub(IMathArray<Float> obj, IMathArray<Float> dest)
 	{
 		assert !dest.isImmutable();
 		
@@ -159,7 +159,7 @@ public class Quaternion implements IMathObject<Float>
 	}
 	
 	@Override
-	public IMathObject<Float> mul(IMathObject<Float> obj, IMathObject<Float> dest)
+	public IMathArray<Float> mul(IMathArray<Float> obj, IMathArray<Float> dest)
 	{
 		assert !dest.isImmutable();
 		

@@ -12,19 +12,19 @@ import com.elusivehawk.util.storage.IStorable;
  * 
  * @author Elusivehawk
  */
-public interface IMathObject<T extends Number> extends IDirty, IStorable<T>, IArray<T>
+public interface IMathArray<T extends Number> extends IDirty, IStorable<T>, IArray<T>
 {
-	public IMathObject<T> set(int pos, Number num, boolean notify);
+	public IMathArray<T> set(int pos, Number num, boolean notify);
 	
-	public IMathObject<T> add(IMathObject<T> obj, IMathObject<T> dest);
+	public IMathArray<T> add(IMathArray<T> obj, IMathArray<T> dest);
 	
-	public IMathObject<T> div(IMathObject<T> obj, IMathObject<T> dest);
+	public IMathArray<T> div(IMathArray<T> obj, IMathArray<T> dest);
 	
-	public IMathObject<T> mul(IMathObject<T> obj, IMathObject<T> dest);
+	public IMathArray<T> mul(IMathArray<T> obj, IMathArray<T> dest);
 	
-	public IMathObject<T> sub(IMathObject<T> obj, IMathObject<T> dest);
+	public IMathArray<T> sub(IMathArray<T> obj, IMathArray<T> dest);
 	
-	public IMathObject<T> normalize(IMathObject<T> dest);
+	public IMathArray<T> normalize(IMathArray<T> dest);
 	
 	//Default methods
 	
@@ -40,12 +40,12 @@ public interface IMathObject<T extends Number> extends IDirty, IStorable<T>, IAr
 	}
 	
 	@Override
-	default IMathObject<T> set(int pos, T num)
+	default IMathArray<T> set(int pos, T num)
 	{
 		return this.set(pos, num, true);
 	}
 	
-	default IMathObject<T> setAll(T num)
+	default IMathArray<T> setAll(T num)
 	{
 		for (int c = 0; c < this.size(); c++)
 		{
@@ -58,7 +58,7 @@ public interface IMathObject<T extends Number> extends IDirty, IStorable<T>, IAr
 		return this;
 	}
 	
-	default IMathObject<T> normalize()
+	default IMathArray<T> normalize()
 	{
 		return this.normalize(this);
 	}
@@ -98,7 +98,7 @@ public interface IMathObject<T extends Number> extends IDirty, IStorable<T>, IAr
 		return ret;
 	}
 	
-	default IMathObject<T> set(IMathObject<T> obj)
+	default IMathArray<T> set(IMathArray<T> obj)
 	{
 		int l = Math.min(this.size(), obj.size());
 		
@@ -113,32 +113,32 @@ public interface IMathObject<T extends Number> extends IDirty, IStorable<T>, IAr
 		return this;
 	}
 	
-	default IMathObject<T> add(IMathObject<T> obj)
+	default IMathArray<T> add(IMathArray<T> obj)
 	{
 		return this.add(obj, this);
 	}
 	
-	default IMathObject<T> div(IMathObject<T> obj)
+	default IMathArray<T> div(IMathArray<T> obj)
 	{
 		return this.div(obj, this);
 	}
 	
-	default IMathObject<T> mul(IMathObject<T> obj)
+	default IMathArray<T> mul(IMathArray<T> obj)
 	{
 		return this.mul(obj, this);
 	}
 	
-	default IMathObject<T> sub(IMathObject<T> obj)
+	default IMathArray<T> sub(IMathArray<T> obj)
 	{
 		return this.sub(obj, this);
 	}
 	
-	default IMathObject<T> cos()
+	default IMathArray<T> cos()
 	{
 		return this.cos(this);
 	}
 	
-	default IMathObject<T> cos(IMathObject<T> dest)
+	default IMathArray<T> cos(IMathArray<T> dest)
 	{
 		int i = Math.min(this.size(), dest.size());
 	
@@ -153,12 +153,12 @@ public interface IMathObject<T extends Number> extends IDirty, IStorable<T>, IAr
 		return dest;
 	}
 	
-	default IMathObject<T> sin()
+	default IMathArray<T> sin()
 	{
 		return this.sin(this);
 	}
 	
-	default IMathObject<T> sin(IMathObject<T> dest)
+	default IMathArray<T> sin(IMathArray<T> dest)
 	{
 		int i = Math.min(this.size(), dest.size());
 		
