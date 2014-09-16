@@ -18,17 +18,33 @@ public final class MathHelper
 	
 	public static boolean bounds(float f, float min, float max)
 	{
-		return clamp(f, min, max) == f;
+		return f >= min && f <= max;
 	}
 	
 	public static boolean bounds(int i, int min, int max)
 	{
-		return clamp(i, min, max) == i;
+		return i >= min && i <= max;
 	}
 	
 	public static boolean bounds(long l, long min, long max)
 	{
-		return clamp(l, min, max) == l;
+		return l >= min && l <= max;
+	}
+	
+	public static boolean bounds(Vector v, Vector min, Vector max)
+	{
+		int size = min(v.size(), min.size(), max.size());
+		
+		for (int c = 0; c < size; c++)
+		{
+			if (!bounds(v.get(c), min.get(c), max.get(c)))
+			{
+				return false;
+			}
+			
+		}
+		
+		return true;
 	}
 	
 	public static Vector calcNormal(Vector one, Vector two, Vector three)
@@ -49,6 +65,21 @@ public final class MathHelper
 	public static long clamp(long l, long min, long max)
 	{
 		return Math.min(max, Math.max(l, min));
+	}
+	
+	public static Vector clamp(Vector v, Vector min, Vector max)
+	{
+		int size = min(v.size(), min.size(), max.size());
+		
+		Vector ret = new Vector(size);
+		
+		for (int c = 0; c < size; c++)
+		{
+			ret.set(c, clamp(v.get(c), min.get(c), max.get(c)), false);
+			
+		}
+		
+		return ret;
 	}
 	
 	public static Vector cross(Vector one, Vector two)

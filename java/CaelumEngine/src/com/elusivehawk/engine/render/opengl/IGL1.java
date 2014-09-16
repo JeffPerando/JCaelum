@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.render.opengl;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import com.elusivehawk.engine.render.Color;
@@ -10,7 +11,7 @@ import com.elusivehawk.util.BufferHelper;
 
 /**
  * 
- * Supports OpenGL versions 1.0/1 to 1.5.
+ * Supports OpenGL versions 1.0/1.1 to 1.5.
  * 
  * @author Elusivehawk
  */
@@ -42,21 +43,26 @@ public interface IGL1
 	
 	public void glBlendFunc(int sfactor, int dfactor) throws GLException;
 	
-	default void glBufferData(GLEnumBufferTarget target, GLEnumDataType type, java.nio.Buffer data, GLEnumDataUsage usage) throws GLException
+	default void glBufferData(GLEnumBufferTarget target, GLEnumDataType type, Buffer data, GLEnumDataUsage usage) throws GLException
 	{
 		this.glBufferData(target.getGLId(), type.getGLId(), data, usage.getGLId());
 		
 	}
 	
-	public void glBufferData(int target, int type, java.nio.Buffer data, int usage) throws GLException;
+	public void glBufferData(int target, int type, Buffer data, int usage) throws GLException;
 	
-	default void glBufferSubData(GLEnumBufferTarget target, int offset, GLEnumDataType type, java.nio.Buffer data) throws GLException
+	default void glBufferSubData(VertexBuffer buffer, int offset, Buffer data) throws GLException
+	{
+		this.glBufferSubData(buffer.getTarget(), offset, buffer.getDataType(), data);
+	}
+	
+	default void glBufferSubData(GLEnumBufferTarget target, int offset, GLEnumDataType type, Buffer data) throws GLException
 	{
 		this.glBufferSubData(target.getGLId() * type.getByteCount(), offset, type.getGLId(), data);
 		
 	}
 	
-	public void glBufferSubData(int target, int offset, int type, java.nio.Buffer data) throws GLException;
+	public void glBufferSubData(int target, int offset, int type, Buffer data) throws GLException;
 	
 	public void glClear(int mask) throws GLException;
 	

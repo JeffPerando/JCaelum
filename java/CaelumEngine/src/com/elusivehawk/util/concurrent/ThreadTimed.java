@@ -72,7 +72,7 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 	}
 	
 	@Override
-	public final void rawUpdate()
+	public final void rawUpdate() throws Throwable
 	{
 		if (this.timeUsed + this.delta > 1.0)//Have we run out of time?
 		{
@@ -80,16 +80,7 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 			
 			if (sleep > 0)
 			{
-				try
-				{
-					Thread.sleep(sleep);//Sleep for the remainder of the second
-					
-				}
-				catch (InterruptedException e)
-				{
-					this.handleException(e);
-					
-				}
+				Thread.sleep(sleep);//Sleep for the remainder of the second
 				
 			}
 			
@@ -119,16 +110,7 @@ public abstract class ThreadTimed extends ThreadStoppable implements IUpdatable
 				
 			}
 			
-			try
-			{
-				Thread.sleep((long)((this.delta - this.timeSpent) * MILI_SEC));//Sleep for the remaining time.
-				
-			}
-			catch (InterruptedException e)
-			{
-				this.handleException(e);
-				
-			}
+			Thread.sleep((long)((this.delta - this.timeSpent) * MILI_SEC));//Sleep for the remaining time.
 			
 		}
 		

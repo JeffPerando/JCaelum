@@ -53,36 +53,13 @@ public class AABB extends Shape implements IVecListener
 			return false;
 		}
 		
-		for (int c = 0; c < 3; c++)
-		{
-			if (!MathHelper.bounds(vec.get(c), this.min.get(c), this.max.get(c)))
-			{
-				return false;
-			}
-			
-		}
-		
-		return true;
+		return MathHelper.bounds(vec, this.min, this.max);
 	}
 	
 	@Override
 	public Vector createNearestPoint(Vector otherPos)
 	{
-		Vector ret = new Vector();
-		
-		for (int c = 0; c < 3; c++)
-		{
-			ret.set(c, MathHelper.clamp(otherPos.get(c), this.min.get(c), this.max.get(c)));
-			
-		}
-		
-		return ret;
-	}
-	
-	@Override
-	public AABB clone()
-	{
-		return new AABB(this);
+		return MathHelper.clamp(otherPos, this.min, this.max);
 	}
 	
 	@Override
@@ -95,6 +72,12 @@ public class AABB extends Shape implements IVecListener
 			
 		}
 		
+	}
+	
+	@Override
+	public AABB clone()
+	{
+		return new AABB(this);
 	}
 	
 }

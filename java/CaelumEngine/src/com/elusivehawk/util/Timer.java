@@ -43,11 +43,19 @@ public class Timer
 		return this.started ? 0 : this.time;
 	}
 	
-	public double timeCall(Runnable r)
+	public double timeCall(Runnable r) throws Throwable
 	{
 		this.start();
 		
-		r.run();
+		try
+		{
+			r.run();
+			
+		}
+		catch (Throwable e)
+		{
+			throw e;
+		}
 		
 		this.stop();
 		
