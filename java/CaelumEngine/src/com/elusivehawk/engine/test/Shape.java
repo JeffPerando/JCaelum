@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.test;
 
 import com.elusivehawk.engine.EnumEngineFeature;
+import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.math.Vector;
 
 /**
@@ -11,7 +12,7 @@ import com.elusivehawk.util.math.Vector;
  * @author Elusivehawk
  */
 @IntendedFor(EnumEngineFeature.PHYSICS)
-public abstract class Shape
+public abstract class Shape implements IUpdatable
 {
 	protected final Vector pos = new Vector();
 	protected volatile boolean moveable = true;
@@ -19,6 +20,16 @@ public abstract class Shape
 	public Shape(Vector position)
 	{
 		this.pos.set(position);
+		
+	}
+	
+	@Override
+	public void update(double delta, Object... extra)
+	{
+		if (!this.canMove())
+		{
+			
+		}
 		
 	}
 	

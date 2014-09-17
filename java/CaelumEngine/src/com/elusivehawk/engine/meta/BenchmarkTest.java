@@ -34,15 +34,14 @@ import com.elusivehawk.util.math.Vector;
 public class BenchmarkTest
 {
 	public static final int TESTS = 10;
-	public static final double DIV = 1000000000D;
 	
 	public static void main(String[] args)
 	{
 		Logger.log().log(EnumLogType.VERBOSE, "Beginning bench testing...");
 		
-		Vector one = new Vector(150, 150, 150), two = new Vector(50, 50, 50);
+		Vector one = new Vector(150, 150, 150), two = new Vector(10, 10, 10);
 		
-		Logger.log().log(EnumLogType.INFO, "Test: %s", MathHelper.cross(one, two));
+		Logger.log().log(EnumLogType.INFO, "Test: %s", MathHelper.distSquared(one, two));
 		
 		Logger.log().log(EnumLogType.VERBOSE, "Th-th-th-th-That's all, folks!");
 		

@@ -305,17 +305,7 @@ public class Quaternion implements IMathArray<Float>
 		Quaternion vQuat = (Quaternion)new Quaternion().set(vec).set(4, 1f);
 		
 		vQuat.mul(this);
-		vQuat.mul(conj);
-		
-		int size = Math.min(3, dest.size());
-		
-		for (int c = 0; c < size; c++)
-		{
-			dest.set(c, vQuat.get(c), false);
-			
-		}
-		
-		dest.onChanged();
+		vQuat.mul(conj, dest);
 		
 		return vec;
 	}
