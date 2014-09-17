@@ -1,7 +1,7 @@
 
-package com.elusivehawk.engine.test;
+package com.elusivehawk.engine.physics;
 
-import com.elusivehawk.engine.EnumEngineFeature;
+import com.elusivehawk.engine.Experimental;
 
 /**
  * 
@@ -9,7 +9,7 @@ import com.elusivehawk.engine.EnumEngineFeature;
  * 
  * @author Elusivehawk
  */
-@IntendedFor(EnumEngineFeature.PHYSICS)
+@Experimental
 public class PhysicsConst
 {
 	public static final float GRAVITY = 10f;//In m/s/s

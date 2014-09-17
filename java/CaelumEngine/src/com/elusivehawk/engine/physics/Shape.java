@@ -1,7 +1,7 @@
 
-package com.elusivehawk.engine.test;
+package com.elusivehawk.engine.physics;
 
-import com.elusivehawk.engine.EnumEngineFeature;
+import com.elusivehawk.engine.Experimental;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.math.IVecListener;
 import com.elusivehawk.util.math.Vector;
@@ -12,7 +12,7 @@ import com.elusivehawk.util.math.Vector;
  * 
  * @author Elusivehawk
  */
-@IntendedFor(EnumEngineFeature.PHYSICS)
+@Experimental
 public abstract class Shape implements IVecListener, IUpdatable
 {
 	protected final Vector pos = new Vector();

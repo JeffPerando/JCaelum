@@ -14,10 +14,13 @@ import com.google.common.collect.Lists;
 public class Vector implements IMathArray<Float>
 {
 	protected final float[] data;
+	
 	protected List<IVecListener> listeners = null;
 	protected String name = null;
-	protected boolean immutable = false;
-	protected boolean dirty = false;
+	protected volatile boolean
+			dirty = false,
+			immutable = false,
+			sync = false;
 	
 	public Vector()
 	{
@@ -127,7 +130,20 @@ public class Vector implements IMathArray<Float>
 				
 			}
 			
-			this.data[pos] = num.floatValue();
+			if (this.sync)
+			{
+				synchronized (this)
+				{
+					this.data[pos] = num.floatValue();
+					
+				}
+				
+			}
+			else
+			{
+				this.data[pos] = num.floatValue();
+				
+			}
 			
 			if (notify)
 			{
@@ -341,6 +357,13 @@ public class Vector implements IMathArray<Float>
 	public Vector setName(String str)
 	{
 		this.name = str;
+		
+		return this;
+	}
+	
+	public Vector setSync()
+	{
+		this.sync = true;
 		
 		return this;
 	}

@@ -1,7 +1,7 @@
 
-package com.elusivehawk.engine.test;
+package com.elusivehawk.engine.physics;
 
-import com.elusivehawk.engine.EnumEngineFeature;
+import com.elusivehawk.engine.Experimental;
 import com.elusivehawk.util.math.MathHelper;
 import com.elusivehawk.util.math.Vector;
 
@@ -11,7 +11,7 @@ import com.elusivehawk.util.math.Vector;
  * 
  * @author Elusivehawk
  */
-@IntendedFor(EnumEngineFeature.PHYSICS)
+@Experimental
 public class AABB extends Shape
 {
 	private final Vector max, min, size;

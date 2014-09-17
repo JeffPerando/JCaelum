@@ -13,8 +13,8 @@ import com.google.common.collect.Lists;
 public class Quaternion implements IMathArray<Float>
 {
 	protected final float[] data = new float[4];
-	protected volatile boolean dirty = false;
 	
+	protected volatile boolean dirty = false;
 	protected List<IQuatListener> listeners = null;
 	protected Matrix matrix = MatrixHelper.createIdentityMatrix();
 	
