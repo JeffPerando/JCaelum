@@ -3,6 +3,7 @@ package com.elusivehawk.engine.test;
 
 import com.elusivehawk.engine.EnumEngineFeature;
 import com.elusivehawk.util.IUpdatable;
+import com.elusivehawk.util.math.IVecListener;
 import com.elusivehawk.util.math.Vector;
 
 /**
@@ -12,14 +13,16 @@ import com.elusivehawk.util.math.Vector;
  * @author Elusivehawk
  */
 @IntendedFor(EnumEngineFeature.PHYSICS)
-public abstract class Shape implements IUpdatable
+public abstract class Shape implements IVecListener, IUpdatable
 {
 	protected final Vector pos = new Vector();
 	protected volatile boolean moveable = true;
 	
+	@SuppressWarnings("unqualified-field-access")
 	public Shape(Vector position)
 	{
-		this.pos.set(position);
+		pos.set(position);
+		pos.addListener(this);
 		
 	}
 	
@@ -32,6 +35,9 @@ public abstract class Shape implements IUpdatable
 		}
 		
 	}
+	
+	@Override
+	public void onVecChanged(Vector vec){}
 	
 	public Vector getPosition()
 	{

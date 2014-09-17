@@ -2,7 +2,6 @@
 package com.elusivehawk.engine.test;
 
 import com.elusivehawk.engine.EnumEngineFeature;
-import com.elusivehawk.util.math.IVecListener;
 import com.elusivehawk.util.math.MathHelper;
 import com.elusivehawk.util.math.Vector;
 
@@ -13,7 +12,7 @@ import com.elusivehawk.util.math.Vector;
  * @author Elusivehawk
  */
 @IntendedFor(EnumEngineFeature.PHYSICS)
-public class AABB extends Shape implements IVecListener
+public class AABB extends Shape
 {
 	private final Vector max, min, size;
 	private final Vector maxOff = new Vector(), minOff = new Vector();
@@ -34,8 +33,6 @@ public class AABB extends Shape implements IVecListener
 		
 		maxOff.setImmutable();
 		minOff.setImmutable();
-		
-		pos.addListener(this);
 		
 	}
 	
