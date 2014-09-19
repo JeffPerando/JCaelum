@@ -27,6 +27,11 @@ public final class BufferHelper
 	
 	public static ByteBuffer createByteBuffer(int size)
 	{
+		if (size <= 0)
+		{
+			throw new RuntimeException(String.format("Cannot make a ByteBuffer with a size of %s", size));
+		}
+		
 		return ByteBuffer.allocateDirect(size).order(ByteOrder.nativeOrder());
 	}
 	
