@@ -2,10 +2,12 @@
 package com.elusivehawk.engine.assets;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import com.elusivehawk.engine.CaelumException;
+import com.elusivehawk.util.CompInfo;
 import com.elusivehawk.util.FileHelper;
 import com.elusivehawk.util.storage.SyncList;
 import com.elusivehawk.util.task.ITaskListener;
@@ -29,7 +31,7 @@ public class AssetManager implements ITaskListener
 			resLocs = Lists.newArrayList(),
 			filesToScan = new SyncList<File>();
 	
-	protected boolean loaded = false;
+	protected volatile boolean loaded = false;
 	protected String parent = ".";
 	
 	public AssetManager(){}
@@ -44,7 +46,7 @@ public class AssetManager implements ITaskListener
 		
 		TaskLoadAsset t = (TaskLoadAsset)task;
 		
-		Asset a = t.getCompleteAsset();
+		Asset a = t.getCompletedAsset();
 		
 		if (a == null)
 		{
@@ -76,6 +78,11 @@ public class AssetManager implements ITaskListener
 			
 		}
 		
+	}
+	
+	public boolean isLoaded()
+	{
+		return this.loaded;
 	}
 	
 	public void addSearchDirectory(File dir)
@@ -135,18 +142,17 @@ public class AssetManager implements ITaskListener
 	
 	public void initiate()
 	{
-		if (this.loaded)
+		if (!this.loaded)
 		{
-			return;
-		}
-		
-		for (File file : this.filesToScan)
-		{
-			this.resLocs.addAll(FileHelper.getFiles(file));
+			for (File file : this.filesToScan)
+			{
+				this.resLocs.addAll(FileHelper.getFiles(file));
+				
+			}
+			
+			this.loaded = true;
 			
 		}
-		
-		this.loaded = true;
 		
 	}
 	
@@ -175,18 +181,36 @@ public class AssetManager implements ITaskListener
 		return null;
 	}
 	
-	protected File getFile(String loc)
+	protected InputStream getStream(String loc)
 	{
+		InputStream ret = null;
+		
 		for (File file : this.resLocs)
 		{
 			if (file.getPath().endsWith(loc))
 			{
-				return file;
+				ret = FileHelper.createInStream(file);
+				break;
 			}
 			
 		}
 		
-		return new File(this.parent, loc);
+		if (ret == null)
+		{
+			if (CompInfo.BUILT)
+			{
+				ret = FileHelper.getResourceStream(loc);
+				
+			}
+			else
+			{
+				ret = FileHelper.createInStream(FileHelper.createFile(this.parent, loc));
+				
+			}
+			
+		}
+		
+		return ret;
 	}
 	
 }

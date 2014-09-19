@@ -2,10 +2,8 @@
 package com.elusivehawk.engine.assets;
 
 import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.InputStream;
 import com.elusivehawk.engine.CaelumEngine;
-import com.elusivehawk.util.FileHelper;
 import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.task.Task;
 
@@ -41,6 +39,21 @@ public class TaskLoadAsset extends Task
 			throw new NullPointerException("Asset manager not found! Aborting!!");
 		}
 		
+		if (!mgr.isLoaded())
+		{
+			while (!mgr.isLoaded())
+			{
+				try
+				{
+					Thread.sleep(1);
+					
+				}
+				catch (Exception e){}
+				
+			}
+			
+		}
+		
 		Asset a = mgr.getExistingAsset(this.asset.filepath, this.asset.type);
 		
 		if (a != null)
@@ -50,31 +63,29 @@ public class TaskLoadAsset extends Task
 			return true;
 		}
 		
-		File file = mgr.getFile(this.asset.filepath);
+		InputStream is = mgr.getStream(this.asset.filepath);
 		
-		if (!FileHelper.canRead(file))
+		if (is == null)
 		{
-			return false;
+			throw new NullPointerException(String.format("Asset stream for \"%s\" cannot be null!", this.asset.filepath));
 		}
 		
-		FileInputStream fis = FileHelper.createInStream(file);
+		BufferedInputStream in = new BufferedInputStream(is);
 		
-		if (fis == null)
-		{
-			return false;
-		}
+		boolean ret = this.asset.read(in);
 		
-		if (this.asset.read(new BufferedInputStream(fis)))
+		in.close();
+		
+		if (ret)
 		{
 			this.fin = this.asset;
 			
-			return true;
 		}
 		
-		return false;
+		return ret;
 	}
 	
-	public Asset getCompleteAsset()
+	public Asset getCompletedAsset()
 	{
 		return this.fin;
 	}
