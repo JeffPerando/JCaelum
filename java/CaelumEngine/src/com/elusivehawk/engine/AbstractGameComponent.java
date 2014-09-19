@@ -115,10 +115,7 @@ public abstract class AbstractGameComponent implements IUpdatable, IRenderable
 	@SuppressWarnings("unused")
 	public void onScreenFlipped(boolean flip){}
 	
-	@SuppressWarnings("unused")
-	public void loadAssets(AssetManager mgr){}
-	
-	public abstract void initiate(GameArguments args) throws Throwable;
+	public abstract void initiate(GameArguments args, AssetManager assets) throws Throwable;
 	
 	public abstract void onShutdown();
 	

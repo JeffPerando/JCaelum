@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine;
 
+import com.elusivehawk.engine.assets.AssetManager;
 import com.elusivehawk.engine.physics.IPhysicsSimulator;
 import com.elusivehawk.engine.render.IRenderable;
 import com.elusivehawk.engine.render.RenderContext;
@@ -40,7 +41,7 @@ public class GameState extends AbstractGameComponent
 	}
 	
 	@Override
-	public void initiate(GameArguments args) throws Throwable{}
+	public void initiate(GameArguments args, AssetManager assets) throws Throwable{}
 	
 	@Override
 	public void render(RenderContext rcon, double delta) throws RenderException

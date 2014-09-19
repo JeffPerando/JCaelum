@@ -44,13 +44,13 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 	}
 	
 	@Override
-	public final void initiate(GameArguments args) throws Throwable
+	public final void initiate(GameArguments args, AssetManager assets) throws Throwable
 	{
-		this.initiateGame(args);
+		this.initiateGame(args, assets);
 		
 		if (this.nextState != null)
 		{
-			this.nextState.initiate(args);
+			this.nextState.initiate(args, assets);
 			
 			this.state = this.nextState;
 			this.nextState = null;
@@ -135,15 +135,13 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 				
 				try
 				{
-					this.state.initiate(CaelumEngine.gameArgs());
+					this.state.initiate(CaelumEngine.gameArgs(), CaelumEngine.assetManager());
 					
 				}
 				catch (Throwable e)
 				{
 					throw new GameTickException("Error caught during game state initiation:", e);
 				}
-				
-				this.state.loadAssets(CaelumEngine.assetManager());
 				
 				if (!this.listeners.isEmpty())
 				{
@@ -161,17 +159,6 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 	public String getFormattedName()
 	{
 		return this.getGameVersion() == null ? this.name : String.format("%s %s", this.name, this.getGameVersion());
-	}
-	
-	@Override
-	public void loadAssets(AssetManager mgr)
-	{
-		if (this.state != null)
-		{
-			this.state.loadAssets(mgr);
-			
-		}
-		
 	}
 	
 	//XXX Optional/technical methods
@@ -217,7 +204,7 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 	
 	//XXX Abstract methods
 	
-	protected abstract void initiateGame(GameArguments args) throws Throwable;
+	protected abstract void initiateGame(GameArguments args, AssetManager assets) throws Throwable;
 	
 	protected abstract void onGameShutdown();
 	

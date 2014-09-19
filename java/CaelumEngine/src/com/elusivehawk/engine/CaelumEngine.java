@@ -528,7 +528,7 @@ public final class CaelumEngine
 		
 		try
 		{
-			g.initiateGame(this.gameargs);
+			g.initiate(this.gameargs, this.assets);
 			
 		}
 		catch (Throwable e)
@@ -539,7 +539,6 @@ public final class CaelumEngine
 			return;
 		}
 		
-		this.game.loadAssets(this.assets);
 		this.assets.initiate();
 		
 		//XXX Creating game threads

@@ -2,6 +2,7 @@
 package com.elusivehawk.engine;
 
 import java.io.IOException;
+import com.elusivehawk.engine.assets.AssetManager;
 import com.elusivehawk.engine.network.Client;
 import com.elusivehawk.engine.network.ConnectionType;
 import com.elusivehawk.engine.network.IHost;
@@ -51,7 +52,7 @@ public abstract class NetworkGame extends Game implements INetworkMaster
 	}
 	
 	@Override
-	public void initiateGame(GameArguments args) throws Throwable
+	public void initiateGame(GameArguments args, AssetManager assets) throws Throwable
 	{
 		if (this.side != Side.SERVER)
 		{
