@@ -17,7 +17,7 @@ public class Shaders implements IDirty, IAssetReceiver
 {
 	private final Shader[] shaders = new Shader[RenderConst.SHADER_COUNT];
 	private int shCount = 0;
-	private boolean dirty = false;
+	private volatile boolean dirty = false;
 	
 	@Override
 	public void onAssetLoaded(Asset a)
@@ -37,7 +37,7 @@ public class Shaders implements IDirty, IAssetReceiver
 	}
 
 	@Override
-	public synchronized void setIsDirty(boolean b)
+	public void setIsDirty(boolean b)
 	{
 		this.dirty = b;
 		
@@ -48,8 +48,10 @@ public class Shaders implements IDirty, IAssetReceiver
 		return this.shCount;
 	}
 	
-	public void attachShaders(RenderContext rcon, GLProgram p) throws GLException
+	public boolean attachShaders(RenderContext rcon, GLProgram p) throws GLException
 	{
+		boolean ret = false;
+		
 		Shader sh;
 		
 		for (int c = 0; c < RenderConst.SHADER_COUNT; c++)
@@ -61,10 +63,16 @@ public class Shaders implements IDirty, IAssetReceiver
 				continue;
 			}
 			
-			rcon.getGL2().glAttachShader(p, sh);
+			if (sh.isLoaded())
+			{
+				rcon.getGL2().glAttachShader(p, sh);
+				ret = true;
+				
+			}
 			
 		}
 		
+		return ret;
 	}
 	
 	public void deleteShaders(RenderContext rcon, GLProgram p) throws GLException
@@ -76,8 +84,12 @@ public class Shaders implements IDirty, IAssetReceiver
 				continue;
 			}
 			
-			rcon.getGL2().glDetachShader(p, sh);
-			sh.delete(rcon);
+			if (sh.isLoaded())
+			{
+				rcon.getGL2().glDetachShader(p, sh);
+				sh.delete(rcon);
+				
+			}
 			
 		}
 		

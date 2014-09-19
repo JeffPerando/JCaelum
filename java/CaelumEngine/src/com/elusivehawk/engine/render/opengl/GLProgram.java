@@ -28,7 +28,7 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 	private final Shaders shaders = new Shaders();
 	private final HashMap<VertexBuffer, List<Integer>> vbos = new HashMap<VertexBuffer, List<Integer>>();
 	
-	private int id = -1, vba = -1;
+	private int id = 0, vba = 0;
 	private boolean bound = false, relink = true;
 	
 	public GLProgram(){}
@@ -95,10 +95,16 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 	@Override
 	public boolean bind(RenderContext rcon)
 	{
-		if (this.id == -1)
+		if (this.id == 0)
 		{
 			this.id = rcon.getGL2().glCreateProgram();
-			this.vba = rcon.getGL3().glGenVertexArrays();
+			
+			if (!rcon.getGL2().glIsProgram(this.id))
+			{
+				this.id = 0;
+				
+				return false;
+			}
 			
 			rcon.registerCleanable(this);
 			
@@ -106,9 +112,18 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 			
 		}
 		
-		if (this.relink)
+		if (this.vba == 0)
 		{
-			this.shaders.attachShaders(rcon, this);
+			this.vba = rcon.getGL3().glGenVertexArrays();
+			
+		}
+		
+		if (this.relink || this.shaders.isDirty())
+		{
+			if (!this.shaders.attachShaders(rcon, this))
+			{
+				return false;
+			}
 			
 			IGL2 gl2 = rcon.getGL2();
 			
@@ -119,15 +134,14 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 			{
 				RenderHelper.checkForGLError(rcon);
 				
-				this.relink = false;
-				
 			}
-			catch (Exception e){}
+			catch (Exception e)
+			{
+				throw e;
+			}
 			
-		}
-		else if (this.shaders.isDirty())
-		{
-			this.shaders.attachShaders(rcon, this);
+			this.relink = false;
+			this.shaders.setIsDirty(false);
 			
 		}
 		

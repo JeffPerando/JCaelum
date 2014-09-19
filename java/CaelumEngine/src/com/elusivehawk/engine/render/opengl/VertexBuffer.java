@@ -24,7 +24,7 @@ public class VertexBuffer implements IGLBindable
 	private Buffer initBuf = null;
 	
 	private int id = 0;
-	private boolean initiated = false, reupload = false;
+	private boolean initiated = false, reupload = true;
 	
 	private final SyncList<Tuple<Buffer, Integer>> uploads = SyncList.newList();
 	
@@ -78,7 +78,15 @@ public class VertexBuffer implements IGLBindable
 		
 		gl1.glBindBuffer(this);
 		
-		if (!this.initiated || this.reupload)
+		if (!this.initiated)
+		{
+			rcon.registerCleanable(this);
+			
+			this.initiated = true;
+			
+		}
+		
+		if (this.reupload)
 		{
 			if (this.initBuf != null)
 			{
@@ -104,7 +112,6 @@ public class VertexBuffer implements IGLBindable
 				
 			}
 			
-			this.initiated = true;
 			this.reupload = false;
 			
 		}

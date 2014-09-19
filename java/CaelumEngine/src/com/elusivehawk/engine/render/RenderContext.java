@@ -1,7 +1,6 @@
 
 package com.elusivehawk.engine.render;
 
-import java.io.File;
 import java.util.List;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.IContext;
@@ -14,6 +13,7 @@ import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
 import com.elusivehawk.engine.render.opengl.IGLDeletable;
+import com.elusivehawk.util.FileHelper;
 import com.elusivehawk.util.IPausable;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.Logger;
@@ -93,9 +93,9 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 		
 		for (GLEnumShader sh : GLEnumShader.values())
 		{
-			String loc = String.format("res/shaders/%s.glsl", sh.name().toLowerCase());
+			String loc = String.format("/res/shaders/%s.glsl", sh.name().toLowerCase());
 			
-			if (new File(loc).exists())
+			if (FileHelper.getResource(loc).exists())
 			{
 				this.shaders.addShader(new Shader(loc, sh));
 				
@@ -162,19 +162,28 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 	}
 	
 	@Override
-	public void update(double delta, Object... extra) throws RenderException
+	public void update(double delta, Object... extra)
 	{
-		if (this.refreshScreen)
+		try
 		{
-			this.display.updateSettings(this.settings);
-			this.gl1.glViewport(0, 0, this.display.getWidth(), this.display.getHeight());
+			if (this.refreshScreen)
+			{
+				this.display.updateSettings(this.settings);
+				this.gl1.glViewport(0, 0, this.display.getWidth(), this.display.getHeight());
+				
+				this.refreshScreen = false;
+				
+			}
 			
-			this.refreshScreen = false;
+			this.gl1.glClear(0b0100010100000000);
+			this.renderGame(delta);
 			
 		}
-		
-		this.gl1.glClear(0b0100010100000000);
-		this.renderGame(delta);
+		catch (Throwable e)
+		{
+			Logger.log().err(e);
+			
+		}
 		
 	}
 	
@@ -294,12 +303,11 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 	
 	public void registerCleanable(IGLDeletable gl)
 	{
-		if (this.cleanables.contains(gl))
+		if (!this.cleanables.contains(gl))
 		{
-			return;
+			this.cleanables.add(gl);
+			
 		}
-		
-		this.cleanables.add(gl);
 		
 	}
 	
