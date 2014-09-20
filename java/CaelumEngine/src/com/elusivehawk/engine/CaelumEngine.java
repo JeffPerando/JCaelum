@@ -539,8 +539,6 @@ public final class CaelumEngine
 			return;
 		}
 		
-		this.assets.initiate();
-		
 		//XXX Creating game threads
 		
 		ThreadGameLoop gameloop = new ThreadGameLoop(this.inputs, this.game);

@@ -39,21 +39,6 @@ public class TaskLoadAsset extends Task
 			throw new NullPointerException("Asset manager not found! Aborting!!");
 		}
 		
-		if (!mgr.isLoaded())
-		{
-			while (!mgr.isLoaded())
-			{
-				try
-				{
-					Thread.sleep(1);
-					
-				}
-				catch (Exception e){}
-				
-			}
-			
-		}
-		
 		Asset a = mgr.getExistingAsset(this.asset.filepath, this.asset.type);
 		
 		if (a != null)

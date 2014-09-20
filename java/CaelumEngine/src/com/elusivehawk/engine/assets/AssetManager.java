@@ -1,7 +1,6 @@
 
 package com.elusivehawk.engine.assets;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
@@ -9,10 +8,10 @@ import java.util.Map;
 import com.elusivehawk.engine.CaelumException;
 import com.elusivehawk.util.CompInfo;
 import com.elusivehawk.util.FileHelper;
+import com.elusivehawk.util.io.IStreamProvider;
 import com.elusivehawk.util.storage.SyncList;
 import com.elusivehawk.util.task.ITaskListener;
 import com.elusivehawk.util.task.Task;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
@@ -27,12 +26,7 @@ public class AssetManager implements ITaskListener
 	
 	protected final Map<EnumAssetType, List<Asset>> assets = Maps.newHashMap();
 	
-	protected final List<File>
-			resLocs = Lists.newArrayList(),
-			filesToScan = new SyncList<File>();
-	
-	protected volatile boolean loaded = false;
-	protected String parent = ".";
+	protected volatile IStreamProvider sProvider = ((path) -> {return FileHelper.getResourceStream(path);});
 	
 	public AssetManager(){}
 	
@@ -80,41 +74,11 @@ public class AssetManager implements ITaskListener
 		
 	}
 	
-	public boolean isLoaded()
+	public void setStreamProvider(IStreamProvider sp)
 	{
-		return this.loaded;
-	}
-	
-	public void addSearchDirectory(File dir)
-	{
-		if (!dir.exists())
-		{
-			return;
-		}
+		assert sp != null;
 		
-		if (!dir.isDirectory())
-		{
-			return;
-		}
-		
-		if (this.loaded)
-		{
-			this.resLocs.addAll(FileHelper.getFiles(dir));
-			
-		}
-		else
-		{
-			this.filesToScan.add(dir);
-			
-		}
-		
-	}
-	
-	public void setDefaultResourceParent(String path)
-	{
-		assert path != null && !"".equals(path);
-		
-		this.parent = path;
+		this.sProvider = sp;
 		
 	}
 	
@@ -138,22 +102,6 @@ public class AssetManager implements ITaskListener
 		}
 		
 		this.assets.remove(a);
-	}
-	
-	public void initiate()
-	{
-		if (!this.loaded)
-		{
-			for (File file : this.filesToScan)
-			{
-				this.resLocs.addAll(FileHelper.getFiles(file));
-				
-			}
-			
-			this.loaded = true;
-			
-		}
-		
 	}
 	
 	protected Asset getExistingAsset(String filename, EnumAssetType type)
@@ -183,17 +131,7 @@ public class AssetManager implements ITaskListener
 	
 	protected InputStream getStream(String loc)
 	{
-		InputStream ret = null;
-		
-		for (File file : this.resLocs)
-		{
-			if (file.getPath().endsWith(loc))
-			{
-				ret = FileHelper.createInStream(file);
-				break;
-			}
-			
-		}
+		InputStream ret = this.sProvider.getInStream(loc);
 		
 		if (ret == null)
 		{
@@ -204,7 +142,7 @@ public class AssetManager implements ITaskListener
 			}
 			else
 			{
-				ret = FileHelper.createInStream(FileHelper.createFile(this.parent, loc));
+				ret = FileHelper.createInStream(FileHelper.createFile(".", loc));
 				
 			}
 			
