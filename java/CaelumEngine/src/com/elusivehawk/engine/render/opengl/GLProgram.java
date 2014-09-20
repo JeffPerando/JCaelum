@@ -99,12 +99,7 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 		{
 			this.id = rcon.getGL2().glCreateProgram();
 			
-			if (!rcon.getGL2().glIsProgram(this.id))
-			{
-				this.id = 0;
-				
-				return false;
-			}
+			this.relink(rcon);
 			
 			rcon.registerCleanable(this);
 			
@@ -120,28 +115,7 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 		
 		if (this.relink || this.shaders.isDirty())
 		{
-			if (!this.shaders.attachShaders(rcon, this))
-			{
-				return false;
-			}
-			
-			IGL2 gl2 = rcon.getGL2();
-			
-			gl2.glLinkProgram(this);
-			gl2.glValidateProgram(this);
-			
-			try
-			{
-				RenderHelper.checkForGLError(rcon);
-				
-			}
-			catch (Exception e)
-			{
-				throw e;
-			}
-			
-			this.relink = false;
-			this.shaders.setIsDirty(false);
+			this.relink(rcon);
 			
 		}
 		
@@ -201,6 +175,33 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 		this.bound = true;
 		
 		return true;
+	}
+	
+	private void relink(RenderContext rcon)
+	{
+		if (!this.shaders.attachShaders(rcon, this))
+		{
+			return;
+		}
+		
+		IGL2 gl2 = rcon.getGL2();
+		
+		gl2.glLinkProgram(this);
+		gl2.glValidateProgram(this);
+		
+		try
+		{
+			RenderHelper.checkForGLError(rcon);
+			
+		}
+		catch (Exception e)
+		{
+			throw e;
+		}
+		
+		this.relink = false;
+		this.shaders.setIsDirty(false);
+		
 	}
 	
 	@Override

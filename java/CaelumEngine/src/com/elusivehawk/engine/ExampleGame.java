@@ -20,6 +20,7 @@ import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.Logger;
+import com.elusivehawk.util.ShutdownHelper;
 import com.elusivehawk.util.Version;
 
 /**
@@ -112,7 +113,15 @@ public final class ExampleGame extends Game
 	{
 		if (this.sh2D.isLoaded())
 		{
-			this.renderer.render(rcon, delta);
+			try
+			{
+				this.renderer.render(rcon, delta);
+				
+			}
+			catch (Exception e)
+			{
+				ShutdownHelper.exit("CANNOT-RENDER");
+			}
 			
 		}
 		else
