@@ -34,8 +34,6 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 	private IGL2 gl2;
 	private IGL3 gl3;
 	
-	private boolean paused = false;
-	
 	private int notex, maxTexCount;
 	
 	private Shaders shaders = new Shaders();
@@ -47,6 +45,7 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 	private DisplaySettings settings = new DisplaySettings();
 	private boolean //Hey, I sorta like this...
 				initiated = false,
+				paused = false,
 				refreshScreen = false,
 				flipScreen = false;
 	

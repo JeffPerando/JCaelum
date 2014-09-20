@@ -120,6 +120,7 @@ public final class ExampleGame extends Game
 			}
 			catch (Exception e)
 			{
+				Logger.log().err(e);
 				ShutdownHelper.exit("CANNOT-RENDER");
 			}
 			
