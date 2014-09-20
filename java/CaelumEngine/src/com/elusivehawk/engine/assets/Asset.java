@@ -26,6 +26,9 @@ public abstract class Asset
 	@SuppressWarnings("unqualified-field-access")
 	protected Asset(String path, EnumAssetType aType)
 	{
+		assert path != null && !"".equals(path);
+		assert aType != null;
+		
 		filepath = path;
 		type = aType;
 		
