@@ -93,6 +93,11 @@ public interface IGL2
 	
 	public void glGetProgram(int program, int pname, IntBuffer params) throws GLException;
 	
+	default int glGetProgrami(GLProgram program, GLEnumPStatus status)
+	{
+		return this.glGetProgrami(program.getId(), status.gl);
+	}
+	
 	public int glGetProgrami(int program, int pname) throws GLException;
 	
 	public String glGetProgramInfoLog(int program, int maxLength) throws GLException;
@@ -100,6 +105,16 @@ public interface IGL2
 	public void glGetProgramInfoLog(int program, IntBuffer length, ByteBuffer infoLog) throws GLException;
 	
 	public void glGetShader(int shader, int pname, IntBuffer params) throws GLException;
+	
+	default int glGetShaderi(int shader, GLEnumSStatus status) throws GLException
+	{
+		return this.glGetShaderi(shader, status.gl);
+	}
+	
+	default int glGetShaderi(Shader shader, GLEnumSStatus status) throws GLException
+	{
+		return this.glGetShaderi(shader.getGLId(), status.gl);
+	}
 	
 	public int glGetShaderi(int shader, int pname) throws GLException;
 	

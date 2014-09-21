@@ -14,6 +14,7 @@ import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLEnumError;
 import com.elusivehawk.engine.render.opengl.GLEnumPolyType;
+import com.elusivehawk.engine.render.opengl.GLEnumSStatus;
 import com.elusivehawk.engine.render.opengl.GLEnumShader;
 import com.elusivehawk.engine.render.opengl.GLEnumTexture;
 import com.elusivehawk.engine.render.opengl.GLException;
@@ -270,6 +271,13 @@ public final class RenderHelper
 		{
 			Logger.log().err(e);
 			
+			return 0;
+		}
+		
+		int status = rcon.getGL2().glGetShaderi(id, GLEnumSStatus.GL_COMPILE_STATUS);
+		
+		if (status == GLConst.GL_FALSE)
+		{
 			return 0;
 		}
 		
