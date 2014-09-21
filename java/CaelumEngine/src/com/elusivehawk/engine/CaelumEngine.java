@@ -407,11 +407,15 @@ public final class CaelumEngine
 			}
 			else
 			{
-				for (Input input : inputList)
+				this.inputs.addAll(inputList);
+				
+				if (CompInfo.DEBUG)
 				{
-					this.inputs.add(input);
-					
-					Logger.log().log(EnumLogType.DEBUG, "Input found: %s", input.getClass().getSimpleName());
+					for (Input input : inputList)
+					{
+						Logger.log().log(EnumLogType.VERBOSE, "Input found: %s", input.getClass().getSimpleName());
+						
+					}
 					
 				}
 				
