@@ -93,7 +93,7 @@ public interface IGL2
 	
 	public void glGetProgram(int program, int pname, IntBuffer params) throws GLException;
 	
-	default int glGetProgrami(GLProgram program, GLEnumPStatus status)
+	default int glGetProgrami(GLProgram program, GLEnumPStatus status) throws GLException
 	{
 		return this.glGetProgrami(program.getId(), status.gl);
 	}
