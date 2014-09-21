@@ -418,7 +418,7 @@ public final class CaelumEngine
 					Logger.log().log(EnumLogType.WARN, "Unable to load input");
 					
 				}
-				else if (CompInfo.DEBUG)
+				else
 				{
 					for (Input input : inputList)
 					{
