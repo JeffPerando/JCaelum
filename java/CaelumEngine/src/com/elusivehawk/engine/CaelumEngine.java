@@ -434,24 +434,22 @@ public final class CaelumEngine
 			
 		}
 		
-		if (CompInfo.DEBUG)
-		{
-			this.factory = (() -> {return new ExampleGame();});
-			
-		}
-		else if (this.factory == null)
+		if (this.factory == null)
 		{
 			String gamefac = this.startargs.get("gamefac");
 			
 			if (gamefac == null)
 			{
-				Logger.log().log(EnumLogType.ERROR, "Game factory not found: Factory not provided");
-				ShutdownHelper.exit("NO-FACTORY-FOUND");
+				Logger.log().log(EnumLogType.VERBOSE, "Running example game");
 				
-				return;
+				this.factory = (() -> {return new ExampleGame();});
+				
 			}
-			
-			this.factory = (GameFactory)ReflectionHelper.newInstance(gamefac, new Class<?>[]{GameFactory.class}, null);
+			else
+			{
+				this.factory = (GameFactory)ReflectionHelper.newInstance(gamefac, new Class<?>[]{GameFactory.class}, null);
+				
+			}
 			
 		}
 		
