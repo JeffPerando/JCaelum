@@ -54,8 +54,10 @@ public final class CaelumEngine
 	
 	private final Map<EnumEngineFeature, IThreadStoppable> threads = Maps.newEnumMap(EnumEngineFeature.class);
 	private final List<Input> inputs = Lists.newArrayList();
-	private final Map<String, String> startargs = Maps.newHashMap();
 	private final TaskManager tasks = new TaskManager();
+	private final AssetManager assets = new AssetManager();
+	
+	private final Map<String, String> startargs = Maps.newHashMap();
 	private final List<String> startupPrefixes = Lists.newArrayList();
 	
 	private File nativeLocation = null;
@@ -66,7 +68,6 @@ public final class CaelumEngine
 	private GameFactory factory = null;
 	private Game game = null;
 	private GameArguments gameargs = null;
-	private AssetManager assets = new AssetManager();
 	private RenderContext rcon = null;
 	
 	private CaelumEngine()
@@ -144,6 +145,7 @@ public final class CaelumEngine
 		return instance().nativeLocation;
 	}
 	
+	@Deprecated
 	public static IContext getContext(boolean safe)
 	{
 		Thread t = Thread.currentThread();
@@ -170,6 +172,7 @@ public final class CaelumEngine
 	
 	//XXX Hooks
 	
+	@Deprecated
 	public static void scheduleRenderTask(RenderTask rt)
 	{
 		instance().rcon.scheduleRTask(rt);
@@ -264,7 +267,7 @@ public final class CaelumEngine
 			return;
 		}
 		
-		//XXX Parsing the starting arguments
+		//XXX Parse the starting arguments
 		
 		List<String> gargs = Lists.newArrayList();
 		Map<String, String> strs = Maps.newHashMap();
@@ -320,7 +323,7 @@ public final class CaelumEngine
 		
 		this.loadNatives();
 		
-		//XXX Loading game environment
+		//XXX Load game environment
 		
 		if (this.env == null)
 		{
@@ -394,7 +397,7 @@ public final class CaelumEngine
 			
 		}
 		
-		//XXX Loading input
+		//XXX Load input
 		
 		if (this.inputs.isEmpty())
 		{
@@ -423,6 +426,8 @@ public final class CaelumEngine
 			
 		}
 		
+		//XXX Load game factory
+		
 		if (this.factory == null)
 		{
 			String gamefac = this.startargs.get("gamefac");
@@ -447,7 +452,7 @@ public final class CaelumEngine
 	@Internal
 	public void startGame()
 	{
-		//XXX Creating the game itself
+		//XXX Create the game itself
 		
 		if (this.factory == null)
 		{
@@ -507,12 +512,6 @@ public final class CaelumEngine
 		
 		this.rcon.setSettings(settings);
 		
-		if (this.assets == null)
-		{
-			this.assets = new AssetManager();
-			
-		}
-		
 		try
 		{
 			g.initiate(this.gameargs, this.assets);
@@ -526,7 +525,7 @@ public final class CaelumEngine
 			return;
 		}
 		
-		//XXX Creating game threads
+		//XXX Create game threads
 		
 		ThreadGameLoop gameloop = new ThreadGameLoop(this.inputs, this.game);
 		
@@ -552,7 +551,7 @@ public final class CaelumEngine
 			
 		}*/
 		
-		//XXX Starting game threads
+		//XXX Start game threads
 		
 		IThreadStoppable t;
 		
@@ -653,7 +652,6 @@ public final class CaelumEngine
 		this.display = null;
 		
 		this.gameargs = null;
-		this.assets = null;
 		
 	}
 	
