@@ -41,11 +41,13 @@ public final class RenderHelper
 {
 	private RenderHelper(){}
 	
+	@Deprecated
 	public static RenderContext renderContext()
 	{
 		return renderContext(true);
 	}
 	
+	@Deprecated
 	public static RenderContext renderContext(boolean safe)
 	{
 		return (RenderContext)CaelumEngine.getContext(safe);

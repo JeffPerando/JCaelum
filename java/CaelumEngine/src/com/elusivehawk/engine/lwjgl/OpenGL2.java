@@ -346,13 +346,21 @@ public class OpenGL2 extends OpenGL1 implements IGL2
 	@Override
 	public boolean glIsProgram(int program) throws GLException
 	{
-		return GL20.glIsProgram(program);
+		boolean ret = GL20.glIsProgram(program);
+		
+		RenderHelper.checkForGLError(this);
+		
+		return ret;
 	}
 	
 	@Override
 	public boolean glIsShader(int shader) throws GLException
 	{
-		return GL20.glIsShader(shader);
+		boolean ret = GL20.glIsShader(shader);
+		
+		RenderHelper.checkForGLError(this);
+		
+		return ret;
 	}
 	
 	@Override
