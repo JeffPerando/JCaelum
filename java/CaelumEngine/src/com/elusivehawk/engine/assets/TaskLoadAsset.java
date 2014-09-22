@@ -4,7 +4,9 @@ package com.elusivehawk.engine.assets;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import com.elusivehawk.engine.CaelumEngine;
+import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.Internal;
+import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.task.Task;
 
 /**
@@ -52,7 +54,9 @@ public class TaskLoadAsset extends Task
 		
 		if (is == null)
 		{
-			throw new NullPointerException(String.format("Asset stream for \"%s\" cannot be null!", this.asset.filepath));
+			Logger.log().log(EnumLogType.WARN, "Asset stream for \"%s\" cannot be null!", this.asset.filepath);
+			
+			return false;
 		}
 		
 		BufferedInputStream in = new BufferedInputStream(is);
@@ -68,6 +72,12 @@ public class TaskLoadAsset extends Task
 		}
 		
 		return ret;
+	}
+	
+	@Override
+	public boolean doTryAgain()
+	{
+		return false;
 	}
 	
 	public Asset getCompletedAsset()

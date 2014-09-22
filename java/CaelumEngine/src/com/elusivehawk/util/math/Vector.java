@@ -124,12 +124,6 @@ public class Vector implements IMathArray<Float>
 		
 		if (this.data[pos] != num.floatValue())
 		{
-			if (!this.isDirty())
-			{
-				this.setIsDirty(true);
-				
-			}
-			
 			if (this.sync)
 			{
 				synchronized (this)
@@ -144,6 +138,8 @@ public class Vector implements IMathArray<Float>
 				this.data[pos] = num.floatValue();
 				
 			}
+			
+			this.dirty = true;
 			
 			if (notify)
 			{

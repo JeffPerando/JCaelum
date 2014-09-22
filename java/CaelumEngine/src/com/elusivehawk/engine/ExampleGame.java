@@ -116,6 +116,7 @@ public final class ExampleGame extends Game
 			try
 			{
 				this.renderer.render(rcon, delta);
+				Logger.log().verbose("Rendered frame!");
 				
 			}
 			catch (Exception e)
@@ -123,11 +124,6 @@ public final class ExampleGame extends Game
 				Logger.log().err(e);
 				ShutdownHelper.exit("CANNOT-RENDER");
 			}
-			
-		}
-		else
-		{
-			Logger.log().verbose("Not rendering this frame");
 			
 		}
 		

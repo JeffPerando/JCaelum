@@ -13,7 +13,7 @@ public abstract class Task
 {
 	private final ITaskListener listener;
 	private int tries = 0;
-	private boolean complete = false;
+	private boolean complete = false, tryAgain = true;
 	
 	public Task()
 	{
@@ -35,7 +35,7 @@ public abstract class Task
 			return true;
 		}
 		
-		if (this.tries == 5)
+		if (this.tries == 5 || !this.doTryAgain())
 		{
 			return true;
 		}
@@ -67,6 +67,11 @@ public abstract class Task
 		}
 		
 		return this.complete;
+	}
+	
+	public boolean doTryAgain()
+	{
+		return this.tryAgain;
 	}
 	
 	protected abstract boolean finishTask() throws Throwable;

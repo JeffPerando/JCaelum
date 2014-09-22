@@ -13,7 +13,6 @@ import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
 import com.elusivehawk.engine.render.opengl.IGLDeletable;
-import com.elusivehawk.util.FileHelper;
 import com.elusivehawk.util.IPausable;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.Logger;
@@ -92,13 +91,7 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 		
 		for (GLEnumShader sh : GLEnumShader.values())
 		{
-			String loc = String.format("/res/shaders/%s.glsl", sh.name().toLowerCase());
-			
-			if (FileHelper.getResource(loc).exists())
-			{
-				this.shaders.addShader(new Shader(loc, sh));
-				
-			}
+			this.shaders.addShader(new Shader(String.format("/res/shaders/%s.glsl", sh.name().toLowerCase()), sh));
 			
 		}
 		

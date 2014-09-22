@@ -22,6 +22,7 @@ import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
 import com.elusivehawk.util.BufferHelper;
+import com.elusivehawk.util.CompInfo;
 import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.FileHelper;
 import com.elusivehawk.util.Logger;
@@ -280,8 +281,18 @@ public final class RenderHelper
 		
 		if (status == GLConst.GL_FALSE)
 		{
+			if (CompInfo.DEBUG)
+			{
+				Logger.log().log(EnumLogType.WARN, "Cannot compile shader number %s of type %s", id, type);
+				
+			}
+			
+			gl2.glDeleteShader(id);
+			
 			return 0;
 		}
+		
+		Logger.log().log(EnumLogType.DEBUG, "Succesfully compiled shader number %s of type %s", id, type);
 		
 		return id;
 	}
