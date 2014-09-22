@@ -1,4 +1,4 @@
-#version 330
+#version 330 core
 
 uniform mat4 proj;
 uniform mat4 view;
@@ -14,7 +14,7 @@ out vec2 frag_texcoord;
 out vec3 frag_norm;
 out int frag_mindex;
 
-void main()
+void main(void)
 {
 	frag_tex = in_tex;
 	frag_norm = in_norm;

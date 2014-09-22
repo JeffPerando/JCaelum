@@ -36,11 +36,6 @@ public class TaskLoadAsset extends Task
 	{
 		AssetManager mgr = CaelumEngine.assetManager();
 		
-		if (mgr == null)
-		{
-			throw new NullPointerException("Asset manager not found! Aborting!!");
-		}
-		
 		Asset a = mgr.getExistingAsset(this.asset.filepath, this.asset.type);
 		
 		if (a != null)

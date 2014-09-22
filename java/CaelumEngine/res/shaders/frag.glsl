@@ -1,4 +1,4 @@
-#version 330
+#version 330 core
 
 #define MATERIAL_CAP 16
 
@@ -17,7 +17,7 @@ in int frag_mat_index;
 
 out vec4 out_color;
 
-void main()
+void main(void)
 {
 	Material mat = mats[frag_mat_index];
 	

@@ -103,7 +103,14 @@ public final class FileHelper
 	
 	public static InputStream getResourceStream(String path)
 	{
-		return FileHelper.class.getResourceAsStream(path);
+		if (CompInfo.BUILT)
+		{
+			return FileHelper.class.getResourceAsStream(path);
+		}
+		
+		File file = createFile(CompInfo.JAR_DIR.getParentFile(), path);
+		
+		return createInStream(file);
 	}
 	
 	public static FileInputStream createInStream(File file)

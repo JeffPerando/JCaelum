@@ -27,12 +27,6 @@ public class TaskManager implements IPausable
 	{
 		threads = new ThreadTaskWorker[threadCount];
 		
-		for (int c = 0; c < threadCount; c++)
-		{
-			threads[c] = new ThreadTaskWorker(c + 1);
-			
-		}
-		
 	}
 	
 	@Override
@@ -46,9 +40,13 @@ public class TaskManager implements IPausable
 	{
 		this.paused = p;
 		
-		for (ThreadTaskWorker th : this.threads)
+		if (this.started)
 		{
-			th.setPaused(p);
+			for (ThreadTaskWorker th : this.threads)
+			{
+				th.setPaused(p);
+				
+			}
 			
 		}
 		
@@ -59,6 +57,12 @@ public class TaskManager implements IPausable
 		if (this.started)
 		{
 			return;
+		}
+		
+		for (int c = 0; c < this.threads.length; c++)
+		{
+			this.threads[c] = new ThreadTaskWorker(c + 1);
+			
 		}
 		
 		for (ThreadTaskWorker t : this.threads)
@@ -90,16 +94,14 @@ public class TaskManager implements IPausable
 		
 	}
 	
-	public boolean scheduleTask(Task t)
+	public void scheduleTask(Task t)
 	{
-		if (!this.started)
+		if (this.started)
 		{
-			return false;
+			this.threads[RNG.rng().nextInt(CompInfo.CORES)].scheduleTask(t);
+			
 		}
 		
-		this.threads[RNG.rng().nextInt(CompInfo.CORES)].scheduleTask(t);
-		
-		return true;
 	}
 	
 }

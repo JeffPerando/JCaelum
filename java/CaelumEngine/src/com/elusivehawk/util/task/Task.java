@@ -35,7 +35,7 @@ public abstract class Task
 			return true;
 		}
 		
-		if (this.tries == 5 || !this.doTryAgain())
+		if (this.tries == 5)
 		{
 			return true;
 		}
@@ -62,7 +62,16 @@ public abstract class Task
 		}
 		else
 		{
-			this.tries++;
+			if (this.doTryAgain())
+			{
+				this.tries++;
+				
+			}
+			else
+			{
+				this.tries = 5;
+				
+			}
 			
 		}
 		

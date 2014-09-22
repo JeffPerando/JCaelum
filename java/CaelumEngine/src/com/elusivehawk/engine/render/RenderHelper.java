@@ -283,7 +283,7 @@ public final class RenderHelper
 		{
 			if (CompInfo.DEBUG)
 			{
-				Logger.log().log(EnumLogType.WARN, "Cannot compile shader number %s of type %s", id, type);
+				Logger.log().log(EnumLogType.WARN, "Cannot compile shader number %s of type %s, source: %s", id, type, src);
 				
 			}
 			
@@ -291,8 +291,6 @@ public final class RenderHelper
 			
 			return 0;
 		}
-		
-		Logger.log().log(EnumLogType.DEBUG, "Succesfully compiled shader number %s of type %s", id, type);
 		
 		return id;
 	}

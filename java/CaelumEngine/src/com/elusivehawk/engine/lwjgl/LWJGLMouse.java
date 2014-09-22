@@ -25,17 +25,11 @@ public class LWJGLMouse extends com.elusivehawk.engine.input.Mouse
 	protected EnumMouseClick[]
 			buttons = null,
 			oldButtons = null;
-	protected final Vector mousePos, mousePosDelta;
+	protected final Vector
+			mousePos = new Vector(2),
+			mousePosDelta = new Vector(2);
 	
 	protected float wheel = 0f;
-	
-	@SuppressWarnings("unqualified-field-access")
-	public LWJGLMouse()
-	{
-		mousePos = new Vector(0f, 0f).setName("pos");
-		mousePosDelta = new Vector(0f, 0f).setName("posDelta");
-		
-	}
 	
 	@Override
 	public void close()
@@ -57,15 +51,15 @@ public class LWJGLMouse extends com.elusivehawk.engine.input.Mouse
 	}
 	
 	@Override
-	public EnumMouseClick getClickStatus(int button)
+	public EnumMouseClick[] getClickStatus()
 	{
-		return this.buttons[button];
+		return this.buttons;
 	}
 	
 	@Override
-	public EnumMouseClick getOldClickStatus(int button)
+	public EnumMouseClick[] getOldClickStatus()
 	{
-		return this.oldButtons[button];
+		return this.oldButtons;
 	}
 	
 	@Override
@@ -191,7 +185,7 @@ public class LWJGLMouse extends com.elusivehawk.engine.input.Mouse
 				}
 				
 			}
-			else if (this.getClickStatus(b).isDown())
+			else if (this.buttons[b].isDown())
 			{
 				this.oldButtons[b] = cur;
 				this.buttons[b] = UP;

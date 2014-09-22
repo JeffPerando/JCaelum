@@ -39,8 +39,6 @@ public final class ExampleGame extends Game
 	
 	private SimpleRenderer renderer = null;
 	
-	private Shader sh2D = null;
-	
 	public ExampleGame()
 	{
 		super("Example Game");
@@ -78,24 +76,18 @@ public final class ExampleGame extends Game
 		{
 			Mouse m = (Mouse)in;
 			
-			for (int c = 0; c < m.getButtonCount(); c++)
-			{
-				Logger.log().log(EnumLogType.VERBOSE, "Mouse click: #%s, type: %s, pos: %s", c, m.getClickStatus(c), m.getMousePos());
-				
-			}
+			Logger.log().log(EnumLogType.VERBOSE, "Mouse pos: %s", m.getMousePos());
 			
 		}));
 		
 		this.renderer = new SimpleRenderer(4, GLEnumPolyType.GL_TRIANGLE_STRIP, ((p) ->
 		{
+			p.attachShader(new Shader("/res/shaders/vertex2d.glsl", GLEnumShader.VERTEX));
+			
 			p.attachVBO(new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_STATIC_DRAW, GLEnumDataType.GL_FLOAT, this.square), 0);
 			p.attachVBO(new VertexBuffer(GLEnumBufferTarget.GL_ELEMENT_ARRAY_BUFFER, GLEnumDataUsage.GL_STATIC_DRAW, GLEnumDataType.GL_INT, this.square_ind));
 			
 		}));
-		
-		assets.addAssetReceiver(this.renderer.getProgram());
-		
-		this.sh2D = new Shader("/res/shaders/vertex2d.glsl", GLEnumShader.VERTEX);
 		
 	}
 	
@@ -111,20 +103,15 @@ public final class ExampleGame extends Game
 	@Override
 	public void render(RenderContext rcon, double delta)
 	{
-		if (this.sh2D.isLoaded())
+		try
 		{
-			try
-			{
-				this.renderer.render(rcon, delta);
-				Logger.log().verbose("Rendered frame!");
-				
-			}
-			catch (Exception e)
-			{
-				Logger.log().err(e);
-				ShutdownHelper.exit("CANNOT-RENDER");
-			}
+			this.renderer.render(rcon, delta);
 			
+		}
+		catch (Exception e)
+		{
+			Logger.log().err(e);
+			ShutdownHelper.exit("CANNOT-RENDER");
 		}
 		
 	}

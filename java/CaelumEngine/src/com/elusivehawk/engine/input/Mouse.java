@@ -15,9 +15,9 @@ public abstract class Mouse extends Input
 	
 	public abstract Vector getMousePosDelta();
 	
-	public abstract EnumMouseClick getClickStatus(int button);
+	public abstract EnumMouseClick[] getClickStatus();
 	
-	public abstract EnumMouseClick getOldClickStatus(int button);
+	public abstract EnumMouseClick[] getOldClickStatus();
 	
 	public abstract int getButtonCount();
 	

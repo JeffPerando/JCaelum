@@ -175,15 +175,18 @@ public final class StringHelper
 				Logger.log().err(e);
 				
 			}
-			
-			try
+			finally
 			{
-				br.close();
-				
-			}
-			catch (IOException e)
-			{
-				Logger.log().err(e);
+				try
+				{
+					br.close();
+					
+				}
+				catch (IOException e)
+				{
+					Logger.log().err(e);
+					
+				}
 				
 			}
 			
@@ -335,6 +338,7 @@ public final class StringHelper
 			if (c > 0)
 			{
 				b.append(separator);
+				
 			}
 			
 			b.append(strs.get(c));

@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import com.elusivehawk.engine.CaelumException;
-import com.elusivehawk.util.CompInfo;
 import com.elusivehawk.util.FileHelper;
 import com.elusivehawk.util.io.IStreamProvider;
 import com.elusivehawk.util.storage.SyncList;
@@ -131,24 +130,7 @@ public class AssetManager implements ITaskListener
 	
 	protected InputStream getStream(String loc)
 	{
-		InputStream ret = this.sProvider.getInStream(loc);
-		
-		if (ret == null)
-		{
-			if (CompInfo.BUILT)
-			{
-				ret = FileHelper.getResourceStream(loc);
-				
-			}
-			else
-			{
-				ret = FileHelper.createInStream(FileHelper.createFile(".", loc));
-				
-			}
-			
-		}
-		
-		return ret;
+		return this.sProvider.getInStream(loc);
 	}
 	
 }
