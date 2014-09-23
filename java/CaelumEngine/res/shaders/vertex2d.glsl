@@ -1,7 +1,7 @@
 #version 330 core
 
-(location = 0) in vec2 in_pos;
-//(location = 1) in vec2 in_tex;
+layout(location = 0) in vec2 in_pos;
+//layout(location = 1) in vec2 in_tex;
 
 //out vec4 frag_color;
 //out vec2 frag_texcoord;

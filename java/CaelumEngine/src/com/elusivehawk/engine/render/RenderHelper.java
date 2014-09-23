@@ -14,15 +14,12 @@ import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLEnumError;
 import com.elusivehawk.engine.render.opengl.GLEnumPolyType;
-import com.elusivehawk.engine.render.opengl.GLEnumSStatus;
-import com.elusivehawk.engine.render.opengl.GLEnumShader;
 import com.elusivehawk.engine.render.opengl.GLEnumTexture;
 import com.elusivehawk.engine.render.opengl.GLException;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
 import com.elusivehawk.util.BufferHelper;
-import com.elusivehawk.util.CompInfo;
 import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.FileHelper;
 import com.elusivehawk.util.Logger;
@@ -255,44 +252,6 @@ public final class RenderHelper
 		}
 		
 		return src;
-	}
-	
-	public static int loadShader(String src, GLEnumShader type, RenderContext rcon)
-	{
-		IGL2 gl2 = rcon.getGL2();
-		
-		int id = gl2.glCreateShader(type);
-		gl2.glShaderSource(id, src);
-		gl2.glCompileShader(id);
-		
-		try
-		{
-			checkForGLError(rcon);
-			
-		}
-		catch (Exception e)
-		{
-			Logger.log().err(e);
-			
-			return 0;
-		}
-		
-		int status = rcon.getGL2().glGetShaderi(id, GLEnumSStatus.GL_COMPILE_STATUS);
-		
-		if (status == GLConst.GL_FALSE)
-		{
-			if (CompInfo.DEBUG)
-			{
-				Logger.log().log(EnumLogType.WARN, "Cannot compile shader number %s of type %s, source: %s", id, type, src);
-				
-			}
-			
-			gl2.glDeleteShader(id);
-			
-			return 0;
-		}
-		
-		return id;
 	}
 	
 	@Deprecated

@@ -3,8 +3,6 @@ package com.elusivehawk.engine.render;
 
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
-import com.elusivehawk.engine.render.opengl.GLConst;
-import com.elusivehawk.engine.render.opengl.GLEnumPStatus;
 import com.elusivehawk.engine.render.opengl.GLException;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGL2;
@@ -68,11 +66,6 @@ public class Shaders implements IDirty, IAssetReceiver
 			}
 			
 			gl2.glAttachShader(p, sh);
-			
-			if (gl2.glGetProgrami(p, GLEnumPStatus.GL_LINK_STATUS) == GLConst.GL_FALSE)
-			{
-				return false;
-			}
 			
 			ret = true;
 			

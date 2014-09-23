@@ -164,7 +164,7 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 			{
 				rcon.getGL1().glBindBuffer(entry.getKey());
 				
-				if (entry.getValue() != null)
+				if (!entry.getValue().isEmpty())
 				{
 					for (int attrib : entry.getValue())
 					{
@@ -245,13 +245,6 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 	
 	public void attachVBO(VertexBuffer vbo, int... attribs)
 	{
-		if (attribs == null || attribs.length == 0)
-		{
-			this.vbos.put(vbo, null);
-			
-			return;
-		}
-		
 		List<Integer> valid = Lists.newArrayList();
 		
 		for (int a : attribs)
@@ -260,7 +253,7 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 			
 			for (List<Integer> l : this.vbos.values())
 			{
-				if (l != null && l.contains(a))
+				if (l.contains(a))
 				{
 					found = true;
 					
@@ -276,11 +269,7 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 			
 		}
 		
-		if (!valid.isEmpty())
-		{
-			this.vbos.put(vbo, valid);
-			
-		}
+		this.vbos.put(vbo, valid);
 		
 	}
 	

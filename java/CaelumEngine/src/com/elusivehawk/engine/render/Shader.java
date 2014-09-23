@@ -44,7 +44,7 @@ public class Shader extends GraphicAsset
 		
 		if (src != null)
 		{
-			CaelumEngine.scheduleRenderTask(new RTaskUploadShader(this, this.gltype, src));
+			CaelumEngine.scheduleRenderTask(new RTaskUploadShader(this, src));
 			
 			return true;
 		}
