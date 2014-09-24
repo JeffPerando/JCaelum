@@ -111,6 +111,8 @@ public class OpenGL1 implements IGL1
 	{
 		GL11.glClearColor(r, g, b, a);
 		
+		RenderHelper.checkForGLError(this);
+		
 	}
 	
 	@Override
@@ -194,6 +196,8 @@ public class OpenGL1 implements IGL1
 	public void glDeleteTextures(int... textures) throws GLException
 	{
 		this.glDeleteTextures(BufferHelper.makeIntBuffer(textures));
+		
+		RenderHelper.checkForGLError(this);
 		
 	}
 	
@@ -283,12 +287,16 @@ public class OpenGL1 implements IGL1
 	{
 		GL11.glFinish();
 		
+		RenderHelper.checkForGLError(this);
+		
 	}
 	
 	@Override
 	public void glFlush()
 	{
 		GL11.glFlush();
+		
+		RenderHelper.checkForGLError(this);
 		
 	}
 	

@@ -3,6 +3,7 @@
 # Package Files #
 *.war
 *.ear
+*.log
 
 /.gradle/*
 /build/*
@@ -11,8 +12,6 @@
 /cpp/*
 /TEST/*
 
-/.metadata/.bak_0.log
-/.metadata/.log
 /.metadata/.plugins/*
 /.metadata/.mylyn/*
 

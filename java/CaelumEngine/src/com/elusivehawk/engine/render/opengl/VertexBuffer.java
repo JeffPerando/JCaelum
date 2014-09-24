@@ -90,7 +90,7 @@ public class VertexBuffer implements IGLBindable
 		{
 			if (this.initBuf != null)
 			{
-				IGL3 gl3 = rcon.getGL3();
+				/*IGL3 gl3 = rcon.getGL3();
 				
 				int vba = gl1.glGetInteger(GLConst.GL_VERTEX_ARRAY_BINDING);
 				
@@ -98,15 +98,15 @@ public class VertexBuffer implements IGLBindable
 				{
 					gl3.glBindVertexArray(0);
 					
-				}
+				}*/
 				
 				gl1.glBufferData(this.t, this.dataType, this.initBuf, this.loadMode);
 				
-				if (vba != 0)
+				/*if (vba != 0)
 				{
 					gl3.glBindVertexArray(vba);
 					
-				}
+				}*/
 				
 				this.initBuf = null;
 				

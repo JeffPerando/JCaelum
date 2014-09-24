@@ -3,6 +3,7 @@ package com.elusivehawk.engine.lwjgl;
 
 import java.nio.IntBuffer;
 import org.lwjgl.opengl.GL30;
+import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.opengl.IGL3;
 import com.elusivehawk.util.BufferHelper;
 
@@ -19,12 +20,16 @@ public class OpenGL3 extends OpenGL2 implements IGL3
 	{
 		GL30.glBindVertexArray(array);
 		
+		RenderHelper.checkForGLError(this);
+		
 	}
 	
 	@Override
 	public void glDeleteVertexArrays(int array)
 	{
 		GL30.glDeleteVertexArrays(array);
+		
+		RenderHelper.checkForGLError(this);
 		
 	}
 	
@@ -33,30 +38,28 @@ public class OpenGL3 extends OpenGL2 implements IGL3
 	{
 		GL30.glGenerateMipmap(target);
 		
+		RenderHelper.checkForGLError(this);
+		
 	}
 	
 	@Override
 	public int glGenVertexArrays()
 	{
-		return GL30.glGenVertexArrays();
+		int ret = GL30.glGenVertexArrays();
+		
+		RenderHelper.checkForGLError(this);
+		
+		return ret;
 	}
 	
 	@Override
 	public void glGenVertexArrays(int[] arrays)
 	{
-		IntBuffer a = BufferHelper.createIntBuffer(arrays.length);
+		IntBuffer a = BufferHelper.createWrapper(arrays);
 		
 		GL30.glGenVertexArrays(a);
 		
-		a.flip();
-		
-		int c = 0;
-		
-		while (a.remaining() > 0)
-		{
-			arrays[c++] = a.get();
-			
-		}
+		RenderHelper.checkForGLError(this);
 		
 	}
 	

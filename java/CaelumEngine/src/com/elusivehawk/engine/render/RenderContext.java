@@ -13,6 +13,7 @@ import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
 import com.elusivehawk.engine.render.opengl.IGLDeletable;
+import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.IPausable;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.Logger;
@@ -88,6 +89,10 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 		this.gl3 = (IGL3)this.env.getGL(3);
 		
 		this.gl1.glViewport(0, 0, this.display.getWidth(), this.display.getHeight());
+		
+		Logger.log().log(EnumLogType.VERBOSE, "GL version: %s", this.gl1.glGetString(GLConst.GL_VERSION));
+		Logger.log().log(EnumLogType.VERBOSE, "GL vendor: %s", this.gl1.glGetString(GLConst.GL_VENDOR));
+		Logger.log().log(EnumLogType.VERBOSE, "GL renderer %s", this.gl1.glGetString(GLConst.GL_RENDERER));
 		
 		for (GLEnumShader sh : GLEnumShader.values())
 		{
