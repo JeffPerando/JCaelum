@@ -24,7 +24,7 @@ public class VertexBuffer implements IGLBindable
 	private Buffer initBuf = null;
 	
 	private int id = 0;
-	private boolean initiated = false, reupload = true;
+	private boolean initiated = false;
 	
 	private final SyncList<Tuple<Buffer, Integer>> uploads = SyncList.newList();
 	
@@ -86,33 +86,11 @@ public class VertexBuffer implements IGLBindable
 			
 		}
 		
-		if (this.reupload)
+		if (this.initBuf != null)
 		{
-			if (this.initBuf != null)
-			{
-				/*IGL3 gl3 = rcon.getGL3();
-				
-				int vba = gl1.glGetInteger(GLConst.GL_VERTEX_ARRAY_BINDING);
-				
-				if (vba != 0)
-				{
-					gl3.glBindVertexArray(0);
-					
-				}*/
-				
-				gl1.glBufferData(this.t, this.dataType, this.initBuf, this.loadMode);
-				
-				/*if (vba != 0)
-				{
-					gl3.glBindVertexArray(vba);
-					
-				}*/
-				
-				this.initBuf = null;
-				
-			}
+			gl1.glBufferData(this.t, this.dataType, this.initBuf, this.loadMode);
 			
-			this.reupload = false;
+			this.initBuf = null;
 			
 		}
 		
@@ -192,7 +170,6 @@ public class VertexBuffer implements IGLBindable
 	public synchronized void uploadBuffer(Buffer buf)
 	{
 		this.initBuf = buf;
-		this.reupload = true;
 		
 	}
 	
