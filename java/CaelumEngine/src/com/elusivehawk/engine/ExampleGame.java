@@ -34,7 +34,7 @@ public final class ExampleGame extends Game
 {
 	public static final Version VERSION = new Version(1, 0, 0);
 	
-	public final FloatBuffer square = BufferHelper.makeFloatBuffer(0f, 0f, 1f, 0f, 0f, 1f, 1f, 1f);
+	public final FloatBuffer square = BufferHelper.makeFloatBuffer(0, 0, 1, 0, 0, 1, 1, 1);
 	public final IntBuffer square_ind = BufferHelper.makeIntBuffer(0, 1, 2, 3);
 	
 	private SimpleRenderer renderer = null;

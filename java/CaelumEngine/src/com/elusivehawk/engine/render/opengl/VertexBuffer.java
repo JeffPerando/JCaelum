@@ -128,6 +128,7 @@ public class VertexBuffer implements IGLBindable
 				gl1.glBufferSubData(this.getTarget(), pair.two, this.dataType, pair.one);
 				
 				itr.remove();
+				
 			}
 			
 		}

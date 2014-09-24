@@ -162,7 +162,7 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 		{
 			for (Entry<VertexBuffer, List<Integer>> entry : this.vbos.entrySet())
 			{
-				rcon.getGL1().glBindBuffer(entry.getKey());
+				entry.getKey().bind(rcon);
 				
 				if (!entry.getValue().isEmpty())
 				{
