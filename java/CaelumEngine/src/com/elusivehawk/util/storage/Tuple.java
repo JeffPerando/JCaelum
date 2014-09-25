@@ -20,6 +20,12 @@ public class Tuple<O, T>
 		
 	}
 	
+	@Override
+	public Tuple<O, T> clone()
+	{
+		return new Tuple<O, T>(this.one, this.two);
+	}
+	
 	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean equals(Object obj)
@@ -31,23 +37,18 @@ public class Tuple<O, T>
 		
 		Tuple t = (Tuple)obj;
 		
-		if (!t.one.equals(this.one) || !t.two.equals(this.one))
-		{
-			return false;
-		}
-		
-		if (!t.one.equals(this.two) || !t.two.equals(this.two))
-		{
-			return false;
-		}
-		
-		return true;
+		return t.one.equals(this.one) && t.two.equals(this.two);
 	}
 	
 	@Override
-	public Tuple<O, T> clone()
+	public int hashCode()
 	{
-		return new Tuple<O, T>(this.one, this.two);
+		int ret = 31;
+		
+		ret *= (31 + this.one.hashCode());
+		ret *= (31 + this.two.hashCode());
+		
+		return ret;
 	}
 	
 	public static <O, T> Tuple<O, T> create(O one, T two)
