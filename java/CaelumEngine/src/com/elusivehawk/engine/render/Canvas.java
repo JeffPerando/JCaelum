@@ -1,17 +1,20 @@
 
 package com.elusivehawk.engine.render;
 
+import java.nio.FloatBuffer;
 import java.util.List;
+import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLEnumBufferTarget;
 import com.elusivehawk.engine.render.opengl.GLEnumDataType;
 import com.elusivehawk.engine.render.opengl.GLEnumDataUsage;
+import com.elusivehawk.engine.render.opengl.GLEnumPolyType;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
 import com.elusivehawk.util.FloatBufferer;
 import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.storage.IGettable;
-import com.elusivehawk.util.storage.Pair;
+import com.elusivehawk.util.storage.Tuple;
 import com.google.common.collect.Lists;
 
 /**
@@ -59,7 +62,7 @@ public class Canvas extends RenderableObj
 	}
 	
 	@Override
-	protected void doRender(RenderContext rcon, double delta) throws RenderException
+	public boolean updateBeforeRender(RenderContext rcon, double delta)
 	{
 		if (!this.populators.isEmpty())
 		{
@@ -73,17 +76,17 @@ public class Canvas extends RenderableObj
 			this.indbuf.uploadBuffer(this.buffer.getIndices());
 			
 		}
-		else
+		else if (this.buffer.isDirty())
 		{
-			List<Pair<Integer>> diffs = this.buffer.getFloatDiffs();
+			List<Tuple<Integer, FloatBuffer>> diffs = this.buffer.getFloatDiffs();
 			
 			if (!diffs.isEmpty())
 			{
 				IGL1 gl1 = rcon.getGL1();
 				
-				for (Pair<Integer> diff : diffs)
+				for (Tuple<Integer, FloatBuffer> diff : diffs)
 				{
-					//TODO Finish
+					gl1.glBufferSubData(this.floatbuf.getId(), diff.one, GLConst.GL_FLOAT, diff.two);
 					
 				}
 				
@@ -91,7 +94,21 @@ public class Canvas extends RenderableObj
 			
 		}
 		
-		// TODO Auto-generated method stub
+		return true;
+	}
+	
+	@Override
+	protected void doRender(RenderContext rcon, double delta) throws RenderException
+	{
+		rcon.getGL1().glDrawElements(GLEnumPolyType.GL_TRIANGLES, this.images * 2, GLConst.GL_UNSIGNED_INT, 0);
+		
+	}
+	
+	@Override
+	public void postRender(RenderContext rcon)
+	{
+		this.buffer.rewind();
+		this.buffer.setIsDirty(false);
 		
 	}
 	
@@ -184,6 +201,11 @@ public class Canvas extends RenderableObj
 		
 		this.populators.add(pop);
 		
+	}
+	
+	public int getImageCount()
+	{
+		return this.images;
 	}
 	
 }

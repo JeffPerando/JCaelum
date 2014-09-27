@@ -5,7 +5,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
 import com.elusivehawk.util.math.MathHelper;
-import com.elusivehawk.util.storage.Pair;
+import com.elusivehawk.util.storage.Tuple;
 import com.google.common.collect.Lists;
 
 /**
@@ -19,12 +19,13 @@ public class FloatBufferer implements IDirty
 	private final int fpi;
 	private FloatBuffer buf, prev;
 	private IntBuffer indices, indPrev;
-	private final List<Pair<Integer>> floatDiff = Lists.newArrayList(),
-			intDiff = Lists.newArrayList();
+	private final List<Tuple<Integer, FloatBuffer>> floatDiff = Lists.newArrayList();
+	private final List<Tuple<Integer, IntBuffer>> intDiff = Lists.newArrayList();
 	
-	private boolean dirty = false, resized = false;
+	private volatile boolean dirty = false;
+	private boolean resized = false;
 	private int indicecount = 0;
-	private Pair<Integer> fDiff = null;
+	private Tuple<Integer, List<Float>> fDiff = null;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public FloatBufferer(int floatsPerIndice, int indiceCount)
@@ -123,8 +124,7 @@ public class FloatBufferer implements IDirty
 				{
 					if (this.fDiff != null)
 					{
-						this.floatDiff.add(this.fDiff);
-						this.fDiff = null;
+						this.addFloatEntry();
 						
 					}
 					
@@ -133,11 +133,11 @@ public class FloatBufferer implements IDirty
 				{
 					if (this.fDiff == null)
 					{
-						this.fDiff = new Pair<Integer>(pos + c, 0);
+						this.fDiff = Tuple.create(pos + c, Lists.newArrayList());
 						
 					}
 					
-					this.fDiff.two++;
+					this.fDiff.two.add(this.buf.get(pos));
 					
 				}
 				
@@ -200,8 +200,7 @@ public class FloatBufferer implements IDirty
 		
 		if (this.fDiff != null)
 		{
-			this.floatDiff.add(this.fDiff);
-			this.fDiff = null;
+			this.addFloatEntry();
 			
 		}
 		
@@ -237,6 +236,13 @@ public class FloatBufferer implements IDirty
 		
 	}
 	
+	private void addFloatEntry()
+	{
+		this.floatDiff.add(Tuple.create(this.fDiff.one, BufferHelper.makeFloatBuffer(this.fDiff.two)));
+		this.fDiff = null;
+		
+	}
+	
 	public FloatBuffer getBuffer()
 	{
 		return this.buf;
@@ -247,12 +253,12 @@ public class FloatBufferer implements IDirty
 		return this.indices;
 	}
 	
-	public List<Pair<Integer>> getFloatDiffs()
+	public List<Tuple<Integer, FloatBuffer>> getFloatDiffs()
 	{
 		return this.floatDiff;
 	}
 	
-	public List<Pair<Integer>> getIntDiffs()
+	public List<Tuple<Integer, IntBuffer>> getIntDiffs()
 	{
 		return this.intDiff;
 	}

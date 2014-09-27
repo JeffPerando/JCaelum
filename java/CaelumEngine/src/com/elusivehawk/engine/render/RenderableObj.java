@@ -94,13 +94,20 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 			
 		}
 		
-		if (this.p.bind(rcon))
+		if (!this.p.bind(rcon))
 		{
-			this.doRender(rcon, delta);
-			
-			this.p.unbind(rcon);
-			
+			return;
 		}
+		
+		if (!this.vao.bind(rcon))
+		{
+			return;
+		}
+		
+		this.doRender(rcon, delta);
+		
+		this.vao.unbind(rcon);
+		this.p.unbind(rcon);
 		
 		this.postRender(rcon);
 		
