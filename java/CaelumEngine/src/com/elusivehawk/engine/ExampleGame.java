@@ -84,8 +84,10 @@ public final class ExampleGame extends Game
 		{
 			p.attachShader(new Shader("/res/shaders/vertex2d.glsl", GLEnumShader.VERTEX));
 			
-			p.attachVBO(new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_STATIC_DRAW, GLEnumDataType.GL_FLOAT, this.square), 0);
-			p.attachVBO(new VertexBuffer(GLEnumBufferTarget.GL_ELEMENT_ARRAY_BUFFER, GLEnumDataUsage.GL_STATIC_DRAW, GLEnumDataType.GL_INT, this.square_ind));
+		}), ((vao) ->
+		{
+			vao.attachVBO(new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_STATIC_DRAW, GLEnumDataType.GL_FLOAT, this.square), 0);
+			vao.attachVBO(new VertexBuffer(GLEnumBufferTarget.GL_ELEMENT_ARRAY_BUFFER, GLEnumDataUsage.GL_STATIC_DRAW, GLEnumDataType.GL_INT, this.square_ind));
 			
 		}));
 		

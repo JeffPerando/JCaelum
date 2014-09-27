@@ -83,8 +83,8 @@ public class RenderTicket extends RenderableObj implements IQuatListener, IVecLi
 		
 		this.vbo.uploadBuffer(this.buf);
 		
-		this.m.populate(this.p);
-		this.p.attachVBO(this.vbo, 3);
+		this.m.populate(this.vao);
+		this.vao.attachVBO(this.vbo, 3);
 		
 		return true;
 	}

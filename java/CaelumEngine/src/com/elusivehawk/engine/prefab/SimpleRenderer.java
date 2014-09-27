@@ -4,6 +4,7 @@ package com.elusivehawk.engine.prefab;
 import com.elusivehawk.engine.render.ILogicalRender;
 import com.elusivehawk.engine.render.opengl.GLEnumPolyType;
 import com.elusivehawk.engine.render.opengl.GLProgram;
+import com.elusivehawk.engine.render.opengl.VertexArray;
 import com.elusivehawk.util.IPopulator;
 
 /**
@@ -15,15 +16,17 @@ import com.elusivehawk.util.IPopulator;
 public class SimpleRenderer implements ILogicalRender
 {
 	private final GLProgram p = new GLProgram();
+	private final VertexArray vao = new VertexArray();
 	
 	private final int polyCount;
 	private final GLEnumPolyType polyType;
 	
-	public SimpleRenderer(int polys, GLEnumPolyType type, IPopulator<GLProgram> pop)
+	public SimpleRenderer(int polys, GLEnumPolyType type, IPopulator<GLProgram> glpop, IPopulator<VertexArray> vaopop)
 	{
 		this(polys, type);
 		
-		pop.populate(this.getProgram());
+		glpop.populate(this.p);
+		vaopop.populate(this.vao);
 		
 	}
 	
@@ -39,6 +42,12 @@ public class SimpleRenderer implements ILogicalRender
 	public GLProgram getProgram()
 	{
 		return this.p;
+	}
+	
+	@Override
+	public VertexArray getVAO()
+	{
+		return this.vao;
 	}
 	
 	@Override

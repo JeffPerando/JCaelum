@@ -216,12 +216,12 @@ public interface IGL2
 	
 	public void glVertexAttrib4f(int index, float x, float y, float z, float w) throws GLException;
 	
-	default void glVertexAttribPointer(int index, int size, int type, boolean normalized, int stride, java.nio.Buffer buf) throws GLException
+	default void glVertexAttribPointer(int index, int size, int type, boolean normalized, int stride, long first) throws GLException
 	{
-		this.glVertexAttribPointer(index, size, type, false, normalized, stride, buf);
+		this.glVertexAttribPointer(index, size, type, false, normalized, stride, first);
 		
 	}
 	
-	public void glVertexAttribPointer(int index, int size, int type, boolean unsigned, boolean normalized, int stride, java.nio.Buffer buf) throws GLException;
+	public void glVertexAttribPointer(int index, int size, int type, boolean unsigned, boolean normalized, int stride, long first) throws GLException;
 	
 }

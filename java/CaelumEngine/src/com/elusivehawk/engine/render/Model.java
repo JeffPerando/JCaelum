@@ -10,7 +10,7 @@ import com.elusivehawk.engine.render.opengl.GLEnumBufferTarget;
 import com.elusivehawk.engine.render.opengl.GLEnumDataType;
 import com.elusivehawk.engine.render.opengl.GLEnumDataUsage;
 import com.elusivehawk.engine.render.opengl.GLEnumPolyType;
-import com.elusivehawk.engine.render.opengl.GLProgram;
+import com.elusivehawk.engine.render.opengl.VertexArray;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
 import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.IPopulator;
@@ -27,7 +27,7 @@ import com.google.common.collect.Lists;
  * @see IAssetReceiver
  * @see Tessellator
  */
-public class Model implements IAssetReceiver, IPopulator<GLProgram>
+public class Model implements IAssetReceiver, IPopulator<VertexArray>
 {
 	protected final List<ModelSection> sections = Lists.newArrayList();
 	protected String name;
@@ -49,15 +49,15 @@ public class Model implements IAssetReceiver, IPopulator<GLProgram>
 	}
 	
 	@Override
-	public void populate(GLProgram p)
+	public void populate(VertexArray vao)
 	{
 		Few<VertexBuffer> vbos = this.getVBOs();
 		
 		if (vbos != null)
 		{
-			p.attachVBO(vbos.one, 0, 1, 2);
-			p.attachVBO(vbos.two, null);
-			p.attachVBO(vbos.three, 4);
+			vao.attachVBO(vbos.one, 0, 1, 2);
+			vao.attachVBO(vbos.two, null);
+			vao.attachVBO(vbos.three, 4);
 			
 		}
 		

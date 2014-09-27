@@ -1,15 +1,11 @@
 
 package com.elusivehawk.engine.lwjgl;
 
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
-import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.nio.ShortBuffer;
 import org.lwjgl.opengl.GL20;
 import com.elusivehawk.engine.render.RenderHelper;
-import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLException;
 import com.elusivehawk.engine.render.opengl.IGL2;
 
@@ -634,17 +630,9 @@ public class OpenGL2 extends OpenGL1 implements IGL2
 	}
 	
 	@Override
-	public void glVertexAttribPointer(int index, int size, int type, boolean unsigned, boolean normalized, int stride, Buffer buffer) throws GLException
+	public void glVertexAttribPointer(int index, int size, int type, boolean unsigned, boolean normalized, int stride, long first) throws GLException
 	{
-		switch (type)
-		{
-			case GLConst.GL_BYTE: GL20.glVertexAttribPointer(index, size, unsigned, normalized, stride, (ByteBuffer)buffer); break;
-			case GLConst.GL_SHORT: GL20.glVertexAttribPointer(index, size, unsigned, normalized, stride, (ShortBuffer)buffer); break;
-			case GLConst.GL_INT: GL20.glVertexAttribPointer(index, size, unsigned, normalized, stride, (IntBuffer)buffer); break;
-			case GLConst.GL_FLOAT: GL20.glVertexAttribPointer(index, size, unsigned, stride, (FloatBuffer)buffer); break;
-			case GLConst.GL_DOUBLE: GL20.glVertexAttribPointer(index, size, unsigned, stride, (DoubleBuffer)buffer); break;
-			
-		}
+		GL20.glVertexAttribPointer(index, size, type, normalized, stride, first);
 		
 		RenderHelper.checkForGLError(this);
 		

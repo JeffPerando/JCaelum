@@ -4,6 +4,7 @@ package com.elusivehawk.engine.render;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLEnumPolyType;
 import com.elusivehawk.engine.render.opengl.GLProgram;
+import com.elusivehawk.engine.render.opengl.VertexArray;
 
 /**
  * 
@@ -25,7 +26,8 @@ public interface ILogicalRender extends IRenderable
 		
 		if (p == null)
 		{
-			return;
+			p = rcon.getDefaultProgram();
+			
 		}
 		
 		if (!p.bind(rcon))
@@ -33,13 +35,32 @@ public interface ILogicalRender extends IRenderable
 			return;
 		}
 		
+		VertexArray vao = this.getVAO();
+		
+		if (vao == null)
+		{
+			return;
+		}
+		
+		if (!vao.bind(rcon))
+		{
+			return;
+		}
+		
 		rcon.getGL1().glDrawElements(this.getPolygonType(), this.getPolyCount(), GLConst.GL_UNSIGNED_INT, 0);
+		
+		vao.unbind(rcon);
 		
 		p.unbind(rcon);
 		
 	}
 	
-	public GLProgram getProgram();
+	default GLProgram getProgram()
+	{
+		return null;
+	}
+	
+	public VertexArray getVAO();
 	
 	public GLEnumPolyType getPolygonType();
 	

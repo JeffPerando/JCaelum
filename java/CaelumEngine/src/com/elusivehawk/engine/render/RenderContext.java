@@ -9,6 +9,7 @@ import com.elusivehawk.engine.render.old.RenderTask;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLEnumShader;
 import com.elusivehawk.engine.render.opengl.GLException;
+import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.engine.render.opengl.IGL3;
@@ -36,7 +37,8 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 	
 	private int notex, maxTexCount;
 	
-	private Shaders shaders = new Shaders();
+	private final Shaders shaders = new Shaders();
+	private final GLProgram p = new GLProgram(this.shaders);
 	
 	private final List<IGLDeletable> cleanables = Lists.newArrayList();
 	@Deprecated
@@ -269,9 +271,9 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 		return this.settings.targetFPS;
 	}
 	
-	public Shaders getDefaultShaders()
+	public GLProgram getDefaultProgram()
 	{
-		return this.shaders;
+		return this.p;
 	}
 	
 	public int getDefaultTexture()

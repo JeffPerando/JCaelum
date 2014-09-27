@@ -3,9 +3,7 @@ package com.elusivehawk.engine.render.opengl;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.render.RenderContext;
@@ -15,7 +13,8 @@ import com.elusivehawk.engine.render.Shaders;
 import com.elusivehawk.util.ArrayHelper;
 import com.elusivehawk.util.IDirty;
 import com.elusivehawk.util.IPopulator;
-import com.google.common.collect.Lists;
+import com.elusivehawk.util.storage.SyncList;
+import com.elusivehawk.util.storage.Tuple;
 
 /**
  * 
@@ -25,22 +24,30 @@ import com.google.common.collect.Lists;
  */
 public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 {
-	private final Shaders shaders = new Shaders();
-	private final HashMap<VertexBuffer, List<Integer>> vbos = new HashMap<VertexBuffer, List<Integer>>();
+	private final List<Tuple<String, Integer>> attribs = SyncList.newList();
+	private final Shaders shaders;
 	
-	private int id = 0, vba = 0;
+	private int id = 0;
 	private boolean bound = false, relink = true;
 	
-	public GLProgram(){}
+	public GLProgram()
+	{
+		this(new Shaders());
+		
+	}
 	
 	public GLProgram(IPopulator<GLProgram> pop)
 	{
+		this();
+		
 		pop.populate(this);
 		
 	}
 	
 	public GLProgram(Shader[] sh)
 	{
+		this();
+		
 		if (!ArrayHelper.isNullOrEmpty(sh))
 		{
 			for (Shader s : sh)
@@ -50,6 +57,13 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 			}
 			
 		}
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public GLProgram(Shaders shs)
+	{
+		shaders = shs;
 		
 	}
 	
@@ -84,8 +98,6 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 		
 		IGL2 gl2 = rcon.getGL2();
 		
-		rcon.getGL3().glDeleteVertexArrays(this.vba);
-		
 		this.shaders.deleteShaders(rcon, this);
 		
 		gl2.glDeleteProgram(this);
@@ -107,12 +119,6 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 			rcon.registerCleanable(this);
 			
 			RenderHelper.checkForGLError(rcon);
-			
-		}
-		
-		if (this.vba == 0)
-		{
-			this.vba = rcon.getGL3().glGenVertexArrays();
 			
 		}
 		
@@ -156,28 +162,6 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 		
 		rcon.getGL2().glUseProgram(this);
 		
-		rcon.getGL3().glBindVertexArray(this.vba);
-		
-		if (!this.vbos.isEmpty())
-		{
-			for (Entry<VertexBuffer, List<Integer>> entry : this.vbos.entrySet())
-			{
-				entry.getKey().bind(rcon);
-				
-				if (!entry.getValue().isEmpty())
-				{
-					for (int attrib : entry.getValue())
-					{
-						rcon.getGL2().glEnableVertexAttribArray(attrib);
-						
-					}
-					
-				}
-				
-			}
-			
-		}
-		
 		this.bound = true;
 		
 		return true;
@@ -191,6 +175,12 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 		}
 		
 		IGL2 gl2 = rcon.getGL2();
+		
+		for (Tuple<String, Integer> pointer : this.attribs)
+		{
+			//gl2.glVertexAttribPointer(gl2.glGetAttribLocation(this.id, pointer.one), pointer.two, type, false, stride, first);
+			
+		}
 		
 		gl2.glLinkProgram(this);
 		gl2.glValidateProgram(this);
@@ -209,28 +199,6 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 			return;
 		}
 		
-		if (!this.vbos.isEmpty())
-		{
-			for (Entry<VertexBuffer, List<Integer>> entry : this.vbos.entrySet())
-			{
-				if (entry.getValue() != null)
-				{
-					for (int a : entry.getValue())
-					{
-						rcon.getGL2().glDisableVertexAttribArray(a);
-						
-					}
-					
-				}
-				
-				entry.getKey().unbind(rcon);
-				
-			}
-			
-		}
-		
-		rcon.getGL3().glBindVertexArray(0);
-		
 		rcon.getGL2().glUseProgram(0);
 		
 		this.bound = false;
@@ -243,36 +211,6 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 		return this.getId();
 	}
 	
-	public void attachVBO(VertexBuffer vbo, int... attribs)
-	{
-		List<Integer> valid = Lists.newArrayList();
-		
-		for (int a : attribs)
-		{
-			boolean found = false;
-			
-			for (List<Integer> l : this.vbos.values())
-			{
-				if (l.contains(a))
-				{
-					found = true;
-					
-				}
-				
-			}
-			
-			if (!found)
-			{
-				valid.add(a);
-				
-			}
-			
-		}
-		
-		this.vbos.put(vbo, valid);
-		
-	}
-	
 	public synchronized boolean attachShader(Shader sh)
 	{
 		if (this.shaders.addShader(sh))
@@ -282,6 +220,12 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 		}
 		
 		return false;
+	}
+	
+	public void addVertexAttrib(String name, int count)
+	{
+		this.attribs.add(Tuple.create(name, count));
+		
 	}
 	
 	public void attachUniform(RenderContext rcon, String name, FloatBuffer info, EnumUniformType type)

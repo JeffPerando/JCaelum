@@ -47,8 +47,8 @@ public class Canvas extends RenderableObj
 		floatbuf = new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW, GLEnumDataType.GL_FLOAT, buffer.getBuffer());
 		indbuf = new VertexBuffer(GLEnumBufferTarget.GL_ELEMENT_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW, GLEnumDataType.GL_INT, buffer.getIndices());
 		
-		p.attachVBO(floatbuf, 0, 1);
-		p.attachVBO(indbuf, null);
+		vao.attachVBO(floatbuf, 0, 1);
+		vao.attachVBO(indbuf, null);
 		
 	}
 	

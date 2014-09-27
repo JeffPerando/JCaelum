@@ -6,6 +6,7 @@ import java.util.UUID;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.render.opengl.GLProgram;
+import com.elusivehawk.engine.render.opengl.VertexArray;
 import com.elusivehawk.util.IDirty;
 import com.google.common.collect.Lists;
 
@@ -19,6 +20,7 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 {
 	protected final GLProgram p;
 	
+	protected final VertexArray vao = new VertexArray();
 	protected final List<IDirty> dirts = Lists.newArrayList();
 	
 	protected boolean dirty = true, initiated = false;
