@@ -15,7 +15,7 @@ public class Quaternion implements IMathArray<Float>
 	protected final float[] data = new float[4];
 	
 	protected volatile boolean dirty = false;
-	protected List<IQuatListener> listeners = null;
+	protected List<Listener> listeners = null;
 	protected Matrix matrix = MatrixHelper.createIdentityMatrix();
 	
 	public Quaternion()
@@ -193,7 +193,7 @@ public class Quaternion implements IMathArray<Float>
 		
 	}
 	
-	public void addListener(IQuatListener lis)
+	public void addListener(Listener lis)
 	{
 		assert lis != null;
 		
@@ -207,7 +207,7 @@ public class Quaternion implements IMathArray<Float>
 		
 	}
 	
-	public void removeListener(IQuatListener lis)
+	public void removeListener(Listener lis)
 	{
 		if (this.listeners != null)
 		{
@@ -318,6 +318,13 @@ public class Quaternion implements IMathArray<Float>
 	public Matrix asMatrix(Matrix dest)
 	{
 		return MatrixHelper.createRotationMatrix(this, dest);
+	}
+	
+	@FunctionalInterface
+	public static interface Listener
+	{
+		public void onQuatChanged(Quaternion q);
+		
 	}
 	
 }

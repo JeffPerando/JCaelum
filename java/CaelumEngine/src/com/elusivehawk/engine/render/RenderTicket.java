@@ -11,8 +11,6 @@ import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
 import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.IDirty;
-import com.elusivehawk.util.math.IQuatListener;
-import com.elusivehawk.util.math.IVecListener;
 import com.elusivehawk.util.math.Matrix;
 import com.elusivehawk.util.math.MatrixHelper;
 import com.elusivehawk.util.math.Quaternion;
@@ -32,7 +30,7 @@ import com.elusivehawk.util.math.Vector;
  * @see IQuatListener
  * @see IVecListener
  */
-public class RenderTicket extends RenderableObj implements IQuatListener, IVecListener
+public class RenderTicket extends RenderableObj implements Quaternion.Listener, Vector.Listener
 {
 	protected final Vector
 			offset = new Vector(),

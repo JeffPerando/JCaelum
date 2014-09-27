@@ -15,7 +15,7 @@ public class Vector implements IMathArray<Float>
 {
 	protected final float[] data;
 	
-	protected List<IVecListener> listeners = null;
+	protected List<Listener> listeners = null;
 	protected String name = null;
 	protected volatile boolean
 			dirty = false,
@@ -326,7 +326,7 @@ public class Vector implements IMathArray<Float>
 		return this.immutable;
 	}
 	
-	public void addListener(IVecListener lis)
+	public void addListener(Listener lis)
 	{
 		assert lis != null;
 		
@@ -340,7 +340,7 @@ public class Vector implements IMathArray<Float>
 		
 	}
 	
-	public void removeListener(IVecListener lis)
+	public void removeListener(Listener lis)
 	{
 		if (this.listeners != null)
 		{
@@ -630,6 +630,13 @@ public class Vector implements IMathArray<Float>
 	public Vector scale(float f)
 	{
 		return this.mulAll(f);
+	}
+	
+	@FunctionalInterface
+	public static interface Listener
+	{
+		public void onVecChanged(Vector vec);
+		
 	}
 	
 }

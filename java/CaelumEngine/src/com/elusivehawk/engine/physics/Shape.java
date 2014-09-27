@@ -3,7 +3,6 @@ package com.elusivehawk.engine.physics;
 
 import com.elusivehawk.engine.Experimental;
 import com.elusivehawk.util.IUpdatable;
-import com.elusivehawk.util.math.IVecListener;
 import com.elusivehawk.util.math.Vector;
 
 /**
@@ -13,7 +12,7 @@ import com.elusivehawk.util.math.Vector;
  * @author Elusivehawk
  */
 @Experimental
-public abstract class Shape implements IVecListener, IUpdatable
+public abstract class Shape implements Vector.Listener, IUpdatable
 {
 	protected final Vector pos = new Vector();
 	protected volatile boolean moveable = true;
