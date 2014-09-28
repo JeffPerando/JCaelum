@@ -107,6 +107,13 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 	@Override
 	public boolean bind(RenderContext rcon)
 	{
+		int bp = rcon.getGL1().glGetInteger(GLConst.GL_CURRENT_PROGRAM);
+		
+		if (bp != 0)
+		{
+			return false;
+		}
+		
 		if (this.id == 0)
 		{
 			this.id = rcon.getGL2().glCreateProgram();
@@ -122,40 +129,7 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 			
 		}
 		
-		if (this.relink || this.shaders.isDirty())
-		{
-			if (!this.relink(rcon))
-			{
-				return false;
-			}
-			
-		}
-		
-		if (!this.bind0(rcon))
-		{
-			this.unbind(rcon);
-			
-			return false;
-		}
-		
-		return true;
-	}
-	
-	private boolean bind0(RenderContext rcon)
-	{
-		if (this.bound)
-		{
-			return true;
-		}
-		
-		int bp = rcon.getGL1().glGetInteger(GLConst.GL_CURRENT_PROGRAM);
-		
-		if (bp == this.id)
-		{
-			return true;
-		}
-		
-		if (bp != 0)
+		if ((this.relink || this.shaders.isDirty()) && !this.relink(rcon))
 		{
 			return false;
 		}
@@ -165,6 +139,26 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 		this.bound = true;
 		
 		return true;
+	}
+	
+	@Override
+	public void unbind(RenderContext rcon)
+	{
+		if (!this.bound)
+		{
+			return;
+		}
+		
+		rcon.getGL2().glUseProgram(0);
+		
+		this.bound = false;
+		
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		return this.getId();
 	}
 	
 	private boolean relink(RenderContext rcon)
@@ -189,26 +183,6 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 		this.shaders.setIsDirty(false);
 		
 		return true;
-	}
-	
-	@Override
-	public void unbind(RenderContext rcon)
-	{
-		if (!this.bound)
-		{
-			return;
-		}
-		
-		rcon.getGL2().glUseProgram(0);
-		
-		this.bound = false;
-		
-	}
-	
-	@Override
-	public int hashCode()
-	{
-		return this.getId();
 	}
 	
 	public synchronized boolean attachShader(Shader sh)
