@@ -14,7 +14,6 @@ import com.elusivehawk.util.ArrayHelper;
 import com.elusivehawk.util.IDirty;
 import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.storage.SyncList;
-import com.elusivehawk.util.storage.Tuple;
 
 /**
  * 
@@ -24,7 +23,7 @@ import com.elusivehawk.util.storage.Tuple;
  */
 public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 {
-	private final List<Tuple<String, Integer>> attribs = SyncList.newList();
+	private final List<VertexAttrib> attribs = SyncList.newList();
 	private final Shaders shaders;
 	
 	private int id = 0;
@@ -170,9 +169,9 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 		
 		IGL2 gl2 = rcon.getGL2();
 		
-		for (Tuple<String, Integer> pointer : this.attribs)
+		for (VertexAttrib pointer : this.attribs)
 		{
-			//gl2.glVertexAttribPointer(gl2.glGetAttribLocation(this.id, pointer.one), pointer.two, type, false, stride, first);
+			gl2.glVertexAttribPointer(this, pointer);
 			
 		}
 		
@@ -196,9 +195,15 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 		return false;
 	}
 	
-	public void addVertexAttrib(String name, int count)
+	public void addVertexAttrib(String name, int size, int type, boolean normalized, int stride, long first)
 	{
-		this.attribs.add(Tuple.create(name, count));
+		this.addVertexAttrib(name, size, type, false, normalized, stride, first);
+		
+	}
+	
+	public void addVertexAttrib(String name, int size, int type, boolean unsigned, boolean normalized, int stride, long first)
+	{
+		this.attribs.add(new VertexAttrib(name, size, type, unsigned, normalized, stride, first));
 		
 	}
 	
@@ -363,6 +368,28 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 			public void loadUniform(RenderContext rcon, int loc, IntBuffer buf){}
 			
 		};
+		
+	}
+	
+	public static class VertexAttrib
+	{
+		public final String name;
+		public final int size, type, stride;
+		public final boolean unsigned, normalized;
+		public final long first;
+		
+		@SuppressWarnings("unqualified-field-access")
+		public VertexAttrib(String attrib, int length, int t, boolean u, boolean n, int off, long f)
+		{
+			name = attrib;
+			size = length;
+			type = t;
+			unsigned = u;
+			normalized = n;
+			stride = off;
+			first = f;
+			
+		}
 		
 	}
 	

@@ -216,6 +216,18 @@ public interface IGL2
 	
 	public void glVertexAttrib4f(int index, float x, float y, float z, float w) throws GLException;
 	
+	default void glVertexAttribPointer(GLProgram program, GLProgram.VertexAttrib attrib)
+	{
+		this.glVertexAttribPointer(program.getId(), attrib);
+		
+	}
+	
+	default void glVertexAttribPointer(int program, GLProgram.VertexAttrib attrib)
+	{
+		this.glVertexAttribPointer(this.glGetAttribLocation(program, attrib.name), attrib.size, attrib.type, attrib.unsigned, attrib.normalized, attrib.stride, attrib.first);
+		
+	}
+	
 	default void glVertexAttribPointer(int index, int size, int type, boolean normalized, int stride, long first) throws GLException
 	{
 		this.glVertexAttribPointer(index, size, type, false, normalized, stride, first);
