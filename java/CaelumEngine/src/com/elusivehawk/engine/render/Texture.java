@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
-import java.io.BufferedInputStream;
+import java.io.InputStream;
 import java.util.List;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.CaelumException;
@@ -20,7 +20,6 @@ public class Texture extends GraphicAsset
 	protected final boolean animate;
 	
 	protected int[] frames = null;
-	protected int frameCount = -1;
 	
 	public Texture(String filepath)
 	{
@@ -38,7 +37,7 @@ public class Texture extends GraphicAsset
 	}
 	
 	@Override
-	protected boolean readAsset(BufferedInputStream in) throws Throwable
+	protected boolean readAsset(InputStream in) throws Throwable
 	{
 		List<ILegibleImage> imgs = RenderHelper.readImg(in, this.animate);
 		
@@ -47,12 +46,12 @@ public class Texture extends GraphicAsset
 			return false;
 		}
 		
-		this.frames = new int[this.frameCount = imgs.size()];
+		this.frames = new int[imgs.size()];
 		
 		for (int c = 0; c < imgs.size(); c++)
 		{
 			CaelumEngine.scheduleRenderTask(new RTaskUploadImage(this, imgs.get(c), c));
-			this.frames[c] = -1;
+			this.frames[c] = 0;
 			
 		}
 		
@@ -98,12 +97,12 @@ public class Texture extends GraphicAsset
 	
 	public int getTexId(int frame)
 	{
-		return this.frames == null ? -1 : this.frames[frame];
+		return this.frames == null ? 0 : this.frames[frame];
 	}
 	
 	public int getFrameCount()
 	{
-		return this.frameCount;
+		return this.frames == null ? 0 : this.frames.length;
 	}
 	
 	public boolean isAnimated()

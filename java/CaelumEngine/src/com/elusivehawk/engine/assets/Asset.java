@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.assets;
 
-import java.io.BufferedInputStream;
+import java.io.InputStream;
 import com.elusivehawk.engine.CaelumEngine;
 
 /**
@@ -47,11 +47,11 @@ public abstract class Asset
 		return this.read;
 	}
 	
-	public final boolean read(BufferedInputStream in) throws Throwable
+	public final boolean read(InputStream is) throws Throwable
 	{
-		return this.read ? true : (this.read = this.readAsset(in));
+		return this.read ? true : (this.read = this.readAsset(is));
 	}
 	
-	protected abstract boolean readAsset(BufferedInputStream in) throws Throwable;
+	protected abstract boolean readAsset(InputStream is) throws Throwable;
 	
 }

@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
-import java.io.BufferedInputStream;
+import java.io.InputStream;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.EnumAssetType;
 import com.elusivehawk.util.math.Vector;
@@ -29,7 +29,7 @@ public class Mesh extends Asset
 	}
 	
 	@Override
-	protected boolean readAsset(BufferedInputStream in)
+	protected boolean readAsset(InputStream is)
 	{
 		return false;
 	}

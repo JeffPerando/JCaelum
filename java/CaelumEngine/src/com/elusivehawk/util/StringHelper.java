@@ -143,7 +143,7 @@ public final class StringHelper
 	
 	public static String readToOneLine(Reader r)
 	{
-		StringBuilder b = newBuilder();
+		StringBuilder b = new StringBuilder();
 		
 		if (r != null)
 		{
@@ -159,11 +159,7 @@ public final class StringHelper
 						b.append("\n");
 						
 					}
-					else
-					{
-						prev = true;
-						
-					}
+					else prev = true;
 					
 					b.append(line);
 					
@@ -282,7 +278,7 @@ public final class StringHelper
 			return str;
 		}
 		
-		StringBuilder b = newBuilder(str);
+		StringBuilder b = new StringBuilder(str);
 		b.replace(lastIn, lastIn + in.length(), out);
 		
 		return b.toString();
@@ -300,7 +296,7 @@ public final class StringHelper
 			return d;
 		}
 		
-		StringBuilder b = newBuilder(strs.length * 2);
+		StringBuilder b = new StringBuilder(strs.length * 2);
 		
 		for (int c = 0; c < strs.length; ++c)
 		{
@@ -331,7 +327,7 @@ public final class StringHelper
 			return d;
 		}
 		
-		StringBuilder b = newBuilder(strs.size() * 2);
+		StringBuilder b = new StringBuilder(strs.size() * 2);
 		
 		for (int c = 0; c < strs.size(); ++c)
 		{
@@ -458,7 +454,7 @@ public final class StringHelper
 	
 	public static String parseDate(Calendar cal, String dateSep, String timeSep)
 	{
-		StringBuilder b = newBuilder(16);
+		StringBuilder b = new StringBuilder(16);
 		
 		b.append(cal.get(Calendar.DATE));
 		b.append(dateSep);
@@ -520,21 +516,6 @@ public final class StringHelper
 		}
 		
 		return ret;
-	}
-	
-	public static StringBuilder newBuilder()
-	{
-		return new StringBuilder();
-	}
-	
-	public static StringBuilder newBuilder(int size)
-	{
-		return new StringBuilder(size);
-	}
-	
-	public static StringBuilder newBuilder(String str)
-	{
-		return new StringBuilder(str);
 	}
 	
 	public static boolean isInt(String str)

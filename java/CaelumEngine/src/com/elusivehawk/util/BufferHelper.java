@@ -12,6 +12,7 @@ import java.nio.ShortBuffer;
 import java.util.Collection;
 import com.elusivehawk.util.io.IByteReader;
 import com.elusivehawk.util.storage.Buffer;
+import com.elusivehawk.util.storage.IArray;
 
 /**
  * 
@@ -222,6 +223,21 @@ public final class BufferHelper
 		return ret;
 	}
 	
+	public static ByteBuffer makeByteBuffer(IArray<Byte> a)
+	{
+		ByteBuffer ret = createByteBuffer(a.size());
+		
+		for (int c = 0; c < a.size(); c++)
+		{
+			ret.put(a.get(c));
+			
+		}
+		
+		ret.flip();
+		
+		return ret;
+	}
+	
 	public static CharBuffer makeCharBuffer(char... data)
 	{
 		return (CharBuffer)createCharBuffer(data.length).put(data).flip();
@@ -272,6 +288,21 @@ public final class BufferHelper
 		for (CharBuffer buf : bufs)
 		{
 			ret.put(buf);
+			
+		}
+		
+		ret.flip();
+		
+		return ret;
+	}
+	
+	public static CharBuffer makeCharBuffer(IArray<Character> a)
+	{
+		CharBuffer ret = createCharBuffer(a.size());
+		
+		for (int c = 0; c < a.size(); c++)
+		{
+			ret.put(a.get(c));
 			
 		}
 		
@@ -338,6 +369,21 @@ public final class BufferHelper
 		return ret;
 	}
 	
+	public static ShortBuffer makeShortBuffer(IArray<Short> a)
+	{
+		ShortBuffer ret = createShortBuffer(a.size());
+		
+		for (int c = 0; c < a.size(); c++)
+		{
+			ret.put(a.get(c));
+			
+		}
+		
+		ret.flip();
+		
+		return ret;
+	}
+	
 	public static IntBuffer makeIntBuffer(int... data)
 	{
 		return (IntBuffer)createIntBuffer(data.length).put(data).flip();
@@ -388,6 +434,21 @@ public final class BufferHelper
 		for (IntBuffer buf : bufs)
 		{
 			ret.put(buf);
+			
+		}
+		
+		ret.flip();
+		
+		return ret;
+	}
+	
+	public static IntBuffer makeIntBuffer(IArray<Integer> a)
+	{
+		IntBuffer ret = createIntBuffer(a.size());
+		
+		for (int c = 0; c < a.size(); c++)
+		{
+			ret.put(a.get(c));
 			
 		}
 		
@@ -454,6 +515,21 @@ public final class BufferHelper
 		return ret;
 	}
 	
+	public static DoubleBuffer makeDoubleBuffer(IArray<Double> a)
+	{
+		DoubleBuffer ret = createDoubleBuffer(a.size());
+		
+		for (int c = 0; c < a.size(); c++)
+		{
+			ret.put(a.get(c));
+			
+		}
+		
+		ret.flip();
+		
+		return ret;
+	}
+	
 	public static FloatBuffer makeFloatBuffer(float... data)
 	{
 		return (FloatBuffer)createFloatBuffer(data.length).put(data).flip();
@@ -512,6 +588,21 @@ public final class BufferHelper
 		return ret;
 	}
 	
+	public static FloatBuffer makeFloatBuffer(IArray<Float> a)
+	{
+		FloatBuffer ret = createFloatBuffer(a.size());
+		
+		for (int c = 0; c < a.size(); c++)
+		{
+			ret.put(a.get(c));
+			
+		}
+		
+		ret.flip();
+		
+		return ret;
+	}
+	
 	public static LongBuffer makeLongBuffer(long... data)
 	{
 		return (LongBuffer)createLongBuffer(data.length).put(data).flip();
@@ -562,6 +653,21 @@ public final class BufferHelper
 		for (LongBuffer buf : bufs)
 		{
 			ret.put(buf);
+			
+		}
+		
+		ret.flip();
+		
+		return ret;
+	}
+	
+	public static LongBuffer makeLongBuffer(IArray<Long> a)
+	{
+		LongBuffer ret = createLongBuffer(a.size());
+		
+		for (int c = 0; c < a.size(); c++)
+		{
+			ret.put(a.get(c));
 			
 		}
 		

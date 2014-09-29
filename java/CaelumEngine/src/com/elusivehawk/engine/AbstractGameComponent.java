@@ -6,7 +6,6 @@ import com.elusivehawk.engine.assets.AssetManager;
 import com.elusivehawk.engine.physics.IPhysicsSimulator;
 import com.elusivehawk.engine.render.IRenderable;
 import com.elusivehawk.util.IUpdatable;
-import com.elusivehawk.util.StringHelper;
 import com.google.common.collect.Lists;
 
 /**
@@ -49,7 +48,7 @@ public abstract class AbstractGameComponent implements IUpdatable, IRenderable
 			return this.getFormattedName();
 		}
 		
-		StringBuilder b = StringHelper.newBuilder(this.modules.size() * 2 + 2);
+		StringBuilder b = new StringBuilder(this.modules.size() * 2 + 2);
 		
 		b.append(this.name);
 		b.append('{');

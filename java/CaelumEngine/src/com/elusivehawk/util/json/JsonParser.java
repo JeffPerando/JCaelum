@@ -238,7 +238,7 @@ public final class JsonParser
 			throw new JsonParseException("Invalid integer found on %s", name);
 		}
 		
-		StringBuilder b = StringHelper.newBuilder();
+		StringBuilder b = new StringBuilder();
 		
 		b.append(i);
 		
@@ -292,7 +292,7 @@ public final class JsonParser
 	public static String gatherInts(Buffer<String> buf)
 	{
 		String str = buf.next();
-		StringBuilder b = StringHelper.newBuilder();
+		StringBuilder b = new StringBuilder();
 		
 		while (StringHelper.isInt(str))
 		{

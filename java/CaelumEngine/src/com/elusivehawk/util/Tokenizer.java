@@ -7,7 +7,7 @@ import com.google.common.collect.Lists;
 
 /**
  * 
- * 
+ * Because regex is evil! And so is stuffing.
  * 
  * @author Elusivehawk
  */
@@ -43,41 +43,47 @@ public class Tokenizer
 		List<String> ret = Lists.newArrayList();
 		String rem = str;
 		
-		if ((str != null && !"".equalsIgnoreCase(str)) && !this.tokens.isEmpty())
+		if (str == null || "".equalsIgnoreCase(str))
 		{
-			Tuple<String, Integer> t = this.getNextTokenIndex(rem, 0);
-			int i;
+			return ret;
+		}
+		
+		if (this.tokens.isEmpty())
+		{
+			return ret;
+		}
+		
+		Tuple<String, Integer> t = this.getNextTokenIndex(rem, 0);
+		int i;
+		
+		while (t != null)
+		{
+			i = t.two;
 			
-			while (t != null)
+			if (i >= 0)
 			{
-				i = t.two;
-				
-				if (i >= 0)
+				if (i > 0)
 				{
-					if (i > 0)
-					{
-						ret.add(rem.substring(0, i));
-						
-					}
+					ret.add(rem.substring(0, i));
 					
-					if (rem.length() >= t.one.length())
-					{
-						ret.add(rem.substring(i, i + t.one.length()));
-						rem = rem.substring(i + t.one.length());
-						
-						t = this.getNextTokenIndex(rem, 0);
-						
-					}
+				}
+				
+				if (rem.length() >= t.one.length())
+				{
+					ret.add(rem.substring(i, i + t.one.length()));
+					rem = rem.substring(i + t.one.length());
+					
+					t = this.getNextTokenIndex(rem, 0);
 					
 				}
 				
 			}
 			
-			if (!"".equalsIgnoreCase(rem))
-			{
-				ret.add(rem);
-				
-			}
+		}
+		
+		if (!"".equalsIgnoreCase(rem))
+		{
+			ret.add(rem);
 			
 		}
 		
