@@ -204,6 +204,7 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 	public void addVertexAttrib(String name, int size, int type, boolean unsigned, boolean normalized, int stride, long first)
 	{
 		this.attribs.add(new VertexAttrib(name, size, type, unsigned, normalized, stride, first));
+		this.relink = true;
 		
 	}
 	
