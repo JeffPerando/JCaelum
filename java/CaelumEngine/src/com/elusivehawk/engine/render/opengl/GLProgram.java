@@ -167,6 +167,11 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 			return false;
 		}
 		
+		if (this.attribs.isEmpty())
+		{
+			return false;
+		}
+		
 		IGL2 gl2 = rcon.getGL2();
 		
 		for (VertexAttrib pointer : this.attribs)
@@ -203,12 +208,25 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 	
 	public void addVertexAttrib(String name, int size, int type, boolean unsigned, boolean normalized, int stride, long first)
 	{
+		if (!this.attribs.isEmpty())
+		{
+			for (VertexAttrib a : this.attribs)
+			{
+				if (a.name.equalsIgnoreCase(name))
+				{
+					return;
+				}
+				
+			}
+			
+		}
+		
 		this.attribs.add(new VertexAttrib(name, size, type, unsigned, normalized, stride, first));
 		this.relink = true;
 		
 	}
 	
-	public void attachUniform(RenderContext rcon, String name, FloatBuffer info, EnumUniformType type)
+	public void attachUniform(RenderContext rcon, String name, FloatBuffer info, GLEnumUType type)
 	{
 		if (!this.bound)
 		{
@@ -225,7 +243,7 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 		
 	}
 	
-	public void attachUniform(RenderContext rcon, String name, IntBuffer info, EnumUniformType type)
+	public void attachUniform(RenderContext rcon, String name, IntBuffer info, GLEnumUType type)
 	{
 		if (!this.bound)
 		{
@@ -250,148 +268,6 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 	public int shaderCount()
 	{
 		return this.shaders.getShaderCount();
-	}
-	
-	private static interface IUniformType
-	{
-		public void loadUniform(RenderContext rcon, int loc, FloatBuffer buf);
-		
-		public void loadUniform(RenderContext rcon, int loc, IntBuffer buf);
-		
-	}
-	
-	public static enum EnumUniformType implements IUniformType
-	{
-		ONE
-		{
-			@Override
-			public void loadUniform(RenderContext rcon, int loc, FloatBuffer buf)
-			{
-				rcon.getGL2().glUniform1f(loc, buf.get());
-				
-			}
-			
-			@Override
-			public void loadUniform(RenderContext rcon, int loc, IntBuffer buf)
-			{
-				rcon.getGL2().glUniform1i(loc, buf.get());
-				
-			}
-			
-		},
-		TWO
-		{
-			@Override
-			public void loadUniform(RenderContext rcon, int loc, FloatBuffer buf)
-			{
-				rcon.getGL2().glUniform2f(loc, buf.get(), buf.get());
-				
-			}
-			
-			@Override
-			public void loadUniform(RenderContext rcon, int loc, IntBuffer buf)
-			{
-				rcon.getGL2().glUniform2i(loc, buf.get(), buf.get());
-				
-			}
-			
-		},
-		THREE
-		{
-			@Override
-			public void loadUniform(RenderContext rcon, int loc, FloatBuffer buf)
-			{
-				rcon.getGL2().glUniform3f(loc, buf.get(), buf.get(), buf.get());
-				
-			}
-			
-			@Override
-			public void loadUniform(RenderContext rcon, int loc, IntBuffer buf)
-			{
-				rcon.getGL2().glUniform3i(loc, buf.get(), buf.get(), buf.get());
-				
-			}
-			
-		},
-		FOUR
-		{
-			@Override
-			public void loadUniform(RenderContext rcon, int loc, FloatBuffer buf)
-			{
-				rcon.getGL2().glUniform4f(loc, buf.get(), buf.get(), buf.get(), buf.get());
-				
-			}
-			
-			@Override
-			public void loadUniform(RenderContext rcon, int loc, IntBuffer buf)
-			{
-				rcon.getGL2().glUniform4i(loc, buf.get(), buf.get(), buf.get(), buf.get());
-				
-			}
-			
-		},
-		M_TWO
-		{
-			@Override
-			public void loadUniform(RenderContext rcon, int loc, FloatBuffer buf)
-			{
-				rcon.getGL2().glUniformMatrix2fv(loc, 1, false, buf);
-				
-			}
-			
-			@Override
-			public void loadUniform(RenderContext rcon, int loc, IntBuffer buf){}
-			
-		},
-		M_THREE
-		{
-			@Override
-			public void loadUniform(RenderContext rcon, int loc, FloatBuffer buf)
-			{
-				rcon.getGL2().glUniformMatrix3fv(loc, 1, false, buf);
-				
-			}
-			
-			@Override
-			public void loadUniform(RenderContext rcon, int loc, IntBuffer buf){}
-			
-		},
-		M_FOUR
-		{
-			@Override
-			public void loadUniform(RenderContext rcon, int loc, FloatBuffer buf)
-			{
-				rcon.getGL2().glUniformMatrix4fv(loc, 1, false, buf);
-				
-			}
-			
-			@Override
-			public void loadUniform(RenderContext rcon, int loc, IntBuffer buf){}
-			
-		};
-		
-	}
-	
-	public static class VertexAttrib
-	{
-		public final String name;
-		public final int size, type, stride;
-		public final boolean unsigned, normalized;
-		public final long first;
-		
-		@SuppressWarnings("unqualified-field-access")
-		public VertexAttrib(String attrib, int length, int t, boolean u, boolean n, int off, long f)
-		{
-			name = attrib;
-			size = length;
-			type = t;
-			unsigned = u;
-			normalized = n;
-			stride = off;
-			first = f;
-			
-		}
-		
 	}
 	
 }

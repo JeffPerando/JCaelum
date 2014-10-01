@@ -35,6 +35,12 @@ public class Color
 	public final ColorFormat format;
 	public int color = 0;
 	
+	public Color()
+	{
+		this(ColorFormat.RGBA);
+		
+	}
+	
 	@SuppressWarnings("unqualified-field-access")
 	public Color(ColorFormat f)
 	{

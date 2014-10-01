@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.UUID;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
+import com.elusivehawk.engine.render.opengl.GLEnumUType;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexArray;
+import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.IDirty;
 import com.google.common.collect.Lists;
 
@@ -82,6 +84,8 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 		
 		if (this.isDirty())
 		{
+			this.p.attachUniform(rcon, "flip", BufferHelper.makeIntBuffer(rcon.isScreenFlipped() ? 1 : 0), GLEnumUType.ONE);
+			
 			//TODO Load materials into program
 			
 			if (this.filters != null)
@@ -94,22 +98,16 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 			
 		}
 		
-		if (!this.p.bind(rcon))
+		if (this.p.bind(rcon) && this.vao.bind(rcon))
 		{
-			return;
+			this.doRender(rcon, delta);
+			
+			this.postRender(rcon);
+			
 		}
-		
-		if (!this.vao.bind(rcon))
-		{
-			return;
-		}
-		
-		this.doRender(rcon, delta);
 		
 		this.vao.unbind(rcon);
 		this.p.unbind(rcon);
-		
-		this.postRender(rcon);
 		
 	}
 	

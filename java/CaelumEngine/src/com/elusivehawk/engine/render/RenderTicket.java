@@ -7,6 +7,7 @@ import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLEnumBufferTarget;
 import com.elusivehawk.engine.render.opengl.GLEnumDataUsage;
+import com.elusivehawk.engine.render.opengl.GLEnumUType;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
 import com.elusivehawk.util.BufferHelper;
@@ -139,7 +140,7 @@ public class RenderTicket extends RenderableObj implements Quaternion.Listener, 
 		
 		Matrix m = MatrixHelper.createHomogenousMatrix(this.rot, this.scale, this.pos);
 		
-		this.p.attachUniform(rcon, "model", m.asBuffer(), GLProgram.EnumUniformType.M_FOUR);
+		this.p.attachUniform(rcon, "model", m.asBuffer(), GLEnumUType.M_FOUR);
 		
 		//TODO Load materials into program
 		

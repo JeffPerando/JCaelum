@@ -1,22 +1,13 @@
 
 package com.elusivehawk.engine;
 
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import com.elusivehawk.engine.assets.AssetManager;
 import com.elusivehawk.engine.input.Key;
 import com.elusivehawk.engine.input.Keyboard;
 import com.elusivehawk.engine.input.Mouse;
-import com.elusivehawk.engine.prefab.SimpleRenderer;
+import com.elusivehawk.engine.render.Canvas;
+import com.elusivehawk.engine.render.Icon;
 import com.elusivehawk.engine.render.RenderContext;
-import com.elusivehawk.engine.render.Shader;
-import com.elusivehawk.engine.render.opengl.GLEnumBufferTarget;
-import com.elusivehawk.engine.render.opengl.GLEnumDataType;
-import com.elusivehawk.engine.render.opengl.GLEnumDataUsage;
-import com.elusivehawk.engine.render.opengl.GLEnumPolyType;
-import com.elusivehawk.engine.render.opengl.GLEnumShader;
-import com.elusivehawk.engine.render.opengl.VertexBuffer;
-import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.Logger;
@@ -34,10 +25,7 @@ public final class ExampleGame extends Game
 {
 	public static final Version VERSION = new Version(1, 0, 0);
 	
-	public final FloatBuffer square = BufferHelper.makeFloatBuffer(0, 0, 1, 0, 0, 1, 1, 1);
-	public final IntBuffer square_ind = BufferHelper.makeIntBuffer(0, 1, 2, 3);
-	
-	private SimpleRenderer renderer = null;
+	private Canvas canvas = new Canvas();
 	
 	public ExampleGame()
 	{
@@ -80,16 +68,7 @@ public final class ExampleGame extends Game
 			
 		}));
 		
-		this.renderer = new SimpleRenderer(4, GLEnumPolyType.GL_TRIANGLE_STRIP, ((p) ->
-		{
-			p.attachShader(new Shader("/res/shaders/vertex2d.glsl", GLEnumShader.VERTEX));
-			
-		}), ((vao) ->
-		{
-			vao.attachVBO(new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_STATIC_DRAW, GLEnumDataType.GL_FLOAT, this.square), 0);
-			vao.attachVBO(new VertexBuffer(GLEnumBufferTarget.GL_ELEMENT_ARRAY_BUFFER, GLEnumDataUsage.GL_STATIC_DRAW, GLEnumDataType.GL_INT, this.square_ind));
-			
-		}));
+		this.canvas.drawImage(0, 0, 1, 1, (Icon)null);
 		
 	}
 	
@@ -107,7 +86,7 @@ public final class ExampleGame extends Game
 	{
 		try
 		{
-			this.renderer.render(rcon, delta);
+			this.canvas.render(rcon, delta);
 			
 		}
 		catch (Exception e)

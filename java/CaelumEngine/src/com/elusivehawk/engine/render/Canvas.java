@@ -13,6 +13,7 @@ import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
 import com.elusivehawk.util.FloatBufferer;
 import com.elusivehawk.util.IPopulator;
+import com.elusivehawk.util.math.MathHelper;
 import com.elusivehawk.util.storage.IGettable;
 import com.elusivehawk.util.storage.Tuple;
 import com.google.common.collect.Lists;
@@ -45,10 +46,14 @@ public class Canvas extends RenderableObj
 	{
 		super(program);
 		
-		buffer = new FloatBufferer(4, 12 * 6);
+		buffer = new FloatBufferer(8, 12 * 6);
 		
 		floatbuf = new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW, GLEnumDataType.GL_FLOAT, buffer.getBuffer());
 		indbuf = new VertexBuffer(GLEnumBufferTarget.GL_ELEMENT_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW, GLEnumDataType.GL_INT, buffer.getIndices());
+		
+		program.addVertexAttrib("in_pos", 2, GLConst.GL_UNSIGNED_INT, false, 0, 0);
+		program.addVertexAttrib("in_tex", 2, GLConst.GL_UNSIGNED_INT, false, 2, 0);
+		program.addVertexAttrib("in_mat", 1, GLConst.GL_UNSIGNED_INT, false, 4, 0);
 		
 		vao.attachVBO(floatbuf, 0, 1);
 		vao.attachVBO(indbuf, null);
@@ -134,13 +139,37 @@ public class Canvas extends RenderableObj
 		return true;
 	}
 	
+	public void drawImage(float x, float y, float w, float h)
+	{
+		this.drawImage(x, y, w, h, 0);
+		
+	}
+	
+	public void drawImage(float x, float y, float w, float h, int mat)
+	{
+		this.drawImage(x, y, w, h, (Icon)null, mat);
+		
+	}
+	
 	public void drawImage(float x, float y, float w, float h, IGettable<Icon> icon)
 	{
-		this.drawImage(x, y, w, h, icon.get());
+		this.drawImage(x, y, w, h, icon, 0);
+		
+	}
+	
+	public void drawImage(float x, float y, float w, float h, IGettable<Icon> icon, int mat)
+	{
+		this.drawImage(x, y, w, h, icon.get(), mat);
 		
 	}
 	
 	public void drawImage(float x, float y, float w, float h, Icon icon)
+	{
+		this.drawImage(x, y, w, h, icon, 0);
+		
+	}
+	
+	public void drawImage(float x, float y, float w, float h, Icon icon, int mat)
 	{
 		if (this.sub != null)
 		{
@@ -151,11 +180,15 @@ public class Canvas extends RenderableObj
 			
 		}
 		
+		int m = MathHelper.clamp(mat, 0, 16);
+		
 		float[][] img = new float[][]
-				{{x, y, 0, 0},
-				{w, y, 0, 0},
-				{x, h, 0, 0},
-				{w, h, 0, 0}};
+				{
+				{x, y, 0, 0, m},
+				{w, y, 0, 0, m},
+				{x, h, 0, 0, m},
+				{w, h, 0, 0, m}
+				};
 		
 		if (icon != null)
 		{
