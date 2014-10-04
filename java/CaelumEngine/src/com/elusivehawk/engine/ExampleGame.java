@@ -77,8 +77,6 @@ public final class ExampleGame extends Game
 	{
 		//CaelumEngine.log().log(EnumLogType.INFO, "Test: %s", delta);
 		
-		// TODO Auto-generated method stub
-		
 	}
 	
 	@Override
@@ -98,10 +96,6 @@ public final class ExampleGame extends Game
 	}
 	
 	@Override
-	protected void onGameShutdown()
-	{
-		// TODO Auto-generated method stub
-		
-	}
+	protected void onGameShutdown(){}
 	
 }
