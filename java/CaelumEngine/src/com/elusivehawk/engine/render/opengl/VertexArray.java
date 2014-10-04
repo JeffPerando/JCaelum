@@ -19,7 +19,7 @@ public class VertexArray implements IGLBindable
 	private final HashMap<VertexBuffer, List<Integer>> vbos = new HashMap<VertexBuffer, List<Integer>>();
 	
 	private int id = 0;
-	private boolean bound = false;
+	private boolean bound = false, initiated = false;
 	
 	public VertexArray(){}
 	
@@ -32,6 +32,23 @@ public class VertexArray implements IGLBindable
 	@Override
 	public void delete(RenderContext rcon)
 	{
+		if (!this.initiated)
+		{
+			return;
+		}
+		
+		if (this.bound)
+		{
+			this.unbind(rcon);
+			
+		}
+		
+		for (Entry<VertexBuffer, List<Integer>> entry : this.vbos.entrySet())
+		{
+			entry.getKey().unbind(rcon);
+			
+		}
+		
 		rcon.getGL3().glDeleteVertexArrays(this.id);
 		
 	}
@@ -44,27 +61,33 @@ public class VertexArray implements IGLBindable
 			return true;
 		}
 		
+		if (this.vbos.isEmpty())
+		{
+			return false;
+		}
+		
 		if (this.id == 0)
 		{
 			this.id = rcon.getGL3().glGenVertexArrays();
+			rcon.registerCleanable(this);
 			
 		}
 		
 		rcon.getGL3().glBindVertexArray(this.id);
 		
-		if (!this.vbos.isEmpty())
+		for (Entry<VertexBuffer, List<Integer>> entry : this.vbos.entrySet())
 		{
-			for (Entry<VertexBuffer, List<Integer>> entry : this.vbos.entrySet())
+			if (!this.initiated)
 			{
 				entry.getKey().bind(rcon);
 				
-				if (!entry.getValue().isEmpty())
+			}
+			
+			if (!entry.getValue().isEmpty())
+			{
+				for (int attrib : entry.getValue())
 				{
-					for (int attrib : entry.getValue())
-					{
-						rcon.getGL2().glEnableVertexAttribArray(attrib);
-						
-					}
+					rcon.getGL2().glEnableVertexAttribArray(attrib);
 					
 				}
 				
@@ -73,6 +96,7 @@ public class VertexArray implements IGLBindable
 		}
 		
 		this.bound = true;
+		this.initiated = true;
 		
 		return true;
 	}
@@ -89,7 +113,7 @@ public class VertexArray implements IGLBindable
 		{
 			for (Entry<VertexBuffer, List<Integer>> entry : this.vbos.entrySet())
 			{
-				if (entry.getValue() != null)
+				if (!entry.getValue().isEmpty())
 				{
 					for (int a : entry.getValue())
 					{
@@ -98,8 +122,6 @@ public class VertexArray implements IGLBindable
 					}
 					
 				}
-				
-				entry.getKey().unbind(rcon);
 				
 			}
 			
@@ -115,23 +137,27 @@ public class VertexArray implements IGLBindable
 	{
 		List<Integer> valid = Lists.newArrayList();
 		
-		for (int a : attribs)
+		if (attribs != null && attribs.length > 0)
 		{
-			boolean found = false;
-			
-			for (List<Integer> l : this.vbos.values())
+			for (int a : attribs)
 			{
-				if (l.contains(a))
+				boolean found = false;
+				
+				for (List<Integer> l : this.vbos.values())
 				{
-					found = true;
+					if (l.contains(a))
+					{
+						found = true;
+						
+					}
 					
 				}
 				
-			}
-			
-			if (!found)
-			{
-				valid.add(a);
+				if (!found)
+				{
+					valid.add(a);
+					
+				}
 				
 			}
 			
