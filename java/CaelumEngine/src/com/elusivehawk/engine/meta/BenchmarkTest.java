@@ -1,10 +1,12 @@
 
 package com.elusivehawk.engine.meta;
 
+import java.util.List;
 import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.Logger;
-import com.elusivehawk.util.math.MathHelper;
-import com.elusivehawk.util.math.Vector;
+import com.elusivehawk.util.Token;
+import com.elusivehawk.util.Tokenizer;
+import com.google.common.collect.Lists;
 
 /**
  * 
@@ -39,9 +41,24 @@ public class BenchmarkTest
 	{
 		Logger.log().log(EnumLogType.VERBOSE, "Beginning bench testing...");
 		
-		Vector one = new Vector(150, 150, 150), two = new Vector(10, 10, 10);
+		Tokenizer t = new Tokenizer();
 		
-		Logger.log().log(EnumLogType.INFO, "Test: %s", MathHelper.distSquared(one, two));
+		t.addTokens("if", " ", "\t", "(", ")", "{", "}", ",", ";");
+		
+		List<String> test = Lists.newArrayList();
+		
+		test.add("if (condition)");
+		test.add("{");
+		test.add("\tmethodName(arg0, arg1);");
+		test.add("}");
+		
+		List<Token> tkns = t.tokenize(test);
+		
+		for (Token tkn : tkns)
+		{
+			Logger.log().log(EnumLogType.INFO, "Token found: \"%s\"", tkn);
+			
+		}
 		
 		Logger.log().log(EnumLogType.VERBOSE, "Th-th-th-th-That's all, folks!");
 		

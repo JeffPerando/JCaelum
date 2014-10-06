@@ -6,6 +6,7 @@ import java.io.Reader;
 import java.util.List;
 import java.util.Map;
 import com.elusivehawk.util.StringHelper;
+import com.elusivehawk.util.Token;
 import com.elusivehawk.util.Tokenizer;
 import com.elusivehawk.util.storage.Buffer;
 import com.google.common.collect.Lists;
@@ -23,15 +24,15 @@ public final class JsonParser
 	
 	private JsonParser(){}
 	
-	public static void skipWhitespace(Buffer<String> buf)
+	public static void skipWhitespace(Buffer<Token> buf)
 	{
-		String str;
+		Token tkn;
 		
 		while (buf.hasNext())
 		{
-			str = buf.next();
+			tkn = buf.next();
 			
-			if (!StringHelper.isWhitespace(str))
+			if (!StringHelper.isWhitespace(tkn.str))
 			{
 				buf.rewind(1);
 				
@@ -44,22 +45,17 @@ public final class JsonParser
 	
 	public static JsonData parse(File file) throws JsonParseException
 	{
-		return parse(StringHelper.readToOneLine(file));
+		return parse(StringHelper.read(file));
 	}
 	
 	public static JsonData parse(Reader r) throws JsonParseException
 	{
-		return parse(StringHelper.readToOneLine(r));
+		return parse(StringHelper.read(r));
 	}
 	
 	public static JsonData parse(List<String> strs) throws JsonParseException
 	{
-		return parse(StringHelper.concat(strs, "\n", "", null));
-	}
-	
-	public static JsonData parse(String str) throws JsonParseException
-	{
-		if (str == null)
+		if (strs == null || strs.isEmpty())
 		{
 			return null;
 		}
@@ -70,12 +66,12 @@ public final class JsonParser
 		t.addTokens(StringHelper.NUMBERS);
 		t.addTokens(StringHelper.WHITESPACE);
 		
-		Buffer<String> buf = new Buffer<String>(t.tokenize(str));
+		Buffer<Token> buf = new Buffer<Token>(t.tokenize(strs));
 		
 		return parseContent("", buf);
 	}
 	
-	public static JsonData parseKeypair(Buffer<String> buf)  throws JsonParseException
+	public static JsonData parseKeypair(Buffer<Token> buf)  throws JsonParseException
 	{
 		skipWhitespace(buf);
 		
@@ -83,7 +79,7 @@ public final class JsonParser
 		
 		skipWhitespace(buf);
 		
-		if (!":".equalsIgnoreCase(buf.next()))
+		if (!":".equalsIgnoreCase(buf.next().str))
 		{
 			throw new JsonParseException("Colon not found for keypair %s", name);
 		}
@@ -93,16 +89,16 @@ public final class JsonParser
 		return parseContent(name, buf);
 	}
 	
-	public static JsonData parseContent(String name, Buffer<String> buf) throws JsonParseException
+	public static JsonData parseContent(String name, Buffer<Token> buf) throws JsonParseException
 	{
-		String str = buf.next(false);
+		Token tkn = buf.next(false);
 		
-		if (str == null)
+		if (tkn == null)
 		{
 			throw new JsonParseException(new NullPointerException());
 		}
 		
-		str = str.toLowerCase();
+		String str = tkn.str.toLowerCase();
 		
 		switch (str)
 		{
@@ -123,29 +119,29 @@ public final class JsonParser
 		throw new JsonParseException("Invalid value for key \"%s\": \"%s\"", name, StringHelper.sanitizeEscapeSequence(str));
 	}
 	
-	public static String parseString(Buffer<String> buf)
+	public static String parseString(Buffer<Token> buf)
 	{
-		String next = buf.next();
+		Token tkn = buf.next();
 		
-		if (!"\"".equalsIgnoreCase(next))
+		if (!"\"".equalsIgnoreCase(tkn.str))
 		{
-			throw new JsonParseException("Not a string: \"%s\"", next);
+			throw new JsonParseException("Not a string: \"%s\"", tkn.str);
 		}
 		
 		StringBuilder b = new StringBuilder();
 		
-		while (!"\"".equalsIgnoreCase((next = buf.next())))
+		while (!"\"".equalsIgnoreCase((tkn = buf.next()).str))
 		{
-			b.append(StringHelper.valueOf(next));
+			b.append(StringHelper.valueOf(tkn.str));
 			
 		}
 		
 		return b.toString();
 	}
 	
-	public static JsonObject parseObj(String name, Buffer<String> buf) throws JsonParseException
+	public static JsonObject parseObj(String name, Buffer<Token> buf) throws JsonParseException
 	{
-		if (!"{".equalsIgnoreCase(buf.next()))
+		if (!"{".equalsIgnoreCase(buf.next().str))
 		{
 			throw new JsonParseException("Not an object: %s", name);
 		}
@@ -153,7 +149,7 @@ public final class JsonParser
 		Map<String, JsonData> m = Maps.newHashMap();
 		boolean kill = false;
 		
-		while (!"}".equalsIgnoreCase(buf.next(false)))
+		while (!"}".equalsIgnoreCase(buf.next(false).str))
 		{
 			JsonData v = parseKeypair(buf);
 			
@@ -166,7 +162,7 @@ public final class JsonParser
 			
 			skipWhitespace(buf);
 			
-			if (!",".equalsIgnoreCase(buf.next()))
+			if (!",".equalsIgnoreCase(buf.next().str))
 			{
 				if (kill)
 				{
@@ -184,9 +180,9 @@ public final class JsonParser
 		return new JsonObject(name, m.values());
 	}
 	
-	public static JsonArray parseArray(String name, Buffer<String> buf) throws JsonParseException
+	public static JsonArray parseArray(String name, Buffer<Token> buf) throws JsonParseException
 	{
-		if (!"[".equalsIgnoreCase(buf.next()))
+		if (!"[".equalsIgnoreCase(buf.next().str))
 		{
 			throw new JsonParseException("Not an array: %s", name);
 		}
@@ -194,7 +190,7 @@ public final class JsonParser
 		List<JsonData> list = Lists.newArrayList();
 		boolean kill = false;
 		
-		while (!"]".equalsIgnoreCase(buf.next(false)))
+		while (!"]".equalsIgnoreCase(buf.next(false).str))
 		{
 			skipWhitespace(buf);
 			
@@ -202,7 +198,7 @@ public final class JsonParser
 			
 			skipWhitespace(buf);
 			
-			if (!",".equalsIgnoreCase(buf.next()))
+			if (!",".equalsIgnoreCase(buf.next().str))
 			{
 				if (kill)
 				{
@@ -220,10 +216,10 @@ public final class JsonParser
 		return new JsonArray(name, list);
 	}
 	
-	public static JsonData parseInt(String name, Buffer<String> buf) throws JsonParseException
+	public static JsonData parseInt(String name, Buffer<Token> buf) throws JsonParseException
 	{
-		String str = buf.next(false);
-		boolean neg = str.equalsIgnoreCase("-"), isFloat = false;
+		Token tkn = buf.next(false);
+		boolean neg = tkn.str.equalsIgnoreCase("-"), isFloat = false;
 		
 		if (neg)
 		{
@@ -242,7 +238,7 @@ public final class JsonParser
 		
 		b.append(i);
 		
-		str = buf.next();
+		String str = buf.next().str;
 		
 		if (".".equalsIgnoreCase(str))
 		{
@@ -257,7 +253,7 @@ public final class JsonParser
 			
 			b.append(str);
 			
-			str = buf.next();
+			str = buf.next().str;
 			
 			isFloat = true;
 			
@@ -267,7 +263,7 @@ public final class JsonParser
 		{
 			b.append(str);
 			
-			str = buf.next();
+			str = buf.next().str;
 			
 			if ("+".equalsIgnoreCase(str) || "-".equalsIgnoreCase(str))
 			{
@@ -289,15 +285,15 @@ public final class JsonParser
 		return new JsonData(isFloat ? EnumJsonType.FLOAT : EnumJsonType.INT, name, b.toString());
 	}
 	
-	public static String gatherInts(Buffer<String> buf)
+	public static String gatherInts(Buffer<Token> buf)
 	{
-		String str = buf.next();
+		String str = buf.next().str;
 		StringBuilder b = new StringBuilder();
 		
 		while (StringHelper.isInt(str))
 		{
 			b.append(str);
-			str = buf.next();
+			str = buf.next().str;
 			
 		}
 		

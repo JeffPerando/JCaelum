@@ -378,7 +378,7 @@ public final class StringHelper
 		
 		if (str.equalsIgnoreCase(out))
 		{
-			return new Pair<String>("", str);
+			return new Pair<String>("", "");
 		}
 		
 		int ind = str.indexOf(out);

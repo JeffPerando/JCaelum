@@ -2,7 +2,7 @@
 package com.elusivehawk.util;
 
 import java.util.List;
-import com.elusivehawk.util.storage.Tuple;
+import com.elusivehawk.util.storage.Pair;
 import com.google.common.collect.Lists;
 
 /**
@@ -27,7 +27,7 @@ public class Tokenizer
 	{
 		for (String tk : tks)
 		{
-			if (tk == null || "".equalsIgnoreCase(tk))
+			if (tk == null || "".equalsIgnoreCase(tk) || this.tokens.contains(tk))
 			{
 				continue;
 			}
@@ -38,83 +38,107 @@ public class Tokenizer
 		
 	}
 	
-	public List<String> tokenize(String str)
+	public List<Token> tokenize(List<String> str)
 	{
-		List<String> ret = Lists.newArrayList();
-		String rem = str;
-		
-		if (str == null || "".equalsIgnoreCase(str))
-		{
-			return ret;
-		}
+		List<Token> ret = Lists.newArrayList();
 		
 		if (this.tokens.isEmpty())
 		{
 			return ret;
 		}
 		
-		Tuple<String, Integer> t = this.getNextTokenIndex(rem, 0);
-		int i;
-		
-		while (t != null)
+		if (str == null || str.isEmpty())
 		{
-			i = t.two;
-			
-			if (i >= 0)
+			return ret;
+		}
+		
+		int l = 0;
+		
+		for (String line : str)
+		{
+			if (!line.isEmpty() && !this.tokenize(line, l, 0, ret))
 			{
-				if (i > 0)
-				{
-					ret.add(rem.substring(0, i));
-					
-				}
-				
-				if (rem.length() >= t.one.length())
-				{
-					ret.add(rem.substring(i, i + t.one.length()));
-					rem = rem.substring(i + t.one.length());
-					
-					t = this.getNextTokenIndex(rem, 0);
-					
-				}
+				ret.add(new Token(line, l, 0));
 				
 			}
 			
-		}
-		
-		if (!"".equalsIgnoreCase(rem))
-		{
-			ret.add(rem);
+			ret.add(new Token("\n", l, line.length()));
+			
+			l++;
 			
 		}
 		
 		return ret;
 	}
 	
-	public Tuple<String, Integer> getNextTokenIndex(String str, int start)
+	private boolean tokenize(String str, int line, int off, List<Token> ret)
 	{
-		String tkn = null;
-		int in = str.length();
-		
-		for (int c = 0; c < this.tokens.size(); c++)
+		if (str.isEmpty())
 		{
-			int i = Math.min(in, str.indexOf(this.tokens.get(c), start));
+			return false;
+		}
+		
+		if (this.tokens.contains(str))
+		{
+			ret.add(new Token(str, line, off));
+			return true;
+		}
+		
+		String rem = str;
+		String tkn = null;
+		int col = off;
+		int index = -1;
+		
+		for (String token : this.tokens)
+		{
+			if (token.length() > rem.length())
+			{
+				continue;
+			}
+			
+			int i = rem.indexOf(token);
 			
 			if (i == -1)
 			{
 				continue;
 			}
 			
-			if (i < in)
+			if (tkn == null || i < index || (index == i && token.length() < tkn.length()))
 			{
-				tkn = this.tokens.get(c);
+				tkn = token;
+				index = i;
 				
 			}
 			
-			in = i;
+		}
+		
+		if (index == -1)
+		{
+			return false;
+		}
+		
+		Pair<String> spl = StringHelper.splitFirst(rem, tkn);
+		
+		if (!spl.one.isEmpty())
+		{
+			ret.add(new Token(spl.one, line, col));
+			col += spl.one.length();
 			
 		}
 		
-		return tkn == null ? null : Tuple.create(tkn, in);
+		ret.add(new Token(tkn, line, col));
+		
+		col += tkn.length();
+		
+		rem = spl.two;
+		
+		if (!rem.isEmpty() && !this.tokenize(rem, line, col, ret))
+		{
+			ret.add(new Token(rem, line, col));
+			
+		}
+		
+		return true;
 	}
 	
 }
