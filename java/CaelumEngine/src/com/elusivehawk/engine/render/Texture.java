@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.List;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.CaelumException;
+import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.EnumAssetType;
 import com.elusivehawk.engine.assets.GraphicAsset;
 import com.elusivehawk.util.task.Task;
@@ -19,7 +20,7 @@ public class Texture extends GraphicAsset
 {
 	protected final boolean animate;
 	
-	protected int[] frames = null;
+	protected volatile int[] frames = null;
 	
 	public Texture(String filepath)
 	{
@@ -33,6 +34,13 @@ public class Texture extends GraphicAsset
 		super(filepath, EnumAssetType.TEXTURE);
 		
 		animate = animated;
+		
+	}
+	
+	@Override
+	public void delete(RenderContext rcon)
+	{
+		rcon.getGL1().glDeleteTextures(this.frames);
 		
 	}
 	
@@ -56,6 +64,19 @@ public class Texture extends GraphicAsset
 		}
 		
 		return true;
+	}
+	
+	@Override
+	public void onExistingAssetFound(Asset a)
+	{
+		super.onExistingAssetFound(a);
+		
+		if (a instanceof Texture && ((Texture)a).isLoaded())
+		{
+			this.frames = ((Texture)a).frames;
+			
+		}
+		
 	}
 	
 	@Override
@@ -88,13 +109,6 @@ public class Texture extends GraphicAsset
 		
 	}
 	
-	@Override
-	public void delete(RenderContext rcon)
-	{
-		rcon.getGL1().glDeleteTextures(this.frames);
-		
-	}
-	
 	public int getTexId(int frame)
 	{
 		return this.frames == null ? 0 : this.frames[frame];
@@ -107,7 +121,7 @@ public class Texture extends GraphicAsset
 	
 	public boolean isAnimated()
 	{
-		return this.getFrameCount() > 1;
+		return this.animate && this.getFrameCount() > 1;
 	}
 	
 }

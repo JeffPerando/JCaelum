@@ -39,6 +39,11 @@ public class AssetManager implements ITaskListener
 		
 		TaskLoadAsset t = (TaskLoadAsset)task;
 		
+		if (t.foundDuplicate())
+		{
+			return;
+		}
+		
 		Asset a = t.getCompletedAsset();
 		
 		if (a == null)

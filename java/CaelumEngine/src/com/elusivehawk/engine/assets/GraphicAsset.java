@@ -35,6 +35,22 @@ public abstract class GraphicAsset extends Asset implements ITaskListener, IGLDe
 		
 	}
 	
+	@Override
+	public void onExistingAssetFound(Asset a)
+	{
+		super.onExistingAssetFound(a);
+		
+		if (a instanceof GraphicAsset)
+		{
+			GraphicAsset g = (GraphicAsset)a;
+			
+			this.registered = g.registered;
+			this.loaded = g.loaded;
+			
+		}
+		
+	}
+	
 	public boolean isLoaded()
 	{
 		return this.loaded && this.isRead();

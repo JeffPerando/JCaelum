@@ -21,6 +21,7 @@ public class TaskLoadAsset extends Task
 	protected final Asset asset;
 	
 	protected Asset fin = null;
+	protected boolean duplicate = false;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public TaskLoadAsset(Asset a)
@@ -40,7 +41,10 @@ public class TaskLoadAsset extends Task
 		
 		if (a != null)
 		{
+			this.asset.onExistingAssetFound(a);
+			
 			this.fin = a;
+			this.duplicate = true;
 			
 			return true;
 		}
@@ -78,6 +82,11 @@ public class TaskLoadAsset extends Task
 	public Asset getCompletedAsset()
 	{
 		return this.fin;
+	}
+	
+	public boolean foundDuplicate()
+	{
+		return this.duplicate;
 	}
 	
 }

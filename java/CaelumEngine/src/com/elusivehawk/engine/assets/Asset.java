@@ -42,6 +42,12 @@ public abstract class Asset
 		return this.filepath;
 	}
 	
+	public void onExistingAssetFound(Asset a)
+	{
+		this.read = a.read;
+		
+	}
+	
 	public final boolean isRead()
 	{
 		return this.read;
