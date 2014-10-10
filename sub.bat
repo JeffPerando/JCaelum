@@ -1,3 +1,3 @@
 @echo off
-git submodule foreach git pull
+call git submodule foreach git pull
 pause "Done!"

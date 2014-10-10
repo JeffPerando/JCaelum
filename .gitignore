@@ -6,8 +6,6 @@
 *.log
 
 /.gradle/*
+/bin/*
 /build/*
 /builds/*
-/*/*/bin/*
-/cpp/*
-/TEST/*
