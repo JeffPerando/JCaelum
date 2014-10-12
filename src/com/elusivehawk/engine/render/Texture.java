@@ -7,7 +7,6 @@ import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.CaelumException;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.EnumAssetType;
-import com.elusivehawk.engine.assets.GraphicAsset;
 import com.elusivehawk.util.task.Task;
 
 /**
@@ -16,11 +15,12 @@ import com.elusivehawk.util.task.Task;
  * 
  * @author Elusivehawk
  */
-public class Texture extends GraphicAsset
+public class Texture extends GraphicAsset implements ITexture
 {
-	protected final boolean animate;
+	private final boolean animate;
 	
 	protected volatile int[] frames = null;
+	protected int frame = 0;
 	
 	public Texture(String filepath)
 	{
@@ -109,19 +109,46 @@ public class Texture extends GraphicAsset
 		
 	}
 	
-	public int getTexId(int frame)
-	{
-		return this.frames == null ? 0 : this.frames[frame];
-	}
-	
 	public int getFrameCount()
 	{
 		return this.frames == null ? 0 : this.frames.length;
 	}
 	
+	@Override
+	public void preRender(RenderContext rcon, double delta)
+	{
+		if (this.isAnimated())
+		{
+			this.frame++;
+			
+			if (this.frame == this.getFrameCount())
+			{
+				this.frame = 0;
+			}
+			
+		}
+		
+	}
+	
+	@Override
 	public boolean isAnimated()
 	{
 		return this.animate && this.getFrameCount() > 1;
+	}
+	
+	@Override
+	public int getTexId()
+	{
+		return this.frames == null ? 0 : this.frames[this.frame];
+	}
+	
+	@Override
+	public void initR(RenderContext rcon)
+	{
+		super.initR(rcon);
+		
+		rcon.registerPreRenderer(this);
+		
 	}
 	
 }

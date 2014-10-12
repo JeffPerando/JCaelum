@@ -1,7 +1,9 @@
 
-package com.elusivehawk.engine.assets;
+package com.elusivehawk.engine.render;
 
-import com.elusivehawk.engine.render.RenderHelper;
+import com.elusivehawk.engine.CaelumEngine;
+import com.elusivehawk.engine.assets.Asset;
+import com.elusivehawk.engine.assets.EnumAssetType;
 import com.elusivehawk.engine.render.old.RenderTask;
 import com.elusivehawk.engine.render.opengl.IGLDeletable;
 import com.elusivehawk.util.task.ITaskListener;
@@ -28,7 +30,10 @@ public abstract class GraphicAsset extends Asset implements ITaskListener, IGLDe
 	{
 		if (!this.registered && task instanceof RenderTask)//TODO Remove this come OpenGL NG
 		{
-			RenderHelper.renderContext().registerCleanable(this);
+			RenderContext rcon = CaelumEngine.renderContext();
+			
+			this.initR(rcon);
+			
 			this.registered = true;
 			
 		}
@@ -54,6 +59,12 @@ public abstract class GraphicAsset extends Asset implements ITaskListener, IGLDe
 	public boolean isLoaded()
 	{
 		return this.loaded && this.isRead();
+	}
+	
+	public void initR(RenderContext rcon)
+	{
+		rcon.registerCleanable(this);
+		
 	}
 	
 }

@@ -4,6 +4,7 @@ package com.elusivehawk.engine.lwjgl;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.opengl.GLException;
@@ -337,6 +338,12 @@ public class OpenGL2 extends OpenGL1 implements IGL2
 		
 		RenderHelper.checkForGLError(this);
 		
+	}
+	
+	@Override
+	public boolean glIsEnabled(int cap)
+	{
+		return GL11.glIsEnabled(cap);
 	}
 	
 	@Override

@@ -19,4 +19,6 @@ public interface ICamera extends IDirty, Quaternion.Listener, Vector.Listener, I
 {
 	public Matrix getView();
 	
+	public Matrix getProjection();
+	
 }

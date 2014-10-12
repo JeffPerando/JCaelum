@@ -21,7 +21,7 @@ public class Camera3D implements ICamera
 	
 	private final float fov, zNear, zFar;
 	
-	private volatile Matrix m = null;
+	private volatile Matrix view = null, proj = null;
 	private volatile boolean dirty = true;
 	
 	@SuppressWarnings("unqualified-field-access")
@@ -72,13 +72,20 @@ public class Camera3D implements ICamera
 	@Override
 	public void render(RenderContext rcon, double delta)
 	{
+		rcon.renderGame(this, delta);
 		
 	}
 	
 	@Override
 	public Matrix getView()
 	{
-		return this.m;
+		return this.view;
+	}
+	
+	@Override
+	public Matrix getProjection()
+	{
+		return this.proj;
 	}
 	
 	public Camera3D setPosOffset(Vector off)

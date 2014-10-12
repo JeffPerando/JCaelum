@@ -20,11 +20,11 @@ public interface IGL2
 		
 	}
 	
-	public void glAttachShader(int program, int shader) throws GLException;
+	void glAttachShader(int program, int shader) throws GLException;
 	
-	public void glBindAttribLocation(int program, int index, String name) throws GLException;
+	void glBindAttribLocation(int program, int index, String name) throws GLException;
 	
-	public void glBlendEquationSeparate(int modeRGB, int modeAlpha) throws GLException;
+	void glBlendEquationSeparate(int modeRGB, int modeAlpha) throws GLException;
 	
 	default void glCompileShader(Shader shader) throws GLException
 	{
@@ -32,16 +32,16 @@ public interface IGL2
 		
 	}
 	
-	public void glCompileShader(int shader) throws GLException;
+	void glCompileShader(int shader) throws GLException;
 	
-	public int glCreateProgram() throws GLException;
+	int glCreateProgram() throws GLException;
 	
 	default int glCreateShader(GLEnumShader type) throws GLException
 	{
 		return this.glCreateShader(type.getGLId());
 	}
 	
-	public int glCreateShader(int type) throws GLException;
+	int glCreateShader(int type) throws GLException;
 	
 	default void glDeleteProgram(GLProgram program) throws GLException
 	{
@@ -49,7 +49,7 @@ public interface IGL2
 		
 	}
 	
-	public void glDeleteProgram(int program) throws GLException;
+	void glDeleteProgram(int program) throws GLException;
 	
 	default void glDeleteShader(Shader shader) throws GLException
 	{
@@ -57,7 +57,7 @@ public interface IGL2
 		
 	}
 	
-	public void glDeleteShader(int shader) throws GLException;
+	void glDeleteShader(int shader) throws GLException;
 	
 	default void glDetachShader(GLProgram program, Shader shader) throws GLException
 	{
@@ -65,46 +65,46 @@ public interface IGL2
 		
 	}
 	
-	public void glDetachShader(int program, int shader) throws GLException;
+	void glDetachShader(int program, int shader) throws GLException;
 	
-	public void glDisableVertexAttribArray(int index) throws GLException;
+	void glDisableVertexAttribArray(int index) throws GLException;
 	
-	public void glEnableVertexAttribArray(int index) throws GLException;
+	void glEnableVertexAttribArray(int index) throws GLException;
 	
-	public String glGetActiveAttrib(int program, int index, int maxLength) throws GLException;
+	String glGetActiveAttrib(int program, int index, int maxLength) throws GLException;
 	
-	public String glGetActiveAttrib(int program, int index, int maxLength, IntBuffer sizeType) throws GLException;
+	String glGetActiveAttrib(int program, int index, int maxLength, IntBuffer sizeType) throws GLException;
 	
-	public int glGetActiveAttribSize(int program, int index) throws GLException;
+	int glGetActiveAttribSize(int program, int index) throws GLException;
 	
-	public int glGetActiveAttribType(int program, int index) throws GLException;
+	int glGetActiveAttribType(int program, int index) throws GLException;
 	
-	public String glGetActiveUniform(int program, int index, int maxLength) throws GLException;
+	String glGetActiveUniform(int program, int index, int maxLength) throws GLException;
 	
-	public String glGetActiveUniform(int program, int index, int maxLength, IntBuffer sizeType) throws GLException;
+	String glGetActiveUniform(int program, int index, int maxLength, IntBuffer sizeType) throws GLException;
 	
-	public void glGetActiveUniform(int program, int index, IntBuffer length, IntBuffer size, IntBuffer type, ByteBuffer name) throws GLException;
+	void glGetActiveUniform(int program, int index, IntBuffer length, IntBuffer size, IntBuffer type, ByteBuffer name) throws GLException;
 	
-	public int glGetActiveUniformType(int program, int index) throws GLException;
+	int glGetActiveUniformType(int program, int index) throws GLException;
 	
-	public void glGetAttachedShaders(int program, IntBuffer count, IntBuffer shaders) throws GLException;
+	void glGetAttachedShaders(int program, IntBuffer count, IntBuffer shaders) throws GLException;
 	
-	public int glGetAttribLocation(int program, String name) throws GLException;
+	int glGetAttribLocation(int program, String name) throws GLException;
 	
-	public void glGetProgram(int program, int pname, IntBuffer params) throws GLException;
+	void glGetProgram(int program, int pname, IntBuffer params) throws GLException;
 	
 	default int glGetProgrami(GLProgram program, GLEnumPStatus status) throws GLException
 	{
 		return this.glGetProgrami(program.getId(), status.gl);
 	}
 	
-	public int glGetProgrami(int program, int pname) throws GLException;
+	int glGetProgrami(int program, int pname) throws GLException;
 	
-	public String glGetProgramInfoLog(int program, int maxLength) throws GLException;
+	String glGetProgramInfoLog(int program, int maxLength) throws GLException;
 	
-	public void glGetProgramInfoLog(int program, IntBuffer length, ByteBuffer infoLog) throws GLException;
+	void glGetProgramInfoLog(int program, IntBuffer length, ByteBuffer infoLog) throws GLException;
 	
-	public void glGetShader(int shader, int pname, IntBuffer params) throws GLException;
+	void glGetShader(int shader, int pname, IntBuffer params) throws GLException;
 	
 	default int glGetShaderi(int shader, GLEnumSStatus status) throws GLException
 	{
@@ -116,27 +116,29 @@ public interface IGL2
 		return this.glGetShaderi(shader.getGLId(), status.gl);
 	}
 	
-	public int glGetShaderi(int shader, int pname) throws GLException;
+	int glGetShaderi(int shader, int pname) throws GLException;
 	
-	public String glGetShaderInfoLog(int shader, int maxLength) throws GLException;
+	String glGetShaderInfoLog(int shader, int maxLength) throws GLException;
 	
-	public String glGetShaderSource(int shader, int maxLength) throws GLException;
+	String glGetShaderSource(int shader, int maxLength) throws GLException;
 	
-	public void glGetUniform(int program, int location, FloatBuffer params) throws GLException;
+	void glGetUniform(int program, int location, FloatBuffer params) throws GLException;
 	
-	public void glGetUniform(int program, int location, IntBuffer params) throws GLException;
+	void glGetUniform(int program, int location, IntBuffer params) throws GLException;
 	
-	public int glGetUniformLocation(int program, String name) throws GLException;
+	int glGetUniformLocation(int program, String name) throws GLException;
 	
-	public void glGetVertexAttrib(int index, int pname, FloatBuffer params) throws GLException;
+	void glGetVertexAttrib(int index, int pname, FloatBuffer params) throws GLException;
 	
-	public void glGetVertexAttrib(int index, int pname, IntBuffer params) throws GLException;
+	void glGetVertexAttrib(int index, int pname, IntBuffer params) throws GLException;
 	
-	//public String glGetVertexAttribPointer(int index, int pname, long result_size);
+	//String glGetVertexAttribPointer(int index, int pname, long result_size);
 	
-	public boolean glIsProgram(int program);
+	boolean glIsEnabled(int cap);
 	
-	public boolean glIsShader(int shader);
+	boolean glIsProgram(int program);
+	
+	boolean glIsShader(int shader);
 	
 	default void glLinkProgram(GLProgram program) throws GLException
 	{
@@ -144,53 +146,53 @@ public interface IGL2
 		
 	}
 	
-	public void glLinkProgram(int program) throws GLException;
+	void glLinkProgram(int program) throws GLException;
 	
-	public void glShaderSource(int shader, String string) throws GLException;
+	void glShaderSource(int shader, String string) throws GLException;
 	
-	public void glStencilFuncSeparate(int face, int func, int ref, int mask) throws GLException;
+	void glStencilFuncSeparate(int face, int func, int ref, int mask) throws GLException;
 	
-	public void glStencilMaskSeparate(int face, int mask) throws GLException;
+	void glStencilMaskSeparate(int face, int mask) throws GLException;
 	
-	public void glStencilOpSeparate(int face, int sfail, int dpfail, int dppass) throws GLException;
+	void glStencilOpSeparate(int face, int sfail, int dpfail, int dppass) throws GLException;
 	
-	public void glUniform1f(int location, float x) throws GLException;
+	void glUniform1f(int location, float x) throws GLException;
 	
-	public void glUniform1fv(int location, int count, FloatBuffer v) throws GLException;
+	void glUniform1fv(int location, int count, FloatBuffer v) throws GLException;
 	
-	public void glUniform1i(int location, int x) throws GLException;
+	void glUniform1i(int location, int x) throws GLException;
 	
-	public void glUniform1iv(int location, int count, IntBuffer v) throws GLException;
+	void glUniform1iv(int location, int count, IntBuffer v) throws GLException;
 	
-	public void glUniform2f(int location, float x, float y) throws GLException;
+	void glUniform2f(int location, float x, float y) throws GLException;
 	
-	public void glUniform2fv(int location, int count, FloatBuffer v) throws GLException;
+	void glUniform2fv(int location, int count, FloatBuffer v) throws GLException;
 	
-	public void glUniform2i(int location, int x, int y) throws GLException;
+	void glUniform2i(int location, int x, int y) throws GLException;
 	
-	public void glUniform2iv(int location, int count, IntBuffer v) throws GLException;
+	void glUniform2iv(int location, int count, IntBuffer v) throws GLException;
 	
-	public void glUniform3f(int location, float x, float y, float z) throws GLException;
+	void glUniform3f(int location, float x, float y, float z) throws GLException;
 	
-	public void glUniform3fv(int location, int count, FloatBuffer v) throws GLException;
+	void glUniform3fv(int location, int count, FloatBuffer v) throws GLException;
 	
-	public void glUniform3i(int location, int x, int y, int z) throws GLException;
+	void glUniform3i(int location, int x, int y, int z) throws GLException;
 	
-	public void glUniform3iv(int location, int count, IntBuffer v) throws GLException;
+	void glUniform3iv(int location, int count, IntBuffer v) throws GLException;
 	
-	public void glUniform4f(int location, float x, float y, float z, float w) throws GLException;
+	void glUniform4f(int location, float x, float y, float z, float w) throws GLException;
 	
-	public void glUniform4fv(int location, int count, FloatBuffer v) throws GLException;
+	void glUniform4fv(int location, int count, FloatBuffer v) throws GLException;
 	
-	public void glUniform4i(int location, int x, int y, int z, int w) throws GLException;
+	void glUniform4i(int location, int x, int y, int z, int w) throws GLException;
 	
-	public void glUniform4iv(int location, int count, IntBuffer v) throws GLException;
+	void glUniform4iv(int location, int count, IntBuffer v) throws GLException;
 	
-	public void glUniformMatrix2fv(int location, int count, boolean transpose, FloatBuffer value) throws GLException;
+	void glUniformMatrix2fv(int location, int count, boolean transpose, FloatBuffer value) throws GLException;
 	
-	public void glUniformMatrix3fv(int location, int count, boolean transpose, FloatBuffer value) throws GLException;
+	void glUniformMatrix3fv(int location, int count, boolean transpose, FloatBuffer value) throws GLException;
 	
-	public void glUniformMatrix4fv(int location, int count, boolean transpose, FloatBuffer value) throws GLException;
+	void glUniformMatrix4fv(int location, int count, boolean transpose, FloatBuffer value) throws GLException;
 	
 	default void glUseProgram(GLProgram program) throws GLException
 	{
@@ -198,7 +200,7 @@ public interface IGL2
 		
 	}
 	
-	public void glUseProgram(int program) throws GLException;
+	void glUseProgram(int program) throws GLException;
 	
 	default void glValidateProgram(GLProgram program) throws GLException
 	{
@@ -206,15 +208,15 @@ public interface IGL2
 		
 	}
 	
-	public void glValidateProgram(int program) throws GLException;
+	void glValidateProgram(int program) throws GLException;
 	
-	public void glVertexAttrib1f(int index, float x) throws GLException;
+	void glVertexAttrib1f(int index, float x) throws GLException;
 	
-	public void glVertexAttrib2f(int index, float x, float y) throws GLException;
+	void glVertexAttrib2f(int index, float x, float y) throws GLException;
 	
-	public void glVertexAttrib3f(int index, float x, float y, float z) throws GLException;
+	void glVertexAttrib3f(int index, float x, float y, float z) throws GLException;
 	
-	public void glVertexAttrib4f(int index, float x, float y, float z, float w) throws GLException;
+	void glVertexAttrib4f(int index, float x, float y, float z, float w) throws GLException;
 	
 	default void glVertexAttribPointer(GLProgram program, VertexAttrib attrib)
 	{
@@ -234,6 +236,6 @@ public interface IGL2
 		
 	}
 	
-	public void glVertexAttribPointer(int index, int size, int type, boolean unsigned, boolean normalized, int stride, long first) throws GLException;
+	void glVertexAttribPointer(int index, int size, int type, boolean unsigned, boolean normalized, int stride, long first) throws GLException;
 	
 }

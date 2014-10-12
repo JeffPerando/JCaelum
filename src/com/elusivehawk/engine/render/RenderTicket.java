@@ -47,7 +47,6 @@ public class RenderTicket extends RenderableObj implements Quaternion.Listener, 
 	
 	protected final VertexBuffer vbo = new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW);
 	
-	protected volatile boolean zBuffer = true;//, animPause = false;
 	//protected int frame = 0;
 	//protected IModelAnimation anim = null, lastAnim = null;
 	protected int texFrame = 0;
@@ -112,7 +111,7 @@ public class RenderTicket extends RenderableObj implements Quaternion.Listener, 
 	}
 	
 	@Override
-	public boolean updateBeforeRender(RenderContext rcon, double delta)
+	public void preRender(RenderContext rcon, double delta)
 	{
 		/*if (this.anim != null && !this.isAnimationPaused())
 		{
@@ -146,14 +145,6 @@ public class RenderTicket extends RenderableObj implements Quaternion.Listener, 
 		
 		this.setIsDirty(false);
 		
-		return true;
-	}
-	
-	@Override
-	public void postRender(RenderContext rcon)
-	{
-		//TODO Z-buffering
-		
 	}
 	
 	@Override
@@ -183,13 +174,6 @@ public class RenderTicket extends RenderableObj implements Quaternion.Listener, 
 		this.frame = f;
 		
 	}*/
-	
-	public RenderTicket setEnableZBuffer(boolean b)
-	{
-		this.zBuffer = b;
-		
-		return this;
-	}
 	
 	@Override
 	public synchronized RenderTicket setMaterials(MaterialSet ms)
@@ -253,11 +237,6 @@ public class RenderTicket extends RenderableObj implements Quaternion.Listener, 
 	public int getCurrentTexFrame()
 	{
 		return this.texFrame;
-	}
-	
-	public boolean enableZBuffering()
-	{
-		return this.zBuffer;
 	}
 	
 	public RenderTicket setPosOffset(Vector off)

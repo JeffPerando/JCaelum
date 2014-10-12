@@ -17,11 +17,6 @@ public interface ILogicalRender extends IRenderable
 	@Override
 	default void render(RenderContext rcon, double delta)
 	{
-		if (!this.updateBeforeRender(rcon, delta))
-		{
-			return;
-		}
-		
 		GLProgram p = this.getProgram();
 		
 		if (p == null)

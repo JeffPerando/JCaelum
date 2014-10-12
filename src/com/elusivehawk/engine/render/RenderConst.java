@@ -29,4 +29,6 @@ public final class RenderConst
 	
 	public static final int MAT_I = 6;
 	
+	public static final int RECURSIVE_LIMIT = 8;
+	
 }

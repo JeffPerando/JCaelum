@@ -35,7 +35,7 @@ public interface IGL1
 	
 	default void glBindTexture(GLEnumTexture target, Texture texture)
 	{
-		this.glBindTexture(target, texture.getTexId(0));
+		this.glBindTexture(target, texture.getTexId());
 		
 	}
 	
@@ -103,38 +103,6 @@ public interface IGL1
 	public void glDeleteBuffers(int... buffer) throws GLException;
 	
 	public void glDeleteBuffers(IntBuffer buffers) throws GLException;
-	
-	default void glDeleteTextures(Texture... textures)
-	{
-		int texCount = 0;
-		
-		for (Texture tex : textures)
-		{
-			if (tex == null)
-			{
-				continue;
-			}
-			
-			texCount += tex.getFrameCount();
-			
-		}
-		
-		int[] texs = new int[texCount];
-		int curr = 0;
-		
-		for (Texture tex : textures)
-		{
-			for (int c = 0; c < tex.getFrameCount(); c++)
-			{
-				texs[curr++] = tex.getTexId(c);
-				
-			}
-			
-		}
-		
-		this.glDeleteBuffers(texs);
-		
-	}
 	
 	public void glDeleteTextures(int... textures) throws GLException;
 	

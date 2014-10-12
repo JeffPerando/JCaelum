@@ -11,7 +11,7 @@ import com.elusivehawk.util.math.MathHelper;
  */
 public class Material
 {
-	public final Texture tex;
+	public final ITexture tex;
 	public final float shininess;
 	public final Color filter;
 	
@@ -20,19 +20,19 @@ public class Material
 		this(null, 0.0f, overlay);
 	}
 	
-	public Material(Texture texture)
+	public Material(ITexture texture)
 	{
 		this(texture, 0.0f, new Color(ColorFormat.RGBA));
 		
 	}
 	
-	public Material(Texture texture, Color overlay)
+	public Material(ITexture texture, Color overlay)
 	{
 		this(texture, 0.0f, overlay);
 		
 	}
 	
-	public Material(Texture texture, float shine)
+	public Material(ITexture texture, float shine)
 	{
 		this(texture, shine, new Color(ColorFormat.RGBA));
 		
@@ -45,7 +45,7 @@ public class Material
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Material(Texture texture, float shine, Color overlay)
+	public Material(ITexture texture, float shine, Color overlay)
 	{
 		assert overlay != null;
 		

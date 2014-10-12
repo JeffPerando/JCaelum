@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.UUID;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
+import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLEnumUType;
 import com.elusivehawk.engine.render.opengl.GLProgram;
+import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.VertexArray;
 import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.IDirty;
@@ -26,6 +28,7 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 	protected final List<IDirty> dirts = Lists.newArrayList();
 	
 	protected boolean dirty = true, initiated = false;
+	protected volatile boolean zBuffer = true;
 	protected Filters filters = null;
 	protected MaterialSet matSet = null;
 	
@@ -74,12 +77,8 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 			}
 			
 			this.initiated = true;
+			rcon.registerRenderer(this);
 			
-		}
-		
-		if (!this.updateBeforeRender(rcon, delta))
-		{
-			return;
 		}
 		
 		if (this.isDirty())
@@ -98,8 +97,34 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 			
 		}
 		
+		if (rcon.updateCamera())
+		{
+			this.p.attachUniform(rcon, "view", rcon.getCamera().getView().asBuffer(), GLEnumUType.M_FOUR);
+			this.p.attachUniform(rcon, "proj", rcon.getCamera().getProjection().asBuffer(), GLEnumUType.M_FOUR);
+			
+		}
+		
 		if (this.p.bind(rcon) && this.vao.bind(rcon))
 		{
+			boolean zBuffer = rcon.getGL2().glIsEnabled(GLConst.GL_DEPTH_TEST);
+			
+			if (zBuffer != this.zBuffer)
+			{
+				IGL1 gl1 = rcon.getGL1();
+				
+				if (this.zBuffer)
+				{
+					gl1.glEnable(GLConst.GL_DEPTH_TEST);
+					
+				}
+				else
+				{
+					gl1.glDisable(GLConst.GL_DEPTH_TEST);
+					
+				}
+				
+			}
+			
 			this.doRender(rcon, delta);
 			
 			this.postRender(rcon);
@@ -222,6 +247,13 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 		}
 		
 		return this.matSet.addMaterials(ms);
+	}
+	
+	public RenderableObj setEnableZBuffer(boolean z)
+	{
+		this.zBuffer = z;
+		
+		return this;
 	}
 	
 	public int getMaterialCount()

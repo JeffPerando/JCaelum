@@ -15,6 +15,7 @@ import com.elusivehawk.engine.input.Input;
 import com.elusivehawk.engine.render.DisplaySettings;
 import com.elusivehawk.engine.render.IDisplay;
 import com.elusivehawk.engine.render.RenderContext;
+import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.ThreadGameRender;
 import com.elusivehawk.engine.render.old.RenderTask;
 import com.elusivehawk.util.CompInfo;
@@ -120,9 +121,9 @@ public final class CaelumEngine
 		return instance().assets;
 	}
 	
-	public static IGameEnvironment environment()
+	public static RenderContext renderContext()
 	{
-		return instance().env;
+		return RenderHelper.renderContext();
 	}
 	
 	public static TaskManager tasks()

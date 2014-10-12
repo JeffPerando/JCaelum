@@ -46,6 +46,8 @@ public class Canvas extends RenderableObj
 	{
 		super(program);
 		
+		zBuffer = false;
+		
 		buffer = new FloatBufferer(8, 12 * 6);
 		
 		floatbuf = new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW, GLEnumDataType.GL_FLOAT, buffer.getBuffer());
@@ -67,7 +69,7 @@ public class Canvas extends RenderableObj
 	}
 	
 	@Override
-	public boolean updateBeforeRender(RenderContext rcon, double delta)
+	public void preRender(RenderContext rcon, double delta)
 	{
 		if (!this.populators.isEmpty())
 		{
@@ -99,7 +101,6 @@ public class Canvas extends RenderableObj
 			
 		}
 		
-		return true;
 	}
 	
 	@Override
@@ -115,6 +116,12 @@ public class Canvas extends RenderableObj
 		this.buffer.rewind();
 		this.buffer.setIsDirty(false);
 		
+	}
+	
+	@Override
+	public RenderableObj setEnableZBuffer(boolean z)
+	{
+		throw new UnsupportedOperationException("One does not simply enable Z buffering for a 2D canvas");
 	}
 	
 	public void createSubCanvas(float xmin, float ymin, float xmax, float ymax)

@@ -35,12 +35,14 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 	private IGL2 gl2;
 	private IGL3 gl3;
 	
-	private int notex, maxTexCount;
+	private int notex, maxTexCount, renders = 0;
 	
 	private final Shaders shaders = new Shaders();
 	private final GLProgram p = new GLProgram(this.shaders);
 	
 	private final List<IGLDeletable> cleanables = Lists.newArrayList();
+	private final List<IPreRenderer> preRenderers = Lists.newArrayList();
+	private final List<IPostRenderer> postRenderers = Lists.newArrayList();
 	@Deprecated
 	private final List<RenderTask> rtasks = Lists.newArrayList();
 	
@@ -49,7 +51,10 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 			initiated = false,
 			paused = false,
 			refreshScreen = false,
-			flipScreen = false;
+			flipScreen = false,
+			updateCameraUniforms = true;
+	
+	private ICamera camera = null;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public RenderContext(IGameEnvironment gameEnv, IDisplay d)
@@ -175,7 +180,12 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 			}
 			
 			this.gl1.glClear(0b0100010100000000);
+			
+			this.preRender(delta);
+			
 			this.renderGame(delta);
+			
+			this.postRender();
 			
 		}
 		catch (Throwable e)
@@ -186,20 +196,47 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 		
 	}
 	
-	private void renderGame(double delta)
+	public void renderGame(ICamera cam, double delta)
 	{
-		this.preRender();
+		assert cam != null;
 		
-		CaelumEngine.game().render(this, delta);
+		ICamera cam_tmp = this.camera;
 		
-		this.postRender();
+		this.camera = cam;
+		this.updateCameraUniforms = true;
+		
+		this.renderGame(delta);
+		
+		this.camera = cam_tmp;
+		this.updateCameraUniforms = false;
 		
 	}
 	
-	private void preRender(){}
+	private void renderGame(double delta)
+	{
+		if (this.renders == RenderConst.RECURSIVE_LIMIT)
+		{
+			return;
+		}
+		
+		this.renders++;
+		
+		CaelumEngine.game().render(this, delta);
+		
+		this.renders--;
+		
+	}
+	
+	private void preRender(double delta)
+	{
+		this.preRenderers.forEach(((preR) -> {preR.preRender(this, delta);}));
+		
+	}
 	
 	private void postRender()
 	{
+		this.postRenderers.forEach(((postR) -> {postR.postRender(this);}));
+		
 		if (!this.rtasks.isEmpty())
 		{
 			RenderTask t = this.rtasks.get(0);
@@ -286,9 +323,24 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 		return this.maxTexCount;
 	}
 	
+	public int getRenderCount()
+	{
+		return this.renders;
+	}
+	
 	public boolean isScreenFlipped()
 	{
 		return this.flipScreen;
+	}
+	
+	public ICamera getCamera()
+	{
+		return this.camera;
+	}
+	
+	public boolean updateCamera()
+	{
+		return this.camera == null ? false : (this.updateCameraUniforms || this.camera.isDirty());
 	}
 	
 	public void setSettings(DisplaySettings ds)
@@ -307,6 +359,41 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 			this.cleanables.add(gl);
 			
 		}
+		
+	}
+	
+	public void registerRenderer(IRenderable r)
+	{
+		this.registerPreRenderer(r);
+		this.registerPostRenderer(r);
+		
+	}
+	
+	public void registerPreRenderer(IPreRenderer preR)
+	{
+		if (!this.preRenderers.contains(preR))
+		{
+			this.preRenderers.add(preR);
+			
+		}
+		
+	}
+	
+	public void registerPostRenderer(IPostRenderer postR)
+	{
+		if (!this.postRenderers.contains(postR))
+		{
+			this.postRenderers.add(postR);
+			
+		}
+		
+	}
+	
+	public void setCamera(ICamera cam)
+	{
+		assert cam != null;
+		
+		this.camera = cam;
 		
 	}
 	

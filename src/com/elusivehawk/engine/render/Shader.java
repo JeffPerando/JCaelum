@@ -5,7 +5,6 @@ import java.io.InputStream;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.EnumAssetType;
-import com.elusivehawk.engine.assets.GraphicAsset;
 import com.elusivehawk.engine.render.opengl.GLEnumShader;
 import com.elusivehawk.util.StringHelper;
 import com.elusivehawk.util.task.Task;

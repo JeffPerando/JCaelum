@@ -8,15 +8,12 @@ package com.elusivehawk.engine.render;
  * @author Elusivehawk
  */
 @FunctionalInterface
-public interface IRenderable
+public interface IRenderable extends IPreRenderer, IPostRenderer
 {
-	@SuppressWarnings("unused")
-	default boolean updateBeforeRender(RenderContext rcon, double delta)
-	{
-		return true;
-	}
+	@Override
+	default void preRender(RenderContext rcon, double delta){}
 	
-	@SuppressWarnings("unused")
+	@Override
 	default void postRender(RenderContext rcon){}
 	
 	/**
