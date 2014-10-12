@@ -11,6 +11,7 @@ import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.Shader;
 import com.elusivehawk.engine.render.Shaders;
 import com.elusivehawk.util.ArrayHelper;
+import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.IDirty;
 import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.storage.SyncList;
@@ -226,6 +227,12 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 		
 	}
 	
+	public void attachUniform(RenderContext rcon, String name, float[] info, GLEnumUType type)
+	{
+		this.attachUniform(rcon, name, BufferHelper.makeFloatBuffer(info), type);
+		
+	}
+	
 	public void attachUniform(RenderContext rcon, String name, FloatBuffer info, GLEnumUType type)
 	{
 		if (!this.bound)
@@ -240,6 +247,12 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 			type.loadUniform(rcon, loc, info);
 			
 		}
+		
+	}
+	
+	public void attachUniform(RenderContext rcon, String name, int[] info, GLEnumUType type)
+	{
+		this.attachUniform(rcon, name, BufferHelper.makeIntBuffer(info), type);
 		
 	}
 	

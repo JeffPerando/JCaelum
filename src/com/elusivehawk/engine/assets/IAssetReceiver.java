@@ -10,6 +10,6 @@ package com.elusivehawk.engine.assets;
 @FunctionalInterface
 public interface IAssetReceiver
 {
-	public void onAssetLoaded(Asset a);
+	void onAssetLoaded(Asset a);
 	
 }

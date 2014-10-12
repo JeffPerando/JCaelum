@@ -15,6 +15,6 @@ import com.elusivehawk.util.Internal;
 @Internal
 public interface IThreadContext
 {
-	public IContext getContext();
+	IContext getContext();
 	
 }

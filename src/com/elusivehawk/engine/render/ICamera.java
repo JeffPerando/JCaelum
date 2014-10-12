@@ -17,8 +17,8 @@ import com.elusivehawk.util.math.Vector;
 @Experimental
 public interface ICamera extends IDirty, Quaternion.Listener, Vector.Listener, IInputListener, IRenderable
 {
-	public Matrix getView();
+	Matrix getView();
 	
-	public Matrix getProjection();
+	Matrix getProjection();
 	
 }

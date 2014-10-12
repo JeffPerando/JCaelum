@@ -73,18 +73,18 @@ public final class ExampleGame extends Game
 	}
 	
 	@Override
-	protected void tick(double delta, Object... extra) throws Throwable
+	public void update(double delta, Object... extra) throws Throwable
 	{
 		//CaelumEngine.log().log(EnumLogType.INFO, "Test: %s", delta);
 		
 	}
 	
 	@Override
-	public void render(RenderContext rcon, double delta)
+	public void render(RenderContext rcon)
 	{
 		try
 		{
-			this.canvas.render(rcon, delta);
+			this.canvas.render(rcon);
 			
 		}
 		catch (Exception e)

@@ -10,6 +10,6 @@ package com.elusivehawk.engine;
 @FunctionalInterface
 public interface IGameStateListener
 {
-	public void onGameStateSwitch(GameState gs);
+	void onGameStateSwitch(GameState gs);
 	
 }

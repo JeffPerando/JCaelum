@@ -11,10 +11,10 @@ import java.util.UUID;
  */
 public interface IFilterable
 {
-	public int addFilter(UUID type, IFilter f);
+	int addFilter(UUID type, IFilter f);
 	
-	public void removeFilter(UUID type, IFilter f);
+	void removeFilter(UUID type, IFilter f);
 	
-	public void removeFilter(UUID type, int i);
+	void removeFilter(UUID type, int i);
 	
 }

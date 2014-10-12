@@ -104,7 +104,15 @@ public final class ThreadGameLoop extends ThreadTimed
 			
 		}
 		
-		this.game.update(delta, extra);
+		try
+		{
+			this.game.update(delta, extra);
+			
+		}
+		catch (Throwable e)
+		{
+			throw new GameTickException(e);
+		}
 		
 	}
 	

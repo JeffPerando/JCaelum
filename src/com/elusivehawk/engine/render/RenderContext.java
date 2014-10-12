@@ -3,6 +3,7 @@ package com.elusivehawk.engine.render;
 
 import java.util.List;
 import com.elusivehawk.engine.CaelumEngine;
+import com.elusivehawk.engine.Game;
 import com.elusivehawk.engine.IContext;
 import com.elusivehawk.engine.IGameEnvironment;
 import com.elusivehawk.engine.render.old.RenderTask;
@@ -179,13 +180,51 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 				
 			}
 			
+			//Clears the OpenGL buffer
+			
 			this.gl1.glClear(0b0100010100000000);
 			
-			this.preRender(delta);
+			Game game = CaelumEngine.game();
 			
-			this.renderGame(delta);
+			//Pre-rendering 
 			
-			this.postRender();
+			game.preRender(this, delta);
+			
+			this.preRenderers.forEach(((preR) -> {preR.preRender(this, delta);}));
+			
+			//Rendering the game itself
+			
+			this.renderGame();
+			
+			//Post rendering.
+			
+			game.postRender(this);
+			
+			this.postRenderers.forEach(((postR) -> {postR.postRender(this);}));
+			
+			if (!this.rtasks.isEmpty())
+			{
+				RenderTask t = this.rtasks.get(0);
+				boolean rem = false;
+				
+				try
+				{
+					rem = t.completeTask();
+					
+				}
+				catch (Throwable e)
+				{
+					Logger.log().err("Error caught whilst finishing render task:", e);
+					
+				}
+				
+				if (rem)
+				{
+					this.rtasks.remove(0);
+					
+				}
+				
+			}
 			
 		}
 		catch (Throwable e)
@@ -196,7 +235,7 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 		
 	}
 	
-	public void renderGame(ICamera cam, double delta)
+	public void renderGame(ICamera cam)
 	{
 		assert cam != null;
 		
@@ -205,14 +244,14 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 		this.camera = cam;
 		this.updateCameraUniforms = true;
 		
-		this.renderGame(delta);
+		this.renderGame();
 		
 		this.camera = cam_tmp;
 		this.updateCameraUniforms = false;
 		
 	}
 	
-	private void renderGame(double delta)
+	private void renderGame()
 	{
 		if (this.renders == RenderConst.RECURSIVE_LIMIT)
 		{
@@ -221,45 +260,9 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 		
 		this.renders++;
 		
-		CaelumEngine.game().render(this, delta);
+		CaelumEngine.game().render(this);
 		
 		this.renders--;
-		
-	}
-	
-	private void preRender(double delta)
-	{
-		this.preRenderers.forEach(((preR) -> {preR.preRender(this, delta);}));
-		
-	}
-	
-	private void postRender()
-	{
-		this.postRenderers.forEach(((postR) -> {postR.postRender(this);}));
-		
-		if (!this.rtasks.isEmpty())
-		{
-			RenderTask t = this.rtasks.get(0);
-			boolean rem = false;
-			
-			try
-			{
-				rem = t.completeTask();
-				
-			}
-			catch (Throwable e)
-			{
-				Logger.log().err("Error caught whilst finishing render task:", e);
-				
-			}
-			
-			if (rem)
-			{
-				this.rtasks.remove(0);
-				
-			}
-			
-		}
 		
 	}
 	
@@ -338,7 +341,7 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 		return this.camera;
 	}
 	
-	public boolean updateCamera()
+	public boolean doUpdateCamera()
 	{
 		return this.camera == null ? false : (this.updateCameraUniforms || this.camera.isDirty());
 	}

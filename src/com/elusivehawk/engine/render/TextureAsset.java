@@ -15,21 +15,21 @@ import com.elusivehawk.util.task.Task;
  * 
  * @author Elusivehawk
  */
-public class Texture extends GraphicAsset implements ITexture
+public class TextureAsset extends GraphicAsset implements ITexture
 {
 	private final boolean animate;
 	
 	protected volatile int[] frames = null;
 	protected int frame = 0;
 	
-	public Texture(String filepath)
+	public TextureAsset(String filepath)
 	{
 		this(filepath, filepath.endsWith(".gif"));
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Texture(String filepath, boolean animated)
+	public TextureAsset(String filepath, boolean animated)
 	{
 		super(filepath, EnumAssetType.TEXTURE);
 		
@@ -71,9 +71,9 @@ public class Texture extends GraphicAsset implements ITexture
 	{
 		super.onExistingAssetFound(a);
 		
-		if (a instanceof Texture && ((Texture)a).isLoaded())
+		if (a instanceof TextureAsset && ((TextureAsset)a).isLoaded())
 		{
-			this.frames = ((Texture)a).frames;
+			this.frames = ((TextureAsset)a).frames;
 			
 		}
 		

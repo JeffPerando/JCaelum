@@ -60,11 +60,11 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 	}
 	
 	@Override
-	public void render(RenderContext rcon, double delta)
+	public void render(RenderContext rcon)
 	{
 		if (this.state != null)
 		{
-			this.state.render(rcon, delta);
+			this.state.render(rcon);
 			
 		}
 		
@@ -100,13 +100,13 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 	//XXX Overridden methods
 	
 	@Override
-	public final void update(double delta, Object... extra) throws GameTickException
+	public void update(double delta, Object... extra) throws Throwable
 	{
 		try
 		{
 			if (this.state == null)
 			{
-				this.tick(delta, extra);
+				this.updateModules(delta, extra);
 				
 			}
 			else
@@ -118,7 +118,7 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 		}
 		catch (Throwable e)
 		{
-			throw new GameTickException(e);
+			throw e;
 		}
 		finally
 		{
@@ -186,19 +186,6 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 	public void addGameStateListener(IGameStateListener gsl)
 	{
 		this.listeners.add(gsl);
-		
-	}
-	
-	/**
-	 * 
-	 * Called on every update, if there is no current game state.
-	 * 
-	 * @param delta
-	 * @throws Throwable
-	 */
-	protected void tick(double delta, Object... extra) throws Throwable
-	{
-		this.updateModules(delta, extra);
 		
 	}
 	

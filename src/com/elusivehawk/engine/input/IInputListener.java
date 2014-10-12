@@ -10,6 +10,6 @@ package com.elusivehawk.engine.input;
 @FunctionalInterface
 public interface IInputListener
 {
-	public void onInputReceived(Input in);
+	void onInputReceived(Input in);
 	
 }

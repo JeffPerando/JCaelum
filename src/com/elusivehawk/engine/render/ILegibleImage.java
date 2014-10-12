@@ -12,11 +12,11 @@ import com.elusivehawk.util.BufferHelper;
  */
 public interface ILegibleImage
 {
-	public int getPixel(int x, int y);
+	int getPixel(int x, int y);
 	
-	public int getHeight();
+	int getHeight();
 	
-	public int getWidth();
+	int getWidth();
 	
 	default ColorFormat getFormat()
 	{

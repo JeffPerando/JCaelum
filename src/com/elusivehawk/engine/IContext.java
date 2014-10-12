@@ -15,8 +15,8 @@ import com.elusivehawk.util.Internal;
 @Internal
 public interface IContext
 {
-	public boolean initContext();
+	boolean initContext();
 	
-	public void cleanup();
+	void cleanup();
 	
 }

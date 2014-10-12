@@ -19,12 +19,11 @@ public interface IRenderable extends IPreRenderer, IPostRenderer
 	/**
 	 * 
 	 * @param rcon
-	 * @param delta
 	 * 
 	 * @throws RenderException
 	 * 
 	 * @see RenderHelper
 	 */
-	public void render(RenderContext rcon, double delta) throws RenderException;
+	void render(RenderContext rcon) throws RenderException;
 	
 }

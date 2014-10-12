@@ -2,6 +2,8 @@
 package com.elusivehawk.engine.prefab;
 
 import com.elusivehawk.engine.assets.Asset;
+import com.elusivehawk.engine.render.RenderContext;
+import com.elusivehawk.engine.render.RenderException;
 import com.elusivehawk.engine.render.RenderTicket;
 import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.math.Quaternion;
@@ -13,38 +15,84 @@ import com.elusivehawk.util.math.Vector;
  * 
  * @author Elusivehawk
  */
-public class RenderTicketComponent extends RenderComponent implements Vector.Listener, Quaternion.Listener
+public class RenderTicketComponent extends PositionedComponent
 {
-	public RenderTicketComponent(Component parent, int p, RenderTicket tkt)
+	private final RenderTicket tkt;
+	
+	public RenderTicketComponent(Component parent, RenderTicket ticket)
 	{
-		super(parent, p, tkt);
+		this(parent, 0, ticket);
 		
 	}
 	
-	public RenderTicketComponent(Component parent, int p, RenderTicket tkt, IPopulator<Component> pop)
+	public RenderTicketComponent(Component parent, int p, RenderTicket ticket, IPopulator<Component> pop)
 	{
-		super(parent, p, tkt, pop);
+		this(parent, p, ticket);
+		
+		pop.populate(this);
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public RenderTicketComponent(Component parent, int p, RenderTicket ticket)
+	{
+		super(parent, p);
+		
+		assert ticket != null;
+		
+		tkt = ticket;
 		
 	}
 	
 	@Override
-	public void onQuatChanged(Quaternion q)
+	public void preRender(RenderContext rcon, double delta)
 	{
-		this.getRenderTicket().onQuatChanged(q);
+		this.tkt.preRender(rcon, delta);
+		
+		super.preRender(rcon, delta);
+		
+	}
+	
+	@Override
+	public void render(RenderContext rcon) throws RenderException
+	{
+		this.tkt.render(rcon);
+		
+		super.render(rcon);
+		
+	}
+	
+	@Override
+	public void postRender(RenderContext rcon)
+	{
+		this.tkt.postRender(rcon);
+		
+		super.postRender(rcon);
 		
 	}
 	
 	@Override
 	public void onVecChanged(Vector vec)
 	{
-		this.getRenderTicket().onVecChanged(vec);
+		super.onVecChanged(vec);
+		
+		this.tkt.onVecChanged(vec);
+		
+	}
+	
+	@Override
+	public void onQuatChanged(Quaternion q)
+	{
+		super.onQuatChanged(q);
+		
+		this.tkt.onQuatChanged(q);
 		
 	}
 	
 	@Override
 	public void onAssetLoaded(Asset a)
 	{
-		this.getRenderTicket().onAssetLoaded(a);
+		this.tkt.onAssetLoaded(a);
 		
 		super.onAssetLoaded(a);
 		
@@ -52,7 +100,7 @@ public class RenderTicketComponent extends RenderComponent implements Vector.Lis
 	
 	public RenderTicket getRenderTicket()
 	{
-		return (RenderTicket)this.renderable;
+		return this.tkt;
 	}
 	
 }

@@ -70,9 +70,9 @@ public class Camera3D implements ICamera
 	}
 	
 	@Override
-	public void render(RenderContext rcon, double delta)
+	public void render(RenderContext rcon)
 	{
-		rcon.renderGame(this, delta);
+		rcon.renderGame(this);
 		
 	}
 	

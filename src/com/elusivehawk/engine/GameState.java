@@ -44,11 +44,11 @@ public class GameState extends AbstractGameComponent
 	public void initiate(GameArguments args, AssetManager assets) throws Throwable{}
 	
 	@Override
-	public void render(RenderContext rcon, double delta) throws RenderException
+	public void render(RenderContext rcon) throws RenderException
 	{
 		if (this.renderer != null)
 		{
-			this.renderer.render(rcon, delta);
+			this.renderer.render(rcon);
 			
 		}
 		

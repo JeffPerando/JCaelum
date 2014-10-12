@@ -11,8 +11,8 @@ import com.elusivehawk.engine.render.RenderContext;
  */
 public interface IGLBindable extends IGLDeletable
 {
-	public boolean bind(RenderContext rcon);
+	boolean bind(RenderContext rcon);
 	
-	public void unbind(RenderContext rcon);
+	void unbind(RenderContext rcon);
 	
 }

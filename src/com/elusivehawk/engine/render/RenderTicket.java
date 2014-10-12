@@ -88,7 +88,7 @@ public class RenderTicket extends RenderableObj implements Quaternion.Listener, 
 	}
 	
 	@Override
-	protected void doRender(RenderContext rcon, double delta) throws RenderException
+	protected void doRender(RenderContext rcon) throws RenderException
 	{
 		rcon.getGL1().glDrawElements(this.m.getPolygonType(), this.m.getPolyCount(), GLConst.GL_UNSIGNED_INT, 0);
 		

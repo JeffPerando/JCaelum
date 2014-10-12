@@ -15,7 +15,7 @@ import com.elusivehawk.engine.render.opengl.VertexArray;
 public interface ILogicalRender extends IRenderable
 {
 	@Override
-	default void render(RenderContext rcon, double delta)
+	default void render(RenderContext rcon)
 	{
 		GLProgram p = this.getProgram();
 		
@@ -55,10 +55,10 @@ public interface ILogicalRender extends IRenderable
 		return null;
 	}
 	
-	public VertexArray getVAO();
+	VertexArray getVAO();
 	
-	public GLEnumPolyType getPolygonType();
+	GLEnumPolyType getPolygonType();
 	
-	public int getPolyCount();
+	int getPolyCount();
 	
 }

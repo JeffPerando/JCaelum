@@ -3,6 +3,7 @@ package com.elusivehawk.engine.render;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.render.opengl.GLConst;
@@ -58,16 +59,16 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 			
 		}
 		
-		if (a instanceof Texture)
+		if (a instanceof TextureAsset)
 		{
-			this.addMaterials(new Material(((Texture)a)));
+			this.addMaterials(new Material().tex((TextureAsset)a));
 			
 		}
 		
 	}
 	
 	@Override
-	public void render(RenderContext rcon, double delta) throws RenderException
+	public void render(RenderContext rcon) throws RenderException
 	{
 		if (!this.initiated)
 		{
@@ -81,26 +82,12 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 			
 		}
 		
-		if (this.isDirty())
+		if (rcon.doUpdateCamera())
 		{
-			this.p.attachUniform(rcon, "flip", BufferHelper.makeIntBuffer(rcon.isScreenFlipped() ? 1 : 0), GLEnumUType.ONE);
+			ICamera cam = rcon.getCamera();
 			
-			//TODO Load materials into program
-			
-			if (this.filters != null)
-			{
-				this.filters.filter(rcon, this.p);
-				
-			}
-			
-			this.setIsDirty(false);
-			
-		}
-		
-		if (rcon.updateCamera())
-		{
-			this.p.attachUniform(rcon, "view", rcon.getCamera().getView().asBuffer(), GLEnumUType.M_FOUR);
-			this.p.attachUniform(rcon, "proj", rcon.getCamera().getProjection().asBuffer(), GLEnumUType.M_FOUR);
+			this.p.attachUniform(rcon, "view", cam.getView().asBuffer(), GLEnumUType.M_FOUR);
+			this.p.attachUniform(rcon, "proj", cam.getProjection().asBuffer(), GLEnumUType.M_FOUR);
 			
 		}
 		
@@ -125,9 +112,7 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 				
 			}
 			
-			this.doRender(rcon, delta);
-			
-			this.postRender(rcon);
+			this.doRender(rcon);
 			
 		}
 		
@@ -201,6 +186,31 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 		
 	}
 	
+	@Override
+	public void preRender(RenderContext rcon, double delta)
+	{
+		this.forEveryMaterial(((mat) -> {mat.preRender(rcon, delta);}));
+		
+		if (this.isDirty())
+		{
+			this.p.attachUniform(rcon, "flip", BufferHelper.makeIntBuffer(rcon.isScreenFlipped() ? 1 : 0), GLEnumUType.ONE);
+			
+			this.forEveryMaterial(((mat) -> {mat.renderTexture(rcon);}));
+			
+			//TODO Load materials into program
+			
+			if (this.filters != null)
+			{
+				this.filters.filter(rcon, this.p);
+				
+			}
+			
+			this.setIsDirty(false);
+			
+		}
+		
+	}
+	
 	public synchronized void setFilters(Filters fs)
 	{
 		if (this.filters != null)
@@ -261,8 +271,24 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 		return this.matSet == null ? 0 : this.matSet.matCount();
 	}
 	
+	protected void forEveryMaterial(Consumer<Material> consumer)
+	{
+		int mCount = this.getMaterialCount();
+		
+		if (mCount > 0)
+		{
+			for (int c = 0; c < mCount; c++)
+			{
+				consumer.accept(this.matSet.getMat(c));
+				
+			}
+			
+		}
+		
+	}
+	
 	protected abstract boolean initiate(RenderContext rcon);
 	
-	protected abstract void doRender(RenderContext rcon, double delta) throws RenderException;
+	protected abstract void doRender(RenderContext rcon) throws RenderException;
 	
 }

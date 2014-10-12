@@ -1,8 +1,6 @@
 
 package com.elusivehawk.engine.network;
 
-import com.google.common.collect.ImmutableList;
-
 /**
  * 
  * Interface for packet listening.
@@ -17,8 +15,8 @@ public interface IPacketListener
 	 * Called after packet reading.
 	 * 
 	 * @param origin The connection that sent these packets.
-	 * @param pkts An immutable list of the packets sent.
+	 * @param pkt A packet that was received.
 	 */
-	public void onPacketsReceived(Connection origin, ImmutableList<Packet> pkts);
+	void onPacketReceived(Connection origin, Packet pkt);
 	
 }

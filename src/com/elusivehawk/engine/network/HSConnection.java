@@ -3,7 +3,6 @@ package com.elusivehawk.engine.network;
 
 import java.nio.channels.spi.AbstractSelectableChannel;
 import com.elusivehawk.util.Internal;
-import com.google.common.collect.ImmutableList;
 
 /**
  * 
@@ -30,13 +29,6 @@ public class HSConnection extends Connection implements IPacketHandler
 	}
 	
 	@Override
-	public void onPacketsReceived(Connection origin, ImmutableList<Packet> pkts)
-	{
-		this.master.onHandshake(this, pkts);
-		
-	}
-	
-	@Override
 	public Side getSide()
 	{
 		return this.master.getSide();
@@ -46,6 +38,13 @@ public class HSConnection extends Connection implements IPacketHandler
 	public void onDisconnect(Connection connect)
 	{
 		this.master.onDisconnect(connect);
+		
+	}
+	
+	@Override
+	public void onPacketReceived(Connection origin, Packet pkt)
+	{
+		this.master.onHandshake(this, pkt);
 		
 	}
 	

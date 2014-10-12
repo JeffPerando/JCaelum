@@ -8,7 +8,7 @@ package com.elusivehawk.engine.network;
  * 
  * @author Elusivehawk
  */
-public interface IPacketHandler extends IPacketListener
+public interface IPacketHandler
 {
 	/**
 	 * 
@@ -16,7 +16,7 @@ public interface IPacketHandler extends IPacketListener
 	 * 
 	 * @return The side this handler is on.
 	 */
-	public Side getSide();
+	Side getSide();
 	
 	/**
 	 * 
@@ -24,7 +24,7 @@ public interface IPacketHandler extends IPacketListener
 	 * 
 	 * @param connect The connection about to be closed.
 	 */
-	public void onDisconnect(Connection connect);
+	void onDisconnect(Connection connect);
 	
 	@SuppressWarnings("unused")
 	default void onPacketDropped(Packet pkt){}

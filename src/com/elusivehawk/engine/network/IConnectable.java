@@ -25,8 +25,8 @@ public interface IConnectable
 		return this.connect(ip.toChannel(type));
 	}
 	
-	public UUID connect(AbstractSelectableChannel ch);
+	UUID connect(AbstractSelectableChannel ch);
 	
-	public void beginComm();
+	void beginComm();
 	
 }

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 import javax.crypto.Cipher;
 import com.elusivehawk.util.Logger;
-import com.google.common.collect.ImmutableList;
+import com.elusivehawk.util.storage.SyncList;
 import com.google.common.collect.Lists;
 
 /**
@@ -23,7 +23,7 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-public class Connection
+public class Connection implements IPacketListener
 {
 	private final IPacketHandler handler;
 	private final UUID connectId;
@@ -40,7 +40,11 @@ public class Connection
 	protected boolean readPubKey = false;
 	protected Object attach = null;
 	
-	private final List<Packet> incoming = Lists.newArrayList();
+	private final List<Packet>
+				in_buffer = Lists.newArrayList(),
+				incoming = Lists.newArrayList(),
+				outgoing = SyncList.newList();
+	private final SyncList<IPacketListener> listeners = SyncList.newList();
 	
 	public Connection(IPacketHandler h, AbstractSelectableChannel ch)
 	{
@@ -127,6 +131,9 @@ public class Connection
 	}
 	
 	@Override
+	public void onPacketReceived(Connection origin, Packet pkt){}
+	
+	@Override
 	public Connection clone()
 	{
 		return new Connection(this);
@@ -152,33 +159,36 @@ public class Connection
 		return this.pub;
 	}
 	
-	public ImmutableList<Packet> getOutgoingPackets()
+	public List<Packet> getOutgoingPackets()
 	{
-		if (this.incoming.isEmpty())
-		{
-			return null;
-		}
-		
-		return ImmutableList.copyOf(this.incoming);
+		return this.outgoing;
 	}
 	
 	public synchronized void flushPacket(Packet pkt)
 	{
-		this.incoming.remove(pkt);
+		this.outgoing.remove(pkt);
 		
 	}
 	
-	public synchronized void sendPackets(Packet... pkts)
+	public void addListener(IPacketListener lis)
+	{
+		assert lis != null;
+		
+		this.listeners.add(lis);
+		
+	}
+	
+	public void sendPackets(Packet... pkts)
 	{
 		for (Packet pkt : pkts)
 		{
-			this.incoming.add(pkt);
+			this.outgoing.add(pkt);
 			
 		}
 		
 	}
 	
-	public final byte[] decryptData(byte[] bytes, int count) throws NetworkException
+	public final void decryptData(byte[] bytes, int count) throws NetworkException
 	{
 		if (this.pub_rec == null)
 		{
@@ -203,10 +213,10 @@ public class Connection
 			
 			this.readPubKey = true;
 			
-			return null;
+			return;
 		}
 		
-		byte[] ret = null;
+		byte[] pkt = null;
 		
 		try
 		{
@@ -216,7 +226,7 @@ public class Connection
 			tmp = this.cipher.doFinal(bytes, 0, count);
 			
 			this.cipher.init(Cipher.DECRYPT_MODE, this.priv);
-			ret = this.cipher.doFinal(tmp);
+			pkt = this.cipher.doFinal(tmp);
 			
 		}
 		catch (Throwable e)
@@ -224,7 +234,8 @@ public class Connection
 			throw new NetworkException("Cannot decrypt data:", e);
 		}
 		
-		return ret;
+		this.incoming.add(new Packet(pkt));
+		
 	}
 	
 	public final byte[] encryptData(byte[] in) throws NetworkException
@@ -255,6 +266,31 @@ public class Connection
 		}
 		
 		return ret;
+	}
+	
+	public final void receivePackets()
+	{
+		synchronized (this)
+		{
+			this.in_buffer.addAll(this.incoming);
+			this.incoming.clear();
+			
+		}
+		
+		this.in_buffer.forEach(((pkt) ->
+		{
+			this.onPacketReceived(this, pkt);
+			
+			this.listeners.forEach(((lis) ->
+			{
+				lis.onPacketReceived(this, pkt);
+				
+			}));
+			
+		}));
+		
+		this.in_buffer.clear();
+		
 	}
 	
 	public Object getAttachment()

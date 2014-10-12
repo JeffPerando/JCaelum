@@ -5,7 +5,6 @@ import java.io.Closeable;
 import java.util.UUID;
 import com.elusivehawk.util.IPausable;
 import com.elusivehawk.util.storage.SemiFinalStorage;
-import com.google.common.collect.ImmutableList;
 
 /**
  * 
@@ -102,12 +101,34 @@ public interface IHost extends IConnectable, IPacketHandler, Closeable, IPausabl
 		return found.get();
 	}
 	
-	public void forEveryConnection(IConnectionUser user);
+	default void addPacketListener(UUID id, IPacketListener lis)
+	{
+		this.forEveryConnection(((con) ->
+		{
+			if (id == null || con.getId().equals(id))
+			{
+				con.addListener(lis);
+				
+				return id == null;
+			}
+			
+			return true;
+		}));
+		
+	}
 	
-	public int getMaxPlayerCount();
+	default void receivePackets()
+	{
+		this.forEveryConnection(((con) -> {con.receivePackets(); return true;}));
+		
+	}
 	
-	public int getPlayerCount();
+	void forEveryConnection(IConnectionUser user);
 	
-	public void onHandshake(Connection connection, ImmutableList<Packet> pkts);
+	int getMaxPlayerCount();
+	
+	int getPlayerCount();
+	
+	void onHandshake(Connection connection, Packet pkt);
 	
 }

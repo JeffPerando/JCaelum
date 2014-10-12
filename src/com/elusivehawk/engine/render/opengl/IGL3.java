@@ -9,14 +9,14 @@ package com.elusivehawk.engine.render.opengl;
  */
 public interface IGL3
 {
-	public void glBindVertexArray(int array) throws GLException;
+	void glBindVertexArray(int array) throws GLException;
 	
-	public void glDeleteVertexArrays(int array) throws GLException;
+	void glDeleteVertexArrays(int array) throws GLException;
 	
-	public void glGenerateMipmap(int target) throws GLException;
+	void glGenerateMipmap(int target) throws GLException;
 	
-	public int glGenVertexArrays() throws GLException;
+	int glGenVertexArrays() throws GLException;
 	
-	public void glGenVertexArrays(int[] arrays) throws GLException;
+	void glGenVertexArrays(int[] arrays) throws GLException;
 	
 }

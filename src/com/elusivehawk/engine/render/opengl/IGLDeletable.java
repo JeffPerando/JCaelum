@@ -12,6 +12,6 @@ import com.elusivehawk.engine.render.RenderContext;
 @FunctionalInterface
 public interface IGLDeletable
 {
-	public void delete(RenderContext rcon);
+	void delete(RenderContext rcon);
 	
 }

@@ -17,8 +17,6 @@ import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.concurrent.ThreadStoppable;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
@@ -80,23 +78,19 @@ public class ThreadNetwork extends ThreadStoppable
 		}
 		
 		Set<SelectionKey> keys = this.selector.selectedKeys();
-		Iterator<SelectionKey> itr = keys.iterator();
+		Iterator<SelectionKey> keyItr = keys.iterator();
 		Iterator<Packet> pktItr;
+		Packet pkt;
 		
 		SelectionKey key;
 		ByteChannel io;
 		Connection con;
 		
-		boolean read = false;
 		int bytesRead = -1;
 		
-		byte[] b = null;
-		List<Packet> pkts = null;
-		Packet pkt;
-		
-		while (itr.hasNext())
+		while (keyItr.hasNext())
 		{
-			key = itr.next();
+			key = keyItr.next();
 			
 			if (!key.isValid())
 			{
@@ -111,12 +105,9 @@ public class ThreadNetwork extends ThreadStoppable
 			{
 				while ((bytesRead = io.read(this.bin_buf)) != -1)
 				{
-					read = false;
-					
 					try
 					{
-						b = con.decryptData(this.bin, bytesRead);
-						read = b != null;
+						con.decryptData(this.bin, bytesRead);
 						
 					}
 					catch (NetworkException e)
@@ -125,28 +116,7 @@ public class ThreadNetwork extends ThreadStoppable
 						
 					}
 					
-					if (read)
-					{
-						if (pkts == null)
-						{
-							pkts = Lists.newArrayListWithCapacity(32);
-							
-						}
-						
-						pkt = new Packet(b);
-						pkt.markForReading();
-						
-						pkts.add(pkt);
-						
-					}
-					
 					this.bin_buf.clear();//Clear the incoming bytes to prepare for the next packet.
-					
-				}
-				
-				if (pkts != null)
-				{
-					this.handler.onPacketsReceived(con, ImmutableList.copyOf(pkts));
 					
 				}
 				
@@ -154,9 +124,9 @@ public class ThreadNetwork extends ThreadStoppable
 			
 			if (key.isWritable())
 			{
-				ImmutableList<Packet> outPkts = con.getOutgoingPackets();
+				List<Packet> outPkts = con.getOutgoingPackets();
 				
-				if (outPkts == null || outPkts.isEmpty())
+				if (outPkts.isEmpty())
 				{
 					continue;
 				}

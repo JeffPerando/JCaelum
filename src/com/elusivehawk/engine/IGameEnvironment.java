@@ -26,11 +26,11 @@ import com.elusivehawk.util.json.JsonObject;
 @Internal
 public interface IGameEnvironment
 {
-	public boolean isCompatible(EnumOS os);
+	boolean isCompatible(EnumOS os);
 	
-	public void initiate(JsonObject json, String... args);
+	void initiate(JsonObject json, String... args);
 	
-	public String getName();
+	String getName();
 	
 	/**
 	 * 
@@ -39,9 +39,9 @@ public interface IGameEnvironment
 	 * @param settings The settings to create the display under.
 	 * @return The display created.
 	 */
-	public IDisplay createDisplay(DisplaySettings settings);
+	IDisplay createDisplay(DisplaySettings settings);
 	
-	public List<Input> loadInputs();
+	List<Input> loadInputs();
 	
 	/**
 	 * 
@@ -50,8 +50,8 @@ public interface IGameEnvironment
 	 * @param version The version of the context being requested.
 	 * @return The OpenGL context object requested, or null if it couldn't be found.
 	 */
-	public Object getGL(int version);
+	Object getGL(int version);
 	
-	public IThreadStoppable createRenderThread(RenderContext rcon);
+	IThreadStoppable createRenderThread(RenderContext rcon);
 	
 }

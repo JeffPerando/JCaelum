@@ -4,7 +4,6 @@ package com.elusivehawk.engine.network;
 import java.nio.channels.spi.AbstractSelectableChannel;
 import java.util.List;
 import java.util.UUID;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 /**
@@ -88,13 +87,6 @@ public class Server implements IHost
 	}
 	
 	@Override
-	public void onPacketsReceived(Connection origin, ImmutableList<Packet> pkts)
-	{
-		this.master.onPacketsReceived(origin, pkts);
-		
-	}
-	
-	@Override
 	public void close()
 	{
 		this.listener.stopThread();
@@ -145,7 +137,7 @@ public class Server implements IHost
 	}
 	
 	@Override
-	public void onHandshake(Connection con, ImmutableList<Packet> pkts)
+	public void onHandshake(Connection con, Packet pkt)
 	{
 		if (con == null)
 		{
@@ -162,7 +154,7 @@ public class Server implements IHost
 			return;
 		}
 		
-		if (this.master.handshake(con, pkts))
+		if (this.master.handshake(con, pkt))
 		{
 			this.clients.remove(con);
 			this.clients.add(new Connection(con));

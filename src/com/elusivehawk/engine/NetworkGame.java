@@ -65,6 +65,19 @@ public abstract class NetworkGame extends Game implements INetworkMaster
 	}
 	
 	@Override
+	public void update(double delta, Object... extra) throws Throwable
+	{
+		if (this.host != null)
+		{
+			this.host.receivePackets();
+			
+		}
+		
+		super.update(delta, extra);
+		
+	}
+	
+	@Override
 	protected void onGameShutdown()
 	{
 		if (this.host != null)

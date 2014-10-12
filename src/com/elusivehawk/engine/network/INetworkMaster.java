@@ -1,18 +1,16 @@
 
 package com.elusivehawk.engine.network;
 
-import java.util.List;
-
 /**
  * 
  * The core interface for networking; Implement this to your game instance, or a dedicated networking manager.
  * 
  * @author Elusivehawk
  */
-public interface INetworkMaster extends IPacketListener
+public interface INetworkMaster
 {
-	public int getEncryptionBitCount();
+	int getEncryptionBitCount();
 	
-	public boolean handshake(Connection connection, List<Packet> sentPkts);
+	boolean handshake(Connection connection, Packet pkt);
 	
 }

@@ -5,7 +5,6 @@ import java.nio.channels.spi.AbstractSelectableChannel;
 import java.security.Key;
 import java.util.UUID;
 import com.elusivehawk.util.Logger;
-import com.google.common.collect.ImmutableList;
 
 /**
  * 
@@ -95,13 +94,6 @@ public class Client implements IHost
 	}
 	
 	@Override
-	public void onPacketsReceived(Connection origin, ImmutableList<Packet> pkts)
-	{
-		this.master.onPacketsReceived(origin, pkts);
-		
-	}
-	
-	@Override
 	public void close()
 	{
 		this.thr.stopThread();
@@ -149,14 +141,14 @@ public class Client implements IHost
 	}
 	
 	@Override
-	public void onHandshake(Connection connection, ImmutableList<Packet> pkts)
+	public void onHandshake(Connection connection, Packet pkt)
 	{
 		if (this.hasHS)
 		{
 			return;
 		}
 		
-		if (this.master.handshake(connection, pkts))
+		if (this.master.handshake(connection, pkt))
 		{
 			this.connection = new Connection(connection);
 			

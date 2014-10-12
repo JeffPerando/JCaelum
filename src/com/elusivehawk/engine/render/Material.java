@@ -9,49 +9,40 @@ import com.elusivehawk.util.math.MathHelper;
  * 
  * @author Elusivehawk
  */
-public class Material
+public class Material implements IPreRenderer
 {
-	public final ITexture tex;
-	public final float shininess;
-	public final Color filter;
+	protected ITexture tex = null;
+	protected IFramebufferTexture fboTex = null;
+	protected float shininess = 0f;
+	protected Color filter = new Color();
 	
-	public Material(Color overlay)
-	{
-		this(null, 0.0f, overlay);
-	}
+	private boolean locked = false;
 	
-	public Material(ITexture texture)
-	{
-		this(texture, 0.0f, new Color(ColorFormat.RGBA));
-		
-	}
-	
-	public Material(ITexture texture, Color overlay)
-	{
-		this(texture, 0.0f, overlay);
-		
-	}
-	
-	public Material(ITexture texture, float shine)
-	{
-		this(texture, shine, new Color(ColorFormat.RGBA));
-		
-	}
-	
-	public Material(Material m)
-	{
-		this(m.tex, m.shininess, m.filter);
-		
-	}
+	public Material(){}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Material(ITexture texture, float shine, Color overlay)
+	public Material(Material m)
 	{
-		assert overlay != null;
+		tex = m.tex;
+		shininess = m.shininess;
+		filter = m.filter;
 		
-		tex = texture;
-		shininess = MathHelper.clamp(shine, 0f, 1f);
-		filter = ColorFormat.RGBA.convert(overlay);
+	}
+	
+	@Override
+	public void preRender(RenderContext rcon, double delta)
+	{
+		if (this.tex != null)
+		{
+			this.tex.preRender(rcon, delta);
+			
+		}
+		
+		if (this.fboTex != null)
+		{
+			this.fboTex.preRender(rcon, delta);
+			
+		}
 		
 	}
 	
@@ -61,9 +52,91 @@ public class Material
 		return new Material(this);
 	}
 	
-	public boolean isStatic()
+	public Material fboTex(IFramebufferTexture texture)
 	{
-		return this.tex == null ? true : !this.tex.isAnimated();
+		assert texture != null;
+		
+		if (!this.locked)
+		{
+			this.fboTex = texture;
+			
+		}
+		
+		return this;
+	}
+	
+	public Material filter(Color col)
+	{
+		assert col != null;
+		
+		if (!this.locked)
+		{
+			this.filter = col;
+			
+		}
+		
+		return this;
+	}
+	
+	public Material shine(float shine)
+	{
+		if (!this.locked)
+		{
+			this.shininess = MathHelper.clamp(shine, 0, 1f);
+			
+		}
+		
+		return this;
+	}
+	
+	public Material tex(ITexture texture)
+	{
+		assert texture != null;
+		
+		if (!this.locked)
+		{
+			this.tex = texture;
+			
+		}
+		
+		return this;
+	}
+	
+	public Material lock()
+	{
+		this.locked = true;
+		
+		return this;
+	}
+	
+	public IFramebufferTexture fboTex()
+	{
+		return this.fboTex;
+	}
+	
+	public Color filter()
+	{
+		return this.filter;
+	}
+	
+	public float shine()
+	{
+		return this.shininess;
+	}
+	
+	public ITexture tex()
+	{
+		return this.tex;
+	}
+	
+	public void renderTexture(RenderContext rcon)
+	{
+		if (this.fboTex != null)
+		{
+			this.fboTex.renderTexture(rcon);
+			
+		}
+		
 	}
 	
 }

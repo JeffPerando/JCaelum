@@ -10,6 +10,6 @@ package com.elusivehawk.engine.network;
 @FunctionalInterface
 public interface IConnectionUser
 {
-	public boolean processConnection(Connection con);
+	boolean processConnection(Connection con);
 	
 }

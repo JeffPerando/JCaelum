@@ -30,47 +30,6 @@ public abstract class Component implements IAssetReceiver, IRenderable, IUpdatab
 	protected int maxPriority = -1;
 	protected boolean locked = false;
 	
-	public Component()
-	{
-		this(null, 0);
-		
-	}
-	
-	public Component(IPopulator<Component> pop)
-	{
-		this();
-		
-		pop.populate(this);
-		
-	}
-	
-	public Component(Component owner)
-	{
-		this(owner, 0);
-	}
-	
-	public Component(Component owner, IPopulator<Component> pop)
-	{
-		this(owner);
-		
-		pop.populate(this);
-		
-	}
-	
-	public Component(int p)
-	{
-		this(null, p);
-		
-	}
-	
-	public Component(int p, IPopulator<Component> pop)
-	{
-		this(p);
-		
-		pop.populate(this);
-		
-	}
-	
 	public Component(Component owner, int p, IPopulator<Component> pop)
 	{
 		this(owner, p);
@@ -95,9 +54,9 @@ public abstract class Component implements IAssetReceiver, IRenderable, IUpdatab
 	}
 	
 	@Override
-	public void render(RenderContext rcon, double delta) throws RenderException
+	public void render(RenderContext rcon) throws RenderException
 	{
-		this.forEveryChild(((child) -> {child.render(rcon, delta);}));
+		this.forEveryChild(((child) -> {child.render(rcon);}));
 		
 	}
 	
@@ -105,6 +64,20 @@ public abstract class Component implements IAssetReceiver, IRenderable, IUpdatab
 	public void onAssetLoaded(Asset a)
 	{
 		this.forEveryChild(false, ((child) -> {child.onAssetLoaded(a);}));
+		
+	}
+	
+	@Override
+	public void preRender(RenderContext rcon, double delta)
+	{
+		this.forEveryChild(((child) -> {child.preRender(rcon, delta);}));
+		
+	}
+	
+	@Override
+	public void postRender(RenderContext rcon)
+	{
+		this.forEveryChild(((child) -> {child.postRender(rcon);}));
 		
 	}
 	

@@ -9,11 +9,12 @@ package com.elusivehawk.engine.render;
  * 
  * @author Elusivehawk
  */
-public class CameraTexture implements ITexture
+public class CameraTexture implements IFramebufferTexture
 {
 	private final ICamera cam;
 	
 	private volatile int tex = 0;
+	private boolean rendered = false;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public CameraTexture(ICamera camera)
@@ -23,33 +24,51 @@ public class CameraTexture implements ITexture
 		cam = camera;
 		
 	}
-	
-	@Override
-	public void preRender(RenderContext rcon, double delta)
-	{
-		//TODO Finish
-		
-		rcon.renderGame(this.cam, delta);
-		
-	}
-
-	@Override
-	public void delete(RenderContext rcon)
-	{
-		rcon.getGL1().glDeleteTextures(this.tex);
-		
-	}
 
 	@Override
 	public int getTexId()
 	{
 		return this.tex;
 	}
-
+	
 	@Override
 	public boolean isAnimated()
 	{
 		return false;
+	}
+	
+	@Override
+	public void delete(RenderContext rcon)
+	{
+		if (this.tex != 0)
+		{
+			rcon.getGL1().glDeleteTextures(this.tex);
+			
+		}
+		
+	}
+	
+	@Override
+	public void postRender(RenderContext rcon)
+	{
+		this.rendered = false;
+		
+	}
+	
+	@Override
+	public void renderTexture(RenderContext rcon)
+	{
+		if (this.rendered)
+		{
+			return;
+		}
+		
+		// TODO Finish
+		
+		rcon.renderGame(this.cam);
+		
+		this.rendered = true;
+		
 	}
 	
 }

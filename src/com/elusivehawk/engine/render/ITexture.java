@@ -12,13 +12,16 @@ import com.elusivehawk.engine.render.opengl.IGLDeletable;
  */
 public interface ITexture extends IPreRenderer, IGLDeletable
 {
-	int getTexId();
-	
-	boolean isAnimated();
+	@Override
+	default void preRender(RenderContext rcon, double delta){}
 	
 	default GLEnumTexture getType()
 	{
 		return GLEnumTexture.GL_TEXTURE_2D;
 	}
+	
+	int getTexId();
+	
+	boolean isAnimated();
 	
 }
