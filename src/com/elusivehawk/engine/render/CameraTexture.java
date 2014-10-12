@@ -56,7 +56,7 @@ public class CameraTexture implements IFramebufferTexture
 	}
 	
 	@Override
-	public void renderTexture(RenderContext rcon)
+	public void render(RenderContext rcon)
 	{
 		if (this.rendered)
 		{

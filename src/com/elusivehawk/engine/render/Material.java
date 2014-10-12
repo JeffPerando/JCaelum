@@ -9,7 +9,7 @@ import com.elusivehawk.util.math.MathHelper;
  * 
  * @author Elusivehawk
  */
-public class Material implements IPreRenderer
+public class Material implements IRenderable
 {
 	protected ITexture tex = null;
 	protected IFramebufferTexture fboTex = null;
@@ -30,6 +30,17 @@ public class Material implements IPreRenderer
 	}
 	
 	@Override
+	public void render(RenderContext rcon) throws RenderException
+	{
+		if (this.fboTex != null)
+		{
+			this.fboTex.render(rcon);
+			
+		}
+		
+	}
+	
+	@Override
 	public void preRender(RenderContext rcon, double delta)
 	{
 		if (this.tex != null)
@@ -41,6 +52,17 @@ public class Material implements IPreRenderer
 		if (this.fboTex != null)
 		{
 			this.fboTex.preRender(rcon, delta);
+			
+		}
+		
+	}
+	
+	@Override
+	public void postRender(RenderContext rcon)
+	{
+		if (this.fboTex != null)
+		{
+			this.fboTex.postRender(rcon);
 			
 		}
 		
@@ -129,14 +151,9 @@ public class Material implements IPreRenderer
 		return this.tex;
 	}
 	
-	public void renderTexture(RenderContext rcon)
+	public boolean isStatic()
 	{
-		if (this.fboTex != null)
-		{
-			this.fboTex.renderTexture(rcon);
-			
-		}
-		
+		return this.fboTex != null || (this.tex != null && !this.tex.isAnimated());
 	}
 	
 }

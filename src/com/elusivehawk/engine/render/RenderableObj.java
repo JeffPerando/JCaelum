@@ -1,9 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
-import java.util.List;
 import java.util.UUID;
-import java.util.function.Consumer;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
 import com.elusivehawk.engine.render.opengl.GLConst;
@@ -13,7 +11,6 @@ import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.VertexArray;
 import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.IDirty;
-import com.google.common.collect.Lists;
 
 /**
  * 
@@ -26,12 +23,11 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 	protected final GLProgram p;
 	
 	protected final VertexArray vao = new VertexArray();
-	protected final List<IDirty> dirts = Lists.newArrayList();
 	
-	protected boolean dirty = true, initiated = false;
-	protected volatile boolean zBuffer = true;
-	protected Filters filters = null;
-	protected MaterialSet matSet = null;
+	protected volatile boolean dirty = true, zBuffer = true;
+	protected boolean initiated = false;
+	protected volatile Filters filters = null;
+	protected volatile MaterialSet matSet = null;
 	
 	protected RenderableObj()
 	{
@@ -45,8 +41,6 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 		assert program != null;
 		
 		p = program;
-		
-		dirts.add(program);
 		
 	}
 	
@@ -88,6 +82,14 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 			
 			this.p.attachUniform(rcon, "view", cam.getView().asBuffer(), GLEnumUType.M_FOUR);
 			this.p.attachUniform(rcon, "proj", cam.getProjection().asBuffer(), GLEnumUType.M_FOUR);
+			
+		}
+		
+		if (this.matSet != null && this.matSet.isDirty())
+		{
+			this.matSet.render(rcon);
+			
+			//TODO Load materials into program
 			
 		}
 		
@@ -158,46 +160,28 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 	@Override
 	public boolean isDirty()
 	{
-		if (!this.dirty)
-		{
-			for (IDirty d : this.dirts)
-			{
-				if (d.isDirty())
-				{
-					this.dirty = true;
-					break;
-				}
-				
-			}
-			
-		}
-		
 		return this.dirty;
 	}
 	
 	@Override
-	public synchronized void setIsDirty(boolean b)
+	public void setIsDirty(boolean b)
 	{
-		if (!(this.dirty = b))
-		{
-			this.dirts.forEach(((d) -> {d.setIsDirty(false);}));
-			
-		}
+		this.dirty = b;
 		
 	}
 	
 	@Override
 	public void preRender(RenderContext rcon, double delta)
 	{
-		this.forEveryMaterial(((mat) -> {mat.preRender(rcon, delta);}));
+		if (this.matSet != null)
+		{
+			this.matSet.preRender(rcon, delta);
+			
+		}
 		
 		if (this.isDirty())
 		{
 			this.p.attachUniform(rcon, "flip", BufferHelper.makeIntBuffer(rcon.isScreenFlipped() ? 1 : 0), GLEnumUType.ONE);
-			
-			this.forEveryMaterial(((mat) -> {mat.renderTexture(rcon);}));
-			
-			//TODO Load materials into program
 			
 			if (this.filters != null)
 			{
@@ -211,39 +195,27 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 		
 	}
 	
-	public synchronized void setFilters(Filters fs)
+	@Override
+	public void postRender(RenderContext rcon)
 	{
-		if (this.filters != null)
-		{
-			this.dirts.remove(this.filters);
-			
-		}
-		
-		this.filters = fs;
-		
-		if (fs != null)
-		{
-			this.dirts.add(fs);
-			
-		}
+		this.matSet.postRender(rcon);
 		
 	}
 	
-	public synchronized RenderableObj setMaterials(MaterialSet ms)
+	public RenderableObj setFilters(Filters fs)
 	{
-		if (this.matSet != null)
-		{
-			this.dirts.remove(this.matSet);
-			
-		}
+		assert fs != null;
+		
+		this.filters = fs;
+		
+		return this;
+	}
+	
+	public RenderableObj setMaterials(MaterialSet ms)
+	{
+		assert ms != null;
 		
 		this.matSet = ms;
-		
-		if (ms != null)
-		{
-			this.dirts.add(ms);
-			
-		}
 		
 		return this;
 	}
@@ -269,22 +241,6 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 	public int getMaterialCount()
 	{
 		return this.matSet == null ? 0 : this.matSet.matCount();
-	}
-	
-	protected void forEveryMaterial(Consumer<Material> consumer)
-	{
-		int mCount = this.getMaterialCount();
-		
-		if (mCount > 0)
-		{
-			for (int c = 0; c < mCount; c++)
-			{
-				consumer.accept(this.matSet.getMat(c));
-				
-			}
-			
-		}
-		
 	}
 	
 	protected abstract boolean initiate(RenderContext rcon);

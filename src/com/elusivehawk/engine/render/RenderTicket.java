@@ -175,45 +175,6 @@ public class RenderTicket extends RenderableObj implements Quaternion.Listener, 
 		
 	}*/
 	
-	@Override
-	public synchronized RenderTicket setMaterials(MaterialSet ms)
-	{
-		assert ms != null;
-		
-		if (this.matSet != null)
-		{
-			this.dirts.remove(this.matSet);
-			
-		}
-		
-		super.setMaterials(ms);
-		
-		this.dirts.add(ms);
-		
-		return this;
-	}
-	
-	@Override
-	public synchronized void setFilters(Filters fs)
-	{
-		if (this.filters != null)
-		{
-			this.dirts.remove(this.filters);
-			
-		}
-		
-		super.setFilters(fs);
-		
-		if (fs != null)
-		{
-			this.dirts.add(fs);
-			
-		}
-		
-		this.setIsDirty(true);
-		
-	}
-	
 	public synchronized void setIndice(int i, Matrix m)
 	{
 		this.buf.position(i * 16);

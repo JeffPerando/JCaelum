@@ -7,8 +7,7 @@ package com.elusivehawk.engine.render;
  * 
  * @author Elusivehawk
  */
-public interface IFramebufferTexture extends ITexture, IPostRenderer
+public interface IFramebufferTexture extends ITexture, IRenderable
 {
-	void renderTexture(RenderContext rcon);
 	
 }
