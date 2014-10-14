@@ -25,6 +25,15 @@ public class Camera3D implements ICamera
 	private volatile boolean dirty = true;
 	
 	@SuppressWarnings("unqualified-field-access")
+	public Camera3D(Vector position, float fov, float nearZ, float farZ)
+	{
+		this(fov, nearZ, farZ);
+		
+		pos.set(position);
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
 	public Camera3D(float fieldOfView, float nearZ, float farZ)
 	{
 		fov = fieldOfView;

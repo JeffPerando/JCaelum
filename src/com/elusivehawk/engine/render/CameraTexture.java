@@ -1,6 +1,8 @@
 
 package com.elusivehawk.engine.render;
 
+import com.elusivehawk.engine.render.opengl.GLFramebuffer;
+
 /**
  * 
  * Renders the game scene, and copies what it renders to a texture.
@@ -12,23 +14,30 @@ package com.elusivehawk.engine.render;
 public class CameraTexture implements IFramebufferTexture
 {
 	private final ICamera cam;
+	private final GLFramebuffer framebuf;
 	
-	private volatile int tex = 0;
 	private boolean rendered = false;
 	
-	@SuppressWarnings("unqualified-field-access")
 	public CameraTexture(ICamera camera)
+	{
+		this(camera, true);
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public CameraTexture(ICamera camera, boolean depth)
 	{
 		assert camera != null;
 		
 		cam = camera;
+		framebuf = new GLFramebuffer(depth);
 		
 	}
-
+	
 	@Override
 	public int getTexId()
 	{
-		return this.tex;
+		return this.framebuf.getTexture();
 	}
 	
 	@Override
@@ -40,11 +49,7 @@ public class CameraTexture implements IFramebufferTexture
 	@Override
 	public void delete(RenderContext rcon)
 	{
-		if (this.tex != 0)
-		{
-			rcon.getGL1().glDeleteTextures(this.tex);
-			
-		}
+		this.framebuf.delete(rcon);
 		
 	}
 	
@@ -63,11 +68,15 @@ public class CameraTexture implements IFramebufferTexture
 			return;
 		}
 		
-		// TODO Finish
-		
-		rcon.renderGame(this.cam);
-		
-		this.rendered = true;
+		if (this.framebuf.bind(rcon))
+		{
+			rcon.renderGame(this.cam);
+			
+			this.framebuf.unbind(rcon);
+			
+			this.rendered = true;
+			
+		}
 		
 	}
 	

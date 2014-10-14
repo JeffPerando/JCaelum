@@ -26,8 +26,11 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 	
 	protected volatile boolean dirty = true, zBuffer = true;
 	protected boolean initiated = false;
+	
 	protected volatile Filters filters = null;
 	protected volatile MaterialSet matSet = null;
+	
+	protected int renderCount = 0;
 	
 	protected RenderableObj()
 	{
@@ -76,6 +79,13 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 			
 		}
 		
+		if (this.renderCount == RenderConst.RECURSIVE_LIMIT)
+		{
+			return;
+		}
+		
+		this.renderCount++;
+		
 		if (rcon.doUpdateCamera())
 		{
 			ICamera cam = rcon.getCamera();
@@ -93,33 +103,40 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 			
 		}
 		
-		if (this.p.bind(rcon) && this.vao.bind(rcon))
+		if (this.p.bind(rcon))
 		{
-			boolean zBuffer = rcon.getGL2().glIsEnabled(GLConst.GL_DEPTH_TEST);
-			
-			if (zBuffer != this.zBuffer)
+			if (this.vao.bind(rcon))
 			{
-				IGL1 gl1 = rcon.getGL1();
+				boolean zBuffer = rcon.getGL2().glIsEnabled(GLConst.GL_DEPTH_TEST);
 				
-				if (this.zBuffer)
+				if (zBuffer != this.zBuffer)
 				{
-					gl1.glEnable(GLConst.GL_DEPTH_TEST);
+					IGL1 gl1 = rcon.getGL1();
+					
+					if (this.zBuffer)
+					{
+						gl1.glEnable(GLConst.GL_DEPTH_TEST);
+						
+					}
+					else
+					{
+						gl1.glDisable(GLConst.GL_DEPTH_TEST);
+						
+					}
 					
 				}
-				else
-				{
-					gl1.glDisable(GLConst.GL_DEPTH_TEST);
-					
-				}
+				
+				this.doRender(rcon);
+				
+				this.vao.unbind(rcon);
 				
 			}
 			
-			this.doRender(rcon);
+			this.p.unbind(rcon);
 			
 		}
 		
-		this.vao.unbind(rcon);
-		this.p.unbind(rcon);
+		this.renderCount--;
 		
 	}
 	

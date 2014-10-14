@@ -48,7 +48,7 @@ public class OpenGL1 implements IGL1
 	@Override
 	public void glBindTexture(GLEnumTexture target, int texture) throws GLException
 	{
-		GL11.glBindTexture(target.glCode, texture);
+		GL11.glBindTexture(target.gl, texture);
 		
 		RenderHelper.checkForGLError(this);
 		
@@ -195,7 +195,7 @@ public class OpenGL1 implements IGL1
 	@Override
 	public void glDeleteTextures(int... textures) throws GLException
 	{
-		this.glDeleteTextures(BufferHelper.makeIntBuffer(textures));
+		this.glDeleteTextures(BufferHelper.createWrapper(textures));
 		
 		RenderHelper.checkForGLError(this);
 		

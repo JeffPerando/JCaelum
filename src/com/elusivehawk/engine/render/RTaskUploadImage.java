@@ -27,7 +27,7 @@ public class RTaskUploadImage extends RenderTask
 	@Override
 	protected int finishRTask(RenderContext rcon) throws RenderException
 	{
-		return RenderHelper.processImage(rcon, this.img);
+		return RenderHelper.genTexture(rcon, this.img);
 	}
 	
 	public int getFrame()

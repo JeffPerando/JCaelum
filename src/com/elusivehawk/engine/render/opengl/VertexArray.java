@@ -49,7 +49,7 @@ public class VertexArray implements IGLBindable
 			
 		}
 		
-		rcon.getGL3().glDeleteVertexArrays(this.id);
+		rcon.getGL3().glDeleteVertexArray(this.id);
 		
 	}
 	
@@ -68,7 +68,7 @@ public class VertexArray implements IGLBindable
 		
 		if (this.id == 0)
 		{
-			this.id = rcon.getGL3().glGenVertexArrays();
+			this.id = rcon.getGL3().glGenVertexArray();
 			rcon.registerCleanable(this);
 			
 		}

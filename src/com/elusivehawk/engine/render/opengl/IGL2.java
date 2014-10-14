@@ -69,6 +69,10 @@ public interface IGL2
 	
 	void glDisableVertexAttribArray(int index) throws GLException;
 	
+	void glDrawBuffer(int buffer) throws GLException;
+	
+	void glDrawBuffers(int[] buffers) throws GLException;
+	
 	void glEnableVertexAttribArray(int index) throws GLException;
 	
 	String glGetActiveAttrib(int program, int index, int maxLength) throws GLException;

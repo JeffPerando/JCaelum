@@ -186,13 +186,43 @@ public interface IGL1
 	
 	void glStencilOp(int fail, int zfail, int zpass) throws GLException;
 	
-	void glTexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, ByteBuffer pixels) throws GLException;
+	default void glTexImage2D(GLEnumTexture target, int level, int internalFormat, int width, int height, int border, int format, int type, ByteBuffer pixels) throws GLException
+	{
+		this.glTexImage2D(target.gl, level, internalFormat, width, height, border, format, type, pixels);
+		
+	}
+	
+	void glTexImage2D(int target, int level, int internalFormat, int width, int height, int border, int format, int type, ByteBuffer pixels) throws GLException;
+	
+	default void glTexImage3D(GLEnumTexture target, int level, int internalFormat, int width, int height, int depth, int border, int format, int type, ByteBuffer pixels) throws GLException
+	{
+		this.glTexImage3D(target.gl, level, internalFormat, width, height, depth, border, format, type, pixels);
+		
+	}
 	
 	void glTexImage3D(int target, int level, int internalFormat, int width, int height, int depth, int border, int format, int type, ByteBuffer pixels) throws GLException;
 	
+	default void glTexParameterf(GLEnumTexture target, int pname, float param) throws GLException
+	{
+		this.glTexParameterf(target.gl, pname, param);
+		
+	}
+	
 	void glTexParameterf(int target, int pname, float param) throws GLException;
 	
+	default void glTexParameterx(GLEnumTexture target, int pname, int param) throws GLException
+	{
+		this.glTexParameterx(target.gl, pname, param);
+		
+	}
+	
 	void glTexParameterx(int target, int pname, int param) throws GLException;
+	
+	default void glTexSubImage2D(GLEnumTexture target, int level, int xoffset, int yoffset, int width, int height, int format, int type, ByteBuffer pixels) throws GLException
+	{
+		this.glTexSubImage2D(target.gl, level, xoffset, yoffset, width, height, format, type, pixels);
+		
+	}
 	
 	void glTexSubImage2D(int target, int level, int xoffset, int yoffset, int width, int height, int format, int type, ByteBuffer pixels) throws GLException;
 	

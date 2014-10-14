@@ -9,6 +9,7 @@ import org.lwjgl.opengl.GL20;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.opengl.GLException;
 import com.elusivehawk.engine.render.opengl.IGL2;
+import com.elusivehawk.util.BufferHelper;
 
 /**
  * 
@@ -107,6 +108,20 @@ public class OpenGL2 extends OpenGL1 implements IGL2
 		GL20.glDisableVertexAttribArray(index);
 		
 		RenderHelper.checkForGLError(this);
+		
+	}
+	
+	@Override
+	public void glDrawBuffer(int buffer) throws GLException
+	{
+		GL20.glDrawBuffers(buffer);
+		
+	}
+	
+	@Override
+	public void glDrawBuffers(int[] buffers) throws GLException
+	{
+		GL20.glDrawBuffers(BufferHelper.createWrapper(buffers));
 		
 	}
 	

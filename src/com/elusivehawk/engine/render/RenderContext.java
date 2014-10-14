@@ -122,7 +122,7 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 		
 		try
 		{
-			this.notex = RenderHelper.processImage(ntf);
+			this.notex = RenderHelper.genTexture(this, ntf);
 			
 		}
 		catch (GLException e)
@@ -220,7 +220,7 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 				
 				if (rem)
 				{
-					this.rtasks.remove(0);
+					this.rtasks.remove(t);
 					
 				}
 				

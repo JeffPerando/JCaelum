@@ -123,7 +123,7 @@ public final class CaelumEngine
 	
 	public static RenderContext renderContext()
 	{
-		return RenderHelper.renderContext();
+		return (RenderContext)getContext(true);
 	}
 	
 	public static TaskManager tasks()

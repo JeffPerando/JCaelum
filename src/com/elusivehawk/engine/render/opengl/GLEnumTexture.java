@@ -21,12 +21,12 @@ public enum GLEnumTexture
 	GL_TEXTURE_2D_MULTISAMPLE(GLConst.GL_TEXTURE_2D_MULTISAMPLE),
 	GL_TEXTURE_2D_MULTISAMPLE_ARRAY(GLConst.GL_TEXTURE_2D_MULTISAMPLE_ARRAY);
 	
-	public final int glCode;
+	public final int gl;
 	
 	@SuppressWarnings("unqualified-field-access")
-	GLEnumTexture(int gl)
+	GLEnumTexture(int i)
 	{
-		glCode = gl;
+		gl = i;
 		
 	}
 	

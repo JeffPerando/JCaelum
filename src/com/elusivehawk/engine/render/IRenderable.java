@@ -11,10 +11,10 @@ package com.elusivehawk.engine.render;
 public interface IRenderable extends IPreRenderer, IPostRenderer
 {
 	@Override
-	default void preRender(RenderContext rcon, double delta){}
+	default void postRender(RenderContext rcon){}
 	
 	@Override
-	default void postRender(RenderContext rcon){}
+	default void preRender(RenderContext rcon, double delta){}
 	
 	/**
 	 * 

@@ -42,25 +42,22 @@ public final class RenderHelper
 	@Deprecated
 	public static RenderContext renderContext()
 	{
-		return renderContext(true);
+		return CaelumEngine.renderContext();
 	}
 	
 	@Deprecated
-	public static RenderContext renderContext(boolean safe)
-	{
-		return (RenderContext)CaelumEngine.getContext(safe);
-	}
-	
 	public static IGL1 gl1()
 	{
 		return renderContext().getGL1();
 	}
 	
+	@Deprecated
 	public static IGL2 gl2()
 	{
 		return renderContext().getGL2();
 	}
 	
+	@Deprecated
 	public static IGL3 gl3()
 	{
 		return renderContext().getGL3();
@@ -141,30 +138,41 @@ public final class RenderHelper
 		return null;
 	}
 	
-	public static int processImage(ILegibleImage img) throws GLException
+	public static int genTexture(RenderContext rcon, ILegibleImage img)
 	{
-		return processImage(img, img.getFormat());
+		return genTexture(rcon, img, img.getFormat());
 	}
 	
-	public static int processImage(RenderContext rcon, ILegibleImage img) throws GLException
+	public static int genTexture(RenderContext rcon, ILegibleImage img, ColorFormat format)
 	{
-		return processImage(rcon, img.toBytes(), img.getHeight(), img.getWidth());
+		return genTexture(rcon, img, format, true);
 	}
 	
-	public static int processImage(ILegibleImage img, ColorFormat format) throws GLException
+	public static int genTexture(RenderContext rcon, ILegibleImage img, ColorFormat format, boolean mipmap)
 	{
-		return processImage(img.toBytes(format), img.getWidth(), img.getHeight());
+		return genTexture(rcon, GLEnumTexture.GL_TEXTURE_2D, img.toBytes(format), img.getWidth(), img.getHeight(), format.supports(ColorFilter.ALPHA), mipmap);
 	}
 	
-	public static int processImage(ByteBuffer buf, int w, int h) throws GLException
+	public static int genTexture(RenderContext rcon, GLEnumTexture type, int width, int height, boolean alpha)
 	{
-		return processImage(renderContext(), buf, w, h);
+		return genTexture(rcon, type, null, width, height, alpha, true);
 	}
 	
-	public static int processImage(RenderContext rcon, ByteBuffer buf, int w, int h) throws GLException
+	public static int genTexture(RenderContext rcon, GLEnumTexture type, int width, int height, boolean alpha, boolean mipmap)
 	{
+		return genTexture(rcon, type, null, width, height, alpha, mipmap);
+	}
+	
+	public static int genTexture(RenderContext rcon, GLEnumTexture type, ByteBuffer texture, int width, int height, boolean alpha)
+	{
+		return genTexture(rcon, type, texture, width, height, alpha, true);
+	}
+	
+	public static int genTexture(RenderContext rcon, GLEnumTexture type, ByteBuffer texture, int width, int height, boolean alpha, boolean mipmap)
+	{
+		assert width > 0 && height > 0;
+		
 		IGL1 gl1 = rcon.getGL1();
-		IGL3 gl3 = rcon.getGL3();
 		
 		int tex = 0;
 		
@@ -172,16 +180,18 @@ public final class RenderHelper
 		{
 			tex = gl1.glGenTextures();
 			
-			gl1.glBindTexture(GLEnumTexture.GL_TEXTURE_2D, tex);
+			gl1.glBindTexture(type, tex);
 			
 			gl1.glPixelStorei(GLConst.GL_UNPACK_ALIGNMENT, 1);
-			gl1.glTexImage2D(GLConst.GL_TEXTURE_2D, 0, GLConst.GL_RGB, w, h, 0, GLConst.GL_RGBA, GLConst.GL_UNSIGNED_BYTE, buf);
-			gl3.glGenerateMipmap(GLConst.GL_TEXTURE_2D);
+			gl1.glTexImage2D(type, 0, alpha ? GLConst.GL_RGBA : GLConst.GL_RGB, width, height, 0, alpha ? GLConst.GL_RGBA : GLConst.GL_RGB, GLConst.GL_UNSIGNED_BYTE, texture);
 			
-			gl1.glTexParameterx(GLConst.GL_TEXTURE_2D, GLConst.GL_TEXTURE_MIN_FILTER, GLConst.GL_LINEAR);
-			gl1.glTexParameterx(GLConst.GL_TEXTURE_2D, GLConst.GL_TEXTURE_MAG_FILTER, GLConst.GL_LINEAR);
+			if (mipmap)
+			{
+				rcon.getGL3().glGenerateTextureMipmap(tex);
+				
+			}
 			
-			gl1.glBindTexture(GLEnumTexture.GL_TEXTURE_2D, 0);
+			gl1.glBindTexture(type, 0);
 			
 			return tex;
 		}
