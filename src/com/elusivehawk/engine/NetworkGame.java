@@ -3,12 +3,12 @@ package com.elusivehawk.engine;
 
 import java.io.IOException;
 import com.elusivehawk.engine.assets.AssetManager;
-import com.elusivehawk.engine.network.Client;
-import com.elusivehawk.engine.network.ConnectionType;
-import com.elusivehawk.engine.network.IHost;
-import com.elusivehawk.engine.network.INetworkMaster;
-import com.elusivehawk.engine.network.Server;
-import com.elusivehawk.engine.network.Side;
+import com.elusivehawk.util.network.Client;
+import com.elusivehawk.util.network.ConnectionType;
+import com.elusivehawk.util.network.IHost;
+import com.elusivehawk.util.network.INetworkMaster;
+import com.elusivehawk.util.network.Server;
+import com.elusivehawk.util.network.Side;
 
 /**
  * 
