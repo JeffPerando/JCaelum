@@ -187,7 +187,7 @@ public final class RenderHelper
 			
 			if (mipmap)
 			{
-				rcon.getGL3().glGenerateTextureMipmap(tex);
+				rcon.getGL3().glGenerateMipmap(type);
 				
 			}
 			

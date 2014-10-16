@@ -4,7 +4,6 @@ package com.elusivehawk.engine.render.opengl;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import com.elusivehawk.engine.render.ITexture;
 
 /**
  * 
@@ -192,14 +191,6 @@ public interface IGL3
 	}
 	
 	void glGenerateMipmap(int target) throws GLException;
-	
-	default void glGenerateTextureMipmap(ITexture texture) throws GLException
-	{
-		this.glGenerateTextureMipmap(texture.getTexId());
-		
-	}
-	
-	void glGenerateTextureMipmap(int texture) throws GLException;
 	
 	int glGenFramebuffer() throws GLException;
 	

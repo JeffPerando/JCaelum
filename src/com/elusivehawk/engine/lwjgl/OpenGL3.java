@@ -383,13 +383,6 @@ public class OpenGL3 extends OpenGL2 implements IGL3
 	}
 	
 	@Override
-	public void glGenerateTextureMipmap(int texture) throws GLException
-	{
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
 	public int glGenFramebuffer() throws GLException
 	{
 		// TODO Auto-generated method stub

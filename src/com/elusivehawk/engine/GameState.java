@@ -1,11 +1,13 @@
 
 package com.elusivehawk.engine;
 
+import java.util.List;
 import com.elusivehawk.engine.assets.AssetManager;
 import com.elusivehawk.engine.physics.IPhysicsSimulator;
 import com.elusivehawk.engine.render.IRenderable;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderException;
+import com.google.common.collect.Lists;
 
 /**
  * 
@@ -16,7 +18,7 @@ import com.elusivehawk.engine.render.RenderException;
 public class GameState extends AbstractGameComponent
 {
 	protected IPhysicsSimulator psim = null;
-	protected IRenderable renderer = null;
+	protected List<IRenderable> renderers = Lists.newArrayList();
 	
 	public GameState(Game owner, String title)
 	{
@@ -33,9 +35,11 @@ public class GameState extends AbstractGameComponent
 		return this;
 	}
 	
-	public GameState setRenderer(IRenderable r)
+	public GameState addRenderer(IRenderable r)
 	{
-		this.renderer = r;
+		assert r != null;
+		
+		this.renderers.add(r);
 		
 		return this;
 	}
@@ -46,11 +50,7 @@ public class GameState extends AbstractGameComponent
 	@Override
 	public void render(RenderContext rcon) throws RenderException
 	{
-		if (this.renderer != null)
-		{
-			this.renderer.render(rcon);
-			
-		}
+		this.renderers.forEach(((r) -> {r.render(rcon);}));
 		
 	}
 	
@@ -61,6 +61,20 @@ public class GameState extends AbstractGameComponent
 	public IPhysicsSimulator getPhysicsSimulator()
 	{
 		return this.psim;
+	}
+	
+	@Override
+	public void preRender(RenderContext rcon, double delta)
+	{
+		this.renderers.forEach(((r) -> {r.preRender(rcon, delta);}));
+		
+	}
+	
+	@Override
+	public void postRender(RenderContext rcon) throws RenderException
+	{
+		this.renderers.forEach(((r) -> {r.postRender(rcon);}));
+		
 	}
 	
 }

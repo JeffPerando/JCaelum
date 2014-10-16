@@ -12,7 +12,7 @@ import com.elusivehawk.util.math.MathHelper;
 public class Material implements IRenderable
 {
 	protected ITexture tex = null;
-	protected IFramebufferTexture fboTex = null;
+	protected IRenderableTexture fboTex = null;
 	protected float shininess = 0f;
 	protected Color filter = new Color();
 	
@@ -74,7 +74,7 @@ public class Material implements IRenderable
 		return new Material(this);
 	}
 	
-	public Material fboTex(IFramebufferTexture texture)
+	public Material fboTex(IRenderableTexture texture)
 	{
 		assert texture != null;
 		
@@ -131,7 +131,7 @@ public class Material implements IRenderable
 		return this;
 	}
 	
-	public IFramebufferTexture fboTex()
+	public IRenderableTexture fboTex()
 	{
 		return this.fboTex;
 	}

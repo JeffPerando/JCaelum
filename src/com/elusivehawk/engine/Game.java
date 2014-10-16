@@ -16,10 +16,10 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-@SuppressWarnings({"static-method", "unused"})
+@SuppressWarnings("unused")
 public abstract class Game extends AbstractGameComponent implements IPausable
 {
-	private final List<IGameStateListener> listeners = Lists.newArrayList();
+	private final List<IGameStateListener> gamestateLis = Lists.newArrayList();
 	
 	private GameState state = null, nextState = null;
 	private boolean initiated = false, paused = false;
@@ -140,12 +140,12 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 				}
 				catch (Throwable e)
 				{
-					throw new GameTickException("Error caught during game state initiation:", e);
+					throw new RuntimeException("Error caught during game state initiation:", e);
 				}
 				
-				if (!this.listeners.isEmpty())
+				if (!this.gamestateLis.isEmpty())
 				{
-					this.listeners.forEach(((lis) -> {lis.onGameStateSwitch(this.state);}));
+					this.gamestateLis.forEach(((lis) -> {lis.onGameStateSwitch(this.state);}));
 					
 				}
 				
@@ -159,6 +159,28 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 	public String getFormattedName()
 	{
 		return this.getGameVersion() == null ? this.name : String.format("%s %s", this.name, this.getGameVersion());
+	}
+	
+	@Override
+	public void preRender(RenderContext rcon, double delta)
+	{
+		if (this.state != null)
+		{
+			this.state.preRender(rcon, delta);
+			
+		}
+		
+	}
+	
+	@Override
+	public void postRender(RenderContext rcon)
+	{
+		if (this.state != null)
+		{
+			this.state.postRender(rcon);
+			
+		}
+		
 	}
 	
 	//XXX Optional/technical methods
@@ -185,7 +207,7 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 	
 	public void addGameStateListener(IGameStateListener gsl)
 	{
-		this.listeners.add(gsl);
+		this.gamestateLis.add(gsl);
 		
 	}
 	

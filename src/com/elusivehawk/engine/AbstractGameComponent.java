@@ -41,6 +41,13 @@ public abstract class AbstractGameComponent implements IUpdatable, IRenderable
 	}
 	
 	@Override
+	public void update(double delta, Object... extra) throws Throwable
+	{
+		this.updateModules(delta, extra);
+		
+	}
+	
+	@Override
 	public String toString()
 	{
 		if (this.master == null)
@@ -70,12 +77,7 @@ public abstract class AbstractGameComponent implements IUpdatable, IRenderable
 		return String.format("%s.%s", this.master.master == null ? this.master.name : this.master.toString(), b.toString());
 	}
 	
-	@Override
-	public void update(double delta, Object... extra) throws Throwable
-	{
-		this.updateModules(delta, extra);
-		
-	}
+	//XXX Module things
 	
 	protected final void updateModules(double delta, Object... extra) throws Throwable
 	{
@@ -87,13 +89,11 @@ public abstract class AbstractGameComponent implements IUpdatable, IRenderable
 		
 	}
 	
-	//XXX Module things
-	
 	public synchronized void addModule(IUpdatable m)
 	{
 		if (m instanceof Thread)
 		{
-			throw new CaelumException("Threads are NOT modules. Silly Buttons..."/*[sic]*/);
+			throw new CaelumException("Threads aren't modules. Silly Buttons..."/*[sic]*/);
 		}
 		
 		this.modules.add(m);
@@ -111,7 +111,6 @@ public abstract class AbstractGameComponent implements IUpdatable, IRenderable
 		return this.name;
 	}
 	
-	@SuppressWarnings("unused")
 	public void onScreenFlipped(boolean flip){}
 	
 	public abstract void initiate(GameArguments args, AssetManager assets) throws Throwable;

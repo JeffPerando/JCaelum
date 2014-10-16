@@ -15,7 +15,6 @@ import com.elusivehawk.engine.input.Input;
 import com.elusivehawk.engine.render.DisplaySettings;
 import com.elusivehawk.engine.render.IDisplay;
 import com.elusivehawk.engine.render.RenderContext;
-import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.ThreadGameRender;
 import com.elusivehawk.engine.render.old.RenderTask;
 import com.elusivehawk.util.CompInfo;
@@ -328,7 +327,7 @@ public final class CaelumEngine
 		
 		if (this.env == null)
 		{
-			IGameEnvironment env = null;
+			IGameEnvironment gameenv = null;
 			Class<?> clazz = null;
 			String cl = this.startargs.get("env");
 			
@@ -374,9 +373,9 @@ public final class CaelumEngine
 				
 			}
 			
-			env = (IGameEnvironment)ReflectionHelper.newInstance(clazz, new Class[]{IGameEnvironment.class}, null);
+			gameenv = (IGameEnvironment)ReflectionHelper.newInstance(clazz, new Class[]{IGameEnvironment.class}, null);
 			
-			if (env == null)
+			if (gameenv == null)
 			{
 				Logger.log().log(EnumLogType.ERROR, "Unable to load environment: Instance couldn't be created. Class: %s", clazz == null ? "NULL" : clazz.getCanonicalName());
 				ShutdownHelper.exit("NO-ENVIRONMENT-FOUND");
@@ -384,7 +383,7 @@ public final class CaelumEngine
 				return;
 			}
 			
-			if (!env.isCompatible(CompInfo.OS))
+			if (!gameenv.isCompatible(CompInfo.OS))
 			{
 				Logger.log().log(EnumLogType.ERROR, "Unable to load environment: Current OS is incompatible. Class: %s; OS: %s", clazz == null ? "NULL" : clazz.getCanonicalName(), CompInfo.OS);
 				ShutdownHelper.exit("NO-ENVIRONMENT-FOUND");
@@ -392,9 +391,9 @@ public final class CaelumEngine
 				return;
 			}
 			
-			env.initiate(this.envConfig, args);
+			gameenv.initiate(this.envConfig, args);
 			
-			this.env = env;
+			this.env = gameenv;
 			
 		}
 		

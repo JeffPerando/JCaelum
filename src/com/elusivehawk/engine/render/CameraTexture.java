@@ -1,17 +1,16 @@
 
 package com.elusivehawk.engine.render;
 
+import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.render.opengl.GLFramebuffer;
 
 /**
  * 
- * Renders the game scene, and copies what it renders to a texture.
- * <p>
- * NOTICE: NOT STATIC!
+ * 
  * 
  * @author Elusivehawk
  */
-public class CameraTexture implements IFramebufferTexture
+public class CameraTexture implements IRenderableTexture
 {
 	private final ICamera cam;
 	private final GLFramebuffer framebuf;
@@ -24,13 +23,37 @@ public class CameraTexture implements IFramebufferTexture
 		
 	}
 	
-	@SuppressWarnings("unqualified-field-access")
 	public CameraTexture(ICamera camera, boolean depth)
+	{
+		this(camera, depth, CaelumEngine.display());
+		
+	}
+	
+	public CameraTexture(ICamera camera, IDisplay display)
+	{
+		this(camera, true, display);
+		
+	}
+	
+	public CameraTexture(ICamera camera, boolean depth, IDisplay display)
+	{
+		this(camera, depth, display.getWidth(), display.getHeight());
+		
+	}
+	
+	public CameraTexture(ICamera camera, int w, int h)
+	{
+		this(camera, true, w, h);
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public CameraTexture(ICamera camera, boolean depth, int w, int h)
 	{
 		assert camera != null;
 		
 		cam = camera;
-		framebuf = new GLFramebuffer(depth);
+		framebuf = new GLFramebuffer(depth, w, h);
 		
 	}
 	
@@ -54,13 +77,6 @@ public class CameraTexture implements IFramebufferTexture
 	}
 	
 	@Override
-	public void postRender(RenderContext rcon)
-	{
-		this.rendered = false;
-		
-	}
-	
-	@Override
 	public void render(RenderContext rcon)
 	{
 		if (this.rendered)
@@ -78,6 +94,18 @@ public class CameraTexture implements IFramebufferTexture
 			
 		}
 		
+	}
+	
+	@Override
+	public void postRender(RenderContext rcon)
+	{
+		this.rendered = false;
+		
+	}
+	
+	public ICamera getCam()
+	{
+		return this.cam;
 	}
 	
 }

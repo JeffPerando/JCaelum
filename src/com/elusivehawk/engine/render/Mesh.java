@@ -5,7 +5,7 @@ import java.io.InputStream;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.EnumAssetType;
 import com.elusivehawk.util.math.Vector;
-import com.elusivehawk.util.storage.ImmutableArray;
+import com.elusivehawk.util.storage.Array;
 
 /**
  * 
@@ -15,16 +15,16 @@ import com.elusivehawk.util.storage.ImmutableArray;
  */
 public class Mesh extends Asset
 {
-	public final ImmutableArray<Vector> points, texOffs, normals;
+	public final Array<Vector> points, texOffs, normals;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public Mesh(String filepath, Vector[] p, Vector[] tex, Vector[] norm)
 	{
 		super(filepath, EnumAssetType.MESH);
 		
-		points = ImmutableArray.create(p);
-		texOffs = ImmutableArray.create(tex);
-		normals = ImmutableArray.create(norm);
+		points = Array.create(p).setImmutable();
+		texOffs = Array.create(tex).setImmutable();
+		normals = Array.create(norm).setImmutable();
 		
 	}
 	

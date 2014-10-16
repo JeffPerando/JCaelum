@@ -251,13 +251,11 @@ public class Connection implements IPacketListener
 		{
 			byte[] tmp;
 			
-			Cipher cipher = Cipher.getInstance("RSA");
+			this.cipher.init(Cipher.ENCRYPT_MODE, this.pub_rec);
+			tmp = this.cipher.doFinal(in);
 			
-			cipher.init(Cipher.ENCRYPT_MODE, this.pub_rec);
-			tmp = cipher.doFinal(in);
-			
-			cipher.init(Cipher.ENCRYPT_MODE, this.priv);
-			ret = cipher.doFinal(tmp);
+			this.cipher.init(Cipher.ENCRYPT_MODE, this.priv);
+			ret = this.cipher.doFinal(tmp);
 			
 		}
 		catch (Exception e)

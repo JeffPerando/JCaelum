@@ -1,8 +1,8 @@
 
 package com.elusivehawk.engine.render;
 
-import java.util.function.Consumer;
 import com.elusivehawk.util.IDirty;
+import com.elusivehawk.util.storage.IArray;
 
 /**
  * 
@@ -10,7 +10,7 @@ import com.elusivehawk.util.IDirty;
  * 
  * @author Elusivehawk
  */
-public class MaterialSet implements IRenderable, IDirty
+public class MaterialSet implements IRenderable, IArray<Material>, IDirty
 {
 	private final Material[] mats = new Material[RenderConst.MATERIAL_CAP];
 	private volatile int matCount = 0;
@@ -30,29 +30,78 @@ public class MaterialSet implements IRenderable, IDirty
 	}
 	
 	@Override
+	public int size()
+	{
+		return this.matCount;
+	}
+	
+	@Override
+	public Material get(int i)
+	{
+		return this.mats[i];
+	}
+	
+	@Override
+	public IArray<? extends Material> set(int i, Material mat)
+	{
+		if (this.matCount == RenderConst.MATERIAL_CAP)
+		{
+			return this;
+		}
+		
+		if (this.isImmutable())
+		{
+			return this;
+		}
+		
+		if (mat == null)
+		{
+			return this;
+		}
+		
+		if (this.mats[i] != null)
+		{
+			return this;
+		}
+		
+		this.mats[i] = mat;
+		this.matCount++;
+		
+		return this;
+	}
+	
+	@Override
 	public void render(RenderContext rcon) throws RenderException
 	{
-		this.forEveryMaterial(((mat) -> {mat.render(rcon);}));
+		this.forEach(((mat) -> {mat.render(rcon);}));
 		
 	}
 	
 	@Override
 	public void preRender(RenderContext rcon, double delta)
 	{
-		this.forEveryMaterial(((mat) -> {mat.preRender(rcon, delta);}));
+		this.forEach(((mat) -> {mat.preRender(rcon, delta);}));
 		
 	}
 	
 	@Override
 	public void postRender(RenderContext rcon)
 	{
-		this.forEveryMaterial(((mat) -> {mat.postRender(rcon);}));
+		this.forEach(((mat) -> {mat.postRender(rcon);}));
 		
 	}
 	
-	public Material getMat(int i)
+	@Override
+	public boolean isImmutable()
 	{
-		return this.mats[i];
+		return this.finished;
+	}
+	
+	public MaterialSet setImmutable()
+	{
+		this.finished = true;
+		
+		return this;
 	}
 	
 	public boolean addMaterials(Material... mats)
@@ -100,20 +149,11 @@ public class MaterialSet implements IRenderable, IDirty
 		return ret;
 	}
 	
-	public void forEveryMaterial(Consumer<Material> consumer)
-	{
-		for (int c = 0; c < this.matCount; c++)
-		{
-			consumer.accept(this.getMat(c));
-			
-		}
-		
-	}
-	
-	public void finish()
+	public MaterialSet finish()
 	{
 		this.finished = true;
 		
+		return this;
 	}
 	
 	public int matCount()

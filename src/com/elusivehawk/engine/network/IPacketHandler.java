@@ -26,7 +26,6 @@ public interface IPacketHandler
 	 */
 	void onDisconnect(Connection connect);
 	
-	@SuppressWarnings("unused")
 	default void onPacketDropped(Packet pkt){}
 	
 }

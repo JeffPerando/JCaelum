@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
+import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.IContext;
 import com.elusivehawk.engine.IThreadContext;
 import com.elusivehawk.util.Internal;
@@ -46,7 +47,7 @@ public class ThreadGameRender extends ThreadTimed implements IThreadContext
 			return;
 		}
 		
-		IDisplay display = this.rcon.getDisplay();
+		IDisplay display = CaelumEngine.display();
 		
 		if (display.isCloseRequested())
 		{

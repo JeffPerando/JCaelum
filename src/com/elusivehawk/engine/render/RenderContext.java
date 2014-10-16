@@ -266,14 +266,12 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 		
 	}
 	
-	@SuppressWarnings("unused")
 	public void onDisplayResized(IDisplay d)
 	{
 		//TODO
 		
 	}
 	
-	@SuppressWarnings("unused")
 	public void onDisplayClosed(IDisplay d)
 	{
 		this.cleanup();
@@ -284,11 +282,6 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 	{
 		this.flipScreen = flip;
 		
-	}
-	
-	public IDisplay getDisplay()
-	{
-		return this.display;
 	}
 	
 	public IGL1 getGL1()
@@ -343,7 +336,7 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 	
 	public boolean doUpdateCamera()
 	{
-		return this.camera == null ? false : (this.updateCameraUniforms || this.camera.isDirty());
+		return this.camera != null && this.updateCameraUniforms;
 	}
 	
 	public void setSettings(DisplaySettings ds)
