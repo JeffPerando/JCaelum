@@ -79,6 +79,13 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 			
 		}
 		
+		ICamera cam = rcon.getCamera();
+		
+		if (this.isCulled(cam))
+		{
+			return;
+		}
+		
 		if (this.renderCount == RenderConst.RECURSIVE_LIMIT)
 		{
 			return;
@@ -88,8 +95,6 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 		
 		if (rcon.doUpdateCamera())
 		{
-			ICamera cam = rcon.getCamera();
-			
 			this.p.attachUniform(rcon, "view", cam.getView().asBuffer(), GLEnumUType.M_FOUR);
 			this.p.attachUniform(rcon, "proj", cam.getProjection().asBuffer(), GLEnumUType.M_FOUR);
 			
@@ -258,6 +263,11 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 	public int getMaterialCount()
 	{
 		return this.matSet == null ? 0 : this.matSet.matCount();
+	}
+
+	public boolean isCulled(ICamera cam)
+	{
+		return false;
 	}
 	
 	protected abstract boolean initiate(RenderContext rcon);

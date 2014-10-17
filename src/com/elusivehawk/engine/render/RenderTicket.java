@@ -153,6 +153,17 @@ public class RenderTicket extends RenderableObj implements Quaternion.Listener, 
 		return String.format("%s:%s-%s-%s", this.m.getName(), this.pos.toString(), this.scale.toString(), this.rot.toString());
 	}
 	
+	@Override
+	public boolean isCulled(ICamera cam)
+	{
+		if (this.m == null)
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
 	/*public synchronized void setVector(EnumVectorType type, Vector vec)
 	{
 		this.vecs.get(type).set(vec);

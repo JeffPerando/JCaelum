@@ -24,7 +24,7 @@ public class AABB extends Shape
 		
 		assert cubeSize != null;
 		
-		size = cubeSize;
+		size = cubeSize.setImmutable();
 		
 		Vector halfSize = cubeSize.clone().divAll(2);
 		
@@ -75,6 +75,11 @@ public class AABB extends Shape
 	public AABB clone()
 	{
 		return new AABB(this);
+	}
+	
+	public Vector getSize()
+	{
+		return this.size;
 	}
 	
 }

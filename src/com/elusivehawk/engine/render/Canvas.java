@@ -69,6 +69,13 @@ public class Canvas extends RenderableObj
 	}
 	
 	@Override
+	protected void doRender(RenderContext rcon) throws RenderException
+	{
+		rcon.getGL1().glDrawElements(GLEnumPolyType.GL_TRIANGLES, this.images * 2, GLConst.GL_UNSIGNED_INT, 0);
+		
+	}
+	
+	@Override
 	public void preRender(RenderContext rcon, double delta)
 	{
 		if (!this.populators.isEmpty())
@@ -100,13 +107,6 @@ public class Canvas extends RenderableObj
 			}
 			
 		}
-		
-	}
-	
-	@Override
-	protected void doRender(RenderContext rcon) throws RenderException
-	{
-		rcon.getGL1().glDrawElements(GLEnumPolyType.GL_TRIANGLES, this.images * 2, GLConst.GL_UNSIGNED_INT, 0);
 		
 	}
 	
