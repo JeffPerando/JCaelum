@@ -7,7 +7,7 @@ import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLEnumBufferTarget;
 import com.elusivehawk.engine.render.opengl.GLEnumDataType;
 import com.elusivehawk.engine.render.opengl.GLEnumDataUsage;
-import com.elusivehawk.engine.render.opengl.GLEnumPolyType;
+import com.elusivehawk.engine.render.opengl.GLEnumDrawType;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.IGL1;
 import com.elusivehawk.engine.render.opengl.VertexBuffer;
@@ -71,7 +71,7 @@ public class Canvas extends RenderableObj
 	@Override
 	protected void doRender(RenderContext rcon) throws RenderException
 	{
-		rcon.getGL1().glDrawElements(GLEnumPolyType.GL_TRIANGLES, this.images * 2, GLConst.GL_UNSIGNED_INT, 0);
+		rcon.getGL1().glDrawElements(GLEnumDrawType.GL_TRIANGLES, this.images * 2, GLConst.GL_UNSIGNED_INT, 0);
 		
 	}
 	

@@ -66,6 +66,46 @@ public class TextureAsset extends GraphicAsset implements ITexture
 		return true;
 	}
 	
+	public int getFrameCount()
+	{
+		return this.frames == null ? 0 : this.frames.length;
+	}
+	
+	@Override
+	public void preRender(RenderContext rcon, double delta)
+	{
+		if (this.isAnimated())
+		{
+			this.frame++;
+			
+			if (this.frame == this.getFrameCount())
+			{
+				this.frame = 0;
+			}
+			
+		}
+		
+	}
+	
+	@Override
+	public boolean isAnimated()
+	{
+		return this.animate && this.getFrameCount() > 1;
+	}
+	
+	@Override
+	public int getTexId()
+	{
+		return this.frames == null ? 0 : this.frames[this.frame];
+	}
+	
+	@Override
+	public void finishGPULoading(RenderContext rcon)
+	{
+		rcon.registerPreRenderer(this);
+		
+	}
+	
 	@Override
 	public void onExistingAssetFound(Asset a)
 	{
@@ -106,48 +146,6 @@ public class TextureAsset extends GraphicAsset implements ITexture
 		}
 		
 		this.loaded = b;
-		
-	}
-	
-	public int getFrameCount()
-	{
-		return this.frames == null ? 0 : this.frames.length;
-	}
-	
-	@Override
-	public void preRender(RenderContext rcon, double delta)
-	{
-		if (this.isAnimated())
-		{
-			this.frame++;
-			
-			if (this.frame == this.getFrameCount())
-			{
-				this.frame = 0;
-			}
-			
-		}
-		
-	}
-	
-	@Override
-	public boolean isAnimated()
-	{
-		return this.animate && this.getFrameCount() > 1;
-	}
-	
-	@Override
-	public int getTexId()
-	{
-		return this.frames == null ? 0 : this.frames[this.frame];
-	}
-	
-	@Override
-	public void initR(RenderContext rcon)
-	{
-		super.initR(rcon);
-		
-		rcon.registerPreRenderer(this);
 		
 	}
 	

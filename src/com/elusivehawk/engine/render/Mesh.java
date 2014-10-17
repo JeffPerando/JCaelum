@@ -2,10 +2,10 @@
 package com.elusivehawk.engine.render;
 
 import java.io.InputStream;
-import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.EnumAssetType;
-import com.elusivehawk.util.math.Vector;
-import com.elusivehawk.util.storage.Array;
+import com.elusivehawk.engine.render.opengl.GLEnumDrawType;
+import com.elusivehawk.engine.render.opengl.VertexArray;
+import com.elusivehawk.util.IPopulator;
 
 /**
  * 
@@ -13,25 +13,58 @@ import com.elusivehawk.util.storage.Array;
  * 
  * @author Elusivehawk
  */
-public class Mesh extends Asset
+public class Mesh extends GraphicAsset implements IPopulator<VertexArray>
 {
-	public final Array<Vector> points, texOffs, normals;
+	private int indices = 0, polyCount = 0;
+	private GLEnumDrawType drawType = GLEnumDrawType.GL_TRIANGLES;
 	
-	@SuppressWarnings("unqualified-field-access")
-	public Mesh(String filepath, Vector[] p, Vector[] tex, Vector[] norm)
+	public Mesh(String filepath)
 	{
 		super(filepath, EnumAssetType.MESH);
-		
-		points = Array.create(p).setImmutable();
-		texOffs = Array.create(tex).setImmutable();
-		normals = Array.create(norm).setImmutable();
 		
 	}
 	
 	@Override
-	protected boolean readAsset(InputStream is)
+	public void delete(RenderContext rcon)
 	{
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void populate(VertexArray obj)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	protected void finishGPULoading(RenderContext rcon)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	protected boolean readAsset(InputStream is) throws Throwable
+	{
+		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	public int getIndiceCount()
+	{
+		return this.indices;
+	}
+	
+	public int getPolyCount()
+	{
+		return this.polyCount;
+	}
+	
+	public GLEnumDrawType getDrawType()
+	{
+		return this.drawType;
 	}
 	
 }

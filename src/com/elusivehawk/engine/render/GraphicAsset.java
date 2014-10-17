@@ -32,7 +32,8 @@ public abstract class GraphicAsset extends Asset implements ITaskListener, IGLDe
 		{
 			RenderContext rcon = CaelumEngine.renderContext();
 			
-			this.initR(rcon);
+			rcon.registerCleanable(this);
+			this.finishGPULoading(rcon);
 			
 			this.registered = true;
 			
@@ -61,10 +62,6 @@ public abstract class GraphicAsset extends Asset implements ITaskListener, IGLDe
 		return this.loaded && this.isRead();
 	}
 	
-	public void initR(RenderContext rcon)
-	{
-		rcon.registerCleanable(this);
-		
-	}
+	protected abstract void finishGPULoading(RenderContext rcon);
 	
 }

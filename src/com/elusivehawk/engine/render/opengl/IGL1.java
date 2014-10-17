@@ -118,7 +118,7 @@ public interface IGL1
 	
 	void glDrawArrays(int mode, int first, int count) throws GLException;
 	
-	default void glDrawElements(GLEnumPolyType mode, int count, int type, IntBuffer indices) throws GLException
+	default void glDrawElements(GLEnumDrawType mode, int count, int type, IntBuffer indices) throws GLException
 	{
 		this.glDrawElements(mode.getGLId(), count, type, indices);
 		
@@ -126,7 +126,7 @@ public interface IGL1
 	
 	void glDrawElements(int mode, int count, int type, IntBuffer indices) throws GLException;
 	
-	default void glDrawElements(GLEnumPolyType mode, int count, int type, int offset) throws GLException
+	default void glDrawElements(GLEnumDrawType mode, int count, int type, int offset) throws GLException
 	{
 		this.glDrawElements(mode.getGLId(), count, type, offset);
 		

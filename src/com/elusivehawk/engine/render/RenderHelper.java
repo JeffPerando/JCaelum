@@ -13,7 +13,7 @@ import javax.imageio.stream.ImageInputStream;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.render.opengl.GLConst;
 import com.elusivehawk.engine.render.opengl.GLEnumError;
-import com.elusivehawk.engine.render.opengl.GLEnumPolyType;
+import com.elusivehawk.engine.render.opengl.GLEnumDrawType;
 import com.elusivehawk.engine.render.opengl.GLEnumTexture;
 import com.elusivehawk.engine.render.opengl.GLException;
 import com.elusivehawk.engine.render.opengl.IGL1;
@@ -287,14 +287,14 @@ public final class RenderHelper
 		return ret;
 	}
 	
-	public static int getPolygonCount(int points, GLEnumPolyType poly)
+	public static int getPolygonCount(int points, GLEnumDrawType poly)
 	{
-		return poly == GLEnumPolyType.GL_TRIANGLE_STRIP ? points - 2 : points / poly.getPointCount();
+		return poly == GLEnumDrawType.GL_TRIANGLE_STRIP ? points - 2 : points / poly.getPointCount();
 	}
 	
-	public static int getPointCount(int polycount, GLEnumPolyType poly)
+	public static int getPointCount(int polycount, GLEnumDrawType poly)
 	{
-		return poly == GLEnumPolyType.GL_TRIANGLE_STRIP ? polycount + 2 : polycount * poly.getPointCount();
+		return poly == GLEnumDrawType.GL_TRIANGLE_STRIP ? polycount + 2 : polycount * poly.getPointCount();
 	}
 	
 	public static void checkForGLError() throws GLException

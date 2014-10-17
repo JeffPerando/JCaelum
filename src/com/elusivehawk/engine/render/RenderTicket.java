@@ -42,7 +42,7 @@ public class RenderTicket extends RenderableObj implements Quaternion.Listener, 
 			rotOff = new Quaternion(),
 			rot = new Quaternion();
 	
-	protected Model m = null;
+	protected Mesh mesh = null;
 	protected FloatBuffer buf = null;
 	
 	protected final VertexBuffer vbo = new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW);
@@ -66,22 +66,21 @@ public class RenderTicket extends RenderableObj implements Quaternion.Listener, 
 	@Override
 	protected boolean initiate(RenderContext rcon)
 	{
-		if (this.m == null)
+		if (this.mesh == null)
 		{
 			return false;
 		}
 		
-		if (!this.m.isModelFinished())
+		if (!this.mesh.isLoaded())
 		{
-			this.m.finishModel();
-			
+			return false;
 		}
 		
-		this.buf = BufferHelper.createFloatBuffer(this.m.getIndiceCount() * 16);
+		this.buf = BufferHelper.createFloatBuffer(this.mesh.getIndiceCount() * 16);
 		
 		this.vbo.uploadBuffer(this.buf);
 		
-		this.m.populate(this.vao);
+		this.mesh.populate(this.vao);
 		this.vao.attachVBO(this.vbo, 3);
 		
 		return true;
@@ -90,7 +89,7 @@ public class RenderTicket extends RenderableObj implements Quaternion.Listener, 
 	@Override
 	protected void doRender(RenderContext rcon) throws RenderException
 	{
-		rcon.getGL1().glDrawElements(this.m.getPolygonType(), this.m.getPolyCount(), GLConst.GL_UNSIGNED_INT, 0);
+		rcon.getGL1().glDrawElements(this.mesh.getDrawType(), this.mesh.getPolyCount(), GLConst.GL_UNSIGNED_INT, 0);
 		
 	}
 	
@@ -150,13 +149,13 @@ public class RenderTicket extends RenderableObj implements Quaternion.Listener, 
 	@Override
 	public String toString()
 	{
-		return String.format("%s:%s-%s-%s", this.m.getName(), this.pos.toString(), this.scale.toString(), this.rot.toString());
+		return String.format("%s:%s-%s-%s", this.mesh.filepath, this.pos.toString(), this.scale.toString(), this.rot.toString());
 	}
 	
 	@Override
 	public boolean isCulled(ICamera cam)
 	{
-		if (this.m == null)
+		if (this.mesh == null)
 		{
 			return true;
 		}
@@ -196,9 +195,9 @@ public class RenderTicket extends RenderableObj implements Quaternion.Listener, 
 		
 	}
 	
-	public Model getModel()
+	public Mesh getMesh()
 	{
-		return this.m;
+		return this.mesh;
 	}
 	
 	/*public int getCurrentFrame()

@@ -2,7 +2,7 @@
 package com.elusivehawk.engine.render;
 
 import com.elusivehawk.engine.render.opengl.GLConst;
-import com.elusivehawk.engine.render.opengl.GLEnumPolyType;
+import com.elusivehawk.engine.render.opengl.GLEnumDrawType;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexArray;
 
@@ -57,7 +57,7 @@ public interface ILogicalRender extends IRenderable
 	
 	VertexArray getVAO();
 	
-	GLEnumPolyType getPolygonType();
+	GLEnumDrawType getPolygonType();
 	
 	int getPolyCount();
 	

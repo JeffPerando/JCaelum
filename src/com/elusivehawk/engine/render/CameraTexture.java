@@ -97,6 +97,13 @@ public class CameraTexture implements IRenderableTexture
 	}
 	
 	@Override
+	public void preRender(RenderContext rcon, double delta)
+	{
+		this.cam.preRender(rcon, delta);
+		
+	}
+	
+	@Override
 	public void postRender(RenderContext rcon)
 	{
 		this.rendered = false;

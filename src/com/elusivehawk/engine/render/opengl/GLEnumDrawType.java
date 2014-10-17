@@ -7,7 +7,7 @@ package com.elusivehawk.engine.render.opengl;
  * 
  * @author Elusivehawk
  */
-public enum GLEnumPolyType
+public enum GLEnumDrawType
 {
 	GL_POINTS(1, GLConst.GL_POINTS),
 	GL_LINE_STRIP(0, GLConst.GL_LINE_STRIP),
@@ -25,7 +25,7 @@ public enum GLEnumPolyType
 	private final int pointcount, gl;
 	
 	@SuppressWarnings("unqualified-field-access")
-	GLEnumPolyType(int points, int glType)
+	GLEnumDrawType(int points, int glType)
 	{
 		pointcount = points;
 		gl = glType;

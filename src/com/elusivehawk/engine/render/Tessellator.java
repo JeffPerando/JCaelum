@@ -4,7 +4,7 @@ package com.elusivehawk.engine.render;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
-import com.elusivehawk.engine.render.opengl.GLEnumPolyType;
+import com.elusivehawk.engine.render.opengl.GLEnumDrawType;
 import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.Logger;
@@ -25,9 +25,9 @@ public final class Tessellator
 	
 	private final List<ModelPoint> polys = Lists.newArrayList();
 	
-	private GLEnumPolyType glMode = null;
+	private GLEnumDrawType glMode = null;
 	
-	public void begin(GLEnumPolyType gl) throws RenderException
+	public void begin(GLEnumDrawType gl) throws RenderException
 	{
 		if (this.isWorking())
 		{

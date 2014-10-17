@@ -53,6 +53,9 @@ public class Shader extends GraphicAsset
 	}
 	
 	@Override
+	protected void finishGPULoading(RenderContext rcon){}
+	
+	@Override
 	public void onExistingAssetFound(Asset a)
 	{
 		super.onExistingAssetFound(a);

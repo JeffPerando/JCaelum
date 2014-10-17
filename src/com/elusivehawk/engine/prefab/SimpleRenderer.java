@@ -2,7 +2,7 @@
 package com.elusivehawk.engine.prefab;
 
 import com.elusivehawk.engine.render.ILogicalRender;
-import com.elusivehawk.engine.render.opengl.GLEnumPolyType;
+import com.elusivehawk.engine.render.opengl.GLEnumDrawType;
 import com.elusivehawk.engine.render.opengl.GLProgram;
 import com.elusivehawk.engine.render.opengl.VertexArray;
 import com.elusivehawk.util.IPopulator;
@@ -19,9 +19,9 @@ public class SimpleRenderer implements ILogicalRender
 	private final VertexArray vao = new VertexArray();
 	
 	private final int polyCount;
-	private final GLEnumPolyType polyType;
+	private final GLEnumDrawType polyType;
 	
-	public SimpleRenderer(int polys, GLEnumPolyType type, IPopulator<GLProgram> glpop, IPopulator<VertexArray> vaopop)
+	public SimpleRenderer(int polys, GLEnumDrawType type, IPopulator<GLProgram> glpop, IPopulator<VertexArray> vaopop)
 	{
 		this(polys, type);
 		
@@ -31,7 +31,7 @@ public class SimpleRenderer implements ILogicalRender
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public SimpleRenderer(int polys, GLEnumPolyType type)
+	public SimpleRenderer(int polys, GLEnumDrawType type)
 	{
 		polyCount = polys;
 		polyType = type;
@@ -51,7 +51,7 @@ public class SimpleRenderer implements ILogicalRender
 	}
 	
 	@Override
-	public GLEnumPolyType getPolygonType()
+	public GLEnumDrawType getPolygonType()
 	{
 		return this.polyType;
 	}
