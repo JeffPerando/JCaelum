@@ -115,7 +115,7 @@ public final class CaelumEngine
 		return instance().game;
 	}
 	
-	public static AssetManager assetManager()
+	public static AssetManager assets()
 	{
 		return instance().assets;
 	}

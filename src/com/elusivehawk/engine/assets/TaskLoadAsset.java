@@ -26,7 +26,7 @@ public class TaskLoadAsset extends Task
 	@SuppressWarnings("unqualified-field-access")
 	public TaskLoadAsset(Asset a)
 	{
-		super(CaelumEngine.assetManager());
+		super(CaelumEngine.assets());
 		
 		asset = a;
 		
@@ -35,7 +35,7 @@ public class TaskLoadAsset extends Task
 	@Override
 	protected boolean finishTask() throws Throwable
 	{
-		AssetManager mgr = CaelumEngine.assetManager();
+		AssetManager mgr = CaelumEngine.assets();
 		
 		Asset a = mgr.getExistingAsset(this.asset.filepath, this.asset.type);
 		

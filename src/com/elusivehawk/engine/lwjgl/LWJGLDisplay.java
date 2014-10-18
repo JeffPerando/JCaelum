@@ -5,10 +5,10 @@ import java.io.IOException;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-import com.elusivehawk.engine.render.Color;
-import com.elusivehawk.engine.render.ColorFilter;
 import com.elusivehawk.engine.render.DisplaySettings;
 import com.elusivehawk.engine.render.IDisplay;
+import com.elusivehawk.engine.render.tex.Color;
+import com.elusivehawk.engine.render.tex.ColorFilter;
 import com.elusivehawk.util.Logger;
 
 /**

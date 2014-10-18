@@ -97,6 +97,7 @@ public class MaterialSet implements IRenderable, IArray<Material>, IDirty
 		return this.finished;
 	}
 	
+	@Override
 	public MaterialSet setImmutable()
 	{
 		this.finished = true;

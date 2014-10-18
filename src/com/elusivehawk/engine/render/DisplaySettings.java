@@ -3,6 +3,7 @@ package com.elusivehawk.engine.render;
 
 import java.nio.ByteBuffer;
 import com.elusivehawk.engine.Game;
+import com.elusivehawk.engine.render.tex.Color;
 
 /**
  * 

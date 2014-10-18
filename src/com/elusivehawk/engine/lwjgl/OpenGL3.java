@@ -4,8 +4,8 @@ package com.elusivehawk.engine.lwjgl;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import com.elusivehawk.engine.render.opengl.GLException;
-import com.elusivehawk.engine.render.opengl.IGL3;
+import com.elusivehawk.engine.render.gl.GLException;
+import com.elusivehawk.engine.render.gl.IGL3;
 
 /**
  * 

@@ -1,8 +1,8 @@
 
 package com.elusivehawk.engine.render;
 
-import com.elusivehawk.engine.render.opengl.GLException;
-import com.elusivehawk.engine.render.opengl.GLProgram;
+import com.elusivehawk.engine.render.gl.GLException;
+import com.elusivehawk.engine.render.gl.GLProgram;
 
 /**
  * 

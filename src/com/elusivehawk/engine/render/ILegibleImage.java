@@ -2,6 +2,8 @@
 package com.elusivehawk.engine.render;
 
 import java.nio.ByteBuffer;
+import com.elusivehawk.engine.render.tex.Color;
+import com.elusivehawk.engine.render.tex.ColorFormat;
 import com.elusivehawk.util.BufferHelper;
 
 /**
@@ -13,6 +15,8 @@ import com.elusivehawk.util.BufferHelper;
 public interface ILegibleImage
 {
 	int getPixel(int x, int y);
+	
+	boolean setPixel(int x, int y, int color);
 	
 	int getHeight();
 	

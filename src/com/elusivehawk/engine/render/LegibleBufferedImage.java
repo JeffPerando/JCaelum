@@ -2,6 +2,7 @@
 package com.elusivehawk.engine.render;
 
 import java.awt.image.BufferedImage;
+import com.elusivehawk.engine.render.tex.ColorFormat;
 
 /**
  * 
@@ -23,13 +24,13 @@ public class LegibleBufferedImage implements ILegibleImage
 		
 		switch (image.getType())
 		{
-			case BufferedImage.TYPE_3BYTE_BGR: f = ColorFormat.BGRA;
-			case BufferedImage.TYPE_4BYTE_ABGR: f = ColorFormat.ABGR;
-			case BufferedImage.TYPE_4BYTE_ABGR_PRE: f = ColorFormat.ABGR;
-			case BufferedImage.TYPE_INT_ARGB: f = ColorFormat.ARGB;
-			case BufferedImage.TYPE_INT_ARGB_PRE: f = ColorFormat.ARGB;
-			case BufferedImage.TYPE_INT_BGR: f = ColorFormat.BGRA;
-			case BufferedImage.TYPE_INT_RGB: f = ColorFormat.RGBA;
+			case BufferedImage.TYPE_3BYTE_BGR:
+			case BufferedImage.TYPE_INT_BGR: f = ColorFormat.BGRA; break;
+			case BufferedImage.TYPE_4BYTE_ABGR:
+			case BufferedImage.TYPE_4BYTE_ABGR_PRE: f = ColorFormat.ABGR; break;
+			case BufferedImage.TYPE_INT_ARGB:
+			case BufferedImage.TYPE_INT_ARGB_PRE: f = ColorFormat.ARGB; break;
+			case BufferedImage.TYPE_INT_RGB:
 			default: f = ColorFormat.RGBA;
 		}
 		
@@ -41,6 +42,12 @@ public class LegibleBufferedImage implements ILegibleImage
 	public int getPixel(int x, int y)
 	{
 		return this.img.getRGB(x, y);
+	}
+	
+	@Override
+	public boolean setPixel(int x, int y, int color)
+	{
+		return false;
 	}
 	
 	@Override

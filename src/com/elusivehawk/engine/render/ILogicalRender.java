@@ -1,10 +1,10 @@
 
 package com.elusivehawk.engine.render;
 
-import com.elusivehawk.engine.render.opengl.GLConst;
-import com.elusivehawk.engine.render.opengl.GLEnumDrawType;
-import com.elusivehawk.engine.render.opengl.GLProgram;
-import com.elusivehawk.engine.render.opengl.VertexArray;
+import com.elusivehawk.engine.render.gl.GLConst;
+import com.elusivehawk.engine.render.gl.GLEnumDrawType;
+import com.elusivehawk.engine.render.gl.GLProgram;
+import com.elusivehawk.engine.render.gl.VertexArray;
 
 /**
  * 

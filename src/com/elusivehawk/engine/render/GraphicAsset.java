@@ -4,8 +4,8 @@ package com.elusivehawk.engine.render;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.EnumAssetType;
+import com.elusivehawk.engine.render.gl.IGLDeletable;
 import com.elusivehawk.engine.render.old.RenderTask;
-import com.elusivehawk.engine.render.opengl.IGLDeletable;
 import com.elusivehawk.util.task.ITaskListener;
 import com.elusivehawk.util.task.Task;
 

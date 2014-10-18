@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
-import com.elusivehawk.engine.render.opengl.GLEnumShader;
+import com.elusivehawk.engine.render.gl.GLEnumShader;
 
 /**
  * 

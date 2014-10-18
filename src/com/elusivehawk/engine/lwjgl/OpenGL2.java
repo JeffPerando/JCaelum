@@ -7,8 +7,8 @@ import java.nio.IntBuffer;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import com.elusivehawk.engine.render.RenderHelper;
-import com.elusivehawk.engine.render.opengl.GLException;
-import com.elusivehawk.engine.render.opengl.IGL2;
+import com.elusivehawk.engine.render.gl.GLException;
+import com.elusivehawk.engine.render.gl.IGL2;
 import com.elusivehawk.util.BufferHelper;
 
 /**

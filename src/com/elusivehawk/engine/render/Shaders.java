@@ -3,9 +3,9 @@ package com.elusivehawk.engine.render;
 
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
-import com.elusivehawk.engine.render.opengl.GLException;
-import com.elusivehawk.engine.render.opengl.GLProgram;
-import com.elusivehawk.engine.render.opengl.IGL2;
+import com.elusivehawk.engine.render.gl.GLException;
+import com.elusivehawk.engine.render.gl.GLProgram;
+import com.elusivehawk.engine.render.gl.IGL2;
 import com.elusivehawk.util.IDirty;
 
 /**

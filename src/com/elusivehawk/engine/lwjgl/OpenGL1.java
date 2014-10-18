@@ -12,11 +12,11 @@ import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
 import com.elusivehawk.engine.render.RenderHelper;
-import com.elusivehawk.engine.render.opengl.GLConst;
-import com.elusivehawk.engine.render.opengl.GLEnumError;
-import com.elusivehawk.engine.render.opengl.GLEnumTexture;
-import com.elusivehawk.engine.render.opengl.GLException;
-import com.elusivehawk.engine.render.opengl.IGL1;
+import com.elusivehawk.engine.render.gl.GLConst;
+import com.elusivehawk.engine.render.gl.GLEnumError;
+import com.elusivehawk.engine.render.gl.GLEnumTexture;
+import com.elusivehawk.engine.render.gl.GLException;
+import com.elusivehawk.engine.render.gl.IGL1;
 import com.elusivehawk.util.BufferHelper;
 
 /**

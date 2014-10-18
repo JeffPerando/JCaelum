@@ -1,6 +1,8 @@
 
 package com.elusivehawk.engine.render;
 
+import com.elusivehawk.engine.render.tex.Color;
+import com.elusivehawk.engine.render.tex.ITexture;
 import com.elusivehawk.util.math.MathHelper;
 
 /**
@@ -12,7 +14,7 @@ import com.elusivehawk.util.math.MathHelper;
 public class Material implements IRenderable
 {
 	protected ITexture tex = null;
-	protected IRenderableTexture fboTex = null;
+	protected IRenderableTexture renTex = null;
 	protected float shininess = 0f;
 	protected Color filter = new Color();
 	
@@ -32,9 +34,9 @@ public class Material implements IRenderable
 	@Override
 	public void render(RenderContext rcon) throws RenderException
 	{
-		if (this.fboTex != null)
+		if (this.renTex != null)
 		{
-			this.fboTex.render(rcon);
+			this.renTex.render(rcon);
 			
 		}
 		
@@ -49,9 +51,9 @@ public class Material implements IRenderable
 			
 		}
 		
-		if (this.fboTex != null)
+		if (this.renTex != null)
 		{
-			this.fboTex.preRender(rcon, delta);
+			this.renTex.preRender(rcon, delta);
 			
 		}
 		
@@ -60,9 +62,9 @@ public class Material implements IRenderable
 	@Override
 	public void postRender(RenderContext rcon)
 	{
-		if (this.fboTex != null)
+		if (this.renTex != null)
 		{
-			this.fboTex.postRender(rcon);
+			this.renTex.postRender(rcon);
 			
 		}
 		
@@ -74,13 +76,13 @@ public class Material implements IRenderable
 		return new Material(this);
 	}
 	
-	public Material fboTex(IRenderableTexture texture)
+	public Material renTex(IRenderableTexture texture)
 	{
 		assert texture != null;
 		
 		if (!this.locked)
 		{
-			this.fboTex = texture;
+			this.renTex = texture;
 			
 		}
 		
@@ -131,9 +133,9 @@ public class Material implements IRenderable
 		return this;
 	}
 	
-	public IRenderableTexture fboTex()
+	public IRenderableTexture renTex()
 	{
-		return this.fboTex;
+		return this.renTex;
 	}
 	
 	public Color filter()
@@ -153,7 +155,7 @@ public class Material implements IRenderable
 	
 	public boolean isStatic()
 	{
-		return this.fboTex != null || (this.tex != null && !this.tex.isAnimated());
+		return this.renTex != null || (this.tex != null && !this.tex.isAnimated());
 	}
 	
 }

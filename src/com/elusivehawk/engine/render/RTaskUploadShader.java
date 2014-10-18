@@ -1,10 +1,10 @@
 
 package com.elusivehawk.engine.render;
 
+import com.elusivehawk.engine.render.gl.GLConst;
+import com.elusivehawk.engine.render.gl.GLEnumSStatus;
+import com.elusivehawk.engine.render.gl.IGL2;
 import com.elusivehawk.engine.render.old.RenderTask;
-import com.elusivehawk.engine.render.opengl.GLConst;
-import com.elusivehawk.engine.render.opengl.GLEnumSStatus;
-import com.elusivehawk.engine.render.opengl.IGL2;
 import com.elusivehawk.util.CompInfo;
 import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.Logger;

@@ -135,7 +135,7 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 				
 				try
 				{
-					this.state.initiate(CaelumEngine.gameArgs(), CaelumEngine.assetManager());
+					this.state.initiate(CaelumEngine.gameArgs(), CaelumEngine.assets());
 					
 				}
 				catch (Throwable e)

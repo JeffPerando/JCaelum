@@ -4,11 +4,12 @@ package com.elusivehawk.engine.render;
 import java.util.UUID;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.IAssetReceiver;
-import com.elusivehawk.engine.render.opengl.GLConst;
-import com.elusivehawk.engine.render.opengl.GLEnumUType;
-import com.elusivehawk.engine.render.opengl.GLProgram;
-import com.elusivehawk.engine.render.opengl.IGL1;
-import com.elusivehawk.engine.render.opengl.VertexArray;
+import com.elusivehawk.engine.render.gl.GLConst;
+import com.elusivehawk.engine.render.gl.GLEnumUType;
+import com.elusivehawk.engine.render.gl.GLProgram;
+import com.elusivehawk.engine.render.gl.IGL1;
+import com.elusivehawk.engine.render.gl.VertexArray;
+import com.elusivehawk.engine.render.tex.TextureAsset;
 import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.IDirty;
 

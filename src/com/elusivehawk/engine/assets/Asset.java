@@ -3,6 +3,7 @@ package com.elusivehawk.engine.assets;
 
 import java.io.InputStream;
 import com.elusivehawk.engine.CaelumEngine;
+import com.elusivehawk.util.Internal;
 
 /**
  * 
@@ -42,17 +43,19 @@ public abstract class Asset
 		return this.filepath;
 	}
 	
+	public final boolean isRead()
+	{
+		return this.read;
+	}
+	
+	@Internal
 	public void onExistingAssetFound(Asset a)
 	{
 		this.read = a.read;
 		
 	}
 	
-	public final boolean isRead()
-	{
-		return this.read;
-	}
-	
+	@Internal
 	public final boolean read(InputStream is) throws Throwable
 	{
 		return this.read ? true : (this.read = this.readAsset(is));

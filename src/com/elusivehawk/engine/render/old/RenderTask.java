@@ -1,9 +1,9 @@
 
 package com.elusivehawk.engine.render.old;
 
+import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderException;
-import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.task.ITaskListener;
 import com.elusivehawk.util.task.Task;
@@ -19,7 +19,7 @@ import com.elusivehawk.util.task.Task;
 @Deprecated
 public abstract class RenderTask extends Task
 {
-	private int glId = -1;
+	private int glId = 0;
 	
 	public RenderTask(ITaskListener tlis)
 	{
@@ -34,7 +34,7 @@ public abstract class RenderTask extends Task
 		
 		try
 		{
-			this.glId = this.finishRTask(RenderHelper.renderContext());
+			this.glId = this.finishRTask(CaelumEngine.renderContext());
 			
 		}
 		catch (RenderException e)

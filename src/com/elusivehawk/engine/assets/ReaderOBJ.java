@@ -2,12 +2,6 @@
 package com.elusivehawk.engine.assets;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-import com.elusivehawk.util.StringHelper;
-import com.elusivehawk.util.math.Vector;
-import com.google.common.collect.Lists;
 
 /**
  * 
@@ -19,7 +13,7 @@ public class ReaderOBJ
 {
 	public Asset readAsset(AssetManager mgr, File file) throws Throwable
 	{
-		List<Vector> vertPositions = Lists.newArrayList(),
+		/*List<Vector> vertPositions = Lists.newArrayList(),
 				vertTexCoords = Lists.newArrayList(),
 				vertNormals = Lists.newArrayList();
 		String texstring = "";
@@ -73,7 +67,7 @@ public class ReaderOBJ
 			}
 			else if ("f".equalsIgnoreCase(prefix))
 			{
-				/*for (int i = 1; i < 4; i++)
+				for (int i = 1; i < 4; i++)
 				{
 					Vertex vert = new Vertex(new VertPosition(1, 1, 1));
 					String[] faceIndices = s[i].split("/");
@@ -120,7 +114,7 @@ public class ReaderOBJ
 					}
 					
 				}
-				*/
+				
 			}
 			
 		}
@@ -129,7 +123,7 @@ public class ReaderOBJ
 		
 		//CaelumEngine.log().log(EnumLogType.INFO, String.format("Mesh loaded with %s vertices, with texture %s", arg1));
 		//Mesh mesh = new Mesh(file.getName(), vertices, indices, texId);
-		
+		*/
 		return null;
 	}
 	

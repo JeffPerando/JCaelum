@@ -2,9 +2,9 @@
 package com.elusivehawk.engine.prefab;
 
 import com.elusivehawk.engine.render.ILogicalRender;
-import com.elusivehawk.engine.render.opengl.GLEnumDrawType;
-import com.elusivehawk.engine.render.opengl.GLProgram;
-import com.elusivehawk.engine.render.opengl.VertexArray;
+import com.elusivehawk.engine.render.gl.GLEnumDrawType;
+import com.elusivehawk.engine.render.gl.GLProgram;
+import com.elusivehawk.engine.render.gl.VertexArray;
 import com.elusivehawk.util.IPopulator;
 
 /**

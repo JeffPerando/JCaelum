@@ -3,8 +3,8 @@ package com.elusivehawk.engine.render;
 
 import java.io.InputStream;
 import com.elusivehawk.engine.assets.EnumAssetType;
-import com.elusivehawk.engine.render.opengl.GLEnumDrawType;
-import com.elusivehawk.engine.render.opengl.VertexArray;
+import com.elusivehawk.engine.render.gl.GLEnumDrawType;
+import com.elusivehawk.engine.render.gl.VertexArray;
 import com.elusivehawk.util.IPopulator;
 
 /**
