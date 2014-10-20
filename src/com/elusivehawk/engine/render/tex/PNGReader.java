@@ -8,7 +8,7 @@ import com.elusivehawk.engine.Experimental;
 import com.elusivehawk.engine.render.LegibleByteImage;
 import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.io.IByteReader;
-import com.elusivehawk.util.storage.TriTuple;
+import com.elusivehawk.util.storage.Tuple;
 import com.google.common.collect.Lists;
 
 /**
@@ -21,7 +21,6 @@ import com.google.common.collect.Lists;
 public class PNGReader
 {
 	public static final long HEADER = 0x89504E470D0A1A01L;
-	public static final byte UPPERCASE = 0b00001000;
 	
 	public static LegibleByteImage readPNG(IByteReader r) throws Throwable
 	{
@@ -29,10 +28,10 @@ public class PNGReader
 		
 		if (header != HEADER)//Check the header
 		{
-			throw new CaelumException("PNG file is corrupt: Header did not match! Header: 0x%s", Long.toHexString(header));
+			throw new CaelumException("PNG file is corrupt: Header did not match! Header: 0x%s, expected: 0x%s", Long.toHexString(header), Long.toHexString(HEADER));
 		}
 		
-		TriTuple<String, ByteBuffer, Integer> first = readChunk(r);//Read one chunk
+		Tuple<String, ByteBuffer> first = readChunk(r);//Read one chunk
 		
 		assert first != null;
 		assert first.one.equals("IHDR");//If the name of the first chunk isn't IHDR, we throw a hissy fit. Literally.
@@ -59,12 +58,13 @@ public class PNGReader
 		
 		//Now we read the remaining chunks
 		
-		List<TriTuple<String, ByteBuffer, Integer>> unused = Lists.newArrayList();
+		List<Tuple<String, ByteBuffer>>
+					unused = Lists.newArrayList(),
+					idats = Lists.newArrayList();
 		
-		boolean usingIDAT = false;
 		boolean foundPalette = false;
 		
-		TriTuple<String, ByteBuffer, Integer> chunk = null;
+		Tuple<String, ByteBuffer> chunk = null;
 		ByteBuffer buf = null;
 		List<Color> palette = Lists.newArrayList();
 		LegibleByteImage ret = new LegibleByteImage(width, height);
@@ -97,7 +97,7 @@ public class PNGReader
 				case "IEND": {
 					if (r.remaining() > 0)
 						throw new CaelumException("IEND is not last chunk! This is a bug!");
-					if (!usingIDAT)
+					if (idats.isEmpty())
 						throw new CaelumException("Did not find IDAT chunk!");
 					
 					break decloop;
@@ -105,7 +105,7 @@ public class PNGReader
 				case "PLTE": {
 					if (foundPalette)
 						throw new CaelumException("Extra palette chunk found");
-					if (usingIDAT)
+					if (!idats.isEmpty())
 						throw new CaelumException("Cannot use palette chunk after IDAT chunks start to be used");
 					if (buf.capacity() % 3 != 0)
 						throw new CaelumException("Palette size is not divisible by 3");
@@ -121,8 +121,7 @@ public class PNGReader
 					break;
 				}
 				case "IDAT":
-					usingIDAT = true;
-					//TODO Use
+					idats.add(chunk);
 					break;
 				default: throw new CaelumException("Unknown chunk name found: %s", chunk.one);
 				
@@ -135,7 +134,7 @@ public class PNGReader
 		return ret;
 	}
 	
-	private static TriTuple<String, ByteBuffer, Integer> readChunk(IByteReader r) throws Throwable
+	private static Tuple<String, ByteBuffer> readChunk(IByteReader r) throws Throwable
 	{
 		int size = r.readInt();
 		
@@ -153,7 +152,7 @@ public class PNGReader
 		
 		//TODO Return null if CRC check fails
 		
-		return TriTuple.create(new String(type), BufferHelper.createWrapper(data), crc);
+		return Tuple.create(new String(type), BufferHelper.createWrapper(data));
 	}
 	
 }
