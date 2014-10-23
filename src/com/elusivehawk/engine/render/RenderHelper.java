@@ -200,7 +200,11 @@ public final class RenderHelper
 		}
 		catch (GLException e)
 		{
-			gl1.glDeleteTextures(tex);
+			if (tex != 0)
+			{
+				gl1.glDeleteTextures(tex);
+				
+			}
 			
 			throw e;
 		}
