@@ -11,9 +11,9 @@ import com.elusivehawk.engine.render.gl.GLEnumDrawType;
 import com.elusivehawk.engine.render.gl.GLProgram;
 import com.elusivehawk.engine.render.gl.IGL1;
 import com.elusivehawk.engine.render.gl.VertexBuffer;
-import com.elusivehawk.util.FloatBufferer;
 import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.math.MathHelper;
+import com.elusivehawk.util.storage.FloatBufferer;
 import com.elusivehawk.util.storage.IGettable;
 import com.elusivehawk.util.storage.Tuple;
 import com.google.common.collect.Lists;
@@ -118,6 +118,7 @@ public class Canvas extends RenderableObj
 		
 	}
 	
+	@SuppressWarnings("sync-override")
 	@Override
 	public RenderableObj setEnableZBuffer(boolean z)
 	{

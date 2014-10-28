@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL20;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.gl.GLException;
 import com.elusivehawk.engine.render.gl.IGL2;
-import com.elusivehawk.util.BufferHelper;
+import com.elusivehawk.util.storage.BufferHelper;
 
 /**
  * 

@@ -5,11 +5,11 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
 import com.elusivehawk.engine.render.gl.GLEnumDrawType;
-import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.math.MathConst;
 import com.elusivehawk.util.math.Vector;
+import com.elusivehawk.util.storage.BufferHelper;
 import com.google.common.collect.Lists;
 
 /**

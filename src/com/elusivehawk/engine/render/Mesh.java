@@ -1,11 +1,11 @@
 
 package com.elusivehawk.engine.render;
 
-import java.io.InputStream;
 import com.elusivehawk.engine.assets.EnumAssetType;
 import com.elusivehawk.engine.render.gl.GLEnumDrawType;
 import com.elusivehawk.engine.render.gl.VertexArray;
 import com.elusivehawk.util.IPopulator;
+import com.elusivehawk.util.io.IByteReader;
 
 /**
  * 
@@ -46,7 +46,7 @@ public class Mesh extends GraphicAsset implements IPopulator<VertexArray>
 	}
 	
 	@Override
-	protected boolean readAsset(InputStream is) throws Throwable
+	protected boolean readAsset(IByteReader r) throws Throwable
 	{
 		// TODO Auto-generated method stub
 		return false;

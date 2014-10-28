@@ -17,7 +17,7 @@ import com.elusivehawk.engine.render.gl.GLEnumError;
 import com.elusivehawk.engine.render.gl.GLEnumTexture;
 import com.elusivehawk.engine.render.gl.GLException;
 import com.elusivehawk.engine.render.gl.IGL1;
-import com.elusivehawk.util.BufferHelper;
+import com.elusivehawk.util.storage.BufferHelper;
 
 /**
  * 

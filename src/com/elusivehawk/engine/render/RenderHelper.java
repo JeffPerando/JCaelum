@@ -22,13 +22,13 @@ import com.elusivehawk.engine.render.gl.IGL3;
 import com.elusivehawk.engine.render.tex.Color;
 import com.elusivehawk.engine.render.tex.ColorFilter;
 import com.elusivehawk.engine.render.tex.ColorFormat;
-import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.FileHelper;
 import com.elusivehawk.util.Logger;
-import com.elusivehawk.util.StringHelper;
 import com.elusivehawk.util.io.ByteBuffers;
 import com.elusivehawk.util.storage.Buffer;
+import com.elusivehawk.util.storage.BufferHelper;
+import com.elusivehawk.util.string.StringHelper;
 import com.google.common.collect.Lists;
 import de.matthiasmann.twl.utils.PNGDecoder;
 
@@ -71,18 +71,20 @@ public final class RenderHelper
 		return CaelumEngine.renderContext().getGL4();
 	}*/
 	
+	@Deprecated
 	public static List<ILegibleImage> readImg(File img)
 	{
 		return readImg(new BufferedInputStream(FileHelper.createInStream(img)), img.getName().endsWith(".gif"));
 	}
 	
+	@Deprecated
 	public static List<ILegibleImage> readImg(InputStream is, boolean isGif)
 	{
-		List<ILegibleImage> ret = null;
+		List<ILegibleImage> ret = Lists.newArrayList();
 		
 		if (isGif)
 		{
-			ret = readGifFile(is);
+			readGifFile(is, ret);
 			
 		}
 		else
@@ -93,8 +95,6 @@ public final class RenderHelper
 				ByteBuffer buf = BufferHelper.createByteBuffer(dec.getWidth() * dec.getHeight() * 4);
 				
 				dec.decode(buf, dec.getWidth() * 4, PNGDecoder.Format.RGBA);
-				
-				ret = Lists.newArrayList();
 				
 				ret.add(new LegibleByteImage(buf, dec.getWidth(), dec.getHeight()));
 				
@@ -110,7 +110,8 @@ public final class RenderHelper
 		return ret;
 	}
 	
-	private static List<ILegibleImage> readGifFile(InputStream is)
+	@Deprecated
+	private static void readGifFile(InputStream is, List<ILegibleImage> ret)
 	{
 		try
 		{
@@ -120,8 +121,6 @@ public final class RenderHelper
 			
 			int imgs = r.getNumImages(true);
 			
-			List<ILegibleImage> ret = Lists.newArrayListWithCapacity(imgs);
-			
 			for (int c = 0; c < imgs; c++)
 			{
 				ret.add(new LegibleBufferedImage(r.read(c)));
@@ -130,7 +129,6 @@ public final class RenderHelper
 			
 			in.close();
 			
-			return ret;
 		}
 		catch (Exception e)
 		{
@@ -138,7 +136,6 @@ public final class RenderHelper
 			
 		}
 		
-		return null;
 	}
 	
 	public static int genTexture(RenderContext rcon, ILegibleImage img)

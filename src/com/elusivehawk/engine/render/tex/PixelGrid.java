@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import com.elusivehawk.engine.render.ILegibleImage;
-import com.elusivehawk.util.BufferHelper;
+import com.elusivehawk.util.storage.BufferHelper;
 
 /**
  * 

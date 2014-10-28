@@ -5,9 +5,10 @@ import java.nio.ByteBuffer;
 import java.util.List;
 import com.elusivehawk.engine.CaelumException;
 import com.elusivehawk.engine.Experimental;
+import com.elusivehawk.engine.assets.IAssetReader;
 import com.elusivehawk.engine.render.LegibleByteImage;
-import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.io.IByteReader;
+import com.elusivehawk.util.storage.BufferHelper;
 import com.elusivehawk.util.storage.Tuple;
 import com.google.common.collect.Lists;
 
@@ -18,11 +19,12 @@ import com.google.common.collect.Lists;
  * @author Elusivehawk
  */
 @Experimental
-public class PNGReader
+public class PNGReader implements IAssetReader
 {
 	public static final long HEADER = 0x89504E470D0A1A01L;
 	
-	public static LegibleByteImage readPNG(IByteReader r) throws Throwable
+	@Override
+	public LegibleByteImage readAsset(IByteReader r) throws Throwable
 	{
 		long header = r.readLong();
 		
@@ -113,16 +115,11 @@ public class PNGReader
 					foundPalette = true;
 					
 					while (buf.remaining() > 0)
-					{
 						palette.add(new Color(ColorFormat.RGBA, buf.get(), buf.get(), buf.get()));
-						
-					}
 					
 					break;
 				}
-				case "IDAT":
-					idats.add(chunk);
-					break;
+				case "IDAT": idats.add(chunk); break;
 				default: throw new CaelumException("Unknown chunk name found: %s", chunk.one);
 				
 			}

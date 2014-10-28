@@ -5,6 +5,7 @@
 struct Material
 {
 	sampler2D tex;
+	sampler2D reflTex;
 	vec4 color;
 	float shininess;
 	

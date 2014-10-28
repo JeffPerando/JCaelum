@@ -19,12 +19,12 @@ public class GLFramebuffer implements IGLBindable
 	
 	public GLFramebuffer(int w, int h)
 	{
-		this(true, w, h);
+		this(w, h, true);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public GLFramebuffer(boolean depth, int w, int h)
+	public GLFramebuffer(int w, int h, boolean depth)
 	{
 		assert w > 0;
 		assert h > 0;

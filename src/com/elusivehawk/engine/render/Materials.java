@@ -10,11 +10,11 @@ import com.elusivehawk.util.storage.IArray;
  * 
  * @author Elusivehawk
  */
-public class MaterialSet implements IRenderable, IArray<Material>, IDirty
+public class Materials implements IRenderable, IArray<Material>, IDirty
 {
 	private final Material[] mats = new Material[RenderConst.MATERIAL_CAP];
-	private volatile int matCount = 0;
-	private volatile boolean dirty = false, isStatic = true, finished = false;
+	private int matCount = 0;
+	private boolean dirty = false, isStatic = true, finished = false;
 	
 	@Override
 	public boolean isDirty()
@@ -64,8 +64,12 @@ public class MaterialSet implements IRenderable, IArray<Material>, IDirty
 			return this;
 		}
 		
-		this.mats[i] = mat;
-		this.matCount++;
+		synchronized (this)
+		{
+			this.mats[i] = mat;
+			this.matCount++;
+			
+		}
 		
 		return this;
 	}
@@ -98,16 +102,16 @@ public class MaterialSet implements IRenderable, IArray<Material>, IDirty
 	}
 	
 	@Override
-	public MaterialSet setImmutable()
+	public synchronized Materials setImmutable()
 	{
 		this.finished = true;
 		
 		return this;
 	}
 	
-	public boolean addMaterials(Material... mats)
+	public boolean addMaterials(Material... ms)
 	{
-		assert mats != null && mats.length > 0;
+		assert ms != null && ms.length > 0;
 		
 		if (this.finished)
 		{
@@ -124,33 +128,50 @@ public class MaterialSet implements IRenderable, IArray<Material>, IDirty
 				break;
 			}
 			
-			this.mats[this.matCount++] = mats[i++];
-			ret = true;
-			
-		}
-		while (i < mats.length);
-		
-		if (ret)
-		{
-			for (Material m : mats)
+			synchronized (this)
 			{
-				if (!this.isStatic())
-				{
-					break;
-				}
-				
-				this.isStatic = m.isStatic();
+				this.mats[this.matCount++] = ms[i++];
 				
 			}
 			
-			this.dirty = true;
+			ret = true;
+			
+		}
+		while (i < ms.length);
+		
+		if (ret)
+		{
+			if (this.isStatic())
+			{
+				for (Material m : this.mats)
+				{
+					synchronized (this)
+					{
+						this.isStatic = m.isStatic();
+						
+					}
+					
+					if (!this.isStatic)
+					{
+						break;
+					}
+					
+				}
+				
+			}
+			
+			synchronized (this)
+			{
+				this.dirty = true;
+				
+			}
 			
 		}
 		
 		return ret;
 	}
 	
-	public MaterialSet finish()
+	public synchronized Materials finish()
 	{
 		this.finished = true;
 		

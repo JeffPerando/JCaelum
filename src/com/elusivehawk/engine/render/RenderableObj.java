@@ -10,8 +10,8 @@ import com.elusivehawk.engine.render.gl.GLProgram;
 import com.elusivehawk.engine.render.gl.IGL1;
 import com.elusivehawk.engine.render.gl.VertexArray;
 import com.elusivehawk.engine.render.tex.TextureAsset;
-import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.IDirty;
+import com.elusivehawk.util.storage.BufferHelper;
 
 /**
  * 
@@ -25,11 +25,11 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 	
 	protected final VertexArray vao = new VertexArray();
 	
-	protected volatile boolean dirty = true, zBuffer = true;
+	protected boolean dirty = true, zBuffer = true;
 	protected boolean initiated = false;
 	
-	protected volatile Filters filters = null;
-	protected volatile MaterialSet matSet = null;
+	protected Filters filters = null;
+	protected Materials matSet = null;
 	
 	protected int renderCount = 0;
 	
@@ -187,7 +187,7 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 	}
 	
 	@Override
-	public void setIsDirty(boolean b)
+	public synchronized void setIsDirty(boolean b)
 	{
 		this.dirty = b;
 		
@@ -225,7 +225,7 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 		
 	}
 	
-	public RenderableObj setFilters(Filters fs)
+	public synchronized RenderableObj setFilters(Filters fs)
 	{
 		assert fs != null;
 		
@@ -234,7 +234,7 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 		return this;
 	}
 	
-	public RenderableObj setMaterials(MaterialSet ms)
+	public synchronized RenderableObj setMaterials(Materials ms)
 	{
 		assert ms != null;
 		
@@ -247,14 +247,14 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 	{
 		if (this.matSet == null)
 		{
-			this.setMaterials(new MaterialSet());
+			this.setMaterials(new Materials());
 			
 		}
 		
 		return this.matSet.addMaterials(ms);
 	}
 	
-	public RenderableObj setEnableZBuffer(boolean z)
+	public synchronized RenderableObj setEnableZBuffer(boolean z)
 	{
 		this.zBuffer = z;
 		

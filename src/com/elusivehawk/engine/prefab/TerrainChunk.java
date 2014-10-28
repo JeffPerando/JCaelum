@@ -1,10 +1,10 @@
 
-package com.elusivehawk.engine.test;
+package com.elusivehawk.engine.prefab;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import com.elusivehawk.engine.Experimental;
-import com.elusivehawk.util.BufferHelper;
+import com.elusivehawk.util.storage.BufferHelper;
 
 /**
  * 

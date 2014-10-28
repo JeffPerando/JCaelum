@@ -3,8 +3,8 @@ package com.elusivehawk.engine.prefab;
 
 import java.io.File;
 import java.util.List;
-import com.elusivehawk.util.StringHelper;
 import com.elusivehawk.util.storage.Pair;
+import com.elusivehawk.util.string.StringHelper;
 
 /**
  * 

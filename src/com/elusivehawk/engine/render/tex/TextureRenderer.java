@@ -1,8 +1,8 @@
 
 package com.elusivehawk.engine.render.tex;
 
-import com.elusivehawk.engine.render.ICamera;
 import com.elusivehawk.engine.render.IDisplay;
+import com.elusivehawk.engine.render.IRenderable;
 import com.elusivehawk.engine.render.RenderContext;
 
 /**
@@ -11,64 +11,73 @@ import com.elusivehawk.engine.render.RenderContext;
  * 
  * @author Elusivehawk
  */
-public class CameraTexture extends RenderableTexture
+public class TextureRenderer extends RenderableTexture
 {
-	private final ICamera cam;
+	private final IRenderable renderer;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public CameraTexture(ICamera camera)
+	public TextureRenderer(IRenderable r)
 	{
-		cam = camera;
+		renderer = r;
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public CameraTexture(ICamera camera, boolean depth)
+	public TextureRenderer(IRenderable r, boolean depth)
 	{
 		super(depth);
 		
-		cam = camera;
+		renderer = r;
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public CameraTexture(ICamera camera, IDisplay display)
+	public TextureRenderer(IRenderable r, IDisplay display)
 	{
 		super(display);
 		
-		cam = camera;
+		renderer = r;
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public CameraTexture(ICamera camera, IDisplay display, boolean depth)
+	public TextureRenderer(IRenderable r, IDisplay display, boolean depth)
 	{
 		super(display, depth);
 		
-		cam = camera;
+		renderer = r;
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public CameraTexture(ICamera camera, int width, int height, boolean depth)
+	public TextureRenderer(IRenderable r, int width, int height, boolean depth)
 	{
 		super(width, height, depth);
 		
-		cam = camera;
+		renderer = r;
 		
 	}
 	
 	@Override
 	public void preRender(RenderContext rcon, double delta)
 	{
-		this.cam.preRender(rcon, delta);
+		this.renderer.preRender(rcon, delta);
 		
 	}
 	
 	@Override
 	public void renderTexture(RenderContext rcon)
 	{
-		rcon.renderGame(this.cam);
+		this.renderer.render(rcon);
+		
+	}
+	
+	@Override
+	public void postRender(RenderContext rcon)
+	{
+		super.postRender(rcon);
+		
+		this.renderer.postRender(rcon);
 		
 	}
 	

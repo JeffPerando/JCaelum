@@ -1,7 +1,12 @@
 
 package com.elusivehawk.engine.input;
 
-import static com.elusivehawk.engine.input.EnumKeyType.*;
+import static com.elusivehawk.engine.input.EnumKeyType.FUNCTIONAL;
+import static com.elusivehawk.engine.input.EnumKeyType.F_KEY;
+import static com.elusivehawk.engine.input.EnumKeyType.LETTER;
+import static com.elusivehawk.engine.input.EnumKeyType.MISC;
+import static com.elusivehawk.engine.input.EnumKeyType.NUMBER;
+import static com.elusivehawk.engine.input.EnumKeyType.SYMBOL;
 
 /**
  * 

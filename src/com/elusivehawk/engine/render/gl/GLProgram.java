@@ -10,10 +10,10 @@ import com.elusivehawk.engine.render.RenderContext;
 import com.elusivehawk.engine.render.RenderHelper;
 import com.elusivehawk.engine.render.Shader;
 import com.elusivehawk.engine.render.Shaders;
-import com.elusivehawk.util.ArrayHelper;
-import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.IDirty;
 import com.elusivehawk.util.IPopulator;
+import com.elusivehawk.util.storage.ArrayHelper;
+import com.elusivehawk.util.storage.BufferHelper;
 import com.elusivehawk.util.storage.SyncList;
 
 /**

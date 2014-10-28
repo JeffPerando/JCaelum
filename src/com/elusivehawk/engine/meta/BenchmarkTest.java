@@ -4,8 +4,8 @@ package com.elusivehawk.engine.meta;
 import java.util.List;
 import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.Logger;
-import com.elusivehawk.util.Token;
-import com.elusivehawk.util.Tokenizer;
+import com.elusivehawk.util.string.Token;
+import com.elusivehawk.util.string.Tokenizer;
 import com.google.common.collect.Lists;
 
 /**

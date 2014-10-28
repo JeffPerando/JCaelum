@@ -10,12 +10,12 @@ import com.elusivehawk.engine.render.gl.GLEnumDataUsage;
 import com.elusivehawk.engine.render.gl.GLEnumUType;
 import com.elusivehawk.engine.render.gl.GLProgram;
 import com.elusivehawk.engine.render.gl.VertexBuffer;
-import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.IDirty;
 import com.elusivehawk.util.math.Matrix;
 import com.elusivehawk.util.math.MatrixHelper;
 import com.elusivehawk.util.math.Quaternion;
 import com.elusivehawk.util.math.Vector;
+import com.elusivehawk.util.storage.BufferHelper;
 
 /**
  * 

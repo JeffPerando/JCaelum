@@ -4,7 +4,7 @@ package com.elusivehawk.engine.render;
 import java.nio.ByteBuffer;
 import com.elusivehawk.engine.render.tex.Color;
 import com.elusivehawk.engine.render.tex.ColorFormat;
-import com.elusivehawk.util.BufferHelper;
+import com.elusivehawk.util.storage.BufferHelper;
 
 /**
  * 

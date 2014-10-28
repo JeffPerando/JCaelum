@@ -1,9 +1,10 @@
 
 package com.elusivehawk.engine.assets;
 
-import java.io.InputStream;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.util.Internal;
+import com.elusivehawk.util.io.IByteReader;
+import com.elusivehawk.util.string.StringHelper;
 
 /**
  * 
@@ -13,7 +14,7 @@ import com.elusivehawk.util.Internal;
  */
 public abstract class Asset
 {
-	public final String filepath;
+	public final String filepath, ext;
 	public final EnumAssetType type;
 	
 	private boolean read = false;
@@ -32,6 +33,7 @@ public abstract class Asset
 		
 		filepath = path;
 		type = aType;
+		ext = StringHelper.getSuffix(path, ".");
 		
 		CaelumEngine.tasks().scheduleTask(new TaskLoadAsset(this));
 		
@@ -56,11 +58,11 @@ public abstract class Asset
 	}
 	
 	@Internal
-	public final boolean read(InputStream is) throws Throwable
+	public final boolean read(IByteReader r) throws Throwable
 	{
-		return this.read ? true : (this.read = this.readAsset(is));
+		return this.read ? true : (this.read = this.readAsset(r));
 	}
 	
-	protected abstract boolean readAsset(InputStream is) throws Throwable;
+	protected abstract boolean readAsset(IByteReader r) throws Throwable;
 	
 }

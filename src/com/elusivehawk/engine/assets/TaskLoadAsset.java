@@ -1,12 +1,12 @@
 
 package com.elusivehawk.engine.assets;
 
-import java.io.BufferedInputStream;
-import java.io.InputStream;
+import java.io.Closeable;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.Logger;
+import com.elusivehawk.util.io.IByteReader;
 import com.elusivehawk.util.task.Task;
 
 /**
@@ -49,20 +49,22 @@ public class TaskLoadAsset extends Task
 			return true;
 		}
 		
-		InputStream is = mgr.getStream(this.asset.filepath);
+		IByteReader r = mgr.getByteReader(this.asset.filepath);
 		
-		if (is == null)
+		if (r == null)
 		{
 			Logger.log().log(EnumLogType.WARN, "Asset stream for \"%s\" cannot be null!", this.asset.filepath);
 			
 			return false;
 		}
 		
-		BufferedInputStream in = new BufferedInputStream(is);
+		boolean ret = this.asset.read(r);
 		
-		boolean ret = this.asset.read(in);
-		
-		in.close();
+		if (r instanceof Closeable)
+		{
+			((Closeable)r).close();
+			
+		}
 		
 		if (ret)
 		{

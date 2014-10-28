@@ -20,6 +20,6 @@ public interface ITexture extends IPreRenderer, IGLDeletable
 	
 	int getTexId();
 	
-	boolean isAnimated();
+	boolean isStatic();
 	
 }

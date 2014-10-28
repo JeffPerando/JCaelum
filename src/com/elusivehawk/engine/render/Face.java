@@ -1,6 +1,7 @@
 
 package com.elusivehawk.engine.render;
 
+import com.elusivehawk.engine.Experimental;
 import com.elusivehawk.util.math.Vector;
 
 /**
@@ -9,6 +10,7 @@ import com.elusivehawk.util.math.Vector;
  * 
  * @author Elusivehawk
  */
+@Experimental
 public class Face
 {
 	public static final int 

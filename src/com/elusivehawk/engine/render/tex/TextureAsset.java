@@ -1,18 +1,19 @@
 
 package com.elusivehawk.engine.render.tex;
 
-import java.io.InputStream;
 import java.util.List;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.CaelumException;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.EnumAssetType;
+import com.elusivehawk.engine.assets.IAssetReader;
 import com.elusivehawk.engine.render.GraphicAsset;
 import com.elusivehawk.engine.render.ILegibleImage;
 import com.elusivehawk.engine.render.RTaskUploadImage;
 import com.elusivehawk.engine.render.RenderContext;
-import com.elusivehawk.engine.render.RenderHelper;
+import com.elusivehawk.util.io.IByteReader;
 import com.elusivehawk.util.task.Task;
+import com.google.common.collect.Lists;
 
 /**
  * 
@@ -22,23 +23,12 @@ import com.elusivehawk.util.task.Task;
  */
 public class TextureAsset extends GraphicAsset implements ITexture
 {
-	private final boolean animate;
-	
 	protected int[] frames = null;
 	protected int frame = 0;
 	
 	public TextureAsset(String filepath)
 	{
-		this(filepath, filepath.endsWith(".gif"));
-		
-	}
-	
-	@SuppressWarnings("unqualified-field-access")
-	public TextureAsset(String filepath, boolean animated)
-	{
 		super(filepath, EnumAssetType.TEXTURE);
-		
-		animate = animated;
 		
 	}
 	
@@ -52,7 +42,7 @@ public class TextureAsset extends GraphicAsset implements ITexture
 	@Override
 	public void preRender(RenderContext rcon, double delta)
 	{
-		if (this.isAnimated())
+		if (this.isStatic())
 		{
 			this.frame++;
 			
@@ -66,9 +56,9 @@ public class TextureAsset extends GraphicAsset implements ITexture
 	}
 	
 	@Override
-	public boolean isAnimated()
+	public boolean isStatic()
 	{
-		return this.animate && this.getFrameCount() > 1;
+		return this.getFrameCount() > 1;
 	}
 	
 	@Override
@@ -84,12 +74,34 @@ public class TextureAsset extends GraphicAsset implements ITexture
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
-	public boolean readAsset(InputStream in) throws Throwable
+	public boolean readAsset(IByteReader r) throws Throwable
 	{
-		List<ILegibleImage> imgs = RenderHelper.readImg(in, this.animate);
+		IAssetReader ar = CaelumEngine.assets().getReader(this.ext);
 		
-		if (imgs == null || imgs.isEmpty())
+		if (r == null)
+		{
+			throw new CaelumException("Reader not found for texture type %s! THIS IS A BUG!", this.ext);
+		}
+		
+		Object read = ar.readAsset(r);
+		
+		List<ILegibleImage> imgs = Lists.newArrayList();
+		
+		if (read instanceof ILegibleImage)
+		{
+			imgs.add((ILegibleImage)read);
+			
+		}
+		else if (read instanceof List<?>)
+		{
+			imgs.addAll((List<ILegibleImage>)read);
+			
+		}
+		else throw new CaelumException("Unusable return type for texture of type %s: %s", this.ext, read);
+		
+		if (imgs.isEmpty())
 		{
 			return false;
 		}

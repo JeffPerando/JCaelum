@@ -7,7 +7,7 @@ import java.nio.IntBuffer;
 import com.elusivehawk.engine.render.tex.Color;
 import com.elusivehawk.engine.render.tex.ColorFilter;
 import com.elusivehawk.engine.render.tex.ITexture;
-import com.elusivehawk.util.BufferHelper;
+import com.elusivehawk.util.storage.BufferHelper;
 
 /**
  * 

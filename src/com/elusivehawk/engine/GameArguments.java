@@ -2,8 +2,8 @@
 package com.elusivehawk.engine;
 
 import java.util.Map;
-import com.elusivehawk.util.StringHelper;
 import com.elusivehawk.util.storage.Pair;
+import com.elusivehawk.util.string.StringHelper;
 import com.google.common.collect.Maps;
 
 /**

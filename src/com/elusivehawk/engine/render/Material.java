@@ -3,6 +3,7 @@ package com.elusivehawk.engine.render;
 
 import com.elusivehawk.engine.render.tex.Color;
 import com.elusivehawk.engine.render.tex.ITexture;
+import com.elusivehawk.engine.render.tex.RenderableTexture;
 import com.elusivehawk.util.math.MathHelper;
 
 /**
@@ -14,7 +15,7 @@ import com.elusivehawk.util.math.MathHelper;
 public class Material implements IRenderable
 {
 	protected ITexture tex = null;
-	protected IRenderableTexture renTex = null;
+	protected RenderableTexture renTex = null;
 	protected float shininess = 0f;
 	protected Color filter = new Color();
 	
@@ -26,6 +27,7 @@ public class Material implements IRenderable
 	public Material(Material m)
 	{
 		tex = m.tex;
+		renTex = m.renTex;
 		shininess = m.shininess;
 		filter = m.filter;
 		
@@ -76,7 +78,20 @@ public class Material implements IRenderable
 		return new Material(this);
 	}
 	
-	public Material renTex(IRenderableTexture texture)
+	@Override
+	public int hashCode()
+	{
+		int ret = 31;
+		
+		ret *= 31 + (this.tex == null ? 0 : this.tex.hashCode());
+		ret *= 31 + (this.renTex == null ? 0 : this.renTex.hashCode());
+		ret *= 31 + (Float.floatToRawIntBits(this.shininess));
+		ret *= 31 + (this.filter == null ? 0 : this.filter.hashCode());
+		
+		return ret;
+	}
+	
+	public Material renTex(RenderableTexture texture)
 	{
 		assert texture != null;
 		
@@ -133,7 +148,7 @@ public class Material implements IRenderable
 		return this;
 	}
 	
-	public IRenderableTexture renTex()
+	public RenderableTexture renTex()
 	{
 		return this.renTex;
 	}
@@ -155,7 +170,7 @@ public class Material implements IRenderable
 	
 	public boolean isStatic()
 	{
-		return this.renTex != null || (this.tex != null && !this.tex.isAnimated());
+		return this.renTex != null || (this.tex != null && this.tex.isStatic());
 	}
 	
 }

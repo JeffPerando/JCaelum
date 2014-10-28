@@ -3,10 +3,10 @@ package com.elusivehawk.engine.render.tex;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
-import com.elusivehawk.util.BufferHelper;
 import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.io.ByteArray;
 import com.elusivehawk.util.io.IByteReader;
+import com.elusivehawk.util.storage.BufferHelper;
 
 /**
  * 

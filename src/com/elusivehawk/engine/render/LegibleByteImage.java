@@ -2,7 +2,7 @@
 package com.elusivehawk.engine.render;
 
 import java.nio.ByteBuffer;
-import com.elusivehawk.util.BufferHelper;
+import com.elusivehawk.util.storage.BufferHelper;
 
 /**
  * 

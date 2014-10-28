@@ -1,12 +1,12 @@
 
 package com.elusivehawk.engine.render;
 
-import java.io.InputStream;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.assets.Asset;
 import com.elusivehawk.engine.assets.EnumAssetType;
 import com.elusivehawk.engine.render.gl.GLEnumShader;
-import com.elusivehawk.util.StringHelper;
+import com.elusivehawk.util.io.IByteReader;
+import com.elusivehawk.util.string.StringHelper;
 import com.elusivehawk.util.task.Task;
 
 /**
@@ -38,9 +38,9 @@ public class Shader extends GraphicAsset
 	}
 	
 	@Override
-	protected boolean readAsset(InputStream is) throws Throwable
+	protected boolean readAsset(IByteReader r) throws Throwable
 	{
-		String src = StringHelper.readToOneLine(is);
+		String src = StringHelper.readToOneLine(r);
 		
 		if (src != null)
 		{

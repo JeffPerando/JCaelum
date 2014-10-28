@@ -15,6 +15,9 @@ import com.elusivehawk.engine.render.gl.VertexArray;
 public interface ILogicalRender extends IRenderable
 {
 	@Override
+	default void preRender(RenderContext rcon, double delta){}
+	
+	@Override
 	default void render(RenderContext rcon)
 	{
 		GLProgram p = this.getProgram();
@@ -49,6 +52,9 @@ public interface ILogicalRender extends IRenderable
 		p.unbind(rcon);
 		
 	}
+	
+	@Override
+	default void postRender(RenderContext rcon){}
 	
 	default GLProgram getProgram()
 	{
