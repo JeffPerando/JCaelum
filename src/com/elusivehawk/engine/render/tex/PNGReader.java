@@ -3,6 +3,7 @@ package com.elusivehawk.engine.render.tex;
 
 import java.nio.ByteBuffer;
 import java.util.List;
+import java.util.zip.CRC32;
 import com.elusivehawk.engine.CaelumException;
 import com.elusivehawk.engine.Experimental;
 import com.elusivehawk.engine.assets.IAssetReader;
@@ -147,7 +148,16 @@ public class PNGReader implements IAssetReader
 		
 		int crc = r.readInt();
 		
-		//TODO Return null if CRC check fails
+		CRC32 crcgen = new CRC32();
+		
+		crcgen.update(data);
+		
+		long comp = crcgen.getValue();
+		
+		if (crc != comp)
+		{
+			return null;
+		}
 		
 		return Tuple.create(new String(type), BufferHelper.createWrapper(data));
 	}
