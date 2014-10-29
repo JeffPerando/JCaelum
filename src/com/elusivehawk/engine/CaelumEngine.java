@@ -3,7 +3,6 @@ package com.elusivehawk.engine;
 
 import java.io.File;
 import java.io.InputStream;
-import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -21,6 +20,7 @@ import com.elusivehawk.util.CompInfo;
 import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.EnumOS;
 import com.elusivehawk.util.FileHelper;
+import com.elusivehawk.util.HashGen;
 import com.elusivehawk.util.IPausable;
 import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.Logger;
@@ -716,24 +716,6 @@ public final class CaelumEngine
 	
 	private static void copyNative(InputStream is, File dest)
 	{
-		MessageDigest md = null;
-		
-		try
-		{
-			md = MessageDigest.getInstance("SHA-256");
-			
-		}
-		catch (Exception e)
-		{
-			Logger.log().err(e);
-			
-		}
-		
-		if (md == null)
-		{
-			throw new CaelumException("Algorithm digest not found! THIS IS A BUG!!!");
-		}
-		
 		byte[] bytes = FileHelper.readBytes(is, false);
 		
 		if (bytes.length == 0)
@@ -771,44 +753,42 @@ public final class CaelumEngine
 			
 		}
 		
-		md.update(bytes);
-		byte[] sha1 = md.digest();
-		md.reset();
+		byte[] hash = HashGen.sha256(bytes);
 		
-		if (sha1 == null || sha1.length == 0)
+		if (hash == null || hash.length == 0)
 		{
 			Logger.log().log(EnumLogType.ERROR, "Could not generate checksum for \"%s\"; THIS IS A BUG!", name);
 			
 			return;
 		}
 		
-		File sha1File = new File(dest.getParentFile(), String.format("%s.checksum", name));
+		File hashFile = new File(dest.getParentFile(), String.format("%s.checksum", name));
 		
-		if ((sha1File.exists() || sha1File.getTotalSpace() != sha1.length) && !FileHelper.write(sha1, sha1File))
+		if ((hashFile.exists() || hashFile.getTotalSpace() != hash.length) && !FileHelper.write(hash, hashFile))
 		{
 			Logger.log().log(EnumLogType.WARN, "Could not copy checksum for native \"%s\", skipping", name);
 			
 			return;
 		}
 		
-		byte[] oldSHA1 = FileHelper.readBytes(sha1File);
+		byte[] oldHash = FileHelper.readBytes(hashFile);
 		
-		if (oldSHA1.length == 0)
+		if (oldHash.length == 0)
 		{
 			Logger.log().log(EnumLogType.WARN, "Could not read checksum for \"%s\", it read as an empty checksum", name);
 			
-			if (!FileHelper.write(sha1, sha1File))
+			if (!FileHelper.write(hash, hashFile))
 			{
 				Logger.log().log(EnumLogType.WARN, "Could not write checksum for native \"%s\", skipping", name);
 				
 				return;
 			}
 			
-			oldSHA1 = sha1;
+			oldHash = hash;
 			
 		}
 		
-		if (Arrays.equals(sha1, oldSHA1))
+		if (Arrays.equals(hash, oldHash))
 		{
 			if (CompInfo.DEBUG)
 			{
@@ -819,7 +799,7 @@ public final class CaelumEngine
 			return;
 		}
 		
-		if (!FileHelper.write(sha1, sha1File))
+		if (!FileHelper.write(hash, hashFile))
 		{
 			Logger.log().log(EnumLogType.WARN, "Could not write checksum for native \"%s\"", name);
 			
