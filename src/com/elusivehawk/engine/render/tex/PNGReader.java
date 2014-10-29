@@ -3,11 +3,11 @@ package com.elusivehawk.engine.render.tex;
 
 import java.nio.ByteBuffer;
 import java.util.List;
-import java.util.zip.CRC32;
 import com.elusivehawk.engine.CaelumException;
 import com.elusivehawk.engine.Experimental;
 import com.elusivehawk.engine.assets.IAssetReader;
 import com.elusivehawk.engine.render.LegibleByteImage;
+import com.elusivehawk.util.HashGen;
 import com.elusivehawk.util.io.IByteReader;
 import com.elusivehawk.util.storage.BufferHelper;
 import com.elusivehawk.util.storage.Tuple;
@@ -146,15 +146,9 @@ public class PNGReader implements IAssetReader
 		
 		byte[] data = r.read(size);
 		
-		int crc = r.readInt();
+		long crc = Integer.toUnsignedLong(r.readInt());
 		
-		CRC32 crcgen = new CRC32();
-		
-		crcgen.update(data);
-		
-		long comp = crcgen.getValue();
-		
-		if (crc != comp)
+		if (crc != HashGen.crc32(data))
 		{
 			return null;
 		}
