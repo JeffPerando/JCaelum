@@ -1,17 +1,17 @@
 
 package com.elusivehawk.engine.render.tex;
 
+import java.io.DataInputStream;
 import java.util.List;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.engine.CaelumException;
 import com.elusivehawk.engine.assets.Asset;
+import com.elusivehawk.engine.assets.AssetManager;
 import com.elusivehawk.engine.assets.EnumAssetType;
-import com.elusivehawk.engine.assets.IAssetReader;
 import com.elusivehawk.engine.render.GraphicAsset;
 import com.elusivehawk.engine.render.ILegibleImage;
 import com.elusivehawk.engine.render.RTaskUploadImage;
 import com.elusivehawk.engine.render.RenderContext;
-import com.elusivehawk.util.io.IByteReader;
 import com.elusivehawk.util.task.Task;
 import com.google.common.collect.Lists;
 
@@ -76,16 +76,11 @@ public class TextureAsset extends GraphicAsset implements ITexture
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public boolean readAsset(IByteReader r) throws Throwable
+	public boolean readAsset(DataInputStream in) throws Throwable
 	{
-		IAssetReader ar = CaelumEngine.assets().getReader(this.ext);
+		AssetManager mgr = CaelumEngine.assets();
 		
-		if (r == null)
-		{
-			throw new CaelumException("Reader not found for texture type %s! THIS IS A BUG!", this.ext);
-		}
-		
-		Object read = ar.readAsset(r);
+		Object read = mgr.readObjectForAsset(this, in);
 		
 		List<ILegibleImage> imgs = Lists.newArrayList();
 		

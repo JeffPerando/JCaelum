@@ -3,9 +3,6 @@ package com.elusivehawk.engine.render.tex;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
-import com.elusivehawk.util.Logger;
-import com.elusivehawk.util.io.ByteArray;
-import com.elusivehawk.util.io.IByteReader;
 import com.elusivehawk.util.storage.BufferHelper;
 
 /**
@@ -42,16 +39,16 @@ public class Color
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Color(ColorFormat f)
+	public Color(ColorFormat cf)
 	{
-		format = f;
+		format = cf;
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Color(ColorFormat f, int col)
+	public Color(ColorFormat cf, int col)
 	{
-		this(f);
+		this(cf);
 		
 		color = col;
 		
@@ -63,46 +60,43 @@ public class Color
 		
 	}
 	
-	public Color(ColorFormat f, int a, int b, int c, int d)
+	public Color(ColorFormat cf, int a, int b, int c)
 	{
-		this(f, new byte[]{(byte)a, (byte)b, (byte)c, (byte)d});
+		this(cf, a, b, c, 0);
 		
 	}
 	
-	public Color(ColorFormat f, float a, float b, float c, float d)
+	public Color(ColorFormat cf, int a, int b, int c, int d)
 	{
-		this(f, (byte)(255 * a), (byte)(255 * b), (byte)(255 * c), (byte)(255 * d));
+		this(cf, new byte[]{(byte)a, (byte)b, (byte)c, (byte)d});
 		
 	}
 	
-	public Color(ColorFormat f, byte... cols)
+	public Color(ColorFormat cf, float a, float b, float c, float d)
 	{
-		this(f, new ByteArray(cols));
+		this(cf, (byte)(255 * a), (byte)(255 * b), (byte)(255 * c), (byte)(255 * d));
 		
 	}
 	
-	@SuppressWarnings("unqualified-field-access")
-	public Color(ColorFormat f, IByteReader buf)
+	public Color(ColorFormat cf, byte... bs)
 	{
-		this(f);
+		this(cf);
+		
+		int c = 0;
 		
 		for (ColorFilter col : ColorFilter.values())
 		{
-			if (!f.supports(col))
+			if (c == bs.length)
+			{
+				return;
+			}
+			
+			if (!cf.supports(col))
 			{
 				continue;
 			}
 			
-			try
-			{
-				color = (color << f.getColorOffset(col)) | buf.read();
-				
-			}
-			catch (Throwable e)
-			{
-				Logger.log().err(e);
-				break;
-			}
+			setColor(col, bs[c++]);
 			
 		}
 		
@@ -119,16 +113,28 @@ public class Color
 		return this.color;
 	}
 	
-	public boolean setColor(int col)
+	public Color setColor(int col)
 	{
 		this.color = col;
 		
-		return true;
+		return this;
 	}
 	
-	public byte getColor(ColorFilter col)
+	public Color setColor(ColorFilter cf, float col)
 	{
-		return (byte)((this.getColor() >> this.format.getColorOffset(col)) & 0xFF);
+		return this.setColor(cf, (byte)(255 * col));
+	}
+	
+	public Color setColor(ColorFilter cf, byte col)
+	{
+		this.color = (this.color << this.format.getColorOffset(cf)) | col;
+		
+		return this;
+	}
+	
+	public byte getColor(ColorFilter cf)
+	{
+		return (byte)((this.getColor() >> this.format.getColorOffset(cf)) & 0xFF);
 	}
 	
 	public float getColorf(ColorFilter col)

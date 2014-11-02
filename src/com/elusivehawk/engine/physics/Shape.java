@@ -26,7 +26,7 @@ public abstract class Shape implements Vector.Listener, IUpdatable
 	}
 	
 	@Override
-	public void update(double delta, Object... extra)
+	public void update(double delta)
 	{
 		if (!this.canMove())
 		{

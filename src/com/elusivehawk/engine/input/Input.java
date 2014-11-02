@@ -21,7 +21,7 @@ public abstract class Input implements IUpdatable, Closeable
 	private boolean initiated = false;
 	
 	@Override
-	public void update(double delta, Object... extra)
+	public void update(double delta) throws Throwable
 	{
 		if (!this.initiated)
 		{

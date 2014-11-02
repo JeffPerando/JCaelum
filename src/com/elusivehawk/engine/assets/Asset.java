@@ -1,9 +1,9 @@
 
 package com.elusivehawk.engine.assets;
 
+import java.io.DataInputStream;
 import com.elusivehawk.engine.CaelumEngine;
 import com.elusivehawk.util.Internal;
-import com.elusivehawk.util.io.IByteReader;
 import com.elusivehawk.util.string.StringHelper;
 
 /**
@@ -58,11 +58,11 @@ public abstract class Asset
 	}
 	
 	@Internal
-	public final boolean read(IByteReader r) throws Throwable
+	public final boolean read(DataInputStream in) throws Throwable
 	{
-		return this.read ? true : (this.read = this.readAsset(r));
+		return this.read ? true : (this.read = this.readAsset(in));
 	}
 	
-	protected abstract boolean readAsset(IByteReader r) throws Throwable;
+	protected abstract boolean readAsset(DataInputStream in) throws Throwable;
 	
 }

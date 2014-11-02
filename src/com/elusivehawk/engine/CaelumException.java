@@ -29,6 +29,12 @@ public class CaelumException extends RuntimeException
 		
 	}
 	
+	public CaelumException(String err, Throwable e, Object... args)
+	{
+		super(String.format(err, args), e);
+		
+	}
+	
 	public CaelumException(String err, Object... args)
 	{
 		this(String.format(err, args));

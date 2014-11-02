@@ -100,18 +100,18 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 	//XXX Overridden methods
 	
 	@Override
-	public void update(double delta, Object... extra) throws Throwable
+	public void update(double delta) throws Throwable
 	{
 		try
 		{
 			if (this.state == null)
 			{
-				this.updateModules(delta, extra);
+				this.updateModules(delta);
 				
 			}
 			else
 			{
-				this.state.update(delta, extra);
+				this.state.update(delta);
 				
 			}
 			

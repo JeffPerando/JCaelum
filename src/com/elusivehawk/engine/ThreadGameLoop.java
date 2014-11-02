@@ -82,7 +82,7 @@ public final class ThreadGameLoop extends ThreadTimed
 	}
 	
 	@Override
-	public void update(double delta, Object... extra) throws Throwable
+	public void update(double delta) throws Throwable
 	{
 		if (!this.input.isEmpty())
 		{
@@ -90,7 +90,7 @@ public final class ThreadGameLoop extends ThreadTimed
 			{
 				try
 				{
-					input.update(delta, extra);
+					input.update(delta);
 					
 				}
 				catch (Throwable e)
@@ -106,7 +106,7 @@ public final class ThreadGameLoop extends ThreadTimed
 		
 		try
 		{
-			this.game.update(delta, extra);
+			this.game.update(delta);
 			
 		}
 		catch (Throwable e)

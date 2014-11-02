@@ -1,15 +1,14 @@
 
 package com.elusivehawk.engine.assets;
 
+import java.io.DataInputStream;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import com.elusivehawk.engine.CaelumException;
-import com.elusivehawk.engine.render.tex.PNGReader;
 import com.elusivehawk.util.FileHelper;
-import com.elusivehawk.util.io.ByteStreams;
-import com.elusivehawk.util.io.IByteReader;
-import com.elusivehawk.util.io.IIOProvider;
+import com.elusivehawk.util.IStreamProvider;
 import com.elusivehawk.util.storage.SyncList;
 import com.elusivehawk.util.task.ITaskListener;
 import com.elusivehawk.util.task.Task;
@@ -27,7 +26,7 @@ public final class AssetManager implements ITaskListener
 	private final Map<EnumAssetType, List<Asset>> assets = Maps.newHashMap();
 	private final Map<String, IAssetReader> readers = Maps.newHashMap();
 	
-	private volatile IIOProvider sProvider = ((path) -> {return new ByteStreams(FileHelper.getResourceStream(path));});
+	private volatile IStreamProvider sProvider = ((path) -> {return FileHelper.getResourceStream(path);});
 	
 	public AssetManager()
 	{
@@ -84,11 +83,30 @@ public final class AssetManager implements ITaskListener
 		
 	}
 	
-	public void setStreamProvider(IIOProvider iop)
+	public Object readObjectForAsset(Asset a, DataInputStream in) throws Throwable
 	{
-		assert iop != null;
+		IAssetReader ar = this.getReader(a.ext);
 		
-		this.sProvider = iop;
+		Object ret = null;
+		
+		try
+		{
+			ret = ar.readAsset(in);
+			
+		}
+		catch (Throwable e)
+		{
+			throw new CaelumException("Error caught while reading asset %s:", e, a.filepath);
+		}
+		
+		return ret;
+	}
+	
+	public void setStreamProvider(IStreamProvider isp)
+	{
+		assert isp != null;
+		
+		this.sProvider = isp;
 		
 	}
 	
@@ -153,7 +171,7 @@ public final class AssetManager implements ITaskListener
 		return this.readers.get(ext.toLowerCase());
 	}
 	
-	public IByteReader getByteReader(String loc)
+	public InputStream getIn(String loc)
 	{
 		return this.sProvider.getIn(loc);
 	}

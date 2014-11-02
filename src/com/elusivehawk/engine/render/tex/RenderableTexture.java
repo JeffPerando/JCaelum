@@ -62,6 +62,7 @@ public abstract class RenderableTexture implements ITexture, IRenderable
 	public void postRender(RenderContext rcon)
 	{
 		this.rendered = false;
+		
 	}
 	
 	@Override

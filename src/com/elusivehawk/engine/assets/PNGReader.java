@@ -1,14 +1,15 @@
 
-package com.elusivehawk.engine.render.tex;
+package com.elusivehawk.engine.assets;
 
+import java.io.DataInputStream;
 import java.nio.ByteBuffer;
 import java.util.List;
 import com.elusivehawk.engine.CaelumException;
 import com.elusivehawk.engine.Experimental;
-import com.elusivehawk.engine.assets.IAssetReader;
 import com.elusivehawk.engine.render.LegibleByteImage;
+import com.elusivehawk.engine.render.tex.Color;
+import com.elusivehawk.engine.render.tex.ColorFormat;
 import com.elusivehawk.util.HashGen;
-import com.elusivehawk.util.io.IByteReader;
 import com.elusivehawk.util.storage.BufferHelper;
 import com.elusivehawk.util.storage.Tuple;
 import com.google.common.collect.Lists;
@@ -25,16 +26,16 @@ public class PNGReader implements IAssetReader
 	public static final long HEADER = 0x89504E470D0A1A01L;
 	
 	@Override
-	public LegibleByteImage readAsset(IByteReader r) throws Throwable
+	public LegibleByteImage readAsset(DataInputStream in) throws Throwable
 	{
-		long header = r.readLong();
+		long header = in.readLong();
 		
 		if (header != HEADER)//Check the header
 		{
 			throw new CaelumException("PNG file is corrupt: Header did not match! Header: 0x%s, expected: 0x%s", Long.toHexString(header), Long.toHexString(HEADER));
 		}
 		
-		Tuple<String, ByteBuffer> first = readChunk(r);//Read one chunk
+		Tuple<String, ByteBuffer> first = readChunk(in);//Read one chunk
 		
 		assert first != null;
 		assert first.one.equals("IHDR");//If the name of the first chunk isn't IHDR, we throw a hissy fit. Literally.
@@ -72,9 +73,9 @@ public class PNGReader implements IAssetReader
 		List<Color> palette = Lists.newArrayList();
 		LegibleByteImage ret = new LegibleByteImage(width, height);
 		
-		decloop: while (r.remaining() > 0)
+		decloop: while (in.available() > 0)
 		{
-			chunk = readChunk(r);
+			chunk = readChunk(in);
 			
 			if (chunk == null)
 			{
@@ -98,7 +99,7 @@ public class PNGReader implements IAssetReader
 			switch (chunk.one)
 			{
 				case "IEND": {
-					if (r.remaining() > 0)
+					if (in.available() > 0)
 						throw new CaelumException("IEND is not last chunk! This is a bug!");
 					if (idats.isEmpty())
 						throw new CaelumException("Did not find IDAT chunk!");
@@ -132,21 +133,23 @@ public class PNGReader implements IAssetReader
 		return ret;
 	}
 	
-	private static Tuple<String, ByteBuffer> readChunk(IByteReader r) throws Throwable
+	private static Tuple<String, ByteBuffer> readChunk(DataInputStream in) throws Throwable
 	{
-		int size = r.readInt();
+		int size = in.readInt();
 		
 		char[] type = new char[4];
 		
 		for (int c = 0; c < 4; c++)
 		{
-			type[c] = (char)r.read();
+			type[c] = in.readChar();
 			
 		}
 		
-		byte[] data = r.read(size);
+		byte[] data = new byte[size];
 		
-		long crc = Integer.toUnsignedLong(r.readInt());
+		in.read(data);
+		
+		long crc = Integer.toUnsignedLong(in.readInt());
 		
 		if (crc != HashGen.crc32(data))
 		{

@@ -65,7 +65,7 @@ public abstract class NetworkGame extends Game implements INetworkMaster
 	}
 	
 	@Override
-	public void update(double delta, Object... extra) throws Throwable
+	public void update(double delta) throws Throwable
 	{
 		if (this.host != null)
 		{
@@ -73,7 +73,7 @@ public abstract class NetworkGame extends Game implements INetworkMaster
 			
 		}
 		
-		super.update(delta, extra);
+		super.update(delta);
 		
 	}
 	

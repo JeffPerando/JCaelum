@@ -47,9 +47,9 @@ public abstract class Component implements IAssetReceiver, IRenderable, IUpdatab
 	}
 	
 	@Override
-	public void update(double delta, Object... extra)
+	public void update(double delta)
 	{
-		this.forEveryChild(((child) -> {child.update(delta, extra);}));
+		this.forEveryChild(((child) -> {child.update(delta);}));
 		
 	}
 	

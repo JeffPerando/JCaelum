@@ -169,7 +169,7 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 	}
 	
 	@Override
-	public void update(double delta, Object... extra)
+	public void update(double delta)
 	{
 		try
 		{

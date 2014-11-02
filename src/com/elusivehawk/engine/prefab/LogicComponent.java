@@ -47,11 +47,11 @@ public class LogicComponent extends Component
 	}
 	
 	@Override
-	public void update(double delta, Object... extra)
+	public void update(double delta)
 	{
 		try
 		{
-			this.logic.update(delta, extra);
+			this.logic.update(delta);
 			
 		}
 		catch (Throwable e)
@@ -60,7 +60,7 @@ public class LogicComponent extends Component
 			
 		}
 		
-		super.update(delta, extra);
+		super.update(delta);
 		
 	}
 	

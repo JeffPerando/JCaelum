@@ -1,7 +1,6 @@
 
 package com.elusivehawk.engine.render;
 
-import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.InputStream;
@@ -25,7 +24,6 @@ import com.elusivehawk.engine.render.tex.ColorFormat;
 import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.FileHelper;
 import com.elusivehawk.util.Logger;
-import com.elusivehawk.util.io.ByteBuffers;
 import com.elusivehawk.util.storage.Buffer;
 import com.elusivehawk.util.storage.BufferHelper;
 import com.elusivehawk.util.string.StringHelper;
@@ -266,29 +264,6 @@ public final class RenderHelper
 		}
 		
 		return src;
-	}
-	
-	@Deprecated
-	public static synchronized BufferedImage captureScreen(IDisplay win)
-	{
-		ByteBuffer buf = BufferHelper.createByteBuffer(win.getHeight() * win.getWidth() * 4);
-		
-		gl1().glReadPixels(0, 0, win.getWidth(), win.getHeight(), GLConst.GL_RGBA, GLConst.GL_BYTE, buf);
-		
-		BufferedImage ret = new BufferedImage(win.getWidth(), win.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		ByteBuffers io = new ByteBuffers(buf, null);
-		
-		for (int x = 0; x < ret.getWidth(); x++)
-		{
-			for (int y = 0; y < ret.getHeight(); y++)
-			{
-				ret.setRGB(x, y, ColorFormat.ARGB.convert(new Color(ColorFormat.RGBA, io)).getColor());
-				
-			}
-			
-		}
-		
-		return ret;
 	}
 	
 	public static int getPolygonCount(int points, GLEnumDrawType poly)

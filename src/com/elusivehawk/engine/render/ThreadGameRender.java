@@ -40,7 +40,7 @@ public class ThreadGameRender extends ThreadTimed implements IThreadContext
 	}
 	
 	@Override
-	public void update(double delta, Object... extra) throws Throwable
+	public void update(double delta) throws Throwable
 	{
 		if (this.isPaused())
 		{
@@ -58,7 +58,7 @@ public class ThreadGameRender extends ThreadTimed implements IThreadContext
 			return;
 		}
 		
-		this.rcon.update(delta, extra);
+		this.rcon.update(delta);
 		
 		display.updateDisplay();
 		

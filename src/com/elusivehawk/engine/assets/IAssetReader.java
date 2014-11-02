@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.assets;
 
-import com.elusivehawk.util.io.IByteReader;
+import java.io.DataInputStream;
 
 /**
  * 
@@ -12,6 +12,6 @@ import com.elusivehawk.util.io.IByteReader;
 @FunctionalInterface
 public interface IAssetReader
 {
-	Object readAsset(IByteReader r) throws Throwable;
+	Object readAsset(DataInputStream in) throws Throwable;
 	
 }

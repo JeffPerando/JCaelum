@@ -1,9 +1,6 @@
 
 package com.elusivehawk.engine.render.tex;
 
-import com.elusivehawk.util.io.ByteBufWrapper;
-import com.elusivehawk.util.storage.Buffer;
-
 /**
  * 
  * 
@@ -61,16 +58,20 @@ public enum ColorFormat
 			return old;
 		}
 		
-		Buffer<Byte> buf = new Buffer<Byte>();
+		Color ret = new Color(this);
 		
-		for (ColorFilter col : this.filters)
+		for (ColorFilter cf : this.filters)
 		{
-			buf.add(old.getColor(col));
+			if (!old.format.supports(cf))
+			{
+				continue;
+			}
 			
+			ret.setColor(cf, old.getColor(cf));
 			
 		}
 		
-		return new Color(this, new ByteBufWrapper(buf));
+		return ret;
 	}
 	
 }

@@ -9,7 +9,7 @@ import java.util.List;
  * 
  * @author Elusivehawk
  */
-public abstract class Keyboard extends Input
+public abstract class Keyboard extends DelayedInput
 {
 	public abstract boolean isKeyDown(Key key);
 	

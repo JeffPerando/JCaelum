@@ -73,7 +73,7 @@ public final class ExampleGame extends Game
 	}
 	
 	@Override
-	public void update(double delta, Object... extra) throws Throwable
+	public void update(double delta) throws Throwable
 	{
 		//CaelumEngine.log().log(EnumLogType.INFO, "Test: %s", delta);
 		
