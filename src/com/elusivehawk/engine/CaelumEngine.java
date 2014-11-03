@@ -3,7 +3,6 @@ package com.elusivehawk.engine;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -764,7 +763,7 @@ public final class CaelumEngine
 		
 		File hashFile = new File(dest.getParentFile(), String.format("%s.checksum", name));
 		
-		if ((hashFile.exists() || hashFile.getTotalSpace() != hash.length) && !FileHelper.write(hash, hashFile))
+		if (!hashFile.exists() && !FileHelper.write(hash, hashFile))
 		{
 			Logger.log().log(EnumLogType.WARN, "Could not copy checksum for native \"%s\", skipping", name);
 			
@@ -788,7 +787,7 @@ public final class CaelumEngine
 			
 		}
 		
-		if (Arrays.equals(hash, oldHash))
+		if (StringHelper.asHexString(hash).equalsIgnoreCase(StringHelper.asHexString(oldHash)))
 		{
 			if (CompInfo.DEBUG)
 			{
