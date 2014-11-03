@@ -1,7 +1,7 @@
 
 package com.elusivehawk.engine.assets;
 
-import java.io.File;
+import java.io.DataInputStream;
 
 /**
  * 
@@ -9,9 +9,10 @@ import java.io.File;
  * 
  * @author Elusivehawk
  */
-public class ReaderOBJ
+public class OBJReader implements IAssetReader
 {
-	public Asset readAsset(AssetManager mgr, File file) throws Throwable
+	@Override
+	public Object readAsset(DataInputStream in) throws Throwable
 	{
 		/*List<Vector> vertPositions = Lists.newArrayList(),
 				vertTexCoords = Lists.newArrayList(),
@@ -21,7 +22,7 @@ public class ReaderOBJ
 		List<Vector> vertices = new CopyOnWriteArrayList<Vector>();
 		List<Integer> indices = new ArrayList<Integer>();
 		
-		List<String> txt = StringHelper.read(file);
+		List<String> txt = StringHelper.read(in);
 		
 		for (String line : txt)
 		{
