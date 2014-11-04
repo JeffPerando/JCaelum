@@ -6,6 +6,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/jdom/jdom-2.0.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/lwjgl/jar/lwjgl.jar" sourcepath="lib/lwjgl/jar/lwjgl.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/PNGDecoder.jar"/>
-	<classpathentry exported="true" kind="lib" path="HawkUtils/lib/guava/guava-16.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/guava/guava-16.0.1.jar" sourcepath="lib/guava/guava-16.0.1-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
