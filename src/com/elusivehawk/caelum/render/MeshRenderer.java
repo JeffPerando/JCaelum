@@ -75,11 +75,6 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 	@Override
 	protected boolean initiate(RenderContext rcon)
 	{
-		if (this.mesh == null)
-		{
-			return false;
-		}
-		
 		if (!this.mesh.isLoaded())
 		{
 			return false;
@@ -168,6 +163,8 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 		{
 			return true;
 		}
+		
+		//TODO Finish
 		
 		return false;
 	}
