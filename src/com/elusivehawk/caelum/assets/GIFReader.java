@@ -6,7 +6,9 @@ import java.nio.ByteBuffer;
 import java.util.List;
 import com.elusivehawk.caelum.render.ILegibleImage;
 import com.elusivehawk.caelum.render.tex.Color;
+import com.elusivehawk.caelum.render.tex.ColorFilter;
 import com.elusivehawk.caelum.render.tex.ColorFormat;
+import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.storage.BufferHelper;
 import com.elusivehawk.util.storage.Tuple;
 import com.google.common.base.Charsets;
@@ -58,8 +60,12 @@ public class GIFReader implements IAssetReader
 		int version = Integer.parseInt(new String(verBytes, Charsets.US_ASCII));
 		char extra = in.readChar();
 		
+		Logger.log().debug("Version: %s%s", version, extra);
+		
 		int width = Short.toUnsignedInt(in.readShort());
 		int height = Short.toUnsignedInt(in.readShort());
+		
+		Logger.log().debug("Dimensions: [%s, %s]", width, height);
 		
 		int flags = in.read();
 		
@@ -77,6 +83,8 @@ public class GIFReader implements IAssetReader
 			for (int c = 0; c < table.length; c++)
 			{
 				table[c] = new Color(ColorFormat.RGBA, in.read(), in.read(), in.read());
+				
+				Logger.log().debug("Color #%s: [%s, %s, %s]", c + 1, table[c].getColor(ColorFilter.RED), table[c].getColor(ColorFilter.GREEN), table[c].getColor(ColorFilter.BLUE));
 				
 			}
 			
@@ -144,6 +152,8 @@ public class GIFReader implements IAssetReader
 					for (int c = 0; c < colors.length; c++)
 					{
 						colors[c] = new Color(ColorFormat.RGBA, in.read(), in.read(), in.read());
+						
+						Logger.log().debug("Local color #%s: [%s, %s, %s]", c + 1, colors[c].getColor(ColorFilter.RED), colors[c].getColor(ColorFilter.GREEN), colors[c].getColor(ColorFilter.BLUE));
 						
 					}
 					

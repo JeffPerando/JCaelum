@@ -1,9 +1,7 @@
 
 package com.elusivehawk.caelum.lwjgl;
 
-import static com.elusivehawk.caelum.input.EnumMouseClick.DOWN;
-import static com.elusivehawk.caelum.input.EnumMouseClick.DRAG;
-import static com.elusivehawk.caelum.input.EnumMouseClick.UP;
+import static com.elusivehawk.caelum.input.EnumMouseClick.*;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Mouse;
 import com.elusivehawk.caelum.CaelumEngine;
@@ -168,27 +166,34 @@ public class LWJGLMouse extends com.elusivehawk.caelum.input.Mouse
 			
 			if (Mouse.getEventButtonState())
 			{
-				switch (cur)
+				if (!cur.isDown())
 				{
-					case DOWN:
-						if (this.mousePos.isDirty())
-						{
-							this.oldButtons[b] = DOWN;
-							this.buttons[b] = DRAG;
-						}
-						break;
-					case UP:
-						this.oldButtons[b] = UP;
-						this.buttons[b] = DOWN;
-						ret = true;
-						break;
+					this.oldButtons[b] = cur;
+					this.buttons[b] = DOWN;
+					
+				}
+				else if (cur == DOWN && this.mousePos.isDirty())
+				{
+					this.oldButtons[b] = DOWN;
+					this.buttons[b] = DRAG;
+					
 				}
 				
 			}
-			else if (this.buttons[b].isDown())
+			else
 			{
-				this.oldButtons[b] = cur;
-				this.buttons[b] = UP;
+				if (cur.isDown())
+				{
+					this.oldButtons[b] = cur;
+					this.buttons[b] = LIFTED;
+					
+				}
+				else if (cur == LIFTED)
+				{
+					this.oldButtons[b] = LIFTED;
+					this.buttons[b] = UP;
+					
+				}
 				
 				ret = true;
 				
