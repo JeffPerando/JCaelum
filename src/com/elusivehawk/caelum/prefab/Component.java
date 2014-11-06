@@ -27,7 +27,7 @@ public abstract class Component implements IAssetReceiver, IRenderable, IUpdatab
 	
 	protected Map<Integer, List<Component>> childMap = null;
 	protected List<Component> childList = null;
-	protected int maxPriority = Integer.MIN_VALUE;
+	protected int maxPriority = Integer.MIN_VALUE, minPriority = Integer.MAX_VALUE;
 	protected boolean locked = false;
 	
 	public Component(Component owner, int p, IPopulator<Component> pop)
@@ -139,7 +139,8 @@ public abstract class Component implements IAssetReceiver, IRenderable, IUpdatab
 		children.add(comp);
 		this.childList.add(comp);
 		
-		this.maxPriority = Math.max(this.maxPriority, comp.getPriority()); 
+		this.maxPriority = Math.max(this.maxPriority, comp.getPriority());
+		this.minPriority = Math.min(this.minPriority, comp.getPriority());
 		
 	}
 	
@@ -183,7 +184,7 @@ public abstract class Component implements IAssetReceiver, IRenderable, IUpdatab
 		{
 			if (usePriority)
 			{
-				for (int c = 0; c < this.maxPriority; c++)
+				for (int c = this.minPriority; c < this.maxPriority; c++)
 				{
 					List<Component> children = this.childMap.get(c);
 					
