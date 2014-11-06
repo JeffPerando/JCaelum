@@ -6,7 +6,6 @@ import com.elusivehawk.caelum.input.Key;
 import com.elusivehawk.caelum.input.Keyboard;
 import com.elusivehawk.caelum.input.Mouse;
 import com.elusivehawk.caelum.render.Canvas;
-import com.elusivehawk.caelum.render.Icon;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.Internal;
@@ -68,7 +67,7 @@ public final class ExampleGame extends Game
 			
 		}));
 		
-		this.canvas.drawImage(0, 0, 1, 1, (Icon)null);
+		this.canvas.drawImage(0, 0, 1, 1, null);
 		
 	}
 	

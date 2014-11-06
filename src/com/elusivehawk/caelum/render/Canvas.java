@@ -14,7 +14,6 @@ import com.elusivehawk.caelum.render.gl.VertexBuffer;
 import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.math.MathHelper;
 import com.elusivehawk.util.storage.FloatBufferer;
-import com.elusivehawk.util.storage.IGettable;
 import com.elusivehawk.util.storage.Tuple;
 import com.google.common.collect.Lists;
 
@@ -156,18 +155,6 @@ public class Canvas extends RenderableObj
 	public void drawImage(float x, float y, float w, float h, int mat)
 	{
 		this.drawImage(x, y, w, h, (Icon)null, mat);
-		
-	}
-	
-	public void drawImage(float x, float y, float w, float h, IGettable<Icon> icon)
-	{
-		this.drawImage(x, y, w, h, icon, 0);
-		
-	}
-	
-	public void drawImage(float x, float y, float w, float h, IGettable<Icon> icon, int mat)
-	{
-		this.drawImage(x, y, w, h, icon.get(), mat);
 		
 	}
 	
