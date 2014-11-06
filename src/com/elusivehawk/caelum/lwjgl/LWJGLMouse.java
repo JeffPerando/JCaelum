@@ -115,7 +115,7 @@ public class LWJGLMouse extends com.elusivehawk.caelum.input.Mouse
 	}
 	
 	@Override
-	protected void pollInput()//TODO Buffer mouse movements, clicks, etc.
+	protected void pollInput(double delta)
 	{
 		if (!Mouse.isCreated())
 		{
@@ -200,7 +200,7 @@ public class LWJGLMouse extends com.elusivehawk.caelum.input.Mouse
 			
 			if (upd || cur != this.buttons[b])
 			{
-				this.sendUpdateToListeners();
+				this.sendUpdateToListeners(delta);
 				
 			}
 			

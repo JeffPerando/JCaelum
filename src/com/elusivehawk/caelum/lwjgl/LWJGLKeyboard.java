@@ -193,7 +193,7 @@ public class LWJGLKeyboard extends com.elusivehawk.caelum.input.Keyboard
 	}
 	
 	@Override
-	protected void pollInput()
+	protected void pollInput(double delta)
 	{
 		if (!Keyboard.isCreated())
 		{
@@ -252,7 +252,7 @@ public class LWJGLKeyboard extends com.elusivehawk.caelum.input.Keyboard
 			
 			if (upd)
 			{
-				this.sendUpdateToListeners();
+				this.sendUpdateToListeners(delta);
 				
 			}
 			

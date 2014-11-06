@@ -29,7 +29,7 @@ public abstract class Input implements IUpdatable, Closeable
 		}
 		
 		this.updatingInput = true;
-		this.pollInput();
+		this.pollInput(delta);
 		this.updatingInput = false;
 		
 		this.postUpdate();
@@ -54,7 +54,7 @@ public abstract class Input implements IUpdatable, Closeable
 		return true;
 	}
 	
-	protected void sendUpdateToListeners()
+	protected void sendUpdateToListeners(double delta)
 	{
 		if (!this.updatingInput)
 		{
@@ -65,7 +65,7 @@ public abstract class Input implements IUpdatable, Closeable
 		{
 			try
 			{
-				lis.onInputReceived(this);
+				lis.onInputReceived(this, delta);
 				
 			}
 			catch (Throwable e)
@@ -78,7 +78,7 @@ public abstract class Input implements IUpdatable, Closeable
 		
 	}
 	
-	protected abstract void pollInput();
+	protected abstract void pollInput(double delta);
 	
 	protected abstract void postUpdate();
 	

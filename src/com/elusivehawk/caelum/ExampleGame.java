@@ -42,7 +42,7 @@ public final class ExampleGame extends Game
 	@Override
 	protected void initiateGame(GameArguments args, AssetManager assets)
 	{
-		CaelumEngine.addInputListener(Keyboard.class, ((in) ->
+		CaelumEngine.addInputListener(Keyboard.class, ((in, delta) ->
 		{
 			Keyboard kb = (Keyboard)in;
 			
@@ -60,7 +60,7 @@ public final class ExampleGame extends Game
 			
 		}));
 		
-		CaelumEngine.addInputListener(Mouse.class, ((in) ->
+		CaelumEngine.addInputListener(Mouse.class, ((in, delta) ->
 		{
 			Mouse m = (Mouse)in;
 			
