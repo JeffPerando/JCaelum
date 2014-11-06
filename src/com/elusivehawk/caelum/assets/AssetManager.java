@@ -26,10 +26,11 @@ public final class AssetManager implements ITaskListener
 	private final Map<EnumAssetType, List<Asset>> assets = Maps.newHashMap();
 	private final Map<String, IAssetReader> readers = Maps.newHashMap();
 	
-	private volatile IStreamProvider sProvider = ((path) -> {return FileHelper.getResourceStream(path);});
+	private IStreamProvider sProvider = ((path) -> {return FileHelper.getResourceStream(path);});
 	
 	public AssetManager()
 	{
+		setReader("gif", new GIFReader());
 		setReader("png", new PNGReader());
 		
 	}
@@ -102,7 +103,7 @@ public final class AssetManager implements ITaskListener
 		return ret;
 	}
 	
-	public void setStreamProvider(IStreamProvider isp)
+	public synchronized void setStreamProvider(IStreamProvider isp)
 	{
 		assert isp != null;
 		
