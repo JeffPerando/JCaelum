@@ -69,7 +69,7 @@ public final class RenderHelper
 	
 	/*public static IGL4 gl4()
 	{
-		return CaelumEngine.renderContext().getGL4();
+		return renderContext().getGL4();
 	}*/
 	
 	@Deprecated
