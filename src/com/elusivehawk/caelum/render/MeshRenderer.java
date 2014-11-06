@@ -31,7 +31,7 @@ import com.elusivehawk.util.storage.BufferHelper;
  * @see IQuatListener
  * @see IVecListener
  */
-public class RenderTicket extends RenderableObj implements Quaternion.Listener, Vector.Listener
+public class MeshRenderer extends RenderableObj implements Quaternion.Listener, Vector.Listener
 {
 	protected final Vector
 			offset = new Vector(),
@@ -42,7 +42,8 @@ public class RenderTicket extends RenderableObj implements Quaternion.Listener, 
 			rotOff = new Quaternion(),
 			rot = new Quaternion();
 	
-	protected Mesh mesh = null;
+	protected final Mesh mesh;
+	
 	protected FloatBuffer buf = null;
 	
 	protected final VertexBuffer vbo = new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW);
@@ -51,15 +52,23 @@ public class RenderTicket extends RenderableObj implements Quaternion.Listener, 
 	//protected IModelAnimation anim = null, lastAnim = null;
 	protected int texFrame = 0;
 	
-	public RenderTicket()
+	@SuppressWarnings("unqualified-field-access")
+	public MeshRenderer(Mesh m)
 	{
-		super();
+		assert m != null;
+		
+		mesh = m;
 		
 	}
 	
-	public RenderTicket(GLProgram program)
+	@SuppressWarnings("unqualified-field-access")
+	public MeshRenderer(Mesh m, GLProgram program)
 	{
 		super(program);
+		
+		assert m != null;
+		
+		mesh = m;
 		
 	}
 	
@@ -210,7 +219,7 @@ public class RenderTicket extends RenderableObj implements Quaternion.Listener, 
 		return this.texFrame;
 	}
 	
-	public RenderTicket setPosOffset(Vector off)
+	public MeshRenderer setPosOffset(Vector off)
 	{
 		this.offset.set(off);
 		this.pos.add(this.offset);
@@ -220,7 +229,7 @@ public class RenderTicket extends RenderableObj implements Quaternion.Listener, 
 		return this;
 	}
 	
-	public RenderTicket setScale(Vector s)
+	public MeshRenderer setScale(Vector s)
 	{
 		for (int c = 0; c < s.size(); c++)
 		{
@@ -237,7 +246,7 @@ public class RenderTicket extends RenderableObj implements Quaternion.Listener, 
 		return this;
 	}
 	
-	public RenderTicket setRotOffset(Quaternion qoff)
+	public MeshRenderer setRotOffset(Quaternion qoff)
 	{
 		this.rotOff.set(qoff);
 		this.rot.add(this.rotOff);
