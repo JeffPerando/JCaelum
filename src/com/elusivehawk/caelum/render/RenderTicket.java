@@ -19,7 +19,7 @@ import com.elusivehawk.util.storage.BufferHelper;
 
 /**
  * 
- * Used to render static {@link Model}s with non-static information (i.e. rotation)
+ * Used to render static {@link Mesh}es with non-static information (i.e. rotation)
  * 
  * @author Elusivehawk
  * 
