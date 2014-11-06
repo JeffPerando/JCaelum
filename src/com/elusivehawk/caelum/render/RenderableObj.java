@@ -2,17 +2,13 @@
 package com.elusivehawk.caelum.render;
 
 import java.util.UUID;
-import com.elusivehawk.caelum.assets.Asset;
-import com.elusivehawk.caelum.assets.IAssetReceiver;
 import com.elusivehawk.caelum.render.gl.GLConst;
 import com.elusivehawk.caelum.render.gl.GLEnumUType;
 import com.elusivehawk.caelum.render.gl.GLProgram;
 import com.elusivehawk.caelum.render.gl.IGL1;
-import com.elusivehawk.caelum.render.gl.Shader;
 import com.elusivehawk.caelum.render.gl.VertexArray;
 import com.elusivehawk.caelum.render.tex.Material;
 import com.elusivehawk.caelum.render.tex.Materials;
-import com.elusivehawk.caelum.render.tex.TextureAsset;
 import com.elusivehawk.util.IDirty;
 import com.elusivehawk.util.storage.BufferHelper;
 
@@ -22,7 +18,7 @@ import com.elusivehawk.util.storage.BufferHelper;
  * 
  * @author Elusivehawk
  */
-public abstract class RenderableObj implements IDirty, IFilterable, IRenderable, IAssetReceiver
+public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 {
 	protected final GLProgram p;
 	
@@ -48,23 +44,6 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable,
 		assert program != null;
 		
 		p = program;
-		
-	}
-	
-	@Override
-	public void onAssetLoaded(Asset a)
-	{
-		if (a instanceof Shader)
-		{
-			this.p.attachShader((Shader)a);
-			
-		}
-		
-		if (a instanceof TextureAsset)
-		{
-			this.addMaterials(new Material().tex((TextureAsset)a));
-			
-		}
 		
 	}
 	

@@ -1,7 +1,6 @@
 
 package com.elusivehawk.caelum.prefab;
 
-import com.elusivehawk.caelum.assets.Asset;
 import com.elusivehawk.caelum.render.Mesh;
 import com.elusivehawk.caelum.render.MeshRenderer;
 import com.elusivehawk.caelum.render.RenderContext;
@@ -105,15 +104,6 @@ public class MeshComponent extends PositionedComponent
 		super.onQuatChanged(q);
 		
 		this.meshRenderer.onQuatChanged(q);
-		
-	}
-	
-	@Override
-	public void onAssetLoaded(Asset a)
-	{
-		this.meshRenderer.onAssetLoaded(a);
-		
-		super.onAssetLoaded(a);
 		
 	}
 	

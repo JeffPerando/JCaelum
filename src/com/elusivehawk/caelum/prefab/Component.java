@@ -4,8 +4,6 @@ package com.elusivehawk.caelum.prefab;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import com.elusivehawk.caelum.assets.Asset;
-import com.elusivehawk.caelum.assets.IAssetReceiver;
 import com.elusivehawk.caelum.render.IRenderable;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
@@ -20,7 +18,7 @@ import com.google.common.collect.Maps;
  * 
  * @author Elusivehawk
  */
-public abstract class Component implements IAssetReceiver, IRenderable, IUpdatable
+public abstract class Component implements IRenderable, IUpdatable
 {
 	protected final Component parent;
 	protected final int priority;
@@ -57,13 +55,6 @@ public abstract class Component implements IAssetReceiver, IRenderable, IUpdatab
 	public void render(RenderContext rcon) throws RenderException
 	{
 		this.forEveryChild(((child) -> {child.render(rcon);}));
-		
-	}
-	
-	@Override
-	public void onAssetLoaded(Asset a)
-	{
-		this.forEveryChild(false, ((child) -> {child.onAssetLoaded(a);}));
 		
 	}
 	

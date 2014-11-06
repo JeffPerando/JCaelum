@@ -1,8 +1,6 @@
 
 package com.elusivehawk.caelum.render.gl;
 
-import com.elusivehawk.caelum.assets.Asset;
-import com.elusivehawk.caelum.assets.IAssetReceiver;
 import com.elusivehawk.caelum.render.RenderConst;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.util.IDirty;
@@ -13,22 +11,11 @@ import com.elusivehawk.util.IDirty;
  * 
  * @author Elusivehawk
  */
-public class Shaders implements IDirty, IAssetReceiver
+public class Shaders implements IDirty
 {
 	private final Shader[] shaders = new Shader[RenderConst.SHADER_COUNT];
 	private int shCount = 0;
 	private volatile boolean dirty = false;
-	
-	@Override
-	public void onAssetLoaded(Asset a)
-	{
-		if (a instanceof Shader)
-		{
-			this.addShader((Shader)a);
-			
-		}
-		
-	}
 	
 	@Override
 	public boolean isDirty()

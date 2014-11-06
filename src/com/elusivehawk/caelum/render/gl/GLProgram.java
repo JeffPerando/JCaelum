@@ -4,8 +4,6 @@ package com.elusivehawk.caelum.render.gl;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
-import com.elusivehawk.caelum.assets.Asset;
-import com.elusivehawk.caelum.assets.IAssetReceiver;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderHelper;
 import com.elusivehawk.util.IDirty;
@@ -20,7 +18,7 @@ import com.elusivehawk.util.storage.SyncList;
  * 
  * @author Elusivehawk
  */
-public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
+public final class GLProgram implements IGLBindable, IDirty
 {
 	private final List<VertexAttrib> attribs = SyncList.newList();
 	private final Shaders shaders;
@@ -75,13 +73,6 @@ public final class GLProgram implements IGLBindable, IAssetReceiver, IDirty
 	public void setIsDirty(boolean b)
 	{
 		this.shaders.setIsDirty(b);
-		
-	}
-	
-	@Override
-	public synchronized void onAssetLoaded(Asset a)
-	{
-		this.shaders.onAssetLoaded(a);
 		
 	}
 	
