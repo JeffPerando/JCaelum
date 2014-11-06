@@ -27,7 +27,7 @@ public abstract class Component implements IAssetReceiver, IRenderable, IUpdatab
 	
 	protected Map<Integer, List<Component>> childMap = null;
 	protected List<Component> childList = null;
-	protected int maxPriority = -1;
+	protected int maxPriority = Integer.MIN_VALUE;
 	protected boolean locked = false;
 	
 	public Component(Component owner, int p, IPopulator<Component> pop)
