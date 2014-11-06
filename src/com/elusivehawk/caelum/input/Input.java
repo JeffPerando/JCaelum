@@ -18,37 +18,27 @@ import com.google.common.collect.Lists;
 public abstract class Input implements IUpdatable, Closeable
 {
 	private final List<IInputListener> listeners = Lists.newArrayList();
-	private boolean initiated = false;
+	private boolean initiated = false, updatingInput = false;
 	
 	@Override
 	public void update(double delta) throws Throwable
 	{
 		if (!this.initiated)
 		{
-			throw new CaelumException("Input %s has yet to be initiated.", this.getClass().getSimpleName());
+			throw new CaelumException("Input \"%s\" has yet to be initiated.", this.getName());
 		}
 		
-		if (this.poll())
-		{
-			this.listeners.forEach(((lis) ->
-			{
-				try
-				{
-					lis.onInputReceived(this);
-					
-				}
-				catch (Throwable e)
-				{
-					Logger.log().err("[%s] Error caught:", e, this.getClass().getSimpleName());
-					
-				}
-				
-			}));
-			
-		}
+		this.updatingInput = true;
+		this.pollInput();
+		this.updatingInput = false;
 		
 		this.postUpdate();
 		
+	}
+	
+	public String getName()
+	{
+		return this.getClass().getSimpleName();
 	}
 	
 	public void addListener(IInputListener lis)
@@ -64,7 +54,31 @@ public abstract class Input implements IUpdatable, Closeable
 		return true;
 	}
 	
-	protected abstract boolean poll();
+	protected void sendUpdateToListeners()
+	{
+		if (!this.updatingInput)
+		{
+			throw new CaelumException("Not updating input!");
+		}
+		
+		this.listeners.forEach(((lis) ->
+		{
+			try
+			{
+				lis.onInputReceived(this);
+				
+			}
+			catch (Throwable e)
+			{
+				Logger.log().err("[%s] Error caught:", e, this.getName());
+				
+			}
+			
+		}));
+		
+	}
+	
+	protected abstract void pollInput();
 	
 	protected abstract void postUpdate();
 	

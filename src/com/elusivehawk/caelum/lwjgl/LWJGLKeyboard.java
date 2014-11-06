@@ -193,7 +193,7 @@ public class LWJGLKeyboard extends com.elusivehawk.caelum.input.Keyboard
 	}
 	
 	@Override
-	protected boolean poll()
+	protected void pollInput()
 	{
 		if (!Keyboard.isCreated())
 		{
@@ -218,10 +218,11 @@ public class LWJGLKeyboard extends com.elusivehawk.caelum.input.Keyboard
 		}
 		
 		Key key;
-		boolean ret = false;
 		
 		while (Keyboard.next())
 		{
+			boolean upd = false;
+			
 			key = LWJGL_TO_ENUM[Keyboard.getEventKey()];
 			
 			if (key == Key.UNKNOWN)
@@ -234,7 +235,8 @@ public class LWJGLKeyboard extends com.elusivehawk.caelum.input.Keyboard
 				if (!this.downKeyList.contains(key))
 				{
 					this.downKeyList.add(key);
-					ret = true;
+					
+					upd = true;
 					
 				}
 				
@@ -243,13 +245,19 @@ public class LWJGLKeyboard extends com.elusivehawk.caelum.input.Keyboard
 			{
 				this.downKeyList.remove(key);
 				this.upKeyList.add(key);
-				ret = true;
+				
+				upd = true;
+				
+			}
+			
+			if (upd)
+			{
+				this.sendUpdateToListeners();
 				
 			}
 			
 		}
 		
-		return ret;
 	}
 	
 	@Override

@@ -115,7 +115,7 @@ public class LWJGLMouse extends com.elusivehawk.caelum.input.Mouse
 	}
 	
 	@Override
-	protected boolean poll()//TODO Buffer mouse movements, clicks, etc.
+	protected void pollInput()//TODO Buffer mouse movements, clicks, etc.
 	{
 		if (!Mouse.isCreated())
 		{
@@ -140,18 +140,19 @@ public class LWJGLMouse extends com.elusivehawk.caelum.input.Mouse
 		}
 		
 		IDisplay display = CaelumEngine.display();
-		boolean ret = false;
 		int b;
 		
 		while (Mouse.next())
 		{
+			boolean upd = false;
+			
 			this.mousePos.set(((float)Mouse.getEventX() / (float)display.getWidth()), 1.0f - ((float)Mouse.getEventY() / (float)display.getHeight()));
 			this.mousePosDelta.set(((float)Mouse.getEventDX() / (float)display.getWidth()), 1.0f - ((float)Mouse.getEventDY() / (float)display.getHeight()));
 			this.wheel = (float)Mouse.getEventDWheel() / (float)display.getHeight();
 			
 			if (this.mousePos.isDirty() || this.mousePosDelta.isDirty())
 			{
-				ret = true;
+				upd = true;
 				
 			}
 			
@@ -195,13 +196,16 @@ public class LWJGLMouse extends com.elusivehawk.caelum.input.Mouse
 					
 				}
 				
-				ret = true;
+			}
+			
+			if (upd || cur != this.buttons[b])
+			{
+				this.sendUpdateToListeners();
 				
 			}
 			
 		}
 		
-		return ret;
 	}
 	
 	@Override
