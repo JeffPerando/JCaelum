@@ -1,11 +1,10 @@
 
-package com.elusivehawk.caelum.render;
+package com.elusivehawk.caelum.render.gl;
 
 import com.elusivehawk.caelum.assets.Asset;
 import com.elusivehawk.caelum.assets.IAssetReceiver;
-import com.elusivehawk.caelum.render.gl.GLException;
-import com.elusivehawk.caelum.render.gl.GLProgram;
-import com.elusivehawk.caelum.render.gl.IGL2;
+import com.elusivehawk.caelum.render.RenderConst;
+import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.util.IDirty;
 
 /**

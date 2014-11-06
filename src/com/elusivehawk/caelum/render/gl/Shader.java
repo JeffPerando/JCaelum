@@ -1,11 +1,12 @@
 
-package com.elusivehawk.caelum.render;
+package com.elusivehawk.caelum.render.gl;
 
 import java.io.DataInputStream;
 import com.elusivehawk.caelum.CaelumEngine;
 import com.elusivehawk.caelum.assets.Asset;
 import com.elusivehawk.caelum.assets.EnumAssetType;
-import com.elusivehawk.caelum.render.gl.GLEnumShader;
+import com.elusivehawk.caelum.render.GraphicAsset;
+import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.util.string.StringHelper;
 import com.elusivehawk.util.task.Task;
 

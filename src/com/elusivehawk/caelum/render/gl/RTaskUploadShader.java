@@ -1,9 +1,9 @@
 
-package com.elusivehawk.caelum.render;
+package com.elusivehawk.caelum.render.gl;
 
-import com.elusivehawk.caelum.render.gl.GLConst;
-import com.elusivehawk.caelum.render.gl.GLEnumSStatus;
-import com.elusivehawk.caelum.render.gl.IGL2;
+import com.elusivehawk.caelum.render.RenderContext;
+import com.elusivehawk.caelum.render.RenderException;
+import com.elusivehawk.caelum.render.RenderHelper;
 import com.elusivehawk.caelum.render.old.RenderTask;
 import com.elusivehawk.util.CompInfo;
 import com.elusivehawk.util.EnumLogType;

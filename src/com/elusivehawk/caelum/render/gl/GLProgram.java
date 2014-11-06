@@ -8,8 +8,6 @@ import com.elusivehawk.caelum.assets.Asset;
 import com.elusivehawk.caelum.assets.IAssetReceiver;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderHelper;
-import com.elusivehawk.caelum.render.Shader;
-import com.elusivehawk.caelum.render.Shaders;
 import com.elusivehawk.util.IDirty;
 import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.storage.ArrayHelper;

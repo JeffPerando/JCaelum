@@ -14,6 +14,8 @@ import com.elusivehawk.caelum.render.gl.IGL1;
 import com.elusivehawk.caelum.render.gl.IGL2;
 import com.elusivehawk.caelum.render.gl.IGL3;
 import com.elusivehawk.caelum.render.gl.IGLDeletable;
+import com.elusivehawk.caelum.render.gl.Shader;
+import com.elusivehawk.caelum.render.gl.Shaders;
 import com.elusivehawk.caelum.render.old.RenderTask;
 import com.elusivehawk.caelum.render.tex.ColorFormat;
 import com.elusivehawk.caelum.render.tex.PixelGrid;
