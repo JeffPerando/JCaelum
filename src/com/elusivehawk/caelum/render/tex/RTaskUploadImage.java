@@ -1,6 +1,9 @@
 
-package com.elusivehawk.caelum.render;
+package com.elusivehawk.caelum.render.tex;
 
+import com.elusivehawk.caelum.render.RenderContext;
+import com.elusivehawk.caelum.render.RenderException;
+import com.elusivehawk.caelum.render.RenderHelper;
 import com.elusivehawk.caelum.render.old.RenderTask;
 import com.elusivehawk.util.task.ITaskListener;
 

@@ -9,8 +9,6 @@ import com.elusivehawk.caelum.assets.Asset;
 import com.elusivehawk.caelum.assets.AssetManager;
 import com.elusivehawk.caelum.assets.EnumAssetType;
 import com.elusivehawk.caelum.render.GraphicAsset;
-import com.elusivehawk.caelum.render.ILegibleImage;
-import com.elusivehawk.caelum.render.RTaskUploadImage;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.util.task.Task;
 import com.google.common.collect.Lists;

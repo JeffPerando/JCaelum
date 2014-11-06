@@ -1,6 +1,10 @@
 
-package com.elusivehawk.caelum.render;
+package com.elusivehawk.caelum.render.tex;
 
+import com.elusivehawk.caelum.render.IRenderable;
+import com.elusivehawk.caelum.render.RenderConst;
+import com.elusivehawk.caelum.render.RenderContext;
+import com.elusivehawk.caelum.render.RenderException;
 import com.elusivehawk.util.IDirty;
 import com.elusivehawk.util.storage.IArray;
 

@@ -9,6 +9,8 @@ import com.elusivehawk.caelum.render.gl.GLEnumUType;
 import com.elusivehawk.caelum.render.gl.GLProgram;
 import com.elusivehawk.caelum.render.gl.IGL1;
 import com.elusivehawk.caelum.render.gl.VertexArray;
+import com.elusivehawk.caelum.render.tex.Material;
+import com.elusivehawk.caelum.render.tex.Materials;
 import com.elusivehawk.caelum.render.tex.TextureAsset;
 import com.elusivehawk.util.IDirty;
 import com.elusivehawk.util.storage.BufferHelper;

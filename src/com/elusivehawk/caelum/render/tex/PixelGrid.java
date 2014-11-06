@@ -4,7 +4,6 @@ package com.elusivehawk.caelum.render.tex;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import com.elusivehawk.caelum.render.ILegibleImage;
 import com.elusivehawk.util.storage.BufferHelper;
 
 /**

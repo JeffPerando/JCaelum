@@ -1,5 +1,5 @@
 
-package com.elusivehawk.caelum.render;
+package com.elusivehawk.caelum.render.tex;
 
 import java.nio.ByteBuffer;
 import com.elusivehawk.util.storage.BufferHelper;

@@ -1,8 +1,7 @@
 
-package com.elusivehawk.caelum.render;
+package com.elusivehawk.caelum.render.tex;
 
 import java.awt.image.BufferedImage;
-import com.elusivehawk.caelum.render.tex.ColorFormat;
 
 /**
  * 

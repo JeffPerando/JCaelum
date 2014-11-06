@@ -1,9 +1,9 @@
 
-package com.elusivehawk.caelum.render;
+package com.elusivehawk.caelum.render.tex;
 
-import com.elusivehawk.caelum.render.tex.Color;
-import com.elusivehawk.caelum.render.tex.ITexture;
-import com.elusivehawk.caelum.render.tex.RenderableTexture;
+import com.elusivehawk.caelum.render.IRenderable;
+import com.elusivehawk.caelum.render.RenderContext;
+import com.elusivehawk.caelum.render.RenderException;
 import com.elusivehawk.util.math.MathHelper;
 
 /**
