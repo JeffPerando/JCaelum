@@ -117,7 +117,7 @@ public class MeshComponent extends PositionedComponent
 		
 	}
 	
-	public MeshRenderer getRenderTicket()
+	public MeshRenderer getMeshRenderer()
 	{
 		return this.meshRenderer;
 	}
