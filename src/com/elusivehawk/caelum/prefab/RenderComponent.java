@@ -47,11 +47,29 @@ public class RenderComponent extends Component
 	}
 	
 	@Override
+	public void preRender(RenderContext rcon, double delta)
+	{
+		this.renderable.preRender(rcon, delta);
+		
+		super.preRender(rcon, delta);
+		
+	}
+	
+	@Override
 	public void render(RenderContext rcon)
 	{
 		this.renderable.render(rcon);
 		
 		super.render(rcon);
+		
+	}
+	
+	@Override
+	public void postRender(RenderContext rcon)
+	{
+		this.renderable.postRender(rcon);
+		
+		super.postRender(rcon);
 		
 	}
 	
