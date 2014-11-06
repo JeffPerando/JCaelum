@@ -44,7 +44,7 @@ public class PixelGrid implements ILegibleImage
 		{
 			for (int y = 0; y < img.getHeight(); y++)
 			{
-				pixels[x][y] = new Color(f, img.getPixel(x, y)).getColor();
+				pixels[x][y] = img.getPixel(x, y);
 				
 			}
 			
