@@ -3,6 +3,7 @@ package com.elusivehawk.caelum;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -761,46 +762,24 @@ public final class CaelumEngine
 			return;
 		}
 		
-		File hashFile = new File(dest.getParentFile(), String.format("%s.checksum", name));
-		
-		if (!hashFile.exists() && !FileHelper.write(hash, hashFile))
+		if (dest.exists())
 		{
-			Logger.log().log(EnumLogType.WARN, "Could not copy checksum for native \"%s\", skipping", name);
+			byte[] oldHash = HashGen.sha256(FileHelper.readBytes(dest));
 			
-			return;
-		}
-		
-		byte[] oldHash = FileHelper.readBytes(hashFile);
-		
-		if (oldHash.length == 0)
-		{
-			Logger.log().log(EnumLogType.WARN, "Could not read checksum for \"%s\", it read as an empty checksum", name);
-			
-			if (!FileHelper.write(hash, hashFile))
+			if (Arrays.equals(hash, oldHash))
 			{
-				Logger.log().log(EnumLogType.WARN, "Could not write checksum for native \"%s\", skipping", name);
+				if (CompInfo.DEBUG)
+				{
+					Logger.log().log(EnumLogType.VERBOSE, "Not copying file \"%s\", checksum matched", name);
+					
+				}
 				
 				return;
 			}
 			
-			oldHash = hash;
-			
-		}
-		
-		if (StringHelper.asHexString(hash).equalsIgnoreCase(StringHelper.asHexString(oldHash)))
-		{
-			if (CompInfo.DEBUG)
-			{
-				Logger.log().log(EnumLogType.VERBOSE, "Not copying file \"%s\", checksum matched", name);
-				
-			}
-			
-			return;
-		}
-		
-		if (!FileHelper.write(hash, hashFile))
-		{
-			Logger.log().log(EnumLogType.WARN, "Could not write checksum for native \"%s\"", name);
+			Logger.log().log(EnumLogType.WARN, "Checksum for \"%s\" did not match!", name);
+			Logger.log().log(EnumLogType.DEBUG, "Hash: 0x%s", StringHelper.asHexString(hash));
+			Logger.log().log(EnumLogType.DEBUG, "Old hash: 0x%s", StringHelper.asHexString(oldHash));
 			
 		}
 		

@@ -158,47 +158,48 @@ public class LWJGLMouse extends com.elusivehawk.caelum.input.Mouse
 			
 			b = Mouse.getEventButton();
 			
-			if (b == -1)
+			if (b != -1)
 			{
-				continue;
-			}
-			
-			EnumMouseClick cur = this.buttons[b];
-			
-			if (Mouse.getEventButtonState())
-			{
-				if (!cur.isDown())
+				EnumMouseClick cur = this.buttons[b];
+				
+				if (Mouse.getEventButtonState())
 				{
-					this.oldButtons[b] = cur;
-					this.buttons[b] = DOWN;
+					if (!cur.isDown())
+					{
+						this.oldButtons[b] = cur;
+						this.buttons[b] = DOWN;
+						
+					}
+					else if (cur == DOWN && this.mousePos.isDirty())
+					{
+						this.oldButtons[b] = DOWN;
+						this.buttons[b] = DRAG;
+						
+					}
 					
 				}
-				else if (cur == DOWN && this.mousePos.isDirty())
+				else
 				{
-					this.oldButtons[b] = DOWN;
-					this.buttons[b] = DRAG;
+					if (cur.isDown())
+					{
+						this.oldButtons[b] = cur;
+						this.buttons[b] = LIFTED;
+						
+					}
+					else if (cur == LIFTED)
+					{
+						this.oldButtons[b] = LIFTED;
+						this.buttons[b] = UP;
+						
+					}
 					
 				}
 				
-			}
-			else
-			{
-				if (cur.isDown())
-				{
-					this.oldButtons[b] = cur;
-					this.buttons[b] = LIFTED;
-					
-				}
-				else if (cur == LIFTED)
-				{
-					this.oldButtons[b] = LIFTED;
-					this.buttons[b] = UP;
-					
-				}
+				upd = true;
 				
 			}
 			
-			if (upd || cur != this.buttons[b])
+			if (upd)
 			{
 				this.sendUpdateToListeners(delta);
 				

@@ -77,7 +77,7 @@ public class Canvas extends RenderableObj
 	@Override
 	public void preRender(RenderContext rcon, double delta)
 	{
-		if (!this.populators.isEmpty())
+		if (this.populators != null)
 		{
 			this.populators.forEach(((pop) -> {pop.populate(this);}));
 			

@@ -102,9 +102,9 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 		
 		this.gl1.glViewport(0, 0, this.display.getWidth(), this.display.getHeight());
 		
-		Logger.log().log(EnumLogType.VERBOSE, "GL version: %s", this.gl1.glGetString(GLConst.GL_VERSION));
-		Logger.log().log(EnumLogType.VERBOSE, "GL vendor: %s", this.gl1.glGetString(GLConst.GL_VENDOR));
-		Logger.log().log(EnumLogType.VERBOSE, "GL renderer %s", this.gl1.glGetString(GLConst.GL_RENDERER));
+		Logger.log().log(EnumLogType.VERBOSE, "OpenGL version: %s", this.gl1.glGetString(GLConst.GL_VERSION));
+		Logger.log().log(EnumLogType.VERBOSE, "OpenGL vendor: %s", this.gl1.glGetString(GLConst.GL_VENDOR));
+		Logger.log().log(EnumLogType.VERBOSE, "OpenGL renderer: %s", this.gl1.glGetString(GLConst.GL_RENDERER));
 		
 		for (GLEnumShader sh : GLEnumShader.values())
 		{
