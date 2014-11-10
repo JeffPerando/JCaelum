@@ -655,6 +655,7 @@ public final class CaelumEngine
 		
 	}
 	
+	@Internal
 	private void loadNatives()
 	{
 		if (this.nativeLocation != null)
@@ -714,6 +715,7 @@ public final class CaelumEngine
 		
 	}
 	
+	@Internal
 	private static void copyNative(InputStream is, File dest)
 	{
 		byte[] bytes = FileHelper.readBytes(is, false);
@@ -800,6 +802,7 @@ public final class CaelumEngine
 		
 	}
 	
+	@Internal
 	private Class<?> loadEnvironmentFromJson()
 	{
 		File jsonFile = FileHelper.createFile(".", "gameEnv.json");
