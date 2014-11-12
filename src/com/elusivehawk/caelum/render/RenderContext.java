@@ -138,8 +138,6 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 	@Override
 	public void cleanup()
 	{
-		//this.gl1.glDeleteTextures(this.notex);
-		
 		for (IGLDeletable gl : this.cleanables)
 		{
 			gl.delete(this);
