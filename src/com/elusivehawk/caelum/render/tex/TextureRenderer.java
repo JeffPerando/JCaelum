@@ -18,6 +18,8 @@ public class TextureRenderer extends RenderableTexture
 	@SuppressWarnings("unqualified-field-access")
 	public TextureRenderer(IRenderable r)
 	{
+		assert r != null;
+		
 		renderer = r;
 		
 	}
@@ -26,6 +28,8 @@ public class TextureRenderer extends RenderableTexture
 	public TextureRenderer(IRenderable r, boolean depth)
 	{
 		super(depth);
+		
+		assert r != null;
 		
 		renderer = r;
 		
@@ -36,6 +40,8 @@ public class TextureRenderer extends RenderableTexture
 	{
 		super(display);
 		
+		assert r != null;
+		
 		renderer = r;
 		
 	}
@@ -45,6 +51,8 @@ public class TextureRenderer extends RenderableTexture
 	{
 		super(display, depth);
 		
+		assert r != null;
+		
 		renderer = r;
 		
 	}
@@ -53,6 +61,8 @@ public class TextureRenderer extends RenderableTexture
 	public TextureRenderer(IRenderable r, int width, int height, boolean depth)
 	{
 		super(width, height, depth);
+		
+		assert r != null;
 		
 		renderer = r;
 		

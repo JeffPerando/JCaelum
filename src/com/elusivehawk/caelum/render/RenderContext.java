@@ -8,7 +8,6 @@ import com.elusivehawk.caelum.IContext;
 import com.elusivehawk.caelum.IGameEnvironment;
 import com.elusivehawk.caelum.render.gl.GLConst;
 import com.elusivehawk.caelum.render.gl.GLEnumShader;
-import com.elusivehawk.caelum.render.gl.GLException;
 import com.elusivehawk.caelum.render.gl.GLProgram;
 import com.elusivehawk.caelum.render.gl.IGL1;
 import com.elusivehawk.caelum.render.gl.IGL2;
@@ -17,7 +16,9 @@ import com.elusivehawk.caelum.render.gl.IGLDeletable;
 import com.elusivehawk.caelum.render.gl.Shader;
 import com.elusivehawk.caelum.render.gl.Shaders;
 import com.elusivehawk.caelum.render.tex.ColorFormat;
+import com.elusivehawk.caelum.render.tex.ITexture;
 import com.elusivehawk.caelum.render.tex.PixelGrid;
+import com.elusivehawk.caelum.render.tex.TextureImage;
 import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.IPausable;
 import com.elusivehawk.util.IUpdatable;
@@ -35,11 +36,15 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 	private final IGameEnvironment env;
 	private final IDisplay display;
 	
-	private IGL1 gl1;
-	private IGL2 gl2;
-	private IGL3 gl3;
+	private IGL1 gl1 = null;
+	private IGL2 gl2 = null;
+	private IGL3 gl3 = null;
 	
-	private int notex, maxTexCount, renders = 0;
+	private int
+			maxTexCount = 0,
+			renders = 0;
+	
+	private ITexture notex = null;
 	
 	private final Shaders shaders = new Shaders();
 	private final GLProgram p = new GLProgram(this.shaders);
@@ -121,16 +126,7 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 			
 		}
 		
-		try
-		{
-			this.notex = RenderHelper.genTexture(this, ntf);
-			
-		}
-		catch (GLException e)
-		{
-			Logger.log().err(e);
-			
-		}
+		this.notex = new TextureImage(ntf);
 		
 		this.maxTexCount = this.gl1.glGetInteger(GLConst.GL_MAX_TEXTURE_UNITS);
 		
@@ -286,7 +282,7 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 		return this.p;
 	}
 	
-	public int getDefaultTexture()
+	public ITexture getDefaultTexture()
 	{
 		return this.notex;
 	}
