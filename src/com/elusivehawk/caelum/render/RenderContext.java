@@ -16,7 +16,6 @@ import com.elusivehawk.caelum.render.gl.IGL3;
 import com.elusivehawk.caelum.render.gl.IGLDeletable;
 import com.elusivehawk.caelum.render.gl.Shader;
 import com.elusivehawk.caelum.render.gl.Shaders;
-import com.elusivehawk.caelum.render.old.RenderTask;
 import com.elusivehawk.caelum.render.tex.ColorFormat;
 import com.elusivehawk.caelum.render.tex.PixelGrid;
 import com.elusivehawk.util.EnumLogType;
@@ -48,8 +47,6 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 	private final List<IGLDeletable> cleanables = Lists.newArrayList();
 	private final List<IPreRenderer> preRenderers = Lists.newArrayList();
 	private final List<IPostRenderer> postRenderers = Lists.newArrayList();
-	@Deprecated
-	private final List<RenderTask> rtasks = Lists.newArrayList();
 	
 	private DisplaySettings settings = new DisplaySettings();
 	private boolean
@@ -205,30 +202,6 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 			game.postRender(this);
 			
 			this.postRenderers.forEach(((postR) -> {postR.postRender(this);}));
-			
-			if (!this.rtasks.isEmpty())
-			{
-				RenderTask t = this.rtasks.get(0);
-				boolean rem = false;
-				
-				try
-				{
-					rem = t.completeTask();
-					
-				}
-				catch (Throwable e)
-				{
-					Logger.log().err("Error caught whilst finishing render task:", e);
-					
-				}
-				
-				if (rem)
-				{
-					this.rtasks.remove(t);
-					
-				}
-				
-			}
 			
 		}
 		catch (Throwable e)
@@ -400,13 +373,6 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 	public synchronized void setScreenFlipped(boolean b)
 	{
 		this.flipScreen = b;
-		
-	}
-	
-	@Deprecated
-	public synchronized void scheduleRTask(RenderTask rt)
-	{
-		this.rtasks.add(rt);
 		
 	}
 	

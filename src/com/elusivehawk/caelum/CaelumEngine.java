@@ -15,7 +15,6 @@ import com.elusivehawk.caelum.render.DisplaySettings;
 import com.elusivehawk.caelum.render.IDisplay;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.ThreadGameRender;
-import com.elusivehawk.caelum.render.old.RenderTask;
 import com.elusivehawk.util.CompInfo;
 import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.EnumOS;
@@ -171,13 +170,6 @@ public final class CaelumEngine
 	}
 	
 	//XXX Hooks
-	
-	@Deprecated
-	public static void scheduleRenderTask(RenderTask rt)
-	{
-		instance().rcon.scheduleRTask(rt);
-		
-	}
 	
 	public static void addInputListener(Class<? extends Input> type, IInputListener lis)
 	{

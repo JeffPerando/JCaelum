@@ -15,7 +15,7 @@ public interface IGL2
 {
 	default void glAttachShader(GLProgram program, Shader shader) throws GLException
 	{
-		this.glAttachShader(program.getId(), shader.getGLId());
+		this.glAttachShader(program.getId(), shader.getShaderId(this));
 		
 	}
 	
@@ -27,7 +27,7 @@ public interface IGL2
 	
 	default void glCompileShader(Shader shader) throws GLException
 	{
-		this.glCompileShader(shader.getGLId());
+		this.glCompileShader(shader.getShaderId(this));
 		
 	}
 	
@@ -52,7 +52,7 @@ public interface IGL2
 	
 	default void glDeleteShader(Shader shader) throws GLException
 	{
-		this.glDeleteShader(shader.getGLId());
+		this.glDeleteShader(shader.getShaderId(this));
 		
 	}
 	
@@ -60,7 +60,7 @@ public interface IGL2
 	
 	default void glDetachShader(GLProgram program, Shader shader) throws GLException
 	{
-		this.glDetachShader(program.getId(), shader.getGLId());
+		this.glDetachShader(program.getId(), shader.getShaderId(this));
 		
 	}
 	
@@ -116,7 +116,7 @@ public interface IGL2
 	
 	default int glGetShaderi(Shader shader, GLEnumSStatus status) throws GLException
 	{
-		return this.glGetShaderi(shader.getGLId(), status.gl);
+		return this.glGetShaderi(shader.getShaderId(this), status.gl);
 	}
 	
 	int glGetShaderi(int shader, int pname) throws GLException;

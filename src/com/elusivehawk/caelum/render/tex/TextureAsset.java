@@ -10,7 +10,7 @@ import com.elusivehawk.caelum.assets.AssetManager;
 import com.elusivehawk.caelum.assets.EnumAssetType;
 import com.elusivehawk.caelum.render.GraphicAsset;
 import com.elusivehawk.caelum.render.RenderContext;
-import com.elusivehawk.util.task.Task;
+import com.elusivehawk.caelum.render.RenderHelper;
 import com.google.common.collect.Lists;
 
 /**
@@ -21,6 +21,7 @@ import com.google.common.collect.Lists;
  */
 public class TextureAsset extends GraphicAsset implements ITexture
 {
+	protected ILegibleImage[] sources = null;
 	protected int[] frames = null;
 	protected int frame = 0;
 	
@@ -33,20 +34,42 @@ public class TextureAsset extends GraphicAsset implements ITexture
 	@Override
 	public void delete(RenderContext rcon)
 	{
-		rcon.getGL1().glDeleteTextures(this.frames);
+		if (this.frames != null)
+		{
+			rcon.getGL1().glDeleteTextures(this.frames);
+			
+		}
 		
 	}
 	
 	@Override
 	public void preRender(RenderContext rcon, double delta)
 	{
-		if (this.isStatic())
+		if (this.frames == null)
+		{
+			return;
+		}
+		
+		if (!this.isStatic())
 		{
 			this.frame++;
 			
 			if (this.frame == this.getFrameCount())
 			{
 				this.frame = 0;
+				
+			}
+			
+		}
+		
+		if (this.frames[this.frame] == 0)
+		{
+			ILegibleImage src = this.sources[this.frame];
+			
+			if (src != null)
+			{
+				this.frames[this.frame] = RenderHelper.genTexture(rcon, src);
+				
 			}
 			
 		}
@@ -63,13 +86,6 @@ public class TextureAsset extends GraphicAsset implements ITexture
 	public int getTexId()
 	{
 		return this.frames == null ? 0 : this.frames[this.frame];
-	}
-	
-	@Override
-	public void finishGPULoading(RenderContext rcon)
-	{
-		rcon.registerPreRenderer(this);
-		
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -99,12 +115,13 @@ public class TextureAsset extends GraphicAsset implements ITexture
 			return false;
 		}
 		
-		this.frames = new int[imgs.size()];
+		ILegibleImage[] srcs = imgs.toArray(new ILegibleImage[imgs.size()]);
+		int[] fs = new int[imgs.size()];
 		
-		for (int c = 0; c < imgs.size(); c++)
+		synchronized (this)
 		{
-			CaelumEngine.scheduleRenderTask(new RTaskUploadImage(this, imgs.get(c), c));
-			this.frames[c] = 0;
+			this.sources = srcs;
+			this.frames = fs;
 			
 		}
 		
@@ -121,36 +138,6 @@ public class TextureAsset extends GraphicAsset implements ITexture
 			this.frames = ((TextureAsset)a).frames;
 			
 		}
-		
-	}
-	
-	@Override
-	public void onTaskComplete(Task task)
-	{
-		if (this.isLoaded())
-		{
-			throw new CaelumException("We're already full up on frames, sir...");
-		}
-		
-		super.onTaskComplete(task);
-		
-		RTaskUploadImage t = (RTaskUploadImage)task;
-		
-		this.frames[t.getFrame()] = t.getGLId();
-		
-		boolean b = true;
-		
-		for (int c = 0; c < this.getFrameCount(); c++)
-		{
-			if (this.frames[c] == -1)
-			{
-				b = false;
-				break;
-			}
-			
-		}
-		
-		this.loaded = b;
 		
 	}
 	

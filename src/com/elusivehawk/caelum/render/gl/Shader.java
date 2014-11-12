@@ -2,13 +2,14 @@
 package com.elusivehawk.caelum.render.gl;
 
 import java.io.DataInputStream;
-import com.elusivehawk.caelum.CaelumEngine;
 import com.elusivehawk.caelum.assets.Asset;
 import com.elusivehawk.caelum.assets.EnumAssetType;
 import com.elusivehawk.caelum.render.GraphicAsset;
 import com.elusivehawk.caelum.render.RenderContext;
+import com.elusivehawk.util.CompInfo;
+import com.elusivehawk.util.EnumLogType;
+import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.string.StringHelper;
-import com.elusivehawk.util.task.Task;
 
 /**
  * 
@@ -20,7 +21,8 @@ public class Shader extends GraphicAsset
 {
 	public final GLEnumShader gltype;
 	
-	protected volatile int glId = 0;
+	protected String source = null;
+	protected int glId = 0;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public Shader(String filepath, GLEnumShader type)
@@ -34,7 +36,11 @@ public class Shader extends GraphicAsset
 	@Override
 	public void delete(RenderContext rcon)
 	{
-		rcon.getGL2().glDeleteShader(this);
+		if (this.glId != 0)
+		{
+			rcon.getGL2().glDeleteShader(this.glId);
+			
+		}
 		
 	}
 	
@@ -43,18 +49,14 @@ public class Shader extends GraphicAsset
 	{
 		String src = StringHelper.readToOneLine(in);
 		
-		if (src != null)
+		synchronized (this)
 		{
-			CaelumEngine.scheduleRenderTask(new RTaskUploadShader(this, src));
+			this.source = src;
 			
-			return true;
 		}
 		
-		return false;
+		return this.source != null;
 	}
-	
-	@Override
-	protected void finishGPULoading(RenderContext rcon){}
 	
 	@Override
 	public void onExistingAssetFound(Asset a)
@@ -63,29 +65,61 @@ public class Shader extends GraphicAsset
 		
 		if (a instanceof Shader && ((Shader)a).isLoaded())
 		{
-			this.glId = ((Shader)a).glId;
+			synchronized (this)
+			{
+				Shader s = (Shader)a;
+				
+				this.source = s.source;
+				this.glId = s.glId;
+				
+			}
 			
 		}
 		
 	}
 	
-	@Override
-	public void onTaskComplete(Task task)
+	public int getShaderId(RenderContext rcon)
 	{
-		super.onTaskComplete(task);
-		
-		this.glId = ((RTaskUploadShader)task).getGLId();
-		
-		if (this.glId != 0)
+		return this.getShaderId(rcon.getGL2());
+	}
+	
+	public int getShaderId(IGL2 gl2)
+	{
+		if (this.glId == 0 && this.source != null)
 		{
-			this.loaded = true;
+			int id = gl2.glCreateShader(this.gltype);
+			
+			if (id == 0)
+			{
+				throw new GLException("Cannot load shader: Out of shader IDs");
+			}
+			
+			gl2.glShaderSource(id, this.source);
+			gl2.glCompileShader(id);
+			
+			int status = gl2.glGetShaderi(id, GLEnumSStatus.GL_COMPILE_STATUS);
+			
+			if (status == GLConst.GL_FALSE)
+			{
+				if (CompInfo.DEBUG)
+				{
+					Logger.log().log(EnumLogType.WARN, "Cannot compile shader \"%s\"", this.filepath);
+					
+				}
+				
+				Logger.log().log(EnumLogType.VERBOSE, "Log: %s", gl2.glGetShaderInfoLog(id, gl2.glGetShaderi(id, GLEnumSStatus.GL_INFO_LOG_LENGTH)));
+				
+				gl2.glDeleteShader(id);
+				
+				return 0;
+			}
+			
+			this.glId = id;
+			
+			Logger.log().verbose("Successfully compiled shader \"%s\"", this.filepath);
 			
 		}
 		
-	}
-	
-	public int getGLId()
-	{
 		return this.glId;
 	}
 	
