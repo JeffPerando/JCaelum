@@ -134,7 +134,7 @@ public final class CaelumEngine
 		return instance().gameargs;
 	}
 	
-	public static IDisplay display()
+	public static IDisplay defaultDisplay()
 	{
 		return instance().display;
 	}
@@ -188,7 +188,7 @@ public final class CaelumEngine
 	@Internal
 	public static void waitForDisplay()
 	{
-		while (!display().isCreated())
+		while (!defaultDisplay().isCreated())
 		{
 			try
 			{

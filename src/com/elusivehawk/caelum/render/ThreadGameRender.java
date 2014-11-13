@@ -47,7 +47,7 @@ public class ThreadGameRender extends ThreadTimed implements IThreadContext
 			return;
 		}
 		
-		IDisplay display = CaelumEngine.display();
+		IDisplay display = CaelumEngine.defaultDisplay();
 		
 		if (display.isCloseRequested())
 		{

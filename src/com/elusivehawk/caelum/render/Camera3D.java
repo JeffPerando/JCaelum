@@ -87,7 +87,7 @@ public abstract class Camera3D implements ICamera
 	{
 		if (this.updateProj)
 		{
-			IDisplay display = CaelumEngine.display();
+			IDisplay display = CaelumEngine.defaultDisplay();
 			
 			this.proj = MatrixHelper.createProjectionMatrix(this.fov, (float)display.getHeight() / (float)display.getWidth(), this.zFar, this.zNear);
 			

@@ -22,13 +22,13 @@ public abstract class RenderableTexture implements ITexture, IRenderable
 	
 	public RenderableTexture()
 	{
-		this(CaelumEngine.display());
+		this(CaelumEngine.defaultDisplay());
 		
 	}
 	
 	public RenderableTexture(boolean depth)
 	{
-		this(CaelumEngine.display(), depth);
+		this(CaelumEngine.defaultDisplay(), depth);
 		
 	}
 	

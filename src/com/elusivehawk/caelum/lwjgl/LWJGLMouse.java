@@ -139,7 +139,7 @@ public class LWJGLMouse extends com.elusivehawk.caelum.input.Mouse
 			
 		}
 		
-		IDisplay display = CaelumEngine.display();
+		IDisplay display = CaelumEngine.defaultDisplay();
 		int b;
 		
 		while (Mouse.next())
