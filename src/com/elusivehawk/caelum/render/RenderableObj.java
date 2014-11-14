@@ -245,9 +245,9 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 	
 	public int getMaterialCount()
 	{
-		return this.matSet == null ? 0 : this.matSet.matCount();
+		return this.matSet == null ? 0 : this.matSet.size();
 	}
-
+	
 	public boolean isCulled(ICamera cam)
 	{
 		return false;

@@ -170,7 +170,7 @@ public class Material implements IRenderable
 	
 	public boolean isStatic()
 	{
-		return this.renTex != null || (this.tex != null && this.tex.isStatic());
+		return this.renTex == null && (this.tex != null && this.tex.isStatic());
 	}
 	
 }

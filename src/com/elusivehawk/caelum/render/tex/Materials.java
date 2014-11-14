@@ -1,6 +1,8 @@
 
 package com.elusivehawk.caelum.render.tex;
 
+import java.util.ArrayList;
+import java.util.List;
 import com.elusivehawk.caelum.render.IRenderable;
 import com.elusivehawk.caelum.render.RenderConst;
 import com.elusivehawk.caelum.render.RenderContext;
@@ -16,8 +18,7 @@ import com.elusivehawk.util.storage.IArray;
  */
 public class Materials implements IRenderable, IArray<Material>, IDirty
 {
-	private final Material[] mats = new Material[RenderConst.MATERIAL_CAP];
-	private int matCount = 0;
+	private final List<Material> mats = new ArrayList<Material>(RenderConst.MATERIAL_CAP);
 	private boolean dirty = false, isStatic = true, finished = false;
 	
 	@Override
@@ -36,19 +37,19 @@ public class Materials implements IRenderable, IArray<Material>, IDirty
 	@Override
 	public int size()
 	{
-		return this.matCount;
+		return this.mats.size();
 	}
 	
 	@Override
 	public Material get(int i)
 	{
-		return this.mats[i];
+		return this.mats.get(i);
 	}
 	
 	@Override
 	public IArray<? extends Material> set(int i, Material mat)
 	{
-		if (this.matCount == RenderConst.MATERIAL_CAP)
+		if (this.size() == RenderConst.MATERIAL_CAP)
 		{
 			return this;
 		}
@@ -63,15 +64,9 @@ public class Materials implements IRenderable, IArray<Material>, IDirty
 			return this;
 		}
 		
-		if (this.mats[i] != null)
-		{
-			return this;
-		}
-		
 		synchronized (this)
 		{
-			this.mats[i] = mat;
-			this.matCount++;
+			this.mats.add(i, mat);
 			
 		}
 		
@@ -123,25 +118,17 @@ public class Materials implements IRenderable, IArray<Material>, IDirty
 		}
 		
 		boolean ret = false;
-		int i = 0;
 		
-		do
+		for (Material mat : ms)
 		{
-			if (this.matCount == this.mats.length)
+			if (this.size() == RenderConst.MATERIAL_CAP)
 			{
 				break;
 			}
 			
-			synchronized (this)
-			{
-				this.mats[this.matCount++] = ms[i++];
-				
-			}
-			
-			ret = true;
+			this.mats.add(mat);
 			
 		}
-		while (i < ms.length);
 		
 		if (ret)
 		{
@@ -149,14 +136,14 @@ public class Materials implements IRenderable, IArray<Material>, IDirty
 			{
 				for (Material m : this.mats)
 				{
-					synchronized (this)
+					if (m.isStatic())
 					{
-						this.isStatic = m.isStatic();
-						
+						continue;
 					}
 					
-					if (!this.isStatic)
+					synchronized (this)
 					{
+						this.isStatic = false;
 						break;
 					}
 					
@@ -173,18 +160,6 @@ public class Materials implements IRenderable, IArray<Material>, IDirty
 		}
 		
 		return ret;
-	}
-	
-	public synchronized Materials finish()
-	{
-		this.finished = true;
-		
-		return this;
-	}
-	
-	public int matCount()
-	{
-		return this.matCount;
 	}
 	
 	public boolean isStatic()

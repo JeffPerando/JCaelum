@@ -79,7 +79,7 @@ public class TextureAsset extends GraphicAsset implements ITexture
 	@Override
 	public boolean isStatic()
 	{
-		return this.getFrameCount() > 1;
+		return this.getFrameCount() < 2;
 	}
 	
 	@Override
