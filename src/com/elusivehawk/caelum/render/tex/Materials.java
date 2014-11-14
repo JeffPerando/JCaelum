@@ -1,7 +1,6 @@
 
 package com.elusivehawk.caelum.render.tex;
 
-import java.util.ArrayList;
 import java.util.List;
 import com.elusivehawk.caelum.render.IRenderable;
 import com.elusivehawk.caelum.render.RenderConst;
@@ -9,6 +8,7 @@ import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
 import com.elusivehawk.util.IDirty;
 import com.elusivehawk.util.storage.IArray;
+import com.google.common.collect.Lists;
 
 /**
  * 
@@ -18,7 +18,7 @@ import com.elusivehawk.util.storage.IArray;
  */
 public class Materials implements IRenderable, IArray<Material>, IDirty
 {
-	private final List<Material> mats = new ArrayList<Material>(RenderConst.MATERIAL_CAP);
+	private final List<Material> mats = Lists.newArrayListWithCapacity(RenderConst.MATERIAL_CAP);
 	private boolean dirty = false, isStatic = true, finished = false;
 	
 	@Override
