@@ -9,15 +9,13 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
-import com.elusivehawk.caelum.CaelumEngine;
+import com.elusivehawk.caelum.render.gl.GL1;
+import com.elusivehawk.caelum.render.gl.GL3;
 import com.elusivehawk.caelum.render.gl.GLConst;
 import com.elusivehawk.caelum.render.gl.GLEnumDrawType;
 import com.elusivehawk.caelum.render.gl.GLEnumError;
 import com.elusivehawk.caelum.render.gl.GLEnumTexture;
 import com.elusivehawk.caelum.render.gl.GLException;
-import com.elusivehawk.caelum.render.gl.IGL1;
-import com.elusivehawk.caelum.render.gl.IGL2;
-import com.elusivehawk.caelum.render.gl.IGL3;
 import com.elusivehawk.caelum.render.tex.Color;
 import com.elusivehawk.caelum.render.tex.ColorFilter;
 import com.elusivehawk.caelum.render.tex.ColorFormat;
@@ -42,35 +40,6 @@ import de.matthiasmann.twl.utils.PNGDecoder;
 public final class RenderHelper
 {
 	private RenderHelper(){}
-	
-	@Deprecated
-	public static RenderContext renderContext()
-	{
-		return CaelumEngine.renderContext();
-	}
-	
-	@Deprecated
-	public static IGL1 gl1()
-	{
-		return renderContext().getGL1();
-	}
-	
-	@Deprecated
-	public static IGL2 gl2()
-	{
-		return renderContext().getGL2();
-	}
-	
-	@Deprecated
-	public static IGL3 gl3()
-	{
-		return renderContext().getGL3();
-	}
-	
-	/*public static IGL4 gl4()
-	{
-		return renderContext().getGL4();
-	}*/
 	
 	@Deprecated
 	public static List<ILegibleImage> readImg(File img)
@@ -173,26 +142,24 @@ public final class RenderHelper
 	{
 		assert width > 0 && height > 0;
 		
-		IGL1 gl1 = rcon.getGL1();
-		
 		int tex = 0;
 		
 		try
 		{
-			tex = gl1.glGenTextures();
+			tex = GL1.glGenTextures();
 			
-			gl1.glBindTexture(type, tex);
+			GL1.glBindTexture(type, tex);
 			
-			gl1.glPixelStorei(GLConst.GL_UNPACK_ALIGNMENT, 1);
-			gl1.glTexImage2D(type, 0, alpha ? GLConst.GL_RGBA : GLConst.GL_RGB, width, height, 0, alpha ? GLConst.GL_RGBA : GLConst.GL_RGB, GLConst.GL_UNSIGNED_BYTE, texture);
+			GL1.glPixelStorei(GLConst.GL_UNPACK_ALIGNMENT, 1);
+			GL1.glTexImage2D(type, 0, alpha ? GLConst.GL_RGBA : GLConst.GL_RGB, width, height, 0, alpha ? GLConst.GL_RGBA : GLConst.GL_RGB, GLConst.GL_UNSIGNED_BYTE, texture);
 			
 			if (mipmap)
 			{
-				rcon.getGL3().glGenerateMipmap(type);
+				GL3.glGenerateMipmap(type);
 				
 			}
 			
-			gl1.glBindTexture(type, 0);
+			GL1.glBindTexture(type, 0);
 			
 			return tex;
 		}
@@ -200,7 +167,7 @@ public final class RenderHelper
 		{
 			if (tex != 0)
 			{
-				gl1.glDeleteTextures(tex);
+				GL1.glDeleteTextures(tex);
 				
 			}
 			
@@ -281,19 +248,7 @@ public final class RenderHelper
 	
 	public static void checkForGLError() throws GLException
 	{
-		checkForGLError(gl1());
-		
-	}
-	
-	public static void checkForGLError(RenderContext rcon) throws GLException
-	{
-		checkForGLError(rcon.getGL1());
-		
-	}
-	
-	public static void checkForGLError(IGL1 gl) throws GLException
-	{
-		GLEnumError err = gl.glGetError();
+		GLEnumError err = GL1.glGetError();
 		
 		if (err != GLEnumError.GL_NO_ERROR)
 		{

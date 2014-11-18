@@ -19,6 +19,12 @@ public class PixelGrid implements ILegibleImage
 	protected final int xSize, ySize;
 	protected final ColorFormat f;
 	
+	public PixelGrid(int w, int h)
+	{
+		this(w, h, ColorFormat.RGBA);
+		
+	}
+	
 	@SuppressWarnings("unqualified-field-access")
 	public PixelGrid(int w, int h, ColorFormat format)
 	{
@@ -81,6 +87,12 @@ public class PixelGrid implements ILegibleImage
 	public ColorFormat getFormat()
 	{
 		return this.f;
+	}
+	
+	@Override
+	public PixelGrid clone()
+	{
+		return new PixelGrid(this);
 	}
 	
 	public void setColor(int x, int y, Color col)
@@ -206,20 +218,6 @@ public class PixelGrid implements ILegibleImage
 		return ret;
 	}
 	
-	public void invertColors()
-	{
-		for (int x = 0; x < this.xSize; x++)
-		{
-			for (int y = 0; y < this.ySize; y++)
-			{
-				this.setPixel(x, y, 0xFFFFFF - this.getPixel(x, y));
-				
-			}
-			
-		}
-		
-	}
-	
 	public void reset()
 	{
 		for (int x = 0; x < this.xSize; x++)
@@ -234,20 +232,20 @@ public class PixelGrid implements ILegibleImage
 		
 	}
 	
-	public static PixelGrid scale(PixelGrid grid, int scale)
+	public PixelGrid scale(int scale)
 	{
-		return scale(grid, scale, scale);
+		return this.scale(scale, scale);
 	}
 	
-	public static PixelGrid scale(PixelGrid grid, int xScale, int yScale)
+	public PixelGrid scale(int xScale, int yScale)
 	{
-		PixelGrid ret = new PixelGrid(grid.xSize * xScale, grid.ySize * yScale, grid.getFormat());
+		PixelGrid ret = new PixelGrid(this.xSize * xScale, this.ySize * yScale, this.getFormat());
 		
-		for (int x = 0; x < grid.xSize; x++)
+		for (int x = 0; x < this.xSize; x++)
 		{
-			for (int y = 0; y < grid.ySize; y++)
+			for (int y = 0; y < this.ySize; y++)
 			{
-				int col = grid.getPixel(x, y);
+				int col = this.getPixel(x, y);
 				
 				for (int w = 0; w < xScale; w++)
 				{

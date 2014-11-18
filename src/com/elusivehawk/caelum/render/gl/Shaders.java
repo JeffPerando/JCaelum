@@ -38,7 +38,6 @@ public class Shaders implements IDirty
 	public boolean attachShaders(RenderContext rcon, GLProgram p) throws GLException
 	{
 		boolean ret = false;
-		IGL2 gl2 = rcon.getGL2();
 		
 		Shader sh;
 		
@@ -51,7 +50,7 @@ public class Shaders implements IDirty
 				continue;
 			}
 			
-			gl2.glAttachShader(p, sh);
+			GL2.glAttachShader(p, sh);
 			
 			ret = true;
 			
@@ -71,7 +70,7 @@ public class Shaders implements IDirty
 			
 			if (sh.isLoaded())
 			{
-				rcon.getGL2().glDetachShader(p, sh);
+				GL2.glDetachShader(p, sh);
 				sh.delete(rcon);
 				
 			}

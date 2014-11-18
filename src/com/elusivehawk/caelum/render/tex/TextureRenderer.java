@@ -1,7 +1,6 @@
 
 package com.elusivehawk.caelum.render.tex;
 
-import com.elusivehawk.caelum.render.IDisplay;
 import com.elusivehawk.caelum.render.IRenderable;
 import com.elusivehawk.caelum.render.RenderContext;
 
@@ -15,12 +14,9 @@ public class TextureRenderer extends RenderableTexture
 {
 	private final IRenderable renderer;
 	
-	@SuppressWarnings("unqualified-field-access")
 	public TextureRenderer(IRenderable r)
 	{
-		assert r != null;
-		
-		renderer = r;
+		this(r, true);
 		
 	}
 	
@@ -28,39 +24,6 @@ public class TextureRenderer extends RenderableTexture
 	public TextureRenderer(IRenderable r, boolean depth)
 	{
 		super(depth);
-		
-		assert r != null;
-		
-		renderer = r;
-		
-	}
-	
-	@SuppressWarnings("unqualified-field-access")
-	public TextureRenderer(IRenderable r, IDisplay display)
-	{
-		super(display);
-		
-		assert r != null;
-		
-		renderer = r;
-		
-	}
-	
-	@SuppressWarnings("unqualified-field-access")
-	public TextureRenderer(IRenderable r, IDisplay display, boolean depth)
-	{
-		super(display, depth);
-		
-		assert r != null;
-		
-		renderer = r;
-		
-	}
-	
-	@SuppressWarnings("unqualified-field-access")
-	public TextureRenderer(IRenderable r, int width, int height, boolean depth)
-	{
-		super(width, height, depth);
 		
 		assert r != null;
 		

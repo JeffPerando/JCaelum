@@ -1,17 +1,20 @@
 
 package com.elusivehawk.caelum.lwjgl;
 
-import java.util.List;
+import org.lwjgl.system.glfw.GLFW;
 import com.elusivehawk.caelum.CaelumEngine;
+import com.elusivehawk.caelum.CaelumException;
+import com.elusivehawk.caelum.Display;
+import com.elusivehawk.caelum.DisplaySettings;
+import com.elusivehawk.caelum.IDisplayImpl;
 import com.elusivehawk.caelum.IGameEnvironment;
+import com.elusivehawk.caelum.input.EnumInputType;
 import com.elusivehawk.caelum.input.Input;
-import com.elusivehawk.caelum.render.DisplaySettings;
-import com.elusivehawk.caelum.render.IDisplay;
-import com.elusivehawk.caelum.render.RenderContext;
+import com.elusivehawk.caelum.render.gl.GL1;
+import com.elusivehawk.caelum.render.gl.GL2;
+import com.elusivehawk.caelum.render.gl.GL3;
 import com.elusivehawk.util.EnumOS;
-import com.elusivehawk.util.concurrent.IThreadStoppable;
 import com.elusivehawk.util.json.JsonObject;
-import com.google.common.collect.Lists;
 
 /**
  * 
@@ -21,9 +24,6 @@ import com.google.common.collect.Lists;
  */
 public class LWJGLEnvironment implements IGameEnvironment
 {
-	protected final OpenGL3 GL_3 = new OpenGL3();
-	protected final Object GL_4 = null;
-	
 	@Override
 	public boolean isCompatible(EnumOS os)
 	{
@@ -33,9 +33,25 @@ public class LWJGLEnvironment implements IGameEnvironment
 	@Override
 	public void initiate(JsonObject json, String... args)
 	{
+		GL1.setImpl(new OpenGL1());
+		GL2.setImpl(new OpenGL2());
+		GL3.setImpl(new OpenGL3());
+		
 		System.setProperty("org.lwjgl.opengl.Display.noinput", "true");
 		
 		System.setProperty("org.lwjgl.librarypath", CaelumEngine.getNativeLocation().getAbsolutePath());
+		
+		if (GLFW.glfwInit() != 1)
+		{
+			throw new CaelumException("Unable to initiate GLFW");
+		}
+		
+	}
+	
+	@Override
+	public void destroy()
+	{
+		GLFW.glfwTerminate();
 		
 	}
 	
@@ -46,44 +62,21 @@ public class LWJGLEnvironment implements IGameEnvironment
 	}
 	
 	@Override
-	public IDisplay createDisplay(DisplaySettings settings)
+	public IDisplayImpl createDisplay(DisplaySettings settings)
 	{
-		LWJGLDisplay ret = new LWJGLDisplay();
-		
-		ret.updateSettings(settings);
-		
-		return ret;
+		return new LWJGLDisplay(settings);
 	}
 	
 	@Override
-	public List<Input> loadInputs()
+	public Input loadInput(Display display, EnumInputType type)
 	{
-		List<Input> ret = Lists.newArrayList();
-		
-		ret.add(new LWJGLMouse());
-		ret.add(new LWJGLKeyboard());
-		
-		return ret;
-	}
-	
-	@Override
-	public Object getGL(int version)
-	{
-		switch (version)
+		switch (type)
 		{
-			case 1:
-			case 2:
-			case 3: return this.GL_3;
-			case 4: return this.GL_4;
-			default: return null;
+			case KEYBOARD: return new LWJGLKeyboard(display);
+			case MOUSE: return new LWJGLMouse(display);
+			default: throw new CaelumException("Unsupported input type: %s", type);
 		}
 		
-	}
-	
-	@Override
-	public IThreadStoppable createRenderThread(RenderContext rcon)
-	{
-		return null;
 	}
 	
 	/*public static File determineLWJGLPath()

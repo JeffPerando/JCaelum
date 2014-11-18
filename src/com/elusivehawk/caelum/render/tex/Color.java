@@ -182,4 +182,9 @@ public class Color
 		
 	}
 	
+	public Color convert(ColorFormat nf)
+	{
+		return nf.convert(this);
+	}
+	
 }

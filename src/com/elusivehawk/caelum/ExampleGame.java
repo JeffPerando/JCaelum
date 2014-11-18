@@ -2,6 +2,7 @@
 package com.elusivehawk.caelum;
 
 import com.elusivehawk.caelum.assets.AssetManager;
+import com.elusivehawk.caelum.input.Input;
 import com.elusivehawk.caelum.input.Key;
 import com.elusivehawk.caelum.input.Keyboard;
 import com.elusivehawk.caelum.input.Mouse;
@@ -41,32 +42,6 @@ public final class ExampleGame extends Game
 	@Override
 	protected void initiateGame(GameArguments args, AssetManager assets)
 	{
-		CaelumEngine.addInputListener(Keyboard.class, ((in, delta) ->
-		{
-			Keyboard kb = (Keyboard)in;
-			
-			for (Key key : kb.getPushedKeys())
-			{
-				Logger.log().log(EnumLogType.VERBOSE, "Key down: %s", key);
-				
-			}
-			
-			for (Key key : kb.getOldPushedKeys())
-			{
-				Logger.log().log(EnumLogType.VERBOSE, "Key up: %s", key);
-				
-			}
-			
-		}));
-		
-		CaelumEngine.addInputListener(Mouse.class, ((in, delta) ->
-		{
-			Mouse m = (Mouse)in;
-			
-			Logger.log().log(EnumLogType.VERBOSE, "Mouse pos: %s", m.getMousePos());
-			
-		}));
-		
 		this.canvas.drawImage(0, 0, 1, 1, null);
 		
 	}
@@ -96,5 +71,35 @@ public final class ExampleGame extends Game
 	
 	@Override
 	protected void onGameShutdown(){}
+	
+	@Override
+	public void onInputReceived(Display display, Input in, double delta)
+	{
+		if (in instanceof Keyboard)
+		{
+			Keyboard kb = (Keyboard)in;
+			
+			for (Key key : kb.getPushedKeys())
+			{
+				Logger.log().log(EnumLogType.VERBOSE, "Key down: %s", key);
+				
+			}
+			
+			for (Key key : kb.getOldPushedKeys())
+			{
+				Logger.log().log(EnumLogType.VERBOSE, "Key up: %s", key);
+				
+			}
+			
+		}
+		else if (in instanceof Mouse)
+		{
+			Mouse m = (Mouse)in;
+			
+			Logger.log().log(EnumLogType.VERBOSE, "Mouse pos: %s", m.getMousePos());
+			
+		}
+		
+	}
 	
 }

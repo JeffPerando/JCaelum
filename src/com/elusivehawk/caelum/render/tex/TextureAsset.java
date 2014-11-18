@@ -11,6 +11,7 @@ import com.elusivehawk.caelum.assets.EnumAssetType;
 import com.elusivehawk.caelum.render.GraphicAsset;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderHelper;
+import com.elusivehawk.caelum.render.gl.GL1;
 import com.google.common.collect.Lists;
 
 /**
@@ -36,7 +37,7 @@ public class TextureAsset extends GraphicAsset implements ITexture
 	{
 		if (this.frames != null)
 		{
-			rcon.getGL1().glDeleteTextures(this.frames);
+			GL1.glDeleteTextures(this.frames);
 			
 		}
 		

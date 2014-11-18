@@ -38,7 +38,7 @@ public class Shader extends GraphicAsset
 	{
 		if (this.glId != 0)
 		{
-			rcon.getGL2().glDeleteShader(this.glId);
+			GL2.glDeleteShader(this.glId);
 			
 		}
 		
@@ -78,26 +78,21 @@ public class Shader extends GraphicAsset
 		
 	}
 	
-	public int getShaderId(RenderContext rcon)
-	{
-		return this.getShaderId(rcon.getGL2());
-	}
-	
-	public int getShaderId(IGL2 gl2)
+	public int getShaderId()
 	{
 		if (this.glId == 0 && this.source != null)
 		{
-			int id = gl2.glCreateShader(this.gltype);
+			int id = GL2.glCreateShader(this.gltype);
 			
 			if (id == 0)
 			{
 				throw new GLException("Cannot load shader: Out of shader IDs");
 			}
 			
-			gl2.glShaderSource(id, this.source);
-			gl2.glCompileShader(id);
+			GL2.glShaderSource(id, this.source);
+			GL2.glCompileShader(id);
 			
-			int status = gl2.glGetShaderi(id, GLEnumSStatus.GL_COMPILE_STATUS);
+			int status = GL2.glGetShaderi(id, GLEnumSStatus.GL_COMPILE_STATUS);
 			
 			if (status == GLConst.GL_FALSE)
 			{
@@ -107,9 +102,9 @@ public class Shader extends GraphicAsset
 					
 				}
 				
-				Logger.log().log(EnumLogType.VERBOSE, "Log: %s", gl2.glGetShaderInfoLog(id, gl2.glGetShaderi(id, GLEnumSStatus.GL_INFO_LOG_LENGTH)));
+				Logger.log().log(EnumLogType.VERBOSE, "Log: %s", GL2.glGetShaderInfoLog(id, GL2.glGetShaderi(id, GLEnumSStatus.GL_INFO_LOG_LENGTH)));
 				
-				gl2.glDeleteShader(id);
+				GL2.glDeleteShader(id);
 				
 				return 0;
 			}

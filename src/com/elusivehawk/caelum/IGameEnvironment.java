@@ -1,14 +1,10 @@
 
 package com.elusivehawk.caelum;
 
-import java.util.List;
+import com.elusivehawk.caelum.input.EnumInputType;
 import com.elusivehawk.caelum.input.Input;
-import com.elusivehawk.caelum.render.DisplaySettings;
-import com.elusivehawk.caelum.render.IDisplay;
-import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.util.EnumOS;
 import com.elusivehawk.util.Internal;
-import com.elusivehawk.util.concurrent.IThreadStoppable;
 import com.elusivehawk.util.json.JsonObject;
 
 /**
@@ -30,28 +26,18 @@ public interface IGameEnvironment
 	
 	void initiate(JsonObject json, String... args);
 	
+	void destroy();
+	
 	String getName();
 	
 	/**
 	 * 
-	 * Called during startup.
-	 * 
-	 * @param settings The settings to create the display under.
-	 * @return The display created.
+	 * @param settings
+	 * @return
+	 * @throws Throwable
 	 */
-	IDisplay createDisplay(DisplaySettings settings);
+	IDisplayImpl createDisplay(DisplaySettings settings) throws Throwable;
 	
-	List<Input> loadInputs();
-	
-	/**
-	 * 
-	 * Returns an OpenGL context object.
-	 * 
-	 * @param version The version of the context being requested.
-	 * @return The OpenGL context object requested, or null if it couldn't be found.
-	 */
-	Object getGL(int version);
-	
-	IThreadStoppable createRenderThread(RenderContext rcon);
+	Input loadInput(Display display, EnumInputType type);
 	
 }

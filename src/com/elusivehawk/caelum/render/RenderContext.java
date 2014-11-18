@@ -2,27 +2,24 @@
 package com.elusivehawk.caelum.render;
 
 import java.util.List;
-import com.elusivehawk.caelum.CaelumEngine;
-import com.elusivehawk.caelum.Game;
+import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.IContext;
-import com.elusivehawk.caelum.IGameEnvironment;
+import com.elusivehawk.caelum.IDisplayImpl;
+import com.elusivehawk.caelum.render.gl.GL1;
 import com.elusivehawk.caelum.render.gl.GLConst;
 import com.elusivehawk.caelum.render.gl.GLEnumShader;
 import com.elusivehawk.caelum.render.gl.GLProgram;
-import com.elusivehawk.caelum.render.gl.IGL1;
-import com.elusivehawk.caelum.render.gl.IGL2;
-import com.elusivehawk.caelum.render.gl.IGL3;
 import com.elusivehawk.caelum.render.gl.IGLDeletable;
 import com.elusivehawk.caelum.render.gl.Shader;
 import com.elusivehawk.caelum.render.gl.Shaders;
-import com.elusivehawk.caelum.render.tex.ColorFormat;
+import com.elusivehawk.caelum.render.tex.Color;
 import com.elusivehawk.caelum.render.tex.ITexture;
 import com.elusivehawk.caelum.render.tex.PixelGrid;
 import com.elusivehawk.caelum.render.tex.TextureImage;
 import com.elusivehawk.util.EnumLogType;
-import com.elusivehawk.util.IPausable;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.Logger;
+import com.elusivehawk.util.math.MathHelper;
 import com.google.common.collect.Lists;
 
 /**
@@ -31,14 +28,10 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-public final class RenderContext implements IUpdatable, IPausable, IContext
+public final class RenderContext implements IUpdatable, IContext
 {
-	private final IGameEnvironment env;
-	private final IDisplay display;
-	
-	private IGL1 gl1 = null;
-	private IGL2 gl2 = null;
-	private IGL3 gl3 = null;
+	private final Display display;
+	private final IRenderable renderer;
 	
 	private int
 			maxTexCount = 0,
@@ -53,24 +46,21 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 	private final List<IPreRenderer> preRenderers = Lists.newArrayList();
 	private final List<IPostRenderer> postRenderers = Lists.newArrayList();
 	
-	private DisplaySettings settings = new DisplaySettings();
 	private boolean
 			initiated = false,
-			paused = false,
-			refreshScreen = false,
 			flipScreen = false,
 			updateCameraUniforms = true;
 	
 	private ICamera camera = null;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public RenderContext(IGameEnvironment gameEnv, IDisplay d)
+	public RenderContext(Display d, IRenderable r)
 	{
-		assert gameEnv != null;
 		assert d != null;
+		assert r != null;
 		
-		env = gameEnv;
 		display = d;
+		renderer = r;
 		
 	}
 	
@@ -82,31 +72,11 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 			return false;
 		}
 		
-		try
-		{
-			this.display.createDisplay();
-			
-		}
-		catch (Throwable e)
-		{
-			Logger.log().err(e);
-			
-		}
+		GL1.glViewport(0, 0, this.display.getWidth(), this.display.getHeight());
 		
-		if (!this.display.isCreated())
-		{
-			return false;
-		}
-		
-		this.gl1 = (IGL1)this.env.getGL(1);
-		this.gl2 = (IGL2)this.env.getGL(2);
-		this.gl3 = (IGL3)this.env.getGL(3);
-		
-		this.gl1.glViewport(0, 0, this.display.getWidth(), this.display.getHeight());
-		
-		Logger.log().log(EnumLogType.VERBOSE, "OpenGL version: %s", this.gl1.glGetString(GLConst.GL_VERSION));
-		Logger.log().log(EnumLogType.VERBOSE, "OpenGL vendor: %s", this.gl1.glGetString(GLConst.GL_VENDOR));
-		Logger.log().log(EnumLogType.VERBOSE, "OpenGL renderer: %s", this.gl1.glGetString(GLConst.GL_RENDERER));
+		Logger.log().log(EnumLogType.VERBOSE, "OpenGL version: %s", GL1.glGetString(GLConst.GL_VERSION));
+		Logger.log().log(EnumLogType.VERBOSE, "OpenGL vendor: %s", GL1.glGetString(GLConst.GL_VENDOR));
+		Logger.log().log(EnumLogType.VERBOSE, "OpenGL renderer: %s", GL1.glGetString(GLConst.GL_RENDERER));
 		
 		for (GLEnumShader sh : GLEnumShader.values())
 		{
@@ -114,21 +84,21 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 			
 		}
 		
-		PixelGrid ntf = new PixelGrid(32, 32, ColorFormat.RGBA);
+		PixelGrid ntf = new PixelGrid(16, 16);
 		
 		for (int x = 0; x < ntf.getWidth(); x++)
 		{
 			for (int y = 0; y < ntf.getHeight(); y++)
 			{
-				ntf.setPixel(x, y, (x <= 16 && y >= 16) || (x >= 16 && y <= 16) ? 0xFF00FF : 0xFFFFFF);
+				ntf.setPixel(x, y, MathHelper.isOdd(x) && MathHelper.isOdd(y) ? Color.PINK : Color.BLACK);
 				
 			}
 			
 		}
 		
-		this.notex = new TextureImage(ntf);
+		this.notex = new TextureImage(ntf.scale(2));
 		
-		this.maxTexCount = this.gl1.glGetInteger(GLConst.GL_MAX_TEXTURE_UNITS);
+		this.maxTexCount = GL1.glGetInteger(GLConst.GL_MAX_TEXTURE_UNITS);
 		
 		this.initiated = true;
 		
@@ -138,26 +108,9 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 	@Override
 	public void cleanup()
 	{
-		for (IGLDeletable gl : this.cleanables)
-		{
-			gl.delete(this);
-			
-		}
+		this.cleanables.forEach(((gl) -> {gl.delete(this);}));
 		
 		this.cleanables.clear();
-		
-	}
-	
-	@Override
-	public boolean isPaused()
-	{
-		return this.paused;
-	}
-	
-	@Override
-	public void setPaused(boolean p)
-	{
-		this.paused = p;
 		
 	}
 	
@@ -166,24 +119,15 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 	{
 		try
 		{
-			if (this.refreshScreen)
-			{
-				this.display.updateSettings(this.settings);
-				this.gl1.glViewport(0, 0, this.display.getWidth(), this.display.getHeight());
-				
-				this.refreshScreen = false;
-				
-			}
+			GL1.glViewport(0, 0, this.display.getWidth(), this.display.getHeight());
 			
 			//Clears the OpenGL buffer
 			
-			this.gl1.glClear(0b0100010100000000);
-			
-			Game game = CaelumEngine.game();
+			GL1.glClear(0b0100010100000000);
 			
 			//Pre-rendering 
 			
-			game.preRender(this, delta);
+			this.renderer.preRender(this, delta);
 			
 			this.preRenderers.forEach(((preR) -> {preR.preRender(this, delta);}));
 			
@@ -193,7 +137,7 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 			
 			//Post rendering.
 			
-			game.postRender(this);
+			this.renderer.postRender(this);
 			
 			this.postRenderers.forEach(((postR) -> {postR.postRender(this);}));
 			
@@ -231,19 +175,19 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 		
 		this.renders++;
 		
-		CaelumEngine.game().render(this);
+		this.renderer.render(this);
 		
 		this.renders--;
 		
 	}
 	
-	public void onDisplayResized(IDisplay d)
+	public void onDisplayResized(IDisplayImpl d)
 	{
 		//TODO
 		
 	}
 	
-	public void onDisplayClosed(IDisplay d)
+	public void onDisplayClosed(IDisplayImpl d)
 	{
 		this.cleanup();
 		
@@ -255,24 +199,9 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 		
 	}
 	
-	public IGL1 getGL1()
+	public Display getDisplay()
 	{
-		return this.gl1;
-	}
-	
-	public IGL2 getGL2()
-	{
-		return this.gl2;
-	}
-	
-	public IGL3 getGL3()
-	{
-		return this.gl3;
-	}
-	
-	public int getFPS()
-	{
-		return this.settings.targetFPS;
+		return this.display;
 	}
 	
 	public GLProgram getDefaultProgram()
@@ -308,15 +237,6 @@ public final class RenderContext implements IUpdatable, IPausable, IContext
 	public boolean doUpdateCamera()
 	{
 		return this.camera != null && this.updateCameraUniforms;
-	}
-	
-	public void setSettings(DisplaySettings ds)
-	{
-		assert ds != null;
-		
-		this.settings = ds;
-		this.refreshScreen = true;
-		
 	}
 	
 	public void registerCleanable(IGLDeletable gl)

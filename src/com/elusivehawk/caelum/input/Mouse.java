@@ -1,6 +1,7 @@
 
 package com.elusivehawk.caelum.input;
 
+import com.elusivehawk.caelum.Display;
 import com.elusivehawk.util.math.Vector;
 
 /**
@@ -11,6 +12,18 @@ import com.elusivehawk.util.math.Vector;
  */
 public abstract class Mouse extends Input
 {
+	public Mouse(Display window)
+	{
+		super(window);
+		
+	}
+	
+	@Override
+	public final EnumInputType getType()
+	{
+		return EnumInputType.MOUSE;
+	}
+	
 	public abstract Vector getMousePos();
 	
 	public abstract Vector getMousePosDelta();

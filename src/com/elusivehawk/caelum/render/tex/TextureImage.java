@@ -3,6 +3,7 @@ package com.elusivehawk.caelum.render.tex;
 
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderHelper;
+import com.elusivehawk.caelum.render.gl.GL1;
 
 /**
  * 
@@ -42,7 +43,7 @@ public class TextureImage implements ITexture
 	{
 		if (this.tex != 0)
 		{
-			rcon.getGL1().glDeleteTextures(this.tex);
+			GL1.glDeleteTextures(this.tex);
 			
 		}
 		

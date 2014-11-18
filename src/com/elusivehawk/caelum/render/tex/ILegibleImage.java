@@ -20,6 +20,16 @@ public interface ILegibleImage
 	
 	int getWidth();
 	
+	default Color getPixelColor(int x, int y)
+	{
+		return new Color(this.getFormat(), this.getPixel(x, y));
+	}
+	
+	default boolean setPixel(int x, int y, Color color)
+	{
+		return this.setPixel(x, y, color.convert(this.getFormat()).getColor());
+	}
+	
 	default ColorFormat getFormat()
 	{
 		return ColorFormat.RGBA;

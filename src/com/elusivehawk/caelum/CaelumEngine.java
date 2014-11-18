@@ -9,11 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import com.elusivehawk.caelum.assets.AssetManager;
+import com.elusivehawk.caelum.input.EnumInputType;
 import com.elusivehawk.caelum.input.IInputListener;
-import com.elusivehawk.caelum.input.Input;
-import com.elusivehawk.caelum.render.DisplaySettings;
-import com.elusivehawk.caelum.render.IDisplay;
-import com.elusivehawk.caelum.render.RenderContext;
+import com.elusivehawk.caelum.render.IRenderable;
 import com.elusivehawk.caelum.render.ThreadGameRender;
 import com.elusivehawk.util.CompInfo;
 import com.elusivehawk.util.EnumLogType;
@@ -52,7 +50,6 @@ public final class CaelumEngine
 	public static final Version VERSION = new Version(Version.ALPHA, 1, 0, 0, 0);
 	
 	private final Map<EnumEngineFeature, IThreadStoppable> threads = Maps.newEnumMap(EnumEngineFeature.class);
-	private final List<Input> inputs = Lists.newArrayList();
 	private final TaskManager tasks = new TaskManager();
 	private final AssetManager assets = new AssetManager();
 	
@@ -62,12 +59,12 @@ public final class CaelumEngine
 	private File nativeLocation = null;
 	private IGameEnvironment env = null;
 	private JsonObject envConfig = null;
-	private IDisplay display = null;
 	
 	private GameFactory factory = null;
 	private Game game = null;
 	private GameArguments gameargs = null;
-	private RenderContext rcon = null;
+	private Display defaultDisplay = null;
+	private DisplayManager displays = null;
 	
 	private CaelumEngine()
 	{
@@ -119,11 +116,6 @@ public final class CaelumEngine
 		return instance().assets;
 	}
 	
-	public static RenderContext renderContext()
-	{
-		return (RenderContext)getContext(true);
-	}
-	
 	public static TaskManager tasks()
 	{
 		return instance().tasks;
@@ -134,27 +126,9 @@ public final class CaelumEngine
 		return instance().gameargs;
 	}
 	
-	public static IDisplay defaultDisplay()
-	{
-		return instance().display;
-	}
-	
 	public static File getNativeLocation()
 	{
 		return instance().nativeLocation;
-	}
-	
-	@Deprecated
-	public static IContext getContext(boolean safe)
-	{
-		Thread t = Thread.currentThread();
-		
-		if (safe && !(t instanceof IThreadContext))
-		{
-			return null;
-		}
-		
-		return ((IThreadContext)t).getContext();
 	}
 	
 	public static boolean isPaused()
@@ -171,48 +145,31 @@ public final class CaelumEngine
 	
 	//XXX Hooks
 	
-	public static void addInputListener(Class<? extends Input> type, IInputListener lis)
+	public static Display createDisplay(String name, DisplaySettings settings, IRenderable renderer, IInputListener in)
 	{
-		instance().inputs.forEach(((input) ->
-		{
-			if (type.isInstance(input))
-			{
-				input.addListener(lis);
-				
-			}
-			
-		}));
-		
+		return instance().displays.createDisplay(name, settings, renderer, in);
 	}
 	
-	@Internal
-	public static void waitForDisplay()
+	public static Display defaultDisplay()
 	{
-		while (!defaultDisplay().isCreated())
-		{
-			try
-			{
-				Thread.sleep(2);//Would be 1, but there's potential for multiple threads to use this; Bad thread locking, bad!
-				
-			}
-			catch (InterruptedException e)
-			{
-				Logger.log().err(e);
-				
-			}
-			
-		}
-		
+		return instance().defaultDisplay;
 	}
+	
+	public static Display getDisplay(String name)
+	{
+		return instance().displays.getDisplay(name);
+	}
+	
+	//End hooks
 	
 	@Internal
 	public static void flipScreen(boolean flip)
 	{
-		if (instance().rcon != null)
+		/*if (instance().rcon != null)
 		{
 			instance().rcon.onScreenFlipped(flip);
 			
-		}
+		}*/
 		
 		if (game() != null)
 		{
@@ -389,34 +346,9 @@ public final class CaelumEngine
 			
 		}
 		
-		//XXX Load input
+		//XXX Load display system
 		
-		if (this.inputs.isEmpty())
-		{
-			List<Input> inputList = this.env.loadInputs();
-			
-			if (inputList == null || inputList.isEmpty())
-			{
-				Logger.log().log(EnumLogType.WARN, "Unable to load input");
-				
-			}
-			else
-			{
-				this.inputs.addAll(inputList);
-				
-				if (CompInfo.DEBUG)
-				{
-					for (Input input : inputList)
-					{
-						Logger.log().log(EnumLogType.VERBOSE, "Input found: %s", input.getClass().getSimpleName());
-						
-					}
-					
-				}
-				
-			}
-			
-		}
+		this.displays = new DisplayManager(this.env);
 		
 		//XXX Load game factory
 		
@@ -484,29 +416,20 @@ public final class CaelumEngine
 		
 		if (settings == null)
 		{
-			settings = new DisplaySettings(this.game);
+			settings = new DisplaySettings();
 			
 		}
 		
-		IDisplay d = this.env.createDisplay(settings);
+		this.defaultDisplay = createDisplay("default", settings, g, g);
 		
-		if (d == null)
-		{
-			Logger.log().log(EnumLogType.ERROR, "Display could not be created: Display is null");
-			ShutdownHelper.exit("DISPLAY-NOT-MADE");
-			
-			return;
-		}
+		this.defaultDisplay.createInputType(EnumInputType.KEYBOARD);
+		this.defaultDisplay.createInputType(EnumInputType.MOUSE);
 		
-		this.display = d;
-		
-		this.rcon = new RenderContext(this.env, d);
-		
-		this.rcon.setSettings(settings);
+		//XXX Initiate game
 		
 		try
 		{
-			g.initiate(this.gameargs, this.assets);
+			g.initiate(this.gameargs, this.defaultDisplay, this.assets);
 			
 		}
 		catch (Throwable e)
@@ -519,19 +442,11 @@ public final class CaelumEngine
 		
 		//XXX Create game threads
 		
-		ThreadGameLoop gameloop = new ThreadGameLoop(this.inputs, this.game);
+		ThreadGameLoop gameloop = new ThreadGameLoop(this.game);
 		
 		this.threads.put(EnumEngineFeature.LOGIC, gameloop);
 		
-		IThreadStoppable rt = this.env.createRenderThread(this.rcon);
-		
-		if (rt == null)
-		{
-			rt = new ThreadGameRender(this.rcon);
-			
-		}
-		
-		this.threads.put(EnumEngineFeature.RENDER, rt);
+		this.threads.put(EnumEngineFeature.RENDER, new ThreadGameRender(this.displays));
 		
 		/*this.threads.put(EnumEngineFeature.SOUND, new ThreadSoundPlayer());
 		
@@ -602,8 +517,6 @@ public final class CaelumEngine
 			return;
 		}
 		
-		this.rcon = null;
-		
 		if (this.game != null)
 		{
 			this.game.onShutdown();
@@ -636,12 +549,11 @@ public final class CaelumEngine
 			throw new CaelumException("YOU CLUMSY POOP!");
 		}
 		
-		this.inputs.clear();
 		this.startargs.clear();
 		
 		this.env = null;
 		this.envConfig = null;
-		this.display = null;
+		this.displays = null;
 		
 		this.gameargs = null;
 		

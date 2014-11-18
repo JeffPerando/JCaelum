@@ -2,10 +2,11 @@
 package com.elusivehawk.caelum.render;
 
 import java.util.UUID;
+import com.elusivehawk.caelum.render.gl.GL1;
+import com.elusivehawk.caelum.render.gl.GL2;
 import com.elusivehawk.caelum.render.gl.GLConst;
 import com.elusivehawk.caelum.render.gl.GLEnumUType;
 import com.elusivehawk.caelum.render.gl.GLProgram;
-import com.elusivehawk.caelum.render.gl.IGL1;
 import com.elusivehawk.caelum.render.gl.VertexArray;
 import com.elusivehawk.caelum.render.tex.Material;
 import com.elusivehawk.caelum.render.tex.Materials;
@@ -95,20 +96,18 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 		{
 			if (this.vao.bind(rcon))
 			{
-				boolean zBuffer = rcon.getGL2().glIsEnabled(GLConst.GL_DEPTH_TEST);
+				boolean zBuffer = GL2.glIsEnabled(GLConst.GL_DEPTH_TEST);
 				
 				if (zBuffer != this.zBuffer)
 				{
-					IGL1 gl1 = rcon.getGL1();
-					
 					if (this.zBuffer)
 					{
-						gl1.glEnable(GLConst.GL_DEPTH_TEST);
+						GL1.glEnable(GLConst.GL_DEPTH_TEST);
 						
 					}
 					else
 					{
-						gl1.glDisable(GLConst.GL_DEPTH_TEST);
+						GL1.glDisable(GLConst.GL_DEPTH_TEST);
 						
 					}
 					

@@ -85,18 +85,16 @@ public final class GLProgram implements IGLBindable, IDirty
 			
 		}
 		
-		IGL2 gl2 = rcon.getGL2();
-		
 		this.shaders.deleteShaders(rcon, this);
 		
-		gl2.glDeleteProgram(this);
+		GL2.glDeleteProgram(this);
 		
 	}
 	
 	@Override
 	public boolean bind(RenderContext rcon)
 	{
-		int bp = rcon.getGL1().glGetInteger(GLConst.GL_CURRENT_PROGRAM);
+		int bp = GL1.glGetInteger(GLConst.GL_CURRENT_PROGRAM);
 		
 		if (bp != 0)
 		{
@@ -105,7 +103,7 @@ public final class GLProgram implements IGLBindable, IDirty
 		
 		if (this.id == 0)
 		{
-			this.id = rcon.getGL2().glCreateProgram();
+			this.id = GL2.glCreateProgram();
 			
 			if (!this.relink(rcon))
 			{
@@ -114,7 +112,7 @@ public final class GLProgram implements IGLBindable, IDirty
 			
 			rcon.registerCleanable(this);
 			
-			RenderHelper.checkForGLError(rcon);
+			RenderHelper.checkForGLError();
 			
 		}
 		
@@ -123,7 +121,7 @@ public final class GLProgram implements IGLBindable, IDirty
 			return false;
 		}
 		
-		rcon.getGL2().glUseProgram(this);
+		GL2.glUseProgram(this);
 		
 		this.bound = true;
 		
@@ -138,7 +136,7 @@ public final class GLProgram implements IGLBindable, IDirty
 			return;
 		}
 		
-		rcon.getGL2().glUseProgram(0);
+		GL2.glUseProgram(0);
 		
 		this.bound = false;
 		
@@ -162,16 +160,14 @@ public final class GLProgram implements IGLBindable, IDirty
 			return false;
 		}
 		
-		IGL2 gl2 = rcon.getGL2();
-		
 		for (VertexAttrib pointer : this.attribs)
 		{
-			gl2.glVertexAttribPointer(this, pointer);
+			GL2.glVertexAttribPointer(this, pointer);
 			
 		}
 		
-		gl2.glLinkProgram(this);
-		gl2.glValidateProgram(this);
+		GL2.glLinkProgram(this);
+		GL2.glValidateProgram(this);
 		
 		this.relink = false;
 		this.shaders.setIsDirty(false);
@@ -229,7 +225,7 @@ public final class GLProgram implements IGLBindable, IDirty
 			return;
 		}
 		
-		int loc = rcon.getGL2().glGetUniformLocation(this.id, name);
+		int loc = GL2.glGetUniformLocation(this.id, name);
 		
 		if (loc != 0)
 		{
@@ -252,7 +248,7 @@ public final class GLProgram implements IGLBindable, IDirty
 			return;
 		}
 		
-		int loc = rcon.getGL2().glGetUniformLocation(this.id, name);
+		int loc = GL2.glGetUniformLocation(this.id, name);
 		
 		if (loc != 0)
 		{

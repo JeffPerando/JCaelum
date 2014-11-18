@@ -3,6 +3,8 @@ package com.elusivehawk.caelum;
 
 import java.util.List;
 import com.elusivehawk.caelum.assets.AssetManager;
+import com.elusivehawk.caelum.input.IInputListener;
+import com.elusivehawk.caelum.input.Input;
 import com.elusivehawk.caelum.physics.IPhysicsSimulator;
 import com.elusivehawk.caelum.render.IRenderable;
 import com.elusivehawk.caelum.render.RenderContext;
@@ -17,6 +19,7 @@ import com.google.common.collect.Lists;
  */
 public class GameState extends AbstractGameComponent
 {
+	protected IInputListener inputLis = null;
 	protected IPhysicsSimulator psim = null;
 	protected List<IRenderable> renderers = Lists.newArrayList();
 	
@@ -26,6 +29,13 @@ public class GameState extends AbstractGameComponent
 		
 		assert owner != null;
 		
+	}
+	
+	public GameState setInputListener(IInputListener lis)
+	{
+		this.inputLis = lis;
+		
+		return this;
 	}
 	
 	public GameState setPhysicsSim(IPhysicsSimulator sim)
@@ -45,22 +55,21 @@ public class GameState extends AbstractGameComponent
 	}
 	
 	@Override
-	public void initiate(GameArguments args, AssetManager assets) throws Throwable{}
+	public void onInputReceived(Display display, Input in, double delta)
+	{
+		if (this.inputLis != null)
+		{
+			this.inputLis.onInputReceived(display, in, delta);
+			
+		}
+		
+	}
 	
 	@Override
 	public void render(RenderContext rcon) throws RenderException
 	{
 		this.renderers.forEach(((r) -> {r.render(rcon);}));
 		
-	}
-	
-	@Override
-	public void onShutdown(){}
-	
-	@Override
-	public IPhysicsSimulator getPhysicsSimulator()
-	{
-		return this.psim;
 	}
 	
 	@Override
@@ -75,6 +84,18 @@ public class GameState extends AbstractGameComponent
 	{
 		this.renderers.forEach(((r) -> {r.postRender(rcon);}));
 		
+	}
+	
+	@Override
+	public void initiate(GameArguments args, Display display, AssetManager assets){}
+	
+	@Override
+	public void onShutdown(){}
+	
+	@Override
+	public IPhysicsSimulator getPhysicsSimulator()
+	{
+		return this.psim;
 	}
 	
 }

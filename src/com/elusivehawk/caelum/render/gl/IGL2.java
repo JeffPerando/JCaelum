@@ -13,56 +13,21 @@ import java.nio.IntBuffer;
  */
 public interface IGL2
 {
-	default void glAttachShader(GLProgram program, Shader shader) throws GLException
-	{
-		this.glAttachShader(program.getId(), shader.getShaderId(this));
-		
-	}
-	
 	void glAttachShader(int program, int shader) throws GLException;
 	
 	void glBindAttribLocation(int program, int index, String name) throws GLException;
 	
 	void glBlendEquationSeparate(int modeRGB, int modeAlpha) throws GLException;
 	
-	default void glCompileShader(Shader shader) throws GLException
-	{
-		this.glCompileShader(shader.getShaderId(this));
-		
-	}
-	
 	void glCompileShader(int shader) throws GLException;
 	
 	int glCreateProgram() throws GLException;
 	
-	default int glCreateShader(GLEnumShader type) throws GLException
-	{
-		return this.glCreateShader(type.getGLId());
-	}
-	
 	int glCreateShader(int type) throws GLException;
-	
-	default void glDeleteProgram(GLProgram program) throws GLException
-	{
-		this.glDeleteProgram(program.getId());
-		
-	}
 	
 	void glDeleteProgram(int program) throws GLException;
 	
-	default void glDeleteShader(Shader shader) throws GLException
-	{
-		this.glDeleteShader(shader.getShaderId(this));
-		
-	}
-	
 	void glDeleteShader(int shader) throws GLException;
-	
-	default void glDetachShader(GLProgram program, Shader shader) throws GLException
-	{
-		this.glDetachShader(program.getId(), shader.getShaderId(this));
-		
-	}
 	
 	void glDetachShader(int program, int shader) throws GLException;
 	
@@ -96,11 +61,6 @@ public interface IGL2
 	
 	void glGetProgram(int program, int pname, IntBuffer params) throws GLException;
 	
-	default int glGetProgrami(GLProgram program, GLEnumPStatus status) throws GLException
-	{
-		return this.glGetProgrami(program.getId(), status.gl);
-	}
-	
 	int glGetProgrami(int program, int pname) throws GLException;
 	
 	String glGetProgramInfoLog(int program, int maxLength) throws GLException;
@@ -108,16 +68,6 @@ public interface IGL2
 	void glGetProgramInfoLog(int program, IntBuffer length, ByteBuffer infoLog) throws GLException;
 	
 	void glGetShader(int shader, int pname, IntBuffer params) throws GLException;
-	
-	default int glGetShaderi(int shader, GLEnumSStatus status) throws GLException
-	{
-		return this.glGetShaderi(shader, status.gl);
-	}
-	
-	default int glGetShaderi(Shader shader, GLEnumSStatus status) throws GLException
-	{
-		return this.glGetShaderi(shader.getShaderId(this), status.gl);
-	}
 	
 	int glGetShaderi(int shader, int pname) throws GLException;
 	
@@ -142,12 +92,6 @@ public interface IGL2
 	boolean glIsProgram(int program);
 	
 	boolean glIsShader(int shader);
-	
-	default void glLinkProgram(GLProgram program) throws GLException
-	{
-		this.glLinkProgram(program.getId());
-		
-	}
 	
 	void glLinkProgram(int program) throws GLException;
 	
@@ -197,19 +141,7 @@ public interface IGL2
 	
 	void glUniformMatrix4fv(int location, int count, boolean transpose, FloatBuffer value) throws GLException;
 	
-	default void glUseProgram(GLProgram program) throws GLException
-	{
-		this.glUseProgram(program.getId());
-		
-	}
-	
 	void glUseProgram(int program) throws GLException;
-	
-	default void glValidateProgram(GLProgram program) throws GLException
-	{
-		this.glValidateProgram(program.getId());
-		
-	}
 	
 	void glValidateProgram(int program) throws GLException;
 	
@@ -220,24 +152,6 @@ public interface IGL2
 	void glVertexAttrib3f(int index, float x, float y, float z) throws GLException;
 	
 	void glVertexAttrib4f(int index, float x, float y, float z, float w) throws GLException;
-	
-	default void glVertexAttribPointer(GLProgram program, VertexAttrib attrib)
-	{
-		this.glVertexAttribPointer(program.getId(), attrib);
-		
-	}
-	
-	default void glVertexAttribPointer(int program, VertexAttrib attrib)
-	{
-		this.glVertexAttribPointer(this.glGetAttribLocation(program, attrib.name), attrib.size, attrib.type, attrib.unsigned, attrib.normalized, attrib.stride, attrib.first);
-		
-	}
-	
-	default void glVertexAttribPointer(int index, int size, int type, boolean normalized, int stride, long first) throws GLException
-	{
-		this.glVertexAttribPointer(index, size, type, false, normalized, stride, first);
-		
-	}
 	
 	void glVertexAttribPointer(int index, int size, int type, boolean unsigned, boolean normalized, int stride, long first) throws GLException;
 	

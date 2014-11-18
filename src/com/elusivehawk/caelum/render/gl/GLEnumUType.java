@@ -18,14 +18,14 @@ public enum GLEnumUType
 		@Override
 		public void loadUniform(RenderContext rcon, int loc, FloatBuffer buf)
 		{
-			rcon.getGL2().glUniform1f(loc, buf.get());
+			GL2.glUniform1f(loc, buf.get());
 			
 		}
 		
 		@Override
 		public void loadUniform(RenderContext rcon, int loc, IntBuffer buf)
 		{
-			rcon.getGL2().glUniform1i(loc, buf.get());
+			GL2.glUniform1i(loc, buf.get());
 			
 		}
 		
@@ -35,14 +35,14 @@ public enum GLEnumUType
 		@Override
 		public void loadUniform(RenderContext rcon, int loc, FloatBuffer buf)
 		{
-			rcon.getGL2().glUniform2f(loc, buf.get(), buf.get());
+			GL2.glUniform2f(loc, buf.get(), buf.get());
 			
 		}
 		
 		@Override
 		public void loadUniform(RenderContext rcon, int loc, IntBuffer buf)
 		{
-			rcon.getGL2().glUniform2i(loc, buf.get(), buf.get());
+			GL2.glUniform2i(loc, buf.get(), buf.get());
 			
 		}
 		
@@ -52,14 +52,14 @@ public enum GLEnumUType
 		@Override
 		public void loadUniform(RenderContext rcon, int loc, FloatBuffer buf)
 		{
-			rcon.getGL2().glUniform3f(loc, buf.get(), buf.get(), buf.get());
+			GL2.glUniform3f(loc, buf.get(), buf.get(), buf.get());
 			
 		}
 		
 		@Override
 		public void loadUniform(RenderContext rcon, int loc, IntBuffer buf)
 		{
-			rcon.getGL2().glUniform3i(loc, buf.get(), buf.get(), buf.get());
+			GL2.glUniform3i(loc, buf.get(), buf.get(), buf.get());
 			
 		}
 		
@@ -69,14 +69,14 @@ public enum GLEnumUType
 		@Override
 		public void loadUniform(RenderContext rcon, int loc, FloatBuffer buf)
 		{
-			rcon.getGL2().glUniform4f(loc, buf.get(), buf.get(), buf.get(), buf.get());
+			GL2.glUniform4f(loc, buf.get(), buf.get(), buf.get(), buf.get());
 			
 		}
 		
 		@Override
 		public void loadUniform(RenderContext rcon, int loc, IntBuffer buf)
 		{
-			rcon.getGL2().glUniform4i(loc, buf.get(), buf.get(), buf.get(), buf.get());
+			GL2.glUniform4i(loc, buf.get(), buf.get(), buf.get(), buf.get());
 			
 		}
 		
@@ -86,7 +86,7 @@ public enum GLEnumUType
 		@Override
 		public void loadUniform(RenderContext rcon, int loc, FloatBuffer buf)
 		{
-			rcon.getGL2().glUniformMatrix2fv(loc, 1, false, buf);
+			GL2.glUniformMatrix2fv(loc, 1, false, buf);
 			
 		}
 		
@@ -99,7 +99,7 @@ public enum GLEnumUType
 		@Override
 		public void loadUniform(RenderContext rcon, int loc, FloatBuffer buf)
 		{
-			rcon.getGL2().glUniformMatrix3fv(loc, 1, false, buf);
+			GL2.glUniformMatrix3fv(loc, 1, false, buf);
 			
 		}
 		
@@ -112,7 +112,7 @@ public enum GLEnumUType
 		@Override
 		public void loadUniform(RenderContext rcon, int loc, FloatBuffer buf)
 		{
-			rcon.getGL2().glUniformMatrix4fv(loc, 1, false, buf);
+			GL2.glUniformMatrix4fv(loc, 1, false, buf);
 			
 		}
 		

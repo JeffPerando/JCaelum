@@ -68,15 +68,13 @@ public class VertexBuffer implements IGLBindable
 	@Override
 	public boolean bind(RenderContext rcon)
 	{
-		IGL1 gl1 = rcon.getGL1();
-		
 		if (this.id == 0)
 		{
-			this.id = gl1.glGenBuffers();
+			this.id = GL1.glGenBuffers();
 			
 		}
 		
-		gl1.glBindBuffer(this);
+		GL1.glBindBuffer(this);
 		
 		if (!this.initiated)
 		{
@@ -88,7 +86,7 @@ public class VertexBuffer implements IGLBindable
 		
 		if (this.initBuf != null)
 		{
-			gl1.glBufferData(this.t, this.dataType, this.initBuf, this.loadMode);
+			GL1.glBufferData(this.t, this.dataType, this.initBuf, this.loadMode);
 			
 			this.initBuf = null;
 			
@@ -103,7 +101,7 @@ public class VertexBuffer implements IGLBindable
 			{
 				pair = itr.next();
 				
-				gl1.glBufferSubData(this.getTarget(), pair.two, this.dataType, pair.one);
+				GL1.glBufferSubData(this.getTarget(), pair.two, this.dataType, pair.one);
 				
 				itr.remove();
 				
@@ -113,7 +111,7 @@ public class VertexBuffer implements IGLBindable
 		
 		try
 		{
-			RenderHelper.checkForGLError(gl1);
+			RenderHelper.checkForGLError();
 			
 		}
 		catch (GLException e)
@@ -131,7 +129,7 @@ public class VertexBuffer implements IGLBindable
 	@Override
 	public void unbind(RenderContext rcon)
 	{
-		rcon.getGL1().glBindBuffer(this.t, 0);
+		GL1.glBindBuffer(this.t, 0);
 		
 	}
 	
@@ -140,7 +138,7 @@ public class VertexBuffer implements IGLBindable
 	{
 		if (this.id != 0)
 		{
-			rcon.getGL1().glDeleteBuffers(this);
+			GL1.glDeleteBuffers(this);
 			
 		}
 		

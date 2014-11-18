@@ -4,6 +4,7 @@ package com.elusivehawk.caelum.render;
 import java.nio.FloatBuffer;
 import com.elusivehawk.caelum.CaelumException;
 import com.elusivehawk.caelum.assets.IAssetReceiver;
+import com.elusivehawk.caelum.render.gl.GL1;
 import com.elusivehawk.caelum.render.gl.GLConst;
 import com.elusivehawk.caelum.render.gl.GLEnumBufferTarget;
 import com.elusivehawk.caelum.render.gl.GLEnumDataUsage;
@@ -93,7 +94,7 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 	@Override
 	protected void doRender(RenderContext rcon) throws RenderException
 	{
-		rcon.getGL1().glDrawElements(this.mesh.getDrawType(), this.mesh.getPolyCount(), GLConst.GL_UNSIGNED_INT, 0);
+		GL1.glDrawElements(this.mesh.getDrawType(), this.mesh.getPolyCount(), GLConst.GL_UNSIGNED_INT, 0);
 		
 	}
 	

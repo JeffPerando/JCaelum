@@ -3,6 +3,7 @@ package com.elusivehawk.caelum;
 
 import java.util.List;
 import com.elusivehawk.caelum.assets.AssetManager;
+import com.elusivehawk.caelum.input.IInputListener;
 import com.elusivehawk.caelum.physics.IPhysicsSimulator;
 import com.elusivehawk.caelum.render.IRenderable;
 import com.elusivehawk.util.IUpdatable;
@@ -19,7 +20,7 @@ import com.google.common.collect.Lists;
  * @see GameState
  * @see IUpdatable
  */
-public abstract class AbstractGameComponent implements IUpdatable, IRenderable
+public abstract class AbstractGameComponent implements IInputListener, IUpdatable, IRenderable
 {
 	private final AbstractGameComponent master;
 	
@@ -113,7 +114,7 @@ public abstract class AbstractGameComponent implements IUpdatable, IRenderable
 	
 	public void onScreenFlipped(boolean flip){}
 	
-	public abstract void initiate(GameArguments args, AssetManager assets) throws Throwable;
+	public abstract void initiate(GameArguments args, Display display, AssetManager assets) throws Throwable;
 	
 	public abstract void onShutdown();
 	

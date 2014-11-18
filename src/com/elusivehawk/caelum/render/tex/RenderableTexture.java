@@ -1,8 +1,6 @@
 
 package com.elusivehawk.caelum.render.tex;
 
-import com.elusivehawk.caelum.CaelumEngine;
-import com.elusivehawk.caelum.render.IDisplay;
 import com.elusivehawk.caelum.render.IRenderable;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
@@ -22,32 +20,14 @@ public abstract class RenderableTexture implements ITexture, IRenderable
 	
 	public RenderableTexture()
 	{
-		this(CaelumEngine.defaultDisplay());
-		
-	}
-	
-	public RenderableTexture(boolean depth)
-	{
-		this(CaelumEngine.defaultDisplay(), depth);
-		
-	}
-	
-	public RenderableTexture(IDisplay display)
-	{
-		this(display, true);
-		
-	}
-	
-	public RenderableTexture(IDisplay display, boolean depth)
-	{
-		this(display.getWidth(), display.getHeight(), depth);
+		this(false);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public RenderableTexture(int width, int height, boolean depth)
+	public RenderableTexture(boolean depth)
 	{
-		fbo = new GLFramebuffer(width, height, depth);
+		fbo = new GLFramebuffer(depth);
 		
 	}
 	

@@ -1,6 +1,8 @@
 
 package com.elusivehawk.caelum.input;
 
+import com.elusivehawk.caelum.Display;
+
 /**
  * 
  * It's baaaaack...
@@ -10,6 +12,6 @@ package com.elusivehawk.caelum.input;
 @FunctionalInterface
 public interface IInputListener
 {
-	void onInputReceived(Input in, double delta);
+	void onInputReceived(Display display, Input in, double delta);
 	
 }

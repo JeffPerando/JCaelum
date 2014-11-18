@@ -1,6 +1,7 @@
 
 package com.elusivehawk.caelum.render.gl;
 
+import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderHelper;
 
@@ -13,25 +14,20 @@ import com.elusivehawk.caelum.render.RenderHelper;
 public class GLFramebuffer implements IGLBindable
 {
 	private final boolean useDepth;
+	
 	private boolean initiated = false;
-	private final int width, height;
 	private int fbo = 0, depth = 0, tex = 0, last = 0;
 	
-	public GLFramebuffer(int w, int h)
+	public GLFramebuffer()
 	{
-		this(w, h, true);
+		this(true);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public GLFramebuffer(int w, int h, boolean depth)
+	public GLFramebuffer(boolean depth)
 	{
-		assert w > 0;
-		assert h > 0;
-		
 		useDepth = depth;
-		width = w;
-		height = h;
 		
 	}
 	
@@ -40,15 +36,13 @@ public class GLFramebuffer implements IGLBindable
 	{
 		if (this.initiated)
 		{
-			IGL3 gl3 = rcon.getGL3();
+			GL3.glDeleteFramebuffer(this.fbo);
 			
-			gl3.glDeleteFramebuffer(this.fbo);
-			
-			rcon.getGL1().glDeleteTextures(this.tex);
+			GL1.glDeleteTextures(this.tex);
 			
 			if (this.useDepth)
 			{
-				gl3.glDeleteRenderbuffer(this.depth);
+				GL3.glDeleteRenderbuffer(this.depth);
 				
 			}
 			
@@ -59,46 +53,44 @@ public class GLFramebuffer implements IGLBindable
 	@Override
 	public boolean bind(RenderContext rcon)
 	{
-		IGL1 gl1 = rcon.getGL1();
-		IGL2 gl2 = rcon.getGL2();
-		IGL3 gl3 = rcon.getGL3();
+		Display display = rcon.getDisplay();
 		
-		this.last = gl1.glGetInteger(GLConst.GL_FRAMEBUFFER_BINDING);
+		this.last = GL1.glGetInteger(GLConst.GL_FRAMEBUFFER_BINDING);
 		
 		if (this.initiated)
 		{
-			gl3.glBindFramebuffer(GLEnumFBType.GL_FRAMEBUFFER, this.fbo);
+			GL3.glBindFramebuffer(GLEnumFBType.GL_FRAMEBUFFER, this.fbo);
 			
 		}
 		else
 		{
 			rcon.registerCleanable(this);
 			
-			this.fbo = gl3.glGenFramebuffer();
+			this.fbo = GL3.glGenFramebuffer();
 			
-			this.tex = RenderHelper.genTexture(rcon, GLEnumTexture.GL_TEXTURE_2D, this.width, this.height, false, false);
+			this.tex = RenderHelper.genTexture(rcon, GLEnumTexture.GL_TEXTURE_2D, display.getWidth(), display.getHeight(), false, false);
 			
-			gl3.glBindFramebuffer(GLEnumFBType.GL_FRAMEBUFFER, this.fbo);
+			GL3.glBindFramebuffer(GLEnumFBType.GL_FRAMEBUFFER, this.fbo);
 			
 			if (this.useDepth)
 			{
-				this.depth = gl3.glGenRenderbuffer();
+				this.depth = GL3.glGenRenderbuffer();
 				
-				gl3.glBindRenderbuffer(this.depth);
-				gl3.glRenderbufferStorage(GLConst.GL_DEPTH_COMPONENT, this.width, this.height);
-				gl3.glFramebufferRenderbuffer(GLEnumFBType.GL_FRAMEBUFFER, GLEnumFBAttach.GL_DEPTH_ATTACHMENT, this.depth);
+				GL3.glBindRenderbuffer(this.depth);
+				GL3.glRenderbufferStorage(GLConst.GL_DEPTH_COMPONENT, display.getWidth(), display.getHeight());
+				GL3.glFramebufferRenderbuffer(GLEnumFBType.GL_FRAMEBUFFER, GLEnumFBAttach.GL_DEPTH_ATTACHMENT, this.depth);
 				
 			}
 			
-			gl3.glFramebufferTexture(GLEnumFBType.GL_FRAMEBUFFER, GLEnumFBAttach.GL_COLOR_ATTACHMENT, this.tex, 0);
+			GL3.glFramebufferTexture(GLEnumFBType.GL_FRAMEBUFFER, GLEnumFBAttach.GL_COLOR_ATTACHMENT, this.tex, 0);
 			
-			gl2.glDrawBuffer(GLConst.GL_COLOR_ATTACHMENT0);
+			GL2.glDrawBuffer(GLConst.GL_COLOR_ATTACHMENT0);
 			
 			this.initiated = true;
 			
 		}
 		
-		rcon.getGL1().glViewport(0, 0, this.width, this.height);
+		GL1.glViewport(0, 0, display.getWidth(), display.getHeight());
 		
 		return true;
 	}
@@ -106,13 +98,13 @@ public class GLFramebuffer implements IGLBindable
 	@Override
 	public void unbind(RenderContext rcon)
 	{
-		IGL3 gl3 = rcon.getGL3();
+		GL3.glBindFramebuffer(GLEnumFBType.GL_FRAMEBUFFER, this.last);
 		
-		if (this.last == 0 || gl3.glIsFramebuffer(this.last))
-		{
-			gl3.glBindFramebuffer(GLEnumFBType.GL_FRAMEBUFFER, this.last);
-			
-		}
+		this.last = 0;
+		
+		Display display = rcon.getDisplay();
+		
+		GL1.glViewport(0, 0, display.getWidth(), display.getHeight());
 		
 	}
 	

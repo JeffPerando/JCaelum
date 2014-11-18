@@ -1,13 +1,16 @@
 
 package com.elusivehawk.caelum.lwjgl;
 
-import static com.elusivehawk.caelum.input.EnumMouseClick.*;
-import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Mouse;
+import static com.elusivehawk.caelum.input.EnumMouseClick.DOWN;
+import static com.elusivehawk.caelum.input.EnumMouseClick.DRAG;
+import static com.elusivehawk.caelum.input.EnumMouseClick.LIFTED;
+import static com.elusivehawk.caelum.input.EnumMouseClick.UP;
 import com.elusivehawk.caelum.CaelumEngine;
 import com.elusivehawk.caelum.CaelumException;
+import com.elusivehawk.caelum.Display;
+import com.elusivehawk.caelum.IDisplayImpl;
 import com.elusivehawk.caelum.input.EnumMouseClick;
-import com.elusivehawk.caelum.render.IDisplay;
+import com.elusivehawk.caelum.input.Mouse;
 import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.math.Vector;
@@ -28,6 +31,12 @@ public class LWJGLMouse extends com.elusivehawk.caelum.input.Mouse
 			mousePosDelta = new Vector(2);
 	
 	protected float wheel = 0f;
+	
+	public LWJGLMouse(Display window)
+	{
+		super(window);
+		
+	}
 	
 	@Override
 	public void close()
@@ -139,7 +148,7 @@ public class LWJGLMouse extends com.elusivehawk.caelum.input.Mouse
 			
 		}
 		
-		IDisplay display = CaelumEngine.defaultDisplay();
+		IDisplayImpl display = CaelumEngine.defaultDisplay();
 		int b;
 		
 		while (Mouse.next())

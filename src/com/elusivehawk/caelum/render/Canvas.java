@@ -3,13 +3,13 @@ package com.elusivehawk.caelum.render;
 
 import java.nio.FloatBuffer;
 import java.util.List;
+import com.elusivehawk.caelum.render.gl.GL1;
 import com.elusivehawk.caelum.render.gl.GLConst;
 import com.elusivehawk.caelum.render.gl.GLEnumBufferTarget;
 import com.elusivehawk.caelum.render.gl.GLEnumDataType;
 import com.elusivehawk.caelum.render.gl.GLEnumDataUsage;
 import com.elusivehawk.caelum.render.gl.GLEnumDrawType;
 import com.elusivehawk.caelum.render.gl.GLProgram;
-import com.elusivehawk.caelum.render.gl.IGL1;
 import com.elusivehawk.caelum.render.gl.VertexBuffer;
 import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.math.MathHelper;
@@ -70,7 +70,7 @@ public class Canvas extends RenderableObj
 	@Override
 	protected void doRender(RenderContext rcon) throws RenderException
 	{
-		rcon.getGL1().glDrawElements(GLEnumDrawType.GL_TRIANGLES, this.images * 2, GLConst.GL_UNSIGNED_INT, 0);
+		GL1.glDrawElements(GLEnumDrawType.GL_TRIANGLES, this.images * 2, GLConst.GL_UNSIGNED_INT, 0);
 		
 	}
 	
@@ -95,11 +95,9 @@ public class Canvas extends RenderableObj
 			
 			if (!diffs.isEmpty())
 			{
-				IGL1 gl1 = rcon.getGL1();
-				
 				for (Tuple<Integer, FloatBuffer> diff : diffs)
 				{
-					gl1.glBufferSubData(this.floatbuf.getId(), diff.one, GLConst.GL_FLOAT, diff.two);
+					GL1.glBufferSubData(this.floatbuf.getId(), diff.one, GLConst.GL_FLOAT, diff.two);
 					
 				}
 				

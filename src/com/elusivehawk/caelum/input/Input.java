@@ -2,12 +2,9 @@
 package com.elusivehawk.caelum.input;
 
 import java.io.Closeable;
-import java.util.List;
 import com.elusivehawk.caelum.CaelumException;
+import com.elusivehawk.caelum.Display;
 import com.elusivehawk.util.IUpdatable;
-import com.elusivehawk.util.Logger;
-import com.google.common.collect.Lists;
-
 
 /**
  * 
@@ -17,22 +14,28 @@ import com.google.common.collect.Lists;
  */
 public abstract class Input implements IUpdatable, Closeable
 {
-	private final List<IInputListener> listeners = Lists.newArrayList();
-	private boolean initiated = false, updatingInput = false;
+	protected final Display display;
+	
+	private boolean initiated = false;
+	
+	@SuppressWarnings("unqualified-field-access")
+	public Input(Display window)
+	{
+		assert window != null;
+		
+		display = window;
+		
+	}
 	
 	@Override
-	public void update(double delta) throws Throwable
+	public void update(double delta)
 	{
 		if (!this.initiated)
 		{
-			throw new CaelumException("Input \"%s\" has yet to be initiated.", this.getName());
+			throw new CaelumException("Input not initiated!");
 		}
 		
-		this.updatingInput = true;
 		this.pollInput(delta);
-		this.updatingInput = false;
-		
-		this.postUpdate();
 		
 	}
 	
@@ -41,10 +44,9 @@ public abstract class Input implements IUpdatable, Closeable
 		return this.getClass().getSimpleName();
 	}
 	
-	public void addListener(IInputListener lis)
+	public Display getParent()
 	{
-		this.listeners.add(lis);
-		
+		return this.display;
 	}
 	
 	public boolean initiateInput()
@@ -54,32 +56,8 @@ public abstract class Input implements IUpdatable, Closeable
 		return true;
 	}
 	
-	protected void sendUpdateToListeners(double delta)
-	{
-		if (!this.updatingInput)
-		{
-			throw new CaelumException("Not updating input!");
-		}
-		
-		this.listeners.forEach(((lis) ->
-		{
-			try
-			{
-				lis.onInputReceived(this, delta);
-				
-			}
-			catch (Throwable e)
-			{
-				Logger.log().err("[%s] Error caught:", e, this.getName());
-				
-			}
-			
-		}));
-		
-	}
+	public abstract EnumInputType getType();
 	
 	protected abstract void pollInput(double delta);
-	
-	protected abstract void postUpdate();
 	
 }

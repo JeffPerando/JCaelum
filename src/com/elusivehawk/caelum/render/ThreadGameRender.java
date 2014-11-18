@@ -1,11 +1,8 @@
 
 package com.elusivehawk.caelum.render;
 
-import com.elusivehawk.caelum.CaelumEngine;
-import com.elusivehawk.caelum.IContext;
-import com.elusivehawk.caelum.IThreadContext;
+import com.elusivehawk.caelum.DisplayManager;
 import com.elusivehawk.util.Internal;
-import com.elusivehawk.util.ShutdownHelper;
 import com.elusivehawk.util.concurrent.ThreadTimed;
 
 /**
@@ -15,28 +12,21 @@ import com.elusivehawk.util.concurrent.ThreadTimed;
  * @author Elusivehawk
  */
 @Internal
-public class ThreadGameRender extends ThreadTimed implements IThreadContext
+public final class ThreadGameRender extends ThreadTimed
 {
-	protected final RenderContext rcon;
+	private final DisplayManager mgr;
+	
+	private int fps = 30;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public ThreadGameRender(RenderContext con)
+	public ThreadGameRender(DisplayManager displays)
 	{
 		super("Renderer");
 		
-		rcon = con;
+		assert displays != null;
 		
-	}
-	
-	@Override
-	public boolean initiate()
-	{
-		if (!this.rcon.initContext())
-		{
-			return false;
-		}
+		mgr = displays;
 		
-		return super.initiate();
 	}
 	
 	@Override
@@ -47,41 +37,22 @@ public class ThreadGameRender extends ThreadTimed implements IThreadContext
 			return;
 		}
 		
-		IDisplay display = CaelumEngine.defaultDisplay();
-		
-		if (display.isCloseRequested())
-		{
-			this.rcon.onDisplayClosed(display);
-			
-			ShutdownHelper.exit(0);
-			
-			return;
-		}
-		
-		this.rcon.update(delta);
-		
-		display.updateDisplay();
-		
-	}
-	
-	@Override
-	public synchronized void setPaused(boolean pause)
-	{
-		super.setPaused(pause);
-		this.rcon.setPaused(pause);
+		this.mgr.update(delta);
 		
 	}
 	
 	@Override
 	public int getTargetUpdateCount()
 	{
-		return this.rcon.getFPS();
+		return this.fps;
 	}
 	
-	@Override
-	public IContext getContext()
+	public synchronized void setFPS(int i)
 	{
-		return this.rcon;
+		assert i > 0;
+		
+		this.fps = i;
+		
 	}
 	
 }

@@ -1,7 +1,7 @@
 
 package com.elusivehawk.caelum.render;
 
-import com.elusivehawk.caelum.CaelumEngine;
+import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.Experimental;
 import com.elusivehawk.util.math.Matrix;
 import com.elusivehawk.util.math.MatrixHelper;
@@ -87,7 +87,7 @@ public abstract class Camera3D implements ICamera
 	{
 		if (this.updateProj)
 		{
-			IDisplay display = CaelumEngine.defaultDisplay();
+			Display display = rcon.getDisplay();
 			
 			this.proj = MatrixHelper.createProjectionMatrix(this.fov, (float)display.getHeight() / (float)display.getWidth(), this.zFar, this.zNear);
 			

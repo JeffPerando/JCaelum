@@ -49,7 +49,7 @@ public class VertexArray implements IGLBindable
 			
 		}
 		
-		rcon.getGL3().glDeleteVertexArray(this.id);
+		GL3.glDeleteVertexArray(this.id);
 		
 	}
 	
@@ -68,12 +68,12 @@ public class VertexArray implements IGLBindable
 		
 		if (this.id == 0)
 		{
-			this.id = rcon.getGL3().glGenVertexArray();
+			this.id = GL3.glGenVertexArray();
 			rcon.registerCleanable(this);
 			
 		}
 		
-		rcon.getGL3().glBindVertexArray(this.id);
+		GL3.glBindVertexArray(this.id);
 		
 		for (Entry<VertexBuffer, List<Integer>> entry : this.vbos.entrySet())
 		{
@@ -87,7 +87,7 @@ public class VertexArray implements IGLBindable
 			{
 				for (int attrib : entry.getValue())
 				{
-					rcon.getGL2().glEnableVertexAttribArray(attrib);
+					GL2.glEnableVertexAttribArray(attrib);
 					
 				}
 				
@@ -117,7 +117,7 @@ public class VertexArray implements IGLBindable
 				{
 					for (int a : entry.getValue())
 					{
-						rcon.getGL2().glDisableVertexAttribArray(a);
+						GL2.glDisableVertexAttribArray(a);
 						
 					}
 					
@@ -127,7 +127,7 @@ public class VertexArray implements IGLBindable
 			
 		}
 		
-		rcon.getGL3().glBindVertexArray(0);
+		GL3.glBindVertexArray(0);
 		
 		this.bound = false;
 		

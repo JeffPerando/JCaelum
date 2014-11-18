@@ -4,7 +4,6 @@ package com.elusivehawk.caelum;
 import java.util.List;
 import com.elusivehawk.caelum.assets.AssetManager;
 import com.elusivehawk.caelum.physics.IPhysicsSimulator;
-import com.elusivehawk.caelum.render.DisplaySettings;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.util.IPausable;
 import com.elusivehawk.util.Version;
@@ -44,13 +43,13 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 	}
 	
 	@Override
-	public final void initiate(GameArguments args, AssetManager assets) throws Throwable
+	public final void initiate(GameArguments args, Display display, AssetManager assets) throws Throwable
 	{
 		this.initiateGame(args, assets);
 		
 		if (this.nextState != null)
 		{
-			this.nextState.initiate(args, assets);
+			this.nextState.initiate(args, display, assets);
 			
 			this.state = this.nextState;
 			this.nextState = null;
@@ -135,7 +134,7 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 				
 				try
 				{
-					this.state.initiate(CaelumEngine.gameArgs(), CaelumEngine.assets());
+					this.state.initiate(CaelumEngine.gameArgs(), CaelumEngine.defaultDisplay(), CaelumEngine.assets());
 					
 				}
 				catch (Throwable e)

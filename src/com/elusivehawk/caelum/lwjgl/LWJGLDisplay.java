@@ -2,14 +2,11 @@
 package com.elusivehawk.caelum.lwjgl;
 
 import java.io.IOException;
-import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
-import com.elusivehawk.caelum.render.DisplaySettings;
-import com.elusivehawk.caelum.render.IDisplay;
-import com.elusivehawk.caelum.render.tex.Color;
-import com.elusivehawk.caelum.render.tex.ColorFilter;
-import com.elusivehawk.util.Logger;
+import java.nio.IntBuffer;
+import org.lwjgl.system.glfw.GLFW;
+import com.elusivehawk.caelum.DisplaySettings;
+import com.elusivehawk.caelum.IDisplayImpl;
+import com.elusivehawk.util.storage.BufferHelper;
 
 /**
  * 
@@ -17,47 +14,49 @@ import com.elusivehawk.util.Logger;
  * 
  * @author Elusivehawk
  */
-public class LWJGLDisplay implements IDisplay
+public class LWJGLDisplay implements IDisplayImpl
 {
-	private String title = "";
-	private int width = 800, height = 600;
+	private final DisplaySettings settings;
 	
-	@Override
-	public void close() throws IOException
+	private int width = 0, height = 0;
+	private long id = 0;
+	
+	@SuppressWarnings("unqualified-field-access")
+	public LWJGLDisplay(DisplaySettings ds)
 	{
-		Display.destroy();
+		settings = ds;
 		
 	}
 	
 	@Override
-	public String getTitle()
+	public void close() throws IOException
 	{
-		return this.title;
+		GLFW.glfwDestroyWindow(this.id);
+		
 	}
 	
 	@Override
 	public boolean isCreated()
 	{
-		return Display.isCreated();
+		return this.id != 0;
 	}
 	
 	@Override
 	public void createDisplay() throws Exception
 	{
-		Display.create();
+		this.id = GLFW.glfwCreateWindow(this.settings.width, this.settings.height, this.settings.title, GLFW.glfwGetPrimaryMonitor()/*TODO Implement >1 monitor support*/, 0);
 		
-	}
-	
-	@Override
-	public boolean getFullscreen()
-	{
-		return Display.isFullscreen();
+		if (this.id == 0)
+		{
+			throw new RuntimeException("Could not create display!");
+		}
+		
 	}
 	
 	@Override
 	public boolean isCloseRequested()
 	{
-		return Display.isCloseRequested();
+		return GLFW.glfwWindowShouldClose(this.id) != 0;
 	}
 	
 	@Override
@@ -73,80 +72,40 @@ public class LWJGLDisplay implements IDisplay
 	}
 	
 	@Override
+	public void preRenderDisplay()
+	{
+		
+	}
+	
+	@Override
 	public void updateDisplay()
 	{
-		Display.update();
+		GLFW.glfwSwapBuffers(this.id);
 		
 	}
 	
 	@Override
-	public synchronized void updateSettings(DisplaySettings settings)
+	public void updateSettings(DisplaySettings settings)
 	{
-		try
-		{
-			Display.setTitle(settings.title);
-			Display.setDisplayMode(new DisplayMode(settings.width, settings.height));
-			Display.setFullscreen(settings.vsync);
-			
-			if (settings.icons != null)
-			{
-				Display.setIcon(settings.icons);
-				
-			}
-			
-			Color bg = settings.bg;
-			Display.setInitialBackground(bg.getColorf(ColorFilter.RED), bg.getColorf(ColorFilter.GREEN), bg.getColorf(ColorFilter.BLUE));
-			
-			Display.setTitle(settings.title);
-			Display.setVSyncEnabled(settings.vsync);
-			
-		}
-		catch (LWJGLException e)
-		{
-			Logger.log().err(e);
-			
-		}
+		GLFW.glfwSetWindowTitle(this.id, settings.title);
+		GLFW.glfwSetWindowSize(this.id, settings.width, settings.height);
+		GLFW.glfwSwapInterval(settings.vsync ? 1 : 0);
 		
-		this.title = Display.getTitle();
-		this.width = Display.getWidth();
-		this.height = Display.getHeight();
+		/*
+		 * TODO:
+		 * 
+		 * Fullscreen
+		 * Icon(s)
+		 * 
+		 */
 		
-	}
-	
-	@Override
-	public boolean makeCurrent()
-	{
-		try
-		{
-			Display.makeCurrent();
-			
-		}
-		catch (LWJGLException e)
-		{
-			Logger.log().err(e);
-			
-			return false;
-		}
+		IntBuffer size = BufferHelper.createIntBuffer(2);
 		
-		return true;
-	}
-	
-	@Override
-	public boolean releaseContext()
-	{
-		try
-		{
-			Display.releaseContext();
-			
-		}
-		catch (LWJGLException e)
-		{
-			Logger.log().err(e);
-			
-			return false;
-		}
+		GLFW.glfwGetFramebufferSize(this.id, size, size);
 		
-		return true;
+		this.width = size.get();
+		this.height = size.get();
+		
 	}
 	
 }

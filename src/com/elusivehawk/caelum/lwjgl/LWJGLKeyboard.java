@@ -2,9 +2,10 @@
 package com.elusivehawk.caelum.lwjgl;
 
 import java.util.List;
-import org.lwjgl.input.Keyboard;
 import com.elusivehawk.caelum.CaelumException;
+import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.input.Key;
+import com.elusivehawk.caelum.input.Keyboard;
 import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.Logger;
 import com.google.common.collect.Lists;
@@ -145,6 +146,12 @@ public class LWJGLKeyboard extends com.elusivehawk.caelum.input.Keyboard
 			}
 			
 		}
+		
+	}
+	
+	public LWJGLKeyboard(Display window)
+	{
+		super(window);
 		
 	}
 	
