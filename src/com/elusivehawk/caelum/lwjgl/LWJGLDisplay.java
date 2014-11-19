@@ -18,7 +18,7 @@ public class LWJGLDisplay implements IDisplayImpl
 {
 	private final DisplaySettings settings;
 	
-	private int width = 0, height = 0;
+	private int width = 0, height = 0, xPos = 0, yPos = 0;
 	private long id = 0;
 	
 	@SuppressWarnings("unqualified-field-access")
@@ -57,6 +57,18 @@ public class LWJGLDisplay implements IDisplayImpl
 	public boolean isCloseRequested()
 	{
 		return GLFW.glfwWindowShouldClose(this.id) != 0;
+	}
+	
+	@Override
+	public int getPosX()
+	{
+		return this.xPos;
+	}
+	
+	@Override
+	public int getPosY()
+	{
+		return this.yPos;
 	}
 	
 	@Override
@@ -99,13 +111,21 @@ public class LWJGLDisplay implements IDisplayImpl
 		 * 
 		 */
 		
-		IntBuffer size = BufferHelper.createIntBuffer(2);
+		IntBuffer info = BufferHelper.createIntBuffer(4);
 		
-		GLFW.glfwGetFramebufferSize(this.id, size, size);
+		GLFW.glfwGetWindowSize(this.id, info, info);
+		GLFW.glfwGetWindowPos(this.id, info, info);
 		
-		this.width = size.get();
-		this.height = size.get();
+		this.width = info.get();
+		this.height = info.get();
+		this.xPos = info.get();
+		this.yPos = info.get();
 		
+	}
+	
+	public long getWindowId()
+	{
+		return this.id;
 	}
 	
 }

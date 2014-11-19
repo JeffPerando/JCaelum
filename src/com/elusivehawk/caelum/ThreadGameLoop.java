@@ -14,38 +14,25 @@ import com.elusivehawk.util.concurrent.ThreadTimed;
 public final class ThreadGameLoop extends ThreadTimed
 {
 	private final Game game;
+	private final DisplayManager displays;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public ThreadGameLoop(Game g)
+	public ThreadGameLoop(Game g, DisplayManager dmgr)
 	{
 		super("GameLoop");
 		
+		assert g != null;
+		assert dmgr != null;
+		
 		game = g;
+		displays = dmgr;
 		
 	}
 	
 	@Override
 	public void update(double delta) throws Throwable
 	{
-		/*if (!this.input.isEmpty())
-		{
-			this.input.forEach(((input) ->
-			{
-				try
-				{
-					input.update(delta);
-					
-				}
-				catch (Throwable e)
-				{
-					this.handleException(e);
-					ShutdownHelper.exit("INPUT-ERR");
-					
-				}
-				
-			}));
-			
-		}*/
+		this.displays.sendInputEvents(delta);
 		
 		try
 		{

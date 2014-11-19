@@ -14,16 +14,16 @@ import com.elusivehawk.util.IUpdatable;
  */
 public abstract class Input implements IUpdatable, Closeable
 {
-	protected final Display display;
+	protected final InputManager manager;
 	
 	private boolean initiated = false;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Input(Display window)
+	public Input(InputManager mgr)
 	{
-		assert window != null;
+		assert mgr != null;
 		
-		display = window;
+		manager = mgr;
 		
 	}
 	
@@ -35,18 +35,13 @@ public abstract class Input implements IUpdatable, Closeable
 			throw new CaelumException("Input not initiated!");
 		}
 		
-		this.pollInput(delta);
+		this.pollInput(delta, this.manager.getDisplay());
 		
 	}
 	
 	public String getName()
 	{
 		return this.getClass().getSimpleName();
-	}
-	
-	public Display getParent()
-	{
-		return this.display;
 	}
 	
 	public boolean initiateInput()
@@ -58,6 +53,6 @@ public abstract class Input implements IUpdatable, Closeable
 	
 	public abstract EnumInputType getType();
 	
-	protected abstract void pollInput(double delta);
+	protected abstract void pollInput(double delta, Display display);
 	
 }

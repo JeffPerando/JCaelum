@@ -2,10 +2,10 @@
 package com.elusivehawk.caelum;
 
 import com.elusivehawk.caelum.assets.AssetManager;
-import com.elusivehawk.caelum.input.Input;
-import com.elusivehawk.caelum.input.Key;
-import com.elusivehawk.caelum.input.Keyboard;
-import com.elusivehawk.caelum.input.Mouse;
+import com.elusivehawk.caelum.input.InputEvent;
+import com.elusivehawk.caelum.input.KeyEvent;
+import com.elusivehawk.caelum.input.MouseEvent;
+import com.elusivehawk.caelum.input.PasteEvent;
 import com.elusivehawk.caelum.render.Canvas;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.util.EnumLogType;
@@ -73,30 +73,34 @@ public final class ExampleGame extends Game
 	protected void onGameShutdown(){}
 	
 	@Override
-	public void onInputReceived(Display display, Input in, double delta)
+	public void onInputReceived(Display display, InputEvent event, double delta)
 	{
-		if (in instanceof Keyboard)
+		if (event instanceof KeyEvent)
 		{
-			Keyboard kb = (Keyboard)in;
+			KeyEvent ke = (KeyEvent)event;
 			
-			for (Key key : kb.getPushedKeys())
+			if (ke.down)
 			{
-				Logger.log().log(EnumLogType.VERBOSE, "Key down: %s", key);
+				Logger.log().log(EnumLogType.VERBOSE, "Key down: %s", ke.key);
 				
 			}
-			
-			for (Key key : kb.getOldPushedKeys())
+			else
 			{
-				Logger.log().log(EnumLogType.VERBOSE, "Key up: %s", key);
+				Logger.log().log(EnumLogType.VERBOSE, "Key up: %s", ke.key);
 				
 			}
 			
 		}
-		else if (in instanceof Mouse)
+		else if (event instanceof MouseEvent)
 		{
-			Mouse m = (Mouse)in;
+			MouseEvent me = (MouseEvent)event;
 			
-			Logger.log().log(EnumLogType.VERBOSE, "Mouse pos: %s", m.getMousePos());
+			Logger.log().log(EnumLogType.VERBOSE, "Mouse pos: %s", me.pos);
+			
+		}
+		else if (event instanceof PasteEvent)
+		{
+			Logger.log().log(EnumLogType.VERBOSE, "Pasted: %s", ((PasteEvent)event).pasted);
 			
 		}
 		

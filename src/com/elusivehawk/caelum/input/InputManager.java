@@ -2,11 +2,14 @@
 package com.elusivehawk.caelum.input;
 
 import java.util.List;
+import java.util.Map;
 import com.elusivehawk.caelum.CaelumException;
 import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.IGameEnvironment;
 import com.elusivehawk.util.IUpdatable;
+import com.elusivehawk.util.storage.SyncList;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * 
@@ -18,7 +21,8 @@ public final class InputManager implements IUpdatable
 {
 	private final List<EnumInputType> types = Lists.newArrayList();
 	private final List<Input> input = Lists.newArrayList();
-	private final List<IInputListener> listeners = Lists.newArrayList();
+	private final Map<EnumInputType, List<IInputListener>> listeners = Maps.newHashMap();
+	private final List<InputEvent> eventQueue = SyncList.newList();
 	
 	private final Display display;
 	
@@ -39,12 +43,21 @@ public final class InputManager implements IUpdatable
 			throw new CaelumException("Input manager was not initiated!");
 		}
 		
-		this.input.forEach(((input) -> {input.update(delta);}));
+		this.input.forEach(((input) ->
+		{
+			input.update(delta);
+			
+		}));
 		
 	}
 	
 	public void initiateInput(IGameEnvironment ge)
 	{
+		if (this.initiated)
+		{
+			return;
+		}
+		
 		if (this.types.isEmpty())
 		{
 			return;
@@ -52,7 +65,7 @@ public final class InputManager implements IUpdatable
 		
 		for (EnumInputType type : this.types)
 		{
-			Input in = ge.loadInput(this.display, type);
+			Input in = ge.loadInput(this, type);
 			
 			if (in == null)
 			{
@@ -60,11 +73,6 @@ public final class InputManager implements IUpdatable
 			}
 			
 			if (in.getType() != type)
-			{
-				continue;
-			}
-			
-			if (in.getParent() != this.display)
 			{
 				continue;
 			}
@@ -83,6 +91,39 @@ public final class InputManager implements IUpdatable
 			
 		}
 		
+		this.initiated = true;
+		
+	}
+	
+	public void queueInputEvent(InputEvent event)
+	{
+		assert event != null;
+		
+		this.eventQueue.add(event);
+		
+	}
+	
+	public void sendInputEvents(double delta)
+	{
+		if (this.listeners.isEmpty() || this.eventQueue.isEmpty())
+		{
+			return;
+		}
+		
+		for (InputEvent event : this.eventQueue)
+		{
+			List<IInputListener> inList = this.listeners.get(event.type);
+			
+			if (inList != null)
+			{
+				inList.forEach(((lis) -> {lis.onInputReceived(this.display, event, delta);}));
+				
+				this.eventQueue.remove(event);
+				
+			}
+			
+		}
+		
 	}
 	
 	public void createInputType(EnumInputType type)
@@ -95,12 +136,27 @@ public final class InputManager implements IUpdatable
 		
 	}
 	
-	public void addListener(IInputListener lis)
+	public void addListener(EnumInputType type, IInputListener lis)
 	{
+		assert type != null;
 		assert lis != null;
 		
-		this.listeners.add(lis);
+		List<IInputListener> inList = this.listeners.get(type);
 		
+		if (inList == null)
+		{
+			inList = SyncList.newList();
+			this.listeners.put(type, inList);
+			
+		}
+		
+		inList.add(lis);
+		
+	}
+	
+	public Display getDisplay()
+	{
+		return this.display;
 	}
 	
 }

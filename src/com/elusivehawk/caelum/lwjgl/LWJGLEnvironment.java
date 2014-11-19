@@ -4,12 +4,12 @@ package com.elusivehawk.caelum.lwjgl;
 import org.lwjgl.system.glfw.GLFW;
 import com.elusivehawk.caelum.CaelumEngine;
 import com.elusivehawk.caelum.CaelumException;
-import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.DisplaySettings;
 import com.elusivehawk.caelum.IDisplayImpl;
 import com.elusivehawk.caelum.IGameEnvironment;
 import com.elusivehawk.caelum.input.EnumInputType;
 import com.elusivehawk.caelum.input.Input;
+import com.elusivehawk.caelum.input.InputManager;
 import com.elusivehawk.caelum.render.gl.GL1;
 import com.elusivehawk.caelum.render.gl.GL2;
 import com.elusivehawk.caelum.render.gl.GL3;
@@ -68,12 +68,12 @@ public class LWJGLEnvironment implements IGameEnvironment
 	}
 	
 	@Override
-	public Input loadInput(Display display, EnumInputType type)
+	public Input loadInput(InputManager inmgr, EnumInputType type)
 	{
 		switch (type)
 		{
-			case KEYBOARD: return new LWJGLKeyboard(display);
-			case MOUSE: return new LWJGLMouse(display);
+			case KEYBOARD: return new LWJGLKeyboard(inmgr);
+			case MOUSE: return new LWJGLMouse(inmgr);
 			default: throw new CaelumException("Unsupported input type: %s", type);
 		}
 		

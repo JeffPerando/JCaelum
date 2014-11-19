@@ -12,11 +12,12 @@ public final class InputConst
 	private InputConst(){}
 	
 	public static final int
-					MOUSE_CLICK_LEFT = 0,
-					MOUSE_CLICK_RIGHT = 1,
-					MOUSE_CLICK_WHEEL = 2,
-					MOUSE_CLICK_EXTRA_0 = 3,
-					MOUSE_CLICK_EXTRA_1 = 4,
-					MOUSE_CLICK_EXTRA_2 = 5;
+					MOUSE_NONE = -1,
+					MOUSE_LEFT = 0,
+					MOUSE_RIGHT = 1,
+					MOUSE_WHEEL = 2,
+					MOUSE_EXTRA_0 = 3,
+					MOUSE_EXTRA_1 = 4,
+					MOUSE_EXTRA_2 = 5;
 	
 }

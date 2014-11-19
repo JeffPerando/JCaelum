@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import com.elusivehawk.caelum.assets.AssetManager;
 import com.elusivehawk.caelum.input.EnumInputType;
-import com.elusivehawk.caelum.input.IInputListener;
 import com.elusivehawk.caelum.render.IRenderable;
 import com.elusivehawk.caelum.render.ThreadGameRender;
 import com.elusivehawk.util.CompInfo;
@@ -145,9 +144,9 @@ public final class CaelumEngine
 	
 	//XXX Hooks
 	
-	public static Display createDisplay(String name, DisplaySettings settings, IRenderable renderer, IInputListener in)
+	public static Display createDisplay(String name, DisplaySettings settings, IRenderable renderer)
 	{
-		return instance().displays.createDisplay(name, settings, renderer, in);
+		return instance().displays.createDisplay(name, settings, renderer);
 	}
 	
 	public static Display defaultDisplay()
@@ -420,10 +419,13 @@ public final class CaelumEngine
 			
 		}
 		
-		this.defaultDisplay = createDisplay("default", settings, g, g);
+		this.defaultDisplay = createDisplay("default", settings, g);
 		
 		this.defaultDisplay.createInputType(EnumInputType.KEYBOARD);
 		this.defaultDisplay.createInputType(EnumInputType.MOUSE);
+		
+		this.defaultDisplay.addInputListener(EnumInputType.KEYBOARD, g);
+		this.defaultDisplay.addInputListener(EnumInputType.MOUSE, g);
 		
 		//XXX Initiate game
 		
@@ -442,12 +444,8 @@ public final class CaelumEngine
 		
 		//XXX Create game threads
 		
-		ThreadGameLoop gameloop = new ThreadGameLoop(this.game);
-		
-		this.threads.put(EnumEngineFeature.LOGIC, gameloop);
-		
+		this.threads.put(EnumEngineFeature.LOGIC, new ThreadGameLoop(this.game, this.displays));
 		this.threads.put(EnumEngineFeature.RENDER, new ThreadGameRender(this.displays));
-		
 		/*this.threads.put(EnumEngineFeature.SOUND, new ThreadSoundPlayer());
 		
 		IPhysicsSimulator ph = this.game.getPhysicsSimulator();

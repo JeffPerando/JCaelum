@@ -3,10 +3,8 @@ package com.elusivehawk.caelum;
 
 import java.io.Closeable;
 import java.util.List;
-import com.elusivehawk.caelum.input.IInputListener;
 import com.elusivehawk.caelum.render.IRenderable;
 import com.elusivehawk.caelum.render.RenderException;
-import com.elusivehawk.caelum.render.ThreadGameRender;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.storage.SyncList;
@@ -34,8 +32,6 @@ public final class DisplayManager implements Closeable, IUpdatable
 	@Override
 	public void update(double delta) throws Throwable
 	{
-		assert Thread.currentThread() instanceof ThreadGameRender : "Displays not getting updated on render thread! This is a bug/oversight!";
-		
 		if (!this.displaysToInit.isEmpty())
 		{
 			for (Display display : this.displaysToInit)
@@ -98,7 +94,7 @@ public final class DisplayManager implements Closeable, IUpdatable
 		
 	}
 	
-	public Display createDisplay(String name, DisplaySettings settings, IRenderable renderer, IInputListener in)
+	public Display createDisplay(String name, DisplaySettings settings, IRenderable renderer)
 	{
 		if (name == null || name.equalsIgnoreCase(""))
 		{
@@ -115,7 +111,7 @@ public final class DisplayManager implements Closeable, IUpdatable
 			return null;
 		}
 		
-		Display ret = new Display(name, settings, renderer, in);
+		Display ret = new Display(name, settings, renderer);
 		
 		this.displaysToInit.add(ret);
 		
@@ -134,6 +130,12 @@ public final class DisplayManager implements Closeable, IUpdatable
 		}
 		
 		return null;
+	}
+	
+	public void sendInputEvents(double delta)
+	{
+		this.displays.forEach(((display) -> {display.sendInputEvents(delta);}));
+		
 	}
 	
 }

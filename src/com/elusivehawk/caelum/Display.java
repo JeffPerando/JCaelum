@@ -31,7 +31,7 @@ public class Display implements Closeable, IUpdatable
 	private boolean refresh = true, closed = false;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Display(String str, DisplaySettings ds, IRenderable r, IInputListener in)
+	public Display(String str, DisplaySettings ds, IRenderable r)
 	{
 		assert ds != null;
 		assert r != null;
@@ -39,13 +39,8 @@ public class Display implements Closeable, IUpdatable
 		name = str;
 		settings = ds;
 		renderer = r;
-		input = new InputManager(this);
 		
-		if (in != null)
-		{
-			input.addListener(in);
-			
-		}
+		input = new InputManager(this);
 		
 	}
 	
@@ -161,9 +156,9 @@ public class Display implements Closeable, IUpdatable
 		
 	}
 	
-	public void addInputListener(IInputListener lis)
+	public void addInputListener(EnumInputType type, IInputListener lis)
 	{
-		this.input.addListener(lis);
+		this.input.addListener(type, lis);
 		
 	}
 	
@@ -172,6 +167,12 @@ public class Display implements Closeable, IUpdatable
 		assert type != null;
 		
 		this.input.createInputType(type);
+		
+	}
+	
+	public void sendInputEvents(double delta)
+	{
+		this.input.sendInputEvents(delta);
 		
 	}
 	

@@ -24,6 +24,10 @@ public interface IDisplayImpl extends Closeable
 	 */
 	boolean isCloseRequested();
 	
+	int getPosX();
+	
+	int getPosY();
+	
 	/**
 	 * 
 	 * @return The current height of the display.

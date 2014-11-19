@@ -12,6 +12,6 @@ import com.elusivehawk.caelum.Display;
 @FunctionalInterface
 public interface IInputListener
 {
-	void onInputReceived(Display display, Input in, double delta);
+	void onInputReceived(Display display, InputEvent inEvent, double delta);
 	
 }

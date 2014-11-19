@@ -2,12 +2,16 @@
 package com.elusivehawk.caelum.lwjgl;
 
 import java.util.List;
-import com.elusivehawk.caelum.CaelumException;
+import org.lwjgl.system.glfw.GLFW;
 import com.elusivehawk.caelum.Display;
+import com.elusivehawk.caelum.input.EnumInputType;
+import com.elusivehawk.caelum.input.Input;
+import com.elusivehawk.caelum.input.InputManager;
 import com.elusivehawk.caelum.input.Key;
-import com.elusivehawk.caelum.input.Keyboard;
-import com.elusivehawk.util.EnumLogType;
-import com.elusivehawk.util.Logger;
+import com.elusivehawk.caelum.input.KeyEvent;
+import com.elusivehawk.caelum.input.PasteEvent;
+import com.elusivehawk.util.storage.Tuple;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 /**
@@ -16,261 +20,172 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-public class LWJGLKeyboard extends com.elusivehawk.caelum.input.Keyboard
+public class LWJGLKeyboard extends Input
 {
-	public static final Key[] LWJGL_TO_ENUM = new Key[Keyboard.KEYBOARD_SIZE];
+	public static final ImmutableList<Tuple<Integer, Key>> GLFW_ENUMS;
 	
-	protected boolean dirty = false;
-	protected final boolean[] downKeys = new boolean[Key.values().length];
-	protected final List<Key>
-			downKeyList = Lists.newArrayList(),
-			upKeyList = Lists.newArrayList();
+	private final List<Key> downKeys = Lists.newArrayList();
 	
 	static
 	{
-		LWJGL_TO_ENUM[Keyboard.KEY_A] = Key.A;
-		LWJGL_TO_ENUM[Keyboard.KEY_B] = Key.B;
-		LWJGL_TO_ENUM[Keyboard.KEY_C] = Key.C;
-		LWJGL_TO_ENUM[Keyboard.KEY_D] = Key.D;
-		LWJGL_TO_ENUM[Keyboard.KEY_E] = Key.E;
-		LWJGL_TO_ENUM[Keyboard.KEY_F] = Key.F;
-		LWJGL_TO_ENUM[Keyboard.KEY_G] = Key.G;
-		LWJGL_TO_ENUM[Keyboard.KEY_H] = Key.H;
-		LWJGL_TO_ENUM[Keyboard.KEY_I] = Key.I;
-		LWJGL_TO_ENUM[Keyboard.KEY_J] = Key.J;
-		LWJGL_TO_ENUM[Keyboard.KEY_K] = Key.K;
-		LWJGL_TO_ENUM[Keyboard.KEY_L] = Key.L;
-		LWJGL_TO_ENUM[Keyboard.KEY_M] = Key.M;
-		LWJGL_TO_ENUM[Keyboard.KEY_N] = Key.N;
-		LWJGL_TO_ENUM[Keyboard.KEY_O] = Key.O;
-		LWJGL_TO_ENUM[Keyboard.KEY_P] = Key.P;
-		LWJGL_TO_ENUM[Keyboard.KEY_Q] = Key.Q;
-		LWJGL_TO_ENUM[Keyboard.KEY_R] = Key.R;
-		LWJGL_TO_ENUM[Keyboard.KEY_S] = Key.S;
-		LWJGL_TO_ENUM[Keyboard.KEY_T] = Key.T;
-		LWJGL_TO_ENUM[Keyboard.KEY_U] = Key.U;
-		LWJGL_TO_ENUM[Keyboard.KEY_V] = Key.V;
-		LWJGL_TO_ENUM[Keyboard.KEY_W] = Key.W;
-		LWJGL_TO_ENUM[Keyboard.KEY_X] = Key.X;
-		LWJGL_TO_ENUM[Keyboard.KEY_Y] = Key.Y;
-		LWJGL_TO_ENUM[Keyboard.KEY_Z] = Key.Z;
+		List<Tuple<Integer, Key>> list = Lists.newArrayList();
 		
-		LWJGL_TO_ENUM[Keyboard.KEY_1] = Key.NUM_1;
-		LWJGL_TO_ENUM[Keyboard.KEY_2] = Key.NUM_2;
-		LWJGL_TO_ENUM[Keyboard.KEY_3] = Key.NUM_3;
-		LWJGL_TO_ENUM[Keyboard.KEY_4] = Key.NUM_4;
-		LWJGL_TO_ENUM[Keyboard.KEY_5] = Key.NUM_5;
-		LWJGL_TO_ENUM[Keyboard.KEY_6] = Key.NUM_6;
-		LWJGL_TO_ENUM[Keyboard.KEY_7] = Key.NUM_7;
-		LWJGL_TO_ENUM[Keyboard.KEY_8] = Key.NUM_8;
-		LWJGL_TO_ENUM[Keyboard.KEY_9] = Key.NUM_9;
-		LWJGL_TO_ENUM[Keyboard.KEY_0] = Key.NUM_0;
+		list.add(Tuple.create(GLFW.GLFW_KEY_A, Key.A));
+		list.add(Tuple.create(GLFW.GLFW_KEY_B, Key.B));
+		list.add(Tuple.create(GLFW.GLFW_KEY_C, Key.C));
+		list.add(Tuple.create(GLFW.GLFW_KEY_D, Key.D));
+		list.add(Tuple.create(GLFW.GLFW_KEY_E, Key.E));
+		list.add(Tuple.create(GLFW.GLFW_KEY_F, Key.F));
+		list.add(Tuple.create(GLFW.GLFW_KEY_G, Key.G));
+		list.add(Tuple.create(GLFW.GLFW_KEY_H, Key.H));
+		list.add(Tuple.create(GLFW.GLFW_KEY_I, Key.I));
+		list.add(Tuple.create(GLFW.GLFW_KEY_J, Key.J));
+		list.add(Tuple.create(GLFW.GLFW_KEY_K, Key.K));
+		list.add(Tuple.create(GLFW.GLFW_KEY_L, Key.L));
+		list.add(Tuple.create(GLFW.GLFW_KEY_M, Key.M));
+		list.add(Tuple.create(GLFW.GLFW_KEY_N, Key.N));
+		list.add(Tuple.create(GLFW.GLFW_KEY_O, Key.O));
+		list.add(Tuple.create(GLFW.GLFW_KEY_P, Key.P));
+		list.add(Tuple.create(GLFW.GLFW_KEY_Q, Key.Q));
+		list.add(Tuple.create(GLFW.GLFW_KEY_R, Key.R));
+		list.add(Tuple.create(GLFW.GLFW_KEY_S, Key.S));
+		list.add(Tuple.create(GLFW.GLFW_KEY_T, Key.T));
+		list.add(Tuple.create(GLFW.GLFW_KEY_U, Key.U));
+		list.add(Tuple.create(GLFW.GLFW_KEY_V, Key.V));
+		list.add(Tuple.create(GLFW.GLFW_KEY_W, Key.W));
+		list.add(Tuple.create(GLFW.GLFW_KEY_X, Key.X));
+		list.add(Tuple.create(GLFW.GLFW_KEY_Y, Key.Y));
+		list.add(Tuple.create(GLFW.GLFW_KEY_Z, Key.Z));
 		
-		LWJGL_TO_ENUM[Keyboard.KEY_NUMPAD1] = Key.NUM_1;
-		LWJGL_TO_ENUM[Keyboard.KEY_NUMPAD2] = Key.NUM_2;
-		LWJGL_TO_ENUM[Keyboard.KEY_NUMPAD3] = Key.NUM_3;
-		LWJGL_TO_ENUM[Keyboard.KEY_NUMPAD4] = Key.NUM_4;
-		LWJGL_TO_ENUM[Keyboard.KEY_NUMPAD5] = Key.NUM_5;
-		LWJGL_TO_ENUM[Keyboard.KEY_NUMPAD6] = Key.NUM_6;
-		LWJGL_TO_ENUM[Keyboard.KEY_NUMPAD7] = Key.NUM_7;
-		LWJGL_TO_ENUM[Keyboard.KEY_NUMPAD8] = Key.NUM_8;
-		LWJGL_TO_ENUM[Keyboard.KEY_NUMPAD9] = Key.NUM_9;
-		LWJGL_TO_ENUM[Keyboard.KEY_NUMPAD0] = Key.NUM_0;
+		list.add(Tuple.create(GLFW.GLFW_KEY_1, Key.NUM_1));
+		list.add(Tuple.create(GLFW.GLFW_KEY_2, Key.NUM_2));
+		list.add(Tuple.create(GLFW.GLFW_KEY_3, Key.NUM_3));
+		list.add(Tuple.create(GLFW.GLFW_KEY_4, Key.NUM_4));
+		list.add(Tuple.create(GLFW.GLFW_KEY_5, Key.NUM_5));
+		list.add(Tuple.create(GLFW.GLFW_KEY_6, Key.NUM_6));
+		list.add(Tuple.create(GLFW.GLFW_KEY_7, Key.NUM_7));
+		list.add(Tuple.create(GLFW.GLFW_KEY_8, Key.NUM_8));
+		list.add(Tuple.create(GLFW.GLFW_KEY_9, Key.NUM_9));
+		list.add(Tuple.create(GLFW.GLFW_KEY_0, Key.NUM_0));
 		
-		LWJGL_TO_ENUM[Keyboard.KEY_LMENU] = Key.ALT;
-		LWJGL_TO_ENUM[Keyboard.KEY_RMENU] = Key.ALT;
-		LWJGL_TO_ENUM[Keyboard.KEY_BACK] = Key.BACKSPACE;
-		LWJGL_TO_ENUM[Keyboard.KEY_RCONTROL] = Key.CONTROL;
-		LWJGL_TO_ENUM[Keyboard.KEY_LCONTROL] = Key.CONTROL;
-		LWJGL_TO_ENUM[Keyboard.KEY_DELETE] = Key.DELETE;
-		LWJGL_TO_ENUM[Keyboard.KEY_DECIMAL] = Key.DELETE;
-		LWJGL_TO_ENUM[Keyboard.KEY_END] = Key.END;
-		LWJGL_TO_ENUM[Keyboard.KEY_ESCAPE] = Key.ESCAPE;
-		LWJGL_TO_ENUM[Keyboard.KEY_HOME] = Key.HOME;
-		LWJGL_TO_ENUM[Keyboard.KEY_INSERT] = Key.INSERT;
-		LWJGL_TO_ENUM[Keyboard.KEY_PRIOR] = Key.PAGE_UP;
-		LWJGL_TO_ENUM[Keyboard.KEY_NEXT] = Key.PAGE_DOWN;
-		LWJGL_TO_ENUM[Keyboard.KEY_RSHIFT] = Key.SHIFT;
-		LWJGL_TO_ENUM[Keyboard.KEY_LSHIFT] = Key.SHIFT;
-		LWJGL_TO_ENUM[Keyboard.KEY_LMETA] = Key.START;
-		LWJGL_TO_ENUM[Keyboard.KEY_RMETA] = Key.START;
+		list.add(Tuple.create(GLFW.GLFW_KEY_LEFT_ALT, Key.ALT));
+		list.add(Tuple.create(GLFW.GLFW_KEY_RIGHT_ALT, Key.ALT));
+		list.add(Tuple.create(GLFW.GLFW_KEY_BACKSPACE, Key.BACKSPACE));
+		list.add(Tuple.create(GLFW.GLFW_KEY_LEFT_CONTROL, Key.CONTROL));
+		list.add(Tuple.create(GLFW.GLFW_KEY_RIGHT_CONTROL, Key.CONTROL));
+		list.add(Tuple.create(GLFW.GLFW_KEY_DELETE, Key.DELETE));
+		list.add(Tuple.create(GLFW.GLFW_KEY_END, Key.END));
+		list.add(Tuple.create(GLFW.GLFW_KEY_ESCAPE, Key.ESCAPE));
+		list.add(Tuple.create(GLFW.GLFW_KEY_HOME, Key.HOME));
+		list.add(Tuple.create(GLFW.GLFW_KEY_INSERT, Key.INSERT));
+		list.add(Tuple.create(GLFW.GLFW_KEY_PAGE_UP, Key.PAGE_UP));
+		list.add(Tuple.create(GLFW.GLFW_KEY_PAGE_DOWN, Key.PAGE_DOWN));
+		list.add(Tuple.create(GLFW.GLFW_KEY_LEFT_SHIFT, Key.SHIFT));
+		list.add(Tuple.create(GLFW.GLFW_KEY_RIGHT_SHIFT, Key.SHIFT));
+		list.add(Tuple.create(GLFW.GLFW_KEY_LEFT_SUPER, Key.START));
+		list.add(Tuple.create(GLFW.GLFW_KEY_RIGHT_SUPER, Key.START));
 		
-		LWJGL_TO_ENUM[Keyboard.KEY_F1] = Key.F1;
-		LWJGL_TO_ENUM[Keyboard.KEY_F2] = Key.F2;
-		LWJGL_TO_ENUM[Keyboard.KEY_F3] = Key.F3;
-		LWJGL_TO_ENUM[Keyboard.KEY_F4] = Key.F4;
-		LWJGL_TO_ENUM[Keyboard.KEY_F5] = Key.F5;
-		LWJGL_TO_ENUM[Keyboard.KEY_F6] = Key.F6;
-		LWJGL_TO_ENUM[Keyboard.KEY_F7] = Key.F7;
-		LWJGL_TO_ENUM[Keyboard.KEY_F8] = Key.F8;
-		LWJGL_TO_ENUM[Keyboard.KEY_F9] = Key.F9;
-		LWJGL_TO_ENUM[Keyboard.KEY_F10] = Key.F10;
-		LWJGL_TO_ENUM[Keyboard.KEY_F11] = Key.F11;
-		LWJGL_TO_ENUM[Keyboard.KEY_F12] = Key.F12;
-		LWJGL_TO_ENUM[Keyboard.KEY_F13] = Key.F13;
-		LWJGL_TO_ENUM[Keyboard.KEY_F14] = Key.F14;
-		LWJGL_TO_ENUM[Keyboard.KEY_F15] = Key.F15;
-		LWJGL_TO_ENUM[Keyboard.KEY_F16] = Key.F16;
-		LWJGL_TO_ENUM[Keyboard.KEY_F17] = Key.F17;
-		LWJGL_TO_ENUM[Keyboard.KEY_F18] = Key.F18;
-		LWJGL_TO_ENUM[Keyboard.KEY_F19] = Key.F19;
+		list.add(Tuple.create(GLFW.GLFW_KEY_F1, Key.F1));
+		list.add(Tuple.create(GLFW.GLFW_KEY_F2, Key.F2));
+		list.add(Tuple.create(GLFW.GLFW_KEY_F3, Key.F3));
+		list.add(Tuple.create(GLFW.GLFW_KEY_F4, Key.F4));
+		list.add(Tuple.create(GLFW.GLFW_KEY_F5, Key.F5));
+		list.add(Tuple.create(GLFW.GLFW_KEY_F6, Key.F6));
+		list.add(Tuple.create(GLFW.GLFW_KEY_F7, Key.F7));
+		list.add(Tuple.create(GLFW.GLFW_KEY_F8, Key.F8));
+		list.add(Tuple.create(GLFW.GLFW_KEY_F9, Key.F9));
+		list.add(Tuple.create(GLFW.GLFW_KEY_F10, Key.F10));
+		list.add(Tuple.create(GLFW.GLFW_KEY_F11, Key.F11));
+		list.add(Tuple.create(GLFW.GLFW_KEY_F12, Key.F12));
+		list.add(Tuple.create(GLFW.GLFW_KEY_F13, Key.F13));
+		list.add(Tuple.create(GLFW.GLFW_KEY_F14, Key.F14));
+		list.add(Tuple.create(GLFW.GLFW_KEY_F15, Key.F15));
+		list.add(Tuple.create(GLFW.GLFW_KEY_F16, Key.F16));
+		list.add(Tuple.create(GLFW.GLFW_KEY_F17, Key.F17));
+		list.add(Tuple.create(GLFW.GLFW_KEY_F18, Key.F18));
+		list.add(Tuple.create(GLFW.GLFW_KEY_F19, Key.F19));
 		
-		LWJGL_TO_ENUM[Keyboard.KEY_BACKSLASH] = Key.BACKSLASH;
-		LWJGL_TO_ENUM[Keyboard.KEY_LBRACKET] = Key.BRACKET_LEFT;
-		LWJGL_TO_ENUM[Keyboard.KEY_RBRACKET] = Key.BRACKET_RIGHT;
-		LWJGL_TO_ENUM[Keyboard.KEY_COMMA] = Key.COMMA;
-		LWJGL_TO_ENUM[Keyboard.KEY_NUMPADCOMMA] = Key.COMMA;
-		LWJGL_TO_ENUM[Keyboard.KEY_SUBTRACT] = Key.DASH;
-		LWJGL_TO_ENUM[Keyboard.KEY_EQUALS] = Key.EQUALS;
-		LWJGL_TO_ENUM[Keyboard.KEY_GRAVE] = Key.GRAVE;
-		LWJGL_TO_ENUM[Keyboard.KEY_PERIOD] = Key.PERIOD;
-		LWJGL_TO_ENUM[Keyboard.KEY_SEMICOLON] = Key.SEMIUCOLON;
-		LWJGL_TO_ENUM[Keyboard.KEY_SLASH] = Key.SLASH;
+		list.add(Tuple.create(GLFW.GLFW_KEY_BACKSLASH, Key.BACKSLASH));
+		list.add(Tuple.create(GLFW.GLFW_KEY_LEFT_BRACKET, Key.BRACKET_LEFT));
+		list.add(Tuple.create(GLFW.GLFW_KEY_RIGHT_BRACKET, Key.BRACKET_RIGHT));
+		list.add(Tuple.create(GLFW.GLFW_KEY_COMMA, Key.COMMA));
+		list.add(Tuple.create(GLFW.GLFW_KEY_MINUS, Key.DASH));
+		list.add(Tuple.create(GLFW.GLFW_KEY_EQUAL, Key.EQUALS));
+		list.add(Tuple.create(GLFW.GLFW_KEY_GRAVE_ACCENT, Key.GRAVE));
+		list.add(Tuple.create(GLFW.GLFW_KEY_PERIOD, Key.PERIOD));
+		list.add(Tuple.create(GLFW.GLFW_KEY_SEMICOLON, Key.SEMICOLON));
+		list.add(Tuple.create(GLFW.GLFW_KEY_SLASH, Key.SLASH));
 		
-		LWJGL_TO_ENUM[Keyboard.KEY_DOWN] = Key.ARROW_DOWN;
-		LWJGL_TO_ENUM[Keyboard.KEY_LEFT] = Key.ARROW_LEFT;
-		LWJGL_TO_ENUM[Keyboard.KEY_RIGHT] = Key.ARROW_RIGHT;
-		LWJGL_TO_ENUM[Keyboard.KEY_UP] = Key.ARROW_UP;
-		//CAPS_LOCK
-		LWJGL_TO_ENUM[Keyboard.KEY_RETURN] = Key.ENTER;
-		LWJGL_TO_ENUM[Keyboard.KEY_NUMLOCK] = Key.NUM_LOCK;
-		LWJGL_TO_ENUM[Keyboard.KEY_SPACE] = Key.SPACE;
-		LWJGL_TO_ENUM[Keyboard.KEY_TAB] = Key.TAB;
+		list.add(Tuple.create(GLFW.GLFW_KEY_DOWN, Key.ARROW_DOWN));
+		list.add(Tuple.create(GLFW.GLFW_KEY_LEFT, Key.ARROW_LEFT));
+		list.add(Tuple.create(GLFW.GLFW_KEY_RIGHT, Key.ARROW_RIGHT));
+		list.add(Tuple.create(GLFW.GLFW_KEY_UP, Key.ARROW_UP));
+		list.add(Tuple.create(GLFW.GLFW_KEY_CAPS_LOCK, Key.CAPS_LOCK));
+		list.add(Tuple.create(GLFW.GLFW_KEY_ENTER, Key.ENTER));
+		list.add(Tuple.create(GLFW.GLFW_KEY_NUM_LOCK, Key.NUM_LOCK));
+		list.add(Tuple.create(GLFW.GLFW_KEY_SPACE, Key.SPACE));
+		list.add(Tuple.create(GLFW.GLFW_KEY_TAB, Key.TAB));
 		
-		for (int c = 0; c < LWJGL_TO_ENUM.length; c++)
+		GLFW_ENUMS = ImmutableList.copyOf(list);
+		
+	}
+	
+	public LWJGLKeyboard(InputManager mgr)
+	{
+		super(mgr);
+		
+	}
+	
+	@Override
+	public void close(){}
+	
+	@Override
+	public EnumInputType getType()
+	{
+		return EnumInputType.KEYBOARD;
+	}
+	
+	@Override
+	protected void pollInput(double delta, Display display)
+	{
+		long window = ((LWJGLDisplay)display.getImpl()).getWindowId();
+		
+		String paste = GLFW.glfwGetClipboardString(window);
+		
+		if (paste != null)
 		{
-			if (LWJGL_TO_ENUM[c] == null)
-			{
-				LWJGL_TO_ENUM[c] = Key.UNKNOWN;
-				
-			}
+			this.manager.queueInputEvent(new PasteEvent(paste));
 			
 		}
 		
-	}
-	
-	public LWJGLKeyboard(Display window)
-	{
-		super(window);
-		
-	}
-	
-	@Override
-	public void close()
-	{
-		Keyboard.destroy();
-		
-	}
-	
-	@Override
-	public boolean isKeyDown(Key key)
-	{
-		return this.downKeys[key.ordinal()];
-	}
-	
-	@Override
-	public List<Key> getPushedKeys()
-	{
-		return this.downKeyList;
-	}
-	
-	@Override
-	public List<Key> getOldPushedKeys()
-	{
-		return this.upKeyList;
-	}
-	
-	@Override
-	public boolean initiateInput()
-	{
-		super.initiateInput();
-		
-		try
+		for (Tuple<Integer, Key> t : GLFW_ENUMS)
 		{
-			Keyboard.create();
+			int status = GLFW.glfwGetKey(window, t.one);
+			boolean down = (status == GLFW.GLFW_PRESS);
+			boolean downPrev = false;
 			
-		}
-		catch (Exception e)
-		{
-			Logger.log().err(e);
-			return false;
-		}
-		
-		return Keyboard.isCreated();
-	}
-	
-	@Override
-	protected void pollInput(double delta)
-	{
-		if (!Keyboard.isCreated())
-		{
-			try
+			if (down || (downPrev = this.downKeys.contains(t.two)))
 			{
-				Keyboard.create();
-				
-			}
-			catch (Exception e)
-			{
-				Logger.log().err(e);
-				
-			}
-			
-			if (!Keyboard.isCreated())
-			{
-				throw new CaelumException("Cannot poll keyboard: It wasn't created!");
-			}
-			
-			Logger.log().log(EnumLogType.WARN, "Keyboard recreated; Let's not do anything stupid again...");
-			
-		}
-		
-		Key key;
-		
-		while (Keyboard.next())
-		{
-			boolean upd = false;
-			
-			key = LWJGL_TO_ENUM[Keyboard.getEventKey()];
-			
-			if (key == Key.UNKNOWN)
-			{
-				continue;
-			}
-			
-			if (this.downKeys[key.ordinal()] = Keyboard.getEventKeyState())//TODO See how this affects caps lock
-			{
-				if (!this.downKeyList.contains(key))
+				if (down)
 				{
-					this.downKeyList.add(key);
+					if (!downPrev)
+					{
+						this.downKeys.add(t.two);
+						
+					}
 					
-					upd = true;
+				}
+				else
+				{
+					this.downKeys.remove(t.two);
 					
 				}
 				
-			}
-			else
-			{
-				this.downKeyList.remove(key);
-				this.upKeyList.add(key);
-				
-				upd = true;
-				
-			}
-			
-			if (upd)
-			{
-				this.sendUpdateToListeners(delta);
+				this.manager.queueInputEvent(new KeyEvent(t.two, down, downPrev));
 				
 			}
 			
 		}
-		
-	}
-	
-	@Override
-	protected void postUpdate()
-	{
-		this.upKeyList.clear();
 		
 	}
 	

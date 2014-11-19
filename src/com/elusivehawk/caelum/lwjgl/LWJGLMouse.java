@@ -1,19 +1,17 @@
 
 package com.elusivehawk.caelum.lwjgl;
 
-import static com.elusivehawk.caelum.input.EnumMouseClick.DOWN;
-import static com.elusivehawk.caelum.input.EnumMouseClick.DRAG;
-import static com.elusivehawk.caelum.input.EnumMouseClick.LIFTED;
-import static com.elusivehawk.caelum.input.EnumMouseClick.UP;
-import com.elusivehawk.caelum.CaelumEngine;
-import com.elusivehawk.caelum.CaelumException;
+import java.io.IOException;
+import java.nio.DoubleBuffer;
+import org.lwjgl.system.glfw.GLFW;
 import com.elusivehawk.caelum.Display;
-import com.elusivehawk.caelum.IDisplayImpl;
+import com.elusivehawk.caelum.input.EnumInputType;
 import com.elusivehawk.caelum.input.EnumMouseClick;
-import com.elusivehawk.caelum.input.Mouse;
-import com.elusivehawk.util.EnumLogType;
-import com.elusivehawk.util.Logger;
+import com.elusivehawk.caelum.input.Input;
+import com.elusivehawk.caelum.input.InputManager;
+import com.elusivehawk.caelum.input.MouseEvent;
 import com.elusivehawk.util.math.Vector;
+import com.elusivehawk.util.storage.BufferHelper;
 
 /**
  * 
@@ -21,208 +19,91 @@ import com.elusivehawk.util.math.Vector;
  * 
  * @author Elusivehawk
  */
-public class LWJGLMouse extends com.elusivehawk.caelum.input.Mouse
+public class LWJGLMouse extends Input
 {
-	protected EnumMouseClick[]
-			buttons = null,
-			oldButtons = null;
-	protected final Vector
-			mousePos = new Vector(2),
-			mousePosDelta = new Vector(2);
+	public static final int MOUSE_BUTTONS = 8;
 	
-	protected float wheel = 0f;
+	//private long cursor = 0; TODO Write custom cursor system
 	
-	public LWJGLMouse(Display window)
+	private final EnumMouseClick[] statuses = new EnumMouseClick[MOUSE_BUTTONS];
+	private final boolean[] buttonsOld = new boolean[MOUSE_BUTTONS];
+	private final Vector
+					pos = new Vector(2),
+					posOld = new Vector(2);
+	
+	public LWJGLMouse(InputManager mgr)
 	{
-		super(window);
+		super(mgr);
 		
 	}
 	
 	@Override
-	public void close()
+	public void close() throws IOException
 	{
-		Mouse.destroy();
+		//GLFW.glfwDestroyCursor(this.cursor);
 		
 	}
 	
 	@Override
-	public Vector getMousePos()
+	public EnumInputType getType()
 	{
-		return this.mousePos;
+		return EnumInputType.MOUSE;
 	}
 	
 	@Override
-	public Vector getMousePosDelta()
+	protected void pollInput(double delta, Display display)
 	{
-		return this.mousePosDelta;
-	}
-	
-	@Override
-	public EnumMouseClick[] getClickStatus()
-	{
-		return this.buttons;
-	}
-	
-	@Override
-	public EnumMouseClick[] getOldClickStatus()
-	{
-		return this.oldButtons;
-	}
-	
-	@Override
-	public int getButtonCount()
-	{
-		return this.buttons.length;
-	}
-	
-	@Override
-	public float getWheelScroll()
-	{
-		return this.wheel;
-	}
-	
-	@Override
-	public void setGrabMouse(boolean grab)
-	{
-		Mouse.setGrabbed(grab);
+		long window = ((LWJGLDisplay)display.getImpl()).getWindowId();
 		
-	}
-	
-	@Override
-	public boolean initiateInput()
-	{
-		super.initiateInput();
+		DoubleBuffer posBuf = BufferHelper.createDoubleBuffer(2);
 		
-		try
+		GLFW.glfwGetCursorPos(window, posBuf, posBuf);
+		
+		this.pos.set((float)posBuf.get(), (float)posBuf.get());
+		
+		for (int c = 0; c < MOUSE_BUTTONS; c++)
 		{
-			Mouse.create();
+			boolean down = (GLFW.glfwGetMouseButton(window, c) == GLFW.GLFW_PRESS);
+			EnumMouseClick status = EnumMouseClick.UP;
 			
-		}
-		catch (Exception e)
-		{
-			Logger.log().err(e);
-			
-			return false;
-		}
-		
-		if (!Mouse.isCreated())
-		{
-			return false;
-		}
-		
-		this.buttons = new EnumMouseClick[Mouse.getButtonCount()];
-		this.oldButtons = new EnumMouseClick[Mouse.getButtonCount()];
-		
-		for (int b = 0; b < this.buttons.length; b++)
-		{
-			this.buttons[b] = EnumMouseClick.UP;
-			this.oldButtons[b] = EnumMouseClick.UP;
-			
-		}
-		
-		return true;
-	}
-	
-	@Override
-	protected void pollInput(double delta)
-	{
-		if (!Mouse.isCreated())
-		{
-			try
+			if (down)
 			{
-				Mouse.create();
-				
-			}
-			catch (LWJGLException e)
-			{
-				e.printStackTrace();
-				
-			}
-			
-			if (!Mouse.isCreated())
-			{
-				throw new CaelumException("Cannot poll mouse: It wasn't created!");
-			}
-			
-			Logger.log().log(EnumLogType.WARN, "Mouse recreated; Let's not do anything stupid again...");
-			
-		}
-		
-		IDisplayImpl display = CaelumEngine.defaultDisplay();
-		int b;
-		
-		while (Mouse.next())
-		{
-			boolean upd = false;
-			
-			this.mousePos.set(((float)Mouse.getEventX() / (float)display.getWidth()), 1.0f - ((float)Mouse.getEventY() / (float)display.getHeight()));
-			this.mousePosDelta.set(((float)Mouse.getEventDX() / (float)display.getWidth()), 1.0f - ((float)Mouse.getEventDY() / (float)display.getHeight()));
-			this.wheel = (float)Mouse.getEventDWheel() / (float)display.getHeight();
-			
-			if (this.mousePos.isDirty() || this.mousePosDelta.isDirty())
-			{
-				upd = true;
-				
-			}
-			
-			b = Mouse.getEventButton();
-			
-			if (b != -1)
-			{
-				EnumMouseClick cur = this.buttons[b];
-				
-				if (Mouse.getEventButtonState())
+				if (this.buttonsOld[c])
 				{
-					if (!cur.isDown())
+					if (this.pos.isDirty())
 					{
-						this.oldButtons[b] = cur;
-						this.buttons[b] = DOWN;
+						status = EnumMouseClick.DRAG;
 						
 					}
-					else if (cur == DOWN && this.mousePos.isDirty())
+					else
 					{
-						this.oldButtons[b] = DOWN;
-						this.buttons[b] = DRAG;
+						status = EnumMouseClick.DOWN;
 						
 					}
 					
 				}
 				else
 				{
-					if (cur.isDown())
-					{
-						this.oldButtons[b] = cur;
-						this.buttons[b] = LIFTED;
-						
-					}
-					else if (cur == LIFTED)
-					{
-						this.oldButtons[b] = LIFTED;
-						this.buttons[b] = UP;
-						
-					}
+					status = EnumMouseClick.DOWN;
 					
 				}
 				
-				upd = true;
+			}
+			else if (this.buttonsOld[c])
+			{
+				status = EnumMouseClick.LIFTED;
 				
 			}
 			
-			if (upd)
-			{
-				this.sendUpdateToListeners(delta);
-				
-			}
+			this.statuses[c] = status;
+			this.buttonsOld[c] = down;
 			
 		}
 		
-	}
-	
-	@Override
-	protected void postUpdate()
-	{
-		this.mousePos.setIsDirty(false);
-		this.mousePosDelta.setIsDirty(false);
+		this.manager.queueInputEvent(new MouseEvent(this.pos, this.posOld, this.statuses));
+		
+		this.posOld.set(this.pos);
+		this.pos.setIsDirty(false);
 		
 	}
 	

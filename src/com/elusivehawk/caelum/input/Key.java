@@ -97,7 +97,7 @@ public enum Key
 	EQUALS(SYMBOL, '=', '+'),
 	GRAVE(SYMBOL, '`', '~'),
 	PERIOD(SYMBOL, '.', '>'),
-	SEMIUCOLON(SYMBOL, ';', ':'),
+	SEMICOLON(SYMBOL, ';', ':'),
 	SLASH(SYMBOL, '/', '?'),
 	
 	ARROW_DOWN(MISC),
