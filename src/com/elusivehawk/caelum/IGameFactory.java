@@ -8,7 +8,7 @@ package com.elusivehawk.caelum;
  * @author Elusivehawk
  */
 @FunctionalInterface
-public interface GameFactory
+public interface IGameFactory
 {
 	public Game createGame();
 	

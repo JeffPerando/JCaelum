@@ -59,7 +59,7 @@ public final class CaelumEngine
 	private IGameEnvironment env = null;
 	private JsonObject envConfig = null;
 	
-	private GameFactory factory = null;
+	private IGameFactory factory = null;
 	private Game game = null;
 	private GameArguments gameargs = null;
 	private Display defaultDisplay = null;
@@ -194,7 +194,7 @@ public final class CaelumEngine
 	 * @param gamefac
 	 * @param args
 	 */
-	public static void start(GameFactory gamefac, String... args)
+	public static void start(IGameFactory gamefac, String... args)
 	{
 		if (instance().factory != null)
 		{
@@ -364,7 +364,7 @@ public final class CaelumEngine
 			}
 			else
 			{
-				this.factory = (GameFactory)ReflectionHelper.newInstance(gamefac, new Class<?>[]{GameFactory.class}, null);
+				this.factory = (IGameFactory)ReflectionHelper.newInstance(gamefac, new Class<?>[]{IGameFactory.class}, null);
 				
 			}
 			
