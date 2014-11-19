@@ -25,8 +25,8 @@ public class MouseEvent extends InputEvent
 	{
 		super(EnumInputType.MOUSE);
 		
-		pos = position.setImmutable();
-		posOld = positionOld.setImmutable();
+		pos = position.clone().setImmutable();
+		posOld = positionOld.clone().setImmutable();
 		delta = position.sub(positionOld, false);
 		status = clickStatuses;
 		
