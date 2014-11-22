@@ -26,7 +26,7 @@ public final class AssetManager implements ITaskListener
 	private final Map<EnumAssetType, List<Asset>> assets = Maps.newHashMap();
 	private final Map<String, IAssetReader> readers = Maps.newHashMap();
 	
-	private IStreamProvider sProvider = ((path) -> {return FileHelper.getResourceStream(path);});
+	private IAssetStreamer sProvider = ((path) -> {return new DataInputStream(FileHelper.getResourceStream(path));});
 	
 	public AssetManager()
 	{
@@ -103,11 +103,11 @@ public final class AssetManager implements ITaskListener
 		return ret;
 	}
 	
-	public synchronized void setStreamProvider(IStreamProvider isp)
+	public synchronized void setStreamer(IAssetStreamer as)
 	{
-		assert isp != null;
+		assert as != null;
 		
-		this.sProvider = isp;
+		this.sProvider = as;
 		
 	}
 	
