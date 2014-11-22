@@ -1,10 +1,9 @@
 
 package com.elusivehawk.caelum.render;
 
+import java.io.Closeable;
 import java.util.List;
 import com.elusivehawk.caelum.Display;
-import com.elusivehawk.caelum.IContext;
-import com.elusivehawk.caelum.IDisplayImpl;
 import com.elusivehawk.caelum.render.gl.GL1;
 import com.elusivehawk.caelum.render.gl.GLConst;
 import com.elusivehawk.caelum.render.gl.GLEnumShader;
@@ -28,16 +27,10 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-public final class RenderContext implements IUpdatable, IContext
+public final class RenderContext implements Closeable, IUpdatable
 {
 	private final Display display;
 	private final IRenderable renderer;
-	
-	private int
-			maxTexCount = 0,
-			renders = 0;
-	
-	private ITexture notex = null;
 	
 	private final Shaders shaders = new Shaders();
 	private final GLProgram p = new GLProgram(this.shaders);
@@ -45,6 +38,10 @@ public final class RenderContext implements IUpdatable, IContext
 	private final List<IGLDeletable> cleanables = Lists.newArrayList();
 	private final List<IPreRenderer> preRenderers = Lists.newArrayList();
 	private final List<IPostRenderer> postRenderers = Lists.newArrayList();
+	
+	private int maxTexCount = 0, renders = 0;
+	
+	private ITexture notex = null;
 	
 	private boolean
 			initiated = false,
@@ -65,6 +62,39 @@ public final class RenderContext implements IUpdatable, IContext
 	}
 	
 	@Override
+	public void close()
+	{
+		this.cleanables.forEach(((gl) -> {gl.delete(this);}));
+		
+		this.cleanables.clear();
+		
+	}
+	
+	@Override
+	public void update(double delta)
+	{
+		try
+		{
+			GL1.glViewport(0, 0, this.display.getWidth(), this.display.getHeight());
+			GL1.glClear(0b0100010100000000);
+			
+			this.renderer.preRender(this, delta);
+			this.preRenderers.forEach(((preR) -> {preR.preRender(this, delta);}));
+			
+			this.renderGame();
+			
+			this.renderer.postRender(this);
+			this.postRenderers.forEach(((postR) -> {postR.postRender(this);}));
+			
+		}
+		catch (Throwable e)
+		{
+			Logger.log().err(e);
+			
+		}
+		
+	}
+	
 	public boolean initContext()
 	{
 		if (this.initiated)
@@ -105,51 +135,6 @@ public final class RenderContext implements IUpdatable, IContext
 		return true;
 	}
 	
-	@Override
-	public void cleanup()
-	{
-		this.cleanables.forEach(((gl) -> {gl.delete(this);}));
-		
-		this.cleanables.clear();
-		
-	}
-	
-	@Override
-	public void update(double delta)
-	{
-		try
-		{
-			GL1.glViewport(0, 0, this.display.getWidth(), this.display.getHeight());
-			
-			//Clears the OpenGL buffer
-			
-			GL1.glClear(0b0100010100000000);
-			
-			//Pre-rendering 
-			
-			this.renderer.preRender(this, delta);
-			
-			this.preRenderers.forEach(((preR) -> {preR.preRender(this, delta);}));
-			
-			//Rendering the game itself
-			
-			this.renderGame();
-			
-			//Post rendering.
-			
-			this.renderer.postRender(this);
-			
-			this.postRenderers.forEach(((postR) -> {postR.postRender(this);}));
-			
-		}
-		catch (Throwable e)
-		{
-			Logger.log().err(e);
-			
-		}
-		
-	}
-	
 	public void renderGame(ICamera cam)
 	{
 		assert cam != null;
@@ -178,18 +163,6 @@ public final class RenderContext implements IUpdatable, IContext
 		this.renderer.render(this);
 		
 		this.renders--;
-		
-	}
-	
-	public void onDisplayResized(IDisplayImpl d)
-	{
-		//TODO
-		
-	}
-	
-	public void onDisplayClosed(IDisplayImpl d)
-	{
-		this.cleanup();
 		
 	}
 	

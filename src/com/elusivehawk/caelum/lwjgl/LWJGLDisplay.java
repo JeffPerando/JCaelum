@@ -46,11 +46,6 @@ public class LWJGLDisplay implements IDisplayImpl
 	{
 		this.id = GLFW.glfwCreateWindow(this.settings.width, this.settings.height, this.settings.title, GLFW.glfwGetPrimaryMonitor()/*TODO Implement >1 monitor support*/, 0);
 		
-		if (this.id == 0)
-		{
-			throw new RuntimeException("Could not create display!");
-		}
-		
 	}
 	
 	@Override
@@ -86,6 +81,7 @@ public class LWJGLDisplay implements IDisplayImpl
 	@Override
 	public void preRenderDisplay()
 	{
+		GLFW.glfwMakeContextCurrent(this.id);
 		
 	}
 	
@@ -93,6 +89,8 @@ public class LWJGLDisplay implements IDisplayImpl
 	public void updateDisplay()
 	{
 		GLFW.glfwSwapBuffers(this.id);
+		
+		GLFW.glfwPollEvents();//TODO Check usage
 		
 	}
 	

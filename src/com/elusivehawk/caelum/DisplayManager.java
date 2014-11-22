@@ -70,6 +70,12 @@ public final class DisplayManager implements Closeable, IUpdatable
 				
 			}
 			
+			if (display.isClosed())
+			{
+				this.displays.remove(display);
+				
+			}
+			
 		}));
 		
 	}
@@ -79,18 +85,24 @@ public final class DisplayManager implements Closeable, IUpdatable
 	{
 		this.displays.forEach(((display) ->
 		{
-			try
+			if (!display.isClosed())
 			{
-				display.close();
-				
-			}
-			catch (Throwable e)
-			{
-				Logger.log().err(e);
+				try
+				{
+					display.close();
+					
+				}
+				catch (Throwable e)
+				{
+					Logger.log().err(e);
+					
+				}
 				
 			}
 			
 		}));
+		
+		this.displays.clear();
 		
 	}
 	

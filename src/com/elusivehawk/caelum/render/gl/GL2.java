@@ -14,11 +14,11 @@ import com.elusivehawk.caelum.render.RenderHelper;
  */
 public final class GL2
 {
-	private static IGL2 impl = null;
+	private static IGL2Impl impl = null;
 	
 	private GL2(){}
 	
-	public static void setImpl(IGL2 gl)
+	public static void setImpl(IGL2Impl gl)
 	{
 		assert impl == null;
 		assert gl != null;

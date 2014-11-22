@@ -7,11 +7,11 @@ import java.nio.IntBuffer;
 
 /**
  * 
- * Supports OpenGL v2.0.
+ * OpenGL v2.x wrapper interface
  * 
  * @author Elusivehawk
  */
-public interface IGL2
+public interface IGL2Impl
 {
 	void glAttachShader(int program, int shader) throws GLException;
 	

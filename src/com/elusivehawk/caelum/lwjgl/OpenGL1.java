@@ -13,7 +13,7 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
 import com.elusivehawk.caelum.render.gl.GLConst;
 import com.elusivehawk.caelum.render.gl.GLException;
-import com.elusivehawk.caelum.render.gl.IGL1;
+import com.elusivehawk.caelum.render.gl.IGL1Impl;
 import com.elusivehawk.util.storage.BufferHelper;
 
 /**
@@ -22,7 +22,7 @@ import com.elusivehawk.util.storage.BufferHelper;
  * 
  * @author Elusivehawk
  */
-public class OpenGL1 implements IGL1
+public class OpenGL1 implements IGL1Impl
 {
 	@Override
 	public void glActiveTexture(int texture) throws GLException

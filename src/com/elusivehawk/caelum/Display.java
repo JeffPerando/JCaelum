@@ -2,14 +2,15 @@
 package com.elusivehawk.caelum;
 
 import java.io.Closeable;
-import java.io.IOException;
 import com.elusivehawk.caelum.input.EnumInputType;
 import com.elusivehawk.caelum.input.IInputListener;
 import com.elusivehawk.caelum.input.InputManager;
 import com.elusivehawk.caelum.render.IRenderable;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.ThreadGameRender;
+import com.elusivehawk.caelum.render.gl.GL1;
 import com.elusivehawk.util.IUpdatable;
+import com.elusivehawk.util.Logger;
 
 /**
  * 
@@ -28,7 +29,7 @@ public class Display implements Closeable, IUpdatable
 	private IDisplayImpl impl = null;
 	
 	private int width = 0, height = 0;
-	private boolean refresh = true, closed = false;
+	private boolean refresh = true, closed = false, close = false;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public Display(String str, DisplaySettings ds, IRenderable r)
@@ -52,25 +53,24 @@ public class Display implements Closeable, IUpdatable
 			throw new NullPointerException("Cannot render, render context wasn't made");
 		}
 		
-		if (this.impl.isCloseRequested())
+		if (this.impl.isCloseRequested() || this.close)
 		{
-			this.rcon.cleanup();
-			this.impl.close();
-			
-			this.closed = true;
+			this.close();
 			
 			return;
 		}
+		
+		this.impl.preRenderDisplay();
 		
 		if (this.refresh)
 		{
 			this.impl.updateSettings(this.settings);
 			
+			GL1.glClearColor(this.settings.bg);
+			
 			this.refresh = false;
 			
 		}
-		
-		this.impl.preRenderDisplay();
 		
 		this.rcon.update(delta);
 		
@@ -81,9 +81,26 @@ public class Display implements Closeable, IUpdatable
 	}
 	
 	@Override
-	public void close() throws IOException
+	public void close()
 	{
-		this.impl.close();
+		try
+		{
+			this.rcon.close();
+			this.input.close();
+			this.impl.close();
+			
+		}
+		catch (Throwable e)
+		{
+			Logger.log().err(e);
+			
+		}
+		
+		synchronized (this)
+		{
+			this.closed = true;
+			
+		}
 		
 	}
 	
@@ -147,12 +164,18 @@ public class Display implements Closeable, IUpdatable
 		return this.impl;
 	}
 	
-	public void updateSettings(DisplaySettings ds)
+	public synchronized void updateSettings(DisplaySettings ds)
 	{
 		assert ds != null;
 		
 		this.settings = ds;
 		this.refresh = true;
+		
+	}
+	
+	public synchronized void closeWindow()
+	{
+		this.close = true;
 		
 	}
 	

@@ -2,7 +2,6 @@
 package com.elusivehawk.caelum.render;
 
 import java.nio.FloatBuffer;
-import java.util.List;
 import com.elusivehawk.caelum.render.gl.GL1;
 import com.elusivehawk.caelum.render.gl.GLConst;
 import com.elusivehawk.caelum.render.gl.GLEnumBufferTarget;
@@ -11,11 +10,8 @@ import com.elusivehawk.caelum.render.gl.GLEnumDataUsage;
 import com.elusivehawk.caelum.render.gl.GLEnumDrawType;
 import com.elusivehawk.caelum.render.gl.GLProgram;
 import com.elusivehawk.caelum.render.gl.VertexBuffer;
-import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.math.MathHelper;
-import com.elusivehawk.util.storage.FloatBufferer;
-import com.elusivehawk.util.storage.Tuple;
-import com.google.common.collect.Lists;
+import com.elusivehawk.util.storage.BufferHelper;
 
 /**
  * 
@@ -25,14 +21,15 @@ import com.google.common.collect.Lists;
  */
 public class Canvas extends RenderableObj
 {
-	private final FloatBufferer buffer;
+	public static final Icon BLANK_ICON = new Icon(0, 0, 0, 0);
+	
+	private FloatBuffer vertex = BufferHelper.createFloatBuffer(RenderConst.FLOATS_PER_IMG * 12);
 	
 	private final VertexBuffer floatbuf;
-	private final VertexBuffer indbuf;
 	
-	private List<IPopulator<Canvas>> populators = null;
 	private SubCanvas sub = null;
 	private int images = 0;
+	private boolean expanded = false;
 	
 	public Canvas()
 	{
@@ -47,17 +44,13 @@ public class Canvas extends RenderableObj
 		
 		zBuffer = false;
 		
-		buffer = new FloatBufferer(8, 12 * 6);
-		
-		floatbuf = new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW, GLEnumDataType.GL_FLOAT, buffer.getBuffer());
-		indbuf = new VertexBuffer(GLEnumBufferTarget.GL_ELEMENT_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW, GLEnumDataType.GL_INT, buffer.getIndices());
+		floatbuf = new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW, GLEnumDataType.GL_FLOAT, this.vertex);
 		
 		program.addVertexAttrib("in_pos", 2, GLConst.GL_UNSIGNED_INT, false, 0, 0);
 		program.addVertexAttrib("in_tex", 2, GLConst.GL_UNSIGNED_INT, false, 2, 0);
 		program.addVertexAttrib("in_mat", 1, GLConst.GL_UNSIGNED_INT, false, 4, 0);
 		
-		vao.attachVBO(floatbuf, 0, 1);
-		vao.attachVBO(indbuf, null);
+		vao.attachVBO(this.floatbuf, 0, 1);
 		
 	}
 	
@@ -77,31 +70,19 @@ public class Canvas extends RenderableObj
 	@Override
 	public void preRender(RenderContext rcon, double delta)
 	{
-		if (this.populators != null)
+		if (this.images == 0)
 		{
-			this.populators.forEach(((pop) -> {pop.populate(this);}));
-			
+			return;
 		}
 		
-		if (this.buffer.resizedRecently())
+		if (this.expanded)
 		{
-			this.floatbuf.uploadBuffer(this.buffer.getBuffer());
-			this.indbuf.uploadBuffer(this.buffer.getIndices());
+			this.floatbuf.uploadBuffer(this.vertex);
 			
 		}
-		else if (this.buffer.isDirty())
+		else if (this.isDirty())
 		{
-			List<Tuple<Integer, FloatBuffer>> diffs = this.buffer.getFloatDiffs();
-			
-			if (!diffs.isEmpty())
-			{
-				for (Tuple<Integer, FloatBuffer> diff : diffs)
-				{
-					GL1.glBufferSubData(this.floatbuf.getId(), diff.one, GLConst.GL_FLOAT, diff.two);
-					
-				}
-				
-			}
+			GL1.glBufferSubData(this.floatbuf, 0, this.vertex);
 			
 		}
 		
@@ -110,8 +91,7 @@ public class Canvas extends RenderableObj
 	@Override
 	public void postRender(RenderContext rcon)
 	{
-		this.buffer.rewind();
-		this.buffer.setIsDirty(false);
+		this.setIsDirty(false);
 		
 	}
 	
@@ -119,7 +99,17 @@ public class Canvas extends RenderableObj
 	@Override
 	public RenderableObj setEnableZBuffer(boolean z)
 	{
-		throw new UnsupportedOperationException("One does not simply enable Z buffering for a 2D canvas");
+		if (z)
+		{
+			throw new UnsupportedOperationException("One does not simply enable Z buffering for a 2D canvas");
+		}
+		
+		return this;
+	}
+	
+	public int getImageCount()
+	{
+		return this.images;
 	}
 	
 	public void createSubCanvas(float xmin, float ymin, float xmax, float ymax)
@@ -144,68 +134,51 @@ public class Canvas extends RenderableObj
 		return true;
 	}
 	
-	public void drawImage(float x, float y, float w, float h)
+	public void drawImage(float x, float y, float z, float w, int mat)
 	{
-		this.drawImage(x, y, w, h, 0);
+		this.drawImage(x, y, z, w, BLANK_ICON, mat);
 		
 	}
 	
-	public void drawImage(float x, float y, float w, float h, int mat)
+	public void drawImage(float x, float y, float z, float w, Icon icon)
 	{
-		this.drawImage(x, y, w, h, (Icon)null, mat);
+		this.drawImage(x, y, z, w, icon, 0);
 		
 	}
 	
-	public void drawImage(float x, float y, float w, float h, Icon icon)
+	public void drawImage(float x, float y, float z, float w, Icon icon, int mat)
 	{
-		this.drawImage(x, y, w, h, icon, 0);
+		if (icon == null)
+		{
+			icon = BLANK_ICON;
+			
+		}
 		
-	}
-	
-	public void drawImage(float x, float y, float w, float h, Icon icon, int mat)
-	{
 		if (this.sub != null)
 		{
 			x = this.sub.interpolateX(x);
 			y = this.sub.interpolateY(y);
-			w = this.sub.interpolateW(w);
-			h = this.sub.interpolateH(h);
+			z = this.sub.interpolateW(z);
+			w = this.sub.interpolateH(w);
 			
 		}
 		
-		int m = MathHelper.clamp(mat, 0, 16);
+		mat = MathHelper.clamp(mat, 0, 16);
 		
-		float[][] img = new float[][]
-				{
-				{x, y, 0, 0, m},
-				{w, y, 0, 0, m},
-				{x, h, 0, 0, m},
-				{w, h, 0, 0, m}
-				};
-		
-		if (icon != null)
+		if (this.vertex.remaining() == 0)
 		{
-			for (int c = 0; c < 4; c++)
-			{
-				for (int i = 0; i < 2; i++)
-				{
-					img[c][i + 2] = icon.getCorner(c)[i];
-					
-				}
-				
-			}
+			this.vertex = BufferHelper.expand(this.vertex, RenderConst.FLOATS_PER_IMG * 4);
+			this.expanded = true;
 			
 		}
 		
-		int[] ind = this.buffer.getOrCreateIndices(img);
+		this.addCorner(x, y, mat, 0, icon);
+		this.addCorner(z, y, mat, 1, icon);
+		this.addCorner(x, w, mat, 2, icon);
 		
-		this.buffer.addIndex(ind[0]);
-		this.buffer.addIndex(ind[1]);
-		this.buffer.addIndex(ind[2]);
-		
-		this.buffer.addIndex(ind[1]);
-		this.buffer.addIndex(ind[2]);
-		this.buffer.addIndex(ind[3]);
+		this.addCorner(z, y, mat, 1, icon);
+		this.addCorner(x, w, mat, 2, icon);
+		this.addCorner(z, w, mat, 3, icon);
 		
 		this.images++;
 		
@@ -213,25 +186,19 @@ public class Canvas extends RenderableObj
 	
 	public void clear()
 	{
-		this.buffer.reset();
+		this.vertex.clear();
+		this.images = 0;
 		
 	}
 	
-	public void addPopulator(IPopulator<Canvas> pop)
+	private void addCorner(float a, float b, int m, int corner, Icon icon)
 	{
-		if (this.populators == null)
-		{
-			this.populators = Lists.newArrayList();
-			
-		}
+		this.vertex.put(a);
+		this.vertex.put(b);
+		this.vertex.put(icon.getCorner(corner)[0]);
+		this.vertex.put(icon.getCorner(corner)[1]);
+		this.vertex.put(m);
 		
-		this.populators.add(pop);
-		
-	}
-	
-	public int getImageCount()
-	{
-		return this.images;
 	}
 	
 }

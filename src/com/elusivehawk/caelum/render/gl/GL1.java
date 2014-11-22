@@ -18,11 +18,11 @@ import com.elusivehawk.util.storage.BufferHelper;
  */
 public final class GL1
 {
-	private static IGL1 impl = null;
+	private static IGL1Impl impl = null;
 	
 	private GL1(){}
 	
-	public static void setImpl(IGL1 gl)
+	public static void setImpl(IGL1Impl gl)
 	{
 		assert impl == null;
 		assert gl != null;
@@ -134,6 +134,12 @@ public final class GL1
 	
 	public static void glClearColor(Color col)
 	{
+		if (col == null)
+		{
+			col = Color.BLACK;
+			
+		}
+		
 		glClearColor(col.getColorf(ColorFilter.RED), col.getColorf(ColorFilter.GREEN), col.getColorf(ColorFilter.BLUE), col.getColorf(ColorFilter.ALPHA));
 		
 	}

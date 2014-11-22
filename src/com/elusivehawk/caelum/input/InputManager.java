@@ -1,12 +1,14 @@
 
 package com.elusivehawk.caelum.input;
 
+import java.io.Closeable;
 import java.util.List;
 import java.util.Map;
 import com.elusivehawk.caelum.CaelumException;
 import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.IGameEnvironment;
 import com.elusivehawk.util.IUpdatable;
+import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.storage.SyncList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -17,7 +19,7 @@ import com.google.common.collect.Maps;
  * 
  * @author Elusivehawk
  */
-public final class InputManager implements IUpdatable
+public final class InputManager implements Closeable, IUpdatable
 {
 	private final List<EnumInputType> types = Lists.newArrayList();
 	private final List<Input> input = Lists.newArrayList();
@@ -46,6 +48,26 @@ public final class InputManager implements IUpdatable
 		this.input.forEach(((input) ->
 		{
 			input.update(delta);
+			
+		}));
+		
+	}
+	
+	@Override
+	public void close()
+	{
+		this.input.forEach(((in) ->
+		{
+			try
+			{
+				in.close();
+				
+			}
+			catch (Exception e)
+			{
+				Logger.log().err(e);
+				
+			}
 			
 		}));
 		

@@ -7,11 +7,11 @@ import java.nio.IntBuffer;
 
 /**
  * 
- * Supports OpenGL versions 1.0/1.1 to 1.5.
+ * OpenGL v1.x wrapper interface
  * 
  * @author Elusivehawk
  */
-public interface IGL1
+public interface IGL1Impl
 {
 	void glActiveTexture(int texture);
 	

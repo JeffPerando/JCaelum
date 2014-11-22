@@ -16,6 +16,8 @@ public final class RenderConst
 	@Deprecated
 	public static final String INCLUDE = "#include";
 	
+	public static final int FLOATS_PER_IMG = 30;
+	
 	public static final int MATERIAL_CAP = 16;
 	public static final int SHADER_COUNT = GLEnumShader.values().length;
 	

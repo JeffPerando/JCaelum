@@ -47,6 +47,13 @@ public final class ThreadGameRender extends ThreadTimed
 		return this.fps;
 	}
 	
+	@Override
+	public void onThreadStopped(boolean failure)
+	{
+		this.displays.close();
+		
+	}
+	
 	public synchronized void setFPS(int i)
 	{
 		assert i > 0;
