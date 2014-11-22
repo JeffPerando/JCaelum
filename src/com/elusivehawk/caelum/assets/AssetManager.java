@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import com.elusivehawk.caelum.CaelumException;
 import com.elusivehawk.util.FileHelper;
-import com.elusivehawk.util.IStreamProvider;
 import com.elusivehawk.util.storage.SyncList;
 import com.elusivehawk.util.task.ITaskListener;
 import com.elusivehawk.util.task.Task;
