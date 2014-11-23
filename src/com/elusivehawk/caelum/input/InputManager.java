@@ -138,7 +138,7 @@ public final class InputManager implements Closeable, IUpdatable
 			
 			if (inList != null)
 			{
-				inList.forEach(((lis) -> {lis.onInputReceived(this.display, event, delta);}));
+				inList.forEach(((lis) -> {lis.onInputReceived(event, delta);}));
 				
 				this.eventQueue.remove(event);
 				

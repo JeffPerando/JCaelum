@@ -224,6 +224,18 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 		return this;
 	}
 	
+	public void setMaterial(int i, Material mat)
+	{
+		if (this.matSet == null)
+		{
+			this.setMaterials(new Materials());
+			
+		}
+		
+		this.matSet.set(i, mat);
+		
+	}
+	
 	public synchronized boolean addMaterials(Material... ms)
 	{
 		if (this.matSet == null)

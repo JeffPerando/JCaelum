@@ -1,35 +1,16 @@
 
 package com.elusivehawk.caelum.render;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.util.List;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
 import com.elusivehawk.caelum.render.gl.GL1;
 import com.elusivehawk.caelum.render.gl.GL3;
 import com.elusivehawk.caelum.render.gl.GLConst;
-import com.elusivehawk.caelum.render.gl.GLEnumDrawType;
 import com.elusivehawk.caelum.render.gl.GLEnumError;
 import com.elusivehawk.caelum.render.gl.GLEnumTexture;
 import com.elusivehawk.caelum.render.gl.GLException;
-import com.elusivehawk.caelum.render.tex.Color;
 import com.elusivehawk.caelum.render.tex.ColorFilter;
 import com.elusivehawk.caelum.render.tex.ColorFormat;
 import com.elusivehawk.caelum.render.tex.ILegibleImage;
-import com.elusivehawk.caelum.render.tex.LegibleBufferedImage;
-import com.elusivehawk.caelum.render.tex.LegibleByteImage;
-import com.elusivehawk.util.EnumLogType;
-import com.elusivehawk.util.FileHelper;
-import com.elusivehawk.util.Logger;
-import com.elusivehawk.util.storage.Buffer;
-import com.elusivehawk.util.storage.BufferHelper;
-import com.elusivehawk.util.string.StringHelper;
-import com.google.common.collect.Lists;
-import de.matthiasmann.twl.utils.PNGDecoder;
 
 /**
  * 
@@ -40,73 +21,6 @@ import de.matthiasmann.twl.utils.PNGDecoder;
 public final class RenderHelper
 {
 	private RenderHelper(){}
-	
-	@Deprecated
-	public static List<ILegibleImage> readImg(File img)
-	{
-		return readImg(new BufferedInputStream(FileHelper.createInStream(img)), img.getName().endsWith(".gif"));
-	}
-	
-	@Deprecated
-	public static List<ILegibleImage> readImg(InputStream is, boolean isGif)
-	{
-		List<ILegibleImage> ret = Lists.newArrayList();
-		
-		if (isGif)
-		{
-			readGifFile(is, ret);
-			
-		}
-		else
-		{
-			try
-			{
-				PNGDecoder dec = new PNGDecoder(is);
-				ByteBuffer buf = BufferHelper.createByteBuffer(dec.getWidth() * dec.getHeight() * 4);
-				
-				dec.decode(buf, dec.getWidth() * 4, PNGDecoder.Format.RGBA);
-				
-				ret.add(new LegibleByteImage(buf, dec.getWidth(), dec.getHeight()));
-				
-			}
-			catch (Exception e)
-			{
-				Logger.log().err(e);
-				
-			}
-			
-		}
-		
-		return ret;
-	}
-	
-	@Deprecated
-	private static void readGifFile(InputStream is, List<ILegibleImage> ret)
-	{
-		try
-		{
-			ImageReader r = ImageIO.getImageReadersByFormatName("gif").next();
-			ImageInputStream in = ImageIO.createImageInputStream(is);
-			r.setInput(in, false);
-			
-			int imgs = r.getNumImages(true);
-			
-			for (int c = 0; c < imgs; c++)
-			{
-				ret.add(new LegibleBufferedImage(r.read(c)));
-				
-			}
-			
-			in.close();
-			
-		}
-		catch (Exception e)
-		{
-			Logger.log().err(e);
-			
-		}
-		
-	}
 	
 	public static int genTexture(RenderContext rcon, ILegibleImage img)
 	{
@@ -176,76 +90,6 @@ public final class RenderHelper
 		
 	}
 	
-	/**
-	 * 
-	 * Formats shader source code.
-	 * 
-	 * @param src
-	 * @param parentDir
-	 * @return
-	 * 
-	 * @deprecated To be removed once OpenGL NG comes out, since shaders will be pre-compiled.
-	 */
-	@Deprecated
-	public static String formatShaderSource(String src, File parentDir)
-	{
-		List<String> inc = Lists.newArrayList();
-		List<File> files = FileHelper.getFiles(parentDir);
-		int in;
-		
-		while ((in = src.indexOf(RenderConst.INCLUDE)) != -1)
-		{
-			int newline = src.indexOf("\n", in);
-			String include;
-			
-			if (newline == -1)
-			{
-				include = src.substring(in);
-				
-			}
-			else
-			{
-				include = src.substring(in, newline);
-				
-			}
-			
-			String[] split = include.split(" ");
-			
-			String rep = "";
-			
-			if (split != null && split.length == 2)
-			{
-				Logger.log().log(EnumLogType.DEBUG, "#include found: %s", include);
-				
-				String loc = split[1];
-				
-				if (!inc.contains(loc))
-				{
-					rep = StringHelper.readToOneLine(FileHelper.getChild(loc, files));
-					
-					inc.add(loc);
-					
-				}
-				
-			}
-			
-			src.replaceFirst(include, rep);
-			
-		}
-		
-		return src;
-	}
-	
-	public static int getPolygonCount(int points, GLEnumDrawType poly)
-	{
-		return poly == GLEnumDrawType.GL_TRIANGLE_STRIP ? points - 2 : points / poly.getPointCount();
-	}
-	
-	public static int getPointCount(int polycount, GLEnumDrawType poly)
-	{
-		return poly == GLEnumDrawType.GL_TRIANGLE_STRIP ? polycount + 2 : polycount * poly.getPointCount();
-	}
-	
 	public static void checkForGLError() throws GLException
 	{
 		GLEnumError err = GL1.glGetError();
@@ -255,21 +99,6 @@ public final class RenderHelper
 			throw new GLException(err);
 		}
 		
-	}
-	
-	public static Buffer<Float> mixColors(Color a, Color b)
-	{
-		Buffer<Float> ret = new Buffer<Float>();
-		
-		for (ColorFilter col : ColorFilter.values())
-		{
-			ret.add((a.getColorf(col) + b.getColorf(col)) % 1f);
-			
-		}
-		
-		ret.rewind();
-		
-		return ret;
 	}
 	
 }

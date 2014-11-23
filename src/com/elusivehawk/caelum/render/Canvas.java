@@ -2,6 +2,7 @@
 package com.elusivehawk.caelum.render;
 
 import java.nio.FloatBuffer;
+import com.elusivehawk.caelum.prefab.Rectangle;
 import com.elusivehawk.caelum.render.gl.GL1;
 import com.elusivehawk.caelum.render.gl.GLConst;
 import com.elusivehawk.caelum.render.gl.GLEnumBufferTarget;
@@ -134,15 +135,33 @@ public class Canvas extends RenderableObj
 		return true;
 	}
 	
+	public void drawImage(Rectangle r, int mat)
+	{
+		this.drawImage(r.x, r.y, r.z, r.w, mat);
+		
+	}
+	
 	public void drawImage(float x, float y, float z, float w, int mat)
 	{
 		this.drawImage(x, y, z, w, BLANK_ICON, mat);
 		
 	}
 	
+	public void drawImage(Rectangle r, Icon icon)
+	{
+		this.drawImage(r.x, r.y, r.z, r.w, icon);
+		
+	}
+	
 	public void drawImage(float x, float y, float z, float w, Icon icon)
 	{
 		this.drawImage(x, y, z, w, icon, 0);
+		
+	}
+	
+	public void drawImage(Rectangle r, Icon icon, int mat)
+	{
+		this.drawImage(r.x, r.y, r.z, r.w, icon, mat);
 		
 	}
 	

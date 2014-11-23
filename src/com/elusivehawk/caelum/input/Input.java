@@ -35,7 +35,7 @@ public abstract class Input implements IUpdatable, Closeable
 			throw new CaelumException("Input not initiated!");
 		}
 		
-		this.pollInput(delta, this.manager.getDisplay());
+		this.pollInput(this.manager.getDisplay());
 		
 	}
 	
@@ -53,6 +53,6 @@ public abstract class Input implements IUpdatable, Closeable
 	
 	public abstract EnumInputType getType();
 	
-	protected abstract void pollInput(double delta, Display display);
+	protected abstract void pollInput(Display display);
 	
 }

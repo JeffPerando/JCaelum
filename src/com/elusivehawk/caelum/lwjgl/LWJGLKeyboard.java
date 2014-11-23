@@ -146,7 +146,7 @@ public class LWJGLKeyboard extends Input
 	}
 	
 	@Override
-	protected void pollInput(double delta, Display display)
+	protected void pollInput(Display display)
 	{
 		long window = ((LWJGLDisplay)display.getImpl()).getWindowId();
 		
@@ -154,7 +154,7 @@ public class LWJGLKeyboard extends Input
 		
 		if (paste != null)
 		{
-			this.manager.queueInputEvent(new PasteEvent(paste));
+			this.manager.queueInputEvent(new PasteEvent(display, paste));
 			
 		}
 		
@@ -181,7 +181,7 @@ public class LWJGLKeyboard extends Input
 					
 				}
 				
-				this.manager.queueInputEvent(new KeyEvent(t.two, down, downPrev));
+				this.manager.queueInputEvent(new KeyEvent(display, t.two, down, downPrev));
 				
 			}
 			

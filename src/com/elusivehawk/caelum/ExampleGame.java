@@ -73,7 +73,7 @@ public final class ExampleGame extends Game
 	protected void onGameShutdown(){}
 	
 	@Override
-	public void onInputReceived(Display display, InputEvent event, double delta)
+	public void onInputReceived(InputEvent event, double delta)
 	{
 		if (event instanceof KeyEvent)
 		{

@@ -1,6 +1,8 @@
 
 package com.elusivehawk.caelum.input;
 
+import com.elusivehawk.caelum.Display;
+
 /**
  * 
  * 
@@ -13,9 +15,9 @@ public class KeyEvent extends InputEvent
 	public final boolean down, downBefore;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public KeyEvent(Key pressed, boolean isDown, boolean wasDownBefore)
+	public KeyEvent(Display displayUsed, Key pressed, boolean isDown, boolean wasDownBefore)
 	{
-		super(EnumInputType.KEYBOARD);
+		super(EnumInputType.KEYBOARD, displayUsed);
 		
 		key = pressed;
 		down = isDown;

@@ -1,6 +1,8 @@
 
 package com.elusivehawk.caelum.input;
 
+import com.elusivehawk.caelum.Display;
+
 /**
  * 
  * 
@@ -12,9 +14,9 @@ public class PasteEvent extends InputEvent
 	public final String pasted;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public PasteEvent(String str)
+	public PasteEvent(Display displayUsed, String str)
 	{
-		super(EnumInputType.KEYBOARD);
+		super(EnumInputType.KEYBOARD, displayUsed);
 		
 		assert str != null;
 		

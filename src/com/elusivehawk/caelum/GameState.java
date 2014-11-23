@@ -55,11 +55,11 @@ public class GameState extends AbstractGameComponent
 	}
 	
 	@Override
-	public void onInputReceived(Display display, InputEvent event, double delta)
+	public void onInputReceived(InputEvent event, double delta)
 	{
 		if (this.inputLis != null)
 		{
-			this.inputLis.onInputReceived(display, event, delta);
+			this.inputLis.onInputReceived(event, delta);
 			
 		}
 		

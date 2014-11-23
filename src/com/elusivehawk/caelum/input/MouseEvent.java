@@ -1,6 +1,7 @@
 
 package com.elusivehawk.caelum.input;
 
+import com.elusivehawk.caelum.Display;
 import com.elusivehawk.util.math.Vector;
 
 /**
@@ -12,23 +13,18 @@ import com.elusivehawk.util.math.Vector;
 public class MouseEvent extends InputEvent
 {
 	public final Vector pos, posOld, delta;
-	public final EnumMouseClick[] status;
-	
-	public MouseEvent(Vector position, Vector positionOld)
-	{
-		this(position, positionOld, new EnumMouseClick[]{EnumMouseClick.UP, EnumMouseClick.UP, EnumMouseClick.UP});
-		
-	}
+	public final EnumMouseClick[] status, statusOld;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public MouseEvent(Vector position, Vector positionOld, EnumMouseClick[] clickStatuses)
+	public MouseEvent(Display displayUsed, Vector position, Vector positionOld, EnumMouseClick[] clicks, EnumMouseClick[] clicksOld)
 	{
-		super(EnumInputType.MOUSE);
+		super(EnumInputType.MOUSE, displayUsed);
 		
 		pos = position.clone().setImmutable();
 		posOld = positionOld.clone().setImmutable();
 		delta = position.sub(positionOld, false);
-		status = clickStatuses;
+		status = clicks;
+		statusOld = clicksOld;
 		
 	}
 	
