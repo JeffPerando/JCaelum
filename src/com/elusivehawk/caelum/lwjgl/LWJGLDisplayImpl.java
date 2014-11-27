@@ -18,18 +18,15 @@ import com.elusivehawk.util.storage.BufferHelper;
  */
 public class LWJGLDisplayImpl implements IDisplayImpl
 {
-	private final DisplaySettings settings;
+	private final IntBuffer
+				x = BufferHelper.createIntBuffer(1),
+				y = BufferHelper.createIntBuffer(1),
+				w = BufferHelper.createIntBuffer(1),
+				h = BufferHelper.createIntBuffer(1);
 	
 	private int width = 0, height = 0, xPos = 0, yPos = 0;
 	private long id = 0;
 	private GLContext context = null;
-	
-	@SuppressWarnings("unqualified-field-access")
-	public LWJGLDisplayImpl(DisplaySettings ds)
-	{
-		settings = ds;
-		
-	}
 	
 	@Override
 	public void close() throws IOException
@@ -39,9 +36,9 @@ public class LWJGLDisplayImpl implements IDisplayImpl
 	}
 	
 	@Override
-	public void createDisplay() throws Exception
+	public void createDisplay(DisplaySettings settings) throws Exception
 	{
-		this.id = GLFW.glfwCreateWindow(this.settings.width, this.settings.height, this.settings.title, this.settings.fullscreen ? GLFW.glfwGetPrimaryMonitor() : 0/*TODO Implement >1 monitor support*/, 0);
+		this.id = GLFW.glfwCreateWindow(settings.width, settings.height, settings.title, settings.fullscreen ? GLFW.glfwGetPrimaryMonitor() : 0/*TODO Implement >1 monitor support*/, 0);
 		
 		if (this.id == 0)
 		{
@@ -51,6 +48,8 @@ public class LWJGLDisplayImpl implements IDisplayImpl
 		GLFW.glfwMakeContextCurrent(this.id);
 		
 		this.context = GLContext.createFromCurrent();
+		
+		this.updateInfo();
 		
 	}
 	
@@ -128,21 +127,30 @@ public class LWJGLDisplayImpl implements IDisplayImpl
 		 * 
 		 */
 		
-		IntBuffer info = BufferHelper.createIntBuffer(4);
-		
-		GLFW.glfwGetWindowSize(this.id, info, info);
-		GLFW.glfwGetWindowPos(this.id, info, info);
-		
-		this.width = info.get();
-		this.height = info.get();
-		this.xPos = info.get();
-		this.yPos = info.get();
+		this.updateInfo();
 		
 	}
 	
 	public long getWindowId()
 	{
 		return this.id;
+	}
+	
+	private void updateInfo()
+	{
+		GLFW.glfwGetWindowSize(this.id, this.w, this.h);
+		GLFW.glfwGetWindowPos(this.id, this.x, this.y);
+		
+		this.width = this.w.get();
+		this.height = this.h.get();
+		this.xPos = this.x.get();
+		this.yPos = this.y.get();
+		
+		this.x.position(0);
+		this.y.position(0);
+		this.w.position(0);
+		this.h.position(0);
+		
 	}
 	
 }

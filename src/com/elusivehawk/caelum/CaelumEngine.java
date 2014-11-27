@@ -613,8 +613,6 @@ public final class CaelumEngine
 			File nLoc = FileHelper.getChild("lib", CompInfo.JAR_DIR.getParentFile());
 			List<File> nativeFiles = FileHelper.getFiles(nLoc, ((file) ->
 			{
-				Logger.log().debug("Test: \"%s\"", file.getAbsolutePath());
-				
 				for (String n : natives)
 				{
 					if (file.getPath().endsWith(n))

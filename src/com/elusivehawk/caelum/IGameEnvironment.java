@@ -38,11 +38,10 @@ public interface IGameEnvironment
 	
 	/**
 	 * 
-	 * @param settings
 	 * @return
 	 * @throws Throwable
 	 */
-	IDisplayImpl createDisplay(DisplaySettings settings) throws Throwable;
+	IDisplayImpl createDisplay() throws Throwable;
 	
 	Input loadInput(InputManager inmgr, EnumInputType type);
 	

@@ -29,7 +29,7 @@ public class Display implements Closeable, IUpdatable
 	private IDisplayImpl impl = null;
 	
 	private int width = 0, height = 0;
-	private boolean refresh = true, closed = false, close = false, initiated = false;
+	private boolean refresh = false, closed = false, close = false, initiated = false;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public Display(String str, DisplaySettings ds, IRenderable r)
@@ -65,6 +65,13 @@ public class Display implements Closeable, IUpdatable
 		if (this.refresh)
 		{
 			this.impl.updateSettings(this.settings);
+			
+			synchronized (this)
+			{
+				this.height = this.impl.getHeight();
+				this.width = this.impl.getWidth();
+				
+			}
 			
 			GL1.glClearColor(this.settings.bg);
 			
@@ -108,14 +115,14 @@ public class Display implements Closeable, IUpdatable
 	{
 		assert Thread.currentThread() instanceof ThreadGameRender : "Cannot initiate display outside of rendering thread";
 		
-		IDisplayImpl imp = ge.createDisplay(this.settings);
+		IDisplayImpl imp = ge.createDisplay();
 		
 		if (imp == null)
 		{
 			return;
 		}
 		
-		imp.createDisplay();
+		imp.createDisplay(this.settings);
 		
 		this.impl = imp;
 		

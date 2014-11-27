@@ -4,7 +4,6 @@ package com.elusivehawk.caelum.lwjgl;
 import org.lwjgl.system.glfw.GLFW;
 import com.elusivehawk.caelum.CaelumEngine;
 import com.elusivehawk.caelum.CaelumException;
-import com.elusivehawk.caelum.DisplaySettings;
 import com.elusivehawk.caelum.IDisplayImpl;
 import com.elusivehawk.caelum.IGameEnvironment;
 import com.elusivehawk.caelum.input.EnumInputType;
@@ -93,9 +92,9 @@ public class LWJGLEnvironment implements IGameEnvironment
 	}
 	
 	@Override
-	public IDisplayImpl createDisplay(DisplaySettings settings)
+	public IDisplayImpl createDisplay()
 	{
-		return new LWJGLDisplayImpl(settings);
+		return new LWJGLDisplayImpl();
 	}
 	
 	@Override

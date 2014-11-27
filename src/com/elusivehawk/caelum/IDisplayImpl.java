@@ -14,7 +14,7 @@ import java.io.Closeable;
  */
 public interface IDisplayImpl extends Closeable
 {
-	void createDisplay() throws Throwable;
+	void createDisplay(DisplaySettings settings) throws Throwable;
 	
 	void postInit();
 	
