@@ -45,9 +45,23 @@ public final class InputManager implements Closeable, IUpdatable
 			throw new CaelumException("Input manager was not initiated!");
 		}
 		
+		if (!this.display.isInitiated())
+		{
+			return;
+		}
+		
 		this.input.forEach(((input) ->
 		{
-			input.update(delta);
+			try
+			{
+				input.update(delta);
+				
+			}
+			catch (Throwable e)
+			{
+				Logger.log().err(e);
+				
+			}
 			
 		}));
 		
@@ -140,9 +154,9 @@ public final class InputManager implements Closeable, IUpdatable
 			{
 				inList.forEach(((lis) -> {lis.onInputReceived(event, delta);}));
 				
-				this.eventQueue.remove(event);
-				
 			}
+			
+			this.eventQueue.remove(event);
 			
 		}
 		

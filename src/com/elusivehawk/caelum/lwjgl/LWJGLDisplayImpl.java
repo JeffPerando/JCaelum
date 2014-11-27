@@ -3,7 +3,9 @@ package com.elusivehawk.caelum.lwjgl;
 
 import java.io.IOException;
 import java.nio.IntBuffer;
+import org.lwjgl.opengl.GLContext;
 import org.lwjgl.system.glfw.GLFW;
+import com.elusivehawk.caelum.CaelumException;
 import com.elusivehawk.caelum.DisplaySettings;
 import com.elusivehawk.caelum.IDisplayImpl;
 import com.elusivehawk.util.storage.BufferHelper;
@@ -14,15 +16,16 @@ import com.elusivehawk.util.storage.BufferHelper;
  * 
  * @author Elusivehawk
  */
-public class LWJGLDisplay implements IDisplayImpl
+public class LWJGLDisplayImpl implements IDisplayImpl
 {
 	private final DisplaySettings settings;
 	
 	private int width = 0, height = 0, xPos = 0, yPos = 0;
 	private long id = 0;
+	private GLContext context = null;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public LWJGLDisplay(DisplaySettings ds)
+	public LWJGLDisplayImpl(DisplaySettings ds)
 	{
 		settings = ds;
 		
@@ -36,16 +39,32 @@ public class LWJGLDisplay implements IDisplayImpl
 	}
 	
 	@Override
-	public boolean isCreated()
+	public void createDisplay() throws Exception
 	{
-		return this.id != 0;
+		this.id = GLFW.glfwCreateWindow(this.settings.width, this.settings.height, this.settings.title, this.settings.fullscreen ? GLFW.glfwGetPrimaryMonitor() : 0/*TODO Implement >1 monitor support*/, 0);
+		
+		if (this.id == 0)
+		{
+			throw new CaelumException("Cannot make LWJGL display: ID returned 0");
+		}
+		
+		GLFW.glfwMakeContextCurrent(this.id);
+		
+		this.context = GLContext.createFromCurrent();
+		
 	}
 	
 	@Override
-	public void createDisplay() throws Exception
+	public void postInit()
 	{
-		this.id = GLFW.glfwCreateWindow(this.settings.width, this.settings.height, this.settings.title, GLFW.glfwGetPrimaryMonitor()/*TODO Implement >1 monitor support*/, 0);
+		GLFW.glfwMakeContextCurrent(0);
 		
+	}
+	
+	@Override
+	public boolean isCreated()
+	{
+		return this.id != 0 && this.context != null;
 	}
 	
 	@Override

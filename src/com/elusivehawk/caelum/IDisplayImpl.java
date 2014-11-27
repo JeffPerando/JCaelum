@@ -16,6 +16,8 @@ public interface IDisplayImpl extends Closeable
 {
 	void createDisplay() throws Throwable;
 	
+	void postInit();
+	
 	boolean isCreated();
 	
 	/**

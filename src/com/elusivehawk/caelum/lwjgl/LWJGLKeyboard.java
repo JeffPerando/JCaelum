@@ -148,15 +148,7 @@ public class LWJGLKeyboard extends Input
 	@Override
 	protected void pollInput(Display display)
 	{
-		long window = ((LWJGLDisplay)display.getImpl()).getWindowId();
-		
-		String paste = GLFW.glfwGetClipboardString(window);
-		
-		if (paste != null)
-		{
-			this.manager.queueInputEvent(new PasteEvent(display, paste));
-			
-		}
+		long window = ((LWJGLDisplayImpl)display.getImpl()).getWindowId();
 		
 		for (Tuple<Integer, Key> t : GLFW_ENUMS)
 		{
@@ -182,6 +174,18 @@ public class LWJGLKeyboard extends Input
 				}
 				
 				this.manager.queueInputEvent(new KeyEvent(display, t.two, down, downPrev));
+				
+			}
+			
+		}
+		
+		if (this.downKeys.contains(Key.CONTROL) && this.downKeys.contains(Key.V))
+		{
+			String paste = GLFW.glfwGetClipboardString(window);
+			
+			if (paste != null)
+			{
+				this.manager.queueInputEvent(new PasteEvent(display, paste));
 				
 			}
 			

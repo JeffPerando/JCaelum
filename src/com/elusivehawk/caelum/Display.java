@@ -29,7 +29,7 @@ public class Display implements Closeable, IUpdatable
 	private IDisplayImpl impl = null;
 	
 	private int width = 0, height = 0;
-	private boolean refresh = true, closed = false, close = false;
+	private boolean refresh = true, closed = false, close = false, initiated = false;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public Display(String str, DisplaySettings ds, IRenderable r)
@@ -48,9 +48,9 @@ public class Display implements Closeable, IUpdatable
 	@Override
 	public void update(double delta) throws Throwable
 	{
-		if (this.rcon == null)
+		if (!this.initiated)
 		{
-			throw new NullPointerException("Cannot render, render context wasn't made");
+			throw new NullPointerException("Cannot render, display wasn't initiated");
 		}
 		
 		if (this.impl.isCloseRequested() || this.close)
@@ -104,7 +104,7 @@ public class Display implements Closeable, IUpdatable
 		
 	}
 	
-	public boolean initDisplay(IGameEnvironment ge) throws Throwable
+	public void initDisplay(IGameEnvironment ge) throws Throwable
 	{
 		assert Thread.currentThread() instanceof ThreadGameRender : "Cannot initiate display outside of rendering thread";
 		
@@ -112,15 +112,10 @@ public class Display implements Closeable, IUpdatable
 		
 		if (imp == null)
 		{
-			return false;
+			return;
 		}
 		
 		imp.createDisplay();
-		
-		if (!imp.isCreated())
-		{
-			return false;
-		}
 		
 		this.impl = imp;
 		
@@ -130,13 +125,20 @@ public class Display implements Closeable, IUpdatable
 		
 		if (!this.rcon.initContext())
 		{
-			return false;
+			return;
 		}
 		
-		this.height = this.impl.getHeight();
-		this.width = this.impl.getWidth();
+		imp.postInit();
 		
-		return true;
+		synchronized (this)
+		{
+			this.height = this.impl.getHeight();
+			this.width = this.impl.getWidth();
+			
+			this.initiated = true;
+			
+		}
+		
 	}
 	
 	public String getName()
@@ -162,6 +164,11 @@ public class Display implements Closeable, IUpdatable
 	public IDisplayImpl getImpl()
 	{
 		return this.impl;
+	}
+	
+	public boolean isInitiated()
+	{
+		return this.initiated;
 	}
 	
 	public synchronized void updateSettings(DisplaySettings ds)

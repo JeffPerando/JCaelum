@@ -7,6 +7,7 @@ import com.elusivehawk.caelum.input.InputManager;
 import com.elusivehawk.util.EnumOS;
 import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.json.JsonObject;
+import com.google.common.collect.ImmutableList;
 
 /**
  * 
@@ -25,11 +26,15 @@ public interface IGameEnvironment
 {
 	boolean isCompatible(EnumOS os);
 	
+	void preInit();
+	
 	void initiate(JsonObject json, String... args);
 	
 	void destroy();
 	
 	String getName();
+	
+	ImmutableList<String> getNatives();
 	
 	/**
 	 * 

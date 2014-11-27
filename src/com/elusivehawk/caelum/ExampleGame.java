@@ -3,6 +3,7 @@ package com.elusivehawk.caelum;
 
 import com.elusivehawk.caelum.assets.AssetManager;
 import com.elusivehawk.caelum.input.InputEvent;
+import com.elusivehawk.caelum.input.Key;
 import com.elusivehawk.caelum.input.KeyEvent;
 import com.elusivehawk.caelum.input.MouseEvent;
 import com.elusivehawk.caelum.input.PasteEvent;
@@ -81,7 +82,16 @@ public final class ExampleGame extends Game
 			
 			if (ke.down)
 			{
-				Logger.log().log(EnumLogType.VERBOSE, "Key down: %s", ke.key);
+				if (ke.key == Key.ESCAPE)
+				{
+					ShutdownHelper.exit(1337);
+					
+				}
+				else
+				{
+					Logger.log().log(EnumLogType.VERBOSE, "Key down: %s", ke.key);
+					
+				}
 				
 			}
 			else

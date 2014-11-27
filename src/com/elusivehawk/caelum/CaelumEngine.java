@@ -23,7 +23,7 @@ import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.ReflectionHelper;
 import com.elusivehawk.util.ShutdownHelper;
 import com.elusivehawk.util.Version;
-import com.elusivehawk.util.concurrent.IThreadStoppable;
+import com.elusivehawk.util.concurrent.ThreadStoppable;
 import com.elusivehawk.util.json.EnumJsonType;
 import com.elusivehawk.util.json.JsonData;
 import com.elusivehawk.util.json.JsonObject;
@@ -33,6 +33,7 @@ import com.elusivehawk.util.storage.Pair;
 import com.elusivehawk.util.storage.Tuple;
 import com.elusivehawk.util.string.StringHelper;
 import com.elusivehawk.util.task.TaskManager;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -48,7 +49,7 @@ public final class CaelumEngine
 	
 	public static final Version VERSION = new Version(Version.ALPHA, 1, 0, 0, 0);
 	
-	private final Map<EnumEngineFeature, IThreadStoppable> threads = Maps.newEnumMap(EnumEngineFeature.class);
+	private final Map<EnumEngineFeature, ThreadStoppable> threads = Maps.newEnumMap(EnumEngineFeature.class);
 	private final TaskManager tasks = new TaskManager();
 	private final AssetManager assets = new AssetManager();
 	
@@ -267,10 +268,6 @@ public final class CaelumEngine
 			
 		}*/
 		
-		//XXX Load natives
-		
-		this.loadNatives();
-		
 		//XXX Load game environment
 		
 		if (this.env == null)
@@ -339,11 +336,21 @@ public final class CaelumEngine
 				return;
 			}
 			
-			gameenv.initiate(this.envConfig, args);
-			
 			this.env = gameenv;
 			
 		}
+		
+		//XXX Pre-initiate game environment
+		
+		this.env.preInit();
+		
+		//XXX Load natives
+		
+		this.loadNatives();
+		
+		//XXX Initiate game environment
+		
+		this.env.initiate(this.envConfig, args);
 		
 		//XXX Load display system
 		
@@ -458,28 +465,24 @@ public final class CaelumEngine
 		
 		//XXX Start game threads
 		
-		IThreadStoppable t;
+		ThreadStoppable t;
 		
 		for (EnumEngineFeature fe : EnumEngineFeature.values())
 		{
 			t = this.threads.get(fe);
 			
-			if (t instanceof Thread)
+			if (t == null)
 			{
-				if (((Thread)t).isAlive())
-				{
-					continue;
-				}
-				
-				t.setPaused(true);
-				((Thread)t).start();
-				
+				continue;
 			}
-			else
+			
+			if (t.isAlive())
 			{
-				this.threads.remove(fe);
-				
+				continue;
 			}
+			
+			t.setPaused(true);
+			t.start();
 			
 		}
 		
@@ -495,7 +498,7 @@ public final class CaelumEngine
 	{
 		for (EnumEngineFeature fe : features)
 		{
-			IThreadStoppable t = this.threads.get(fe);
+			ThreadStoppable t = this.threads.get(fe);
 			
 			if (t != null)
 			{
@@ -524,7 +527,7 @@ public final class CaelumEngine
 		
 		for (EnumEngineFeature fe : EnumEngineFeature.values())
 		{
-			IThreadStoppable t = this.threads.get(fe);
+			ThreadStoppable t = this.threads.get(fe);
 			
 			if (t != null)
 			{
@@ -565,6 +568,13 @@ public final class CaelumEngine
 			return;
 		}
 		
+		ImmutableList<String> natives = this.env.getNatives();
+		
+		if (natives == null || natives.isEmpty())
+		{
+			return;
+		}
+		
 		File tmp = FileHelper.createFile(CompInfo.TMP_DIR, String.format(".caelum/%s/natives/%s", VERSION.formatted, CompInfo.BUILT ? "" : "dev/"));
 		
 		if (!tmp.exists() && !tmp.mkdirs())
@@ -576,19 +586,22 @@ public final class CaelumEngine
 		{
 			FileHelper.readZip(CompInfo.JAR_DIR, ((zip, entry, name) ->
 			{
-				if (!FileHelper.NATIVE_NAME_FILTER.accept(null, entry.getName()))
+				for (String n : natives)
 				{
-					return;
-				}
-				
-				try
-				{
-					copyNative(zip.getInputStream(entry), new File(tmp, name.contains("/") ? StringHelper.getSuffix(name, "/") : name));
-					
-				}
-				catch (Exception e)
-				{
-					Logger.log().err(e);
+					if (name.endsWith(n))
+					{
+						try
+						{
+							copyNative(zip.getInputStream(entry), new File(tmp, name.contains("/") ? StringHelper.getSuffix(name, "/") : name));
+							
+						}
+						catch (Exception e)
+						{
+							Logger.log().err(e);
+							
+						}
+						
+					}
 					
 				}
 				
@@ -598,14 +611,28 @@ public final class CaelumEngine
 		else
 		{
 			File nLoc = FileHelper.getChild("lib", CompInfo.JAR_DIR.getParentFile());
-			List<File> natives = FileHelper.getFiles(nLoc, FileHelper.NATIVE_FILTER);
+			List<File> nativeFiles = FileHelper.getFiles(nLoc, ((file) ->
+			{
+				Logger.log().debug("Test: \"%s\"", file.getAbsolutePath());
+				
+				for (String n : natives)
+				{
+					if (file.getPath().endsWith(n))
+					{
+						return true;
+					}
+					
+				}
+				
+				return false;
+			}));
 			
-			if (natives.isEmpty())
+			if (nativeFiles.isEmpty())
 			{
 				throw new CaelumException("Could not load natives! THIS IS A BUG! Native directory: %s", nLoc.getAbsolutePath());
 			}
 			
-			for (File n : natives)
+			for (File n : nativeFiles)
 			{
 				copyNative(FileHelper.createInStream(n), new File(tmp, n.getName()));
 				

@@ -2,13 +2,14 @@
 package com.elusivehawk.caelum;
 
 import java.io.Closeable;
+import java.util.Iterator;
 import java.util.List;
 import com.elusivehawk.caelum.render.IRenderable;
 import com.elusivehawk.caelum.render.RenderException;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.Logger;
+import com.elusivehawk.util.ShutdownHelper;
 import com.elusivehawk.util.storage.SyncList;
-import com.google.common.collect.Lists;
 
 /**
  * 
@@ -19,8 +20,9 @@ import com.google.common.collect.Lists;
 public final class DisplayManager implements Closeable, IUpdatable
 {
 	private final IGameEnvironment env;
-	private final List<Display> displays = Lists.newArrayList();
-	private final List<Display> displaysToInit = SyncList.newList();
+	private final List<Display>
+			displays = SyncList.newList(),
+			displaysToInit = SyncList.newList();
 	
 	@SuppressWarnings("unqualified-field-access")
 	public DisplayManager(IGameEnvironment ge)
@@ -34,18 +36,45 @@ public final class DisplayManager implements Closeable, IUpdatable
 	{
 		if (!this.displaysToInit.isEmpty())
 		{
-			for (Display display : this.displaysToInit)
+			Iterator<Display> itr = this.displaysToInit.iterator();
+			
+			while (itr.hasNext())
 			{
-				if (this.getDisplay(display.getName()) == null)
+				Display display = itr.next();
+				
+				if (!display.isInitiated())
 				{
-					if (display.initDisplay(this.env))
+					if (this.getDisplay(display.getName()) == null && !this.displays.contains(display))
 					{
-						this.displays.add(display);
+						Logger.log().info("Initiating display \"%s\"", display.getName());
 						
-					}
-					else
-					{
-						Logger.log().warn("Could not initiate display \"%s\"", display.getName());
+						boolean accept = true;
+						
+						try
+						{
+							display.initDisplay(this.env);
+							
+						}
+						catch (Throwable e)
+						{
+							Logger.log().err(e);
+							
+							accept = false;
+							
+						}
+						
+						if (accept)
+						{
+							this.displays.add(display);
+							
+						}
+						else
+						{
+							Logger.log().warn("Could not initiate display \"%s\"", display.getName());
+							
+							display.close();
+							
+						}
 						
 					}
 					
@@ -57,7 +86,7 @@ public final class DisplayManager implements Closeable, IUpdatable
 			
 		}
 		
-		this.displays.forEach(((display) ->
+		for (Display display : this.displays)
 		{
 			try
 			{
@@ -76,7 +105,13 @@ public final class DisplayManager implements Closeable, IUpdatable
 				
 			}
 			
-		}));
+		}
+		
+		if (this.displays.isEmpty())
+		{
+			ShutdownHelper.exit("Out of displays");
+			
+		}
 		
 	}
 	

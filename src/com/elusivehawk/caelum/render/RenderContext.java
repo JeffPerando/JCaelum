@@ -102,8 +102,6 @@ public final class RenderContext implements Closeable, IUpdatable
 			return false;
 		}
 		
-		GL1.glViewport(0, 0, this.display.getWidth(), this.display.getHeight());
-		
 		Logger.log().log(EnumLogType.VERBOSE, "OpenGL version: %s", GL1.glGetString(GLConst.GL_VERSION));
 		Logger.log().log(EnumLogType.VERBOSE, "OpenGL vendor: %s", GL1.glGetString(GLConst.GL_VENDOR));
 		Logger.log().log(EnumLogType.VERBOSE, "OpenGL renderer: %s", GL1.glGetString(GLConst.GL_RENDERER));
