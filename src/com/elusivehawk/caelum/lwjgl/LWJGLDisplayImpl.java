@@ -19,12 +19,10 @@ import com.elusivehawk.util.storage.BufferHelper;
 public class LWJGLDisplayImpl implements IDisplayImpl
 {
 	private final IntBuffer
-				x = BufferHelper.createIntBuffer(1),
-				y = BufferHelper.createIntBuffer(1),
 				w = BufferHelper.createIntBuffer(1),
 				h = BufferHelper.createIntBuffer(1);
 	
-	private int width = 0, height = 0, xPos = 0, yPos = 0;
+	private int width = 0, height = 0;
 	private long id = 0;
 	private GLContext context = null;
 	
@@ -70,18 +68,6 @@ public class LWJGLDisplayImpl implements IDisplayImpl
 	public boolean isCloseRequested()
 	{
 		return GLFW.glfwWindowShouldClose(this.id) != 0;
-	}
-	
-	@Override
-	public int getPosX()
-	{
-		return this.xPos;
-	}
-	
-	@Override
-	public int getPosY()
-	{
-		return this.yPos;
 	}
 	
 	@Override
@@ -139,15 +125,10 @@ public class LWJGLDisplayImpl implements IDisplayImpl
 	private void updateInfo()
 	{
 		GLFW.glfwGetWindowSize(this.id, this.w, this.h);
-		GLFW.glfwGetWindowPos(this.id, this.x, this.y);
 		
 		this.width = this.w.get();
 		this.height = this.h.get();
-		this.xPos = this.x.get();
-		this.yPos = this.y.get();
 		
-		this.x.position(0);
-		this.y.position(0);
 		this.w.position(0);
 		this.h.position(0);
 		
