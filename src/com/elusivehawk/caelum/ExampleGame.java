@@ -43,30 +43,7 @@ public final class ExampleGame extends Game
 	@Override
 	protected void initiateGame(GameArguments args, AssetManager assets)
 	{
-		this.canvas.drawImage(0, 0, 1, 1, null);
-		
-	}
-	
-	@Override
-	public void update(double delta) throws Throwable
-	{
-		//CaelumEngine.log().log(EnumLogType.INFO, "Test: %s", delta);
-		
-	}
-	
-	@Override
-	public void render(RenderContext rcon)
-	{
-		try
-		{
-			this.canvas.render(rcon);
-			
-		}
-		catch (Exception e)
-		{
-			Logger.log().err(e);
-			ShutdownHelper.exit("CANNOT-RENDER");
-		}
+		this.canvas.drawImage(0.2f, 0.2f, 0.8f, 0.8f, null);
 		
 	}
 	
@@ -113,6 +90,34 @@ public final class ExampleGame extends Game
 			Logger.log().log(EnumLogType.VERBOSE, "Pasted: %s", ((PasteEvent)event).pasted);
 			
 		}
+		
+	}
+	
+	@Override
+	public void update(double delta) throws Throwable
+	{
+		//CaelumEngine.log().log(EnumLogType.INFO, "Test: %s", delta);
+		
+	}
+	
+	@Override
+	public void preRender(RenderContext rcon, double delta)
+	{
+		this.canvas.preRender(rcon, delta);
+		
+	}
+	
+	@Override
+	public void render(RenderContext rcon)
+	{
+		this.canvas.render(rcon);
+		
+	}
+	
+	@Override
+	public void postRender(RenderContext rcon)
+	{
+		this.canvas.postRender(rcon);
 		
 	}
 	

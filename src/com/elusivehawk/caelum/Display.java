@@ -50,7 +50,7 @@ public class Display implements Closeable, IUpdatable
 	{
 		if (!this.initiated)
 		{
-			throw new NullPointerException("Cannot render, display wasn't initiated");
+			throw new CaelumException("Cannot render, display wasn't initiated");
 		}
 		
 		if (this.impl.isCloseRequested() || this.close)

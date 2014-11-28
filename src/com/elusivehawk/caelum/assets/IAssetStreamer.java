@@ -1,8 +1,7 @@
 
 package com.elusivehawk.caelum.assets;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.io.InputStream;
 
 
 /**
@@ -14,11 +13,6 @@ import java.io.DataOutputStream;
 @FunctionalInterface
 public interface IAssetStreamer
 {
-	DataInputStream getIn(String name);
-	
-	default DataOutputStream getOut(String name)
-	{
-		return null;
-	}
+	InputStream getIn(String name);
 	
 }

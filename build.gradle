@@ -48,7 +48,7 @@ jar
 	
 	into("res")
 	{
-		from("java/CaelumEngine/res/")
+		from("res/")
 	}
 	
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE

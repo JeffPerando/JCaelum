@@ -109,7 +109,7 @@ public final class DisplayManager implements Closeable, IUpdatable
 		
 		if (this.displays.isEmpty())
 		{
-			ShutdownHelper.exit("Out of displays");
+			ShutdownHelper.exit(0);
 			
 		}
 		

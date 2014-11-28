@@ -83,7 +83,7 @@ public class Canvas extends RenderableObj
 		}
 		else if (this.isDirty())
 		{
-			GL1.glBufferSubData(this.floatbuf, 0, this.vertex);
+			this.floatbuf.updateVBO(this.vertex, 0);
 			
 		}
 		

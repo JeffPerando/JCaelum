@@ -359,6 +359,10 @@ public final class GL3
 	
 	public static void glFramebufferRenderbuffer(int target, int attachment, int renderbuffertarget, int renderbuffer) throws GLException
 	{
+		impl.glFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer);
+		
+		RenderHelper.checkForGLError();
+		
 	}
 	
 	public static void glFramebufferTexture(GLEnumFBType target, GLEnumFBAttach attachment, int texture, int level) throws GLException

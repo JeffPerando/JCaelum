@@ -112,7 +112,7 @@ public final class GL1
 	
 	public static void glBufferSubData(GLEnumBufferTarget target, int offset, GLEnumDataType type, Buffer data) throws GLException
 	{
-		glBufferSubData(target.getGLId() * type.getByteCount(), offset, type.getGLId(), data);
+		glBufferSubData(target.getGLId(), offset * type.getByteCount(), type.getGLId(), data);
 		
 	}
 	
