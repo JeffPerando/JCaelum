@@ -29,6 +29,7 @@ public class Display implements Closeable, IUpdatable
 	private IDisplayImpl impl = null;
 	
 	private int width = 0, height = 0;
+	private float aspectRatio = 0f;
 	private boolean refresh = false, closed = false, close = false, initiated = false;
 	
 	@SuppressWarnings("unqualified-field-access")
@@ -70,6 +71,7 @@ public class Display implements Closeable, IUpdatable
 			{
 				this.height = this.impl.getHeight();
 				this.width = this.impl.getWidth();
+				this.aspectRatio = (float)this.height / (float)this.width;
 				
 			}
 			
@@ -165,6 +167,11 @@ public class Display implements Closeable, IUpdatable
 	public int getWidth()
 	{
 		return this.width;
+	}
+	
+	public float getAspectRatio()
+	{
+		return this.aspectRatio;
 	}
 	
 	public boolean isClosed()
