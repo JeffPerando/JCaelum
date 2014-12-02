@@ -83,8 +83,6 @@ public class Display implements Closeable, IUpdatable
 		
 		this.impl.updateDisplay();
 		
-		this.input.update(delta);
-		
 	}
 	
 	@Override
@@ -108,6 +106,12 @@ public class Display implements Closeable, IUpdatable
 			this.closed = true;
 			
 		}
+		
+	}
+	
+	public void pollInput(double delta)
+	{
+		this.input.update(delta);
 		
 	}
 	

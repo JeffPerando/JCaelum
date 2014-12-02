@@ -362,11 +362,9 @@ public final class CaelumEngine
 		{
 			String gamefac = this.startargs.get("gamefac");
 			
-			if (gamefac == null)
+			if (gamefac == null || gamefac.equals(""))
 			{
-				Logger.log().log(EnumLogType.VERBOSE, "Running example game");
-				
-				this.factory = (() -> {return new ExampleGame();});
+				Logger.log().log(EnumLogType.WTF, "Cannot make game factory: \"gamefac\" argument not provided!");
 				
 			}
 			else
@@ -611,6 +609,14 @@ public final class CaelumEngine
 		else
 		{
 			File nLoc = FileHelper.getChild("lib", CompInfo.JAR_DIR.getParentFile());
+			
+			if (nLoc == null)
+			{
+				Logger.log().log(EnumLogType.WTF, "\"Lib\" folder is missing! Expect JNI crashing!");
+				
+				return;
+			}
+			
 			List<File> nativeFiles = FileHelper.getFiles(nLoc, ((file) ->
 			{
 				for (String n : natives)
@@ -670,16 +676,6 @@ public final class CaelumEngine
 				
 			}
 			
-			if (!dest.exists())
-			{
-				if (CompInfo.DEBUG)
-				{
-					Logger.log().log(EnumLogType.VERBOSE, "Not copying native \"%s\", destination could not be created", name);
-				}
-				
-				return;
-			}
-			
 		}
 		
 		byte[] hash = HashGen.sha256(bytes);
@@ -691,26 +687,20 @@ public final class CaelumEngine
 			return;
 		}
 		
-		if (dest.exists())
+		byte[] oldHash = HashGen.sha256(FileHelper.readBytes(dest));
+		
+		if (Arrays.equals(hash, oldHash))
 		{
-			byte[] oldHash = HashGen.sha256(FileHelper.readBytes(dest));
-			
-			if (Arrays.equals(hash, oldHash))
+			if (CompInfo.DEBUG)
 			{
-				if (CompInfo.DEBUG)
-				{
-					Logger.log().log(EnumLogType.VERBOSE, "Not copying file \"%s\", checksum matched", name);
-					
-				}
+				Logger.log().log(EnumLogType.VERBOSE, "Not copying file \"%s\", checksum matched", name);
 				
-				return;
 			}
 			
-			Logger.log().log(EnumLogType.WARN, "Checksum for \"%s\" did not match!", name);
-			Logger.log().log(EnumLogType.DEBUG, "Hash: 0x%s", StringHelper.asHexString(hash));
-			Logger.log().log(EnumLogType.DEBUG, "Old hash: 0x%s", StringHelper.asHexString(oldHash));
-			
+			return;
 		}
+		
+		Logger.log().log(EnumLogType.WARN, "Checksum for \"%s\" did not match!", name);
 		
 		if (FileHelper.write(bytes, dest))
 		{

@@ -42,6 +42,19 @@ public final class ThreadGameRender extends ThreadTimed
 	}
 	
 	@Override
+	public boolean doPostUpdate()
+	{
+		return true;
+	}
+	
+	@Override
+	public void postUpdate(double delta) throws Throwable
+	{
+		this.displays.pollInput(delta);
+		
+	}
+	
+	@Override
 	public int getTargetUpdateCount()
 	{
 		return this.fps;

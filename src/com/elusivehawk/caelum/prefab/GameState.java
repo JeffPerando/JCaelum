@@ -1,7 +1,12 @@
 
-package com.elusivehawk.caelum;
+package com.elusivehawk.caelum.prefab;
 
 import java.util.List;
+import com.elusivehawk.caelum.AbstractGameComponent;
+import com.elusivehawk.caelum.CaelumException;
+import com.elusivehawk.caelum.Display;
+import com.elusivehawk.caelum.Game;
+import com.elusivehawk.caelum.GameArguments;
 import com.elusivehawk.caelum.assets.AssetManager;
 import com.elusivehawk.caelum.input.IInputListener;
 import com.elusivehawk.caelum.input.InputEvent;
@@ -9,6 +14,7 @@ import com.elusivehawk.caelum.physics.IPhysicsSimulator;
 import com.elusivehawk.caelum.render.IRenderable;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
+import com.elusivehawk.util.IUpdatable;
 import com.google.common.collect.Lists;
 
 /**
@@ -21,7 +27,9 @@ public class GameState extends AbstractGameComponent
 {
 	protected IInputListener inputLis = null;
 	protected IPhysicsSimulator psim = null;
-	protected List<IRenderable> renderers = Lists.newArrayList();
+	
+	protected final List<IRenderable> renderers = Lists.newArrayList();
+	protected final List<IUpdatable> modules = Lists.newArrayList();
 	
 	public GameState(Game owner, String title)
 	{
@@ -29,29 +37,6 @@ public class GameState extends AbstractGameComponent
 		
 		assert owner != null;
 		
-	}
-	
-	public GameState setInputListener(IInputListener lis)
-	{
-		this.inputLis = lis;
-		
-		return this;
-	}
-	
-	public GameState setPhysicsSim(IPhysicsSimulator sim)
-	{
-		this.psim = sim;
-		
-		return this;
-	}
-	
-	public GameState addRenderer(IRenderable r)
-	{
-		assert r != null;
-		
-		this.renderers.add(r);
-		
-		return this;
 	}
 	
 	@Override
@@ -62,6 +47,13 @@ public class GameState extends AbstractGameComponent
 			this.inputLis.onInputReceived(event, delta);
 			
 		}
+		
+	}
+	
+	@Override
+	public void update(double delta) throws Throwable
+	{
+		this.updateModules(delta);
 		
 	}
 	
@@ -96,6 +88,58 @@ public class GameState extends AbstractGameComponent
 	public IPhysicsSimulator getPhysicsSimulator()
 	{
 		return this.psim;
+	}
+	
+	public GameState setInputListener(IInputListener lis)
+	{
+		this.inputLis = lis;
+		
+		return this;
+	}
+	
+	public GameState setPhysicsSim(IPhysicsSimulator sim)
+	{
+		this.psim = sim;
+		
+		return this;
+	}
+	
+	public GameState addRenderer(IRenderable r)
+	{
+		assert r != null;
+		
+		this.renderers.add(r);
+		
+		return this;
+	}
+	
+	//XXX Module things
+	
+	protected final void updateModules(double delta) throws Throwable
+	{
+		for (IUpdatable m : this.modules)
+		{
+			m.update(delta);
+			
+		}
+		
+	}
+	
+	public synchronized void addModule(IUpdatable m)
+	{
+		if (m instanceof Thread)
+		{
+			throw new CaelumException("Threads aren't modules. Silly Buttons..."/*[sic]*/);
+		}
+		
+		this.modules.add(m);
+		
+	}
+	
+	public synchronized void removeModule(IUpdatable m)
+	{
+		this.modules.remove(m);
+		
 	}
 	
 }

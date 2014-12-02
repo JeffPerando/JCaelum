@@ -1,13 +1,12 @@
 
 package com.elusivehawk.caelum;
 
-import java.util.List;
 import com.elusivehawk.caelum.assets.AssetManager;
 import com.elusivehawk.caelum.input.IInputListener;
 import com.elusivehawk.caelum.physics.IPhysicsSimulator;
+import com.elusivehawk.caelum.prefab.GameState;
 import com.elusivehawk.caelum.render.IRenderable;
 import com.elusivehawk.util.IUpdatable;
-import com.google.common.collect.Lists;
 
 /**
  * 
@@ -25,7 +24,6 @@ public abstract class AbstractGameComponent implements IInputListener, IUpdatabl
 	private final AbstractGameComponent master;
 	
 	protected final String name;
-	protected final List<IUpdatable> modules = Lists.newArrayList();
 	
 	protected AbstractGameComponent(String title)
 	{
@@ -42,13 +40,6 @@ public abstract class AbstractGameComponent implements IInputListener, IUpdatabl
 	}
 	
 	@Override
-	public void update(double delta) throws Throwable
-	{
-		this.updateModules(delta);
-		
-	}
-	
-	@Override
 	public String toString()
 	{
 		if (this.master == null)
@@ -56,55 +47,7 @@ public abstract class AbstractGameComponent implements IInputListener, IUpdatabl
 			return this.getFormattedName();
 		}
 		
-		StringBuilder b = new StringBuilder(this.modules.size() * 2 + 2);
-		
-		b.append(this.name);
-		b.append('{');
-		
-		for (int c = 0; c < this.modules.size(); c++)
-		{
-			b.append(this.modules.get(c));
-			
-			if (c < (this.modules.size() - 1))
-			{
-				b.append(", ");
-				
-			}
-			
-		}
-		
-		b.append('}');
-		
-		return String.format("%s.%s", this.master.master == null ? this.master.name : this.master.toString(), b.toString());
-	}
-	
-	//XXX Module things
-	
-	protected final void updateModules(double delta) throws Throwable
-	{
-		for (IUpdatable m : this.modules)
-		{
-			m.update(delta);
-			
-		}
-		
-	}
-	
-	public synchronized void addModule(IUpdatable m)
-	{
-		if (m instanceof Thread)
-		{
-			throw new CaelumException("Threads aren't modules. Silly Buttons..."/*[sic]*/);
-		}
-		
-		this.modules.add(m);
-		
-	}
-	
-	public synchronized void removeModule(IUpdatable m)
-	{
-		this.modules.remove(m);
-		
+		return String.format("%s.%s", this.master.master == null ? this.master.name : this.master.toString(), this.name);
 	}
 	
 	public String getFormattedName()
@@ -114,10 +57,16 @@ public abstract class AbstractGameComponent implements IInputListener, IUpdatabl
 	
 	public void onScreenFlipped(boolean flip){}
 	
+	/**
+	 * 
+	 * Called during startup.
+	 * 
+	 * @return The physics simulator to use during the game's lifespan.
+	 */
+	public abstract IPhysicsSimulator getPhysicsSimulator();
+	
 	public abstract void initiate(GameArguments args, Display display, AssetManager assets) throws Throwable;
 	
 	public abstract void onShutdown();
-	
-	public abstract IPhysicsSimulator getPhysicsSimulator();
 	
 }

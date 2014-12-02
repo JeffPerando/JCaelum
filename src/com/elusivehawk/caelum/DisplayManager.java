@@ -141,6 +141,12 @@ public final class DisplayManager implements Closeable, IUpdatable
 		
 	}
 	
+	public void pollInput(double delta)
+	{
+		this.displays.forEach(((display) -> {display.pollInput(delta);}));
+		
+	}
+	
 	public Display createDisplay(String name, DisplaySettings settings, IRenderable renderer)
 	{
 		if (name == null || name.equalsIgnoreCase(""))

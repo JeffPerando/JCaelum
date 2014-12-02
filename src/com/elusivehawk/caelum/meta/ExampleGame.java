@@ -1,14 +1,21 @@
 
-package com.elusivehawk.caelum;
+package com.elusivehawk.caelum.meta;
 
+import com.elusivehawk.caelum.CaelumEngine;
+import com.elusivehawk.caelum.Display;
+import com.elusivehawk.caelum.DisplaySettings;
+import com.elusivehawk.caelum.Game;
+import com.elusivehawk.caelum.GameArguments;
 import com.elusivehawk.caelum.assets.AssetManager;
 import com.elusivehawk.caelum.input.InputEvent;
 import com.elusivehawk.caelum.input.Key;
 import com.elusivehawk.caelum.input.KeyEvent;
 import com.elusivehawk.caelum.input.MouseEvent;
 import com.elusivehawk.caelum.input.PasteEvent;
+import com.elusivehawk.caelum.physics.IPhysicsSimulator;
 import com.elusivehawk.caelum.render.Canvas;
 import com.elusivehawk.caelum.render.RenderContext;
+import com.elusivehawk.caelum.render.RenderException;
 import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.Logger;
@@ -34,21 +41,11 @@ public final class ExampleGame extends Game
 		
 	}
 	
-	@Override
-	public Version getGameVersion()
+	public static void main(String... args)
 	{
-		return VERSION;
-	}
-	
-	@Override
-	protected void initiateGame(GameArguments args, AssetManager assets)
-	{
-		this.canvas.drawImage(0.2f, 0.2f, 0.8f, 0.8f, null);
+		CaelumEngine.start((() -> {return new ExampleGame();}), args);
 		
 	}
-	
-	@Override
-	protected void onGameShutdown(){}
 	
 	@Override
 	public void onInputReceived(InputEvent event, double delta)
@@ -82,7 +79,7 @@ public final class ExampleGame extends Game
 		{
 			MouseEvent me = (MouseEvent)event;
 			
-			Logger.log().log(EnumLogType.VERBOSE, "Mouse pos: %s", me.pos);
+			Logger.log().log(EnumLogType.VERBOSE, "Mouse pos: %s; Delta: %s", me.pos, me.delta);
 			
 		}
 		else if (event instanceof PasteEvent)
@@ -94,9 +91,9 @@ public final class ExampleGame extends Game
 	}
 	
 	@Override
-	public void update(double delta) throws Throwable
+	public void render(RenderContext rcon) throws RenderException
 	{
-		//CaelumEngine.log().log(EnumLogType.INFO, "Test: %s", delta);
+		this.canvas.render(rcon);
 		
 	}
 	
@@ -108,16 +105,44 @@ public final class ExampleGame extends Game
 	}
 	
 	@Override
-	public void render(RenderContext rcon)
+	public void postRender(RenderContext rcon)
 	{
-		this.canvas.render(rcon);
+		this.canvas.postRender(rcon);
 		
 	}
 	
 	@Override
-	public void postRender(RenderContext rcon)
+	public Version getGameVersion()
 	{
-		this.canvas.postRender(rcon);
+		return VERSION;
+	}
+	
+	@Override
+	public DisplaySettings getDisplaySettings()
+	{
+		return null;
+	}
+	
+	@Override
+	public void initiate(GameArguments args, Display display, AssetManager assets) throws Throwable
+	{
+		this.canvas.drawImage(0.2f, 0.2f, 0.8f, 0.8f, null);
+		
+	}
+	
+	@Override
+	public void onShutdown(){}
+	
+	@Override
+	public IPhysicsSimulator getPhysicsSimulator()
+	{
+		return null;
+	}
+	
+	@Override
+	public void update(double delta) throws Throwable
+	{
+		//CaelumEngine.log().log(EnumLogType.INFO, "Test: %s", delta);
 		
 	}
 	

@@ -4,8 +4,8 @@ package com.elusivehawk.caelum.lwjgl;
 import java.util.List;
 import org.lwjgl.system.glfw.GLFW;
 import com.elusivehawk.caelum.Display;
+import com.elusivehawk.caelum.input.DelayedInput;
 import com.elusivehawk.caelum.input.EnumInputType;
-import com.elusivehawk.caelum.input.Input;
 import com.elusivehawk.caelum.input.InputManager;
 import com.elusivehawk.caelum.input.Key;
 import com.elusivehawk.caelum.input.KeyEvent;
@@ -20,7 +20,7 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-public class LWJGLKeyboard extends Input
+public class LWJGLKeyboard extends DelayedInput
 {
 	public static final ImmutableList<Tuple<Integer, Key>> GLFW_ENUMS;
 	
@@ -153,10 +153,11 @@ public class LWJGLKeyboard extends Input
 		for (Tuple<Integer, Key> t : GLFW_ENUMS)
 		{
 			int status = GLFW.glfwGetKey(window, t.one);
-			boolean down = (status == GLFW.GLFW_PRESS);
-			boolean downPrev = false;
 			
-			if (down || (downPrev = this.downKeys.contains(t.two)))
+			boolean down = (status == GLFW.GLFW_PRESS);
+			boolean downPrev = this.downKeys.contains(t.two);
+			
+			if (down || downPrev)
 			{
 				if (down)
 				{
