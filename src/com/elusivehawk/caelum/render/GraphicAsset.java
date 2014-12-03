@@ -13,7 +13,7 @@ import com.elusivehawk.caelum.render.gl.IGLDeletable;
  */
 public abstract class GraphicAsset extends Asset implements IGLDeletable
 {
-	protected volatile boolean loaded = false, registered = false;
+	protected boolean loaded = false, registered = false;
 	
 	public GraphicAsset(String path, EnumAssetType aType)
 	{
@@ -41,5 +41,7 @@ public abstract class GraphicAsset extends Asset implements IGLDeletable
 	{
 		return this.loaded && this.isRead();
 	}
+	
+	public abstract void initiate(RenderContext rcon);
 	
 }

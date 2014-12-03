@@ -45,40 +45,7 @@ public class Shader extends GraphicAsset
 	}
 	
 	@Override
-	protected boolean readAsset(DataInputStream in) throws Throwable
-	{
-		String src = StringHelper.readToOneLine(in);
-		
-		synchronized (this)
-		{
-			this.source = src;
-			
-		}
-		
-		return this.source != null;
-	}
-	
-	@Override
-	public void onExistingAssetFound(Asset a)
-	{
-		super.onExistingAssetFound(a);
-		
-		if (a instanceof Shader && ((Shader)a).isLoaded())
-		{
-			synchronized (this)
-			{
-				Shader s = (Shader)a;
-				
-				this.source = s.source;
-				this.glId = s.glId;
-				
-			}
-			
-		}
-		
-	}
-	
-	public int getShaderId()
+	public void initiate(RenderContext rcon)
 	{
 		if (this.glId == 0 && this.source != null)
 		{
@@ -106,15 +73,60 @@ public class Shader extends GraphicAsset
 				
 				GL2.glDeleteShader(id);
 				
-				return 0;
 			}
-			
-			this.glId = id;
-			
-			Logger.log().verbose("Successfully compiled shader \"%s\"", this.filepath);
+			else
+			{
+				synchronized (this)
+				{
+					this.glId = id;
+					this.loaded = true;
+					
+				}
+				
+				Logger.log().verbose("Successfully compiled shader \"%s\"", this.filepath);
+				
+			}
 			
 		}
 		
+	}
+	
+	@Override
+	protected boolean readAsset(DataInputStream in) throws Throwable
+	{
+		String src = StringHelper.readToOneLine(in);
+		
+		synchronized (this)
+		{
+			this.source = src;
+			
+		}
+		
+		return this.source != null;
+	}
+	
+	@Override
+	public void onExistingAssetFound(Asset a)
+	{
+		super.onExistingAssetFound(a);
+		
+		if (a instanceof Shader)
+		{
+			Shader s = (Shader)a;
+			
+			synchronized (this)
+			{
+				this.source = s.source;
+				this.glId = s.glId;
+				
+			}
+			
+		}
+		
+	}
+	
+	public int getShaderId()
+	{
 		return this.glId;
 	}
 	

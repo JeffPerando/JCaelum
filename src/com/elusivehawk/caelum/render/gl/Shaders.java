@@ -15,7 +15,7 @@ public class Shaders implements IDirty
 {
 	private final Shader[] shaders = new Shader[RenderConst.SHADER_COUNT];
 	private int shCount = 0;
-	private volatile boolean dirty = false;
+	private boolean dirty = false;
 	
 	@Override
 	public boolean isDirty()
@@ -24,7 +24,7 @@ public class Shaders implements IDirty
 	}
 
 	@Override
-	public void setIsDirty(boolean b)
+	public synchronized void setIsDirty(boolean b)
 	{
 		this.dirty = b;
 		
@@ -45,9 +45,15 @@ public class Shaders implements IDirty
 		{
 			sh = this.shaders[c];
 			
-			if (sh == null || !sh.isLoaded())
+			if (sh == null)
 			{
 				continue;
+			}
+			
+			if (!sh.isLoaded())
+			{
+				sh.initiate(rcon);
+				
 			}
 			
 			GL2.glAttachShader(p, sh);
@@ -79,7 +85,7 @@ public class Shaders implements IDirty
 		
 	}
 	
-	public synchronized boolean addShader(Shader sh)
+	public boolean addShader(Shader sh)
 	{
 		assert sh != null;
 		
@@ -93,9 +99,13 @@ public class Shaders implements IDirty
 			return false;
 		}
 		
-		this.shaders[sh.gltype.ordinal()] = sh;
-		this.dirty = true;
-		this.shCount++;
+		synchronized (this)
+		{
+			this.shaders[sh.gltype.ordinal()] = sh;
+			this.dirty = true;
+			this.shCount++;
+			
+		}
 		
 		return true;
 	}

@@ -33,17 +33,6 @@ public class TextureAsset extends GraphicAsset implements ITexture
 	}
 	
 	@Override
-	public void delete(RenderContext rcon)
-	{
-		if (this.frames != null)
-		{
-			GL1.glDeleteTextures(this.frames);
-			
-		}
-		
-	}
-	
-	@Override
 	public void preRender(RenderContext rcon, double delta)
 	{
 		if (this.frames == null)
@@ -78,9 +67,14 @@ public class TextureAsset extends GraphicAsset implements ITexture
 	}
 	
 	@Override
-	public boolean isStatic()
+	public void delete(RenderContext rcon)
 	{
-		return this.getFrameCount() < 2;
+		if (this.frames != null)
+		{
+			GL1.glDeleteTextures(this.frames);
+			
+		}
+		
 	}
 	
 	@Override
@@ -88,6 +82,15 @@ public class TextureAsset extends GraphicAsset implements ITexture
 	{
 		return this.frames == null ? 0 : this.frames[this.frame];
 	}
+	
+	@Override
+	public boolean isStatic()
+	{
+		return this.getFrameCount() < 2;
+	}
+	
+	@Override
+	public void initiate(RenderContext rcon){}
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -110,11 +113,6 @@ public class TextureAsset extends GraphicAsset implements ITexture
 			
 		}
 		else throw new CaelumException("Unusable return type for texture of type %s: %s", this.ext, read);
-		
-		if (imgs.isEmpty())
-		{
-			return false;
-		}
 		
 		ILegibleImage[] srcs = imgs.toArray(new ILegibleImage[imgs.size()]);
 		int[] fs = new int[imgs.size()];
