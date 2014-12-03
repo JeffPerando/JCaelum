@@ -28,7 +28,7 @@ public class Canvas extends RenderableObj
 	
 	private final VertexBuffer floatbuf;
 	
-	private SubCanvas sub = null;
+	private Rectangle sub = null;
 	private int images = 0;
 	private boolean expanded = false;
 	
@@ -80,6 +80,8 @@ public class Canvas extends RenderableObj
 		{
 			this.floatbuf.uploadBuffer(this.vertex);
 			
+			this.expanded = false;
+			
 		}
 		else if (this.isDirty())
 		{
@@ -115,9 +117,15 @@ public class Canvas extends RenderableObj
 	
 	public void createSubCanvas(float xmin, float ymin, float xmax, float ymax)
 	{
+		this.createSubCanvas(new Rectangle(xmin, ymin, xmax, ymax));
+		
+	}
+	
+	public void createSubCanvas(Rectangle r)
+	{
 		if (this.sub == null)
 		{
-			this.sub = new SubCanvas(xmin, ymin, xmax, ymax);
+			this.sub = r;
 			
 		}
 		
@@ -135,21 +143,9 @@ public class Canvas extends RenderableObj
 		return true;
 	}
 	
-	public void drawImage(Rectangle r, int mat)
-	{
-		this.drawImage(r.x, r.y, r.z, r.w, mat);
-		
-	}
-	
 	public void drawImage(float x, float y, float z, float w, int mat)
 	{
 		this.drawImage(x, y, z, w, BLANK_ICON, mat);
-		
-	}
-	
-	public void drawImage(Rectangle r, Icon icon)
-	{
-		this.drawImage(r.x, r.y, r.z, r.w, icon);
 		
 	}
 	
@@ -159,45 +155,60 @@ public class Canvas extends RenderableObj
 		
 	}
 	
-	public void drawImage(Rectangle r, Icon icon, int mat)
+	public void drawImage(float x, float y, float z, float w, Icon icon, int mat)
 	{
-		this.drawImage(r.x, r.y, r.z, r.w, icon, mat);
+		this.drawImage(new Rectangle(x, y, z, w), icon, mat);
 		
 	}
 	
-	public void drawImage(float x, float y, float z, float w, Icon icon, int mat)
+	public void drawImage(Rectangle r, Icon icon)
 	{
+		this.drawImage(r, icon, 0);
+		
+	}
+	
+	public void drawImage(Rectangle r, int mat)
+	{
+		this.drawImage(r, BLANK_ICON, mat);
+		
+	}
+	
+	public void drawImage(Rectangle r, Icon icon, int mat)
+	{
+		if (this.sub != null)
+		{
+			r = this.sub.interpolate(r);
+			
+		}
+		
 		if (icon == null)
 		{
 			icon = BLANK_ICON;
 			
 		}
 		
-		if (this.sub != null)
-		{
-			x = this.sub.interpolateX(x);
-			y = this.sub.interpolateY(y);
-			z = this.sub.interpolateW(z);
-			w = this.sub.interpolateH(w);
-			
-		}
-		
-		mat = MathHelper.clamp(mat, 0, 16);
+		mat = MathHelper.clamp(mat, 0, RenderConst.MATERIAL_CAP - 1);
 		
 		if (this.vertex.remaining() == 0)
 		{
-			this.vertex = BufferHelper.expand(this.vertex, RenderConst.FLOATS_PER_IMG * 4);
-			this.expanded = true;
+			FloatBuffer fb = BufferHelper.expand(this.vertex, RenderConst.FLOATS_PER_IMG * 4);
+			
+			synchronized (this)
+			{
+				this.vertex = fb;
+				this.expanded = true;
+				
+			}
 			
 		}
 		
-		this.addCorner(x, y, mat, 0, icon);
-		this.addCorner(z, y, mat, 1, icon);
-		this.addCorner(x, w, mat, 2, icon);
+		this.addCorner(r.x, r.y, mat, 0, icon);
+		this.addCorner(r.z, r.y, mat, 1, icon);
+		this.addCorner(r.x, r.w, mat, 2, icon);
 		
-		this.addCorner(z, y, mat, 1, icon);
-		this.addCorner(x, w, mat, 2, icon);
-		this.addCorner(z, w, mat, 3, icon);
+		this.addCorner(r.z, r.y, mat, 1, icon);
+		this.addCorner(r.x, r.w, mat, 2, icon);
+		this.addCorner(r.z, r.w, mat, 3, icon);
 		
 		this.images++;
 		
