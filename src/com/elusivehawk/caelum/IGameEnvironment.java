@@ -36,13 +36,8 @@ public interface IGameEnvironment
 	
 	ImmutableList<String> getNatives();
 	
-	/**
-	 * 
-	 * @return
-	 * @throws Throwable
-	 */
 	IDisplayImpl createDisplay() throws Throwable;
 	
-	Input loadInput(InputManager inmgr, EnumInputType type);
+	Input createInput(InputManager inmgr, EnumInputType type);
 	
 }

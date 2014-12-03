@@ -101,7 +101,7 @@ public final class InputManager implements Closeable, IUpdatable
 		
 		for (EnumInputType type : this.types)
 		{
-			Input in = ge.loadInput(this, type);
+			Input in = ge.createInput(this, type);
 			
 			if (in == null)
 			{

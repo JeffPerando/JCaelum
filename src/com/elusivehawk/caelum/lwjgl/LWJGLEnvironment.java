@@ -98,7 +98,7 @@ public class LWJGLEnvironment implements IGameEnvironment
 	}
 	
 	@Override
-	public Input loadInput(InputManager inmgr, EnumInputType type)
+	public Input createInput(InputManager inmgr, EnumInputType type)
 	{
 		switch (type)
 		{
