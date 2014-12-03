@@ -10,6 +10,6 @@ package com.elusivehawk.caelum;
 @FunctionalInterface
 public interface IGameFactory
 {
-	public Game createGame();
+	Game createGame();
 	
 }
