@@ -19,7 +19,6 @@ import com.elusivehawk.caelum.render.RenderException;
 import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.Logger;
-import com.elusivehawk.util.ShutdownHelper;
 import com.elusivehawk.util.Version;
 
 /**
@@ -58,7 +57,7 @@ public final class ExampleGame extends Game
 			{
 				if (ke.key == Key.ESCAPE)
 				{
-					ShutdownHelper.exit(1337);
+					event.display.close();
 					
 				}
 				else

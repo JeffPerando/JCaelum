@@ -60,7 +60,24 @@ public class Display implements Closeable, IUpdatable
 		
 		if (this.impl.isCloseRequested() || this.close)
 		{
-			this.close();
+			try
+			{
+				this.rcon.close();
+				this.input.close();
+				this.impl.close();
+				
+			}
+			catch (Throwable e)
+			{
+				Logger.log().err(e);
+				
+			}
+			
+			synchronized (this)
+			{
+				this.closed = true;
+				
+			}
 			
 			return;
 		}
@@ -92,26 +109,9 @@ public class Display implements Closeable, IUpdatable
 	}
 	
 	@Override
-	public void close()
+	public synchronized void close()
 	{
-		try
-		{
-			this.rcon.close();
-			this.input.close();
-			this.impl.close();
-			
-		}
-		catch (Throwable e)
-		{
-			Logger.log().err(e);
-			
-		}
-		
-		synchronized (this)
-		{
-			this.closed = true;
-			
-		}
+		this.close = true;
 		
 	}
 	
@@ -200,9 +200,13 @@ public class Display implements Closeable, IUpdatable
 		
 	}
 	
-	public synchronized void closeWindow()
+	public void addInputListener(IInputListener lis)
 	{
-		this.close = true;
+		for (EnumInputType type : EnumInputType.values())
+		{
+			this.addInputListener(type, lis);
+			
+		}
 		
 	}
 	
@@ -224,6 +228,16 @@ public class Display implements Closeable, IUpdatable
 	{
 		this.input.sendInputEvents(delta);
 		
+	}
+	
+	public float interpolateX(int x)
+	{
+		return x / (float)this.width;
+	}
+	
+	public float interpolateY(int y)
+	{
+		return y / (float)this.height;
 	}
 	
 }
