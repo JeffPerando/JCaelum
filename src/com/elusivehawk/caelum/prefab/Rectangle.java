@@ -30,7 +30,7 @@ public class Rectangle
 	
 	public boolean within(Vector point)
 	{
-		return MathHelper.bounds(point.get(MathConst.X), this.x, this.w) && MathHelper.bounds(point.get(MathConst.Y), this.y, this.z);
+		return MathHelper.bounds(point.get(MathConst.X), this.x, this.z) && MathHelper.bounds(point.get(MathConst.Y), this.y, this.w);
 	}
 	
 }
