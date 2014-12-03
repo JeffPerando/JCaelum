@@ -1,6 +1,8 @@
 
 package com.elusivehawk.caelum.render;
 
+import com.elusivehawk.caelum.prefab.Rectangle;
+
 /**
  * 
  * 
@@ -12,11 +14,17 @@ public class Icon
 	private final float[] stats;
 	private final float[][] corners;
 	
-	@SuppressWarnings("unqualified-field-access")
-	public Icon(float x, float y, float w, float h)
+	public Icon(Rectangle r)
 	{
-		stats = new float[]{x, y, w, h};
-		corners = new float[][]{{x, y}, {w, y}, {x, h}, {w, h}};
+		this(r.x, r.y, r.z, r.w);
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public Icon(float x, float y, float z, float w)
+	{
+		stats = new float[]{x, y, z, w};
+		corners = new float[][]{{x, y}, {z, y}, {x, w}, {z, w}};
 		
 	}
 	
