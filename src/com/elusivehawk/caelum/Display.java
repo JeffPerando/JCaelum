@@ -21,11 +21,10 @@ import com.elusivehawk.util.Logger;
 public class Display implements Closeable, IUpdatable
 {
 	private final String name;
-	private final IRenderable renderer;
 	private final InputManager input;
+	private final RenderContext rcon;
 	
 	private DisplaySettings settings = null;
-	private RenderContext rcon = null;
 	private IDisplayImpl impl = null;
 	
 	private int width = 0, height = 0;
@@ -40,7 +39,7 @@ public class Display implements Closeable, IUpdatable
 		
 		name = str;
 		settings = ds;
-		renderer = r;
+		rcon = new RenderContext(this, r);
 		
 		input = new InputManager(this);
 		
@@ -49,6 +48,11 @@ public class Display implements Closeable, IUpdatable
 	@Override
 	public void update(double delta) throws Throwable
 	{
+		if (this.closed)
+		{
+			throw new CaelumException("Trying to update a closed display: Not a good idea");
+		}
+		
 		if (!this.initiated)
 		{
 			throw new CaelumException("Cannot render, display wasn't initiated");
@@ -133,8 +137,6 @@ public class Display implements Closeable, IUpdatable
 		this.impl = imp;
 		
 		this.input.initiateInput(ge);
-		
-		this.rcon = new RenderContext(this, this.renderer);
 		
 		if (!this.rcon.initContext())
 		{
