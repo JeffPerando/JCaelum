@@ -15,17 +15,18 @@ import com.elusivehawk.util.concurrent.ThreadTimed;
 public final class ThreadGameRender extends ThreadTimed
 {
 	private final DisplayManager displays;
-	
-	private int fps = 30;
+	private final int fps;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public ThreadGameRender(DisplayManager dmgr)
+	public ThreadGameRender(DisplayManager dmgr, int i)
 	{
 		super("Renderer");
 		
 		assert dmgr != null;
+		assert i > 0;
 		
 		displays = dmgr;
+		fps = i;
 		
 	}
 	
@@ -64,14 +65,6 @@ public final class ThreadGameRender extends ThreadTimed
 	public void onThreadStopped(boolean failure)
 	{
 		this.displays.close();
-		
-	}
-	
-	public synchronized void setFPS(int i)
-	{
-		assert i > 0;
-		
-		this.fps = i;
 		
 	}
 	

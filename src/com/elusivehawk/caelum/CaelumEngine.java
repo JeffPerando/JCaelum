@@ -450,7 +450,7 @@ public final class CaelumEngine
 		//XXX Create game threads
 		
 		this.threads.put(EnumEngineFeature.LOGIC, new ThreadGameLoop(this.game, this.displays));
-		this.threads.put(EnumEngineFeature.RENDER, new ThreadGameRender(this.displays));
+		this.threads.put(EnumEngineFeature.RENDER, new ThreadGameRender(this.displays, this.game.getUpdateCount()));
 		/*this.threads.put(EnumEngineFeature.SOUND, new ThreadSoundPlayer());
 		
 		IPhysicsSimulator ph = this.game.getPhysicsSimulator();
