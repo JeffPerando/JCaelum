@@ -3,7 +3,7 @@ package com.elusivehawk.caelum;
 
 /**
  * 
- * 
+ * Primary class for exceptions created by Caelum, because... reasons?
  * 
  * @author Elusivehawk
  */

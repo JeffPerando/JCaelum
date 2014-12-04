@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 
 /**
  * 
- * 
+ * Denotes an experimental feature.
  * 
  * @author Elusivehawk
  */

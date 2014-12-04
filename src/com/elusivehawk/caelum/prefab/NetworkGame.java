@@ -4,7 +4,6 @@ package com.elusivehawk.caelum.prefab;
 import java.io.IOException;
 import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.Game;
-import com.elusivehawk.caelum.GameArguments;
 import com.elusivehawk.caelum.assets.AssetManager;
 import com.elusivehawk.util.network.Client;
 import com.elusivehawk.util.network.ConnectionType;
@@ -41,21 +40,21 @@ public abstract class NetworkGame extends Game implements INetworkMaster
 		
 	}
 	
-	public abstract int getMaxPlayerCount(GameArguments args);
+	public abstract int getMaxPlayerCount();
 	
 	@Override
-	protected void preInit(GameArguments args)
+	protected void preInit()
 	{
 		switch (this.side)
 		{
 			case CLIENT: this.host = new Client(this);
-			case SERVER: this.host = new Server(this, this.port, this.getMaxPlayerCount(args));
+			case SERVER: this.host = new Server(this, this.port, this.getMaxPlayerCount());
 		}
 		
 	}
 	
 	@Override
-	public void initiate(GameArguments args, Display display, AssetManager assets) throws Throwable
+	public void initiate(Display display, AssetManager assets) throws Throwable
 	{
 		if (this.side != Side.SERVER)
 		{

@@ -14,7 +14,7 @@ import com.elusivehawk.util.Logger;
 
 /**
  * 
- * 
+ * Core class for the Caelum Engine's display system.
  * 
  * @author Elusivehawk
  */

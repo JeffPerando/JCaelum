@@ -13,7 +13,7 @@ import com.elusivehawk.util.storage.SyncList;
 
 /**
  * 
- * 
+ * Handles display updating.
  * 
  * @author Elusivehawk
  */

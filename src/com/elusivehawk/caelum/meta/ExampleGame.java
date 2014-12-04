@@ -5,7 +5,6 @@ import com.elusivehawk.caelum.CaelumEngine;
 import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.DisplaySettings;
 import com.elusivehawk.caelum.Game;
-import com.elusivehawk.caelum.GameArguments;
 import com.elusivehawk.caelum.assets.AssetManager;
 import com.elusivehawk.caelum.input.InputEvent;
 import com.elusivehawk.caelum.input.Key;
@@ -17,7 +16,6 @@ import com.elusivehawk.caelum.render.Canvas;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
 import com.elusivehawk.util.EnumLogType;
-import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.Version;
 
@@ -27,7 +25,6 @@ import com.elusivehawk.util.Version;
  * 
  * @author Elusivehawk
  */
-@Internal
 public final class ExampleGame extends Game
 {
 	public static final Version VERSION = new Version(1, 0, 0);
@@ -123,7 +120,7 @@ public final class ExampleGame extends Game
 	}
 	
 	@Override
-	public void initiate(GameArguments args, Display display, AssetManager assets) throws Throwable
+	public void initiate(Display display, AssetManager assets) throws Throwable
 	{
 		this.canvas.drawImage(0.2f, 0.2f, 0.8f, 0.8f, null);
 		

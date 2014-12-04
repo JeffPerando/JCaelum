@@ -62,7 +62,6 @@ public final class CaelumEngine
 	
 	private IGameFactory factory = null;
 	private Game game = null;
-	private GameArguments gameargs = null;
 	private Display defaultDisplay = null;
 	private DisplayManager displays = null;
 	
@@ -119,11 +118,6 @@ public final class CaelumEngine
 	public static TaskManager tasks()
 	{
 		return instance().tasks;
-	}
-	
-	public static GameArguments gameArgs()
-	{
-		return instance().gameargs;
 	}
 	
 	public static File getNativeLocation()
@@ -248,7 +242,6 @@ public final class CaelumEngine
 		}
 		
 		this.startargs.putAll(strs);
-		this.gameargs = new GameArguments(gargs);
 		
 		Logger.log().log(EnumLogType.INFO, "Starting Caelum Engine %s on %s.", VERSION, CompInfo.OS);
 		
@@ -402,7 +395,7 @@ public final class CaelumEngine
 		
 		this.tasks.start();
 		
-		g.preInit(this.gameargs);
+		g.preInit();
 		
 		Logger.log().log(EnumLogType.INFO,"Loading %s", g);
 		
@@ -436,7 +429,7 @@ public final class CaelumEngine
 		
 		try
 		{
-			g.initiate(this.gameargs, this.defaultDisplay, this.assets);
+			g.initiate(this.defaultDisplay, this.assets);
 			
 		}
 		catch (Throwable e)
@@ -553,8 +546,6 @@ public final class CaelumEngine
 		this.env = null;
 		this.envConfig = null;
 		this.displays = null;
-		
-		this.gameargs = null;
 		
 	}
 	

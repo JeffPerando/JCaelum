@@ -3,7 +3,6 @@ package com.elusivehawk.caelum.render;
 
 import java.nio.FloatBuffer;
 import com.elusivehawk.caelum.CaelumException;
-import com.elusivehawk.caelum.assets.IAssetReceiver;
 import com.elusivehawk.caelum.render.gl.GL1;
 import com.elusivehawk.caelum.render.gl.GLConst;
 import com.elusivehawk.caelum.render.gl.GLEnumBufferTarget;
@@ -11,7 +10,6 @@ import com.elusivehawk.caelum.render.gl.GLEnumDataUsage;
 import com.elusivehawk.caelum.render.gl.GLEnumUType;
 import com.elusivehawk.caelum.render.gl.GLProgram;
 import com.elusivehawk.caelum.render.gl.VertexBuffer;
-import com.elusivehawk.util.IDirty;
 import com.elusivehawk.util.math.Matrix;
 import com.elusivehawk.util.math.MatrixHelper;
 import com.elusivehawk.util.math.Quaternion;
@@ -24,13 +22,8 @@ import com.elusivehawk.util.storage.BufferHelper;
  * 
  * @author Elusivehawk
  * 
- * @see Filters
- * @see Model
- * @see IAssetReceiver
- * @see IDirty
- * @see ILogicalRender
- * @see IQuatListener
- * @see IVecListener
+ * @see Mesh
+ * @see RenderableObj
  */
 public class MeshRenderer extends RenderableObj implements Quaternion.Listener, Vector.Listener
 {

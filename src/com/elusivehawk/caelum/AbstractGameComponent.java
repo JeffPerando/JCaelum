@@ -65,7 +65,7 @@ public abstract class AbstractGameComponent implements IInputListener, IUpdatabl
 	 */
 	public abstract IPhysicsSimulator getPhysicsSimulator();
 	
-	public abstract void initiate(GameArguments args, Display display, AssetManager assets) throws Throwable;
+	public abstract void initiate(Display display, AssetManager assets) throws Throwable;
 	
 	public abstract void onShutdown();
 	

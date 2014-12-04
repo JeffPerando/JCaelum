@@ -5,10 +5,7 @@ import java.io.Closeable;
 
 /**
  * 
- * The new display system for the Caelum Engine.
- * <p>
- * NOTICE: For the sake of simplicity, it is highly recommended that any implementors maximize
- * the window this object is tied to.
+ * Implementation interface for {@link Display}s.
  * 
  * @author Elusivehawk
  */

@@ -6,7 +6,6 @@ import com.elusivehawk.caelum.AbstractGameComponent;
 import com.elusivehawk.caelum.CaelumException;
 import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.Game;
-import com.elusivehawk.caelum.GameArguments;
 import com.elusivehawk.caelum.assets.AssetManager;
 import com.elusivehawk.caelum.input.IInputListener;
 import com.elusivehawk.caelum.input.InputEvent;
@@ -79,7 +78,7 @@ public class GameState extends AbstractGameComponent
 	}
 	
 	@Override
-	public void initiate(GameArguments args, Display display, AssetManager assets){}
+	public void initiate(Display display, AssetManager assets){}
 	
 	@Override
 	public void onShutdown(){}

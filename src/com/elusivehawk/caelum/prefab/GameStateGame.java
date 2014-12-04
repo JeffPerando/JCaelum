@@ -4,7 +4,6 @@ package com.elusivehawk.caelum.prefab;
 import com.elusivehawk.caelum.CaelumEngine;
 import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.Game;
-import com.elusivehawk.caelum.GameArguments;
 import com.elusivehawk.caelum.assets.AssetManager;
 import com.elusivehawk.caelum.input.InputEvent;
 import com.elusivehawk.caelum.physics.IPhysicsSimulator;
@@ -38,11 +37,11 @@ public abstract class GameStateGame extends Game
 	}
 	
 	@Override
-	public final void initiate(GameArguments args, Display display, AssetManager assets) throws Throwable
+	public final void initiate(Display display, AssetManager assets) throws Throwable
 	{
 		if (this.nextState != null)
 		{
-			this.nextState.initiate(args, display, assets);
+			this.nextState.initiate(display, assets);
 			
 			this.state = this.nextState;
 			this.nextState = null;
@@ -123,7 +122,7 @@ public abstract class GameStateGame extends Game
 			
 			try
 			{
-				this.state.initiate(CaelumEngine.gameArgs(), CaelumEngine.defaultDisplay(), CaelumEngine.assets());
+				this.state.initiate(CaelumEngine.defaultDisplay(), CaelumEngine.assets());
 				
 			}
 			catch (Throwable e)

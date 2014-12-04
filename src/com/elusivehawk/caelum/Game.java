@@ -12,7 +12,7 @@ import com.google.common.collect.Lists;
 
 /**
  * 
- * 
+ * Primary game class.
  * 
  * @author Elusivehawk
  */
@@ -50,7 +50,7 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 	
 	//XXX Optional/technical methods
 	
-	protected void preInit(GameArguments args){}
+	protected void preInit(){}
 	
 	public int getUpdateCount()
 	{

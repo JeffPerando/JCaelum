@@ -2,6 +2,7 @@
 package com.elusivehawk.caelum;
 
 import com.elusivehawk.caelum.render.tex.Color;
+import com.elusivehawk.util.MakeStruct;
 
 /**
  * 
@@ -9,6 +10,7 @@ import com.elusivehawk.caelum.render.tex.Color;
  * 
  * @author Elusivehawk
  */
+@MakeStruct
 public class DisplaySettings
 {
 	public String title = "Caelum Engine Game (Now with multiple window support!)";
