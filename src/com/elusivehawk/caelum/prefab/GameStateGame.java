@@ -134,6 +134,17 @@ public abstract class GameStateGame extends Game
 		
 	}
 	
+	@Override
+	public void onScreenFlipped(boolean flip)
+	{
+		if (this.state != null)
+		{
+			this.state.onScreenFlipped(flip);
+			
+		}
+		
+	}
+	
 	public void setGameState(GameState gs)
 	{
 		this.nextState = gs;

@@ -36,11 +36,11 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 			rotOff = new Quaternion(),
 			rot = new Quaternion();
 	
+	protected final VertexBuffer vbo = new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW);
+	
 	protected final Mesh mesh;
 	
 	protected FloatBuffer buf = null;
-	
-	protected final VertexBuffer vbo = new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW);
 	
 	//protected int frame = 0;
 	//protected IModelAnimation anim = null, lastAnim = null;

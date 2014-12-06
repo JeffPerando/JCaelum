@@ -1,14 +1,8 @@
 
 package com.elusivehawk.caelum;
 
-import java.util.List;
-import com.elusivehawk.caelum.assets.AssetManager;
-import com.elusivehawk.caelum.physics.IPhysicsSimulator;
-import com.elusivehawk.caelum.prefab.GameState;
-import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.util.IPausable;
 import com.elusivehawk.util.Version;
-import com.google.common.collect.Lists;
 
 /**
  * 
@@ -16,10 +10,9 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-@SuppressWarnings("unused")
 public abstract class Game extends AbstractGameComponent implements IPausable
 {
-	private boolean initiated = false, paused = false;
+	private boolean paused = false;
 	
 	protected Game(String title)
 	{

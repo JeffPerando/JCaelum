@@ -47,10 +47,7 @@ public class PNGReader implements IAssetReader
 		int width = br.getInt();
 		int height = br.getInt();
 		
-		if (width == 0 || height == 0)
-		{
-			return null;
-		}
+		assert width != 0 && height != 0;
 		
 		byte depth = br.get();
 		byte colorType = br.get();
