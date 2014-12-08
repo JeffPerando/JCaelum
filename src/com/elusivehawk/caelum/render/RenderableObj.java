@@ -11,6 +11,7 @@ import com.elusivehawk.caelum.render.gl.VertexArray;
 import com.elusivehawk.caelum.render.tex.Material;
 import com.elusivehawk.caelum.render.tex.Materials;
 import com.elusivehawk.util.IDirty;
+import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.storage.BufferHelper;
 
 /**
@@ -51,18 +52,6 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 	@Override
 	public void render(RenderContext rcon) throws RenderException
 	{
-		if (!this.initiated)
-		{
-			if (!this.initiate(rcon))
-			{
-				return;
-			}
-			
-			this.initiated = true;
-			rcon.registerRenderer(this);
-			
-		}
-		
 		ICamera cam = rcon.getCamera();
 		
 		if (this.isCulled(cam))
@@ -118,12 +107,70 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 				this.vao.unbind(rcon);
 				
 			}
+			else
+			{
+				Logger.log().debug("VAO NOGO");
+				
+			}
 			
 			this.p.unbind(rcon);
 			
 		}
+		else
+		{
+			Logger.log().debug("PROGRAM NOGO");
+			
+		}
 		
 		this.renderCount--;
+		
+	}
+	
+	@Override
+	public void preRender(RenderContext rcon, double delta)
+	{
+		if (!this.initiated)
+		{
+			if (!this.initiate(rcon))
+			{
+				return;
+			}
+			
+			this.initiated = true;
+			rcon.registerRenderer(this);
+			
+		}
+		
+		if (this.matSet != null)
+		{
+			this.matSet.preRender(rcon, delta);
+			
+		}
+		
+		if (this.isDirty())
+		{
+			this.p.attachUniform(rcon, "flip", BufferHelper.makeIntBuffer(rcon.isScreenFlipped() ? 1 : 0), GLEnumUType.ONE);
+			
+			if (this.filters != null)
+			{
+				this.filters.filter(rcon, this.p);
+				
+			}
+			
+			this.setIsDirty(false);
+			
+		}
+		
+	}
+	
+	@Override
+	public void postRender(RenderContext rcon)
+	{
+		if (this.matSet != null)
+		{
+			this.matSet.postRender(rcon);
+			
+		}
 		
 	}
 	
@@ -171,38 +218,6 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 	public synchronized void setIsDirty(boolean b)
 	{
 		this.dirty = b;
-		
-	}
-	
-	@Override
-	public void preRender(RenderContext rcon, double delta)
-	{
-		if (this.matSet != null)
-		{
-			this.matSet.preRender(rcon, delta);
-			
-		}
-		
-		if (this.isDirty())
-		{
-			this.p.attachUniform(rcon, "flip", BufferHelper.makeIntBuffer(rcon.isScreenFlipped() ? 1 : 0), GLEnumUType.ONE);
-			
-			if (this.filters != null)
-			{
-				this.filters.filter(rcon, this.p);
-				
-			}
-			
-			this.setIsDirty(false);
-			
-		}
-		
-	}
-	
-	@Override
-	public void postRender(RenderContext rcon)
-	{
-		this.matSet.postRender(rcon);
 		
 	}
 	

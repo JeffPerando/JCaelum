@@ -108,7 +108,11 @@ public final class RenderContext implements Closeable, IUpdatable
 		
 		for (GLEnumShader sh : GLEnumShader.values())
 		{
-			this.shaders.addShader(new Shader(String.format("/res/shaders/%s.glsl", sh.name().toLowerCase()), sh));
+			if (!this.shaders.addShader(new Shader(String.format("/res/shaders/%s.glsl", sh.name().toLowerCase()), sh)))
+			{
+				Logger.log().wtf("Could not attach default shader of type %s", sh);
+				
+			}
 			
 		}
 		
@@ -173,6 +177,11 @@ public final class RenderContext implements Closeable, IUpdatable
 	public Display getDisplay()
 	{
 		return this.display;
+	}
+	
+	public Shaders getDefaultShaders()
+	{
+		return this.shaders;
 	}
 	
 	public GLProgram getDefaultProgram()

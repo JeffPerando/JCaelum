@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import com.elusivehawk.caelum.CaelumException;
-import com.elusivehawk.util.FileHelper;
 import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.storage.SyncList;
 import com.elusivehawk.util.task.ITaskListener;
@@ -28,11 +27,11 @@ public final class AssetManager implements ITaskListener
 	
 	private IAssetStreamer sProvider = ((path) ->
 	{
-		Logger.log().debug("Test asset path thingy: \"%s\" -> \"%s\"", path, AssetManager.class.getResource(path));
+		InputStream ret = this.getClass().getResourceAsStream(path);
 		
-		//return FileHelper.createInStream(FileHelper.createFile(CompInfo.JAR_DIR.getParentFile(), path));
-		//return AssetManager.class.getResourceAsStream(path);
-		return FileHelper.getResourceStream(path);
+		Logger.log().debug("Test asset path thingy: \"%s\" -> \"%s\"", path, ret);
+		
+		return ret;
 	});
 	
 	public AssetManager()

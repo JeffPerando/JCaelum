@@ -85,7 +85,7 @@ public final class GLProgram implements IGLBindable, IDirty
 			
 		}
 		
-		this.shaders.deleteShaders(rcon, this);
+		this.shaders.delete(rcon);
 		
 		GL2.glDeleteProgram(this);
 		
@@ -105,14 +105,21 @@ public final class GLProgram implements IGLBindable, IDirty
 		{
 			this.id = GL2.glCreateProgram();
 			
-			if (!this.relink(rcon))
+			try
 			{
-				return false;
+				RenderHelper.checkForGLError();
+				
+			}
+			catch (GLException e)
+			{
+				GL2.glDeleteProgram(this.id);
+				
+				this.id = 0;
+				
+				throw e;
 			}
 			
 			rcon.registerCleanable(this);
-			
-			RenderHelper.checkForGLError();
 			
 		}
 		
@@ -175,7 +182,7 @@ public final class GLProgram implements IGLBindable, IDirty
 		return true;
 	}
 	
-	public synchronized boolean attachShader(Shader sh)
+	public boolean attachShader(Shader sh)
 	{
 		if (this.shaders.addShader(sh))
 		{
@@ -184,6 +191,30 @@ public final class GLProgram implements IGLBindable, IDirty
 		}
 		
 		return false;
+	}
+	
+	public int attachShaders(Shaders shs)
+	{
+		int ret = 0;
+		
+		for (GLEnumShader st : GLEnumShader.values())
+		{
+			if (this.shaders.getShader(st) == null)
+			{
+				continue;
+			}
+			
+			Shader s = shs.getShader(st);
+			
+			if (s != null && this.shaders.addShader(s))
+			{
+				ret++;
+				
+			}
+			
+		}
+		
+		return ret;
 	}
 	
 	public void addVertexAttrib(String name, int size, int type, boolean normalized, int stride, long first)

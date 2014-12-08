@@ -46,10 +46,10 @@ jar
 	exclude "RepoCodeStyle.class"
 	exclude "README.md"
 	
-	into("res")
+	/*into("res")
 	{
 		from("res/")
-	}
+	}*/
 	
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }

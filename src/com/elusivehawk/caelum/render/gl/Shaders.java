@@ -11,9 +11,10 @@ import com.elusivehawk.util.IDirty;
  * 
  * @author Elusivehawk
  */
-public class Shaders implements IDirty
+public class Shaders implements IGLDeletable, IDirty
 {
 	private final Shader[] shaders = new Shader[RenderConst.SHADER_COUNT];
+	
 	private int shCount = 0;
 	private boolean dirty = false;
 	
@@ -27,6 +28,26 @@ public class Shaders implements IDirty
 	public synchronized void setIsDirty(boolean b)
 	{
 		this.dirty = b;
+		
+	}
+	
+	@Override
+	public void delete(RenderContext rcon)
+	{
+		for (Shader sh : this.shaders)
+		{
+			if (sh == null)
+			{
+				continue;
+			}
+			
+			if (sh.isLoaded())
+			{
+				sh.delete(rcon);
+				
+			}
+			
+		}
 		
 	}
 	
@@ -65,26 +86,6 @@ public class Shaders implements IDirty
 		return ret;
 	}
 	
-	public void deleteShaders(RenderContext rcon, GLProgram p) throws GLException
-	{
-		for (Shader sh : this.shaders)
-		{
-			if (sh == null)
-			{
-				continue;
-			}
-			
-			if (sh.isLoaded())
-			{
-				GL2.glDetachShader(p, sh);
-				sh.delete(rcon);
-				
-			}
-			
-		}
-		
-	}
-	
 	public boolean addShader(Shader sh)
 	{
 		assert sh != null;
@@ -108,6 +109,11 @@ public class Shaders implements IDirty
 		}
 		
 		return true;
+	}
+	
+	public Shader getShader(GLEnumShader type)
+	{
+		return this.shaders[type.ordinal()];
 	}
 	
 }

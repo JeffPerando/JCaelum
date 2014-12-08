@@ -11,6 +11,7 @@ import com.elusivehawk.caelum.render.gl.GLEnumDataUsage;
 import com.elusivehawk.caelum.render.gl.GLEnumDrawType;
 import com.elusivehawk.caelum.render.gl.GLProgram;
 import com.elusivehawk.caelum.render.gl.VertexBuffer;
+import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.math.MathHelper;
 import com.elusivehawk.util.storage.BufferHelper;
 
@@ -58,7 +59,9 @@ public class Canvas extends RenderableObj
 	@Override
 	protected boolean initiate(RenderContext rcon)
 	{
-		return true;
+		Logger.log().debug("INITIATING CANVAS");
+		
+		return this.p.attachShaders(rcon.getDefaultShaders()) > 0;
 	}
 	
 	@Override
@@ -71,6 +74,8 @@ public class Canvas extends RenderableObj
 	@Override
 	public void preRender(RenderContext rcon, double delta)
 	{
+		super.preRender(rcon, delta);
+		
 		if (this.images == 0)
 		{
 			return;
@@ -94,6 +99,8 @@ public class Canvas extends RenderableObj
 	@Override
 	public void postRender(RenderContext rcon)
 	{
+		super.postRender(rcon);
+		
 		this.setIsDirty(false);
 		
 	}
