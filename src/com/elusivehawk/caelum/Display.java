@@ -8,7 +8,6 @@ import com.elusivehawk.caelum.input.InputManager;
 import com.elusivehawk.caelum.render.IRenderable;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.ThreadGameRender;
-import com.elusivehawk.caelum.render.gl.GL1;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.Logger;
 
@@ -96,7 +95,8 @@ public class Display implements Closeable, IUpdatable
 				
 			}
 			
-			GL1.glClearColor(this.settings.bg);
+			//GL1.glClearColor(this.settings.bg);
+			//GL1.glViewport(0, 0, this.width, this.height);
 			
 			this.refresh = false;
 			

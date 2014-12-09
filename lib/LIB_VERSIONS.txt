@@ -1,3 +1,3 @@
 Guava: 16.0.1
 JDOM: 2.0.5
-LWJGL: 2.9.1
+LWJGL: 3.0.0.29

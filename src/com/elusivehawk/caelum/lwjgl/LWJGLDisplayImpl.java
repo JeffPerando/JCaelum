@@ -3,8 +3,8 @@ package com.elusivehawk.caelum.lwjgl;
 
 import java.io.IOException;
 import java.nio.IntBuffer;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GLContext;
-import org.lwjgl.system.glfw.GLFW;
 import com.elusivehawk.caelum.CaelumException;
 import com.elusivehawk.caelum.DisplaySettings;
 import com.elusivehawk.caelum.IDisplayImpl;

@@ -19,7 +19,7 @@ public class VertexArray implements IGLBindable
 	private final HashMap<VertexBuffer, List<Integer>> vbos = new HashMap<VertexBuffer, List<Integer>>();
 	
 	private int id = 0;
-	private boolean bound = false, initiated = false;
+	private boolean initiated = false;
 	
 	public VertexArray(){}
 	
@@ -37,7 +37,7 @@ public class VertexArray implements IGLBindable
 			return;
 		}
 		
-		if (this.bound)
+		if (this.isBound(rcon))
 		{
 			this.unbind(rcon);
 			
@@ -56,9 +56,11 @@ public class VertexArray implements IGLBindable
 	@Override
 	public boolean bind(RenderContext rcon)
 	{
-		if (this.bound)
+		int old = GL1.glGetInteger(GLConst.GL_VERTEX_ARRAY_BINDING);
+		
+		if (old != 0)
 		{
-			return true;
+			return false;
 		}
 		
 		if (this.vbos.isEmpty())
@@ -95,7 +97,6 @@ public class VertexArray implements IGLBindable
 			
 		}
 		
-		this.bound = true;
 		this.initiated = true;
 		
 		return true;
@@ -104,7 +105,7 @@ public class VertexArray implements IGLBindable
 	@Override
 	public void unbind(RenderContext rcon)
 	{
-		if  (!this.bound)
+		if (!this.isBound(rcon))
 		{
 			return;
 		}
@@ -128,8 +129,6 @@ public class VertexArray implements IGLBindable
 		}
 		
 		GL3.glBindVertexArray(0);
-		
-		this.bound = false;
 		
 	}
 	
@@ -165,6 +164,13 @@ public class VertexArray implements IGLBindable
 		
 		this.vbos.put(vbo, valid);
 		
+	}
+	
+	public boolean isBound(RenderContext rcon)
+	{
+		int i = GL1.glGetInteger(GLConst.GL_VERTEX_ARRAY_BINDING);
+		
+		return i != 0 && i == this.id;
 	}
 	
 }

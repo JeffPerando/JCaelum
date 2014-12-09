@@ -274,6 +274,12 @@ public final class GL1
 		
 	}
 	
+	public static void glDrawArrays(GLEnumDrawType type, int first, int count) throws GLException
+	{
+		glDrawArrays(type.getGLId(), first, count);
+		
+	}
+	
 	public static void glDrawArrays(int mode, int first, int count) throws GLException
 	{
 		impl.glDrawArrays(mode, first, count);

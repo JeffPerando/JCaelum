@@ -32,7 +32,9 @@ public final class RenderContext implements Closeable, IUpdatable
 	private final Display display;
 	private final IRenderable renderer;
 	
-	private final Shaders shaders = new Shaders();
+	private final Shaders
+				shaders = new Shaders(),
+				shaders2d = new Shaders();
 	private final GLProgram p = new GLProgram(this.shaders);
 	
 	private final List<IGLDeletable> cleanables = Lists.newArrayList();
@@ -75,7 +77,6 @@ public final class RenderContext implements Closeable, IUpdatable
 	{
 		try
 		{
-			GL1.glViewport(0, 0, this.display.getWidth(), this.display.getHeight());
 			GL1.glClear(0b0100010100000000);
 			
 			this.renderer.preRender(this, delta);
@@ -106,13 +107,12 @@ public final class RenderContext implements Closeable, IUpdatable
 		Logger.log().log(EnumLogType.VERBOSE, "OpenGL vendor: %s", GL1.glGetString(GLConst.GL_VENDOR));
 		Logger.log().log(EnumLogType.VERBOSE, "OpenGL renderer: %s", GL1.glGetString(GLConst.GL_RENDERER));
 		
+		GL1.glViewport(0, 0, this.display.getWidth(), this.display.getHeight());
+		
 		for (GLEnumShader sh : GLEnumShader.values())
 		{
-			if (!this.shaders.addShader(new Shader(String.format("/res/shaders/%s.glsl", sh.name().toLowerCase()), sh)))
-			{
-				Logger.log().wtf("Could not attach default shader of type %s", sh);
-				
-			}
+			this.shaders.addShader(new Shader(String.format("/res/shaders/%s2d.glsl", sh.name().toLowerCase()), sh));
+			this.shaders2d.addShader(new Shader(String.format("/res/shaders/%s2d.glsl", sh.name().toLowerCase()), sh));
 			
 		}
 		
@@ -182,6 +182,11 @@ public final class RenderContext implements Closeable, IUpdatable
 	public Shaders getDefaultShaders()
 	{
 		return this.shaders;
+	}
+	
+	public Shaders get2DShaders()
+	{
+		return this.shaders2d;
 	}
 	
 	public GLProgram getDefaultProgram()

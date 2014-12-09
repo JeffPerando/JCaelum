@@ -393,6 +393,11 @@ public final class GL2
 		return impl.glIsProgram(program);
 	}
 	
+	public static boolean glIsShader(Shader shader)
+	{
+		return glIsShader(shader.getShaderId());
+	}
+	
 	public static boolean glIsShader(int shader)
 	{
 		return impl.glIsShader(shader);
@@ -664,7 +669,7 @@ public final class GL2
 	
 	public static void glVertexAttribPointer(int program, VertexAttrib attrib)
 	{
-		glVertexAttribPointer(glGetAttribLocation(program, attrib.name), attrib.size, attrib.type, attrib.unsigned, attrib.normalized, attrib.stride, attrib.first);
+		glVertexAttribPointer(attrib.index, attrib.size, attrib.type, attrib.unsigned, attrib.normalized, attrib.stride, attrib.first);
 		
 	}
 	

@@ -5,7 +5,6 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
 import com.elusivehawk.caelum.render.RenderContext;
-import com.elusivehawk.caelum.render.RenderHelper;
 import com.elusivehawk.util.IDirty;
 import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.storage.ArrayHelper;
@@ -105,18 +104,12 @@ public final class GLProgram implements IGLBindable, IDirty
 		{
 			this.id = GL2.glCreateProgram();
 			
-			try
-			{
-				RenderHelper.checkForGLError();
-				
-			}
-			catch (GLException e)
+			if (!GL2.glIsProgram(this.id))
 			{
 				GL2.glDeleteProgram(this.id);
 				
 				this.id = 0;
 				
-				throw e;
 			}
 			
 			rcon.registerCleanable(this);
@@ -157,6 +150,8 @@ public final class GLProgram implements IGLBindable, IDirty
 	
 	private boolean relink(RenderContext rcon)
 	{
+		this.shaders.detach(rcon, this);
+		
 		if (!this.shaders.attachShaders(rcon, this))
 		{
 			return false;
@@ -199,7 +194,7 @@ public final class GLProgram implements IGLBindable, IDirty
 		
 		for (GLEnumShader st : GLEnumShader.values())
 		{
-			if (this.shaders.getShader(st) == null)
+			if (this.shaders.getShader(st) != null)
 			{
 				continue;
 			}
@@ -217,19 +212,19 @@ public final class GLProgram implements IGLBindable, IDirty
 		return ret;
 	}
 	
-	public void addVertexAttrib(String name, int size, int type, boolean normalized, int stride, long first)
+	public void addVertexAttrib(int index, int size, int type, boolean normalized, int stride, long first)
 	{
-		this.addVertexAttrib(name, size, type, false, normalized, stride, first);
+		this.addVertexAttrib(index, size, type, false, normalized, stride, first);
 		
 	}
 	
-	public void addVertexAttrib(String name, int size, int type, boolean unsigned, boolean normalized, int stride, long first)
+	public void addVertexAttrib(int index, int size, int type, boolean unsigned, boolean normalized, int stride, long first)
 	{
 		if (!this.attribs.isEmpty())
 		{
 			for (VertexAttrib a : this.attribs)
 			{
-				if (a.name.equalsIgnoreCase(name))
+				if (a.index == index)
 				{
 					return;
 				}
@@ -238,7 +233,7 @@ public final class GLProgram implements IGLBindable, IDirty
 			
 		}
 		
-		this.attribs.add(new VertexAttrib(name, size, type, unsigned, normalized, stride, first));
+		this.attribs.add(new VertexAttrib(index, size, type, unsigned, normalized, stride, first));
 		this.relink = true;
 		
 	}

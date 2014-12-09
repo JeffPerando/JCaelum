@@ -3,7 +3,7 @@ package com.elusivehawk.caelum.lwjgl;
 
 import java.io.IOException;
 import java.nio.DoubleBuffer;
-import org.lwjgl.system.glfw.GLFW;
+import org.lwjgl.glfw.GLFW;
 import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.input.EnumInputType;
 import com.elusivehawk.caelum.input.EnumMouseClick;

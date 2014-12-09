@@ -40,6 +40,8 @@ public class Shader extends GraphicAsset
 		{
 			GL2.glDeleteShader(this.glId);
 			
+			this.glId = 0;
+			
 		}
 		
 	}
@@ -47,6 +49,11 @@ public class Shader extends GraphicAsset
 	@Override
 	public void initiate(RenderContext rcon)
 	{
+		if (this.loaded)
+		{
+			return;
+		}
+		
 		if (this.glId == 0 && this.source != null)
 		{
 			int id = GL2.glCreateShader(this.gltype);
@@ -54,6 +61,11 @@ public class Shader extends GraphicAsset
 			if (id == 0)
 			{
 				throw new GLException("Cannot load shader: Out of shader IDs");
+			}
+			
+			if (!GL2.glIsShader(id))
+			{
+				throw new GLException("Shader ID %s is not a proper shader object", id);
 			}
 			
 			GL2.glShaderSource(id, this.source);
@@ -69,7 +81,7 @@ public class Shader extends GraphicAsset
 					
 				}
 				
-				Logger.log().log(EnumLogType.VERBOSE, "Log: %s", GL2.glGetShaderInfoLog(id, GL2.glGetShaderi(id, GLEnumSStatus.GL_INFO_LOG_LENGTH)));
+				Logger.log().log(EnumLogType.VERBOSE, "Shader log for shader \"%s\" (ID %s) of type %s: %s", this.filepath, id, this.gltype, GL2.glGetShaderInfoLog(id, GL2.glGetShaderi(id, GLEnumSStatus.GL_INFO_LOG_LENGTH)));
 				
 				GL2.glDeleteShader(id);
 				

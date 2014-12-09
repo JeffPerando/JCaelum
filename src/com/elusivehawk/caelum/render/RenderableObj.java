@@ -66,6 +66,17 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 		
 		this.renderCount++;
 		
+		if (!this.initiated)
+		{
+			if (!this.initiate(rcon))
+			{
+				return;
+			}
+			
+			this.initiated = true;
+			
+		}
+		
 		if (rcon.doUpdateCamera())
 		{
 			this.p.attachUniform(rcon, "view", cam.getView().asBuffer(), GLEnumUType.M_FOUR);
@@ -129,18 +140,6 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 	@Override
 	public void preRender(RenderContext rcon, double delta)
 	{
-		if (!this.initiated)
-		{
-			if (!this.initiate(rcon))
-			{
-				return;
-			}
-			
-			this.initiated = true;
-			rcon.registerRenderer(this);
-			
-		}
-		
 		if (this.matSet != null)
 		{
 			this.matSet.preRender(rcon, delta);

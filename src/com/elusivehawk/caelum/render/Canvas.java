@@ -11,7 +11,6 @@ import com.elusivehawk.caelum.render.gl.GLEnumDataUsage;
 import com.elusivehawk.caelum.render.gl.GLEnumDrawType;
 import com.elusivehawk.caelum.render.gl.GLProgram;
 import com.elusivehawk.caelum.render.gl.VertexBuffer;
-import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.math.MathHelper;
 import com.elusivehawk.util.storage.BufferHelper;
 
@@ -27,7 +26,7 @@ public class Canvas extends RenderableObj
 	
 	private FloatBuffer vertex = BufferHelper.createFloatBuffer(RenderConst.FLOATS_PER_IMG * 12);
 	
-	private final VertexBuffer floatbuf;
+	private final VertexBuffer floatbuf = new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_STREAM_DRAW, GLEnumDataType.GL_FLOAT, this.vertex);
 	
 	private Rectangle sub = null;
 	private int images = 0;
@@ -46,28 +45,28 @@ public class Canvas extends RenderableObj
 		
 		zBuffer = false;
 		
-		floatbuf = new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW, GLEnumDataType.GL_FLOAT, this.vertex);
+		program.addVertexAttrib(0, 2, GLConst.GL_FLOAT, false, 0, 0);
+		program.addVertexAttrib(1, 2, GLConst.GL_FLOAT, false, 0, 2);
+		program.addVertexAttrib(2, 1, GLConst.GL_FLOAT, false, 0, 4);
 		
-		program.addVertexAttrib("in_pos", 2, GLConst.GL_UNSIGNED_INT, false, 0, 0);
-		program.addVertexAttrib("in_tex", 2, GLConst.GL_UNSIGNED_INT, false, 2, 0);
-		program.addVertexAttrib("in_mat", 1, GLConst.GL_UNSIGNED_INT, false, 4, 0);
-		
-		vao.attachVBO(this.floatbuf, 0, 1);
+		vao.attachVBO(this.floatbuf, 0, 1, 2);
 		
 	}
 	
 	@Override
 	protected boolean initiate(RenderContext rcon)
 	{
-		Logger.log().debug("INITIATING CANVAS");
-		
-		return this.p.attachShaders(rcon.getDefaultShaders()) > 0;
+		return this.p.attachShaders(rcon.get2DShaders()) > 0;
 	}
 	
 	@Override
 	protected void doRender(RenderContext rcon) throws RenderException
 	{
-		GL1.glDrawElements(GLEnumDrawType.GL_TRIANGLES, this.images * 2, GLConst.GL_UNSIGNED_INT, 0);
+		if (this.images > 0)
+		{
+			GL1.glDrawArrays(GLEnumDrawType.GL_TRIANGLES, 0, this.images * 6);
+			
+		}
 		
 	}
 	
@@ -75,11 +74,6 @@ public class Canvas extends RenderableObj
 	public void preRender(RenderContext rcon, double delta)
 	{
 		super.preRender(rcon, delta);
-		
-		if (this.images == 0)
-		{
-			return;
-		}
 		
 		if (this.expanded)
 		{
@@ -217,7 +211,13 @@ public class Canvas extends RenderableObj
 		this.addCorner(r.x, r.w, mat, 2, icon);
 		this.addCorner(r.z, r.w, mat, 3, icon);
 		
-		this.images++;
+		synchronized (this)
+		{
+			this.images++;
+			
+		}
+		
+		this.setIsDirty(true);
 		
 	}
 	

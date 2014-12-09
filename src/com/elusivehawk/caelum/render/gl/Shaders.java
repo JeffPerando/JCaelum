@@ -60,12 +60,8 @@ public class Shaders implements IGLDeletable, IDirty
 	{
 		boolean ret = false;
 		
-		Shader sh;
-		
-		for (int c = 0; c < RenderConst.SHADER_COUNT; c++)
+		for (Shader sh : this.shaders)
 		{
-			sh = this.shaders[c];
-			
 			if (sh == null)
 			{
 				continue;
@@ -75,6 +71,11 @@ public class Shaders implements IGLDeletable, IDirty
 			{
 				sh.initiate(rcon);
 				
+			}
+			
+			if (!GL2.glIsShader(sh))
+			{
+				continue;
 			}
 			
 			GL2.glAttachShader(p, sh);
@@ -109,6 +110,31 @@ public class Shaders implements IGLDeletable, IDirty
 		}
 		
 		return true;
+	}
+	
+	public void detach(RenderContext rcon, GLProgram p)
+	{
+		if (this.shCount == 0)
+		{
+			return;
+		}
+		
+		for (Shader sh : this.shaders)
+		{
+			if (sh == null)
+			{
+				continue;
+			}
+			
+			if (!sh.isLoaded())
+			{
+				continue;
+			}
+			
+			GL2.glDetachShader(p, sh);
+			
+		}
+		
 	}
 	
 	public Shader getShader(GLEnumShader type)

@@ -1,7 +1,7 @@
 
 package com.elusivehawk.caelum.lwjgl;
 
-import org.lwjgl.system.glfw.GLFW;
+import org.lwjgl.glfw.GLFW;
 import com.elusivehawk.caelum.CaelumEngine;
 import com.elusivehawk.caelum.CaelumException;
 import com.elusivehawk.caelum.IDisplayImpl;

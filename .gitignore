@@ -5,6 +5,7 @@
 *.ear
 *.log
 
+/android/*
 /.gradle/*
 /bin/*
 /build/*
