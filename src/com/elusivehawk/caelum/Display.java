@@ -95,8 +95,7 @@ public class Display implements Closeable, IUpdatable
 				
 			}
 			
-			//GL1.glClearColor(this.settings.bg);
-			//GL1.glViewport(0, 0, this.width, this.height);
+			this.rcon.updateFromSettings(this.settings);
 			
 			this.refresh = false;
 			
