@@ -115,6 +115,12 @@ public class VertexArray implements IGLBindable
 		
 	}
 	
+	@Override
+	public boolean isBound(RenderContext rcon)
+	{
+		return this.id != 0 && GL1.glGetInteger(GLConst.GL_VERTEX_ARRAY_BINDING) == this.id;
+	}
+	
 	public int getId()
 	{
 		return this.id;
@@ -124,13 +130,6 @@ public class VertexArray implements IGLBindable
 	{
 		this.vbos.add(vbo);
 		
-	}
-	
-	public boolean isBound(RenderContext rcon)
-	{
-		int i = GL1.glGetInteger(GLConst.GL_VERTEX_ARRAY_BINDING);
-		
-		return i != 0 && i == this.id;
 	}
 	
 }

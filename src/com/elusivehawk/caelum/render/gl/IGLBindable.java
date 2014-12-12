@@ -15,4 +15,6 @@ public interface IGLBindable extends IGLDeletable
 	
 	void unbind(RenderContext rcon);
 	
+	boolean isBound(RenderContext rcon);
+	
 }

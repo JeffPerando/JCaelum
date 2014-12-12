@@ -20,7 +20,7 @@ public final class GLProgram implements IGLBindable, IDirty
 	private final Shaders shaders;
 	
 	private int id = 0;
-	private boolean bound = false, relink = true;
+	private boolean relink = true;
 	
 	public GLProgram()
 	{
@@ -75,7 +75,7 @@ public final class GLProgram implements IGLBindable, IDirty
 	@Override
 	public void delete(RenderContext rcon)
 	{
-		if (this.bound)
+		if (this.isBound(rcon))
 		{
 			this.unbind(rcon);
 			
@@ -111,23 +111,25 @@ public final class GLProgram implements IGLBindable, IDirty
 		
 		GL2.glUseProgram(this);
 		
-		this.bound = true;
-		
 		return true;
 	}
 	
 	@Override
 	public void unbind(RenderContext rcon)
 	{
-		if (!this.bound)
+		if (!this.isBound(rcon))
 		{
 			return;
 		}
 		
 		GL2.glUseProgram(0);
 		
-		this.bound = false;
-		
+	}
+	
+	@Override
+	public boolean isBound(RenderContext rcon)
+	{
+		return this.id != 0 && GL1.glGetInteger(GLConst.GL_CURRENT_PROGRAM) == this.id;
 	}
 	
 	@Override
@@ -197,7 +199,7 @@ public final class GLProgram implements IGLBindable, IDirty
 	
 	public void attachUniform(RenderContext rcon, String name, FloatBuffer info, GLEnumUType type)
 	{
-		if (!this.bound)
+		if (!this.isBound(rcon))
 		{
 			return;
 		}
@@ -220,7 +222,7 @@ public final class GLProgram implements IGLBindable, IDirty
 	
 	public void attachUniform(RenderContext rcon, String name, IntBuffer info, GLEnumUType type)
 	{
-		if (!this.bound)
+		if (!this.isBound(rcon))
 		{
 			return;
 		}

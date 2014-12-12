@@ -16,7 +16,7 @@ public class GLFramebuffer implements IGLBindable
 	private final boolean useDepth;
 	
 	private boolean initiated = false;
-	private int fbo = 0, depth = 0, tex = 0, last = 0;
+	private int id = 0, depth = 0, tex = 0, last = 0;
 	
 	public GLFramebuffer()
 	{
@@ -36,7 +36,7 @@ public class GLFramebuffer implements IGLBindable
 	{
 		if (this.initiated)
 		{
-			GL3.glDeleteFramebuffer(this.fbo);
+			GL3.glDeleteFramebuffer(this.id);
 			
 			GL1.glDeleteTextures(this.tex);
 			
@@ -59,18 +59,18 @@ public class GLFramebuffer implements IGLBindable
 		
 		if (this.initiated)
 		{
-			GL3.glBindFramebuffer(GLEnumFBType.GL_FRAMEBUFFER, this.fbo);
+			GL3.glBindFramebuffer(GLEnumFBType.GL_FRAMEBUFFER, this.id);
 			
 		}
 		else
 		{
 			rcon.registerCleanable(this);
 			
-			this.fbo = GL3.glGenFramebuffer();
+			this.id = GL3.glGenFramebuffer();
 			
 			this.tex = RenderHelper.genTexture(rcon, GLEnumTexture.GL_TEXTURE_2D, display.getWidth(), display.getHeight(), false, false);
 			
-			GL3.glBindFramebuffer(GLEnumFBType.GL_FRAMEBUFFER, this.fbo);
+			GL3.glBindFramebuffer(GLEnumFBType.GL_FRAMEBUFFER, this.id);
 			
 			if (this.useDepth)
 			{
@@ -104,6 +104,12 @@ public class GLFramebuffer implements IGLBindable
 		
 		GL1.glViewport(rcon.getDisplay());
 		
+	}
+	
+	@Override
+	public boolean isBound(RenderContext rcon)
+	{
+		return this.id != 0 && GL1.glGetInteger(GLConst.GL_FRAMEBUFFER_BINDING) == this.id;
 	}
 	
 	public int getTexture()

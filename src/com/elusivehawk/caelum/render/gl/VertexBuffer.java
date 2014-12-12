@@ -66,6 +66,17 @@ public class VertexBuffer implements IGLBindable
 	}
 	
 	@Override
+	public void delete(RenderContext rcon)
+	{
+		if (this.id != 0)
+		{
+			GL1.glDeleteBuffers(this);
+			
+		}
+		
+	}
+	
+	@Override
 	public boolean bind(RenderContext rcon)
 	{
 		if (this.id == 0)
@@ -120,14 +131,9 @@ public class VertexBuffer implements IGLBindable
 	}
 	
 	@Override
-	public void delete(RenderContext rcon)
+	public boolean isBound(RenderContext rcon)
 	{
-		if (this.id != 0)
-		{
-			GL1.glDeleteBuffers(this);
-			
-		}
-		
+		return this.id != 0 && GL1.glGetInteger(this.t.getBindID()) == this.id;
 	}
 	
 	public GLEnumBufferTarget getTarget()
