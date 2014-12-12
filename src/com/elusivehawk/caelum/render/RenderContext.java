@@ -4,7 +4,6 @@ package com.elusivehawk.caelum.render;
 import java.io.Closeable;
 import java.util.List;
 import com.elusivehawk.caelum.Display;
-import com.elusivehawk.caelum.DisplaySettings;
 import com.elusivehawk.caelum.render.gl.GL1;
 import com.elusivehawk.caelum.render.gl.GLConst;
 import com.elusivehawk.caelum.render.gl.GLEnumShader;
@@ -108,11 +107,11 @@ public final class RenderContext implements Closeable, IUpdatable
 		Logger.log().log(EnumLogType.VERBOSE, "OpenGL vendor: %s", GL1.glGetString(GLConst.GL_VENDOR));
 		Logger.log().log(EnumLogType.VERBOSE, "OpenGL renderer: %s", GL1.glGetString(GLConst.GL_RENDERER));
 		
-		GL1.glViewport(0, 0, this.display.getWidth(), this.display.getHeight());
+		GL1.glViewport(this.display);
 		
 		for (GLEnumShader sh : GLEnumShader.values())
 		{
-			this.shaders.addShader(new Shader(String.format("/res/shaders/%s2d.glsl", sh.name().toLowerCase()), sh));
+			this.shaders.addShader(new Shader(String.format("/res/shaders/%s.glsl", sh.name().toLowerCase()), sh));
 			this.shaders2d.addShader(new Shader(String.format("/res/shaders/%s2d.glsl", sh.name().toLowerCase()), sh));
 			
 		}
@@ -166,16 +165,6 @@ public final class RenderContext implements Closeable, IUpdatable
 		this.renderer.render(this);
 		
 		this.renders--;
-		
-	}
-	
-	public void updateFromSettings(DisplaySettings settings)
-	{
-		assert settings.width == this.display.getWidth();
-		assert settings.height == this.display.getHeight();
-		
-		GL1.glViewport(0, 0, settings.width, settings.height);
-		GL1.glClearColor(settings.bg);
 		
 	}
 	

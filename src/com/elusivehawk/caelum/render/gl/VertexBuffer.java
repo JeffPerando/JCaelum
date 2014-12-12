@@ -3,9 +3,8 @@ package com.elusivehawk.caelum.render.gl;
 
 import java.nio.Buffer;
 import java.util.Iterator;
+import java.util.List;
 import com.elusivehawk.caelum.render.RenderContext;
-import com.elusivehawk.caelum.render.RenderHelper;
-import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.storage.SyncList;
 import com.elusivehawk.util.storage.Tuple;
 
@@ -17,6 +16,9 @@ import com.elusivehawk.util.storage.Tuple;
  */
 public class VertexBuffer implements IGLBindable
 {
+	private final List<Tuple<Buffer, Integer>> uploads = SyncList.newList();
+	private final List<VertexAttrib> attribs = SyncList.newList();
+	
 	private final GLEnumBufferTarget t;
 	private final GLEnumDataUsage loadMode;
 	
@@ -25,8 +27,6 @@ public class VertexBuffer implements IGLBindable
 	
 	private int id = 0;
 	private boolean initiated = false;
-	
-	private final SyncList<Tuple<Buffer, Integer>> uploads = SyncList.newList();
 	
 	@SuppressWarnings("unqualified-field-access")
 	public VertexBuffer(GLEnumBufferTarget target, GLEnumDataUsage mode, GLEnumDataType type, Buffer buf)
@@ -109,20 +109,6 @@ public class VertexBuffer implements IGLBindable
 			
 		}
 		
-		try
-		{
-			RenderHelper.checkForGLError();
-			
-		}
-		catch (GLException e)
-		{
-			Logger.log().err(e);
-			
-			this.unbind(rcon);
-			
-			return false;
-		}
-		
 		return true;
 	}
 	
@@ -159,6 +145,11 @@ public class VertexBuffer implements IGLBindable
 		return this.id;
 	}
 	
+	public List<VertexAttrib> getAttribs()
+	{
+		return this.attribs;
+	}
+	
 	public void updateVBO(Buffer buf, int offset)
 	{
 		this.uploads.add(Tuple.create(buf, offset));
@@ -168,6 +159,31 @@ public class VertexBuffer implements IGLBindable
 	public synchronized void uploadBuffer(Buffer buf)
 	{
 		this.initBuf = buf;
+		
+	}
+	
+	public void addAttrib(int index, int size, int type, boolean normalized, int stride, long first)
+	{
+		this.addVertexAttrib(index, size, type, false, normalized, stride, first);
+		
+	}
+	
+	public void addVertexAttrib(int index, int size, int type, boolean unsigned, boolean normalized, int stride, long first)
+	{
+		if (!this.attribs.isEmpty())
+		{
+			for (VertexAttrib a : this.attribs)
+			{
+				if (a.index == index)
+				{
+					return;
+				}
+				
+			}
+			
+		}
+		
+		this.attribs.add(new VertexAttrib(index, size, type, unsigned, normalized, stride, first));
 		
 	}
 	

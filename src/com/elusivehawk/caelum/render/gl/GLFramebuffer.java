@@ -90,7 +90,7 @@ public class GLFramebuffer implements IGLBindable
 			
 		}
 		
-		GL1.glViewport(0, 0, display.getWidth(), display.getHeight());
+		GL1.glViewport(display);
 		
 		return true;
 	}
@@ -102,9 +102,7 @@ public class GLFramebuffer implements IGLBindable
 		
 		this.last = 0;
 		
-		Display display = rcon.getDisplay();
-		
-		GL1.glViewport(0, 0, display.getWidth(), display.getHeight());
+		GL1.glViewport(rcon.getDisplay());
 		
 	}
 	

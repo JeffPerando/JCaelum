@@ -4,6 +4,7 @@ package com.elusivehawk.caelum.render.gl;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.render.RenderHelper;
 import com.elusivehawk.caelum.render.tex.Color;
 import com.elusivehawk.caelum.render.tex.ColorFilter;
@@ -584,6 +585,12 @@ public final class GL1
 		impl.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels);
 		
 		RenderHelper.checkForGLError();
+		
+	}
+	
+	public static void glViewport(Display display) throws GLException
+	{
+		glViewport(0, 0, display.getWidth(), display.getHeight());
 		
 	}
 	

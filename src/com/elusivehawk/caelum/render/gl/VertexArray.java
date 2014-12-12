@@ -1,9 +1,7 @@
 
 package com.elusivehawk.caelum.render.gl;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.util.IPopulator;
 import com.google.common.collect.Lists;
@@ -16,7 +14,8 @@ import com.google.common.collect.Lists;
  */
 public class VertexArray implements IGLBindable
 {
-	private final HashMap<VertexBuffer, List<Integer>> vbos = new HashMap<VertexBuffer, List<Integer>>();
+	private final List<VertexBuffer> vbos = Lists.newArrayList();
+	private final List<Integer> attribs = Lists.newArrayList();
 	
 	private int id = 0;
 	private boolean initiated = false;
@@ -40,12 +39,6 @@ public class VertexArray implements IGLBindable
 		if (this.isBound(rcon))
 		{
 			this.unbind(rcon);
-			
-		}
-		
-		for (Entry<VertexBuffer, List<Integer>> entry : this.vbos.entrySet())
-		{
-			entry.getKey().unbind(rcon);
 			
 		}
 		
@@ -75,29 +68,35 @@ public class VertexArray implements IGLBindable
 			
 		}
 		
-		GL3.glBindVertexArray(this.id);
+		GL3.glBindVertexArray(this);
 		
-		for (Entry<VertexBuffer, List<Integer>> entry : this.vbos.entrySet())
+		if (!this.initiated)
 		{
-			if (!this.initiated)
+			this.vbos.forEach(((vb) ->
 			{
-				entry.getKey().bind(rcon);
+				vb.bind(rcon);
 				
-			}
-			
-			if (!entry.getValue().isEmpty())
-			{
-				for (int attrib : entry.getValue())
+				vb.getAttribs().forEach(((attrib) ->
 				{
-					GL2.glEnableVertexAttribArray(attrib);
+					if (!this.attribs.contains(attrib.index))
+					{
+						GL2.glVertexAttribPointer(attrib);
+						
+						this.attribs.add(attrib.index);
+						
+					}
 					
-				}
+				}));
 				
-			}
+				vb.unbind(rcon);
+				
+			}));
+			
+			this.initiated = true;
 			
 		}
 		
-		this.initiated = true;
+		GL2.glEnableVertexAttribArrays(this.attribs);
 		
 		return true;
 	}
@@ -110,59 +109,20 @@ public class VertexArray implements IGLBindable
 			return;
 		}
 		
-		if (!this.vbos.isEmpty())
-		{
-			for (Entry<VertexBuffer, List<Integer>> entry : this.vbos.entrySet())
-			{
-				if (!entry.getValue().isEmpty())
-				{
-					for (int a : entry.getValue())
-					{
-						GL2.glDisableVertexAttribArray(a);
-						
-					}
-					
-				}
-				
-			}
-			
-		}
+		GL2.glDisableVertexAttribArrays(this.attribs);
 		
-		GL3.glBindVertexArray(0);
+		GL3.glBindVertexArray(null);
 		
 	}
 	
-	public void attachVBO(VertexBuffer vbo, int... attribs)
+	public int getId()
 	{
-		List<Integer> valid = Lists.newArrayList();
-		
-		if (attribs != null && attribs.length > 0)
-		{
-			for (int a : attribs)
-			{
-				boolean found = false;
-				
-				for (List<Integer> l : this.vbos.values())
-				{
-					if (l.contains(a))
-					{
-						found = true;
-						
-					}
-					
-				}
-				
-				if (!found)
-				{
-					valid.add(a);
-					
-				}
-				
-			}
-			
-		}
-		
-		this.vbos.put(vbo, valid);
+		return this.id;
+	}
+	
+	public void addVBO(VertexBuffer vbo)
+	{
+		this.vbos.add(vbo);
 		
 	}
 	

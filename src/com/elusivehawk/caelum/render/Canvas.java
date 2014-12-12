@@ -24,11 +24,11 @@ public class Canvas extends RenderableObj
 {
 	public static final Icon BLANK_ICON = new Icon(0, 0, 0, 0);
 	
-	private FloatBuffer vertex = BufferHelper.createFloatBuffer(RenderConst.FLOATS_PER_IMG * 12);
-	
 	private final VertexBuffer floatbuf = new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_STREAM_DRAW, GLEnumDataType.GL_FLOAT, this.vertex);
 	
+	private FloatBuffer vertex = BufferHelper.createFloatBuffer(RenderConst.FLOATS_PER_IMG * 12);
 	private Rectangle sub = null;
+	
 	private int images = 0;
 	private boolean expanded = false;
 	
@@ -45,11 +45,11 @@ public class Canvas extends RenderableObj
 		
 		zBuffer = false;
 		
-		program.addVertexAttrib(0, 2, GLConst.GL_FLOAT, false, 0, 0);
-		program.addVertexAttrib(1, 2, GLConst.GL_FLOAT, false, 0, 2);
-		program.addVertexAttrib(2, 1, GLConst.GL_FLOAT, false, 0, 4);
+		floatbuf.addAttrib(0, 2, GLConst.GL_FLOAT, false, 0, 0);
+		floatbuf.addAttrib(1, 2, GLConst.GL_FLOAT, false, 2, 0);
+		floatbuf.addAttrib(2, 1, GLConst.GL_FLOAT, false, 4, 0);
 		
-		vao.attachVBO(this.floatbuf, 0, 1, 2);
+		vao.addVBO(this.floatbuf);
 		
 	}
 	
@@ -64,7 +64,7 @@ public class Canvas extends RenderableObj
 	{
 		if (this.images > 0)
 		{
-			GL1.glDrawArrays(GLEnumDrawType.GL_TRIANGLES, 0, this.images * 6);
+			GL1.glDrawArrays(GLEnumDrawType.GL_TRIANGLES, 0, this.images * 2);
 			
 		}
 		
@@ -74,6 +74,12 @@ public class Canvas extends RenderableObj
 	public void preRender(RenderContext rcon, double delta)
 	{
 		super.preRender(rcon, delta);
+		
+		if (this.vertex.position() != 0)
+		{
+			this.vertex.position(0);
+			
+		}
 		
 		if (this.expanded)
 		{
@@ -230,11 +236,13 @@ public class Canvas extends RenderableObj
 	
 	private void addCorner(float a, float b, int m, int corner, Icon icon)
 	{
-		this.vertex.put(a);
-		this.vertex.put(b);
-		this.vertex.put(icon.getCorner(corner)[0]);
-		this.vertex.put(icon.getCorner(corner)[1]);
-		this.vertex.put(m);
+		float[] fs = new float[]{a, b, icon.getCorner(corner)[0], icon.getCorner(corner)[1], m};
+		
+		synchronized (this)
+		{
+			this.vertex.put(fs);
+			
+		}
 		
 	}
 	

@@ -3,13 +3,11 @@ package com.elusivehawk.caelum.render.gl;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.List;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.util.IDirty;
 import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.storage.ArrayHelper;
 import com.elusivehawk.util.storage.BufferHelper;
-import com.elusivehawk.util.storage.SyncList;
 
 /**
  * 
@@ -19,7 +17,6 @@ import com.elusivehawk.util.storage.SyncList;
  */
 public final class GLProgram implements IGLBindable, IDirty
 {
-	private final List<VertexAttrib> attribs = SyncList.newList();
 	private final Shaders shaders;
 	
 	private int id = 0;
@@ -103,15 +100,6 @@ public final class GLProgram implements IGLBindable, IDirty
 		if (this.id == 0)
 		{
 			this.id = GL2.glCreateProgram();
-			
-			if (!GL2.glIsProgram(this.id))
-			{
-				GL2.glDeleteProgram(this.id);
-				
-				this.id = 0;
-				
-			}
-			
 			rcon.registerCleanable(this);
 			
 		}
@@ -157,17 +145,6 @@ public final class GLProgram implements IGLBindable, IDirty
 			return false;
 		}
 		
-		if (this.attribs.isEmpty())
-		{
-			return false;
-		}
-		
-		for (VertexAttrib pointer : this.attribs)
-		{
-			GL2.glVertexAttribPointer(this, pointer);
-			
-		}
-		
 		GL2.glLinkProgram(this);
 		GL2.glValidateProgram(this);
 		
@@ -210,32 +187,6 @@ public final class GLProgram implements IGLBindable, IDirty
 		}
 		
 		return ret;
-	}
-	
-	public void addVertexAttrib(int index, int size, int type, boolean normalized, int stride, long first)
-	{
-		this.addVertexAttrib(index, size, type, false, normalized, stride, first);
-		
-	}
-	
-	public void addVertexAttrib(int index, int size, int type, boolean unsigned, boolean normalized, int stride, long first)
-	{
-		if (!this.attribs.isEmpty())
-		{
-			for (VertexAttrib a : this.attribs)
-			{
-				if (a.index == index)
-				{
-					return;
-				}
-				
-			}
-			
-		}
-		
-		this.attribs.add(new VertexAttrib(index, size, type, unsigned, normalized, stride, first));
-		this.relink = true;
-		
 	}
 	
 	public void attachUniform(RenderContext rcon, String name, float[] info, GLEnumUType type)

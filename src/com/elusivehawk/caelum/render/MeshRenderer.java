@@ -79,7 +79,7 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 		this.vbo.uploadBuffer(this.buf);
 		
 		this.mesh.populate(this.vao);
-		this.vao.attachVBO(this.vbo, 3);
+		this.vao.addVBO(this.vbo);
 		
 		return true;
 	}

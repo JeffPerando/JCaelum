@@ -136,6 +136,12 @@ public final class GL2
 		
 	}
 	
+	public static void glDisableVertexAttribArrays(Iterable<Integer> indices) throws GLException
+	{
+		indices.forEach(((i) -> {glDisableVertexAttribArray(i);}));
+		
+	}
+	
 	public static void glDisableVertexAttribArray(int index) throws GLException
 	{
 		impl.glDisableVertexAttribArray(index);
@@ -157,6 +163,12 @@ public final class GL2
 		impl.glDrawBuffers(buffers);
 		
 		RenderHelper.checkForGLError();
+		
+	}
+	
+	public static void glEnableVertexAttribArrays(Iterable<Integer> indices) throws GLException
+	{
+		indices.forEach(((i) -> {glEnableVertexAttribArray(i);}));
 		
 	}
 	
@@ -661,13 +673,7 @@ public final class GL2
 		
 	}
 	
-	public static void glVertexAttribPointer(GLProgram program, VertexAttrib attrib)
-	{
-		glVertexAttribPointer(program.getId(), attrib);
-		
-	}
-	
-	public static void glVertexAttribPointer(int program, VertexAttrib attrib)
+	public static void glVertexAttribPointer(VertexAttrib attrib)
 	{
 		glVertexAttribPointer(attrib.index, attrib.size, attrib.type, attrib.unsigned, attrib.normalized, attrib.stride, attrib.first);
 		
