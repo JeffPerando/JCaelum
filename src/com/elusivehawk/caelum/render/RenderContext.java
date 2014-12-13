@@ -77,7 +77,7 @@ public final class RenderContext implements Closeable, IUpdatable
 	{
 		try
 		{
-			GL1.glClear(0b0100010100000000);
+			GL1.glClear(GLConst.GL_COLOR_BUFFER_BIT | GLConst.GL_DEPTH_BUFFER_BIT | GLConst.GL_STENCIL_BUFFER_BIT);
 			
 			this.renderer.preRender(this, delta);
 			this.preRenderers.forEach(((preR) -> {preR.preRender(this, delta);}));
@@ -108,6 +108,7 @@ public final class RenderContext implements Closeable, IUpdatable
 		Logger.log().log(EnumLogType.VERBOSE, "OpenGL renderer: %s", GL1.glGetString(GLConst.GL_RENDERER));
 		
 		GL1.glViewport(this.display);
+		GL1.glClearColor(Color.GREEN);
 		
 		for (GLEnumShader sh : GLEnumShader.values())
 		{

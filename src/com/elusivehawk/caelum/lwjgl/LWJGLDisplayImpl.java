@@ -45,6 +45,11 @@ public class LWJGLDisplayImpl implements IDisplayImpl
 		
 		GLFW.glfwMakeContextCurrent(this.id);
 		
+		GLFW.glfwSwapInterval(settings.vsync ? 1 : 0);
+		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, 0);
+		
+		GLFW.glfwShowWindow(this.id);
+		
 		this.context = GLContext.createFromCurrent();
 		
 		this.updateInfo();
@@ -54,7 +59,7 @@ public class LWJGLDisplayImpl implements IDisplayImpl
 	@Override
 	public void postInit()
 	{
-		GLFW.glfwMakeContextCurrent(0);
+		//GLFW.glfwMakeContextCurrent(0);
 		
 	}
 	
@@ -112,6 +117,8 @@ public class LWJGLDisplayImpl implements IDisplayImpl
 		 * Icon(s)
 		 * 
 		 */
+		
+		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, 0);
 		
 		this.updateInfo();
 		

@@ -92,27 +92,27 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 			
 		}
 		
+		boolean zBuffer = GL2.glIsEnabled(GLConst.GL_DEPTH_TEST);
+		
+		if (zBuffer != this.zBuffer)
+		{
+			if (this.zBuffer)
+			{
+				GL1.glEnable(GLConst.GL_DEPTH_TEST);
+				
+			}
+			else
+			{
+				GL1.glDisable(GLConst.GL_DEPTH_TEST);
+				
+			}
+			
+		}
+		
 		if (this.p.bind(rcon))
 		{
 			if (this.vao.bind(rcon))
 			{
-				boolean zBuffer = GL2.glIsEnabled(GLConst.GL_DEPTH_TEST);
-				
-				if (zBuffer != this.zBuffer)
-				{
-					if (this.zBuffer)
-					{
-						GL1.glEnable(GLConst.GL_DEPTH_TEST);
-						
-					}
-					else
-					{
-						GL1.glDisable(GLConst.GL_DEPTH_TEST);
-						
-					}
-					
-				}
-				
 				this.doRender(rcon);
 				
 			}

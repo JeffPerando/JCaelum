@@ -1,6 +1,9 @@
 
 package com.elusivehawk.caelum.render.tex;
 
+import java.util.Map;
+import com.google.common.collect.Maps;
+
 /**
  * 
  * 
@@ -15,22 +18,18 @@ public enum ColorFormat
 	BGRA(ColorFilter.BLUE, ColorFilter.GREEN, ColorFilter.RED, ColorFilter.ALPHA);
 	
 	public final ColorFilter[] filters;
-	private final int[] colors = new int[ColorFilter.values().length];
-	private final boolean[] support = new boolean[ColorFilter.values().length];
+	private final Map<ColorFilter, Integer> offsets = Maps.newHashMap();
 	
 	@SuppressWarnings("unqualified-field-access")
 	ColorFormat(ColorFilter... f)
 	{
 		filters = f;
 		
-		ColorFilter color;
+		int limit = (f.length - 1) * 8;
 		
 		for (int c = 0; c < f.length; c++)
 		{
-			color = f[c];
-			
-			colors[color.ordinal()] = c * 8;
-			support[color.ordinal()] = true;
+			offsets.put(f[c], limit - (c * 8));
 			
 		}
 		
@@ -38,7 +37,7 @@ public enum ColorFormat
 	
 	public int getColorOffset(ColorFilter col)
 	{
-		return this.supports(col) ? this.colors[col.ordinal()] : -1;
+		return this.offsets.get(col);
 	}
 	
 	public int filterCount()
@@ -48,7 +47,7 @@ public enum ColorFormat
 	
 	public boolean supports(ColorFilter col)
 	{
-		return this.support[col.ordinal()];
+		return this.offsets.containsKey(col);
 	}
 	
 	public Color convert(Color old)

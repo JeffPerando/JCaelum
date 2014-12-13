@@ -30,8 +30,8 @@ public class LWJGLEnvironment implements IGameEnvironment
 					WIN_64 = {"\\windows\\x86\\lwjgl.dll", "\\windows\\x86\\OpenAL64.dll"},
 					MAC_32 = {"\\macosx\\x64\\liblwjgl.dylib", "\\macosx\\x64\\libopenal.dylib"},
 					MAC_64 = {},
-					LINUX_32 = {"\\linux\\x64\\liblwjgl.so", "/libnux/x64/libopenal.so"},
-					LINUX_64 = {"\\linux\\x86\\liblwjgl.so", "/libnux/x86/libopenal.so"};
+					LINUX_32 = {"\\linux\\x64\\liblwjgl.so", "\\libnux\\x64\\libopenal.so"},
+					LINUX_64 = {"\\linux\\x86\\liblwjgl.so", "\\libnux\\x86\\libopenal.so"};
 	
 	@Override
 	public boolean isCompatible(EnumOS os)
@@ -59,6 +59,8 @@ public class LWJGLEnvironment implements IGameEnvironment
 		{
 			throw new CaelumException("Unable to initiate GLFW");
 		}
+		
+		GLFW.glfwDefaultWindowHints();
 		
 	}
 	

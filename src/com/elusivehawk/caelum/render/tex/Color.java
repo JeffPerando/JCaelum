@@ -17,17 +17,17 @@ import com.elusivehawk.util.storage.BufferHelper;
 public class Color
 {
 	public static final Color BLACK = new Color(ColorFormat.RGBA, 0x000000);
-	public static final Color GREY = new Color(ColorFormat.RGBA, 0x7F7F7F);
+	public static final Color GREY = new Color(ColorFormat.RGBA, 0x7F7F7F00);
 	public static final Color GRAY = GREY;
-	public static final Color WHITE = new Color(ColorFormat.RGBA, 0xFFFFFF);
+	public static final Color WHITE = new Color(ColorFormat.RGBA, 0xFFFFFF00);
 	
-	public static final Color RED = new Color(ColorFormat.RGBA, 0xFF0000);
-	public static final Color GREEN = new Color(ColorFormat.RGBA, 0x00FF00);
-	public static final Color BLUE = new Color(ColorFormat.RGBA, 0x0000FF);
+	public static final Color RED = new Color(ColorFormat.RGBA, 0xFF000000);
+	public static final Color GREEN = new Color(ColorFormat.RGBA, 0x00FF0000);
+	public static final Color BLUE = new Color(ColorFormat.RGBA, 0x0000FF00);
 	
-	public static final Color YELLOW = new Color(ColorFormat.RGBA, 0xFFFF00);
-	public static final Color PINK = new Color(ColorFormat.RGBA, 0xFF00FF);
-	public static final Color CYAN = new Color(ColorFormat.RGBA, 0x00FFFF);
+	public static final Color YELLOW = new Color(ColorFormat.RGBA, 0xFFFF0000);
+	public static final Color PINK = new Color(ColorFormat.RGBA, 0xFF00FF00);
+	public static final Color CYAN = new Color(ColorFormat.RGBA, 0x00FFFF00);
 	
 	public final ColorFormat format;
 	public int color = 0;
@@ -84,19 +84,14 @@ public class Color
 		
 		int c = 0;
 		
-		for (ColorFilter col : ColorFilter.values())
+		for (ColorFilter col : cf.filters)
 		{
+			setColor(col, bs[c++]);
+			
 			if (c == bs.length)
 			{
 				return;
 			}
-			
-			if (!cf.supports(col))
-			{
-				continue;
-			}
-			
-			setColor(col, bs[c++]);
 			
 		}
 		
@@ -127,19 +122,21 @@ public class Color
 	
 	public Color setColor(ColorFilter cf, byte col)
 	{
-		this.color = (this.color << this.format.getColorOffset(cf)) | col;
+		int off = this.format.getColorOffset(cf);
+		
+		this.color = ((col << off) | this.color) >> off;
 		
 		return this;
 	}
 	
-	public byte getColor(ColorFilter cf)
+	public int getColor(ColorFilter cf)
 	{
-		return (byte)((this.getColor() >> this.format.getColorOffset(cf)) & 0xFF);
+		return (this.getColor() >> this.format.getColorOffset(cf)) & 0xFF;
 	}
 	
 	public float getColorf(ColorFilter col)
 	{
-		return this.getColor(col) / (byte)255;
+		return this.getColor(col) / 255;
 	}
 	
 	public boolean supportsAlpha()
@@ -170,7 +167,7 @@ public class Color
 	{
 		for (ColorFilter filter : this.format.filters)
 		{
-			buf.put(this.getColor(filter));
+			buf.put((byte)this.getColor(filter));
 			
 		}
 		

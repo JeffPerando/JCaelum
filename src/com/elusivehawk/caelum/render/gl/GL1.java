@@ -135,12 +135,6 @@ public final class GL1
 	
 	public static void glClearColor(Color col)
 	{
-		if (col == null)
-		{
-			col = Color.BLACK;
-			
-		}
-		
 		glClearColor(col.getColorf(ColorFilter.RED), col.getColorf(ColorFilter.GREEN), col.getColorf(ColorFilter.BLUE), col.getColorf(ColorFilter.ALPHA));
 		
 	}

@@ -17,7 +17,7 @@ public class DisplaySettings
 	public int width = 800, height = 600;
 	public boolean resize = false;
 	public boolean fullscreen = false;
-	public boolean vsync = false;
+	public boolean vsync = true;
 	public Color bg = Color.BLACK;
 	
 	public DisplaySettings(){}

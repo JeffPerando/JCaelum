@@ -114,7 +114,7 @@ public class PixelGrid implements ILegibleImage
 				
 				for (ColorFilter filter : this.f.filters)
 				{
-					ret.put(col.getColor(filter));
+					ret.put((byte)col.getColor(filter));
 					
 				}
 				
