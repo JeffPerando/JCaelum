@@ -36,10 +36,9 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 			rotOff = new Quaternion(),
 			rot = new Quaternion();
 	
-	protected final GLBuffer vbo = new GLBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW);
-	
 	protected final Mesh mesh;
 	
+	protected GLBuffer vbo = null;
 	protected FloatBuffer buf = null;
 	
 	//protected int frame = 0;
@@ -75,8 +74,7 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 		}*/
 		
 		this.buf = BufferHelper.createFloatBuffer(this.mesh.getIndiceCount() * 16);
-		
-		this.vbo.uploadBuffer(this.buf);
+		this.vbo = new GLBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW, this.buf);
 		
 		this.mesh.populate(this.vao);
 		this.vao.addVBO(this.vbo);
