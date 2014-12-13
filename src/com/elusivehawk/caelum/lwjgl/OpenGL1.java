@@ -12,7 +12,6 @@ import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
 import com.elusivehawk.caelum.render.gl.GLConst;
-import com.elusivehawk.caelum.render.gl.GLException;
 import com.elusivehawk.caelum.render.gl.IGL1Impl;
 import com.elusivehawk.util.storage.BufferHelper;
 
@@ -25,35 +24,35 @@ import com.elusivehawk.util.storage.BufferHelper;
 public class OpenGL1 implements IGL1Impl
 {
 	@Override
-	public void glActiveTexture(int texture) throws GLException
+	public void glActiveTexture(int texture)
 	{
 		GL13.glActiveTexture(texture);
 		
 	}
 	
 	@Override
-	public void glBindBuffer(int target, int buffer) throws GLException
+	public void glBindBuffer(int target, int buffer)
 	{
 		GL15.glBindBuffer(target, buffer);
 		
 	}
 	
 	@Override
-	public void glBindTexture(int target, int texture) throws GLException
+	public void glBindTexture(int target, int texture)
 	{
 		GL11.glBindTexture(target, texture);
 		
 	}
 	
 	@Override
-	public void glBlendFunc(int sfactor, int dfactor) throws GLException
+	public void glBlendFunc(int sfactor, int dfactor)
 	{
 		GL11.glBlendFunc(sfactor, dfactor);
 		
 	}
 	
 	@Override
-	public void glBufferData(int target, int type, Buffer data, int usage) throws GLException
+	public void glBufferData(int target, int type, Buffer data, int usage)
 	{
 		switch (type)
 		{
@@ -68,7 +67,7 @@ public class OpenGL1 implements IGL1Impl
 	}
 	
 	@Override
-	public void glBufferSubData(int target, int offset, int type, Buffer data) throws GLException
+	public void glBufferSubData(int target, int offset, int type, Buffer data)
 	{
 		switch (type)
 		{
@@ -83,7 +82,7 @@ public class OpenGL1 implements IGL1Impl
 	}
 	
 	@Override
-	public void glClear(int mask) throws GLException
+	public void glClear(int mask)
 	{
 		GL11.glClear(mask);
 		
@@ -98,7 +97,7 @@ public class OpenGL1 implements IGL1Impl
 	
 	@Override
 	public void glCopyTexImage1D(int target, int level, int internalFormat,
-			int x, int y, int width, int border) throws GLException
+			int x, int y, int width, int border)
 	{
 		GL11.glCopyTexImage1D(target, level, internalFormat, x, y, width, border);
 		
@@ -106,7 +105,7 @@ public class OpenGL1 implements IGL1Impl
 	
 	@Override
 	public void glCopyTexImage2D(int target, int level, int internalFormat,
-			int x, int y, int width, int height, int border) throws GLException
+			int x, int y, int width, int height, int border)
 	{
 		GL11.glCopyTexImage2D(target, level, internalFormat, x, y, width, height, border);
 		
@@ -114,7 +113,7 @@ public class OpenGL1 implements IGL1Impl
 	
 	@Override
 	public void glCopyTexSubImage1D(int target, int level, int xoffset, int x,
-			int y, int width) throws GLException
+			int y, int width)
 	{
 		GL11.glCopyTexSubImage1D(target, level, xoffset, x, y, width);
 		
@@ -122,7 +121,7 @@ public class OpenGL1 implements IGL1Impl
 	
 	@Override
 	public void glCopyTexSubImage2D(int target, int level, int xoffset,
-			int yoffset, int x, int y, int width, int height) throws GLException
+			int yoffset, int x, int y, int width, int height)
 	{
 		GL11.glCopyTexSubImage2D(target, level, xoffset, yoffset, x, y, width, height);
 		
@@ -130,84 +129,84 @@ public class OpenGL1 implements IGL1Impl
 	
 	@Override
 	public void glCopyTexSubImage3D(int target, int level, int xoffset,
-			int yoffset, int zoffset, int x, int y, int width, int height) throws GLException
+			int yoffset, int zoffset, int x, int y, int width, int height)
 	{
 		GL12.glCopyTexSubImage3D(target, level, xoffset, yoffset, zoffset, x, y, width, height);
 		
 	}
 	
 	@Override
-	public void glCullFace(int mode) throws GLException
+	public void glCullFace(int mode)
 	{
 		GL11.glCullFace(mode);
 		
 	}
 	
 	@Override
-	public void glDeleteBuffers(IntBuffer buffers) throws GLException
+	public void glDeleteBuffers(IntBuffer buffers)
 	{
 		GL15.glDeleteBuffers(buffers);
 		
 	}
 	
 	@Override
-	public void glDeleteTextures(IntBuffer textures) throws GLException
+	public void glDeleteTextures(IntBuffer textures)
 	{
 		GL11.glDeleteTextures(textures);
 		
 	}
 	
 	@Override
-	public void glDepthFunc(int func) throws GLException
+	public void glDepthFunc(int func)
 	{
 		GL11.glDepthFunc(func);
 		
 	}
 	
 	@Override
-	public void glDepthMask(boolean flag) throws GLException
+	public void glDepthMask(boolean flag)
 	{
 		GL11.glDepthMask(flag);
 		
 	}
 	
 	@Override
-	public void glDepthRange(float zNear, float zFar) throws GLException
+	public void glDepthRange(float zNear, float zFar)
 	{
 		GL11.glDepthRange(zNear, zFar);
 		
 	}
 	
 	@Override
-	public void glDisable(int cap) throws GLException
+	public void glDisable(int cap)
 	{
 		GL11.glDisable(cap);
 		
 	}
 	
 	@Override
-	public void glDrawArrays(int mode, int first, int count) throws GLException
+	public void glDrawArrays(int mode, int first, int count)
 	{
 		GL11.glDrawArrays(mode, first, count);
 		
 	}
 	
 	@Override
-	public void glDrawElements(int mode, int count, int type, IntBuffer indices) throws GLException
+	public void glDrawElements(int mode, int count, int type, IntBuffer indices)
 	{
 		GL11.glDrawElements(mode, indices);//TODO Check usage
 		
 	}
 	
 	@Override
-	public void glDrawElements(int mode, int count, int type, int offset) throws GLException
+	public void glDrawElements(int mode, int count, int type, int offset)
 	{
 		GL11.glDrawElements(mode, count, type, offset);
 		
 	}
 	
 	@Override
-	public void glEnable(int cap) throws GLException
+	public void glEnable(int cap)
 	{
 		GL11.glEnable(cap);
 		
@@ -228,33 +227,33 @@ public class OpenGL1 implements IGL1Impl
 	}
 	
 	@Override
-	public void glFrontFace(int mode) throws GLException
+	public void glFrontFace(int mode)
 	{
 		GL11.glFrontFace(mode);
 		
 	}
 	
 	@Override
-	public int glGenBuffers() throws GLException
+	public int glGenBuffers()
 	{
 		return GL15.glGenBuffers();
 	}
 	
 	@Override
-	public void glGenBuffers(IntBuffer buffers) throws GLException
+	public void glGenBuffers(IntBuffer buffers)
 	{
 		GL15.glGenBuffers(buffers);
 		
 	}
 	
 	@Override
-	public int glGenTextures() throws GLException
+	public int glGenTextures()
 	{
 		return GL11.glGenTextures();
 	}
 	
 	@Override
-	public void glGenTextures(int n, int[] textures, int offset) throws GLException
+	public void glGenTextures(int n, int[] textures, int offset)
 	{
 		IntBuffer buf = BufferHelper.createIntBuffer(n);
 		
@@ -269,7 +268,7 @@ public class OpenGL1 implements IGL1Impl
 	}
 	
 	@Override
-	public void glGenTextures(IntBuffer textures) throws GLException
+	public void glGenTextures(IntBuffer textures)
 	{
 		GL11.glGenTextures(textures);
 		
@@ -282,13 +281,13 @@ public class OpenGL1 implements IGL1Impl
 	}
 	
 	@Override
-	public int glGetInteger(int pname) throws GLException
+	public int glGetInteger(int pname)
 	{
 		return GL11.glGetInteger(pname);
 	}
 	
 	@Override
-	public void glGetIntegerv(int pname, int[] params, int offset) throws GLException
+	public void glGetIntegerv(int pname, int[] params, int offset)
 	{
 		IntBuffer buf = BufferHelper.createIntBuffer(params.length - offset);
 		
@@ -303,20 +302,20 @@ public class OpenGL1 implements IGL1Impl
 	}
 	
 	@Override
-	public void glGetIntegerv(int pname, IntBuffer params) throws GLException
+	public void glGetIntegerv(int pname, IntBuffer params)
 	{
 		GL11.glGetInteger(pname, params);
 		
 	}
 	
 	@Override
-	public String glGetString(int name) throws GLException
+	public String glGetString(int name)
 	{
 		return GL11.glGetString(name);
 	}
 	
 	@Override
-	public void glHint(int target, int mode) throws GLException
+	public void glHint(int target, int mode)
 	{
 		GL11.glHint(target, mode);
 		
@@ -335,28 +334,28 @@ public class OpenGL1 implements IGL1Impl
 	}
 	
 	@Override
-	public void glLogicOp(int opcode) throws GLException
+	public void glLogicOp(int opcode)
 	{
 		GL11.glLogicOp(opcode);
 		
 	}
 	
 	@Override
-	public void glPixelStoref(int pname, float param) throws GLException
+	public void glPixelStoref(int pname, float param)
 	{
 		GL11.glPixelStoref(pname, Float.floatToRawIntBits(param));
 		
 	}
 	
 	@Override
-	public void glPixelStorei(int pname, int param) throws GLException
+	public void glPixelStorei(int pname, int param)
 	{
 		GL11.glPixelStorei(pname, param);
 		
 	}
 	
 	@Override
-	public void glPointSize(float size) throws GLException
+	public void glPointSize(float size)
 	{
 		GL11.glPointSize(size);
 		
@@ -364,35 +363,35 @@ public class OpenGL1 implements IGL1Impl
 	
 	@Override
 	public void glReadPixels(int x, int y, int width, int height, int format,
-			int type, ByteBuffer pixels) throws GLException
+			int type, ByteBuffer pixels)
 	{
 		GL11.glReadPixels(x, y, width, height, format, type, pixels);
 		
 	}
 	
 	@Override
-	public void glScissor(int x, int y, int width, int height) throws GLException
+	public void glScissor(int x, int y, int width, int height)
 	{
 		GL11.glScissor(x, y, width, height);
 		
 	}
 	
 	@Override
-	public void glStencilFunc(int func, int ref, int mask) throws GLException
+	public void glStencilFunc(int func, int ref, int mask)
 	{
 		GL11.glStencilFunc(func, ref, mask);
 		
 	}
 	
 	@Override
-	public void glStencilMask(int mask) throws GLException
+	public void glStencilMask(int mask)
 	{
 		GL11.glStencilMask(mask);
 		
 	}
 	
 	@Override
-	public void glStencilOp(int fail, int zfail, int zpass) throws GLException
+	public void glStencilOp(int fail, int zfail, int zpass)
 	{
 		GL11.glStencilOp(fail, zfail, zpass);
 		
@@ -401,28 +400,28 @@ public class OpenGL1 implements IGL1Impl
 	@Override
 	public void glTexImage2D(int target, int level, int internalformat,
 			int width, int height, int border, int format, int type,
-			ByteBuffer pixels) throws GLException
+			ByteBuffer pixels)
 	{
 		GL11.glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
 		
 	}
 	
 	@Override
-	public void glTexImage3D(int target, int level, int internalFormat, int width, int height, int depth, int border, int format, int type, ByteBuffer pixels) throws GLException
+	public void glTexImage3D(int target, int level, int internalFormat, int width, int height, int depth, int border, int format, int type, ByteBuffer pixels)
 	{
 		GL12.glTexImage3D(target, level, internalFormat, width, height, depth, border, format, type, pixels);
 		
 	}
 	
 	@Override
-	public void glTexParameterf(int target, int pname, float param) throws GLException
+	public void glTexParameterf(int target, int pname, float param)
 	{
 		GL11.glTexParameterf(target, pname, param);
 		
 	}
 	
 	@Override
-	public void glTexParameterx(int target, int pname, int param) throws GLException
+	public void glTexParameterx(int target, int pname, int param)
 	{
 		GL11.glTexParameteri(target, pname, param);
 		
@@ -431,14 +430,14 @@ public class OpenGL1 implements IGL1Impl
 	@Override
 	public void glTexSubImage2D(int target, int level, int xoffset,
 			int yoffset, int width, int height, int format, int type,
-			ByteBuffer pixels) throws GLException
+			ByteBuffer pixels)
 	{
 		GL11.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels);
 		
 	}
 	
 	@Override
-	public void glViewport(int x, int y, int width, int height) throws GLException
+	public void glViewport(int x, int y, int width, int height)
 	{
 		GL11.glViewport(x, y, width, height);
 		
