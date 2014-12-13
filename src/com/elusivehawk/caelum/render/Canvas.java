@@ -117,8 +117,6 @@ public class Canvas extends RenderableObj
 	{
 		super.postRender(rcon);
 		
-		this.setIsDirty(false);
-		
 	}
 	
 	@SuppressWarnings("sync-override")

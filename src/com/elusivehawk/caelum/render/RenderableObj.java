@@ -156,8 +156,6 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 				
 			}
 			
-			this.setIsDirty(false);
-			
 		}
 		
 	}
@@ -168,6 +166,12 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 		if (this.matSet != null)
 		{
 			this.matSet.postRender(rcon);
+			
+		}
+		
+		if (this.isDirty())
+		{
+			this.setIsDirty(false);
 			
 		}
 		

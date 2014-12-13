@@ -91,6 +91,14 @@ public final class ExampleGame extends Game
 	{
 		this.canvas.render(rcon);
 		
+		/*GL11.glBegin(GL11.GL_TRIANGLES);
+		
+		GL11.glVertex2f(0.2f, 0.2f);
+		GL11.glVertex2f(0.2f, 0.5f);
+		GL11.glVertex2f(0.5f, 0.2f);
+		
+		GL11.glEnd();*/
+		
 	}
 	
 	@Override

@@ -564,7 +564,7 @@ public final class CaelumEngine
 			return;
 		}
 		
-		File tmp = FileHelper.createFile(CompInfo.TMP_DIR, String.format(".caelum/%s/natives/%s", VERSION.formatted, CompInfo.BUILT ? "" : "dev/"));
+		File tmp = FileHelper.createFile(CompInfo.TMP_DIR, String.format(".caelum/%s/natives/%s/%s", VERSION.formatted, this.env.getName(), CompInfo.BUILT ? "" : "dev/"));
 		
 		if (!tmp.exists() && !tmp.mkdirs())
 		{
