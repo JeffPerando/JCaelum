@@ -9,7 +9,7 @@ import com.elusivehawk.caelum.render.gl.GLEnumBufferTarget;
 import com.elusivehawk.caelum.render.gl.GLEnumDataUsage;
 import com.elusivehawk.caelum.render.gl.GLEnumUType;
 import com.elusivehawk.caelum.render.gl.GLProgram;
-import com.elusivehawk.caelum.render.gl.VertexBuffer;
+import com.elusivehawk.caelum.render.gl.GLBuffer;
 import com.elusivehawk.util.math.Matrix;
 import com.elusivehawk.util.math.MatrixHelper;
 import com.elusivehawk.util.math.Quaternion;
@@ -36,7 +36,7 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 			rotOff = new Quaternion(),
 			rot = new Quaternion();
 	
-	protected final VertexBuffer vbo = new VertexBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW);
+	protected final GLBuffer vbo = new GLBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW);
 	
 	protected final Mesh mesh;
 	

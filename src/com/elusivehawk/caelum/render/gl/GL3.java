@@ -107,7 +107,7 @@ public final class GL3
 		
 	}
 	
-	public static void glBindVertexArray(VertexArray array) throws GLException
+	public static void glBindVertexArray(GLVertexArray array) throws GLException
 	{
 		glBindVertexArray(array == null ? 0 : array.getId());
 		

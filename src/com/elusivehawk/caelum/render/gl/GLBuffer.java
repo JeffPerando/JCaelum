@@ -14,22 +14,21 @@ import com.elusivehawk.util.storage.Tuple;
  * 
  * @author Elusivehawk
  */
-public class VertexBuffer implements IGLBindable
+public class GLBuffer implements IGLBindable
 {
 	private final List<Tuple<Buffer, Integer>> uploads = SyncList.newList();
 	private final List<VertexAttrib> attribs = SyncList.newList();
 	
 	private final GLEnumBufferTarget t;
 	private final GLEnumDataUsage loadMode;
+	private final GLEnumDataType dataType;
 	
-	private GLEnumDataType dataType = GLEnumDataType.GL_FLOAT;
 	private Buffer initBuf = null;
-	
 	private int id = 0;
 	private boolean initiated = false;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public VertexBuffer(GLEnumBufferTarget target, GLEnumDataUsage mode, GLEnumDataType type, Buffer buf)
+	public GLBuffer(GLEnumBufferTarget target, GLEnumDataUsage mode, GLEnumDataType type, Buffer buf)
 	{
 		this(target, mode, type);
 		
@@ -40,7 +39,7 @@ public class VertexBuffer implements IGLBindable
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public VertexBuffer(GLEnumBufferTarget target, GLEnumDataUsage mode, Buffer buf)
+	public GLBuffer(GLEnumBufferTarget target, GLEnumDataUsage mode, Buffer buf)
 	{
 		this(target, mode, GLEnumDataType.findCompatibleType(buf));
 		
@@ -49,19 +48,15 @@ public class VertexBuffer implements IGLBindable
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public VertexBuffer(GLEnumBufferTarget target, GLEnumDataUsage mode, GLEnumDataType type)
+	public GLBuffer(GLEnumBufferTarget target, GLEnumDataUsage mode, GLEnumDataType type)
 	{
-		this(target, mode);
+		assert target != null;
+		assert mode != null;
+		assert type != null;
 		
-		dataType = type;
-		
-	}
-	
-	@SuppressWarnings("unqualified-field-access")
-	public VertexBuffer(GLEnumBufferTarget target, GLEnumDataUsage mode)
-	{
 		t = target;
 		loadMode = mode;
+		dataType = type;
 		
 	}
 	
@@ -89,11 +84,42 @@ public class VertexBuffer implements IGLBindable
 		
 		if (!this.initiated)
 		{
+			if (this.initBuf == null)
+			{
+				GL1.glBindBuffer(this.t, 0);
+				
+				return false;
+			}
+			
+			GL1.glBufferData(this.t, this.dataType, this.initBuf, this.loadMode);
+			
+			this.initBuf = null;
+			
 			rcon.registerCleanable(this);
 			
 			this.initiated = true;
 			
 		}
+		
+		return true;
+	}
+	
+	@Override
+	public void unbind(RenderContext rcon)
+	{
+		GL1.glBindBuffer(this.t, 0);
+		
+	}
+	
+	@Override
+	public boolean isBound(RenderContext rcon)
+	{
+		return this.id != 0 && GL1.glGetInteger(this.t.getBindID()) == this.id;
+	}
+	
+	public void reupload(RenderContext rcon)
+	{
+		assert rcon != null;
 		
 		if (this.initBuf != null)
 		{
@@ -114,26 +140,12 @@ public class VertexBuffer implements IGLBindable
 				
 				GL1.glBufferSubData(this.t, pair.two, this.dataType, pair.one);
 				
-				itr.remove();
+				this.uploads.remove(pair);
 				
 			}
 			
 		}
 		
-		return true;
-	}
-	
-	@Override
-	public void unbind(RenderContext rcon)
-	{
-		GL1.glBindBuffer(this.t, 0);
-		
-	}
-	
-	@Override
-	public boolean isBound(RenderContext rcon)
-	{
-		return this.id != 0 && GL1.glGetInteger(this.t.getBindID()) == this.id;
 	}
 	
 	public GLEnumBufferTarget getTarget()
@@ -156,6 +168,11 @@ public class VertexBuffer implements IGLBindable
 		return this.attribs;
 	}
 	
+	public boolean needsUpdating()
+	{
+		return this.initBuf != null || !this.uploads.isEmpty();
+	}
+	
 	public void updateVBO(Buffer buf, int offset)
 	{
 		this.uploads.add(Tuple.create(buf, offset));
@@ -176,11 +193,19 @@ public class VertexBuffer implements IGLBindable
 	
 	public void addVertexAttrib(int index, int size, int type, boolean unsigned, boolean normalized, int stride, long first)
 	{
+		this.addVertexAttrib(new VertexAttrib(index, size, type, unsigned, normalized, stride, first));
+		
+	}
+	
+	public void addVertexAttrib(VertexAttrib attrib)
+	{
+		assert attrib != null;
+		
 		if (!this.attribs.isEmpty())
 		{
 			for (VertexAttrib a : this.attribs)
 			{
-				if (a.index == index)
+				if (a.index == attrib.index)
 				{
 					return;
 				}
@@ -189,7 +214,7 @@ public class VertexBuffer implements IGLBindable
 			
 		}
 		
-		this.attribs.add(new VertexAttrib(index, size, type, unsigned, normalized, stride, first));
+		this.attribs.add(attrib);
 		
 	}
 	

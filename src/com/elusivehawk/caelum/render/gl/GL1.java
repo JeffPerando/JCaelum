@@ -40,7 +40,7 @@ public final class GL1
 		
 	}
 	
-	public static void glBindBuffer(VertexBuffer vbo)
+	public static void glBindBuffer(GLBuffer vbo)
 	{
 		glBindBuffer(vbo.getTarget(), vbo.getId());
 		
@@ -106,7 +106,7 @@ public final class GL1
 		
 	}
 	
-	public static void glBufferSubData(VertexBuffer buffer, int offset, Buffer data) throws GLException
+	public static void glBufferSubData(GLBuffer buffer, int offset, Buffer data) throws GLException
 	{
 		glBufferSubData(buffer.getTarget(), offset, buffer.getDataType(), data);
 	}
@@ -201,11 +201,11 @@ public final class GL1
 		
 	}
 	
-	public static void glDeleteBuffers(VertexBuffer... buffers)
+	public static void glDeleteBuffers(GLBuffer... buffers)
 	{
 		IntBuffer bufs = BufferHelper.createIntBuffer(buffers.length);
 		
-		for (VertexBuffer vb : buffers)
+		for (GLBuffer vb : buffers)
 		{
 			bufs.put(vb.getId());
 			

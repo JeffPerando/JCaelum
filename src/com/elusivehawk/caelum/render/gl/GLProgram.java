@@ -6,6 +6,7 @@ import java.nio.IntBuffer;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.util.IDirty;
 import com.elusivehawk.util.IPopulator;
+import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.storage.ArrayHelper;
 import com.elusivehawk.util.storage.BufferHelper;
 
@@ -94,6 +95,8 @@ public final class GLProgram implements IGLBindable, IDirty
 		
 		if (bp != 0)
 		{
+			Logger.log().debug("BP: %s", bp);
+			
 			return false;
 		}
 		
@@ -106,6 +109,8 @@ public final class GLProgram implements IGLBindable, IDirty
 		
 		if ((this.relink || this.shaders.isDirty()) && !this.relink(rcon))
 		{
+			Logger.log().debug("Relink nogo");
+			
 			return false;
 		}
 		
@@ -117,11 +122,6 @@ public final class GLProgram implements IGLBindable, IDirty
 	@Override
 	public void unbind(RenderContext rcon)
 	{
-		if (!this.isBound(rcon))
-		{
-			return;
-		}
-		
 		GL2.glUseProgram(0);
 		
 	}

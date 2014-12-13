@@ -1,12 +1,15 @@
 
 package com.elusivehawk.caelum.render.gl;
 
+import com.elusivehawk.util.MakeStruct;
+
 /**
  * 
  * 
  * 
  * @author Elusivehawk
  */
+@MakeStruct
 public class VertexAttrib
 {
 	public final int index, size, type, stride;

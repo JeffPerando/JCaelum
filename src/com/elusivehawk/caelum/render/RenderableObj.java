@@ -7,7 +7,7 @@ import com.elusivehawk.caelum.render.gl.GL2;
 import com.elusivehawk.caelum.render.gl.GLConst;
 import com.elusivehawk.caelum.render.gl.GLEnumUType;
 import com.elusivehawk.caelum.render.gl.GLProgram;
-import com.elusivehawk.caelum.render.gl.VertexArray;
+import com.elusivehawk.caelum.render.gl.GLVertexArray;
 import com.elusivehawk.caelum.render.tex.Material;
 import com.elusivehawk.caelum.render.tex.Materials;
 import com.elusivehawk.util.IDirty;
@@ -24,7 +24,7 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 {
 	protected final GLProgram p;
 	
-	protected final VertexArray vao = new VertexArray();
+	protected final GLVertexArray vao = new GLVertexArray();
 	
 	protected boolean dirty = true, zBuffer = true;
 	protected boolean initiated = false;
@@ -115,8 +115,6 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 				
 				this.doRender(rcon);
 				
-				this.vao.unbind(rcon);
-				
 			}
 			else
 			{
@@ -124,7 +122,7 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 				
 			}
 			
-			this.p.unbind(rcon);
+			this.vao.unbind(rcon);
 			
 		}
 		else
@@ -132,6 +130,8 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 			Logger.log().debug("PROGRAM NOGO");
 			
 		}
+		
+		this.p.unbind(rcon);
 		
 		this.renderCount--;
 		

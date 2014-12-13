@@ -4,7 +4,7 @@ package com.elusivehawk.caelum.render;
 import java.io.DataInputStream;
 import com.elusivehawk.caelum.assets.EnumAssetType;
 import com.elusivehawk.caelum.render.gl.GLEnumDrawType;
-import com.elusivehawk.caelum.render.gl.VertexArray;
+import com.elusivehawk.caelum.render.gl.GLVertexArray;
 import com.elusivehawk.util.IPopulator;
 
 /**
@@ -13,7 +13,7 @@ import com.elusivehawk.util.IPopulator;
  * 
  * @author Elusivehawk
  */
-public class Mesh extends GraphicAsset implements IPopulator<VertexArray>
+public class Mesh extends GraphicAsset implements IPopulator<GLVertexArray>
 {
 	private int indices = 0, polyCount = 0;
 	private GLEnumDrawType drawType = GLEnumDrawType.GL_TRIANGLES;
@@ -32,7 +32,7 @@ public class Mesh extends GraphicAsset implements IPopulator<VertexArray>
 	}
 	
 	@Override
-	public void populate(VertexArray obj)
+	public void populate(GLVertexArray obj)
 	{
 		// TODO Auto-generated method stub
 		

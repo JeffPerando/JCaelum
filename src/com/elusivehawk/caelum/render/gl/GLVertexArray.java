@@ -12,17 +12,17 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-public class VertexArray implements IGLBindable
+public class GLVertexArray implements IGLBindable
 {
-	private final List<VertexBuffer> vbos = Lists.newArrayList();
+	private final List<GLBuffer> vbos = Lists.newArrayList();
 	private final List<Integer> attribs = Lists.newArrayList();
 	
 	private int id = 0;
 	private boolean initiated = false;
 	
-	public VertexArray(){}
+	public GLVertexArray(){}
 	
-	public VertexArray(IPopulator<VertexArray> pop)
+	public GLVertexArray(IPopulator<GLVertexArray> pop)
 	{
 		pop.populate(this);
 		
@@ -70,13 +70,13 @@ public class VertexArray implements IGLBindable
 		
 		GL3.glBindVertexArray(this);
 		
-		if (!this.initiated)
+		this.vbos.forEach(((vbo) ->
 		{
-			this.vbos.forEach(((vb) ->
+			vbo.bind(rcon);
+			
+			if (!this.initiated)
 			{
-				vb.bind(rcon);
-				
-				vb.getAttribs().forEach(((attrib) ->
+				vbo.getAttribs().forEach(((attrib) ->
 				{
 					if (!this.attribs.contains(attrib.index))
 					{
@@ -88,10 +88,20 @@ public class VertexArray implements IGLBindable
 					
 				}));
 				
-				vb.unbind(rcon);
-				
-			}));
+			}
 			
+			if (vbo.needsUpdating())
+			{
+				vbo.reupload(rcon);
+				
+			}
+			
+			vbo.unbind(rcon);
+			
+		}));
+		
+		if (!this.initiated)
+		{
 			this.initiated = true;
 			
 		}
@@ -126,7 +136,7 @@ public class VertexArray implements IGLBindable
 		return this.id;
 	}
 	
-	public void addVBO(VertexBuffer vbo)
+	public void addVBO(GLBuffer vbo)
 	{
 		this.vbos.add(vbo);
 		
