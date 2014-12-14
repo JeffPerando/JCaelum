@@ -58,6 +58,8 @@ public class Display implements Closeable, IUpdatable
 			throw new CaelumException("Cannot render, display wasn't initiated");
 		}
 		
+		this.impl.preRenderDisplay();
+		
 		if (this.impl.isCloseRequested() || this.close)
 		{
 			try
@@ -81,8 +83,6 @@ public class Display implements Closeable, IUpdatable
 			
 			return;
 		}
-		
-		this.impl.preRenderDisplay();
 		
 		if (this.refresh)
 		{

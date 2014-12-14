@@ -101,6 +101,8 @@ public class LWJGLDisplayImpl implements IDisplayImpl
 		
 		GLFW.glfwPollEvents();//TODO Check usage
 		
+		GLFW.glfwMakeContextCurrent(0);
+		
 	}
 	
 	@Override

@@ -33,6 +33,8 @@ public class LWJGLEnvironment implements IGameEnvironment
 					LINUX_32 = {"\\linux\\x64\\liblwjgl.so", "\\libnux\\x64\\libopenal.so"},
 					LINUX_64 = {"\\linux\\x86\\liblwjgl.so", "\\libnux\\x86\\libopenal.so"};
 	
+	private boolean initGLFW = false;
+	
 	@Override
 	public boolean isCompatible(EnumOS os)
 	{
@@ -54,13 +56,6 @@ public class LWJGLEnvironment implements IGameEnvironment
 	public void initiate(JsonObject json, String... args)
 	{
 		System.setProperty("org.lwjgl.librarypath", CaelumEngine.getNativeLocation().getAbsolutePath());
-		
-		if (GLFW.glfwInit() != 1)
-		{
-			throw new CaelumException("Unable to initiate GLFW");
-		}
-		
-		GLFW.glfwDefaultWindowHints();
 		
 	}
 	
@@ -96,6 +91,19 @@ public class LWJGLEnvironment implements IGameEnvironment
 	@Override
 	public IDisplayImpl createDisplay()
 	{
+		if (!this.initGLFW)
+		{
+			if (GLFW.glfwInit() != 1)
+			{
+				throw new CaelumException("Unable to initiate GLFW");
+			}
+			
+			this.initGLFW = true;
+			
+			GLFW.glfwDefaultWindowHints();
+			
+		}
+		
 		return new LWJGLDisplayImpl();
 	}
 	

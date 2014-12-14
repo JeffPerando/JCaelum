@@ -1,6 +1,7 @@
 
 package com.elusivehawk.caelum.meta;
 
+import org.lwjgl.opengl.GL11;
 import com.elusivehawk.caelum.CaelumEngine;
 import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.DisplaySettings;
@@ -91,13 +92,13 @@ public final class ExampleGame extends Game
 	{
 		this.canvas.render(rcon);
 		
-		/*GL11.glBegin(GL11.GL_TRIANGLES);
+		GL11.glBegin(GL11.GL_TRIANGLES);
 		
 		GL11.glVertex2f(0.2f, 0.2f);
 		GL11.glVertex2f(0.2f, 0.5f);
 		GL11.glVertex2f(0.5f, 0.2f);
 		
-		GL11.glEnd();*/
+		GL11.glEnd();
 		
 	}
 	
