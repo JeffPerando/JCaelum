@@ -1,7 +1,6 @@
 
 package com.elusivehawk.caelum.meta;
 
-import org.lwjgl.opengl.GL11;
 import com.elusivehawk.caelum.CaelumEngine;
 import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.DisplaySettings;
@@ -90,29 +89,21 @@ public final class ExampleGame extends Game
 	@Override
 	public void render(RenderContext rcon) throws RenderException
 	{
-		//this.canvas.render(rcon);
-		
-		GL11.glBegin(GL11.GL_TRIANGLES);
-		
-		GL11.glVertex2f(0.2f, 0.2f);
-		GL11.glVertex2f(0.2f, 0.5f);
-		GL11.glVertex2f(0.5f, 0.2f);
-		
-		GL11.glEnd();
+		this.canvas.render(rcon);
 		
 	}
 	
 	@Override
 	public void preRender(RenderContext rcon, double delta)
 	{
-		//this.canvas.preRender(rcon, delta);
+		this.canvas.preRender(rcon, delta);
 		
 	}
 	
 	@Override
 	public void postRender(RenderContext rcon)
 	{
-		//this.canvas.postRender(rcon);
+		this.canvas.postRender(rcon);
 		
 	}
 	
@@ -131,7 +122,7 @@ public final class ExampleGame extends Game
 	@Override
 	public void initiate(Display display, AssetManager assets) throws Throwable
 	{
-		this.canvas.drawImage(0.2f, 0.2f, 0.8f, 0.8f, null);
+		this.canvas.drawImage(0f, 0f, 1f, 1f, null);
 		
 	}
 	

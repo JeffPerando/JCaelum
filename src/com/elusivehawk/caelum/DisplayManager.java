@@ -34,34 +34,6 @@ public final class DisplayManager implements Closeable, IUpdatable
 	@Override
 	public void update(double delta) throws Throwable
 	{
-		/* Works:
-		
-		if (!this.init)
-		{
-			this.display = this.env.createDisplay();
-			
-			this.display.createDisplay(new DisplaySettings());
-			
-			this.display.postInit();
-			
-			this.init = true;
-			
-		}
-		
-		this.display.preRenderDisplay();
-		
-		GL1.glClear(GLConst.GL_COLOR_BUFFER_BIT | GLConst.GL_DEPTH_BUFFER_BIT | GLConst.GL_STENCIL_BUFFER_BIT);
-		
-		GL11.glBegin(GL11.GL_TRIANGLES);
-		
-		GL11.glVertex2f(0.2f, 0.2f);
-		GL11.glVertex2f(0.2f, 0.5f);
-		GL11.glVertex2f(0.5f, 0.2f);
-		
-		GL11.glEnd();
-		
-		this.display.updateDisplay();*/
-		
 		for (Display display : this.displays)
 		{
 			if (!display.isInitiated())

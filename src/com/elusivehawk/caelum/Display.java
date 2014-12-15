@@ -104,18 +104,6 @@ public class Display implements Closeable, IUpdatable
 		
 		this.rcon.update(delta);
 		
-		//Doesn't work:
-		
-		/*GL1.glClear(GLConst.GL_COLOR_BUFFER_BIT | GLConst.GL_DEPTH_BUFFER_BIT | GLConst.GL_STENCIL_BUFFER_BIT);
-		
-		GL11.glBegin(GL11.GL_TRIANGLES);
-		
-		GL11.glVertex2f(0.2f, 0.2f);
-		GL11.glVertex2f(0.2f, 0.5f);
-		GL11.glVertex2f(0.5f, 0.2f);
-		
-		GL11.glEnd();*/
-		
 		this.impl.updateDisplay();
 		
 	}
@@ -146,15 +134,6 @@ public class Display implements Closeable, IUpdatable
 		
 		this.impl = imp;
 		
-		this.input.initiateInput(ge);
-		
-		if (!this.rcon.initContext())
-		{
-			return;
-		}
-		
-		imp.postInit();
-		
 		synchronized (this)
 		{
 			this.height = this.impl.getHeight();
@@ -163,6 +142,15 @@ public class Display implements Closeable, IUpdatable
 			this.initiated = true;
 			
 		}
+		
+		this.input.initiateInput(ge);
+		
+		if (!this.rcon.initContext())
+		{
+			return;
+		}
+		
+		imp.postInit();
 		
 	}
 	

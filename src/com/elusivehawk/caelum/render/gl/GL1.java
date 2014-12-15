@@ -590,6 +590,9 @@ public final class GL1
 	
 	public static void glViewport(int x, int y, int width, int height) throws GLException
 	{
+		assert width > x : "Width is greather than X! This is a bug!";
+		assert height > y : "Height is greather than Y! This is a bug!";
+		
 		impl.glViewport(x, y, width, height);
 		
 		RenderHelper.checkForGLError();
