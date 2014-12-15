@@ -75,7 +75,7 @@ public final class RepoCodeStyle
 		}
 		catch (Exception e) //Only catch Exception/Throwable, that way there are less imports to fuss with. However, you can catch different exceptions to make for a cheap instanceof check.
 		{
-			Logger.log().err(e);
+			Logger.err(e);
 			
 		}
 		

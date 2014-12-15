@@ -70,7 +70,7 @@ public class Display implements Closeable, IUpdatable
 			}
 			catch (Throwable e)
 			{
-				Logger.log().err(e);
+				Logger.err(e);
 				
 			}
 			

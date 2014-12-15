@@ -77,11 +77,11 @@ public class Shader extends GraphicAsset
 			{
 				if (CompInfo.DEBUG)
 				{
-					Logger.log().log(EnumLogType.WARN, "Cannot compile shader \"%s\"", this.filepath);
+					Logger.log(EnumLogType.WARN, "Cannot compile shader \"%s\"", this.filepath);
 					
 				}
 				
-				Logger.log().log(EnumLogType.VERBOSE, "Shader log for shader \"%s\" (ID %s) of type %s: %s", this.filepath, id, this.gltype, GL2.glGetShaderInfoLog(id, GL2.glGetShaderi(id, GLEnumSStatus.GL_INFO_LOG_LENGTH)));
+				Logger.log(EnumLogType.VERBOSE, "Shader log for shader \"%s\" (ID %s) of type %s: %s", this.filepath, id, this.gltype, GL2.glGetShaderInfoLog(id, GL2.glGetShaderi(id, GLEnumSStatus.GL_INFO_LOG_LENGTH)));
 				
 				GL2.glDeleteShader(id);
 				
@@ -95,7 +95,7 @@ public class Shader extends GraphicAsset
 					
 				}
 				
-				Logger.log().verbose("Successfully compiled shader \"%s\"", this.filepath);
+				Logger.verbose("Successfully compiled shader \"%s\"", this.filepath);
 				
 			}
 			

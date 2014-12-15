@@ -53,7 +53,7 @@ public class TaskLoadAsset extends Task
 		
 		if (is == null)
 		{
-			Logger.log().log(EnumLogType.WARN, "Asset stream for \"%s\" cannot be null!", this.asset.filepath);
+			Logger.log(EnumLogType.WARN, "Asset stream for \"%s\" cannot be null!", this.asset.filepath);
 			
 			return false;
 		}

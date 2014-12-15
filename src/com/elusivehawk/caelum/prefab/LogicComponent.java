@@ -56,7 +56,7 @@ public class LogicComponent extends Component
 		}
 		catch (Throwable e)
 		{
-			Logger.log().err(e);
+			Logger.err(e);
 			
 		}
 		

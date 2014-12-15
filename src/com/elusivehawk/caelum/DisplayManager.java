@@ -38,7 +38,7 @@ public final class DisplayManager implements Closeable, IUpdatable
 		{
 			if (!display.isInitiated())
 			{
-				Logger.log().verbose("Initiating display \"%s\"", display.getName());
+				Logger.verbose("Initiating display \"%s\"", display.getName());
 				
 				display.initDisplay(this.env);
 				
@@ -51,7 +51,7 @@ public final class DisplayManager implements Closeable, IUpdatable
 			}
 			catch (Throwable e)
 			{
-				Logger.log().err(new RenderException("Error caught while updating display %s", e, display.getName()));
+				Logger.err(new RenderException("Error caught while updating display %s", e, display.getName()));
 				
 			}
 			
@@ -85,7 +85,7 @@ public final class DisplayManager implements Closeable, IUpdatable
 				}
 				catch (Throwable e)
 				{
-					Logger.log().err(e);
+					Logger.err(e);
 					
 				}
 				

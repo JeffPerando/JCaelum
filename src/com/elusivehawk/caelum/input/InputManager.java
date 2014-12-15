@@ -59,7 +59,7 @@ public final class InputManager implements Closeable, IUpdatable
 			}
 			catch (Throwable e)
 			{
-				Logger.log().err(e);
+				Logger.err(e);
 				
 			}
 			
@@ -79,7 +79,7 @@ public final class InputManager implements Closeable, IUpdatable
 			}
 			catch (Exception e)
 			{
-				Logger.log().err(e);
+				Logger.err(e);
 				
 			}
 			

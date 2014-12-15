@@ -90,7 +90,7 @@ public final class RenderContext implements Closeable, IUpdatable
 		}
 		catch (Throwable e)
 		{
-			Logger.log().err(e);
+			Logger.err(e);
 			
 		}
 		
@@ -103,9 +103,9 @@ public final class RenderContext implements Closeable, IUpdatable
 			return false;
 		}
 		
-		Logger.log().log(EnumLogType.VERBOSE, "OpenGL version: %s", GL1.glGetString(GLConst.GL_VERSION));
-		Logger.log().log(EnumLogType.VERBOSE, "OpenGL vendor: %s", GL1.glGetString(GLConst.GL_VENDOR));
-		Logger.log().log(EnumLogType.VERBOSE, "OpenGL renderer: %s", GL1.glGetString(GLConst.GL_RENDERER));
+		Logger.log(EnumLogType.VERBOSE, "OpenGL version: %s", GL1.glGetString(GLConst.GL_VERSION));
+		Logger.log(EnumLogType.VERBOSE, "OpenGL vendor: %s", GL1.glGetString(GLConst.GL_VENDOR));
+		Logger.log(EnumLogType.VERBOSE, "OpenGL renderer: %s", GL1.glGetString(GLConst.GL_RENDERER));
 		
 		GL1.glViewport(this.display);
 		GL1.glClearColor(Color.BLACK);

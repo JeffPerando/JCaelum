@@ -44,13 +44,13 @@ public class BenchmarkTest
 	
 	public static void main(String[] args)
 	{
-		Logger.log().log(EnumLogType.VERBOSE, "Beginning bench testing...");
+		Logger.log(EnumLogType.VERBOSE, "Beginning bench testing...");
 		
 		Thread thread = new Thread((() ->
 		{
 			if (GLFW.glfwInit() == 0)
 			{
-				Logger.log().warn("NOPE!");
+				Logger.warn("NOPE!");
 				return;
 			}
 			
@@ -82,7 +82,7 @@ public class BenchmarkTest
 					}
 					catch (Throwable e)
 					{
-						Logger.log().err(e);
+						Logger.err(e);
 						
 					}
 					
@@ -120,7 +120,7 @@ public class BenchmarkTest
 		
 		thread.start();
 		
-		Logger.log().log(EnumLogType.VERBOSE, "Th-th-th-th-That's all, folks!");
+		Logger.log(EnumLogType.VERBOSE, "Th-th-th-th-That's all, folks!");
 		
 	}
 	

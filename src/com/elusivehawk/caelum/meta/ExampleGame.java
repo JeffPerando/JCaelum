@@ -59,14 +59,14 @@ public final class ExampleGame extends Game
 				}
 				else
 				{
-					Logger.log().log(EnumLogType.DEBUG, "Key down: %s", ke.key);
+					Logger.log(EnumLogType.DEBUG, "Key down: %s", ke.key);
 					
 				}
 				
 			}
 			else
 			{
-				Logger.log().log(EnumLogType.DEBUG, "Key up: %s", ke.key);
+				Logger.log(EnumLogType.DEBUG, "Key up: %s", ke.key);
 				
 			}
 			
@@ -75,12 +75,12 @@ public final class ExampleGame extends Game
 		{
 			MouseEvent me = (MouseEvent)event;
 			
-			Logger.log().log(EnumLogType.DEBUG, "Mouse pos: %s; Delta: %s", me.pos, me.delta);
+			Logger.log(EnumLogType.DEBUG, "Mouse pos: %s; Delta: %s", me.pos, me.delta);
 			
 		}
 		else if (event instanceof PasteEvent)
 		{
-			Logger.log().log(EnumLogType.DEBUG, "Pasted: %s", ((PasteEvent)event).pasted);
+			Logger.log(EnumLogType.DEBUG, "Pasted: %s", ((PasteEvent)event).pasted);
 			
 		}
 		
@@ -138,7 +138,7 @@ public final class ExampleGame extends Game
 	@Override
 	public void update(double delta) throws Throwable
 	{
-		//CaelumEngine.log().log(EnumLogType.INFO, "Test: %s", delta);
+		//CaelumEngine.log(EnumLogType.INFO, "Test: %s", delta);
 		
 	}
 	

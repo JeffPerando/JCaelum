@@ -118,7 +118,7 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 			}
 			else
 			{
-				Logger.log().debug("VAO NOGO");
+				Logger.debug("VAO NOGO");
 				
 			}
 			
@@ -127,7 +127,7 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 		}
 		else
 		{
-			Logger.log().debug("PROGRAM NOGO");
+			Logger.debug("PROGRAM NOGO");
 			
 		}
 		

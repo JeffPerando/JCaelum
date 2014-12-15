@@ -146,7 +146,7 @@ public final class Tessellator
 			
 			if (p == null)
 			{
-				Logger.log().log(EnumLogType.WARN, "Skipping indice %s at location %s", i, c);
+				Logger.log(EnumLogType.WARN, "Skipping indice %s at location %s", i, c);
 				
 				continue;
 			}

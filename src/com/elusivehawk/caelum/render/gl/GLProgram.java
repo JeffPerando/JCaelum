@@ -95,7 +95,7 @@ public final class GLProgram implements IGLBindable, IDirty
 		
 		if (bp != 0)
 		{
-			Logger.log().debug("BP: %s", bp);
+			Logger.debug("BP: %s", bp);
 			
 			return false;
 		}
@@ -109,7 +109,7 @@ public final class GLProgram implements IGLBindable, IDirty
 		
 		if ((this.relink || this.shaders.isDirty()) && !this.relink(rcon))
 		{
-			Logger.log().debug("Relink nogo");
+			Logger.debug("Relink nogo");
 			
 			return false;
 		}

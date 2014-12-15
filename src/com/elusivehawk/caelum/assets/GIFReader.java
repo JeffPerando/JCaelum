@@ -60,12 +60,12 @@ public class GIFReader implements IAssetReader
 		int version = Integer.parseInt(new String(verBytes, Charsets.US_ASCII));
 		char extra = in.readChar();
 		
-		Logger.log().debug("Version: %s%s", version, extra);
+		Logger.debug("Version: %s%s", version, extra);
 		
 		int width = Short.toUnsignedInt(in.readShort());
 		int height = Short.toUnsignedInt(in.readShort());
 		
-		Logger.log().debug("Dimensions: [%s, %s]", width, height);
+		Logger.debug("Dimensions: [%s, %s]", width, height);
 		
 		int flags = in.read();
 		
@@ -84,7 +84,7 @@ public class GIFReader implements IAssetReader
 			{
 				table[c] = new Color(ColorFormat.RGBA, in.read(), in.read(), in.read());
 				
-				Logger.log().debug("Color #%s: [%s, %s, %s]", c + 1, table[c].getColor(ColorFilter.RED), table[c].getColor(ColorFilter.GREEN), table[c].getColor(ColorFilter.BLUE));
+				Logger.debug("Color #%s: [%s, %s, %s]", c + 1, table[c].getColor(ColorFilter.RED), table[c].getColor(ColorFilter.GREEN), table[c].getColor(ColorFilter.BLUE));
 				
 			}
 			
@@ -153,7 +153,7 @@ public class GIFReader implements IAssetReader
 					{
 						colors[c] = new Color(ColorFormat.RGBA, in.read(), in.read(), in.read());
 						
-						Logger.log().debug("Local color #%s: [%s, %s, %s]", c + 1, colors[c].getColor(ColorFilter.RED), colors[c].getColor(ColorFilter.GREEN), colors[c].getColor(ColorFilter.BLUE));
+						Logger.debug("Local color #%s: [%s, %s, %s]", c + 1, colors[c].getColor(ColorFilter.RED), colors[c].getColor(ColorFilter.GREEN), colors[c].getColor(ColorFilter.BLUE));
 						
 					}
 					
