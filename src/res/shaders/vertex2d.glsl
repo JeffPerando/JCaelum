@@ -1,5 +1,5 @@
 #version 330 core
-=
+
 uniform bool flip;
 
 layout(location = 0) in vec2 in_pos;
