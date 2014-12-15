@@ -2,7 +2,6 @@
 package com.elusivehawk.caelum;
 
 import java.io.Closeable;
-import java.util.Iterator;
 import java.util.List;
 import com.elusivehawk.caelum.render.IRenderable;
 import com.elusivehawk.caelum.render.RenderException;
@@ -20,9 +19,10 @@ import com.elusivehawk.util.storage.SyncList;
 public final class DisplayManager implements Closeable, IUpdatable
 {
 	private final IGameEnvironment env;
-	private final List<Display>
-			displays = SyncList.newList(),
-			displaysToInit = SyncList.newList();
+	private final List<Display> displays = SyncList.newList();
+	
+	/*private IDisplayImpl display = null;
+	private boolean init = false;*/
 	
 	@SuppressWarnings("unqualified-field-access")
 	public DisplayManager(IGameEnvironment ge)
@@ -34,60 +34,44 @@ public final class DisplayManager implements Closeable, IUpdatable
 	@Override
 	public void update(double delta) throws Throwable
 	{
-		if (!this.displaysToInit.isEmpty())
+		/* Works:
+		
+		if (!this.init)
 		{
-			Iterator<Display> itr = this.displaysToInit.iterator();
+			this.display = this.env.createDisplay();
 			
-			while (itr.hasNext())
-			{
-				Display display = itr.next();
-				
-				if (!display.isInitiated())
-				{
-					if (this.getDisplay(display.getName()) == null && !this.displays.contains(display))
-					{
-						Logger.log().info("Initiating display \"%s\"", display.getName());
-						
-						boolean accept = true;
-						
-						try
-						{
-							display.initDisplay(this.env);
-							
-						}
-						catch (Throwable e)
-						{
-							Logger.log().err(e);
-							
-							accept = false;
-							
-						}
-						
-						if (accept)
-						{
-							this.displays.add(display);
-							
-						}
-						else
-						{
-							Logger.log().warn("Could not initiate display \"%s\"", display.getName());
-							
-							display.close();
-							
-						}
-						
-					}
-					
-				}
-				
-				this.displaysToInit.remove(display);
-				
-			}
+			this.display.createDisplay(new DisplaySettings());
+			
+			this.display.postInit();
+			
+			this.init = true;
 			
 		}
 		
+		this.display.preRenderDisplay();
+		
+		GL1.glClear(GLConst.GL_COLOR_BUFFER_BIT | GLConst.GL_DEPTH_BUFFER_BIT | GLConst.GL_STENCIL_BUFFER_BIT);
+		
+		GL11.glBegin(GL11.GL_TRIANGLES);
+		
+		GL11.glVertex2f(0.2f, 0.2f);
+		GL11.glVertex2f(0.2f, 0.5f);
+		GL11.glVertex2f(0.5f, 0.2f);
+		
+		GL11.glEnd();
+		
+		this.display.updateDisplay();*/
+		
 		for (Display display : this.displays)
 		{
+			if (!display.isInitiated())
+			{
+				Logger.log().verbose("Initiating display \"%s\"", display.getName());
+				
+				display.initDisplay(this.env);
+				
+			}
+			
 			try
 			{
 				display.update(delta);
@@ -166,7 +150,7 @@ public final class DisplayManager implements Closeable, IUpdatable
 		
 		Display ret = new Display(name, settings, renderer);
 		
-		this.displaysToInit.add(ret);
+		this.displays.add(ret);
 		
 		return ret;
 	}

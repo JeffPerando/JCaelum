@@ -48,7 +48,7 @@ public class LWJGLEnvironment implements IGameEnvironment
 		GL2.setImpl(new OpenGL2());
 		GL3.setImpl(new OpenGL3());
 		
-		System.setProperty("org.lwjgl.opengl.Display.noinput", "true");
+		//System.setProperty("org.lwjgl.opengl.Display.noinput", "true");
 		
 	}
 	

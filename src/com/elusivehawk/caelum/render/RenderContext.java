@@ -108,7 +108,7 @@ public final class RenderContext implements Closeable, IUpdatable
 		Logger.log().log(EnumLogType.VERBOSE, "OpenGL renderer: %s", GL1.glGetString(GLConst.GL_RENDERER));
 		
 		GL1.glViewport(this.display);
-		GL1.glClearColor(Color.GREEN);
+		GL1.glClearColor(Color.BLACK);
 		
 		for (GLEnumShader sh : GLEnumShader.values())
 		{
@@ -154,7 +154,7 @@ public final class RenderContext implements Closeable, IUpdatable
 		
 	}
 	
-	private void renderGame()
+	public void renderGame()
 	{
 		if (this.renders == RenderConst.RECURSIVE_LIMIT)
 		{

@@ -52,7 +52,7 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 	@Override
 	public void render(RenderContext rcon) throws RenderException
 	{
-		ICamera cam = rcon.getCamera();
+		/*ICamera cam = rcon.getCamera();
 		
 		if (this.isCulled(cam))
 		{
@@ -64,7 +64,7 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 			return;
 		}
 		
-		this.renderCount++;
+		this.renderCount++;*/
 		
 		if (!this.initiated)
 		{
@@ -77,7 +77,7 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 			
 		}
 		
-		if (rcon.doUpdateCamera())
+		/*if (rcon.doUpdateCamera())
 		{
 			this.p.attachUniform(rcon, "view", cam.getView().asBuffer(), GLEnumUType.M_FOUR);
 			this.p.attachUniform(rcon, "proj", cam.getProjection().asBuffer(), GLEnumUType.M_FOUR);
@@ -90,7 +90,7 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 			
 			//TODO Load materials into program
 			
-		}
+		}*/
 		
 		boolean zBuffer = GL2.glIsEnabled(GLConst.GL_DEPTH_TEST);
 		
@@ -133,7 +133,7 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 		
 		this.p.unbind(rcon);
 		
-		this.renderCount--;
+		//this.renderCount--;
 		
 	}
 	

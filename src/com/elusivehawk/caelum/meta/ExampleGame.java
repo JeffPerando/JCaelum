@@ -60,14 +60,14 @@ public final class ExampleGame extends Game
 				}
 				else
 				{
-					Logger.log().log(EnumLogType.VERBOSE, "Key down: %s", ke.key);
+					Logger.log().log(EnumLogType.DEBUG, "Key down: %s", ke.key);
 					
 				}
 				
 			}
 			else
 			{
-				Logger.log().log(EnumLogType.VERBOSE, "Key up: %s", ke.key);
+				Logger.log().log(EnumLogType.DEBUG, "Key up: %s", ke.key);
 				
 			}
 			
@@ -76,12 +76,12 @@ public final class ExampleGame extends Game
 		{
 			MouseEvent me = (MouseEvent)event;
 			
-			Logger.log().log(EnumLogType.VERBOSE, "Mouse pos: %s; Delta: %s", me.pos, me.delta);
+			Logger.log().log(EnumLogType.DEBUG, "Mouse pos: %s; Delta: %s", me.pos, me.delta);
 			
 		}
 		else if (event instanceof PasteEvent)
 		{
-			Logger.log().log(EnumLogType.VERBOSE, "Pasted: %s", ((PasteEvent)event).pasted);
+			Logger.log().log(EnumLogType.DEBUG, "Pasted: %s", ((PasteEvent)event).pasted);
 			
 		}
 		
@@ -90,7 +90,7 @@ public final class ExampleGame extends Game
 	@Override
 	public void render(RenderContext rcon) throws RenderException
 	{
-		this.canvas.render(rcon);
+		//this.canvas.render(rcon);
 		
 		GL11.glBegin(GL11.GL_TRIANGLES);
 		
@@ -105,14 +105,14 @@ public final class ExampleGame extends Game
 	@Override
 	public void preRender(RenderContext rcon, double delta)
 	{
-		this.canvas.preRender(rcon, delta);
+		//this.canvas.preRender(rcon, delta);
 		
 	}
 	
 	@Override
 	public void postRender(RenderContext rcon)
 	{
-		this.canvas.postRender(rcon);
+		//this.canvas.postRender(rcon);
 		
 	}
 	

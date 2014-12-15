@@ -7,7 +7,6 @@ import com.elusivehawk.caelum.input.IInputListener;
 import com.elusivehawk.caelum.input.InputManager;
 import com.elusivehawk.caelum.render.IRenderable;
 import com.elusivehawk.caelum.render.RenderContext;
-import com.elusivehawk.caelum.render.ThreadGameRender;
 import com.elusivehawk.caelum.render.gl.GL1;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.Logger;
@@ -105,6 +104,18 @@ public class Display implements Closeable, IUpdatable
 		
 		this.rcon.update(delta);
 		
+		//Doesn't work:
+		
+		/*GL1.glClear(GLConst.GL_COLOR_BUFFER_BIT | GLConst.GL_DEPTH_BUFFER_BIT | GLConst.GL_STENCIL_BUFFER_BIT);
+		
+		GL11.glBegin(GL11.GL_TRIANGLES);
+		
+		GL11.glVertex2f(0.2f, 0.2f);
+		GL11.glVertex2f(0.2f, 0.5f);
+		GL11.glVertex2f(0.5f, 0.2f);
+		
+		GL11.glEnd();*/
+		
 		this.impl.updateDisplay();
 		
 	}
@@ -124,8 +135,6 @@ public class Display implements Closeable, IUpdatable
 	
 	public void initDisplay(IGameEnvironment ge) throws Throwable
 	{
-		assert Thread.currentThread() instanceof ThreadGameRender : "Cannot initiate display outside of rendering thread";
-		
 		IDisplayImpl imp = ge.createDisplay();
 		
 		if (imp == null)
