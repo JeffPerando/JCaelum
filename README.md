@@ -1,6 +1,6 @@
 ![Imgur](http://i.imgur.com/ISxctvZ.png)
 
-# Caelum-Engine
+# CaelumEngine
 
 
 ## Contributing
