@@ -122,7 +122,7 @@ public final class ExampleGame extends Game
 	@Override
 	public void initiate(Display display, AssetManager assets) throws Throwable
 	{
-		this.canvas.drawImage(0f, 0f, 1f, 1f, null);
+		this.canvas.drawImage(0f, 0f, 0.5f, 0.5f, null);
 		
 	}
 	

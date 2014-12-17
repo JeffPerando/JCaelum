@@ -1,6 +1,7 @@
 
 package com.elusivehawk.caelum.render;
 
+import java.util.List;
 import java.util.UUID;
 import com.elusivehawk.caelum.render.gl.GL1;
 import com.elusivehawk.caelum.render.gl.GL2;
@@ -9,10 +10,11 @@ import com.elusivehawk.caelum.render.gl.GLEnumUType;
 import com.elusivehawk.caelum.render.gl.GLProgram;
 import com.elusivehawk.caelum.render.gl.GLVertexArray;
 import com.elusivehawk.caelum.render.tex.Material;
-import com.elusivehawk.caelum.render.tex.Materials;
 import com.elusivehawk.util.IDirty;
 import com.elusivehawk.util.Logger;
+import com.elusivehawk.util.math.MathHelper;
 import com.elusivehawk.util.storage.BufferHelper;
+import com.elusivehawk.util.storage.SyncList;
 
 /**
  * 
@@ -25,12 +27,12 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 	protected final GLProgram p;
 	
 	protected final GLVertexArray vao = new GLVertexArray();
+	protected final List<Material> mats = SyncList.newList();
 	
 	protected boolean dirty = true, zBuffer = true;
 	protected boolean initiated = false;
 	
 	protected Filters filters = null;
-	protected Materials matSet = null;
 	
 	protected int renderCount = 0;
 	
@@ -140,15 +142,15 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 	@Override
 	public void preRender(RenderContext rcon, double delta)
 	{
-		if (this.matSet != null)
+		if (!this.mats.isEmpty())
 		{
-			this.matSet.preRender(rcon, delta);
+			this.mats.forEach(((mat) -> {mat.preRender(rcon, delta);}));
 			
 		}
 		
 		if (this.isDirty())
 		{
-			this.p.attachUniform(rcon, "flip", BufferHelper.makeIntBuffer(rcon.isScreenFlipped() ? 1 : 0), GLEnumUType.ONE);
+			this.p.attachUniform(rcon, "flip", BufferHelper.makeIntBuffer(new int[]{rcon.isScreenFlipped() ? 1 : 0}), GLEnumUType.ONE);
 			
 			if (this.filters != null)
 			{
@@ -163,9 +165,9 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 	@Override
 	public void postRender(RenderContext rcon)
 	{
-		if (this.matSet != null)
+		if (!this.mats.isEmpty())
 		{
-			this.matSet.postRender(rcon);
+			this.mats.forEach(((mat) -> {mat.postRender(rcon);}));
 			
 		}
 		
@@ -233,36 +235,30 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 		return this;
 	}
 	
-	public synchronized RenderableObj setMaterials(Materials ms)
-	{
-		assert ms != null;
-		
-		this.matSet = ms;
-		
-		return this;
-	}
-	
 	public void setMaterial(int i, Material mat)
 	{
-		if (this.matSet == null)
-		{
-			this.setMaterials(new Materials());
-			
-		}
+		assert MathHelper.bounds(i, 0, RenderConst.MATERIAL_CAP);
 		
-		this.matSet.set(i, mat);
+		this.mats.set(i, mat);
 		
 	}
 	
-	public synchronized boolean addMaterials(Material... ms)
+	public void addMaterials(Material... ms)
 	{
-		if (this.matSet == null)
+		int c = 0;
+		
+		do
 		{
-			this.setMaterials(new Materials());
+			if (this.mats.size() == RenderConst.MATERIAL_CAP)
+			{
+				break;
+			}
+			
+			this.mats.add(ms[c++]);
 			
 		}
+		while (c < ms.length);
 		
-		return this.matSet.addMaterials(ms);
 	}
 	
 	public synchronized RenderableObj setEnableZBuffer(boolean z)
@@ -274,7 +270,7 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 	
 	public int getMaterialCount()
 	{
-		return this.matSet == null ? 0 : this.matSet.size();
+		return this.mats.size();
 	}
 	
 	public boolean isCulled(ICamera cam)

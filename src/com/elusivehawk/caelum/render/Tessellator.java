@@ -1,207 +1,174 @@
 
 package com.elusivehawk.caelum.render;
 
+import static com.elusivehawk.util.math.MathConst.X;
+import static com.elusivehawk.util.math.MathConst.Y;
+import static com.elusivehawk.util.math.MathConst.Z;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
-import com.elusivehawk.caelum.render.gl.GLEnumDrawType;
-import com.elusivehawk.util.EnumLogType;
-import com.elusivehawk.util.Logger;
+import com.elusivehawk.caelum.CaelumException;
+import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.math.MathConst;
 import com.elusivehawk.util.math.Vector;
+import com.elusivehawk.util.storage.ArrayHelper;
 import com.elusivehawk.util.storage.BufferHelper;
 import com.google.common.collect.Lists;
 
 /**
  * 
- * Utility class for creating models.
+ * 
  * 
  * @author Elusivehawk
  */
-public final class Tessellator
+public class Tessellator
 {
-	private FloatBuffer finbuf = null;
-	private IntBuffer indices = null;
+	public static final int FLOATS_PER_INDEX = 3 + 2 + 3 + 1;//Vertex + Texture + Normal + Material
 	
-	private final List<ModelPoint> polys = Lists.newArrayList();
+	private List<ModelPoint> points = Lists.newArrayList();
+	private List<Integer> indices = Lists.newArrayList();
 	
-	private GLEnumDrawType glMode = null;
+	private FloatBuffer fs_ret = null;
+	private IntBuffer in_ret = null;
+	private boolean done = false;
 	
-	public void begin(GLEnumDrawType gl) throws RenderException
+	public Tessellator(){}
+	
+	public Tessellator(IPopulator<Tessellator> pop)
 	{
-		if (this.isWorking())
-		{
-			throw new RenderException("Already tessellating! *trollface*");
-		}
-		
-		if (gl.getPointCount() == 0)
-		{
-			throw new RenderException("Invalid GL mode!");
-			
-		}
-		
-		this.glMode = gl;
+		pop.populate(this);
 		
 	}
 	
-	public int vertex(float x, float y, float z) throws RenderException
+	public void vertex(Vector vtx)
 	{
-		if (!this.isWorking())
-		{
-			throw new RenderException("Not tessellating! *trollface*");
-		}
+		this.vertex(vtx.get(X), vtx.get(Y), vtx.get(Z));
 		
-		return this.vertexWithTexUV(x, y, z, 0f, 0f);
 	}
 	
-	public int vertexWithTexUV(float x, float y, float z, float u, float v)
+	public void vertex(float x, float y, float z)
 	{
-		return this.point(new Vector(x, y, z), new Vector(u, v), new Vector(3));
+		this.vertexTex(x, y, z, 0, 0);
+		
 	}
 	
-	public int vertexWithNormal(float x, float y, float z, float xn, float yn, float zn)
+	public void vertexTex(Vector vtx, Vector tex)
 	{
-		return this.point(new Vector(x, y, z), new Vector(2), new Vector(xn, yn, zn));
+		this.vertexTex(vtx.get(X), vtx.get(Y), vtx.get(Z), tex.get(X), tex.get(Y));
+		
 	}
 	
-	public int point(Vector vtx, Vector tex, Vector norm) throws RenderException
+	public void vertexTex(float x, float y, float z, float u, float v)
 	{
-		if (!this.isWorking())
+		this.vertexTexNormal(x, y, z, u, v, 0, 0, 0);
+		
+	}
+	
+	public void vertexTexNormal(Vector vtx, Vector tex, Vector n)
+	{
+		this.vertexTexNormal(vtx.get(X), vtx.get(Y), vtx.get(Z), tex.get(X), tex.get(Y), n.get(X), n.get(Y), n.get(Z));
+		
+	}
+	
+	public void vertexTexNormal(float x, float y, float z, float u, float v, float nx, float ny, float nz)
+	{
+		this.point(x, y, z, u, v, nx, ny, nz, 0);
+		
+	}
+	
+	public void point(Vector vtx, Vector tex, Vector n, int m)
+	{
+		this.point(vtx.get(X), vtx.get(Y), vtx.get(Z), tex.get(X), tex.get(Y), n.get(X), n.get(Y), n.get(Z), m);
+		
+	}
+	
+	public void point(float x, float y, float z, float u, float v, float nx, float ny, float nz, int m)
+	{
+		if (this.done)
 		{
-			throw new RenderException("Not tessellating! *trollface*");
+			throw new CaelumException("What are you doing with this tessellator? Go home! It's used!");
 		}
 		
-		assert vtx != null;
+		ModelPoint point = new ModelPoint(x, y, z, u, v, nx, ny, nz, m);
 		
-		Vector t = tex, n = norm;
-		
-		if (t == null)
-		{
-			t = new Vector(2);
-			
-		}
-		
-		if (n == null)
-		{
-			n = new Vector(3);
-			
-		}
-		
-		if (vtx.size() < 3 || t.size() < 2 || n.size() < 3)
-		{
-			throw new RenderException("Your vector(s) are too small");
-		}
-		
-		ModelPoint point = new ModelPoint(vtx, t, n);
-		
-		int i = this.polys.indexOf(point);
+		int i = this.getIndex(point);
 		
 		if (i == -1)
 		{
-			i = this.polys.size();
-			this.polys.add(point);
+			this.indices.add(this.points.size());
+			this.points.add(point);
 			
 		}
-		
-		return i;
-	}
-	
-	public void end() throws RenderException
-	{
-		if (!this.isWorking())
+		else
 		{
-			throw new RenderException("Not tessellating! *trollface*");
+			this.indices.add(i);
+			
 		}
-		
-		if (this.polys.size() % this.glMode.getPointCount() != 0)
-		{
-			throw new RenderException(String.format("Odd number of vectors (%s) loaded in mode %s", this.polys.size(), this.glMode));
-		}
-		
-		this.glMode = null;
 		
 	}
 	
-	public void finish(List<Integer> in) throws RenderException
+	public FloatBuffer getVertexData()
 	{
-		if (this.isWorking())
-		{
-			throw new RenderException("Already tessellating! *trollface*");
-		}
-		
-		if (this.polys.size() == 0)
-		{
-			throw new RenderException("You forgot to load any points!");
-		}
-		
-		List<Float> temp = Lists.newArrayList();
-		ModelPoint p = null;
-		int  i = 0;
-		
-		for (int c = 0; c < in.size(); c++)
-		{
-			i = in.get(c);
-			
-			p = this.polys.get(i);
-			
-			if (p == null)
-			{
-				Logger.log(EnumLogType.WARN, "Skipping indice %s at location %s", i, c);
-				
-				continue;
-			}
-			
-			Number[] n = p.v.multiget(MathConst.XYZ);
-			
-			for (Number num : n)
-			{
-				temp.add(num.floatValue());
-				
-			}
-			
-			n = p.t.multiget(MathConst.XY);
-			
-			for (Number num : n)
-			{
-				temp.add(num.floatValue());
-				
-			}
-			
-			n = p.n.multiget(MathConst.XYZ);
-			
-			for (Number num : n)
-			{
-				temp.add(num.floatValue());
-				
-			}
-			
-		}
-		
-		this.finbuf = BufferHelper.makeFloatBuffer(temp).asReadOnlyBuffer();
-		this.indices = BufferHelper.makeIntBuffer(in).asReadOnlyBuffer();
-		
-		this.polys.clear();
-		
-	}
-	
-	public FloatBuffer getPolygons()
-	{
-		return this.finbuf;
+		return this.fs_ret;
 	}
 	
 	public IntBuffer getIndices()
 	{
-		return this.indices;
+		return this.in_ret;
 	}
 	
-	public int getPointCount()
+	public void reset()
 	{
-		return this.polys.size();
+		this.points.clear();
+		this.indices.clear();
+		
+		this.fs_ret = null;
+		this.in_ret = null;
+		this.done = false;
+		
 	}
 	
-	public boolean isWorking()
+	public void finish()
 	{
-		return this.glMode != null;
+		if (this.done)
+		{
+			throw new CaelumException("Already done!");
+		}
+		
+		if (this.points.isEmpty())
+		{
+			throw new CaelumException("You didn't load any points!");
+		}
+		
+		FloatBuffer fs = BufferHelper.createFloatBuffer(FLOATS_PER_INDEX * this.points.size());
+		
+		for (ModelPoint point : this.points)
+		{
+			fs.put(ArrayHelper.asFloats(point.vtx.multiget(MathConst.XYZ)));
+			fs.put(ArrayHelper.asFloats(point.tex.multiget(MathConst.XY)));
+			fs.put(ArrayHelper.asFloats(point.norm.multiget(MathConst.XYZ)));
+			fs.put(point.material);
+			
+		}
+		
+		this.fs_ret = fs.asReadOnlyBuffer();
+		this.in_ret = BufferHelper.makeIntBuffer(this.indices).asReadOnlyBuffer();
+		this.done = true;
+		
+	}
+	
+	private int getIndex(ModelPoint point)
+	{
+		for (int i = 0; i < this.points.size(); i++)
+		{
+			if (this.points.get(i).equals(point))
+			{
+				return i;
+			}
+			
+		}
+		
+		return -1;
 	}
 	
 }

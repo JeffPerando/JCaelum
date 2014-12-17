@@ -1,7 +1,7 @@
 
 package com.elusivehawk.caelum.render;
 
-import com.elusivehawk.util.Internal;
+import com.elusivehawk.util.MakeStruct;
 import com.elusivehawk.util.math.Vector;
 
 /**
@@ -10,17 +10,19 @@ import com.elusivehawk.util.math.Vector;
  * 
  * @author Elusivehawk
  */
-@Internal
+@MakeStruct
 public class ModelPoint
 {
-	public final Vector v, t, n;
+	public final Vector vtx, tex, norm;
+	public final int material;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public ModelPoint(Vector vtx, Vector tx, Vector norm)
+	public ModelPoint(float x, float y, float z, float u, float v, float nx, float ny, float nz, int mat)
 	{
-		v = vtx;
-		t = tx;
-		n = norm;
+		vtx = new Vector(x, y, z);
+		tex = new Vector(u, v);
+		norm = new Vector(nx, ny, nz);
+		material = mat;
 		
 	}
 	
@@ -32,24 +34,42 @@ public class ModelPoint
 			return false;
 		}
 		
-		ModelPoint p = (ModelPoint)obj;
+		ModelPoint mp = (ModelPoint)obj;
 		
-		if (!this.v.equals(p.v))
+		if (!this.vtx.equals(mp.vtx))
 		{
 			return false;
 		}
 		
-		if (!this.t.equals(p.t))
+		if (!this.tex.equals(mp.tex))
 		{
 			return false;
 		}
 		
-		if (!this.n.equals(p.n))
+		if (!this.norm.equals(mp.norm))
+		{
+			return false;
+		}
+		
+		if (this.material != mp.material)
 		{
 			return false;
 		}
 		
 		return true;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		int ret = 31;
+		
+		ret *= (31 + this.vtx.hashCode());
+		ret *= (31 + this.tex.hashCode());
+		ret *= (31 + this.norm.hashCode());
+		ret *= (31 + this.material);
+		
+		return ret;
 	}
 	
 }
