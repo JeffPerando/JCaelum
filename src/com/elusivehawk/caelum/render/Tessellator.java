@@ -1,9 +1,6 @@
 
 package com.elusivehawk.caelum.render;
 
-import static com.elusivehawk.util.math.MathConst.X;
-import static com.elusivehawk.util.math.MathConst.Y;
-import static com.elusivehawk.util.math.MathConst.Z;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
@@ -40,21 +37,15 @@ public class Tessellator
 		
 	}
 	
-	public void vertex(Vector vtx)
-	{
-		this.vertex(vtx.get(X), vtx.get(Y), vtx.get(Z));
-		
-	}
-	
 	public void vertex(float x, float y, float z)
 	{
 		this.vertexTex(x, y, z, 0, 0);
 		
 	}
 	
-	public void vertexTex(Vector vtx, Vector tex)
+	public void vertex(Vector vtx)
 	{
-		this.vertexTex(vtx.get(X), vtx.get(Y), vtx.get(Z), tex.get(X), tex.get(Y));
+		this.vertexTex(vtx, new Vector(2));
 		
 	}
 	
@@ -64,9 +55,9 @@ public class Tessellator
 		
 	}
 	
-	public void vertexTexNormal(Vector vtx, Vector tex, Vector n)
+	public void vertexTex(Vector vtx, Vector tex)
 	{
-		this.vertexTexNormal(vtx.get(X), vtx.get(Y), vtx.get(Z), tex.get(X), tex.get(Y), n.get(X), n.get(Y), n.get(Z));
+		this.vertexTexNormal(vtx, tex, new Vector(3));
 		
 	}
 	
@@ -76,34 +67,37 @@ public class Tessellator
 		
 	}
 	
-	public void point(Vector vtx, Vector tex, Vector n, int m)
+	public void vertexTexNormal(Vector vtx, Vector tex, Vector n)
 	{
-		this.point(vtx.get(X), vtx.get(Y), vtx.get(Z), tex.get(X), tex.get(Y), n.get(X), n.get(Y), n.get(Z), m);
+		this.point(vtx, tex, n, 0);
 		
 	}
 	
 	public void point(float x, float y, float z, float u, float v, float nx, float ny, float nz, int m)
+	{
+		this.point(new Vector(x, y, z), new Vector(u, v), new Vector(nx, ny, nz), m);
+		
+	}
+	
+	public void point(Vector vtx, Vector tex, Vector n, int m)
 	{
 		if (this.done)
 		{
 			throw new CaelumException("What are you doing with this tessellator? Go home! It's used!");
 		}
 		
-		ModelPoint point = new ModelPoint(x, y, z, u, v, nx, ny, nz, m);
+		ModelPoint point = new ModelPoint(vtx, tex, n, m);
 		
-		int i = this.getIndex(point);
+		int i = this.indices.indexOf(point);
 		
 		if (i == -1)
 		{
-			this.indices.add(this.points.size());
+			i = this.points.size();
 			this.points.add(point);
 			
 		}
-		else
-		{
-			this.indices.add(i);
-			
-		}
+		
+		this.indices.add(i);
 		
 	}
 	
@@ -147,7 +141,7 @@ public class Tessellator
 			fs.put(ArrayHelper.asFloats(point.vtx.multiget(MathConst.XYZ)));
 			fs.put(ArrayHelper.asFloats(point.tex.multiget(MathConst.XY)));
 			fs.put(ArrayHelper.asFloats(point.norm.multiget(MathConst.XYZ)));
-			fs.put(point.material);
+			fs.put(point.mat);
 			
 		}
 		
@@ -155,20 +149,6 @@ public class Tessellator
 		this.in_ret = BufferHelper.makeIntBuffer(this.indices).asReadOnlyBuffer();
 		this.done = true;
 		
-	}
-	
-	private int getIndex(ModelPoint point)
-	{
-		for (int i = 0; i < this.points.size(); i++)
-		{
-			if (this.points.get(i).equals(point))
-			{
-				return i;
-			}
-			
-		}
-		
-		return -1;
 	}
 	
 }
