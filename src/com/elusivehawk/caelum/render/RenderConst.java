@@ -15,7 +15,7 @@ public final class RenderConst
 	
 	public static final int FLOATS_PER_IMG = 30;
 	
-	public static final int MATERIAL_CAP = 16;
+	public static final int MATERIAL_CAP = 8;
 	public static final int SHADER_COUNT = GLEnumShader.values().length;
 	
 	public static final int VERTEX_I = 0;

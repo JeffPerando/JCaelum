@@ -72,6 +72,12 @@ public class Color
 		
 	}
 	
+	public Color(ColorFormat cf, float a, float b, float c)
+	{
+		this(cf, a, b, c, 0f);
+		
+	}
+	
 	public Color(ColorFormat cf, float a, float b, float c, float d)
 	{
 		this(cf, (byte)(255 * a), (byte)(255 * b), (byte)(255 * c), (byte)(255 * d));

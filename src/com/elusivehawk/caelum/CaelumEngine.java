@@ -91,7 +91,7 @@ public final class CaelumEngine
 			
 			if (!prefix.endsWith(":"))
 			{
-				Logger.log(EnumLogType.WTF, "Prefix is missing colon: %s", prefix);
+				Logger.wtf("Prefix is missing colon: %s", prefix);
 				itr.remove();
 				
 			}
@@ -243,13 +243,13 @@ public final class CaelumEngine
 		
 		this.startargs.putAll(strs);
 		
-		Logger.log(EnumLogType.INFO, "Starting Caelum Engine %s on %s.", VERSION, CompInfo.OS);
+		Logger.info("Starting Caelum Engine %s on %s.", VERSION, CompInfo.OS);
 		
 		boolean verbose = !"false".equalsIgnoreCase(this.startargs.get("verbose"));
 		
 		Logger.setEnableVerbosity(verbose);
 		
-		Logger.log(EnumLogType.INFO, "Verbosity is set to \'%s\'", verbose);
+		Logger.info("Verbosity is set to \'%s\'", verbose);
 		
 		/*if (DEBUG)
 		{
@@ -287,7 +287,7 @@ public final class CaelumEngine
 			
 			if (clazz == null)
 			{
-				Logger.log(EnumLogType.VERBOSE, "Loading default game environment.");
+				Logger.verbose("Loading default game environment.");
 				
 				try
 				{
@@ -297,7 +297,7 @@ public final class CaelumEngine
 						case MAC:
 						case LINUX: clazz = Class.forName("com.elusivehawk.caelum.lwjgl.LWJGLEnvironment"); break;
 						case ANDROID: clazz = Class.forName("com.elusivehawk.caelum.android.AndroidEnvironment"); break;
-						default: Logger.log(EnumLogType.WTF, "Unsupported OS! Enum: %s; OS: %s", CompInfo.OS, System.getProperty("os.name"));
+						default: Logger.wtf("Unsupported OS! Enum: %s; OS: %s", CompInfo.OS, System.getProperty("os.name"));
 						
 					}
 					
@@ -307,7 +307,7 @@ public final class CaelumEngine
 			}
 			else
 			{
-				Logger.log(EnumLogType.WARN, "Loading custom game environment, this is gonna suck...");
+				Logger.warn("Loading custom game environment, this is gonna suck...");
 				
 			}
 			
@@ -357,7 +357,7 @@ public final class CaelumEngine
 			
 			if (gamefac == null || gamefac.equals(""))
 			{
-				Logger.log(EnumLogType.WTF, "Cannot make game factory: \"gamefac\" argument not provided!");
+				Logger.wtf("Cannot make game factory: \"gamefac\" argument not provided!");
 				
 			}
 			else
@@ -397,11 +397,11 @@ public final class CaelumEngine
 		
 		g.preInit();
 		
-		Logger.log(EnumLogType.INFO,"Loading %s", g);
+		Logger.info("Loading %s", g);
 		
 		if (g.getGameVersion() == null)
 		{
-			Logger.log(EnumLogType.WARN, "The game is missing a Version object!");
+			Logger.warn("The game is missing a Version object!");
 			
 		}
 		
@@ -603,7 +603,7 @@ public final class CaelumEngine
 			
 			if (nLoc == null)
 			{
-				Logger.log(EnumLogType.WTF, "\"Lib\" folder is missing! Expect JNI crashing!");
+				Logger.wtf("\"Lib\" folder is missing! Expect JNI crashing!");
 				
 				return;
 			}
@@ -684,27 +684,27 @@ public final class CaelumEngine
 		{
 			if (CompInfo.DEBUG)
 			{
-				Logger.log(EnumLogType.VERBOSE, "Not copying file \"%s\", checksum matched", name);
+				Logger.verbose("Not copying file \"%s\", checksum matched", name);
 				
 			}
 			
 			return;
 		}
 		
-		Logger.log(EnumLogType.WARN, "Checksum for \"%s\" did not match!", name);
+		Logger.warn("Checksum for \"%s\" did not match!", name);
 		
 		if (FileHelper.write(bytes, dest))
 		{
 			if (CompInfo.DEBUG)
 			{
-				Logger.log(EnumLogType.VERBOSE, "Succesfully copied native: \"%s\"", dest.getName());
+				Logger.verbose("Succesfully copied native: \"%s\"", dest.getName());
 				
 			}
 			
 		}
 		else
 		{
-			Logger.log(EnumLogType.WARN, "Could not copy native: \"%s\"", dest.getName());
+			Logger.warn("Could not copy native: \"%s\"", dest.getName());
 			
 		}
 		

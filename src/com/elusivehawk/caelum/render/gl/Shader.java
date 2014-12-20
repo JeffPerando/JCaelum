@@ -7,7 +7,6 @@ import com.elusivehawk.caelum.assets.EnumAssetType;
 import com.elusivehawk.caelum.render.GraphicAsset;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.util.CompInfo;
-import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.string.StringHelper;
 
@@ -77,11 +76,10 @@ public class Shader extends GraphicAsset
 			{
 				if (CompInfo.DEBUG)
 				{
-					Logger.log(EnumLogType.WARN, "Cannot compile shader \"%s\"", this.filepath);
+					Logger.warn("Cannot compile shader \"%s\"", this.filepath);
+					Logger.info("Shader log for shader \"%s\" (ID %s) of type %s: %s", this.filepath, id, this.gltype, GL2.glGetShaderInfoLog(id, GL2.glGetShaderi(id, GLEnumSStatus.GL_INFO_LOG_LENGTH)));
 					
 				}
-				
-				Logger.log(EnumLogType.VERBOSE, "Shader log for shader \"%s\" (ID %s) of type %s: %s", this.filepath, id, this.gltype, GL2.glGetShaderInfoLog(id, GL2.glGetShaderi(id, GLEnumSStatus.GL_INFO_LOG_LENGTH)));
 				
 				GL2.glDeleteShader(id);
 				

@@ -19,6 +19,7 @@ import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.math.MathHelper;
+import com.elusivehawk.util.storage.DirtableStorage;
 import com.google.common.collect.Lists;
 
 /**
@@ -36,6 +37,7 @@ public final class RenderContext implements Closeable, IUpdatable
 				shaders = new Shaders(),
 				shaders2d = new Shaders();
 	private final GLProgram p = new GLProgram(this.shaders);
+	private final DirtableStorage<Boolean> flipScreen = new DirtableStorage<Boolean>(false).setEnableNull(false);
 	
 	private final List<IGLDeletable> cleanables = Lists.newArrayList();
 	private final List<IPreRenderer> preRenderers = Lists.newArrayList();
@@ -47,7 +49,6 @@ public final class RenderContext implements Closeable, IUpdatable
 	
 	private boolean
 			initiated = false,
-			flipScreen = false,
 			updateCameraUniforms = true;
 	
 	private ICamera camera = null;
@@ -94,6 +95,12 @@ public final class RenderContext implements Closeable, IUpdatable
 			
 		}
 		
+		if (this.flipScreen.isDirty())
+		{
+			this.flipScreen.setIsDirty(false);
+			
+		}
+		
 	}
 	
 	public boolean initContext()
@@ -131,7 +138,7 @@ public final class RenderContext implements Closeable, IUpdatable
 		
 		this.notex = new TextureImage(ntf.scale(2));
 		
-		this.maxTexCount = GL1.glGetInteger(GLConst.GL_MAX_TEXTURE_UNITS);
+		this.maxTexCount = GL1.glGetInteger(GLConst.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS);
 		
 		this.initiated = true;
 		
@@ -171,7 +178,7 @@ public final class RenderContext implements Closeable, IUpdatable
 	
 	public synchronized void onScreenFlipped(boolean flip)
 	{
-		this.flipScreen = flip;
+		this.flipScreen.set(flip);
 		
 	}
 	
@@ -212,7 +219,12 @@ public final class RenderContext implements Closeable, IUpdatable
 	
 	public boolean isScreenFlipped()
 	{
-		return this.flipScreen;
+		return this.flipScreen.get();
+	}
+	
+	public boolean updateScreenFlipUniform()
+	{
+		return this.flipScreen.isDirty();
 	}
 	
 	public ICamera getCamera()
@@ -267,12 +279,6 @@ public final class RenderContext implements Closeable, IUpdatable
 		assert cam != null;
 		
 		this.camera = cam;
-		
-	}
-	
-	public synchronized void setScreenFlipped(boolean b)
-	{
-		this.flipScreen = b;
 		
 	}
 	

@@ -51,7 +51,7 @@ public final class DisplayManager implements Closeable, IUpdatable
 			}
 			catch (Throwable e)
 			{
-				Logger.err(new RenderException("Error caught while updating display %s", e, display.getName()));
+				Logger.err(new RenderException("Error caught while updating display %s: %s", display.getName(), e));
 				
 			}
 			

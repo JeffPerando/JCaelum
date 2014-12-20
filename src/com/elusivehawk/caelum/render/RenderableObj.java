@@ -1,7 +1,7 @@
 
 package com.elusivehawk.caelum.render;
 
-import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import com.elusivehawk.caelum.render.gl.GL1;
 import com.elusivehawk.caelum.render.gl.GL2;
@@ -9,12 +9,10 @@ import com.elusivehawk.caelum.render.gl.GLConst;
 import com.elusivehawk.caelum.render.gl.GLEnumUType;
 import com.elusivehawk.caelum.render.gl.GLProgram;
 import com.elusivehawk.caelum.render.gl.GLVertexArray;
+import com.elusivehawk.caelum.render.tex.ITexture;
 import com.elusivehawk.caelum.render.tex.Material;
-import com.elusivehawk.util.IDirty;
-import com.elusivehawk.util.Logger;
-import com.elusivehawk.util.math.MathHelper;
-import com.elusivehawk.util.storage.BufferHelper;
-import com.elusivehawk.util.storage.SyncList;
+import com.elusivehawk.caelum.render.tex.MaterialSet;
+import com.google.common.collect.Maps;
 
 /**
  * 
@@ -22,19 +20,20 @@ import com.elusivehawk.util.storage.SyncList;
  * 
  * @author Elusivehawk
  */
-public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
+public abstract class RenderableObj implements IFilterable, IRenderable
 {
+	private final Map<ITexture, Integer> boundTex = Maps.newHashMap();
+	
 	protected final GLProgram p;
 	
 	protected final GLVertexArray vao = new GLVertexArray();
-	protected final List<Material> mats = SyncList.newList();
+	protected final MaterialSet mats = new MaterialSet();
 	
-	protected boolean dirty = true, zBuffer = true;
-	protected boolean initiated = false;
+	protected boolean initiated = false, zBuffer = true;
 	
 	protected Filters filters = null;
 	
-	protected int renderCount = 0;
+	protected int renderCount = 0, texCount = 0;
 	
 	protected RenderableObj()
 	{
@@ -54,7 +53,7 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 	@Override
 	public void render(RenderContext rcon) throws RenderException
 	{
-		/*ICamera cam = rcon.getCamera();
+		ICamera cam = rcon.getCamera();
 		
 		if (this.isCulled(cam))
 		{
@@ -66,7 +65,7 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 			return;
 		}
 		
-		this.renderCount++;*/
+		this.renderCount++;
 		
 		if (!this.initiated)
 		{
@@ -79,20 +78,7 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 			
 		}
 		
-		/*if (rcon.doUpdateCamera())
-		{
-			this.p.attachUniform(rcon, "view", cam.getView().asBuffer(), GLEnumUType.M_FOUR);
-			this.p.attachUniform(rcon, "proj", cam.getProjection().asBuffer(), GLEnumUType.M_FOUR);
-			
-		}
-		
-		if (this.matSet != null && this.matSet.isDirty())
-		{
-			this.matSet.render(rcon);
-			
-			//TODO Load materials into program
-			
-		}*/
+		this.mats.forEach(((m) -> {m.render(rcon);}));
 		
 		boolean zBuffer = GL2.glIsEnabled(GLConst.GL_DEPTH_TEST);
 		
@@ -115,67 +101,81 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 		{
 			if (this.vao.bind(rcon))
 			{
+				if (rcon.doUpdateCamera())
+				{
+					GL2.glUniformMatrix4fv("view", cam.getView().asBuffer());
+					GL2.glUniformMatrix4fv("proj", cam.getProjection().asBuffer());
+					
+				}
+				
+				if (this.mats.isDirty())
+				{
+					GL2.glUniform1i("matCount", this.mats.size());
+					
+					this.updateMatUniforms(rcon);
+					
+					this.mats.setIsDirty(false);
+					
+				}
+				else if (!this.mats.isStatic())
+				{
+					this.updateMatUniforms(rcon);
+					
+				}
+				
 				this.doRender(rcon);
 				
-			}
-			else
-			{
-				Logger.debug("VAO NOGO");
+				if (this.texCount > 0)
+				{
+					this.boundTex.forEach(((tex, slot) ->
+					{
+						GL1.glActiveTexture(slot);
+						GL1.glBindTexture(tex.getType(), 0);
+						
+					}));
+					
+					this.boundTex.clear();
+					this.texCount = 0;
+					
+				}
 				
 			}
 			
 			this.vao.unbind(rcon);
 			
 		}
-		else
-		{
-			Logger.debug("PROGRAM NOGO");
-			
-		}
 		
 		this.p.unbind(rcon);
 		
-		//this.renderCount--;
+		this.renderCount--;
 		
 	}
 	
 	@Override
 	public void preRender(RenderContext rcon, double delta)
 	{
-		if (!this.mats.isEmpty())
-		{
-			this.mats.forEach(((mat) -> {mat.preRender(rcon, delta);}));
-			
-		}
+		this.mats.forEach(((mat) -> {mat.preRender(rcon, delta);}));
 		
-		if (this.isDirty())
+		if (this.p.bind(rcon))
 		{
-			this.p.attachUniform(rcon, "flip", BufferHelper.makeIntBuffer(new int[]{rcon.isScreenFlipped() ? 1 : 0}), GLEnumUType.ONE);
+			this.manipulateProgram(rcon);
 			
-			if (this.filters != null)
+			if (rcon.updateScreenFlipUniform())
 			{
-				this.filters.filter(rcon, this.p);
+				GL2.glUniform1i("flip", rcon.isScreenFlipped() ? 1 : 0);
 				
 			}
 			
 		}
+		
+		this.p.unbind(rcon);
 		
 	}
 	
 	@Override
 	public void postRender(RenderContext rcon)
 	{
-		if (!this.mats.isEmpty())
-		{
-			this.mats.forEach(((mat) -> {mat.postRender(rcon);}));
-			
-		}
-		
-		if (this.isDirty())
-		{
-			this.setIsDirty(false);
-			
-		}
+		this.mats.forEach(((mat) -> {mat.postRender(rcon);}));
 		
 	}
 	
@@ -213,19 +213,6 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 		
 	}
 	
-	@Override
-	public boolean isDirty()
-	{
-		return this.dirty;
-	}
-	
-	@Override
-	public synchronized void setIsDirty(boolean b)
-	{
-		this.dirty = b;
-		
-	}
-	
 	public synchronized RenderableObj setFilters(Filters fs)
 	{
 		assert fs != null;
@@ -235,30 +222,26 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 		return this;
 	}
 	
-	public void setMaterial(int i, Material mat)
-	{
-		assert MathHelper.bounds(i, 0, RenderConst.MATERIAL_CAP);
-		
-		this.mats.set(i, mat);
-		
-	}
-	
 	public void addMaterials(Material... ms)
 	{
 		int c = 0;
 		
-		do
+		while (this.mats.size() < RenderConst.MATERIAL_CAP && c < ms.length)
 		{
-			if (this.mats.size() == RenderConst.MATERIAL_CAP)
-			{
-				break;
-			}
-			
 			this.mats.add(ms[c++]);
 			
 		}
-		while (c < ms.length);
 		
+	}
+	
+	public int addMaterial(Material m)
+	{
+		if (this.mats.add(m))
+		{
+			return this.mats.size() - 1;
+		}
+		
+		return -1;
 	}
 	
 	public synchronized RenderableObj setEnableZBuffer(boolean z)
@@ -276,6 +259,50 @@ public abstract class RenderableObj implements IDirty, IFilterable, IRenderable
 	public boolean isCulled(ICamera cam)
 	{
 		return false;
+	}
+	
+	protected void manipulateProgram(RenderContext rcon)
+	{
+		if (this.filters != null)
+		{
+			this.filters.filter(rcon, this.p);
+			
+		}
+		
+	}
+	
+	private void updateMatUniforms(RenderContext rcon)
+	{
+		int c = 0;
+		
+		for (Material m : this.mats)
+		{
+			GL2.glUniformi(GLEnumUType.ONE, String.format("mats[%s].tex", c), this.bindTexture(rcon, m.tex()));
+			GL2.glUniformi(GLEnumUType.ONE, String.format("mats[%s].renTex", c), this.bindTexture(rcon, m.renTex()));
+			GL2.glUniformi(GLEnumUType.ONE, String.format("mats[%s].glowTex", c), this.bindTexture(rcon, m.glowTex()));
+			GL2.glUniformf(GLEnumUType.FOUR, String.format("mats[%s].filter", c), m.filter().asFloats());
+			GL2.glUniformf(GLEnumUType.ONE, String.format("mats[%s].shine", c), m.shine());
+			
+			c++;
+			
+		}
+		
+	}
+	
+	private int bindTexture(RenderContext rcon, ITexture tex)
+	{
+		if (tex == null)
+		{
+			return 0;
+		}
+		
+		int ret = this.texCount;
+		
+		GL1.glActiveTexture(GLConst.GL_TEXTURE0 + this.texCount++);
+		GL1.glBindTexture(tex);
+		this.boundTex.put(tex, ret);
+		
+		return ret;
 	}
 	
 	protected abstract boolean initiate(RenderContext rcon);

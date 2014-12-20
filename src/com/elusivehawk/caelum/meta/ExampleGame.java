@@ -1,6 +1,7 @@
 
 package com.elusivehawk.caelum.meta;
 
+import java.util.Random;
 import com.elusivehawk.caelum.CaelumEngine;
 import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.DisplaySettings;
@@ -15,8 +16,12 @@ import com.elusivehawk.caelum.physics.IPhysicsSimulator;
 import com.elusivehawk.caelum.render.Canvas;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
+import com.elusivehawk.caelum.render.tex.Color;
+import com.elusivehawk.caelum.render.tex.ColorFormat;
+import com.elusivehawk.caelum.render.tex.Material;
 import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.Logger;
+import com.elusivehawk.util.RNG;
 import com.elusivehawk.util.Version;
 
 /**
@@ -28,6 +33,7 @@ import com.elusivehawk.util.Version;
 public final class ExampleGame extends Game
 {
 	public static final Version VERSION = new Version(1, 0, 0);
+	public static final int RANDOM_MATERIAL_CAP = 5;
 	
 	private Canvas canvas = new Canvas();
 	
@@ -122,7 +128,24 @@ public final class ExampleGame extends Game
 	@Override
 	public void initiate(Display display, AssetManager assets) throws Throwable
 	{
-		this.canvas.drawImage(0f, 0f, 0.5f, 0.5f, null);
+		Random rng = RNG.rng();
+		
+		for (int c = 0; c < RANDOM_MATERIAL_CAP; c++)
+		{
+			this.canvas.addMaterial(new Material(((m) ->
+			{
+				m.filter(new Color(ColorFormat.RGBA, rng.nextFloat(), rng.nextFloat(), rng.nextFloat()));
+				
+			})).lock());
+			
+		}
+		
+		this.canvas.drawImage(0.2f, 0.2f, 0.8f, 0.8f);
+		
+		this.canvas.drawImage(0.0f, 0.0f, 0.2f, 0.2f, 1);
+		this.canvas.drawImage(0.8f, 0.8f, 1.0f, 1.0f, 2);
+		this.canvas.drawImage(0.0f, 0.8f, 0.2f, 1.0f, 3);
+		this.canvas.drawImage(0.8f, 0.0f, 1.0f, 0.2f, 4);
 		
 	}
 	

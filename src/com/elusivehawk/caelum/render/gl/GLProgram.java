@@ -1,14 +1,11 @@
 
 package com.elusivehawk.caelum.render.gl;
 
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.util.IDirty;
 import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.storage.ArrayHelper;
-import com.elusivehawk.util.storage.BufferHelper;
 
 /**
  * 
@@ -93,9 +90,9 @@ public final class GLProgram implements IGLBindable, IDirty
 	{
 		int bp = GL1.glGetInteger(GLConst.GL_CURRENT_PROGRAM);
 		
-		if (bp != 0)
+		if (bp != 0 && bp != this.id)
 		{
-			Logger.debug("BP: %s", bp);
+			Logger.debug("Failed to bind program %s; Current program ID: %s", this.id, bp);
 			
 			return false;
 		}
@@ -189,52 +186,6 @@ public final class GLProgram implements IGLBindable, IDirty
 		}
 		
 		return ret;
-	}
-	
-	public void attachUniform(RenderContext rcon, String name, float[] info, GLEnumUType type)
-	{
-		this.attachUniform(rcon, name, BufferHelper.makeFloatBuffer(info), type);
-		
-	}
-	
-	public void attachUniform(RenderContext rcon, String name, FloatBuffer info, GLEnumUType type)
-	{
-		if (!this.isBound(rcon))
-		{
-			return;
-		}
-		
-		int loc = GL2.glGetUniformLocation(this.id, name);
-		
-		if (loc != 0)
-		{
-			type.loadUniform(rcon, loc, info);
-			
-		}
-		
-	}
-	
-	public void attachUniform(RenderContext rcon, String name, int[] info, GLEnumUType type)
-	{
-		this.attachUniform(rcon, name, BufferHelper.makeIntBuffer(info), type);
-		
-	}
-	
-	public void attachUniform(RenderContext rcon, String name, IntBuffer info, GLEnumUType type)
-	{
-		if (!this.isBound(rcon))
-		{
-			return;
-		}
-		
-		int loc = GL2.glGetUniformLocation(this.id, name);
-		
-		if (loc != 0)
-		{
-			type.loadUniform(rcon, loc, info);
-			
-		}
-		
 	}
 	
 	public int getId()

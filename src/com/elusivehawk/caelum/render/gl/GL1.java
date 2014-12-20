@@ -58,9 +58,15 @@ public final class GL1
 		
 	}
 	
+	public static void glBindTexture(ITexture texture)
+	{
+		glBindTexture(texture.getType(), texture);
+		
+	}
+	
 	public static void glBindTexture(GLEnumTexture target, ITexture texture)
 	{
-		glBindTexture(target.gl, texture.getTexId());
+		glBindTexture(target.gl, texture == null ? 0 : texture.getTexId());
 		
 	}
 	
@@ -72,7 +78,7 @@ public final class GL1
 	
 	public static void glBindTexture(int target, ITexture texture)
 	{
-		glBindTexture(target, texture.getTexId());
+		glBindTexture(target, texture == null ? 0 : texture.getTexId());
 		
 	}
 	

@@ -4,6 +4,7 @@ package com.elusivehawk.caelum.render.tex;
 import com.elusivehawk.caelum.render.IRenderable;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
+import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.math.MathHelper;
 
 /**
@@ -12,23 +13,31 @@ import com.elusivehawk.util.math.MathHelper;
  * 
  * @author Elusivehawk
  */
-public class Material implements IRenderable
+public final class Material implements IRenderable
 {
-	protected ITexture tex = null;
-	protected RenderableTexture renTex = null;
-	protected float shininess = 0f;
-	protected Color filter = new Color();
+	private ITexture tex = null, glowTex = null;
+	private RenderableTexture renTex = null;
+	private float shine = 0f;
+	private Color filter = Color.WHITE;
 	
 	private boolean locked = false;
+	private int texCount = 0;
 	
 	public Material(){}
+	
+	public Material(IPopulator<Material> pop)
+	{
+		pop.populate(this);
+		
+	}
 	
 	@SuppressWarnings("unqualified-field-access")
 	public Material(Material m)
 	{
 		tex = m.tex;
+		glowTex = m.glowTex;
 		renTex = m.renTex;
-		shininess = m.shininess;
+		shine = m.shine;
 		filter = m.filter;
 		
 	}
@@ -50,6 +59,12 @@ public class Material implements IRenderable
 		if (this.tex != null)
 		{
 			this.tex.preRender(rcon, delta);
+			
+		}
+		
+		if (this.glowTex != null)
+		{
+			this.glowTex.preRender(rcon, delta);
 			
 		}
 		
@@ -85,23 +100,10 @@ public class Material implements IRenderable
 		
 		ret *= 31 + (this.tex == null ? 0 : this.tex.hashCode());
 		ret *= 31 + (this.renTex == null ? 0 : this.renTex.hashCode());
-		ret *= 31 + (Float.floatToRawIntBits(this.shininess));
+		ret *= 31 + (Float.floatToRawIntBits(this.shine));
 		ret *= 31 + (this.filter == null ? 0 : this.filter.hashCode());
 		
 		return ret;
-	}
-	
-	public Material renTex(RenderableTexture texture)
-	{
-		assert texture != null;
-		
-		if (!this.locked)
-		{
-			this.renTex = texture;
-			
-		}
-		
-		return this;
 	}
 	
 	public Material filter(Color col)
@@ -117,11 +119,55 @@ public class Material implements IRenderable
 		return this;
 	}
 	
-	public Material shine(float shine)
+	public Material glowTex(ITexture glow)
+	{
+		assert glow != null;
+		
+		if (!this.locked)
+		{
+			if (this.glowTex == null)
+			{
+				this.texCount++;
+				
+			}
+			
+			this.glowTex = glow;
+			
+		}
+		
+		return this;
+	}
+	
+	public Material renTex(RenderableTexture texture)
+	{
+		assert texture != null;
+		
+		if (!this.locked)
+		{
+			if (this.renTex == null)
+			{
+				this.texCount++;
+				
+			}
+			
+			this.renTex = texture;
+			
+			if (this.shine == 0f)
+			{
+				this.shine = 1f;
+				
+			}
+			
+		}
+		
+		return this;
+	}
+	
+	public Material shine(float shininess)
 	{
 		if (!this.locked)
 		{
-			this.shininess = MathHelper.clamp(shine, 0, 1f);
+			this.shine = MathHelper.clamp(shininess, 0, 1f);
 			
 		}
 		
@@ -134,6 +180,12 @@ public class Material implements IRenderable
 		
 		if (!this.locked)
 		{
+			if (this.tex == null)
+			{
+				this.texCount++;
+				
+			}
+			
 			this.tex = texture;
 			
 		}
@@ -148,24 +200,34 @@ public class Material implements IRenderable
 		return this;
 	}
 	
-	public RenderableTexture renTex()
-	{
-		return this.renTex;
-	}
-	
 	public Color filter()
 	{
 		return this.filter;
 	}
 	
+	public ITexture glowTex()
+	{
+		return this.glowTex;
+	}
+	
+	public RenderableTexture renTex()
+	{
+		return this.renTex;
+	}
+	
 	public float shine()
 	{
-		return this.shininess;
+		return this.shine;
 	}
 	
 	public ITexture tex()
 	{
 		return this.tex;
+	}
+	
+	public int texCount()
+	{
+		return this.texCount;
 	}
 	
 	public boolean isStatic()

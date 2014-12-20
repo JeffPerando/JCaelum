@@ -4,13 +4,12 @@ package com.elusivehawk.caelum.render;
 import java.nio.FloatBuffer;
 import com.elusivehawk.caelum.CaelumException;
 import com.elusivehawk.caelum.render.gl.GL1;
+import com.elusivehawk.caelum.render.gl.GL2;
+import com.elusivehawk.caelum.render.gl.GLBuffer;
 import com.elusivehawk.caelum.render.gl.GLConst;
 import com.elusivehawk.caelum.render.gl.GLEnumBufferTarget;
 import com.elusivehawk.caelum.render.gl.GLEnumDataUsage;
-import com.elusivehawk.caelum.render.gl.GLEnumUType;
 import com.elusivehawk.caelum.render.gl.GLProgram;
-import com.elusivehawk.caelum.render.gl.GLBuffer;
-import com.elusivehawk.util.math.Matrix;
 import com.elusivehawk.util.math.MatrixHelper;
 import com.elusivehawk.util.math.Quaternion;
 import com.elusivehawk.util.math.Vector;
@@ -68,10 +67,16 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 	@Override
 	protected boolean initiate(RenderContext rcon)
 	{
-		/*if (!this.mesh.isLoaded())
+		if (!this.mesh.isLoaded())
 		{
-			return false;
-		}*/
+			this.mesh.initiate(rcon);
+			
+			if (!this.mesh.isLoaded())
+			{
+				return false;
+			}
+			
+		}
 		
 		this.buf = BufferHelper.createFloatBuffer(this.mesh.getIndiceCount() * 16);
 		this.vbo = new GLBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW, this.buf);
@@ -93,7 +98,7 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 	public synchronized void onVecChanged(Vector vec)
 	{
 		this.offset.add(vec, this.pos);
-		this.setIsDirty(true);
+		//this.setIsDirty(true);
 		
 	}
 	
@@ -101,7 +106,7 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 	public synchronized void onQuatChanged(Quaternion q)
 	{
 		this.rotOff.add(q, this.rot);
-		this.setIsDirty(true);
+		//this.setIsDirty(true);
 		
 	}
 	
@@ -132,14 +137,6 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 			
 		}*/
 		
-		Matrix m = MatrixHelper.createHomogenousMatrix(this.rot, this.scale, this.pos);
-		
-		this.p.attachUniform(rcon, "model", m.asBuffer(), GLEnumUType.M_FOUR);
-		
-		//TODO Load materials into program
-		
-		this.setIsDirty(false);
-		
 	}
 	
 	@Override
@@ -159,6 +156,23 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 		//TODO Finish
 		
 		return false;
+	}
+	
+	@Override
+	protected void manipulateProgram(RenderContext rcon)
+	{
+		super.manipulateProgram(rcon);
+		
+		if (this.rot.isDirty() || this.scale.isDirty() || this.pos.isDirty())
+		{
+			GL2.glUniformMatrix4f("model", MatrixHelper.createHomogenousMatrix(this.rot, this.scale, this.pos));
+			
+			this.rot.setIsDirty(false);
+			this.scale.setIsDirty(false);
+			this.pos.setIsDirty(false);
+			
+		}
+		
 	}
 	
 	/*public synchronized void setVector(EnumVectorType type, Vector vec)
@@ -181,7 +195,7 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 	{
 		this.frame = f;
 		
-	}*/
+	}
 	
 	public synchronized void setIndice(int i, Matrix m)
 	{
@@ -191,7 +205,7 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 		
 		this.setIsDirty(true);
 		
-	}
+	}*/
 	
 	public Mesh getMesh()
 	{
@@ -212,8 +226,6 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 	{
 		this.offset.set(off);
 		this.pos.add(this.offset);
-		
-		this.setIsDirty(true);
 		
 		return this;
 	}
@@ -239,8 +251,6 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 	{
 		this.rotOff.set(qoff);
 		this.rot.add(this.rotOff);
-		
-		this.setIsDirty(true);
 		
 		return this;
 	}

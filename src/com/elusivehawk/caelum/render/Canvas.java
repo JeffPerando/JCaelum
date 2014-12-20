@@ -31,7 +31,7 @@ public class Canvas extends RenderableObj
 	private Rectangle sub = null;
 	
 	private int images = 0;
-	private boolean expanded = false;
+	private boolean expanded = false, drewNewImages = false;
 	
 	public Canvas()
 	{
@@ -104,9 +104,11 @@ public class Canvas extends RenderableObj
 			this.expanded = false;
 			
 		}
-		else if (this.isDirty())
+		else if (this.drewNewImages)
 		{
 			this.vertex.updateVBO(this.floatbuf, 0);
+			
+			this.drewNewImages = false;
 			
 		}
 		
@@ -164,6 +166,12 @@ public class Canvas extends RenderableObj
 		return true;
 	}
 	
+	public void drawImage(float x, float y, float z, float w)
+	{
+		this.drawImage(x, y, z, w, 0);
+		
+	}
+	
 	public void drawImage(float x, float y, float z, float w, int mat)
 	{
 		this.drawImage(x, y, z, w, BLANK_ICON, mat);
@@ -179,6 +187,12 @@ public class Canvas extends RenderableObj
 	public void drawImage(float x, float y, float z, float w, Icon icon, int mat)
 	{
 		this.drawImage(new Rectangle(x, y, z, w), icon, mat);
+		
+	}
+	
+	public void drawImage(Rectangle r)
+	{
+		this.drawImage(r, null, 0);
 		
 	}
 	
@@ -234,10 +248,9 @@ public class Canvas extends RenderableObj
 		synchronized (this)
 		{
 			this.images++;
+			this.drewNewImages = true;
 			
 		}
-		
-		this.setIsDirty(true);
 		
 	}
 	
