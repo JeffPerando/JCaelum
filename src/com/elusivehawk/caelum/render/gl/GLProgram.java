@@ -106,7 +106,7 @@ public final class GLProgram implements IGLBindable, IDirty
 		
 		if ((this.relink || this.shaders.isDirty()) && !this.relink(rcon))
 		{
-			Logger.debug("Relink nogo");
+			Logger.debug("Could not relink program %s; Info log: %s", this.id, GL2.glGetProgramInfoLog(this.id, 2048));
 			
 			return false;
 		}
