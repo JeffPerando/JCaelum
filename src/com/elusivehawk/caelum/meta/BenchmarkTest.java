@@ -7,7 +7,6 @@ import org.lwjgl.opengl.GL11;
 import com.elusivehawk.caelum.DisplaySettings;
 import com.elusivehawk.caelum.lwjgl.LWJGLDisplayImpl;
 import com.elusivehawk.caelum.render.gl.GLConst;
-import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.ShutdownHelper;
 
@@ -44,7 +43,7 @@ public class BenchmarkTest
 	
 	public static void main(String[] args)
 	{
-		Logger.log(EnumLogType.VERBOSE, "Beginning bench testing...");
+		Logger.verbose("Beginning bench testing...");
 		
 		Thread thread = new Thread((() ->
 		{
@@ -120,7 +119,7 @@ public class BenchmarkTest
 		
 		thread.start();
 		
-		Logger.log(EnumLogType.VERBOSE, "Th-th-th-th-That's all, folks!");
+		Logger.verbose("Th-th-th-th-That's all, folks!");
 		
 	}
 	

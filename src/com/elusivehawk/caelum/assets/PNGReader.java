@@ -13,6 +13,7 @@ import com.elusivehawk.util.HashGen;
 import com.elusivehawk.util.storage.BufferHelper;
 import com.elusivehawk.util.storage.Tuple;
 import com.google.common.collect.Lists;
+import de.matthiasmann.twl.utils.PNGDecoder;
 
 /**
  * 
@@ -28,7 +29,8 @@ public class PNGReader implements IAssetReader
 	@Override
 	public LegibleByteImage readAsset(DataInputStream in) throws Throwable
 	{
-		long header = in.readLong();
+		return null;
+		/*long header = in.readLong();
 		
 		if (header != HEADER)//Check the header
 		{
@@ -127,7 +129,7 @@ public class PNGReader implements IAssetReader
 		
 		//TODO Use unused chunks
 		
-		return ret;
+		return ret;*/
 	}
 	
 	private static Tuple<String, ByteBuffer> readChunk(DataInputStream in) throws Throwable

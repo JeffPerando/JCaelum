@@ -3,11 +3,12 @@ package com.elusivehawk.caelum.render;
 
 import com.elusivehawk.caelum.DisplayManager;
 import com.elusivehawk.util.Internal;
+import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.concurrent.ThreadTimed;
 
 /**
  * 
- * The primary thread for rendering the game's window.
+ * 
  * 
  * @author Elusivehawk
  */
@@ -65,6 +66,13 @@ public final class ThreadGameRender extends ThreadTimed
 	public void onThreadStopped(boolean failure)
 	{
 		this.displays.close();
+		
+	}
+	
+	@Override
+	public void handleException(Throwable e)
+	{
+		Logger.err("Error caught during render phase", e);
 		
 	}
 	

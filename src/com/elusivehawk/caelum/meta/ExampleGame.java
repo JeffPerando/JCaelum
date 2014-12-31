@@ -132,15 +132,11 @@ public final class ExampleGame extends Game
 		
 		for (int c = 0; c < RANDOM_MATERIAL_CAP; c++)
 		{
-			this.canvas.addMaterial(new Material(((m) ->
-			{
-				m.filter(new Color(ColorFormat.RGBA, rng.nextFloat(), rng.nextFloat(), rng.nextFloat()));
-				
-			})).lock());
+			this.canvas.addMaterial(new Material().filter(new Color(ColorFormat.RGB, rng.nextFloat(), rng.nextFloat(), rng.nextFloat())).lock());
 			
 		}
 		
-		this.canvas.drawImage(0.2f, 0.2f, 0.8f, 0.8f);
+		this.canvas.drawImage(0.2f, 0.2f, 0.8f, 0.8f, 0);
 		
 		this.canvas.drawImage(0.0f, 0.0f, 0.2f, 0.2f, 1);
 		this.canvas.drawImage(0.8f, 0.8f, 1.0f, 1.0f, 2);

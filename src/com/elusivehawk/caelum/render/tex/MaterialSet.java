@@ -48,26 +48,27 @@ public class MaterialSet implements Iterable<Material>, IDirty
 		return this.mats.iterator();
 	}
 	
-	public boolean add(Material mat)
+	public int add(Material mat)
 	{
-		if (this.size() < RenderConst.MATERIAL_CAP)
+		if (this.size() == RenderConst.MATERIAL_CAP)
 		{
-			if (this.mats.add(mat))
-			{
-				synchronized (this)
-				{
-					this.isStatic = this.isStatic && mat.isStatic();
-					this.texCount += mat.texCount();
-					this.dirty = true;
-					
-				}
-				
-				return true;
-			}
+			return -1;
+		}
+		
+		if (!this.mats.add(mat))
+		{
+			return -1;
+		}
+		
+		synchronized (this)
+		{
+			this.isStatic = this.isStatic && mat.isStatic();
+			this.texCount += mat.texCount();
+			this.dirty = true;
 			
 		}
 		
-		return false;
+		return this.size() - 1;
 	}
 	
 	public boolean isStatic()

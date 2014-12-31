@@ -6,16 +6,15 @@ import java.util.List;
 import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.render.gl.GL1;
 import com.elusivehawk.caelum.render.gl.GLConst;
-import com.elusivehawk.caelum.render.gl.GLEnumShader;
 import com.elusivehawk.caelum.render.gl.GLProgram;
 import com.elusivehawk.caelum.render.gl.IGLDeletable;
-import com.elusivehawk.caelum.render.gl.Shader;
-import com.elusivehawk.caelum.render.gl.Shaders;
+import com.elusivehawk.caelum.render.glsl.GLSLEnumShaderType;
+import com.elusivehawk.caelum.render.glsl.ShaderAsset;
+import com.elusivehawk.caelum.render.glsl.Shaders;
 import com.elusivehawk.caelum.render.tex.Color;
 import com.elusivehawk.caelum.render.tex.ITexture;
 import com.elusivehawk.caelum.render.tex.PixelGrid;
 import com.elusivehawk.caelum.render.tex.TextureImage;
-import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.math.MathHelper;
@@ -110,17 +109,24 @@ public final class RenderContext implements Closeable, IUpdatable
 			return false;
 		}
 		
-		Logger.log(EnumLogType.VERBOSE, "OpenGL version: %s", GL1.glGetString(GLConst.GL_VERSION));
-		Logger.log(EnumLogType.VERBOSE, "OpenGL vendor: %s", GL1.glGetString(GLConst.GL_VENDOR));
-		Logger.log(EnumLogType.VERBOSE, "OpenGL renderer: %s", GL1.glGetString(GLConst.GL_RENDERER));
+		Logger.verbose("OpenGL version: %s", GL1.glGetString(GLConst.GL_VERSION));
+		Logger.verbose("OpenGL vendor: %s", GL1.glGetString(GLConst.GL_VENDOR));
+		Logger.verbose("OpenGL renderer: %s", GL1.glGetString(GLConst.GL_RENDERER));
 		
 		GL1.glViewport(this.display);
-		GL1.glClearColor(Color.BLACK);
+		GL1.glClearColor(Color.WHITE);
 		
-		for (GLEnumShader sh : GLEnumShader.values())
+		//Begin glEnable calls
+		
+		GL1.glEnable(GLConst.GL_BLEND);
+		//GL1.glBlendFunc(GLConst.GL_SRC_ALPHA, GLConst.GL_ONE_MINUS_SRC_ALPHA);
+		
+		//End glEnable calls
+		
+		for (GLSLEnumShaderType sh : GLSLEnumShaderType.values())
 		{
-			this.shaders.addShader(new Shader(String.format("/res/shaders/%s.glsl", sh.name().toLowerCase()), sh));
-			this.shaders2d.addShader(new Shader(String.format("/res/shaders/%s2d.glsl", sh.name().toLowerCase()), sh));
+			this.shaders.addShader(new ShaderAsset(String.format("/res/shaders/%s.glsl", sh.name().toLowerCase()), sh));
+			this.shaders2d.addShader(new ShaderAsset(String.format("/res/shaders/%s2d.glsl", sh.name().toLowerCase()), sh));
 			
 		}
 		

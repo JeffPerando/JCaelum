@@ -27,7 +27,7 @@ public class Tessellator
 	
 	private FloatBuffer fs_ret = null;
 	private IntBuffer in_ret = null;
-	private boolean done = false;
+	private boolean done = false, optimized = false;
 	
 	public Tessellator(){}
 	
@@ -37,49 +37,42 @@ public class Tessellator
 		
 	}
 	
-	public void vertex(float x, float y, float z)
+	public int vertex(float x, float y, float z)
 	{
-		this.vertexTex(x, y, z, 0, 0);
-		
+		return this.vertexTex(x, y, z, 0, 0);
 	}
 	
-	public void vertex(Vector vtx)
+	public int vertex(Vector vtx)
 	{
-		this.vertexTex(vtx, new Vector(2));
-		
+		return this.vertexTex(vtx, new Vector(2));
 	}
 	
-	public void vertexTex(float x, float y, float z, float u, float v)
+	public int vertexTex(float x, float y, float z, float u, float v)
 	{
-		this.vertexTexNormal(x, y, z, u, v, 0, 0, 0);
-		
+		return this.vertexTexNormal(x, y, z, u, v, 0, 0, 0);
 	}
 	
-	public void vertexTex(Vector vtx, Vector tex)
+	public int vertexTex(Vector vtx, Vector tex)
 	{
-		this.vertexTexNormal(vtx, tex, new Vector(3));
-		
+		return this.vertexTexNormal(vtx, tex, new Vector(3));
 	}
 	
-	public void vertexTexNormal(float x, float y, float z, float u, float v, float nx, float ny, float nz)
+	public int vertexTexNormal(float x, float y, float z, float u, float v, float nx, float ny, float nz)
 	{
-		this.point(x, y, z, u, v, nx, ny, nz, 0);
-		
+		return this.point(x, y, z, u, v, nx, ny, nz, 0);
 	}
 	
-	public void vertexTexNormal(Vector vtx, Vector tex, Vector n)
+	public int vertexTexNormal(Vector vtx, Vector tex, Vector n)
 	{
-		this.point(vtx, tex, n, 0);
-		
+		return this.point(vtx, tex, n, 0);
 	}
 	
-	public void point(float x, float y, float z, float u, float v, float nx, float ny, float nz, int m)
+	public int point(float x, float y, float z, float u, float v, float nx, float ny, float nz, int m)
 	{
-		this.point(new Vector(x, y, z), new Vector(u, v), new Vector(nx, ny, nz), m);
-		
+		return this.point(new Vector(x, y, z), new Vector(u, v), new Vector(nx, ny, nz), m);
 	}
 	
-	public void point(Vector vtx, Vector tex, Vector n, int m)
+	public int point(Vector vtx, Vector tex, Vector n, int m)
 	{
 		if (this.done)
 		{
@@ -99,6 +92,9 @@ public class Tessellator
 		
 		this.indices.add(i);
 		
+		this.optimized = false;
+		
+		return i;
 	}
 	
 	public FloatBuffer getVertexData()
@@ -149,6 +145,127 @@ public class Tessellator
 		this.in_ret = BufferHelper.makeIntBuffer(this.indices).asReadOnlyBuffer();
 		this.done = true;
 		
+	}
+	
+	public boolean isOptimized()
+	{
+		return this.optimized;
+	}
+	
+	public boolean optimize()
+	{
+		if (this.done)
+		{
+			return false;
+		}
+		
+		if (this.optimized)
+		{
+			return true;
+		}
+		
+		if (this.points.size() < 2)
+		{
+			return false;
+		}
+		
+		if (this.points.size() % 3 != 0)
+		{
+			return false;
+		}
+		
+		List<Triangle> triangles = Lists.newArrayListWithCapacity(this.indices.size() / 3);
+		
+		for (int c = 0; c < this.points.size(); c += 3)
+		{
+			triangles.add(new Triangle(this.indices.get(c), this.indices.get(c + 1), this.indices.get(c + 2)));
+			
+		}
+		
+		List<Triangle> optimized = Lists.newArrayList();
+		
+		optimized.add(triangles.get(0));
+		
+		while (!triangles.isEmpty())
+		{
+			for (int c = 1; c < triangles.size(); c++)
+			{
+				Triangle t = triangles.get(c);
+				
+				boolean used = false;
+				
+				if (t.canGoAheadOf(optimized.get(0)))
+				{
+					optimized.add(0, t);
+					used = true;
+					
+				}
+				else if (t.canGoBehind(optimized.get(optimized.size() - 1)))
+				{
+					optimized.add(t);
+					used = true;
+					
+				}
+				
+				if (used)
+				{
+					triangles.remove(c);
+					c--;//To make sure we don't skip a triangle
+					
+					continue;
+				}
+				
+				boolean useful = false;
+				
+				for (Triangle other : triangles)
+				{
+					if (t.equals(other))
+					{
+						continue;
+					}
+					
+					if (t.canGoAheadOf(other) || t.canGoBehind(other))
+					{
+						useful = true;
+						break;
+					}
+					
+				}
+				
+				if (!useful)
+				{
+					return false;
+				}
+				
+			}
+			
+		}
+		
+		if (optimized.isEmpty())
+		{
+			return false;
+		}
+		
+		List<Integer> newind = Lists.newArrayList();
+		
+		Triangle first = optimized.get(0);
+		
+		newind.add(first.a);
+		newind.add(first.b);
+		newind.add(first.c);
+		
+		for (int c = 1; c < optimized.size(); c++)
+		{
+			newind.add(optimized.get(c).c);
+			
+		}
+		
+		this.indices.clear();
+		this.indices.addAll(newind);
+		
+		this.optimized = true;
+		
+		return true;
 	}
 	
 }

@@ -2,6 +2,9 @@
 package com.elusivehawk.caelum.render.gl;
 
 import com.elusivehawk.caelum.render.RenderContext;
+import com.elusivehawk.caelum.render.glsl.GLSLEnumShaderType;
+import com.elusivehawk.caelum.render.glsl.IShader;
+import com.elusivehawk.caelum.render.glsl.Shaders;
 import com.elusivehawk.util.IDirty;
 import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.Logger;
@@ -34,13 +37,13 @@ public final class GLProgram implements IGLBindable, IDirty
 		
 	}
 	
-	public GLProgram(Shader[] sh)
+	public GLProgram(IShader[] sh)
 	{
 		this();
 		
 		if (!ArrayHelper.isNullOrEmpty(sh))
 		{
-			for (Shader s : sh)
+			for (IShader s : sh)
 			{
 				attachShader(s);
 				
@@ -153,7 +156,7 @@ public final class GLProgram implements IGLBindable, IDirty
 		return true;
 	}
 	
-	public boolean attachShader(Shader sh)
+	public boolean attachShader(IShader sh)
 	{
 		if (this.shaders.addShader(sh))
 		{
@@ -168,14 +171,14 @@ public final class GLProgram implements IGLBindable, IDirty
 	{
 		int ret = 0;
 		
-		for (GLEnumShader st : GLEnumShader.values())
+		for (GLSLEnumShaderType st : GLSLEnumShaderType.values())
 		{
 			if (this.shaders.getShader(st) != null)
 			{
 				continue;
 			}
 			
-			Shader s = shs.getShader(st);
+			IShader s = shs.getShader(st);
 			
 			if (s != null && this.shaders.addShader(s))
 			{

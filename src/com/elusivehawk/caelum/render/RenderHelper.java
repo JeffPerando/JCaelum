@@ -3,14 +3,19 @@ package com.elusivehawk.caelum.render;
 
 import java.nio.ByteBuffer;
 import com.elusivehawk.caelum.render.gl.GL1;
+import com.elusivehawk.caelum.render.gl.GL2;
 import com.elusivehawk.caelum.render.gl.GL3;
 import com.elusivehawk.caelum.render.gl.GLConst;
 import com.elusivehawk.caelum.render.gl.GLEnumError;
 import com.elusivehawk.caelum.render.gl.GLEnumTexture;
 import com.elusivehawk.caelum.render.gl.GLException;
+import com.elusivehawk.caelum.render.glsl.GLSLEnumSStatus;
+import com.elusivehawk.caelum.render.glsl.IShader;
 import com.elusivehawk.caelum.render.tex.ColorFilter;
 import com.elusivehawk.caelum.render.tex.ColorFormat;
 import com.elusivehawk.caelum.render.tex.ILegibleImage;
+import com.elusivehawk.util.CompInfo;
+import com.elusivehawk.util.Logger;
 
 /**
  * 
@@ -99,6 +104,50 @@ public final class RenderHelper
 			throw new GLException(err);
 		}
 		
+	}
+	
+	public static int compileShader(IShader shader) throws GLException
+	{
+		if (shader.isCompiled())
+		{
+			return shader.getShaderId();
+		}
+		
+		String src = shader.getSource();
+		
+		if (src == null || src.equals(""))
+		{
+			throw new GLException("Shader source for %s is empty!", shader);
+		}
+		
+		int id = GL2.glCreateShader(shader.getShaderId());
+		
+		if (id == 0)
+		{
+			throw new GLException("Cannot load shader: Out of shader IDs");
+		}
+		
+		GL2.glShaderSource(id, src);
+		GL2.glCompileShader(id);
+		
+		int status = GL2.glGetShaderi(id, GLSLEnumSStatus.GL_COMPILE_STATUS);
+		
+		if (status == GLConst.GL_FALSE)
+		{
+			if (CompInfo.DEBUG)
+			{
+				Logger.warn("Cannot compile shader %s", shader);
+				Logger.info("Shader log for shader %s (ID %s) of type %s:\n%s", shader, id, shader.getType(), GL2.glGetShaderInfoLog(id, GL2.glGetShaderi(id, GLSLEnumSStatus.GL_INFO_LOG_LENGTH)));
+				
+			}
+			
+			GL2.glDeleteShader(id);
+			
+		}
+		
+		Logger.debug("Successfully compiled shader %s", shader);
+		
+		return id;
 	}
 	
 }

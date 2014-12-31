@@ -4,13 +4,11 @@ package com.elusivehawk.caelum.render;
 import java.nio.FloatBuffer;
 import com.elusivehawk.caelum.CaelumException;
 import com.elusivehawk.caelum.render.gl.GL1;
-import com.elusivehawk.caelum.render.gl.GL2;
 import com.elusivehawk.caelum.render.gl.GLBuffer;
 import com.elusivehawk.caelum.render.gl.GLConst;
 import com.elusivehawk.caelum.render.gl.GLEnumBufferTarget;
 import com.elusivehawk.caelum.render.gl.GLEnumDataUsage;
 import com.elusivehawk.caelum.render.gl.GLProgram;
-import com.elusivehawk.util.math.MatrixHelper;
 import com.elusivehawk.util.math.Quaternion;
 import com.elusivehawk.util.math.Vector;
 import com.elusivehawk.util.storage.BufferHelper;
@@ -67,7 +65,7 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 	@Override
 	protected boolean initiate(RenderContext rcon)
 	{
-		if (!this.mesh.isLoaded())
+		/*if (!this.mesh.isLoaded())
 		{
 			this.mesh.initiate(rcon);
 			
@@ -76,7 +74,7 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 				return false;
 			}
 			
-		}
+		}*/
 		
 		this.buf = BufferHelper.createFloatBuffer(this.mesh.getIndiceCount() * 16);
 		this.vbo = new GLBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW, this.buf);
@@ -158,7 +156,7 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 		return false;
 	}
 	
-	@Override
+	/*@Override
 	protected void manipulateProgram(RenderContext rcon)
 	{
 		super.manipulateProgram(rcon);
@@ -175,7 +173,7 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 		
 	}
 	
-	/*public synchronized void setVector(EnumVectorType type, Vector vec)
+	public synchronized void setVector(EnumVectorType type, Vector vec)
 	{
 		this.vecs.get(type).set(vec);
 		

@@ -4,7 +4,6 @@ package com.elusivehawk.caelum;
 import java.io.Closeable;
 import java.util.List;
 import com.elusivehawk.caelum.render.IRenderable;
-import com.elusivehawk.caelum.render.RenderException;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.ShutdownHelper;
@@ -44,16 +43,7 @@ public final class DisplayManager implements Closeable, IUpdatable
 				
 			}
 			
-			try
-			{
-				display.update(delta);
-				
-			}
-			catch (Throwable e)
-			{
-				Logger.err(new RenderException("Error caught while updating display %s: %s", display.getName(), e));
-				
-			}
+			display.update(delta);
 			
 			if (display.isClosed())
 			{

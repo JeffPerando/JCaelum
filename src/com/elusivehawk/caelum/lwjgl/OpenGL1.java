@@ -54,6 +54,13 @@ public class OpenGL1 implements IGL1Impl
 	@Override
 	public void glBufferData(int target, int type, Buffer data, int usage)
 	{
+		if (data instanceof ByteBuffer)
+		{
+			GL15.glBufferData(target, (ByteBuffer)data, usage);
+			
+			return;
+		}
+		
 		switch (type)
 		{
 			case GLConst.GL_BYTE: GL15.glBufferData(target, (ByteBuffer)data, usage); break;
@@ -69,6 +76,13 @@ public class OpenGL1 implements IGL1Impl
 	@Override
 	public void glBufferSubData(int target, int offset, int type, Buffer data)
 	{
+		if (data instanceof ByteBuffer)
+		{
+			GL15.glBufferSubData(target, offset, (ByteBuffer)data);
+			
+			return;
+		}
+		
 		switch (type)
 		{
 			case GLConst.GL_BYTE: GL15.glBufferSubData(target, offset, (ByteBuffer)data); break;

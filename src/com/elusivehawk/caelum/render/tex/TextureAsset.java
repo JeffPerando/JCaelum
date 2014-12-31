@@ -89,9 +89,6 @@ public class TextureAsset extends GraphicAsset implements ITexture
 		return this.getFrameCount() < 2;
 	}
 	
-	@Override
-	public void initiate(RenderContext rcon){}
-	
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean readAsset(DataInputStream in) throws Throwable

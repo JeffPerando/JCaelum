@@ -14,12 +14,14 @@ import com.elusivehawk.util.math.Vector;
  */
 public interface IGuiComponent
 {
-	Rectangle getBounds();
-	
 	void drawComponent(Canvas canvas, int state);
 	
 	void onClicked(Display display, int button);
 	
 	void onDragged(Vector delta);
+	
+	Rectangle getBounds();
+	
+	boolean isActive();
 	
 }

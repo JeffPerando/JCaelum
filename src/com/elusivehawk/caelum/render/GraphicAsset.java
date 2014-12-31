@@ -42,6 +42,4 @@ public abstract class GraphicAsset extends Asset implements IGLDeletable
 		return this.loaded && this.isRead();
 	}
 	
-	public abstract void initiate(RenderContext rcon);
-	
 }

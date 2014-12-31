@@ -39,13 +39,6 @@ public class Mesh extends GraphicAsset implements IPopulator<GLVertexArray>
 	}
 	
 	@Override
-	public void initiate(RenderContext rcon)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
 	protected boolean readAsset(DataInputStream in) throws Throwable
 	{
 		// TODO Auto-generated method stub

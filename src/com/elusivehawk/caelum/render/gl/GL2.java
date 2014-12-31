@@ -5,6 +5,9 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import com.elusivehawk.caelum.render.RenderHelper;
+import com.elusivehawk.caelum.render.glsl.GLSLEnumSStatus;
+import com.elusivehawk.caelum.render.glsl.GLSLEnumShaderType;
+import com.elusivehawk.caelum.render.glsl.IShader;
 import com.elusivehawk.util.math.Matrix;
 import com.elusivehawk.util.math.Vector;
 import com.elusivehawk.util.storage.BufferHelper;
@@ -30,7 +33,7 @@ public final class GL2
 		
 	}
 	
-	public static void glAttachShader(GLProgram program, Shader shader) throws GLException
+	public static void glAttachShader(GLProgram program, IShader shader) throws GLException
 	{
 		glAttachShader(program.getId(), shader.getShaderId());
 		
@@ -60,7 +63,7 @@ public final class GL2
 		
 	}
 	
-	public static void glCompileShader(Shader shader) throws GLException
+	public static void glCompileShader(IShader shader) throws GLException
 	{
 		glCompileShader(shader.getShaderId());
 		
@@ -83,7 +86,7 @@ public final class GL2
 		return ret;
 	}
 	
-	public static int glCreateShader(GLEnumShader type) throws GLException
+	public static int glCreateShader(GLSLEnumShaderType type) throws GLException
 	{
 		return glCreateShader(type.getGLId());
 	}
@@ -111,7 +114,7 @@ public final class GL2
 		
 	}
 	
-	public static void glDeleteShader(Shader shader) throws GLException
+	public static void glDeleteShader(IShader shader) throws GLException
 	{
 		glDeleteShader(shader.getShaderId());
 		
@@ -125,7 +128,7 @@ public final class GL2
 		
 	}
 	
-	public static void glDetachShader(GLProgram program, Shader shader) throws GLException
+	public static void glDetachShader(GLProgram program, IShader shader) throws GLException
 	{
 		glDetachShader(program.getId(), shader.getShaderId());
 		
@@ -318,12 +321,12 @@ public final class GL2
 		
 	}
 	
-	public static int glGetShaderi(int shader, GLEnumSStatus status) throws GLException
+	public static int glGetShaderi(int shader, GLSLEnumSStatus status) throws GLException
 	{
 		return glGetShaderi(shader, status.gl);
 	}
 	
-	public static int glGetShaderi(Shader shader, GLEnumSStatus status) throws GLException
+	public static int glGetShaderi(IShader shader, GLSLEnumSStatus status) throws GLException
 	{
 		return glGetShaderi(shader.getShaderId(), status.gl);
 	}
@@ -413,7 +416,7 @@ public final class GL2
 		return impl.glIsProgram(program);
 	}
 	
-	public static boolean glIsShader(Shader shader)
+	public static boolean glIsShader(IShader shader)
 	{
 		return glIsShader(shader.getShaderId());
 	}
@@ -469,44 +472,44 @@ public final class GL2
 		
 	}
 	
-	public static void glUniformf(GLEnumUType type, String location, float... data) throws GLException
+	public static void glUniformf(GLEnumUniformType type, String location, float... data) throws GLException
 	{
 		glUniformf(type, location, BufferHelper.createWrapper(data));
 		
 	}
 	
-	public static void glUniformf(GLEnumUType type, String location, FloatBuffer data) throws GLException
+	public static void glUniformf(GLEnumUniformType type, String location, FloatBuffer data) throws GLException
 	{
 		glUniformf(type, glGetUniformLocation(location), data);
 		
 	}
 	
-	public static void glUniformf(GLEnumUType type, int location, float... data) throws GLException
+	public static void glUniformf(GLEnumUniformType type, int location, float... data) throws GLException
 	{
 		glUniformf(type, location, BufferHelper.createWrapper(data));
 		
 	}
 	
-	public static void glUniformf(GLEnumUType type, int location, FloatBuffer data) throws GLException
+	public static void glUniformf(GLEnumUniformType type, int location, FloatBuffer data) throws GLException
 	{
 		glUniformf(type, location, data, false);
 		
 	}
 	
-	public static void glUniformf(GLEnumUType type, String location, FloatBuffer data, boolean transpose) throws GLException
+	public static void glUniformf(GLEnumUniformType type, String location, FloatBuffer data, boolean transpose) throws GLException
 	{
 		glUniformf(type, glGetUniformLocation(location), data, transpose);
 		
 	}
 	
-	public static void glUniformf(GLEnumUType type, int location, FloatBuffer data, boolean transpose) throws GLException
+	public static void glUniformf(GLEnumUniformType type, int location, FloatBuffer data, boolean transpose) throws GLException
 	{
 		switch (type)
 		{
-			case ONE: glUniform1f(location, data.get()); break;
-			case TWO: glUniform2f(location, data.get(), data.get()); break;
-			case THREE: glUniform3f(location, data.get(), data.get(), data.get()); break;
-			case FOUR: glUniform4f(location, data.get(), data.get(), data.get(), data.get()); break;
+			case ONE: glUniform1fv(location, 1, data); break;
+			case TWO: glUniform2fv(location, 1, data); break;
+			case THREE: glUniform3fv(location, 1, data); break;
+			case FOUR: glUniform4fv(location, 1, data); break;
 			case M_TWO: glUniformMatrix2fv(location, 1, transpose, data); break;
 			case M_THREE: glUniformMatrix3fv(location, 1, transpose, data); break;
 			case M_FOUR: glUniformMatrix4fv(location, 1, transpose, data); break;
@@ -515,25 +518,25 @@ public final class GL2
 		
 	}
 	
-	public static void glUniformi(GLEnumUType type, String location, int... data) throws GLException
+	public static void glUniformi(GLEnumUniformType type, String location, int... data) throws GLException
 	{
 		glUniformi(type, location, BufferHelper.createWrapper(data));
 		
 	}
 	
-	public static void glUniformi(GLEnumUType type, String location, IntBuffer data) throws GLException
+	public static void glUniformi(GLEnumUniformType type, String location, IntBuffer data) throws GLException
 	{
 		glUniformi(type, glGetUniformLocation(location), data);
 		
 	}
 	
-	public static void glUniformi(GLEnumUType type, int location, int... data) throws GLException
+	public static void glUniformi(GLEnumUniformType type, int location, int... data) throws GLException
 	{
 		glUniformi(type, location, BufferHelper.createWrapper(data));
 		
 	}
 	
-	public static void glUniformi(GLEnumUType type, int location, IntBuffer data) throws GLException
+	public static void glUniformi(GLEnumUniformType type, int location, IntBuffer data) throws GLException
 	{
 		switch (type)
 		{
@@ -667,6 +670,12 @@ public final class GL2
 	public static void glUniform3f(int location, Vector vec) throws GLException
 	{
 		glUniform3f(location, vec.get(0), vec.get(1), vec.get(2));
+		
+	}
+	
+	public static void glUniform3f(String location, float... data) throws GLException
+	{
+		glUniform3f(location, data[0], data[1], data[2]);
 		
 	}
 	

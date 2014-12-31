@@ -1,5 +1,7 @@
 
-package com.elusivehawk.caelum.render.gl;
+package com.elusivehawk.caelum.render.glsl;
+
+import com.elusivehawk.caelum.render.gl.GLConst;
 
 /**
  * 
@@ -7,7 +9,7 @@ package com.elusivehawk.caelum.render.gl;
  * 
  * @author Elusivehawk
  */
-public enum GLEnumSStatus
+public enum GLSLEnumSStatus
 {
 	GL_COMPILE_STATUS(GLConst.GL_COMPILE_STATUS),
 	GL_DELETE_STATUS(GLConst.GL_DELETE_STATUS),
@@ -18,7 +20,7 @@ public enum GLEnumSStatus
 	public final int gl;
 	
 	@SuppressWarnings("unqualified-field-access")
-	GLEnumSStatus(int i)
+	GLSLEnumSStatus(int i)
 	{
 		gl = i;
 		

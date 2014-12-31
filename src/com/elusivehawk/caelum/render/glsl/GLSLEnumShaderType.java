@@ -1,5 +1,7 @@
 
-package com.elusivehawk.caelum.render.gl;
+package com.elusivehawk.caelum.render.glsl;
+
+import com.elusivehawk.caelum.render.gl.GLConst;
 
 /**
  * 
@@ -7,7 +9,7 @@ package com.elusivehawk.caelum.render.gl;
  * 
  * @author Elusivehawk
  */
-public enum GLEnumShader
+public enum GLSLEnumShaderType
 {
 	VERTEX(GLConst.GL_VERTEX_SHADER),
 	TESS(GLConst.GL_TESS_CONTROL_SHADER),
@@ -19,7 +21,7 @@ public enum GLEnumShader
 	private final int gl;
 	
 	@SuppressWarnings("unqualified-field-access")
-	GLEnumShader(int glenum)
+	GLSLEnumShaderType(int glenum)
 	{
 		gl = glenum;
 		

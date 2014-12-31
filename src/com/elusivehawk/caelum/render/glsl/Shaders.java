@@ -1,8 +1,12 @@
 
-package com.elusivehawk.caelum.render.gl;
+package com.elusivehawk.caelum.render.glsl;
 
 import com.elusivehawk.caelum.render.RenderConst;
 import com.elusivehawk.caelum.render.RenderContext;
+import com.elusivehawk.caelum.render.gl.GL2;
+import com.elusivehawk.caelum.render.gl.GLException;
+import com.elusivehawk.caelum.render.gl.GLProgram;
+import com.elusivehawk.caelum.render.gl.IGLDeletable;
 import com.elusivehawk.util.IDirty;
 
 /**
@@ -13,7 +17,7 @@ import com.elusivehawk.util.IDirty;
  */
 public class Shaders implements IGLDeletable, IDirty
 {
-	private final Shader[] shaders = new Shader[RenderConst.SHADER_COUNT];
+	private final IShader[] shaders = new ShaderAsset[RenderConst.SHADER_COUNT];
 	
 	private int shCount = 0;
 	private boolean dirty = false;
@@ -34,14 +38,14 @@ public class Shaders implements IGLDeletable, IDirty
 	@Override
 	public void delete(RenderContext rcon)
 	{
-		for (Shader sh : this.shaders)
+		for (IShader sh : this.shaders)
 		{
 			if (sh == null)
 			{
 				continue;
 			}
 			
-			if (sh.isLoaded())
+			if (sh.isCompiled())
 			{
 				sh.delete(rcon);
 				
@@ -60,16 +64,16 @@ public class Shaders implements IGLDeletable, IDirty
 	{
 		boolean ret = false;
 		
-		for (Shader sh : this.shaders)
+		for (IShader sh : this.shaders)
 		{
 			if (sh == null)
 			{
 				continue;
 			}
 			
-			if (!sh.isLoaded())
+			if (!sh.isCompiled())
 			{
-				sh.initiate(rcon);
+				sh.compile(rcon);
 				
 			}
 			
@@ -87,7 +91,7 @@ public class Shaders implements IGLDeletable, IDirty
 		return ret;
 	}
 	
-	public boolean addShader(Shader sh)
+	public boolean addShader(IShader sh)
 	{
 		assert sh != null;
 		
@@ -96,14 +100,14 @@ public class Shaders implements IGLDeletable, IDirty
 			return false;
 		}
 		
-		if (this.shaders[sh.gltype.ordinal()] != null)
+		if (this.shaders[sh.getType().ordinal()] != null)
 		{
 			return false;
 		}
 		
 		synchronized (this)
 		{
-			this.shaders[sh.gltype.ordinal()] = sh;
+			this.shaders[sh.getType().ordinal()] = sh;
 			this.dirty = true;
 			this.shCount++;
 			
@@ -119,14 +123,14 @@ public class Shaders implements IGLDeletable, IDirty
 			return;
 		}
 		
-		for (Shader sh : this.shaders)
+		for (IShader sh : this.shaders)
 		{
 			if (sh == null)
 			{
 				continue;
 			}
 			
-			if (!sh.isLoaded())
+			if (!sh.isCompiled())
 			{
 				continue;
 			}
@@ -137,7 +141,7 @@ public class Shaders implements IGLDeletable, IDirty
 		
 	}
 	
-	public Shader getShader(GLEnumShader type)
+	public IShader getShader(GLSLEnumShaderType type)
 	{
 		return this.shaders[type.ordinal()];
 	}

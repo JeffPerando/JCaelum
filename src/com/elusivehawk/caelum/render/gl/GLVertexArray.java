@@ -14,7 +14,7 @@ import com.google.common.collect.Lists;
  */
 public class GLVertexArray implements IGLBindable
 {
-	private final List<GLBuffer> vbos = Lists.newArrayList();
+	private final List<GLBuffer> buffers = Lists.newArrayList();
 	private final List<Integer> attribs = Lists.newArrayList();
 	
 	private int id = 0;
@@ -56,7 +56,7 @@ public class GLVertexArray implements IGLBindable
 			return false;
 		}
 		
-		if (this.vbos.isEmpty())
+		if (this.buffers.isEmpty())
 		{
 			return false;
 		}
@@ -70,43 +70,65 @@ public class GLVertexArray implements IGLBindable
 		
 		GL3.glBindVertexArray(this);
 		
-		this.vbos.forEach(((vbo) ->
+		if (!this.initiated)
 		{
-			vbo.bind(rcon);
-			
-			if (!this.initiated)
+			this.buffers.forEach(((vbo) ->
 			{
-				vbo.getAttribs().forEach(((attrib) ->
+				if (vbo.getTarget() == GLEnumBufferTarget.GL_ARRAY_BUFFER)
 				{
-					if (!this.attribs.contains(attrib.index))
+					if (vbo.bind(rcon))
 					{
-						GL2.glVertexAttribPointer(attrib);
-						
-						this.attribs.add(attrib.index);
+						vbo.getAttribs().forEach(((attrib) ->
+						{
+							if (!this.attribs.contains(attrib.index))
+							{
+								GL2.glVertexAttribPointer(attrib);
+								
+								this.attribs.add(attrib.index);
+								
+							}
+							
+						}));
 						
 					}
 					
-				}));
+					vbo.unbind(rcon);
+					
+				}
 				
-			}
+			}));
 			
-			if (vbo.needsUpdating())
-			{
-				vbo.reupload(rcon);
-				
-			}
-			
-			vbo.unbind(rcon);
-			
-		}));
-		
-		if (!this.initiated)
-		{
 			this.initiated = true;
 			
 		}
 		
+		this.buffers.forEach(((ab) ->
+		{
+			if (ab.needsUpdating())
+			{
+				if (ab.bind(rcon))
+				{
+					ab.reupload(rcon);
+					
+				}
+				
+				ab.unbind(rcon);
+				
+			}
+			
+		}));
+		
 		GL2.glEnableVertexAttribArrays(this.attribs);
+		
+		this.buffers.forEach(((vbo) ->
+		{
+			if (vbo.getTarget() != GLEnumBufferTarget.GL_ARRAY_BUFFER)
+			{
+				vbo.bind(rcon);
+				
+			}
+			
+		}));
 		
 		return true;
 	}
@@ -118,6 +140,16 @@ public class GLVertexArray implements IGLBindable
 		{
 			return;
 		}
+		
+		this.buffers.forEach(((vbo) ->
+		{
+			if (vbo.getTarget() != GLEnumBufferTarget.GL_ARRAY_BUFFER)
+			{
+				vbo.unbind(rcon);
+				
+			}
+			
+		}));
 		
 		GL2.glDisableVertexAttribArrays(this.attribs);
 		
@@ -138,7 +170,7 @@ public class GLVertexArray implements IGLBindable
 	
 	public void addVBO(GLBuffer vbo)
 	{
-		this.vbos.add(vbo);
+		this.buffers.add(vbo);
 		
 	}
 	

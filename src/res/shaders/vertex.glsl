@@ -8,11 +8,11 @@ uniform bool flip;
 layout(location = 0) in vec3 in_pos;
 layout(location = 1) in vec2 in_tex;
 layout(location = 2) in vec3 in_norm;
-layout(location = 3) in int in_mat;
+layout(location = 3) in unsigned int in_mat;
 
 out vec2 frag_tex;
 out vec3 frag_norm;
-out int frag_mat;
+out unsigned int frag_mat;
 
 void main(void)
 {

@@ -2,11 +2,9 @@
 package com.elusivehawk.caelum.render;
 
 import java.util.Map;
-import java.util.UUID;
 import com.elusivehawk.caelum.render.gl.GL1;
 import com.elusivehawk.caelum.render.gl.GL2;
 import com.elusivehawk.caelum.render.gl.GLConst;
-import com.elusivehawk.caelum.render.gl.GLEnumUType;
 import com.elusivehawk.caelum.render.gl.GLProgram;
 import com.elusivehawk.caelum.render.gl.GLVertexArray;
 import com.elusivehawk.caelum.render.tex.ITexture;
@@ -20,7 +18,7 @@ import com.google.common.collect.Maps;
  * 
  * @author Elusivehawk
  */
-public abstract class RenderableObj implements IFilterable, IRenderable
+public abstract class RenderableObj implements /*IFilterable, */IRenderable
 {
 	private final Map<ITexture, Integer> boundTex = Maps.newHashMap();
 	
@@ -31,7 +29,7 @@ public abstract class RenderableObj implements IFilterable, IRenderable
 	
 	protected boolean initiated = false, zBuffer = true;
 	
-	protected Filters filters = null;
+	//protected Filters filters = null;
 	
 	protected int renderCount = 0, texCount = 0;
 	
@@ -112,16 +110,11 @@ public abstract class RenderableObj implements IFilterable, IRenderable
 				{
 					GL2.glUniform1i("matCount", this.mats.size());
 					
-					this.updateMatUniforms(rcon);
-					
 					this.mats.setIsDirty(false);
 					
 				}
-				else if (!this.mats.isStatic())
-				{
-					this.updateMatUniforms(rcon);
-					
-				}
+				
+				this.updateMatUniforms(rcon);
 				
 				this.doRender(rcon);
 				
@@ -158,7 +151,7 @@ public abstract class RenderableObj implements IFilterable, IRenderable
 		
 		if (this.p.bind(rcon))
 		{
-			this.manipulateProgram(rcon);
+			//this.manipulateProgram(rcon);
 			
 			if (rcon.updateScreenFlipUniform())
 			{
@@ -179,7 +172,7 @@ public abstract class RenderableObj implements IFilterable, IRenderable
 		
 	}
 	
-	@Override
+	/*@Override
 	public int addFilter(UUID type, IFilter f)
 	{
 		if (this.filters == null)
@@ -220,7 +213,7 @@ public abstract class RenderableObj implements IFilterable, IRenderable
 		this.filters = fs;
 		
 		return this;
-	}
+	}*/
 	
 	public void addMaterials(Material... ms)
 	{
@@ -236,12 +229,7 @@ public abstract class RenderableObj implements IFilterable, IRenderable
 	
 	public int addMaterial(Material m)
 	{
-		if (this.mats.add(m))
-		{
-			return this.mats.size() - 1;
-		}
-		
-		return -1;
+		return this.mats.add(m);
 	}
 	
 	public synchronized RenderableObj setEnableZBuffer(boolean z)
@@ -261,27 +249,17 @@ public abstract class RenderableObj implements IFilterable, IRenderable
 		return false;
 	}
 	
-	protected void manipulateProgram(RenderContext rcon)
-	{
-		if (this.filters != null)
-		{
-			this.filters.filter(rcon, this.p);
-			
-		}
-		
-	}
-	
 	private void updateMatUniforms(RenderContext rcon)
 	{
 		int c = 0;
 		
 		for (Material m : this.mats)
 		{
-			GL2.glUniformi(GLEnumUType.ONE, String.format("mats[%s].tex", c), this.bindTexture(rcon, m.tex()));
-			GL2.glUniformi(GLEnumUType.ONE, String.format("mats[%s].renTex", c), this.bindTexture(rcon, m.renTex()));
-			GL2.glUniformi(GLEnumUType.ONE, String.format("mats[%s].glowTex", c), this.bindTexture(rcon, m.glowTex()));
-			GL2.glUniformf(GLEnumUType.FOUR, String.format("mats[%s].filter", c), m.filter().asFloats());
-			GL2.glUniformf(GLEnumUType.ONE, String.format("mats[%s].shine", c), m.shine());
+			GL2.glUniform1i(String.format("texes[%s]", c), this.bindTexture(rcon, m.tex()));
+			GL2.glUniform1i(String.format("rTexes[%s]", c), this.bindTexture(rcon, m.renTex()));
+			GL2.glUniform1i(String.format("gTexes[%s]", c), this.bindTexture(rcon, m.glowTex()));
+			GL2.glUniform3f(String.format("filters[%s]", c), m.filter().asFloats());
+			GL2.glUniform1f(String.format("shines[%s]", c), m.shine());
 			
 			c++;
 			
@@ -296,13 +274,13 @@ public abstract class RenderableObj implements IFilterable, IRenderable
 			return 0;
 		}
 		
-		int ret = this.texCount;
-		
-		GL1.glActiveTexture(GLConst.GL_TEXTURE0 + this.texCount++);
+		GL1.glActiveTexture(GLConst.GL_TEXTURE0 + this.texCount);
 		GL1.glBindTexture(tex);
-		this.boundTex.put(tex, ret);
 		
-		return ret;
+		this.boundTex.put(tex, this.texCount);
+		this.texCount++;
+		
+		return this.texCount - 1;
 	}
 	
 	protected abstract boolean initiate(RenderContext rcon);

@@ -2,6 +2,7 @@
 package com.elusivehawk.caelum;
 
 import com.elusivehawk.caelum.render.tex.Color;
+import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.MakeStruct;
 
 /**
@@ -21,6 +22,12 @@ public class DisplaySettings
 	public Color bg = Color.BLACK;
 	
 	public DisplaySettings(){}
+	
+	public DisplaySettings(IPopulator<DisplaySettings> pop)
+	{
+		pop.populate(this);
+		
+	}
 	
 	@SuppressWarnings("unqualified-field-access")
 	public DisplaySettings(DisplaySettings settings)

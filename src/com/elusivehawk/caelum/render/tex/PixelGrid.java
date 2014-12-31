@@ -4,6 +4,7 @@ package com.elusivehawk.caelum.render.tex;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.storage.BufferHelper;
 
 /**
@@ -22,6 +23,14 @@ public class PixelGrid implements ILegibleImage
 	public PixelGrid(int w, int h)
 	{
 		this(w, h, ColorFormat.RGBA);
+		
+	}
+	
+	public PixelGrid(int w, int h, IPopulator<PixelGrid> pop)
+	{
+		this(w, h);
+		
+		pop.populate(this);
 		
 	}
 	

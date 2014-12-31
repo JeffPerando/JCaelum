@@ -4,10 +4,10 @@ uniform bool flip;
 
 layout(location = 0) in vec2 in_pos;
 layout(location = 1) in vec2 in_tex;
-layout(location = 2) in int in_mat;
+layout(location = 2) in float in_mat;
 
 out vec2 frag_tex;
-out int frag_mat;
+out float frag_mat;
 
 void main(void)
 {

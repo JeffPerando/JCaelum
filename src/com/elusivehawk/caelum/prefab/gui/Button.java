@@ -22,6 +22,7 @@ public class Button implements IGuiComponent
 	private final Icon image;
 	
 	private Object attachment = null;
+	private boolean active = true;
 	
 	public Button(float x, float y, float z, float w, Icon icon)
 	{
@@ -37,12 +38,6 @@ public class Button implements IGuiComponent
 		bounds = r;
 		image = icon;
 		
-	}
-	
-	@Override
-	public Rectangle getBounds()
-	{
-		return this.bounds;
 	}
 	
 	@Override
@@ -67,6 +62,18 @@ public class Button implements IGuiComponent
 	
 	@Override
 	public void onDragged(Vector deltaPos){}
+	
+	@Override
+	public Rectangle getBounds()
+	{
+		return this.bounds;
+	}
+	
+	@Override
+	public boolean isActive()
+	{
+		return this.active;
+	}
 	
 	public Icon getIcon()
 	{
@@ -108,6 +115,13 @@ public class Button implements IGuiComponent
 			}
 			
 		}
+		
+		return this;
+	}
+	
+	public synchronized Button setActive(boolean a)
+	{
+		this.active = a;
 		
 		return this;
 	}
