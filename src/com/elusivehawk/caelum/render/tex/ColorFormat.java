@@ -2,6 +2,7 @@
 package com.elusivehawk.caelum.render.tex;
 
 import java.util.Map;
+import com.elusivehawk.util.storage.Bitmask;
 import com.google.common.collect.Maps;
 
 /**
@@ -12,32 +13,33 @@ import com.google.common.collect.Maps;
  */
 public enum ColorFormat
 {
+	RGB(ColorFilter.RED, ColorFilter.GREEN, ColorFilter.BLUE),
 	RGBA(ColorFilter.RED, ColorFilter.GREEN, ColorFilter.BLUE, ColorFilter.ALPHA),
 	ARGB(ColorFilter.ALPHA, ColorFilter.RED, ColorFilter.GREEN, ColorFilter.BLUE),
 	ABGR(ColorFilter.ALPHA, ColorFilter.BLUE, ColorFilter.GREEN, ColorFilter.RED),
 	BGRA(ColorFilter.BLUE, ColorFilter.GREEN, ColorFilter.RED, ColorFilter.ALPHA);
 	
 	public final ColorFilter[] filters;
-	private final Map<ColorFilter, Integer> offsets = Maps.newHashMap();
+	private final Map<ColorFilter, Bitmask> bitmasks = Maps.newHashMap();
 	
 	@SuppressWarnings("unqualified-field-access")
 	ColorFormat(ColorFilter... f)
 	{
 		filters = f;
 		
-		int limit = (f.length - 1) * 8;
+		int limit = f.length - 1 * 8;
 		
 		for (int c = 0; c < f.length; c++)
 		{
-			offsets.put(f[c], limit - (c * 8));
+			bitmasks.put(f[c], new Bitmask(0xFF, c * 8 - limit));
 			
 		}
 		
 	}
 	
-	public int getColorOffset(ColorFilter col)
+	public Bitmask getBitmask(ColorFilter cf)
 	{
-		return this.offsets.get(col);
+		return this.bitmasks.get(cf);
 	}
 	
 	public int filterCount()
@@ -45,9 +47,9 @@ public enum ColorFormat
 		return this.filters.length;
 	}
 	
-	public boolean supports(ColorFilter col)
+	public boolean supports(ColorFilter cf)
 	{
-		return this.offsets.containsKey(col);
+		return this.bitmasks.containsKey(cf);
 	}
 	
 	public Color convert(Color old)

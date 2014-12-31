@@ -11,4 +11,10 @@ public enum ColorFilter
 {
 	ALPHA, BLUE, GREEN, RED;
 	
+	@Override
+	public String toString()
+	{
+		return name().toLowerCase();
+	}
+	
 }

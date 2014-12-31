@@ -3,40 +3,38 @@ package com.elusivehawk.caelum.render.tex;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import com.elusivehawk.util.parse.json.IJsonSerializer;
+import com.elusivehawk.util.parse.json.JsonObject;
+import com.elusivehawk.util.parse.json.JsonParseException;
+import com.elusivehawk.util.storage.Bitmask;
 import com.elusivehawk.util.storage.BufferHelper;
 
 /**
  * 
- * The much more flexible cousin to {@link java.awt.Color}.
+ * The more flexible cousin to {@link java.awt.Color}.
  * 
  * @author Elusivehawk
  * 
  * @see ColorFilter
  * @see ColorFormat
  */
-public class Color
+public class Color implements IJsonSerializer
 {
-	public static final Color BLACK = new Color(ColorFormat.RGBA, 0x000000);
-	public static final Color GREY = new Color(ColorFormat.RGBA, 0x7F7F7F00);
+	public static final Color BLACK = new Color(ColorFormat.RGB);
+	public static final Color GREY = new Color(ColorFormat.RGB, 0.5f, 0.5f, 0.5f);
 	public static final Color GRAY = GREY;
-	public static final Color WHITE = new Color(ColorFormat.RGBA, 0xFFFFFF00);
+	public static final Color WHITE = new Color(ColorFormat.RGB, 1.0f, 1.0f, 1.0f);
 	
-	public static final Color RED = new Color(ColorFormat.RGBA, 0xFF000000);
-	public static final Color GREEN = new Color(ColorFormat.RGBA, 0x00FF0000);
-	public static final Color BLUE = new Color(ColorFormat.RGBA, 0x0000FF00);
+	public static final Color RED = new Color(ColorFormat.RGB, 1.0f, 0.0f, 0.0f);
+	public static final Color GREEN = new Color(ColorFormat.RGB, 0.0f, 1.0f, 0.0f);
+	public static final Color BLUE = new Color(ColorFormat.RGB, 0.0f, 0.0f, 1.0f);
 	
-	public static final Color YELLOW = new Color(ColorFormat.RGBA, 0xFFFF0000);
-	public static final Color PINK = new Color(ColorFormat.RGBA, 0xFF00FF00);
-	public static final Color CYAN = new Color(ColorFormat.RGBA, 0x00FFFF00);
+	public static final Color YELLOW = new Color(ColorFormat.RGB, 1.0f, 1.0f, 0.0f);
+	public static final Color PINK = new Color(ColorFormat.RGB, 1.0f, 0.0f, 1.0f);
+	public static final Color CYAN = new Color(ColorFormat.RGB, 0.0f, 1.0f, 1.0f);
 	
 	public final ColorFormat format;
 	public int color = 0;
-	
-	public Color()
-	{
-		this(ColorFormat.RGBA);
-		
-	}
 	
 	@SuppressWarnings("unqualified-field-access")
 	public Color(ColorFormat cf)
@@ -46,45 +44,75 @@ public class Color
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Color(ColorFormat cf, int col)
+	public Color(java.awt.Color col)
+	{
+		this(ColorFormat.RGBA);
+		
+		color = col.getRGB();
+		
+	}
+	
+	public Color(JsonObject json)
+	{
+		this(ColorFormat.valueOf(json.getValue("format").toString()), json);
+		
+	}
+	
+	public Color(ColorFormat cf, JsonObject json)
 	{
 		this(cf);
 		
-		color = col;
+		for (ColorFilter filter : cf.filters)
+		{
+			Object color = json.getValue(filter.toString());
+			
+			if (color == null)
+			{
+				continue;
+			}
+			
+			if (!(color instanceof Number))
+			{
+				throw new JsonParseException("Invalid value for JSON key \"%s\": %s", filter.toString(), color);
+			}
+			
+			Number n = (Number)color;
+			
+			if (color instanceof Double)
+			{
+				setColor(filter, n.floatValue());
+				
+			}
+			else if (color instanceof Long)
+			{
+				setColor(filter, n.intValue());
+				
+			}
+			
+		}
 		
 	}
 	
-	public Color(java.awt.Color col)
+	public Color(ColorFormat cf, float... fs)
 	{
-		this(ColorFormat.RGBA, col.getRGB());
+		this(cf);
+		
+		int c = 0;
+		
+		for (ColorFilter col : cf.filters)
+		{
+			setColor(col, fs[c++]);
+			
+			if (c == fs.length)
+			{
+				break;
+			}
+			
+		}
 		
 	}
 	
-	public Color(ColorFormat cf, int a, int b, int c)
-	{
-		this(cf, a, b, c, 0);
-		
-	}
-	
-	public Color(ColorFormat cf, int a, int b, int c, int d)
-	{
-		this(cf, new byte[]{(byte)a, (byte)b, (byte)c, (byte)d});
-		
-	}
-	
-	public Color(ColorFormat cf, float a, float b, float c)
-	{
-		this(cf, a, b, c, 0f);
-		
-	}
-	
-	public Color(ColorFormat cf, float a, float b, float c, float d)
-	{
-		this(cf, (byte)(255 * a), (byte)(255 * b), (byte)(255 * c), (byte)(255 * d));
-		
-	}
-	
-	public Color(ColorFormat cf, byte... bs)
+	public Color(ColorFormat cf, int... bs)
 	{
 		this(cf);
 		
@@ -101,6 +129,20 @@ public class Color
 			
 		}
 		
+	}
+	
+	@Override
+	public String toJson(int tabs)
+	{
+		JsonObject ret = new JsonObject();
+		
+		for (ColorFilter filter : this.format.filters)
+		{
+			ret.add(filter.toString(), getColor(filter));
+			
+		}
+		
+		return ret.toJson(tabs);
 	}
 	
 	@Override
@@ -123,45 +165,60 @@ public class Color
 	
 	public Color setColor(ColorFilter cf, float col)
 	{
-		return this.setColor(cf, (byte)(255 * col));
+		return this.setColor(cf, (int)(255 * col));
 	}
 	
-	public Color setColor(ColorFilter cf, byte col)
+	public Color setColor(ColorFilter cf, int col)
 	{
-		int off = this.format.getColorOffset(cf);
+		col = col & 0xFF;
 		
-		this.color = ((col << off) | this.color) >> off;
+		Bitmask bitmask = this.format.getBitmask(cf);
+		
+		if (bitmask != null)
+		{
+			this.color = (int)bitmask.setValue(this.color, col);
+			
+			assert this.getColor(cf) == col : "Color did not set right! This is a bug!";
+			
+		}
 		
 		return this;
 	}
 	
 	public int getColor(ColorFilter cf)
 	{
-		return (this.getColor() >> this.format.getColorOffset(cf)) & 0xFF;
+		Bitmask bitmask = this.format.getBitmask(cf);
+		
+		if (bitmask == null)
+		{
+			return 0;
+		}
+		
+		return (int)bitmask.getValue(this.color);
 	}
 	
 	public float getColorf(ColorFilter col)
 	{
-		return this.getColor(col) / 255;
+		return (float)this.getColor(col) / 255;
 	}
 	
-	public boolean supportsAlpha()
+	public boolean supports(ColorFilter cf)
 	{
-		return this.format.supports(ColorFilter.ALPHA);
+		return this.format.supports(cf);
 	}
 	
 	public float[] asFloats()
 	{
-		float[] colors = new float[this.format.filters.length];
-		int c = 0;
+		ColorFilter[] filters = this.format.filters;
+		float[] ret = new float[filters.length];
 		
-		for (ColorFilter filter : this.format.filters)
+		for (int c = 0; c < ret.length; c++)
 		{
-			colors[c++] = this.getColorf(filter);
+			ret[c] = this.getColorf(filters[c]);
 			
 		}
 		
-		return colors;
+		return ret;
 	}
 	
 	public FloatBuffer asBufferF()
@@ -181,7 +238,11 @@ public class Color
 	
 	public void writeToBufferf(FloatBuffer buf)
 	{
-		buf.put(this.asFloats());
+		for (ColorFilter filter : this.format.filters)
+		{
+			buf.put(this.getColorf(filter));
+			
+		}
 		
 	}
 	

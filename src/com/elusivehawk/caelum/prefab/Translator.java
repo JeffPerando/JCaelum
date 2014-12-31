@@ -4,7 +4,7 @@ package com.elusivehawk.caelum.prefab;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
-import com.elusivehawk.util.FileHelper;
+import com.elusivehawk.util.io.FileHelper;
 import com.google.common.collect.Maps;
 
 /**

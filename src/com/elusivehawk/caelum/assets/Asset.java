@@ -4,7 +4,8 @@ package com.elusivehawk.caelum.assets;
 import java.io.DataInputStream;
 import com.elusivehawk.caelum.CaelumEngine;
 import com.elusivehawk.util.Internal;
-import com.elusivehawk.util.string.StringHelper;
+import com.elusivehawk.util.parse.ParseHelper;
+import com.elusivehawk.util.parse.json.IJsonSerializer;
 
 /**
  * 
@@ -12,7 +13,7 @@ import com.elusivehawk.util.string.StringHelper;
  * 
  * @author Elusivehawk
  */
-public abstract class Asset
+public abstract class Asset implements IJsonSerializer
 {
 	public final String filepath, ext;
 	public final EnumAssetType type;
@@ -33,10 +34,16 @@ public abstract class Asset
 		
 		filepath = path;
 		type = aType;
-		ext = StringHelper.getSuffix(path, ".");
+		ext = ParseHelper.getSuffix(path, ".");
 		
 		CaelumEngine.tasks().scheduleTask(new TaskLoadAsset(this));
 		
+	}
+	
+	@Override
+	public String toJson(int tabs)
+	{
+		return String.format("\"%s\"", this.filepath);
 	}
 	
 	@Override

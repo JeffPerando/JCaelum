@@ -3,8 +3,9 @@ package com.elusivehawk.caelum.prefab;
 
 import java.io.File;
 import java.util.List;
+import com.elusivehawk.util.io.IOHelper;
+import com.elusivehawk.util.parse.ParseHelper;
 import com.elusivehawk.util.storage.Pair;
-import com.elusivehawk.util.string.StringHelper;
 
 /**
  * 
@@ -22,14 +23,14 @@ public class Language extends LangFolder
 	
 	public void addTranslations(File file)
 	{
-		List<String> strs = StringHelper.read(file, ((line, str) ->
+		List<String> strs = IOHelper.readText(file, ((line, str) ->
 		{
 			return str.trim();
 		}));
 		
 		for (String line : strs)
 		{
-			Pair<String> spl = StringHelper.splitFirst(line, "=");
+			Pair<String> spl = ParseHelper.splitFirst(line, "=");
 			
 			if (spl == null || spl.one.isEmpty())
 			{
@@ -94,7 +95,7 @@ public class Language extends LangFolder
 	{
 		String raw;
 		
-		while (!(raw = StringHelper.substring(str, "{$", "}")).isEmpty())
+		while (!(raw = ParseHelper.substring(str, "{$", "}")).isEmpty())
 		{
 			str.replace(String.format("{$%s}", raw), this.translate(this.getRawTrnaslation(raw)));
 			

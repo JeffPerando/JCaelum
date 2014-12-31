@@ -14,7 +14,7 @@ import com.elusivehawk.caelum.render.gl.GL2;
 import com.elusivehawk.caelum.render.gl.GL3;
 import com.elusivehawk.util.CompInfo;
 import com.elusivehawk.util.EnumOS;
-import com.elusivehawk.util.json.JsonObject;
+import com.elusivehawk.util.parse.json.JsonObject;
 import com.google.common.collect.ImmutableList;
 
 /**

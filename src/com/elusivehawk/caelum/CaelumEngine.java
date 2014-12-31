@@ -15,7 +15,6 @@ import com.elusivehawk.caelum.render.ThreadGameRender;
 import com.elusivehawk.util.CompInfo;
 import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.EnumOS;
-import com.elusivehawk.util.FileHelper;
 import com.elusivehawk.util.HashGen;
 import com.elusivehawk.util.IPausable;
 import com.elusivehawk.util.Internal;
@@ -24,14 +23,15 @@ import com.elusivehawk.util.ReflectionHelper;
 import com.elusivehawk.util.ShutdownHelper;
 import com.elusivehawk.util.Version;
 import com.elusivehawk.util.concurrent.ThreadStoppable;
-import com.elusivehawk.util.json.EnumJsonType;
-import com.elusivehawk.util.json.JsonData;
-import com.elusivehawk.util.json.JsonObject;
-import com.elusivehawk.util.json.JsonParseException;
-import com.elusivehawk.util.json.JsonParser;
+import com.elusivehawk.util.io.FileHelper;
+import com.elusivehawk.util.io.IOHelper;
+import com.elusivehawk.util.parse.ParseHelper;
+import com.elusivehawk.util.parse.json.JsonObject;
+import com.elusivehawk.util.parse.json.JsonParseException;
+import com.elusivehawk.util.parse.json.JsonParser;
+import com.elusivehawk.util.parse.json.JsonValue;
 import com.elusivehawk.util.storage.Pair;
 import com.elusivehawk.util.storage.Tuple;
-import com.elusivehawk.util.string.StringHelper;
 import com.elusivehawk.util.task.TaskManager;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -224,7 +224,7 @@ public final class CaelumEngine
 			{
 				if (str.startsWith(prefix))
 				{
-					spl = StringHelper.splitFirst(str, ":");
+					spl = ParseHelper.splitFirst(str, ":");
 					strs.put(spl.one, spl.two);
 					testForGameArg = false;
 					
@@ -573,7 +573,7 @@ public final class CaelumEngine
 		
 		if (CompInfo.BUILT)
 		{
-			FileHelper.readZip(CompInfo.JAR_DIR, ((zip, entry, name) ->
+			IOHelper.readZip(CompInfo.JAR_DIR, ((zip, entry, name) ->
 			{
 				for (String n : natives)
 				{
@@ -581,7 +581,7 @@ public final class CaelumEngine
 					{
 						try
 						{
-							copyNative(zip.getInputStream(entry), new File(tmp, name.contains("/") ? StringHelper.getSuffix(name, "/") : name));
+							copyNative(zip.getInputStream(entry), new File(tmp, name.contains("/") ? ParseHelper.getSuffix(name, "/") : name));
 							
 						}
 						catch (Exception e)
@@ -642,7 +642,7 @@ public final class CaelumEngine
 	@Internal
 	private static void copyNative(InputStream is, File dest)
 	{
-		byte[] bytes = FileHelper.readBytes(is, false);
+		byte[] bytes = IOHelper.readBytes(is, false);
 		
 		if (bytes.length == 0)
 		{
@@ -678,7 +678,7 @@ public final class CaelumEngine
 			return;
 		}
 		
-		byte[] oldHash = HashGen.sha256(FileHelper.readBytes(dest));
+		byte[] oldHash = HashGen.sha256(IOHelper.readBytes(dest));
 		
 		if (Arrays.equals(hash, oldHash))
 		{
@@ -693,7 +693,7 @@ public final class CaelumEngine
 		
 		Logger.warn("Checksum for \"%s\" did not match!", name);
 		
-		if (FileHelper.write(bytes, dest))
+		if (IOHelper.write(bytes, dest))
 		{
 			if (CompInfo.DEBUG)
 			{
@@ -720,7 +720,7 @@ public final class CaelumEngine
 			return null;
 		}
 		
-		JsonData j = null;
+		JsonValue<?> j = null;
 		
 		try
 		{
@@ -745,22 +745,22 @@ public final class CaelumEngine
 		
 		JsonObject json = (JsonObject)j;
 		
-		JsonData curEnv = json.getValue(CompInfo.OS.toString());
+		Object curEnv = json.getValue(CompInfo.OS.toString());
 		
-		if (curEnv == null || curEnv.type != EnumJsonType.OBJECT)
+		if (curEnv == null || (!(curEnv instanceof JsonObject)))
 		{
 			return null;
 		}
 		
 		this.envConfig = (JsonObject)curEnv;
-		JsonData envLoc = this.envConfig.getValue("lib");
+		Object envLoc = this.envConfig.getValue("lib");
 		
-		if (envLoc == null || envLoc.type != EnumJsonType.STRING)
+		if (envLoc == null || (!(envLoc instanceof String)))
 		{
 			return null;
 		}
 		
-		File envLibFile = FileHelper.createFile(envLoc.value);
+		File envLibFile = FileHelper.createFile((String)envLoc);
 		
 		if (!FileHelper.canRead(envLibFile) || !envLibFile.getName().endsWith(".jar"))
 		{

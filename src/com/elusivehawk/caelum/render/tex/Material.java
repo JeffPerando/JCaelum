@@ -6,6 +6,9 @@ import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
 import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.math.MathHelper;
+import com.elusivehawk.util.parse.json.IJsonSerializer;
+import com.elusivehawk.util.parse.json.JsonObject;
+import com.elusivehawk.util.parse.json.JsonParseException;
 
 /**
  * 
@@ -13,7 +16,7 @@ import com.elusivehawk.util.math.MathHelper;
  * 
  * @author Elusivehawk
  */
-public final class Material implements IRenderable
+public final class Material implements IJsonSerializer, IRenderable
 {
 	private ITexture tex = null, glowTex = null;
 	private RenderableTexture renTex = null;
@@ -31,6 +34,62 @@ public final class Material implements IRenderable
 		
 	}
 	
+	public Material(JsonObject json)
+	{
+		Object texture = json.getValue("tex");
+		
+		if (texture != null)
+		{
+			if (!(texture instanceof String))
+			{
+				throw new JsonParseException("Invalid value for JSON key \"tex\": %s", texture);
+			}
+			
+			tex(new TextureAsset((String)texture));
+			
+		}
+		
+		Object glowTexture = json.getValue("glowTex");
+		
+		if (glowTexture != null)
+		{
+			if (!(glowTexture instanceof String))
+			{
+				throw new JsonParseException("Invalid value for JSON key \"glowTex\": %s", glowTexture);
+			}
+			
+			glowTex(new TextureAsset((String)texture));
+			
+		}
+		
+		Object colorFilter = json.getValue("filter");
+		
+		if (colorFilter != null)
+		{
+			if (!(colorFilter instanceof JsonObject))
+			{
+				throw new JsonParseException("Invalid value for JSON key \"filter\": %s", colorFilter);
+			}
+			
+			filter(new Color(ColorFormat.RGB, (JsonObject)colorFilter));
+			
+		}
+		
+		Object shininess = json.getValue("shine");
+		
+		if (shininess != null)
+		{
+			if (!(shininess instanceof Double))
+			{
+				throw new JsonParseException("Invalid value for JSON key \"shine\": %s", shininess);
+			}
+			
+			shine(((Double)shininess).floatValue());
+			
+		}
+		
+	}
+	
 	@SuppressWarnings("unqualified-field-access")
 	public Material(Material m)
 	{
@@ -40,6 +99,29 @@ public final class Material implements IRenderable
 		shine = m.shine;
 		filter = m.filter;
 		
+	}
+	
+	@Override
+	public String toJson(int tabs)
+	{
+		JsonObject ret = new JsonObject();
+		
+		ret.add("filter", this.filter);
+		ret.add("shine", this.shine);
+		
+		if (this.tex instanceof IJsonSerializer)
+		{
+			ret.add("tex", this.tex);
+			
+		}
+		
+		if (this.glowTex instanceof IJsonSerializer)
+		{
+			ret.add("glowTex", this.glowTex);
+			
+		}
+		
+		return ret.toJson(tabs);
 	}
 	
 	@Override
@@ -106,13 +188,51 @@ public final class Material implements IRenderable
 		return ret;
 	}
 	
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (!(obj instanceof Material))
+		{
+			return false;
+		}
+		
+		Material m = (Material)obj;
+		
+		if (!this.filter().equals(m.filter()))
+		{
+			return false;
+		}
+		
+		if (this.shine() != m.shine())
+		{
+			return false;
+		}
+		
+		if (this.tex() != m.tex())
+		{
+			return false;
+		}
+		
+		if (this.glowTex() != m.glowTex())
+		{
+			return false;
+		}
+		
+		if (this.renTex() != m.renTex())
+		{
+			return false;
+		}
+		
+		return true;
+	}
+	
 	public Material filter(Color col)
 	{
 		assert col != null;
 		
 		if (!this.locked)
 		{
-			this.filter = col;
+			this.filter = col.convert(ColorFormat.RGB);
 			
 		}
 		
