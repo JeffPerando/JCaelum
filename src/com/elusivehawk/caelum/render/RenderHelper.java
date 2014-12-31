@@ -120,7 +120,7 @@ public final class RenderHelper
 			throw new GLException("Shader source for %s is empty!", shader);
 		}
 		
-		int id = GL2.glCreateShader(shader.getShaderId());
+		int id = GL2.glCreateShader(shader.getType());
 		
 		if (id == 0)
 		{
@@ -145,7 +145,7 @@ public final class RenderHelper
 			
 		}
 		
-		Logger.debug("Successfully compiled shader %s", shader);
+		Logger.debug("Successfully compiled shader \"%s\"", shader);
 		
 		return id;
 	}

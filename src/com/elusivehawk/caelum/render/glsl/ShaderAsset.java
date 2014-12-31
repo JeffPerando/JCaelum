@@ -45,6 +45,11 @@ public class ShaderAsset extends GraphicAsset implements IShader
 	@Override
 	public void compile(RenderContext rcon) throws RenderException
 	{
+		if (!this.isRead())
+		{
+			return;
+		}
+		
 		int glid = RenderHelper.compileShader(this);
 		
 		rcon.registerCleanable(this);

@@ -11,6 +11,5 @@
 	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="lib/PNGDecoder.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/guava/guava-16.0.1.jar" sourcepath="lib/guava/guava-16.0.1-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/lwjgl/jar/disruptor.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

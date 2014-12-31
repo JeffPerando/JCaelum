@@ -73,26 +73,17 @@ public final class RenderContext implements Closeable, IUpdatable
 	}
 	
 	@Override
-	public void update(double delta)
+	public void update(double delta) throws RenderException
 	{
-		try
-		{
-			GL1.glClear(GLConst.GL_COLOR_BUFFER_BIT | GLConst.GL_DEPTH_BUFFER_BIT | GLConst.GL_STENCIL_BUFFER_BIT);
-			
-			this.renderer.preRender(this, delta);
-			this.preRenderers.forEach(((preR) -> {preR.preRender(this, delta);}));
-			
-			this.renderGame();
-			
-			this.renderer.postRender(this);
-			this.postRenderers.forEach(((postR) -> {postR.postRender(this);}));
-			
-		}
-		catch (Throwable e)
-		{
-			Logger.err(e);
-			
-		}
+		GL1.glClear(GLConst.GL_COLOR_BUFFER_BIT | GLConst.GL_DEPTH_BUFFER_BIT | GLConst.GL_STENCIL_BUFFER_BIT);
+		
+		this.renderer.preRender(this, delta);
+		this.preRenderers.forEach(((preR) -> {preR.preRender(this, delta);}));
+		
+		this.renderGame();
+		
+		this.renderer.postRender(this);
+		this.postRenderers.forEach(((postR) -> {postR.postRender(this);}));
 		
 		if (this.flipScreen.isDirty())
 		{
@@ -151,7 +142,7 @@ public final class RenderContext implements Closeable, IUpdatable
 		return true;
 	}
 	
-	public void renderGame(ICamera cam)
+	public void renderGame(ICamera cam) throws RenderException
 	{
 		assert cam != null;
 		
@@ -167,7 +158,7 @@ public final class RenderContext implements Closeable, IUpdatable
 		
 	}
 	
-	public void renderGame()
+	public void renderGame() throws RenderException
 	{
 		if (this.renders == RenderConst.RECURSIVE_LIMIT)
 		{
