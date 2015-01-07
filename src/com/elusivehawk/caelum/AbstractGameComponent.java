@@ -1,7 +1,6 @@
 
 package com.elusivehawk.caelum;
 
-import com.elusivehawk.caelum.assets.AssetManager;
 import com.elusivehawk.caelum.input.IInputListener;
 import com.elusivehawk.caelum.physics.IPhysicsSimulator;
 import com.elusivehawk.caelum.prefab.GameState;
@@ -65,7 +64,7 @@ public abstract class AbstractGameComponent implements IInputListener, IUpdatabl
 	 */
 	public abstract IPhysicsSimulator getPhysicsSimulator();
 	
-	public abstract void initiate(Display display, AssetManager assets) throws Throwable;
+	public abstract void initiate(Display display) throws Throwable;
 	
 	public abstract void onShutdown();
 	

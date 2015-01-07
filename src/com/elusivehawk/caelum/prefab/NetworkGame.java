@@ -4,7 +4,6 @@ package com.elusivehawk.caelum.prefab;
 import java.io.IOException;
 import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.Game;
-import com.elusivehawk.caelum.assets.AssetManager;
 import com.elusivehawk.util.network.Client;
 import com.elusivehawk.util.network.ConnectionType;
 import com.elusivehawk.util.network.IHost;
@@ -54,7 +53,7 @@ public abstract class NetworkGame extends Game implements INetworkMaster
 	}
 	
 	@Override
-	public void initiate(Display display, AssetManager assets) throws Throwable
+	public void initiate(Display display) throws Throwable
 	{
 		if (this.side != Side.SERVER)
 		{

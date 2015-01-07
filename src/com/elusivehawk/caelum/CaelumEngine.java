@@ -62,7 +62,7 @@ public final class CaelumEngine
 	
 	private IGameFactory factory = null;
 	private Game game = null;
-	private Display defaultDisplay = null;
+	private Display display = null;
 	private DisplayManager displays = null;
 	
 	private CaelumEngine()
@@ -129,12 +129,12 @@ public final class CaelumEngine
 	{
 		Thread t = Thread.currentThread();
 		
-		if (!(t instanceof IPausable))
+		if (t instanceof IPausable)
 		{
-			return false;
+			return ((IPausable)t).isPaused();
 		}
 		
-		return ((IPausable)t).isPaused();
+		return false;
 	}
 	
 	//XXX Hooks
@@ -146,7 +146,7 @@ public final class CaelumEngine
 	
 	public static Display defaultDisplay()
 	{
-		return instance().defaultDisplay;
+		return instance().display;
 	}
 	
 	public static Display getDisplay(String name)
@@ -417,19 +417,19 @@ public final class CaelumEngine
 			
 		}
 		
-		this.defaultDisplay = createDisplay("default", settings, g);
+		this.display = createDisplay("default", settings, g);
 		
-		this.defaultDisplay.createInputType(EnumInputType.KEYBOARD);
-		this.defaultDisplay.createInputType(EnumInputType.MOUSE);
+		this.display.createInputType(EnumInputType.KEYBOARD);
+		this.display.createInputType(EnumInputType.MOUSE);
 		
-		this.defaultDisplay.addInputListener(EnumInputType.KEYBOARD, g);
-		this.defaultDisplay.addInputListener(EnumInputType.MOUSE, g);
+		this.display.addInputListener(EnumInputType.KEYBOARD, g);
+		this.display.addInputListener(EnumInputType.MOUSE, g);
 		
 		//XXX Initiate game
 		
 		try
 		{
-			g.initiate(this.defaultDisplay, this.assets);
+			g.initiate(this.display);
 			
 		}
 		catch (Throwable e)

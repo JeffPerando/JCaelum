@@ -6,20 +6,18 @@ import com.elusivehawk.caelum.CaelumEngine;
 import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.DisplaySettings;
 import com.elusivehawk.caelum.Game;
-import com.elusivehawk.caelum.assets.AssetManager;
 import com.elusivehawk.caelum.input.InputEvent;
-import com.elusivehawk.caelum.input.Key;
-import com.elusivehawk.caelum.input.KeyEvent;
-import com.elusivehawk.caelum.input.MouseEvent;
-import com.elusivehawk.caelum.input.PasteEvent;
 import com.elusivehawk.caelum.physics.IPhysicsSimulator;
+import com.elusivehawk.caelum.prefab.gui.Button;
+import com.elusivehawk.caelum.prefab.gui.Gui;
 import com.elusivehawk.caelum.render.Canvas;
+import com.elusivehawk.caelum.render.Icon;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
 import com.elusivehawk.caelum.render.tex.Color;
 import com.elusivehawk.caelum.render.tex.ColorFormat;
-import com.elusivehawk.caelum.render.tex.Material;
-import com.elusivehawk.util.EnumLogType;
+import com.elusivehawk.caelum.render.tex.ITexture;
+import com.elusivehawk.caelum.render.tex.TextureAsset;
 import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.RNG;
 import com.elusivehawk.util.Version;
@@ -33,9 +31,10 @@ import com.elusivehawk.util.Version;
 public final class ExampleGame extends Game
 {
 	public static final Version VERSION = new Version(1, 0, 0);
-	public static final int RANDOM_MATERIAL_CAP = 5;
+	//public static final int RANDOM_MATERIAL_CAP = 4;
 	
 	private Canvas canvas = new Canvas();
+	private Gui gui = new Gui();
 	
 	public ExampleGame()
 	{
@@ -52,7 +51,9 @@ public final class ExampleGame extends Game
 	@Override
 	public void onInputReceived(InputEvent event, double delta)
 	{
-		if (event instanceof KeyEvent)
+		this.gui.onInputReceived(event, delta);
+		
+		/*if (event instanceof KeyEvent)
 		{
 			KeyEvent ke = (KeyEvent)event;
 			
@@ -88,7 +89,7 @@ public final class ExampleGame extends Game
 		{
 			Logger.log(EnumLogType.DEBUG, "Pasted: %s", ((PasteEvent)event).pasted);
 			
-		}
+		}*/
 		
 	}
 	
@@ -122,26 +123,75 @@ public final class ExampleGame extends Game
 	@Override
 	public DisplaySettings getDisplaySettings()
 	{
-		return null;
+		return new DisplaySettings(((settings) ->
+		{
+			settings.title = "Example Game (Now with a GUI!)";
+			settings.width = 600;
+			settings.height = 600;
+			settings.bg = Color.GREY;
+			
+		}));
 	}
 	
 	@Override
-	public void initiate(Display display, AssetManager assets) throws Throwable
+	public void initiate(Display display) throws Throwable
 	{
 		Random rng = RNG.rng();
 		
+		ITexture tex = new TextureAsset("/res/gui_buttons.png");
+		
+		/*this.canvas.setMaterial(tex);
+		this.canvas.setMaterial(tex, Color.RED);
+		this.canvas.setMaterial(tex, true);
+		this.canvas.setMaterial(tex, Color.GREY);
+		
+		this.canvas.setMaterial(new TextureAsset("/res/test.png"), new Color(ColorFormat.RGB, rng.nextFloat(), rng.nextFloat(), rng.nextFloat()));*/
+		
+		this.canvas.drawImage(0f, 0f, 1f, 1f);
+		
+		/*this.gui.addComponent(new Button(0.0f, 0.7f, 0.25f, 0.9f, new Icon(0.0f, 0.0f, 0.5f, 0.5f)).setLeftClick(((d, button) ->
+		{
+			Logger.info("Button #1 clicked!");
+			
+		})));
+		this.gui.addComponent(new Button(0.25f, 0.7f, 0.5f, 0.9f, new Icon(0.5f, 0.0f, 1.0f, 0.5f)).setLeftClick(((d, button) ->
+		{
+			Logger.info("Button #2 clicked!");
+			
+		})));
+		this.gui.addComponent(new Button(0.5f, 0.7f, 0.75f, 0.9f, new Icon(0.0f, 0.5f, 0.5f, 1.0f)).setLeftClick(((d, button) ->
+		{
+			Logger.info("Button #3 clicked!");
+			
+		})));
+		this.gui.addComponent(new Button(0.75f, 0.7f, 1.0f, 0.9f, new Icon(0.5f, 0.5f, 1.0f, 1.0f)).setLeftClick(((d, button) ->
+		{
+			Logger.info("Button #4 clicked!");
+			
+		})));*/
+		
+		/*ITexture testimg = new TextureAsset("/res/test.png");
+		
+		this.canvas.addMaterial(new Material().tex(testimg).lock());
+		
 		for (int c = 0; c < RANDOM_MATERIAL_CAP; c++)
 		{
-			this.canvas.addMaterial(new Material().filter(new Color(ColorFormat.RGB, rng.nextFloat(), rng.nextFloat(), rng.nextFloat())).lock());
+			this.canvas.addMaterial(new Material(((mat) ->
+			{
+				mat.filter(new Color(ColorFormat.RGB, rng.nextFloat(), rng.nextFloat(), rng.nextFloat()));
+				mat.tex(testimg);
+				mat.invert(rng.nextBoolean());
+				
+			})).lock());
 			
 		}
 		
-		this.canvas.drawImage(0.2f, 0.2f, 0.8f, 0.8f, 0);
+		this.canvas.drawImage(0.2f, 0.2f, 0.8f, 0.8f);
 		
-		this.canvas.drawImage(0.0f, 0.0f, 0.2f, 0.2f, 1);
-		this.canvas.drawImage(0.8f, 0.8f, 1.0f, 1.0f, 2);
-		this.canvas.drawImage(0.0f, 0.8f, 0.2f, 1.0f, 3);
-		this.canvas.drawImage(0.8f, 0.0f, 1.0f, 0.2f, 4);
+		this.canvas.drawImage(0.0f, 0.0f, 0.2f, 0.2f, new Icon(0.0f, 0.0f, 0.5f, 0.5f));
+		this.canvas.drawImage(0.8f, 0.8f, 1.0f, 1.0f, new Icon(0.5f, 0.5f, 1.0f, 1.0f));
+		this.canvas.drawImage(0.0f, 0.8f, 0.2f, 1.0f, new Icon(0.0f, 0.5f, 0.5f, 1.0f));
+		this.canvas.drawImage(0.8f, 0.0f, 1.0f, 0.2f, new Icon(0.5f, 0.0f, 1.0f, 0.5f));*/
 		
 	}
 	
