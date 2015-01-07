@@ -9,7 +9,7 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="CaelumEngine/lib/lwjgl/native"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="lib/PNGDecoder.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/guava/guava-16.0.1.jar" sourcepath="lib/guava/guava-16.0.1-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/PNGDecoder.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
