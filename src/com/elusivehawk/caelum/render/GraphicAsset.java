@@ -3,7 +3,6 @@ package com.elusivehawk.caelum.render;
 
 import com.elusivehawk.caelum.assets.Asset;
 import com.elusivehawk.caelum.assets.EnumAssetType;
-import com.elusivehawk.caelum.render.gl.IGLDeletable;
 
 /**
  * 
@@ -11,13 +10,19 @@ import com.elusivehawk.caelum.render.gl.IGLDeletable;
  * 
  * @author Elusivehawk
  */
-public abstract class GraphicAsset extends Asset implements IGLDeletable
+public abstract class GraphicAsset extends Asset implements IDeletable
 {
 	protected boolean loaded = false, registered = false;
 	
 	public GraphicAsset(String path, EnumAssetType aType)
 	{
 		super(path, aType);
+		
+	}
+	
+	public GraphicAsset(String path, EnumAssetType aType, boolean readNow)
+	{
+		super(path, aType, readNow);
 		
 	}
 	
