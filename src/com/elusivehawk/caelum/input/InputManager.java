@@ -146,8 +146,10 @@ public final class InputManager implements Closeable, IUpdatable
 			return;
 		}
 		
-		for (InputEvent event : this.eventQueue)
+		for (int c = 0; c < this.eventQueue.size(); c++)
 		{
+			InputEvent event = this.eventQueue.get(c);
+			
 			List<IInputListener> inList = this.listeners.get(event.type);
 			
 			if (inList != null)
@@ -156,7 +158,7 @@ public final class InputManager implements Closeable, IUpdatable
 				
 			}
 			
-			this.eventQueue.remove(event);
+			this.eventQueue.remove(c);
 			
 		}
 		
