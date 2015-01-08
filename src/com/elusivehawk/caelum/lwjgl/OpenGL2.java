@@ -109,37 +109,37 @@ public class OpenGL2 implements IGL2Impl
 	@Override
 	public String glGetActiveAttrib(int program, int index, int maxLength)
 	{
-		return GL20.glGetActiveAttrib(program, index, maxLength);
+		return null;//GL20.glGetActiveAttrib(program, index, maxLength);
 	}
 	
 	@Override
 	public String glGetActiveAttrib(int program, int index, int maxLength, IntBuffer sizeType)
 	{
-		return GL20.glGetActiveAttrib(program, index, maxLength, sizeType);
+		return null;//GL20.glGetActiveAttrib(program, index, maxLength, sizeType);
 	}
 	
 	@Override
 	public int glGetActiveAttribSize(int program, int index)
 	{
-		return GL20.glGetActiveAttribSize(program, index);
+		return 0;//GL20.glGetActiveAttribSize(program, index);
 	}
 	
 	@Override
 	public int glGetActiveAttribType(int program, int index)
 	{
-		return GL20.glGetActiveAttribType(program, index);
+		return 0;//GL20.glGetActiveAttribType(program, index);
 	}
 	
 	@Override
 	public String glGetActiveUniform(int program, int index, int maxLength)
 	{
-		return GL20.glGetActiveUniform(program, index, maxLength);
+		return null;//GL20.glGetActiveUniform(program, index, maxLength);
 	}
 	
 	@Override
 	public String glGetActiveUniform(int program, int index, int maxLength, IntBuffer sizeType)
 	{
-		return GL20.glGetActiveUniform(program, index, maxLength, sizeType);
+		return null;//GL20.glGetActiveUniform(program, index, maxLength, sizeType);
 	}
 	
 	@Override
@@ -152,7 +152,7 @@ public class OpenGL2 implements IGL2Impl
 	@Override
 	public int glGetActiveUniformType(int program, int index)
 	{
-		return GL20.glGetActiveUniformType(program, index);
+		return 0;//GL20.glGetActiveUniformType(program, index);
 	}
 	
 	@Override
