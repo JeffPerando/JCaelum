@@ -412,18 +412,46 @@ public class OpenGL1 implements IGL1Impl
 	}
 	
 	@Override
-	public void glTexImage2D(int target, int level, int internalformat,
-			int width, int height, int border, int format, int type,
-			ByteBuffer pixels)
+	public void glTexImage2D(int target, int level, int internalFormat,
+			int width, int height, int border, int format, int type, Buffer pixels)
 	{
-		GL11.glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
+		if (pixels instanceof ByteBuffer)
+		{
+			GL11.glTexImage2D(target, level, internalFormat, width, height, border, format, type, (ByteBuffer)pixels);
+			
+		}
+		else if (pixels instanceof FloatBuffer)
+		{
+			GL11.glTexImage2D(target, level, internalFormat, width, height, border, format, type, (FloatBuffer)pixels);
+			
+		}
+		else if (pixels instanceof IntBuffer)
+		{
+			GL11.glTexImage2D(target, level, internalFormat, width, height, border, format, type, (IntBuffer)pixels);
+			
+		}
 		
 	}
 	
 	@Override
-	public void glTexImage3D(int target, int level, int internalFormat, int width, int height, int depth, int border, int format, int type, ByteBuffer pixels)
+	public void glTexImage3D(int target, int level, int internalFormat,
+			int width, int height, int depth, int border, int format, int type, Buffer pixels)
 	{
-		GL12.glTexImage3D(target, level, internalFormat, width, height, depth, border, format, type, pixels);
+		if (pixels instanceof ByteBuffer)
+		{
+			GL12.glTexImage3D(target, level, internalFormat, width, height, depth, border, format, type, (ByteBuffer)pixels);
+			
+		}
+		else if (pixels instanceof FloatBuffer)
+		{
+			GL12.glTexImage3D(target, level, internalFormat, width, height, depth, border, format, type, (FloatBuffer)pixels);
+			
+		}
+		else if (pixels instanceof IntBuffer)
+		{
+			GL12.glTexImage3D(target, level, internalFormat, width, height, depth, border, format, type, (IntBuffer)pixels);
+			
+		}
 		
 	}
 	
@@ -435,7 +463,7 @@ public class OpenGL1 implements IGL1Impl
 	}
 	
 	@Override
-	public void glTexParameterx(int target, int pname, int param)
+	public void glTexParameteri(int target, int pname, int param)
 	{
 		GL11.glTexParameteri(target, pname, param);
 		
@@ -443,10 +471,23 @@ public class OpenGL1 implements IGL1Impl
 	
 	@Override
 	public void glTexSubImage2D(int target, int level, int xoffset,
-			int yoffset, int width, int height, int format, int type,
-			ByteBuffer pixels)
+			int yoffset, int width, int height, int format, int type, Buffer pixels)
 	{
-		GL11.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels);
+		if (pixels instanceof ByteBuffer)
+		{
+			GL11.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, (ByteBuffer)pixels);
+			
+		}
+		else if (pixels instanceof FloatBuffer)
+		{
+			GL11.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, (FloatBuffer)pixels);
+			
+		}
+		else if (pixels instanceof IntBuffer)
+		{
+			GL11.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, (IntBuffer)pixels);
+			
+		}
 		
 	}
 	
