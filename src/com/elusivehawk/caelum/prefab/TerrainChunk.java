@@ -15,27 +15,24 @@ import com.elusivehawk.util.storage.BufferHelper;
 @Experimental
 public class TerrainChunk
 {
-	protected final int size;
-	protected final float calcSize;
-	protected final FloatBuffer terrain, texOff;
-	protected final IntBuffer tex;
+	private final int width, breadth;
+	private final FloatBuffer heightmap, texOff;
+	private final IntBuffer texId;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public TerrainChunk(int quality)
+	public TerrainChunk(int xsize, int zsize)
 	{
-		size = quality;
-		calcSize = 1.0f / size;
+		width = xsize;
+		breadth = zsize;
+		heightmap = BufferHelper.createFloatBuffer(xsize * zsize);
+		texOff = BufferHelper.createFloatBuffer(xsize * zsize * 2);
+		texId = BufferHelper.createIntBuffer(xsize * zsize);
 		
-		terrain = BufferHelper.createFloatBuffer(quality * quality * 3);
-		texOff = BufferHelper.createFloatBuffer(quality * quality * 2);
-		tex = BufferHelper.createIntBuffer(quality * quality);
-		
-		for (int x = 0; x < size; x++)
+		for (int x = 0; x < xsize; x++)
 		{
-			for (int z = 0; z < size; z++)
+			for (int z = 0; z < zsize; z++)
 			{
-				terrain.put(new float[]{x * calcSize, 0f, z * calcSize});
-				texOff.put(new float[]{x * calcSize, z * calcSize});
+				texOff.put(new float[]{(float)x / xsize, (float)z / zsize});
 				
 			}
 			
@@ -43,14 +40,24 @@ public class TerrainChunk
 		
 	}
 	
-	public int getIndex(int x, int z)
+	public int getWidth()
 	{
-		return (x * this.size) + z;
+		return this.width;
 	}
 	
-	public void setHeight(int x, int z, float y)
+	public int getBreadth()
 	{
-		this.terrain.put(this.getIndex(x, z), y);
+		return this.breadth;
+	}
+	
+	public float getHeight(int x, int z)
+	{
+		return this.heightmap.get(x + (z * this.breadth));
+	}
+	
+	public void setHeight(int x, float y, int z)
+	{
+		this.heightmap.put(x + (z * this.breadth), y);
 		
 	}
 	
