@@ -3,7 +3,9 @@ package com.elusivehawk.caelum.assets;
 
 import java.io.DataInputStream;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.List;
+import com.elusivehawk.caelum.CaelumException;
 import com.elusivehawk.caelum.render.tex.Color;
 import com.elusivehawk.caelum.render.tex.ColorFilter;
 import com.elusivehawk.caelum.render.tex.ColorFormat;
@@ -22,35 +24,36 @@ import com.google.common.collect.Lists;
  */
 public class GIFReader implements IAssetReader
 {
+	public static final byte[]
+			GIF = "GIF".getBytes(Charsets.UTF_8);
+	
 	public static final int
-				COLOR_TABLE_SIZE =	0b00000111,
-				SORT_FLAG =			0b00001000,
-				COLOR_RES =			0b01110000,
-				COLOR_TABLE_FLAG =	0b10000000,
-				//GCE flags
-				TRANSPARENT_FLAG =	0b00000001,
-				REQUIRES_USER_IN =	0b00000010,
-				DISPOSAL_METHOD =	0b00011100,
-				RESERVED =			0b11100000,
-				//Image Descriptor flags
-				L_COLOR_TABLE_FLAG=	0b10000000,
-				INTERLACE =			0b01000000,
-				SORT_IMG_FLAG =		0b00100000,
-				RESERVED_IMG =		0b00011000,
-				L_COLOR_TABLE_SIZE=	0b00000111;
+			COLOR_TABLE_SIZE =	0b00000111,
+			SORT_FLAG =			0b00001000,
+			COLOR_RES =			0b01110000,
+			COLOR_TABLE_FLAG =	0b10000000,
+			//GCE flags
+			TRANSPARENT_FLAG =	0b00000001,
+			REQUIRES_USER_IN =	0b00000010,
+			DISPOSAL_METHOD =	0b00011100,
+			RESERVED =			0b11100000,
+			//Image Descriptor flags
+			L_COLOR_TABLE_FLAG=	0b10000000,
+			INTERLACE =			0b01000000,
+			SORT_IMG_FLAG =		0b00100000,
+			RESERVED_IMG =		0b00011000,
+			L_COLOR_TABLE_SIZE=	0b00000111;
 	
 	@Override
 	public Object readAsset(DataInputStream in) throws Throwable
 	{
-		byte[] sigBytes = new byte[3];
+		byte[] sig = new byte[3];
 		
-		in.read(sigBytes);
+		in.read(sig);
 		
-		String sig = new String(sigBytes, Charsets.US_ASCII);
-		
-		if (!"GIF".equals(sig))
+		if (!Arrays.equals(sig, GIF))
 		{
-			throw new RuntimeException("Signature is not \"GIF\"!");
+			throw new CaelumException("Signature is not \"GIF\"!");
 		}
 		
 		byte[] verBytes = new byte[2];
@@ -93,15 +96,10 @@ public class GIFReader implements IAssetReader
 		List<ILegibleImage> ret = Lists.newArrayList();
 		List<Tuple<Integer, ByteBuffer>> comments = Lists.newArrayList();
 		
-		while (true)
+		int b;
+		
+		while ((b = in.read()) != 0x3B)
 		{
-			int b = in.read();
-			
-			if (b == 0x3B)
-			{
-				break;
-			}
-			
 			if (b == 0x21)
 			{
 				Tuple<Integer, ByteBuffer> ext = readExt(in);
