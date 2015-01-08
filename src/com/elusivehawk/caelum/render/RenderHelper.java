@@ -11,7 +11,6 @@ import com.elusivehawk.caelum.render.gl.GLEnumTexture;
 import com.elusivehawk.caelum.render.gl.GLException;
 import com.elusivehawk.caelum.render.glsl.GLSLEnumSStatus;
 import com.elusivehawk.caelum.render.glsl.IShader;
-import com.elusivehawk.caelum.render.tex.ColorFilter;
 import com.elusivehawk.caelum.render.tex.ColorFormat;
 import com.elusivehawk.caelum.render.tex.ILegibleImage;
 import com.elusivehawk.util.CompInfo;
@@ -27,37 +26,42 @@ public final class RenderHelper
 {
 	private RenderHelper(){}
 	
-	public static int genTexture(RenderContext rcon, ILegibleImage img)
+	public static int genTexture(ILegibleImage img)
 	{
-		return genTexture(rcon, img, img.getFormat());
+		return genTexture(img, true);
 	}
 	
-	public static int genTexture(RenderContext rcon, ILegibleImage img, ColorFormat format)
+	public static int genTexture(ILegibleImage img, boolean mipmap)
 	{
-		return genTexture(rcon, img, format, true);
+		return genTexture(GLEnumTexture.GL_TEXTURE_2D, img, mipmap);
 	}
 	
-	public static int genTexture(RenderContext rcon, ILegibleImage img, ColorFormat format, boolean mipmap)
+	public static int genTexture(GLEnumTexture type, ILegibleImage img)
 	{
-		return genTexture(rcon, GLEnumTexture.GL_TEXTURE_2D, img.toBytes(format), img.getWidth(), img.getHeight(), format.supports(ColorFilter.ALPHA), mipmap);
+		return genTexture(type, img, true);
 	}
 	
-	public static int genTexture(RenderContext rcon, GLEnumTexture type, int width, int height, boolean alpha)
+	public static int genTexture(GLEnumTexture type, ILegibleImage img, boolean mipmap)
 	{
-		return genTexture(rcon, type, null, width, height, alpha, true);
+		return genTexture(type, img.getFormat() == ColorFormat.RGBA ? img.toBytes() : img.toBytes(ColorFormat.RGBA), img.getWidth(), img.getHeight(), mipmap);
 	}
 	
-	public static int genTexture(RenderContext rcon, GLEnumTexture type, int width, int height, boolean alpha, boolean mipmap)
+	public static int genTexture(GLEnumTexture type, int width, int height)
 	{
-		return genTexture(rcon, type, null, width, height, alpha, mipmap);
+		return genTexture(type, null, width, height, true);
 	}
 	
-	public static int genTexture(RenderContext rcon, GLEnumTexture type, ByteBuffer texture, int width, int height, boolean alpha)
+	public static int genTexture(GLEnumTexture type, int width, int height, boolean mipmap)
 	{
-		return genTexture(rcon, type, texture, width, height, alpha, true);
+		return genTexture(type, null, width, height, mipmap);
 	}
 	
-	public static int genTexture(RenderContext rcon, GLEnumTexture type, ByteBuffer texture, int width, int height, boolean alpha, boolean mipmap)
+	public static int genTexture(GLEnumTexture type, ByteBuffer texture, int width, int height)
+	{
+		return genTexture(type, texture, width, height, true);
+	}
+	
+	public static int genTexture(GLEnumTexture type, ByteBuffer texture, int width, int height, boolean mipmap)
 	{
 		assert width > 0 && height > 0;
 		
@@ -67,10 +71,11 @@ public final class RenderHelper
 		{
 			tex = GL1.glGenTextures();
 			
+			GL1.glActiveTexture(GLConst.GL_TEXTURE0);
 			GL1.glBindTexture(type, tex);
 			
 			GL1.glPixelStorei(GLConst.GL_UNPACK_ALIGNMENT, 1);
-			GL1.glTexImage2D(type, 0, alpha ? GLConst.GL_RGBA : GLConst.GL_RGB, width, height, 0, alpha ? GLConst.GL_RGBA : GLConst.GL_RGB, GLConst.GL_UNSIGNED_BYTE, texture);
+			GL1.glTexImage2D(type, 0, GLConst.GL_RGBA, width, height, 0, GLConst.GL_RGBA, GLConst.GL_UNSIGNED_BYTE, texture);
 			
 			if (mipmap)
 			{
@@ -78,7 +83,13 @@ public final class RenderHelper
 				
 			}
 			
-			GL1.glBindTexture(type, 0);
+			GL1.glTexParameteri(GLConst.GL_TEXTURE_2D, GLConst.GL_TEXTURE_WRAP_S, GLConst.GL_REPEAT);
+			GL1.glTexParameteri(GLConst.GL_TEXTURE_2D, GLConst.GL_TEXTURE_WRAP_T, GLConst.GL_REPEAT);
+			
+			GL1.glTexParameteri(GLConst.GL_TEXTURE_2D, GLConst.GL_TEXTURE_MAG_FILTER, GLConst.GL_NEAREST);
+			GL1.glTexParameteri(GLConst.GL_TEXTURE_2D, GLConst.GL_TEXTURE_MIN_FILTER, GLConst.GL_LINEAR_MIPMAP_LINEAR);
+			
+	        GL1.glBindTexture(type, 0);
 			
 			return tex;
 		}
@@ -117,7 +128,7 @@ public final class RenderHelper
 		
 		if (src == null || src.equals(""))
 		{
-			throw new GLException("Shader source for %s is empty!", shader);
+			return 0;
 		}
 		
 		int id = GL2.glCreateShader(shader.getType());
@@ -145,7 +156,7 @@ public final class RenderHelper
 			
 		}
 		
-		Logger.debug("Successfully compiled shader \"%s\"", shader);
+		Logger.debug("Successfully compiled shader %s", shader);
 		
 		return id;
 	}
