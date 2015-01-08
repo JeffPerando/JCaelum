@@ -17,18 +17,15 @@ public final class RenderConst
 	
 	public static final int MATERIAL_CAP = 8;
 	public static final int SHADER_COUNT = GLSLEnumShaderType.values().length;
+	public static final int RECURSIVE_LIMIT = 8;
 	
 	public static final int VERTEX_I = 0;
 	public static final int TEXCOORD_I = 1;
 	public static final int NORMAL_I = 2;
-	
 	public static final int SCALE_I = 3;
 	public static final int ROTATE_I = 4;
 	public static final int TRANS_I = 5;
-	
 	public static final int MAT_I = 6;
-	
-	public static final int RECURSIVE_LIMIT = 8;
 	
 	public static final ShaderParameter[] MATERIAL_PARAMS =
 		{
