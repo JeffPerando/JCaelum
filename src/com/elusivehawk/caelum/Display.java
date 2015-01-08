@@ -28,7 +28,7 @@ public class Display implements Closeable, IUpdatable
 	
 	private int width = 0, height = 0;
 	private float aspectRatio = 0f;
-	private boolean refresh = false, closed = false, close = false, initiated = false;
+	private boolean refresh = true, closed = false, close = false, initiated = false;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public Display(String str, DisplaySettings ds, IRenderable r)
