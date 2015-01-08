@@ -474,7 +474,7 @@ public final class GL2
 	
 	public static void glUniformf(GLEnumUniformType type, String location, float... data) throws GLException
 	{
-		glUniformf(type, location, BufferHelper.createWrapper(data));
+		glUniformf(type, location, BufferHelper.makeFloatBuffer(data));
 		
 	}
 	
@@ -486,7 +486,7 @@ public final class GL2
 	
 	public static void glUniformf(GLEnumUniformType type, int location, float... data) throws GLException
 	{
-		glUniformf(type, location, BufferHelper.createWrapper(data));
+		glUniformf(type, location, BufferHelper.makeFloatBuffer(data));
 		
 	}
 	
@@ -520,7 +520,7 @@ public final class GL2
 	
 	public static void glUniformi(GLEnumUniformType type, String location, int... data) throws GLException
 	{
-		glUniformi(type, location, BufferHelper.createWrapper(data));
+		glUniformi(type, location, BufferHelper.makeIntBuffer(data));
 		
 	}
 	
@@ -532,7 +532,7 @@ public final class GL2
 	
 	public static void glUniformi(GLEnumUniformType type, int location, int... data) throws GLException
 	{
-		glUniformi(type, location, BufferHelper.createWrapper(data));
+		glUniformi(type, location, BufferHelper.makeIntBuffer(data));
 		
 	}
 	
@@ -732,6 +732,12 @@ public final class GL2
 	public static void glUniform4f(int location, Vector vec) throws GLException
 	{
 		glUniform4f(location, vec.get(0), vec.get(1), vec.get(2), vec.get(3));
+		
+	}
+	
+	public static void glUniform4f(String location, float[] data)
+	{
+		glUniform4f(location, data[0], data[1], data[2], data[3]);
 		
 	}
 	

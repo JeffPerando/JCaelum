@@ -217,7 +217,7 @@ public final class GL1
 	
 	public static void glDeleteBuffers(int... buffer) throws GLException
 	{
-		glDeleteBuffers(BufferHelper.createWrapper(buffer));
+		glDeleteBuffers(BufferHelper.makeIntBuffer(buffer));
 		
 	}
 	
@@ -231,7 +231,7 @@ public final class GL1
 	
 	public static void glDeleteTextures(int... textures) throws GLException
 	{
-		glDeleteBuffers(BufferHelper.createWrapper(textures));
+		glDeleteTextures(BufferHelper.makeIntBuffer(textures));
 		
 	}
 	
@@ -518,13 +518,13 @@ public final class GL1
 		
 	}
 	
-	public static void glTexImage2D(GLEnumTexture target, int level, int internalFormat, int width, int height, int border, int format, int type, ByteBuffer pixels) throws GLException
+	public static void glTexImage2D(GLEnumTexture target, int level, int internalFormat, int width, int height, int border, int format, int type, Buffer pixels) throws GLException
 	{
 		glTexImage2D(target.gl, level, internalFormat, width, height, border, format, type, pixels);
 		
 	}
 	
-	public static void glTexImage2D(int target, int level, int internalFormat, int width, int height, int border, int format, int type, ByteBuffer pixels) throws GLException
+	public static void glTexImage2D(int target, int level, int internalFormat, int width, int height, int border, int format, int type, Buffer pixels) throws GLException
 	{
 		impl.glTexImage2D(target, level, internalFormat, width, height, border, format, type, pixels);
 		
@@ -560,15 +560,15 @@ public final class GL1
 		
 	}
 	
-	public static void glTexParameterx(GLEnumTexture target, int pname, int param) throws GLException
+	public static void glTexParameteri(GLEnumTexture target, int pname, int param) throws GLException
 	{
-		glTexParameterx(target.gl, pname, param);
+		glTexParameteri(target.gl, pname, param);
 		
 	}
 	
-	public static void glTexParameterx(int target, int pname, int param) throws GLException
+	public static void glTexParameteri(int target, int pname, int param) throws GLException
 	{
-		impl.glTexParameterx(target, pname, param);
+		impl.glTexParameteri(target, pname, param);
 		
 		RenderHelper.checkForGLError();
 		
