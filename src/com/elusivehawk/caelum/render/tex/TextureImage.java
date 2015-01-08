@@ -4,6 +4,7 @@ package com.elusivehawk.caelum.render.tex;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderHelper;
 import com.elusivehawk.caelum.render.gl.GL1;
+import com.elusivehawk.caelum.render.gl.GLEnumTexture;
 
 /**
  * 
@@ -13,15 +14,23 @@ import com.elusivehawk.caelum.render.gl.GL1;
  */
 public class TextureImage implements ITexture
 {
-	protected final ILegibleImage img;
-	protected int tex = 0;
+	private final GLEnumTexture type;
+	private final ILegibleImage image;
+	private int tex = 0;
+	
+	public TextureImage(ILegibleImage img)
+	{
+		this(img instanceof CubeGrid ? GLEnumTexture.GL_TEXTURE_3D : GLEnumTexture.GL_TEXTURE_2D, img);
+		
+	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public TextureImage(ILegibleImage image)
+	public TextureImage(GLEnumTexture texType, ILegibleImage img)
 	{
-		assert image != null;
+		assert img != null;
 		
-		img = image;
+		type = texType;
+		image = img;
 		
 	}
 	
@@ -30,7 +39,7 @@ public class TextureImage implements ITexture
 	{
 		if (this.tex == 0)
 		{
-			this.tex = RenderHelper.genTexture(rcon, this.img);
+			this.tex = RenderHelper.genTexture(this.type, this.image);
 			
 			rcon.registerCleanable(this);
 			
