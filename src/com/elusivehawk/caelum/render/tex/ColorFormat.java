@@ -2,8 +2,10 @@
 package com.elusivehawk.caelum.render.tex;
 
 import java.util.Map;
+import com.elusivehawk.caelum.render.gl.GLConst;
 import com.elusivehawk.util.storage.Bitmask;
 import com.google.common.collect.Maps;
+import static com.elusivehawk.caelum.render.tex.ColorFilter.*;
 
 /**
  * 
@@ -13,28 +15,36 @@ import com.google.common.collect.Maps;
  */
 public enum ColorFormat
 {
-	RGB(ColorFilter.RED, ColorFilter.GREEN, ColorFilter.BLUE),
-	RGBA(ColorFilter.RED, ColorFilter.GREEN, ColorFilter.BLUE, ColorFilter.ALPHA),
-	ARGB(ColorFilter.ALPHA, ColorFilter.RED, ColorFilter.GREEN, ColorFilter.BLUE),
-	ABGR(ColorFilter.ALPHA, ColorFilter.BLUE, ColorFilter.GREEN, ColorFilter.RED),
-	BGRA(ColorFilter.BLUE, ColorFilter.GREEN, ColorFilter.RED, ColorFilter.ALPHA);
+	RGB(GLConst.GL_RGB, RED, GREEN, BLUE),
+	RGBA(GLConst.GL_RGBA, RED, GREEN, BLUE, ALPHA),
+	ARGB(GLConst.GL_RGB, ALPHA, RED, GREEN, BLUE),
+	ABGR(GLConst.GL_BGR, ALPHA, BLUE, GREEN, RED),
+	BGR(GLConst.GL_BGR, BLUE, GREEN, RED),
+	BGRA(GLConst.GL_BGRA, BLUE, GREEN, RED, ALPHA);
 	
 	public final ColorFilter[] filters;
+	public final int glFormat;
+	
 	private final Map<ColorFilter, Bitmask> bitmasks = Maps.newHashMap();
 	
 	@SuppressWarnings("unqualified-field-access")
-	ColorFormat(ColorFilter... f)
+	ColorFormat(int gl, ColorFilter... fs)
 	{
-		filters = f;
+		glFormat = gl;
+		filters = fs;
 		
-		int limit = f.length - 1 * 8;
-		
-		for (int c = 0; c < f.length; c++)
+		for (int c = 0; c < fs.length; c++)
 		{
-			bitmasks.put(f[c], new Bitmask(0xFF, c * 8 - limit));
+			bitmasks.put(fs[c], new Bitmask(0xFF, c * 8));
 			
 		}
 		
+	}
+	
+	@Override
+	public String toString()
+	{
+		return this.name().toLowerCase();
 	}
 	
 	public Bitmask getBitmask(ColorFilter cf)
@@ -50,29 +60,6 @@ public enum ColorFormat
 	public boolean supports(ColorFilter cf)
 	{
 		return this.bitmasks.containsKey(cf);
-	}
-	
-	public Color convert(Color old)
-	{
-		if (old.format == this)
-		{
-			return old;
-		}
-		
-		Color ret = new Color(this);
-		
-		for (ColorFilter cf : this.filters)
-		{
-			if (!old.format.supports(cf))
-			{
-				continue;
-			}
-			
-			ret.setColor(cf, old.getColor(cf));
-			
-		}
-		
-		return ret;
 	}
 	
 }
