@@ -59,7 +59,7 @@ public class LWJGLDisplayImpl implements IDisplayImpl
 	@Override
 	public void postInit()
 	{
-		//GLFW.glfwMakeContextCurrent(0);
+		GLFW.glfwMakeContextCurrent(0);
 		
 	}
 	
