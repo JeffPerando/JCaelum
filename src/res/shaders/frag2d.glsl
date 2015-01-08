@@ -1,7 +1,5 @@
 #version 330 core
 
-#define MATERIAL_CAP 8
-
 uniform struct Material
 {
 	sampler2D tex;

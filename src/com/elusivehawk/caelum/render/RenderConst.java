@@ -15,7 +15,6 @@ public final class RenderConst
 {
 	private RenderConst(){}
 	
-	public static final int MATERIAL_CAP = 8;
 	public static final int SHADER_COUNT = GLSLEnumShaderType.values().length;
 	public static final int RECURSIVE_LIMIT = 8;
 	
