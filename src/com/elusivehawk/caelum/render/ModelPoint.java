@@ -14,15 +14,13 @@ import com.elusivehawk.util.math.Vector;
 public class ModelPoint
 {
 	public final Vector vtx, tex, norm;
-	public final int mat;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public ModelPoint(Vector v, Vector t, Vector n, int m)
+	public ModelPoint(Vector v, Vector t, Vector n)
 	{
 		vtx = v.clone().setImmutable();
 		tex = t.clone().setImmutable();
 		norm = n.clone().setImmutable();
-		mat = m;
 		
 	}
 	
@@ -51,11 +49,6 @@ public class ModelPoint
 			return false;
 		}
 		
-		if (this.mat != mp.mat)
-		{
-			return false;
-		}
-		
 		return true;
 	}
 	
@@ -67,7 +60,6 @@ public class ModelPoint
 		ret *= (31 + this.vtx.hashCode());
 		ret *= (31 + this.tex.hashCode());
 		ret *= (31 + this.norm.hashCode());
-		ret *= (31 + this.mat);
 		
 		return ret;
 	}

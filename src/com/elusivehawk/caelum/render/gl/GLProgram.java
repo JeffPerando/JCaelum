@@ -1,6 +1,8 @@
 
 package com.elusivehawk.caelum.render.gl;
 
+import com.elusivehawk.caelum.render.IBindable;
+import com.elusivehawk.caelum.render.IDeletable;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.glsl.GLSLEnumShaderType;
 import com.elusivehawk.caelum.render.glsl.IShader;
@@ -16,7 +18,7 @@ import com.elusivehawk.util.storage.ArrayHelper;
  * 
  * @author Elusivehawk
  */
-public final class GLProgram implements IGLBindable, IDirty
+public final class GLProgram implements IBindable, IDeletable, IDirty
 {
 	private final Shaders shaders;
 	

@@ -2,6 +2,8 @@
 package com.elusivehawk.caelum.render.gl;
 
 import com.elusivehawk.caelum.Display;
+import com.elusivehawk.caelum.render.IBindable;
+import com.elusivehawk.caelum.render.IDeletable;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderHelper;
 
@@ -11,7 +13,7 @@ import com.elusivehawk.caelum.render.RenderHelper;
  * 
  * @author Elusivehawk
  */
-public class GLFramebuffer implements IGLBindable
+public class GLFramebuffer implements IBindable, IDeletable
 {
 	private final boolean useDepth;
 	
@@ -68,7 +70,7 @@ public class GLFramebuffer implements IGLBindable
 			
 			this.id = GL3.glGenFramebuffer();
 			
-			this.tex = RenderHelper.genTexture(rcon, GLEnumTexture.GL_TEXTURE_2D, display.getWidth(), display.getHeight(), false, false);
+			this.tex = RenderHelper.genTexture(GLEnumTexture.GL_TEXTURE_2D, display.getWidth(), display.getHeight(), false);
 			
 			GL3.glBindFramebuffer(GLEnumFBType.GL_FRAMEBUFFER, this.id);
 			

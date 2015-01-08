@@ -11,6 +11,8 @@ import com.elusivehawk.caelum.prefab.Rectangle;
  */
 public class Icon
 {
+	public static final Icon BLANK_ICON = new Icon(0, 0, 1, 1);
+	
 	private final float[] stats;
 	private final float[][] corners;
 	
@@ -24,7 +26,7 @@ public class Icon
 	public Icon(float x, float y, float z, float w)
 	{
 		stats = new float[]{x, y, z, w};
-		corners = new float[][]{{x, y}, {z, y}, {x, w}, {z, w}};
+		corners = new float[][]{{x, y}, {x, w}, {z, y}, {z, w}};
 		
 	}
 	

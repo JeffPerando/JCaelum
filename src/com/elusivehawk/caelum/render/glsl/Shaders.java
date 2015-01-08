@@ -1,12 +1,12 @@
 
 package com.elusivehawk.caelum.render.glsl;
 
+import com.elusivehawk.caelum.render.IDeletable;
 import com.elusivehawk.caelum.render.RenderConst;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.gl.GL2;
 import com.elusivehawk.caelum.render.gl.GLException;
 import com.elusivehawk.caelum.render.gl.GLProgram;
-import com.elusivehawk.caelum.render.gl.IGLDeletable;
 import com.elusivehawk.util.IDirty;
 
 /**
@@ -15,7 +15,7 @@ import com.elusivehawk.util.IDirty;
  * 
  * @author Elusivehawk
  */
-public class Shaders implements IGLDeletable, IDirty
+public class Shaders implements IDeletable, IDirty
 {
 	private final IShader[] shaders = new ShaderAsset[RenderConst.SHADER_COUNT];
 	

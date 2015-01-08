@@ -11,6 +11,7 @@ import com.elusivehawk.caelum.render.gl.GLEnumDataType;
 import com.elusivehawk.caelum.render.gl.GLEnumDataUsage;
 import com.elusivehawk.caelum.render.gl.GLEnumDrawType;
 import com.elusivehawk.caelum.render.gl.GLProgram;
+import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.math.MathHelper;
 import com.elusivehawk.util.storage.BufferHelper;
 
@@ -22,12 +23,10 @@ import com.elusivehawk.util.storage.BufferHelper;
  */
 public class Canvas extends RenderableObj
 {
-	public static final Icon BLANK_ICON = new Icon(0, 0, 1, 1);
-	
 	public static final int IMAGE_BUFFER_SIZE = 12;
 	
 	public static final int INDICES_PER_IMG = 6;
-	public static final int FLOATS_PER_INDEX = 5;
+	public static final int FLOATS_PER_INDEX = 4;
 	public static final int FLOATS_PER_IMG = FLOATS_PER_INDEX * INDICES_PER_IMG;
 	
 	private final GLBuffer vertex;
@@ -36,11 +35,19 @@ public class Canvas extends RenderableObj
 	private Rectangle sub = null;
 	
 	private int images = 0;
-	private boolean expanded = false, drewNewImages = false;
+	private boolean expanded = false, updateImgBuf = false, correctCoords = true;
 	
 	public Canvas()
 	{
 		this(new GLProgram(), IMAGE_BUFFER_SIZE);
+		
+	}
+	
+	public Canvas(IPopulator<Canvas> pop)
+	{
+		this();
+		
+		pop.populate(this);
 		
 	}
 	
@@ -50,9 +57,25 @@ public class Canvas extends RenderableObj
 		
 	}
 	
+	public Canvas(GLProgram program, IPopulator<Canvas> pop)
+	{
+		this(program);
+		
+		pop.populate(this);
+		
+	}
+	
 	public Canvas(int images)
 	{
 		this(new GLProgram(), images);
+		
+	}
+	
+	public Canvas(int images, IPopulator<Canvas> pop)
+	{
+		this(images);
+		
+		pop.populate(this);
 		
 	}
 	
@@ -67,18 +90,25 @@ public class Canvas extends RenderableObj
 		
 		zBuffer = false;
 		
-		vertex.addAttrib(0, 2, GLConst.GL_FLOAT, false, 20, 0);			//Position data
-		vertex.addAttrib(1, 2, GLConst.GL_FLOAT, false, 20, 8);			//Texture off
-		vertex.addAttrib(2, 1, GLConst.GL_FLOAT, false, 20, 16);		//Material index
+		vertex.addAttrib(0, 2, GLConst.GL_FLOAT, false, 16, 0);			//Position data
+		vertex.addAttrib(1, 2, GLConst.GL_FLOAT, false, 16, 8);			//Texture off
 		
 		vao.addVBO(vertex);
+		
+	}
+	
+	public Canvas(GLProgram program, int images, IPopulator<Canvas> pop)
+	{
+		this(program, images);
+		
+		pop.populate(this);
 		
 	}
 	
 	@Override
 	protected boolean initiate(RenderContext rcon)
 	{
-		return this.p.attachShaders(rcon.get2DShaders()) > 0;
+		return this.program.attachShaders(rcon.get2DShaders()) > 0;
 	}
 	
 	@Override
@@ -103,7 +133,7 @@ public class Canvas extends RenderableObj
 			
 		}
 		
-		if (this.drewNewImages)
+		if (this.updateImgBuf)
 		{
 			if (this.expanded)
 			{
@@ -118,7 +148,7 @@ public class Canvas extends RenderableObj
 				
 			}
 			
-			this.drewNewImages = false;
+			this.updateImgBuf = false;
 			
 		}
 		
@@ -168,63 +198,34 @@ public class Canvas extends RenderableObj
 		
 	}
 	
-	public void drawImage(float x, float y, float z, float w)
+	public int drawImage(float x, float y, float z, float w)
 	{
-		this.drawImage(x, y, z, w, 0);
-		
+		return this.drawImage(new Rectangle(x, y, z, w));
 	}
 	
-	public void drawImage(float x, float y, float z, float w, int mat)
+	public int drawImage(float x, float y, float z, float w, Icon icon)
 	{
-		this.drawImage(x, y, z, w, BLANK_ICON, mat);
-		
+		return this.drawImage(new Rectangle(x, y, z, w), icon);
 	}
 	
-	public void drawImage(float x, float y, float z, float w, Icon icon)
+	public int drawImage(Rectangle r)
 	{
-		this.drawImage(x, y, z, w, icon, 0);
-		
+		return this.drawImage(r, Icon.BLANK_ICON);
 	}
 	
-	public void drawImage(float x, float y, float z, float w, Icon icon, int mat)
+	public int drawImage(Rectangle r, Icon icon)
 	{
-		this.drawImage(new Rectangle(x, y, z, w), icon, mat);
+		int pos = this.images * FLOATS_PER_IMG;
 		
-	}
-	
-	public void drawImage(Rectangle r)
-	{
-		this.drawImage(r, null, 0);
-		
-	}
-	
-	public void drawImage(Rectangle r, Icon icon)
-	{
-		this.drawImage(r, icon, 0);
-		
-	}
-	
-	public void drawImage(Rectangle r, int mat)
-	{
-		this.drawImage(r, BLANK_ICON, mat);
-		
-	}
-	
-	public void drawImage(Rectangle r, Icon icon, int mat)
-	{
-		if (this.sub != null)
+		if (this.imgbuf.position() != pos)
 		{
-			r = this.sub.interpolate(r);
+			synchronized (this)
+			{
+				this.imgbuf.position(pos);
+				
+			}
 			
 		}
-		
-		if (icon == null)
-		{
-			icon = BLANK_ICON;
-			
-		}
-		
-		mat = MathHelper.clamp(mat, 0, RenderConst.MATERIAL_CAP - 1);
 		
 		if (this.imgbuf.remaining() == 0)
 		{
@@ -239,18 +240,38 @@ public class Canvas extends RenderableObj
 			
 		}
 		
-		this.addCorner(r.x, r.y, mat, 0, icon);
-		this.addCorner(r.x, r.w, mat, 1, icon);
-		this.addCorner(r.z, r.y, mat, 2, icon);
+		synchronized (this)
+		{
+			this.addCorners(r, icon);
+			
+			this.images++;
+			this.updateImgBuf = true;
+			
+		}
 		
-		this.addCorner(r.x, r.w, mat, 1, icon);
-		this.addCorner(r.z, r.y, mat, 2, icon);
-		this.addCorner(r.z, r.w, mat, 3, icon);
+		return this.images - 1;
+	}
+	
+	public void redrawImage(int image, float x, float y, float z, float w, Icon icon)
+	{
+		this.redrawImage(image, new Rectangle(x, y, z, w), icon);
+		
+	}
+	
+	public void redrawImage(int image, Rectangle r, Icon icon)
+	{
+		assert this.images > 0;
+		assert MathHelper.bounds(image, 0, this.images - 1);
 		
 		synchronized (this)
 		{
-			this.images++;
-			this.drewNewImages = true;
+			this.imgbuf.position(image * FLOATS_PER_IMG);
+			
+			this.addCorners(r, icon);
+			
+			this.imgbuf.position(0);
+			
+			this.updateImgBuf = true;
 			
 		}
 		
@@ -261,17 +282,54 @@ public class Canvas extends RenderableObj
 		this.imgbuf.clear();
 		this.images = 0;
 		
+		this.vertex.updateVBO(this.imgbuf, 0);
+		
 	}
 	
-	private void addCorner(float a, float b, int m, int corner, Icon icon)
+	public Canvas setEnableCoordCorrection(boolean correct)
 	{
-		float[] fs = new float[]{a, b, icon.getCorner(corner)[0], icon.getCorner(corner)[1], m};
+		this.correctCoords = correct;
 		
-		synchronized (this)
+		return this;
+	}
+	
+	private void addCorners(Rectangle r, Icon icon)
+	{
+		if (this.sub != null)
 		{
-			this.imgbuf.put(fs);
+			r = this.sub.interpolate(r);
 			
 		}
+		
+		if (icon == null)
+		{
+			icon = Icon.BLANK_ICON;
+			
+		}
+		
+		this.addCorner(r.x, r.y, icon, 0);
+		this.addCorner(r.x, r.w, icon, 1);
+		this.addCorner(r.z, r.y, icon, 2);
+		
+		this.addCorner(r.x, r.w, icon, 1);
+		this.addCorner(r.z, r.y, icon, 2);
+		this.addCorner(r.z, r.w, icon, 3);
+		
+	}
+	
+	private void addCorner(float x, float y, Icon icon, int corner)
+	{
+		if (this.correctCoords)
+		{
+			x = (x * 2 - 1);
+			y = ((1 - y) * 2 - 1);
+			
+		}
+		
+		this.imgbuf.put(x);
+		this.imgbuf.put(y);
+		this.imgbuf.put(icon.getCorner(corner)[0]);
+		this.imgbuf.put(icon.getCorner(corner)[1]);
 		
 	}
 	

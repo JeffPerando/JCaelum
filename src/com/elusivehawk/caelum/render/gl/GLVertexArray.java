@@ -2,6 +2,8 @@
 package com.elusivehawk.caelum.render.gl;
 
 import java.util.List;
+import com.elusivehawk.caelum.render.IBindable;
+import com.elusivehawk.caelum.render.IDeletable;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.util.IPopulator;
 import com.google.common.collect.Lists;
@@ -12,7 +14,7 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-public class GLVertexArray implements IGLBindable
+public class GLVertexArray implements IBindable, IDeletable
 {
 	private final List<GLBuffer> buffers = Lists.newArrayList();
 	private final List<Integer> attribs = Lists.newArrayList();
@@ -106,12 +108,7 @@ public class GLVertexArray implements IGLBindable
 		{
 			if (ab.needsUpdating())
 			{
-				if (ab.bind(rcon))
-				{
-					ab.reupload(rcon);
-					
-				}
-				
+				ab.bind(rcon);//Automates re-uploading
 				ab.unbind(rcon);
 				
 			}

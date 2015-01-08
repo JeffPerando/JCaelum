@@ -4,6 +4,8 @@ package com.elusivehawk.caelum.render.gl;
 import java.nio.Buffer;
 import java.util.Iterator;
 import java.util.List;
+import com.elusivehawk.caelum.render.IBindable;
+import com.elusivehawk.caelum.render.IDeletable;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.util.storage.SyncList;
 import com.elusivehawk.util.storage.Tuple;
@@ -14,7 +16,7 @@ import com.elusivehawk.util.storage.Tuple;
  * 
  * @author Elusivehawk
  */
-public class GLBuffer implements IGLBindable
+public class GLBuffer implements IBindable, IDeletable
 {
 	private final List<Tuple<Buffer, Integer>> uploads = SyncList.newList();
 	private final List<VertexAttrib> attribs = SyncList.newList();
@@ -84,42 +86,11 @@ public class GLBuffer implements IGLBindable
 		
 		if (!this.initiated)
 		{
-			if (this.initBuf == null)
-			{
-				GL1.glBindBuffer(this.t, 0);
-				
-				return false;
-			}
-			
-			GL1.glBufferData(this.t, this.dataType, this.initBuf, this.loadMode);
-			
-			this.initBuf = null;
-			
 			rcon.registerCleanable(this);
 			
 			this.initiated = true;
 			
 		}
-		
-		return true;
-	}
-	
-	@Override
-	public void unbind(RenderContext rcon)
-	{
-		GL1.glBindBuffer(this.t, 0);
-		
-	}
-	
-	@Override
-	public boolean isBound(RenderContext rcon)
-	{
-		return this.id != 0 && GL1.glGetInteger(this.t.getBindID()) == this.id;
-	}
-	
-	public void reupload(RenderContext rcon)
-	{
-		assert rcon != null;
 		
 		if (this.initBuf != null)
 		{
@@ -146,6 +117,20 @@ public class GLBuffer implements IGLBindable
 			
 		}
 		
+		return true;
+	}
+	
+	@Override
+	public void unbind(RenderContext rcon)
+	{
+		GL1.glBindBuffer(this.t, 0);
+		
+	}
+	
+	@Override
+	public boolean isBound(RenderContext rcon)
+	{
+		return this.id != 0 && GL1.glGetInteger(this.t.getBindID()) == this.id;
 	}
 	
 	public GLEnumBufferTarget getTarget()

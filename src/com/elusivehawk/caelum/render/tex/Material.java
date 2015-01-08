@@ -1,14 +1,16 @@
 
 package com.elusivehawk.caelum.render.tex;
 
+import com.elusivehawk.caelum.CaelumException;
+import com.elusivehawk.caelum.render.IBindable;
 import com.elusivehawk.caelum.render.IRenderable;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
+import com.elusivehawk.caelum.render.gl.GL2;
 import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.math.MathHelper;
 import com.elusivehawk.util.parse.json.IJsonSerializer;
 import com.elusivehawk.util.parse.json.JsonObject;
-import com.elusivehawk.util.parse.json.JsonParseException;
 
 /**
  * 
@@ -16,15 +18,15 @@ import com.elusivehawk.util.parse.json.JsonParseException;
  * 
  * @author Elusivehawk
  */
-public final class Material implements IJsonSerializer, IRenderable
+public final class Material implements IBindable, IRenderable, IJsonSerializer
 {
 	private ITexture tex = null, glowTex = null;
 	private RenderableTexture renTex = null;
 	private float shine = 0f;
-	private Color filter = Color.WHITE;
+	private Color filter = Color.BLACK.convertTo(ColorFormat.RGBA);
 	
-	private boolean locked = false;
-	private int texCount = 0;
+	private boolean locked = false, invert = false, initiated = false, bound = false;
+	private int texCount = 0, texBind = -1, renBind = -1, glowBind = -1;
 	
 	public Material(){}
 	
@@ -42,7 +44,7 @@ public final class Material implements IJsonSerializer, IRenderable
 		{
 			if (!(texture instanceof String))
 			{
-				throw new JsonParseException("Invalid value for JSON key \"tex\": %s", texture);
+				throw new CaelumException("Invalid value for JSON key \"tex\": %s", texture);
 			}
 			
 			tex(new TextureAsset((String)texture));
@@ -55,7 +57,7 @@ public final class Material implements IJsonSerializer, IRenderable
 		{
 			if (!(glowTexture instanceof String))
 			{
-				throw new JsonParseException("Invalid value for JSON key \"glowTex\": %s", glowTexture);
+				throw new CaelumException("Invalid value for JSON key \"glowTex\": %s", glowTexture);
 			}
 			
 			glowTex(new TextureAsset((String)texture));
@@ -68,10 +70,10 @@ public final class Material implements IJsonSerializer, IRenderable
 		{
 			if (!(colorFilter instanceof JsonObject))
 			{
-				throw new JsonParseException("Invalid value for JSON key \"filter\": %s", colorFilter);
+				throw new CaelumException("Invalid value for JSON key \"filter\": %s", colorFilter);
 			}
 			
-			filter(new Color(ColorFormat.RGB, (JsonObject)colorFilter));
+			filter(new Color(ColorFormat.RGBA, (JsonObject)colorFilter));
 			
 		}
 		
@@ -81,7 +83,7 @@ public final class Material implements IJsonSerializer, IRenderable
 		{
 			if (!(shininess instanceof Double))
 			{
-				throw new JsonParseException("Invalid value for JSON key \"shine\": %s", shininess);
+				throw new CaelumException("Invalid value for JSON key \"shine\": %s", shininess);
 			}
 			
 			shine(((Double)shininess).floatValue());
@@ -170,6 +172,73 @@ public final class Material implements IJsonSerializer, IRenderable
 	}
 	
 	@Override
+	public boolean bind(RenderContext rcon)
+	{
+		if (!this.locked())
+		{
+			return false;
+		}
+		
+		if (this.bound)
+		{
+			return false;
+		}
+		
+		int t = rcon.bindTexture(this.tex);
+		int r = rcon.bindTexture(this.renTex);
+		int g = rcon.bindTexture(this.glowTex);
+		
+		if (!this.initiated)
+		{
+			GL2.glUniform1i("mat.tex", (this.texBind = t));
+			GL2.glUniform1i("mat.renTex", (this.renBind = r));
+			GL2.glUniform1i("mat.glowTex", (this.glowBind = g));
+			
+			GL2.glUniform4f("mat.filter", this.filter.asFloats());
+			GL2.glUniform1f("mat.shine", this.shine);
+			GL2.glUniform1i("mat.invert", this.invert ? 1 : 0);
+			
+			this.initiated = true;
+			
+		}
+		
+		if (t != this.texBind)
+		{
+			GL2.glUniform1i("mat.tex", (this.texBind = t));
+			
+		}
+		
+		if (r != this.renBind)
+		{
+			GL2.glUniform1i("mat.renTex", (this.renBind = r));
+			
+		}
+		
+		if (g != this.glowBind)
+		{
+			GL2.glUniform1i("mat.glowTex", (this.glowBind = g));
+			
+		}
+		
+		this.bound = true;
+		
+		return false;
+	}
+	
+	@Override
+	public void unbind(RenderContext rcon)
+	{
+		this.bound = false;
+		
+	}
+	
+	@Override
+	public boolean isBound(RenderContext rcon)
+	{
+		return this.bound;
+	}
+	
+	@Override
 	public Material clone()
 	{
 		return new Material(this);
@@ -182,6 +251,7 @@ public final class Material implements IJsonSerializer, IRenderable
 		
 		ret *= 31 + (this.tex == null ? 0 : this.tex.hashCode());
 		ret *= 31 + (this.renTex == null ? 0 : this.renTex.hashCode());
+		ret *= 31 + (this.glowTex == null ? 0 : this.glowTex.hashCode());
 		ret *= 31 + (Float.floatToRawIntBits(this.shine));
 		ret *= 31 + (this.filter == null ? 0 : this.filter.hashCode());
 		
@@ -232,7 +302,13 @@ public final class Material implements IJsonSerializer, IRenderable
 		
 		if (!this.locked)
 		{
-			this.filter = col.convert(ColorFormat.RGB);
+			if (!col.isImmutable())
+			{
+				col = col.clone().setImmutable();
+				
+			}
+			
+			this.filter = col.convertTo(ColorFormat.RGBA);
 			
 		}
 		
@@ -258,6 +334,17 @@ public final class Material implements IJsonSerializer, IRenderable
 		return this;
 	}
 	
+	public Material invert(boolean b)
+	{
+		if (!this.locked)
+		{
+			this.invert = b;
+			
+		}
+		
+		return this;
+	}
+	
 	public Material renTex(RenderableTexture texture)
 	{
 		assert texture != null;
@@ -274,7 +361,7 @@ public final class Material implements IJsonSerializer, IRenderable
 			
 			if (this.shine == 0f)
 			{
-				this.shine = 1f;
+				this.shine(1f);
 				
 			}
 			
@@ -330,6 +417,11 @@ public final class Material implements IJsonSerializer, IRenderable
 		return this.glowTex;
 	}
 	
+	public boolean invert()
+	{
+		return this.invert;
+	}
+	
 	public RenderableTexture renTex()
 	{
 		return this.renTex;
@@ -350,9 +442,29 @@ public final class Material implements IJsonSerializer, IRenderable
 		return this.texCount;
 	}
 	
+	public boolean locked()
+	{
+		return this.locked;
+	}
+	
 	public boolean isStatic()
 	{
-		return this.renTex == null && (this.tex != null && this.tex.isStatic());
+		if (this.renTex != null)
+		{
+			return false;
+		}
+		
+		if (this.tex != null)
+		{
+			return this.tex.isStatic();
+		}
+		
+		if (this.glowTex != null)
+		{
+			return this.glowTex.isStatic();
+		}
+		
+		return true;
 	}
 	
 }

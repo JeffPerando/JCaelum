@@ -1,9 +1,9 @@
 
 package com.elusivehawk.caelum.render.glsl;
 
+import com.elusivehawk.caelum.render.IDeletable;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
-import com.elusivehawk.caelum.render.gl.IGLDeletable;
 
 /**
  * 
@@ -11,7 +11,7 @@ import com.elusivehawk.caelum.render.gl.IGLDeletable;
  * 
  * @author Elusivehawk
  */
-public interface IShader extends IGLDeletable
+public interface IShader extends IDeletable
 {
 	void compile(RenderContext rcon) throws RenderException;
 	

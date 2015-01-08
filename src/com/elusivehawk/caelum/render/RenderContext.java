@@ -6,8 +6,6 @@ import java.util.List;
 import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.render.gl.GL1;
 import com.elusivehawk.caelum.render.gl.GLConst;
-import com.elusivehawk.caelum.render.gl.GLProgram;
-import com.elusivehawk.caelum.render.gl.IGLDeletable;
 import com.elusivehawk.caelum.render.glsl.GLSLEnumShaderType;
 import com.elusivehawk.caelum.render.glsl.ShaderAsset;
 import com.elusivehawk.caelum.render.glsl.Shaders;
@@ -19,6 +17,7 @@ import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.math.MathHelper;
 import com.elusivehawk.util.storage.DirtableStorage;
+import com.elusivehawk.util.storage.Tuple;
 import com.google.common.collect.Lists;
 
 /**
@@ -29,28 +28,31 @@ import com.google.common.collect.Lists;
  */
 public final class RenderContext implements Closeable, IUpdatable
 {
+	public static final int CLEAR_BITS = GLConst.GL_COLOR_BUFFER_BIT | GLConst.GL_DEPTH_BUFFER_BIT | GLConst.GL_STENCIL_BUFFER_BIT;
+	
 	private final Display display;
 	private final IRenderable renderer;
 	
 	private final Shaders
 				shaders = new Shaders(),
 				shaders2d = new Shaders();
-	private final GLProgram p = new GLProgram(this.shaders);
-	private final DirtableStorage<Boolean> flipScreen = new DirtableStorage<Boolean>(false).setEnableNull(false);
 	
-	private final List<IGLDeletable> cleanables = Lists.newArrayList();
+	private final DirtableStorage<Boolean> flipScreen = new DirtableStorage<Boolean>(false).setEnableNull(false);
+	private final DirtableStorage<ICamera> cameraStorage = new DirtableStorage<ICamera>();
+	
+	private final List<IDeletable> cleanables = Lists.newArrayList();
 	private final List<IPreRenderer> preRenderers = Lists.newArrayList();
 	private final List<IPostRenderer> postRenderers = Lists.newArrayList();
 	
-	private int maxTexCount = 0, renders = 0;
+	private boolean initiated = false, rendering = false;
 	
 	private ITexture notex = null;
 	
-	private boolean
-			initiated = false,
-			updateCameraUniforms = true;
+	private String glVersion, glVendor, glRenderer;
+	private int maxTexCount = 0, renders = 0;
 	
-	private ICamera camera = null;
+	private List<Tuple<ITexture, Integer>> texBinds = Lists.newArrayList();
+	private int nextTex = 0;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public RenderContext(Display d, IRenderable r)
@@ -60,6 +62,61 @@ public final class RenderContext implements Closeable, IUpdatable
 		
 		display = d;
 		renderer = r;
+		
+		preRenderers.add(r);
+		postRenderers.add(r);
+		
+	}
+	
+	//XXX Internal methods
+	
+	@Override
+	public void update(double delta) throws RenderException
+	{
+		if (!this.initiated)
+		{
+			throw new RenderException("Cannot render: Not initiated!");
+		}
+		
+		if (this.rendering)
+		{
+			throw new RenderException("Already rendering! Use renderGame() you plebeian!");
+		}
+		
+		this.rendering = true;
+		
+		try
+		{
+			GL1.glClear(CLEAR_BITS);
+			
+			this.preRenderers.forEach(((preR) -> {preR.preRender(this, delta);}));
+			
+			this.renderGame();
+			
+			this.postRenderers.forEach(((postR) -> {postR.postRender(this);}));
+			
+		}
+		catch (Throwable e)
+		{
+			throw e;
+		}
+		finally
+		{
+			if (this.flipScreen.isDirty())
+			{
+				this.flipScreen.setIsDirty(false);
+				
+			}
+			
+			if (this.cameraStorage.isDirty())
+			{
+				this.cameraStorage.setIsDirty(false);
+				
+			}
+			
+			this.rendering = false;
+			
+		}
 		
 	}
 	
@@ -72,27 +129,6 @@ public final class RenderContext implements Closeable, IUpdatable
 		
 	}
 	
-	@Override
-	public void update(double delta) throws RenderException
-	{
-		GL1.glClear(GLConst.GL_COLOR_BUFFER_BIT | GLConst.GL_DEPTH_BUFFER_BIT | GLConst.GL_STENCIL_BUFFER_BIT);
-		
-		this.renderer.preRender(this, delta);
-		this.preRenderers.forEach(((preR) -> {preR.preRender(this, delta);}));
-		
-		this.renderGame();
-		
-		this.renderer.postRender(this);
-		this.postRenderers.forEach(((postR) -> {postR.postRender(this);}));
-		
-		if (this.flipScreen.isDirty())
-		{
-			this.flipScreen.setIsDirty(false);
-			
-		}
-		
-	}
-	
 	public boolean initContext()
 	{
 		if (this.initiated)
@@ -100,61 +136,66 @@ public final class RenderContext implements Closeable, IUpdatable
 			return false;
 		}
 		
-		Logger.verbose("OpenGL version: %s", GL1.glGetString(GLConst.GL_VERSION));
-		Logger.verbose("OpenGL vendor: %s", GL1.glGetString(GLConst.GL_VENDOR));
-		Logger.verbose("OpenGL renderer: %s", GL1.glGetString(GLConst.GL_RENDERER));
+		Logger.debug("OpenGL version: %s", this.glVersion = GL1.glGetString(GLConst.GL_VERSION));
+		Logger.debug("OpenGL vendor: %s", this.glVendor = GL1.glGetString(GLConst.GL_VENDOR));
+		Logger.debug("OpenGL renderer: %s", this.glRenderer = GL1.glGetString(GLConst.GL_RENDERER));
+		Logger.debug("OpenGL texture count: %s", this.maxTexCount = GL1.glGetInteger(GLConst.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS));
 		
 		GL1.glViewport(this.display);
 		GL1.glClearColor(Color.WHITE);
 		
-		//Begin glEnable calls
-		
-		GL1.glEnable(GLConst.GL_BLEND);
-		//GL1.glBlendFunc(GLConst.GL_SRC_ALPHA, GLConst.GL_ONE_MINUS_SRC_ALPHA);
-		
-		//End glEnable calls
-		
 		for (GLSLEnumShaderType sh : GLSLEnumShaderType.values())
 		{
-			this.shaders.addShader(new ShaderAsset(String.format("/res/shaders/%s.glsl", sh.name().toLowerCase()), sh));
-			this.shaders2d.addShader(new ShaderAsset(String.format("/res/shaders/%s2d.glsl", sh.name().toLowerCase()), sh));
+			this.shaders.addShader(new ShaderAsset(String.format("/res/shaders/%s.glsl", sh.name().toLowerCase()), sh, true));
+			this.shaders2d.addShader(new ShaderAsset(String.format("/res/shaders/%s2d.glsl", sh.name().toLowerCase()), sh, true));
 			
 		}
 		
-		PixelGrid ntf = new PixelGrid(16, 16);
-		
-		for (int x = 0; x < ntf.getWidth(); x++)
+		this.notex = new TextureImage(new PixelGrid(16, 16, ((grid) ->
 		{
-			for (int y = 0; y < ntf.getHeight(); y++)
+			for (int x = 0; x < grid.getWidth(); x++)
 			{
-				ntf.setPixel(x, y, MathHelper.isOdd(x) && MathHelper.isOdd(y) ? Color.PINK : Color.BLACK);
+				for (int y = 0; y < grid.getHeight(); y++)
+				{
+					grid.setPixel(x, y, MathHelper.isOdd(x) && MathHelper.isOdd(y) ? Color.PINK : Color.BLACK);
+					
+				}
 				
 			}
 			
-		}
-		
-		this.notex = new TextureImage(ntf.scale(2));
-		
-		this.maxTexCount = GL1.glGetInteger(GLConst.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS);
+		})).scale(2));
 		
 		this.initiated = true;
 		
 		return true;
 	}
 	
+	//XXX End internal methods
+	
+	//XXX Hooks
+	
 	public void renderGame(ICamera cam) throws RenderException
 	{
 		assert cam != null;
 		
-		ICamera cam_tmp = this.camera;
+		ICamera cam_tmp = this.cameraStorage.get();
 		
-		this.camera = cam;
-		this.updateCameraUniforms = true;
+		this.cameraStorage.set(cam);
 		
-		this.renderGame();
-		
-		this.camera = cam_tmp;
-		this.updateCameraUniforms = false;
+		try
+		{
+			this.renderGame();
+			
+		}
+		catch (RenderException e)
+		{
+			throw e;
+		}
+		finally
+		{
+			this.cameraStorage.set(cam_tmp);
+			
+		}
 		
 	}
 	
@@ -167,9 +208,20 @@ public final class RenderContext implements Closeable, IUpdatable
 		
 		this.renders++;
 		
-		this.renderer.render(this);
-		
-		this.renders--;
+		try
+		{
+			this.renderer.render(this);
+			
+		}
+		catch (RenderException e)
+		{
+			throw e;
+		}
+		finally
+		{
+			this.renders--;
+			
+		}
 		
 	}
 	
@@ -178,6 +230,56 @@ public final class RenderContext implements Closeable, IUpdatable
 		this.flipScreen.set(flip);
 		
 	}
+	
+	public int bindTexture(ITexture tex)
+	{
+		if (tex == null)
+		{
+			return -1;
+		}
+		
+		for (Tuple<ITexture, Integer> boundTex : this.texBinds)
+		{
+			if (boundTex.one == tex)
+			{
+				return boundTex.two;
+			}
+			
+		}
+		
+		if (this.nextTex == this.maxTexCount)
+		{
+			return -1;
+		}
+		
+		int ret = this.nextTex;
+		
+		GL1.glActiveTexture(GLConst.GL_TEXTURE0 + this.nextTex);
+		GL1.glBindTexture(tex);
+		
+		this.texBinds.add(Tuple.create(tex, this.nextTex));
+		this.nextTex++;
+		
+		return ret;
+	}
+	
+	public void releaseTextures()
+	{
+		this.texBinds.forEach(((tuple) ->
+		{
+			GL1.glActiveTexture(GLConst.GL_TEXTURE0 + tuple.two);
+			GL1.glBindTexture(tuple.one.getType(), 0);
+			
+		}));
+		
+		this.texBinds.clear();
+		this.nextTex = 0;
+		
+	}
+	
+	//XXX End hooks
+	
+	//XXX Getters
 	
 	public Display getDisplay()
 	{
@@ -194,11 +296,6 @@ public final class RenderContext implements Closeable, IUpdatable
 		return this.shaders2d;
 	}
 	
-	public GLProgram getDefaultProgram()
-	{
-		return this.p;
-	}
-	
 	public ITexture getDefaultTexture()
 	{
 		return this.notex;
@@ -207,6 +304,21 @@ public final class RenderContext implements Closeable, IUpdatable
 	public int getMaxTextureCount()
 	{
 		return this.maxTexCount;
+	}
+	
+	public String getGLVendor()
+	{
+		return this.glVendor;
+	}
+	
+	public String getGLVersion()
+	{
+		return this.glVersion;
+	}
+	
+	public String getGLRenderer()
+	{
+		return this.glRenderer;
 	}
 	
 	public int getRenderCount()
@@ -219,22 +331,26 @@ public final class RenderContext implements Closeable, IUpdatable
 		return this.flipScreen.get();
 	}
 	
-	public boolean updateScreenFlipUniform()
+	public boolean doUpdateScreenFlipUniform()
 	{
 		return this.flipScreen.isDirty();
 	}
 	
 	public ICamera getCamera()
 	{
-		return this.camera;
+		return this.cameraStorage.get();
 	}
 	
 	public boolean doUpdateCamera()
 	{
-		return this.camera != null && this.updateCameraUniforms;
+		return this.cameraStorage.isDirty();
 	}
 	
-	public void registerCleanable(IGLDeletable gl)
+	//XXX End getters
+	
+	//XXX Setters and registries
+	
+	public void registerCleanable(IDeletable gl)
 	{
 		if (!this.cleanables.contains(gl))
 		{
@@ -275,8 +391,10 @@ public final class RenderContext implements Closeable, IUpdatable
 	{
 		assert cam != null;
 		
-		this.camera = cam;
+		this.cameraStorage.set(cam);
 		
 	}
+	
+	//XXX End setters and registries
 	
 }

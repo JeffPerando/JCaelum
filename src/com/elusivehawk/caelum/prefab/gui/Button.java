@@ -16,34 +16,45 @@ import com.elusivehawk.util.math.Vector;
  */
 public class Button implements IGuiComponent
 {
-	private final IButtonListener[] clickers = new IButtonListener[InputConst.MOUSE_BUTTONS];
-	
 	private final Rectangle bounds;
-	private final Icon image;
+	
+	private final Icon[] icons = new Icon[Gui.STATE_COUNT];
+	private final IButtonListener[] clickers = new IButtonListener[InputConst.MOUSE_BUTTONS];
 	
 	private Object attachment = null;
 	private boolean active = true;
+	private int img = -1, lastState = -1;
 	
-	public Button(float x, float y, float z, float w, Icon icon)
+	public Button(float x, float y, float z, float w)
 	{
-		this(new Rectangle(x, y, z, w), icon);
+		this(new Rectangle(x, y, z, w));
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Button(Rectangle r, Icon icon)
+	public Button(Rectangle r)
 	{
 		assert r != null;
 		
 		bounds = r;
-		image = icon;
 		
 	}
 	
 	@Override
 	public void drawComponent(Canvas canvas, int state)
 	{
-		canvas.drawImage(this.bounds, this.image, state);
+		if (this.img == -1)
+		{
+			this.img = canvas.drawImage(this.bounds, this.icons[state]);
+			
+		}
+		else if (state != this.lastState)
+		{
+			canvas.redrawImage(this.img, this.bounds, this.icons[state]);
+			
+		}
+		
+		this.lastState = state;
 		
 	}
 	
@@ -75,11 +86,6 @@ public class Button implements IGuiComponent
 		return this.active;
 	}
 	
-	public Icon getIcon()
-	{
-		return this.image;
-	}
-	
 	public Object getAttachment()
 	{
 		return this.attachment;
@@ -100,6 +106,13 @@ public class Button implements IGuiComponent
 		assert lis != null;
 		
 		this.clickers[button] = lis;
+		
+		return this;
+	}
+	
+	public Button setIcon(int state, Icon icon)
+	{
+		this.icons[state] = icon;
 		
 		return this;
 	}

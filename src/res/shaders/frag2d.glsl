@@ -2,12 +2,16 @@
 
 #define MATERIAL_CAP 8
 
-uniform sampler2D texes[MATERIAL_CAP];
-uniform sampler2D rTexes[MATERIAL_CAP];
-uniform sampler2D gTexes[MATERIAL_CAP];
-uniform vec3 filters[MATERIAL_CAP];
-uniform float shines[MATERIAL_CAP];
-uniform int matCount;
+uniform struct Material
+{
+	sampler2D tex;
+	sampler2D renTex;
+	sampler2D glowTex;
+	vec4 filter;
+	float shine;
+	bool invert;
+	
+} mat;
 
 in vec2 frag_tex;
 in float frag_mat;
@@ -16,30 +20,19 @@ out vec4 out_color;
 
 void main(void)
 {
-	if (matCount == 0)
+	vec4 mixed = mix(texture(mat.tex, frag_tex), texture(mat.renTex, frag_tex), shines[m]);
+	
+	vec4 fin = vec4((mat.filter.xyz * mat.filter.w) + (mixed.xyz * mixed.w), 0);
+	
+	if (invert[m])
 	{
-		out_color = vec4(1, 1, 1, 0);
-		return;
-	}
-	
-	unsigned int m = int(clamp(frag_mat, 0, matCount));
-	
-	vec4 fin = vec4(filters[m].xyz, 0);
-	
-	vec4 tex = texture(texes[m], frag_tex);
-	vec4 ren = texture(rTexes[m], frag_tex);
-	
-	vec4 mixed = mix(tex, ren, shines[m]);
-	
-	if (mixed.w > 0)
-	{
-		fin.xyz += (mixed.xyz * mixed.w);
+		fin.xyz = (1 - fin.xyz);
 		
 	}
 	
 	//TODO Calculate lighting
 	
-	vec4 glow = texture(gTexes[m], frag_tex);
+	vec4 glow = texture(mat.glowTex, frag_tex);
 	
 	if (glow.w < 1)
 	{

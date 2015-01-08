@@ -1,7 +1,5 @@
 
-package com.elusivehawk.caelum.render.gl;
-
-import com.elusivehawk.caelum.render.RenderContext;
+package com.elusivehawk.caelum.render;
 
 /**
  * 
@@ -9,7 +7,7 @@ import com.elusivehawk.caelum.render.RenderContext;
  * 
  * @author Elusivehawk
  */
-public interface IGLBindable extends IGLDeletable
+public interface IBindable
 {
 	boolean bind(RenderContext rcon);
 	

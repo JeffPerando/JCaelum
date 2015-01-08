@@ -20,7 +20,7 @@ import com.google.common.collect.Lists;
  */
 public class Tessellator
 {
-	public static final int FLOATS_PER_INDEX = 3 + 2 + 3 + 1;//Vertex + Texture + Normal + Material
+	public static final int FLOATS_PER_INDEX = 3 + 2 + 3;//Vertex + Texture + Normal
 	
 	private List<ModelPoint> points = Lists.newArrayList();
 	private List<Integer> indices = Lists.newArrayList();
@@ -49,37 +49,27 @@ public class Tessellator
 	
 	public int vertexTex(float x, float y, float z, float u, float v)
 	{
-		return this.vertexTexNormal(x, y, z, u, v, 0, 0, 0);
+		return this.point(x, y, z, u, v, 0, 0, 0);
 	}
 	
 	public int vertexTex(Vector vtx, Vector tex)
 	{
-		return this.vertexTexNormal(vtx, tex, new Vector(3));
+		return this.point(vtx, tex, new Vector(3));
 	}
 	
-	public int vertexTexNormal(float x, float y, float z, float u, float v, float nx, float ny, float nz)
+	public int point(float x, float y, float z, float u, float v, float nx, float ny, float nz)
 	{
-		return this.point(x, y, z, u, v, nx, ny, nz, 0);
+		return this.point(new Vector(x, y, z), new Vector(u, v), new Vector(nx, ny, nz));
 	}
 	
-	public int vertexTexNormal(Vector vtx, Vector tex, Vector n)
-	{
-		return this.point(vtx, tex, n, 0);
-	}
-	
-	public int point(float x, float y, float z, float u, float v, float nx, float ny, float nz, int m)
-	{
-		return this.point(new Vector(x, y, z), new Vector(u, v), new Vector(nx, ny, nz), m);
-	}
-	
-	public int point(Vector vtx, Vector tex, Vector n, int m)
+	public int point(Vector vtx, Vector tex, Vector n)
 	{
 		if (this.done)
 		{
 			throw new CaelumException("What are you doing with this tessellator? Go home! It's used!");
 		}
 		
-		ModelPoint point = new ModelPoint(vtx, tex, n, m);
+		ModelPoint point = new ModelPoint(vtx, tex, n);
 		
 		int i = this.indices.indexOf(point);
 		
@@ -137,7 +127,6 @@ public class Tessellator
 			fs.put(ArrayHelper.asFloats(point.vtx.multiget(MathConst.XYZ)));
 			fs.put(ArrayHelper.asFloats(point.tex.multiget(MathConst.XY)));
 			fs.put(ArrayHelper.asFloats(point.norm.multiget(MathConst.XYZ)));
-			fs.put(point.mat);
 			
 		}
 		

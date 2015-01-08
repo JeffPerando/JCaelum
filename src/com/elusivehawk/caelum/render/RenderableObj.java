@@ -1,16 +1,15 @@
 
 package com.elusivehawk.caelum.render;
 
-import java.util.Map;
 import com.elusivehawk.caelum.render.gl.GL1;
 import com.elusivehawk.caelum.render.gl.GL2;
 import com.elusivehawk.caelum.render.gl.GLConst;
 import com.elusivehawk.caelum.render.gl.GLProgram;
 import com.elusivehawk.caelum.render.gl.GLVertexArray;
+import com.elusivehawk.caelum.render.tex.Color;
 import com.elusivehawk.caelum.render.tex.ITexture;
 import com.elusivehawk.caelum.render.tex.Material;
-import com.elusivehawk.caelum.render.tex.MaterialSet;
-import com.google.common.collect.Maps;
+import com.elusivehawk.util.storage.DirtableStorage;
 
 /**
  * 
@@ -20,18 +19,16 @@ import com.google.common.collect.Maps;
  */
 public abstract class RenderableObj implements /*IFilterable, */IRenderable
 {
-	private final Map<ITexture, Integer> boundTex = Maps.newHashMap();
-	
-	protected final GLProgram p;
+	protected final GLProgram program;
 	
 	protected final GLVertexArray vao = new GLVertexArray();
-	protected final MaterialSet mats = new MaterialSet();
+	protected final DirtableStorage<Material> mat = new DirtableStorage<Material>(null).setSync();
 	
 	protected boolean initiated = false, zBuffer = true;
 	
 	//protected Filters filters = null;
 	
-	protected int renderCount = 0, texCount = 0;
+	protected int renderCount = 0;
 	
 	protected RenderableObj()
 	{
@@ -40,17 +37,20 @@ public abstract class RenderableObj implements /*IFilterable, */IRenderable
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	protected RenderableObj(GLProgram program)
+	protected RenderableObj(GLProgram p)
 	{
-		assert program != null;
-		
-		p = program;
+		program = p;
 		
 	}
 	
 	@Override
 	public void render(RenderContext rcon) throws RenderException
 	{
+		if (!this.initiated)
+		{
+			return;
+		}
+		
 		ICamera cam = rcon.getCamera();
 		
 		if (this.isCulled(cam))
@@ -65,18 +65,11 @@ public abstract class RenderableObj implements /*IFilterable, */IRenderable
 		
 		this.renderCount++;
 		
-		if (!this.initiated)
+		if (!this.mat.isNull())
 		{
-			if (!this.initiate(rcon))
-			{
-				return;
-			}
-			
-			this.initiated = true;
+			this.mat.get().render(rcon);
 			
 		}
-		
-		this.mats.forEach(((m) -> {m.render(rcon);}));
 		
 		boolean zBuffer = GL2.glIsEnabled(GLConst.GL_DEPTH_TEST);
 		
@@ -95,7 +88,7 @@ public abstract class RenderableObj implements /*IFilterable, */IRenderable
 			
 		}
 		
-		if (this.p.bind(rcon))
+		if (this.program.bind(rcon))
 		{
 			if (this.vao.bind(rcon))
 			{
@@ -106,11 +99,20 @@ public abstract class RenderableObj implements /*IFilterable, */IRenderable
 					
 				}
 				
-				if (this.mats.isDirty())
+				if (!this.mat.isNull())
 				{
-					GL2.glUniform1i("matCount", this.mats.size());
-					
-					this.mats.setIsDirty(false);
+					if (this.mat.isDirty())
+					{
+						this.updateMatUniforms(rcon);
+						
+						this.mat.setIsDirty(false);
+						
+					}
+					else if (!this.mat.get().isStatic())
+					{
+						this.updateMatUniforms(rcon);
+						
+					}
 					
 				}
 				
@@ -118,19 +120,7 @@ public abstract class RenderableObj implements /*IFilterable, */IRenderable
 				
 				this.doRender(rcon);
 				
-				if (this.texCount > 0)
-				{
-					this.boundTex.forEach(((tex, slot) ->
-					{
-						GL1.glActiveTexture(slot);
-						GL1.glBindTexture(tex.getType(), 0);
-						
-					}));
-					
-					this.boundTex.clear();
-					this.texCount = 0;
-					
-				}
+				rcon.releaseTextures();
 				
 			}
 			
@@ -138,7 +128,7 @@ public abstract class RenderableObj implements /*IFilterable, */IRenderable
 			
 		}
 		
-		this.p.unbind(rcon);
+		this.program.unbind(rcon);
 		
 		this.renderCount--;
 		
@@ -147,13 +137,28 @@ public abstract class RenderableObj implements /*IFilterable, */IRenderable
 	@Override
 	public void preRender(RenderContext rcon, double delta)
 	{
-		this.mats.forEach(((mat) -> {mat.preRender(rcon, delta);}));
+		if (!this.initiated)
+		{
+			if (!this.initiate(rcon))
+			{
+				return;
+			}
+			
+			this.initiated = true;
+			
+		}
 		
-		if (this.p.bind(rcon))
+		if (!this.mat.isNull())
+		{
+			this.mat.get().preRender(rcon, delta);
+			
+		}
+		
+		if (this.program.bind(rcon))
 		{
 			//this.manipulateProgram(rcon);
 			
-			if (rcon.updateScreenFlipUniform())
+			if (rcon.doUpdateScreenFlipUniform())
 			{
 				GL2.glUniform1i("flip", rcon.isScreenFlipped() ? 1 : 0);
 				
@@ -161,14 +166,18 @@ public abstract class RenderableObj implements /*IFilterable, */IRenderable
 			
 		}
 		
-		this.p.unbind(rcon);
+		this.program.unbind(rcon);
 		
 	}
 	
 	@Override
 	public void postRender(RenderContext rcon)
 	{
-		this.mats.forEach(((mat) -> {mat.postRender(rcon);}));
+		if (!this.mat.isNull())
+		{
+			this.mat.get().postRender(rcon);
+			
+		}
 		
 	}
 	
@@ -215,21 +224,36 @@ public abstract class RenderableObj implements /*IFilterable, */IRenderable
 		return this;
 	}*/
 	
-	public void addMaterials(Material... ms)
+	public void setMaterial(Color col)
 	{
-		int c = 0;
-		
-		while (this.mats.size() < RenderConst.MATERIAL_CAP && c < ms.length)
-		{
-			this.mats.add(ms[c++]);
-			
-		}
+		this.setMaterial(new Material().filter(col).lock());
 		
 	}
 	
-	public int addMaterial(Material m)
+	public void setMaterial(ITexture tex)
 	{
-		return this.mats.add(m);
+		this.setMaterial(new Material().tex(tex).lock());
+		
+	}
+	
+	public void setMaterial(ITexture tex, Color col)
+	{
+		this.setMaterial(new Material().tex(tex).filter(col).lock());
+		
+	}
+	
+	public void setMaterial(ITexture tex, boolean invert)
+	{
+		this.setMaterial(new Material().tex(tex).invert(invert).lock());
+		
+	}
+	
+	public void setMaterial(Material m)
+	{
+		assert m.locked();
+		
+		this.mat.set(m);
+		
 	}
 	
 	public synchronized RenderableObj setEnableZBuffer(boolean z)
@@ -239,11 +263,6 @@ public abstract class RenderableObj implements /*IFilterable, */IRenderable
 		return this;
 	}
 	
-	public int getMaterialCount()
-	{
-		return this.mats.size();
-	}
-	
 	public boolean isCulled(ICamera cam)
 	{
 		return false;
@@ -251,36 +270,15 @@ public abstract class RenderableObj implements /*IFilterable, */IRenderable
 	
 	private void updateMatUniforms(RenderContext rcon)
 	{
-		int c = 0;
+		Material m = this.mat.get();
 		
-		for (Material m : this.mats)
-		{
-			GL2.glUniform1i(String.format("texes[%s]", c), this.bindTexture(rcon, m.tex()));
-			GL2.glUniform1i(String.format("rTexes[%s]", c), this.bindTexture(rcon, m.renTex()));
-			GL2.glUniform1i(String.format("gTexes[%s]", c), this.bindTexture(rcon, m.glowTex()));
-			GL2.glUniform3f(String.format("filters[%s]", c), m.filter().asFloats());
-			GL2.glUniform1f(String.format("shines[%s]", c), m.shine());
-			
-			c++;
-			
-		}
+		GL2.glUniform1i("mat.tex", rcon.bindTexture(m.tex()));
+		GL2.glUniform1i("mat.renTex", rcon.bindTexture(m.renTex()));
+		GL2.glUniform1i("mat.glowTex", rcon.bindTexture(m.glowTex()));
+		GL2.glUniform4f("mat.filter", m.filter().asFloats());
+		GL2.glUniform1f("mat.shine", m.shine());
+		GL2.glUniform1i("mat.invert", m.invert() ? 1 : 0);
 		
-	}
-	
-	private int bindTexture(RenderContext rcon, ITexture tex)
-	{
-		if (tex == null)
-		{
-			return 0;
-		}
-		
-		GL1.glActiveTexture(GLConst.GL_TEXTURE0 + this.texCount);
-		GL1.glBindTexture(tex);
-		
-		this.boundTex.put(tex, this.texCount);
-		this.texCount++;
-		
-		return this.texCount - 1;
 	}
 	
 	protected abstract boolean initiate(RenderContext rcon);

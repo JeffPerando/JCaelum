@@ -5,11 +5,6 @@ import java.util.List;
 import com.elusivehawk.caelum.input.IInputListener;
 import com.elusivehawk.caelum.input.InputEvent;
 import com.elusivehawk.caelum.input.MouseEvent;
-import com.elusivehawk.caelum.render.Canvas;
-import com.elusivehawk.caelum.render.IRenderable;
-import com.elusivehawk.caelum.render.RenderContext;
-import com.elusivehawk.caelum.render.RenderException;
-import com.elusivehawk.caelum.render.tex.Material;
 import com.elusivehawk.util.IDirty;
 import com.elusivehawk.util.IPopulator;
 import com.google.common.collect.Lists;
@@ -20,45 +15,25 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-public class Gui implements IInputListener, IRenderable, IDirty
+public class Gui implements IInputListener, IDirty
 {
 	public static final int
 					DEFAULT = 0,
 					HIGHLIGHTED = 1,
 					PUSHED = 2,
-					INACTIVE = 3;
+					INACTIVE = 3,
+					STATE_COUNT = 4;
 	
 	private final List<IGuiComponent> components = Lists.newArrayList();
-	
-	private final Canvas canvas;
 	
 	private IGuiComponent active = null, lastClicked = null;
 	private boolean dirty = true, mouseDown = false;
 	
-	public Gui()
-	{
-		this(new Canvas());
-		
-	}
+	public Gui(){}
 	
 	public Gui(IPopulator<Gui> pop)
 	{
 		this();
-		
-		pop.populate(this);
-		
-	}
-	
-	@SuppressWarnings("unqualified-field-access")
-	public Gui(Canvas cvs)
-	{
-		canvas = cvs;
-		
-	}
-	
-	public Gui(Canvas cvs, IPopulator<Gui> pop)
-	{
-		this(cvs);
 		
 		pop.populate(this);
 		
@@ -71,30 +46,20 @@ public class Gui implements IInputListener, IRenderable, IDirty
 	}
 
 	@Override
-	public void setIsDirty(boolean b)
+	public synchronized void setIsDirty(boolean b)
 	{
-		if (b != this.dirty)
-		{
-			synchronized (this)
-			{
-				this.dirty = b;
-				
-			}
-			
-		}
+		this.dirty = b;
 		
 	}
 	
-	@Override
+	/*@Override
 	public void preRender(RenderContext rcon, double delta)
 	{
 		if (this.isDirty())
 		{
-			this.canvas.clear();
-			
 			this.components.forEach(((comp) ->
 			{
-				comp.drawComponent(this.canvas, comp.isActive() ? (comp == this.active ? (this.mouseDown ? PUSHED : HIGHLIGHTED) : DEFAULT) : INACTIVE);
+				comp.drawComponent(this.canvas, (comp.isActive() ? (comp == this.active ? (this.mouseDown ? PUSHED : HIGHLIGHTED) : DEFAULT) : INACTIVE));
 				
 			}));
 			
@@ -118,7 +83,7 @@ public class Gui implements IInputListener, IRenderable, IDirty
 	{
 		this.canvas.render(rcon);
 		
-	}
+	}*/
 	
 	@Override
 	public void onInputReceived(InputEvent event, double delta)
@@ -132,13 +97,32 @@ public class Gui implements IInputListener, IRenderable, IDirty
 		{
 			MouseEvent me = (MouseEvent)event;
 			
+			IGuiComponent a = null;
+			
 			for (IGuiComponent comp : this.components)
 			{
+				if (!comp.isActive())
+				{
+					continue;
+				}
+				
 				if (comp.getBounds().within(me.pos))
 				{
-					this.active = comp;
+					a = comp;
 					break;
 				}
+				
+			}
+			
+			if (this.active != a)
+			{
+				synchronized (this)
+				{
+					this.active = a;
+					
+				}
+				
+				this.setIsDirty(true);
 				
 			}
 			
@@ -161,16 +145,14 @@ public class Gui implements IInputListener, IRenderable, IDirty
 								
 							}
 							
-							break;
-						}
+						}; break;
 						case DOWN:
 						{
 							synchronized (this){this.mouseDown = true;}
 							
 							this.setIsDirty(true);
 							
-							break;
-						}
+						}; break;
 						
 					}
 					
@@ -187,19 +169,12 @@ public class Gui implements IInputListener, IRenderable, IDirty
 		return this.lastClicked;
 	}
 	
-	public Gui addComponent(IGuiComponent component)
+	public Gui addComponent(IGuiComponent comp)
 	{
-		this.components.add(component);
+		assert comp != null;
+		
+		this.components.add(comp);
 		this.setIsDirty(true);
-		
-		return this;
-	}
-	
-	public Gui setMaterial(int state, Material m)
-	{
-		assert m != null;
-		
-		this.canvas.addMaterials(m);
 		
 		return this;
 	}
