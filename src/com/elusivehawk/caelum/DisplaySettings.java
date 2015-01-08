@@ -19,7 +19,7 @@ public class DisplaySettings
 	public boolean resize = false;
 	public boolean fullscreen = false;
 	public boolean vsync = true;
-	public Color bg = Color.BLACK;
+	public Color bg = Color.WHITE;
 	
 	public DisplaySettings(){}
 	
