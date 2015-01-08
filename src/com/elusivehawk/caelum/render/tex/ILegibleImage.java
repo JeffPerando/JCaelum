@@ -2,6 +2,7 @@
 package com.elusivehawk.caelum.render.tex;
 
 import java.nio.ByteBuffer;
+import java.util.function.BiConsumer;
 import com.elusivehawk.util.storage.BufferHelper;
 
 /**
@@ -12,27 +13,25 @@ import com.elusivehawk.util.storage.BufferHelper;
  */
 public interface ILegibleImage
 {
+	ColorFormat getFormat();
+	
 	int getPixel(int x, int y);
 	
-	boolean setPixel(int x, int y, int color);
+	void setPixel(int x, int y, int color);
 	
 	int getHeight();
 	
 	int getWidth();
 	
-	default Color getPixelColor(int x, int y)
+	default Color getColor(int x, int y)
 	{
 		return new Color(this.getFormat(), this.getPixel(x, y));
 	}
 	
-	default boolean setPixel(int x, int y, Color color)
+	default void setPixel(int x, int y, Color color)
 	{
-		return this.setPixel(x, y, color.convert(this.getFormat()).getColor());
-	}
-	
-	default ColorFormat getFormat()
-	{
-		return ColorFormat.RGBA;
+		this.setPixel(x, y, color.convertTo(this.getFormat()).getColor());
+		
 	}
 	
 	default ByteBuffer toBytes()
@@ -42,23 +41,34 @@ public interface ILegibleImage
 	
 	default ByteBuffer toBytes(ColorFormat format)
 	{
-		ByteBuffer buf = BufferHelper.createByteBuffer(this.getHeight() * this.getWidth() * this.getFormat().filterCount());
-		Color col = new Color(format);
+		ByteBuffer buf = BufferHelper.createByteBuffer(this.getWidth() * this.getHeight() * format.filterCount());
 		
-		for (int x = 0; x < this.getWidth(); ++x)
+		Color col = new Color(this.getFormat());
+		Color n = new Color(format);
+		
+		this.forEach(((x, y) ->
 		{
-			for (int y = 0; y < this.getHeight(); ++y)
+			n.setColor(col.setColor(this.getPixel(x, y))).writeToBuffer(buf);
+			
+		}));
+		
+		buf.flip();
+		
+		return buf;
+	}
+	
+	default void forEach(BiConsumer<Integer, Integer> consumer)
+	{
+		for (int x = 0; x < this.getWidth(); x++)
+		{
+			for (int y = 0; y < this.getHeight(); y++)
 			{
-				col.setColor(this.getPixel(x, y));
-				col.writeToBuffer(buf);
+				consumer.accept(x, y);
 				
 			}
 			
 		}
 		
-		buf.flip();
-		
-		return buf;
 	}
 	
 }

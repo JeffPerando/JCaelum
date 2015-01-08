@@ -1,11 +1,8 @@
 
 package com.elusivehawk.caelum.render.tex;
 
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
+import java.awt.image.BufferedImage;
 import com.elusivehawk.util.IPopulator;
-import com.elusivehawk.util.storage.BufferHelper;
 
 /**
  * 
@@ -15,14 +12,14 @@ import com.elusivehawk.util.storage.BufferHelper;
  */
 public class PixelGrid implements ILegibleImage
 {
+	protected final ColorFormat format;
 	protected final int[][] pixels;
 	protected final ILegibleImage base;
 	protected final int xSize, ySize;
-	protected final ColorFormat f;
 	
 	public PixelGrid(int w, int h)
 	{
-		this(w, h, ColorFormat.RGBA);
+		this(ColorFormat.RGBA, w, h);
 		
 	}
 	
@@ -35,13 +32,21 @@ public class PixelGrid implements ILegibleImage
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public PixelGrid(int w, int h, ColorFormat format)
+	public PixelGrid(ColorFormat f, int w, int h)
 	{
+		format = f;
 		pixels = new int[w][h];
 		xSize = w;
 		ySize = h;
 		base = null;
-		f = format;
+		
+	}
+	
+	public PixelGrid(ColorFormat f, int w, int h, IPopulator<PixelGrid> pop)
+	{
+		this(f, w, h);
+		
+		pop.populate(this);
 		
 	}
 	
@@ -52,13 +57,30 @@ public class PixelGrid implements ILegibleImage
 		xSize = img.getWidth();
 		ySize = img.getHeight();
 		base = img;
-		f = img.getFormat();
+		format = img.getFormat();
 		
 		for (int x = 0; x < img.getWidth(); x++)
 		{
 			for (int y = 0; y < img.getHeight(); y++)
 			{
 				pixels[x][y] = img.getPixel(x, y);
+				
+			}
+			
+		}
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public PixelGrid(BufferedImage img)
+	{
+		this(getFormat(img), img.getWidth(), img.getHeight());
+		
+		for (int x = 0; x < img.getWidth(); x++)
+		{
+			for (int y = 0; y < img.getHeight(); y++)
+			{
+				pixels[x][y] = img.getRGB(x, (img.getHeight() - 1) - y);
 				
 			}
 			
@@ -73,11 +95,10 @@ public class PixelGrid implements ILegibleImage
 	}
 	
 	@Override
-	public boolean setPixel(int x, int y, int col)
+	public void setPixel(int x, int y, int col)
 	{
 		this.pixels[x][y] = col;
 		
-		return true;
 	}
 	
 	@Override
@@ -95,7 +116,7 @@ public class PixelGrid implements ILegibleImage
 	@Override
 	public ColorFormat getFormat()
 	{
-		return this.f;
+		return this.format;
 	}
 	
 	@Override
@@ -110,79 +131,10 @@ public class PixelGrid implements ILegibleImage
 		
 	}
 	
-	public ByteBuffer toByteBuffer()
-	{
-		ByteBuffer ret = BufferHelper.createByteBuffer(this.xSize * this.ySize * 4);
-		Color col = new Color(this.f);
-		
-		for (int x = 0; x < this.xSize; x++)
-		{
-			for (int y = 0; y < this.ySize; y++)
-			{
-				col.setColor(this.getPixel(x, y));
-				
-				for (ColorFilter filter : this.f.filters)
-				{
-					ret.put((byte)col.getColor(filter));
-					
-				}
-				
-			}
-			
-		}
-		
-		ret.flip();
-		
-		return ret;
-	}
-	
-	public FloatBuffer toFloatBuffer()
-	{
-		FloatBuffer ret = BufferHelper.createFloatBuffer(this.xSize * this.ySize * 4);
-		Color col = new Color(this.f);
-		
-		for (int x = 0; x < this.xSize; x++)
-		{
-			for (int y = 0; y < this.ySize; y++)
-			{
-				col.setColor(this.getPixel(x, y));
-				
-				for (ColorFilter filter : this.f.filters)
-				{
-					ret.put(col.getColorf(filter));
-					
-				}
-				
-			}
-			
-		}
-		
-		ret.flip();
-		
-		return ret;
-	}
-	
-	public IntBuffer toIntBuffer()
-	{
-		IntBuffer ret = BufferHelper.createIntBuffer(this.xSize * this.ySize);
-		
-		for (int x = 0; x < this.xSize; x++)
-		{
-			for (int y = 0; y < this.ySize; y++)
-			{
-				ret.put(this.getPixel(x, y));
-				
-			}
-			
-		}
-		
-		ret.flip();
-		
-		return ret;
-	}
-	
 	public void pasteImage(ILegibleImage img, int xPos, int yPos)
 	{
+		Color col = new Color(img.getFormat());
+		
 		for (int x = 0; x < img.getWidth(); x++)
 		{
 			if (x + xPos > this.xSize)
@@ -197,7 +149,7 @@ public class PixelGrid implements ILegibleImage
 					break;
 				}
 				
-				this.setPixel(x + xPos, y + yPos, this.f.convert(new Color(img.getFormat(), img.getPixel(x, y))).getColor());
+				this.setPixel(x + xPos, y + yPos, col.setColor(img.getPixel(x, y)).convertTo(this.format).getColor());
 				
 			}
 			
@@ -248,7 +200,7 @@ public class PixelGrid implements ILegibleImage
 	
 	public PixelGrid scale(int xScale, int yScale)
 	{
-		PixelGrid ret = new PixelGrid(this.xSize * xScale, this.ySize * yScale, this.getFormat());
+		PixelGrid ret = new PixelGrid(this.getFormat(), this.xSize * xScale, this.ySize * yScale);
 		
 		for (int x = 0; x < this.xSize; x++)
 		{
@@ -271,6 +223,22 @@ public class PixelGrid implements ILegibleImage
 		}
 		
 		return ret;
+	}
+	
+	private static ColorFormat getFormat(BufferedImage img)
+	{
+		switch (img.getType())
+		{
+			case BufferedImage.TYPE_3BYTE_BGR:
+			case BufferedImage.TYPE_INT_BGR: return ColorFormat.BGRA;
+			case BufferedImage.TYPE_4BYTE_ABGR:
+			case BufferedImage.TYPE_4BYTE_ABGR_PRE: return ColorFormat.ABGR;
+			case BufferedImage.TYPE_INT_ARGB:
+			case BufferedImage.TYPE_INT_ARGB_PRE: return ColorFormat.ARGB;
+			case BufferedImage.TYPE_INT_RGB:
+			default: return ColorFormat.RGBA;
+		}
+		
 	}
 	
 }
