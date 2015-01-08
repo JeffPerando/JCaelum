@@ -6,10 +6,9 @@ import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import com.elusivehawk.caelum.CaelumException;
+import com.elusivehawk.util.EnumLogType;
+import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.storage.SyncList;
-import com.elusivehawk.util.task.ITaskListener;
-import com.elusivehawk.util.task.Task;
 import com.google.common.collect.Maps;
 
 /**
@@ -18,7 +17,7 @@ import com.google.common.collect.Maps;
  * 
  * @author Elusivehawk
  */
-public final class AssetManager implements ITaskListener
+public final class AssetManager
 {
 	private final List<IAssetReceiver> receivers = new SyncList<IAssetReceiver>();
 	private final Map<EnumAssetType, List<Asset>> assets = Maps.newHashMap();
@@ -36,56 +35,7 @@ public final class AssetManager implements ITaskListener
 		
 	}
 	
-	@Override
-	public void onTaskComplete(Task task)
-	{
-		if (!(task instanceof TaskLoadAsset))
-		{
-			return;
-		}
-		
-		TaskLoadAsset t = (TaskLoadAsset)task;
-		
-		if (t.foundDuplicate())
-		{
-			return;
-		}
-		
-		Asset a = t.getCompletedAsset();
-		
-		if (a == null)
-		{
-			throw new NullPointerException("Asset is null!");
-		}
-		
-		List<Asset> assetList = this.assets.get(a.type);
-		
-		if (assetList == null)
-		{
-			assetList = SyncList.newList();
-			
-			this.assets.put(a.type, assetList);
-			
-		}
-		
-		if (assetList.contains(a))
-		{
-			throw new CaelumException("Duplicate asset entry %s!", a);
-		}
-		
-		assetList.add(a);
-		
-		Iterator<IAssetReceiver> itr = this.receivers.iterator();
-		
-		while (itr.hasNext())
-		{
-			itr.next().onAssetLoaded(a);
-			
-		}
-		
-	}
-	
-	public Object readObjectForAsset(Asset a, DataInputStream in) throws Throwable
+	public Object readObjectForAsset(Asset a, DataInputStream in)
 	{
 		IAssetReader ar = this.getReader(a.ext);
 		
@@ -98,7 +48,8 @@ public final class AssetManager implements ITaskListener
 		}
 		catch (Throwable e)
 		{
-			throw new CaelumException("Error caught while reading asset %s:", e, a.filepath);
+			Logger.err("Error caught while reading asset %s:", e, a);
+			
 		}
 		
 		return ret;
@@ -156,6 +107,60 @@ public final class AssetManager implements ITaskListener
 		}
 		
 		return null;
+	}
+	
+	public void readAsset(Asset asset) throws Throwable
+	{
+		Asset aDup = this.getExistingAsset(asset.filepath, asset.type);
+		
+		if (aDup != null)
+		{
+			asset.onExistingAssetFound(aDup);
+			
+			return;
+		}
+		
+		InputStream is = this.getIn(asset.filepath);
+		
+		if (is == null)
+		{
+			Logger.log(EnumLogType.WARN, "Asset stream for \"%s\" cannot be null!", asset.filepath);
+			
+			return;
+		}
+		
+		DataInputStream in = new DataInputStream(is);
+		
+		if (asset.read(in))
+		{
+			List<Asset> assetList = this.assets.get(asset.type);
+			
+			if (assetList == null)
+			{
+				assetList = SyncList.newList();
+				
+				this.assets.put(asset.type, assetList);
+				
+			}
+			
+			if (!assetList.contains(asset))
+			{
+				assetList.add(asset);
+				
+				Iterator<IAssetReceiver> itr = this.receivers.iterator();
+				
+				while (itr.hasNext())
+				{
+					itr.next().onAssetLoaded(asset);
+					
+				}
+				
+			}
+			
+		}
+		
+		in.close();
+		
 	}
 	
 	public IAssetReader getReader(String ext)

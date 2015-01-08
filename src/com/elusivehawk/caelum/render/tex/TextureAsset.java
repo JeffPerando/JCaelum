@@ -12,6 +12,7 @@ import com.elusivehawk.caelum.render.GraphicAsset;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderHelper;
 import com.elusivehawk.caelum.render.gl.GL1;
+import com.elusivehawk.util.Logger;
 import com.google.common.collect.Lists;
 
 /**
@@ -22,13 +23,20 @@ import com.google.common.collect.Lists;
  */
 public class TextureAsset extends GraphicAsset implements ITexture
 {
-	protected ILegibleImage[] sources = null;
-	protected int[] frames = null;
-	protected int frame = 0;
+	private ILegibleImage[] sources;
+	private int[] frames;
+	
+	private int frame = 0;
 	
 	public TextureAsset(String filepath)
 	{
 		super(filepath, EnumAssetType.TEXTURE);
+		
+	}
+	
+	public TextureAsset(String filepath, boolean readNow)
+	{
+		super(filepath, EnumAssetType.TEXTURE, readNow);
 		
 	}
 	
@@ -58,7 +66,18 @@ public class TextureAsset extends GraphicAsset implements ITexture
 			
 			if (src != null)
 			{
-				this.frames[this.frame] = RenderHelper.genTexture(rcon, src);
+				this.frames[this.frame] = RenderHelper.genTexture(src);
+				
+				if (this.frames[this.frame] == 0)
+				{
+					Logger.debug("Failed to load texture #%s in %s", this.frame + 1, this);
+					
+				}
+				else
+				{
+					Logger.debug("Successfully loaded texture #%s in %s", this.frame + 1, this);
+					
+				}
 				
 			}
 			
@@ -97,6 +116,11 @@ public class TextureAsset extends GraphicAsset implements ITexture
 		
 		Object read = mgr.readObjectForAsset(this, in);
 		
+		if (read == null)
+		{
+			throw new NullPointerException(String.format("Cannot use null for jack, diddly, or squat in texture asset %s", this));
+		}
+		
 		List<ILegibleImage> imgs = Lists.newArrayList();
 		
 		if (read instanceof ILegibleImage)
@@ -129,9 +153,12 @@ public class TextureAsset extends GraphicAsset implements ITexture
 	{
 		super.onExistingAssetFound(a);
 		
-		if (a instanceof TextureAsset && ((TextureAsset)a).isLoaded())
+		if (a instanceof TextureAsset)
 		{
-			this.frames = ((TextureAsset)a).frames;
+			TextureAsset ta = (TextureAsset)a;
+			
+			this.sources = ta.sources;
+			this.frames = ta.frames;
 			
 		}
 		

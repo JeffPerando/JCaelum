@@ -9,6 +9,8 @@ import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
 import com.elusivehawk.caelum.render.RenderHelper;
 import com.elusivehawk.caelum.render.gl.GL2;
+import com.elusivehawk.caelum.render.gl.GLException;
+import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.io.IOHelper;
 
 /**
@@ -21,13 +23,19 @@ public class ShaderAsset extends GraphicAsset implements IShader
 {
 	private final GLSLEnumShaderType gltype;
 	
-	private String src = null;
-	private int id = 0;
+	private String source;
+	private int id;
 	
-	@SuppressWarnings("unqualified-field-access")
 	public ShaderAsset(String filepath, GLSLEnumShaderType type)
 	{
-		super(filepath, EnumAssetType.SHADER);
+		this(filepath, type, false);
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public ShaderAsset(String filepath, GLSLEnumShaderType type, boolean readNow)
+	{
+		super(filepath, EnumAssetType.SHADER, readNow);
 		
 		gltype = type;
 		
@@ -36,9 +44,13 @@ public class ShaderAsset extends GraphicAsset implements IShader
 	@Override
 	public void delete(RenderContext rcon)
 	{
-		GL2.glDeleteShader(this);
-		
-		this.id = 0;
+		if (this.id != 0)
+		{
+			GL2.glDeleteShader(this);
+			
+			this.id = 0;
+			
+		}
 		
 	}
 	
@@ -50,14 +62,31 @@ public class ShaderAsset extends GraphicAsset implements IShader
 			return;
 		}
 		
-		int glid = RenderHelper.compileShader(this);
+		Logger.debug("Attempting to compile shader %s", this);
 		
-		rcon.registerCleanable(this);
+		int glid = 0;
 		
-		synchronized (this)
+		try
 		{
-			this.id = glid;
-			this.loaded = true;
+			glid = RenderHelper.compileShader(this);
+			
+		}
+		catch (GLException e)
+		{
+			Logger.err(e);
+			
+		}
+		
+		if (glid != 0)
+		{
+			rcon.registerCleanable(this);
+			
+			synchronized (this)
+			{
+				this.id = glid;
+				this.loaded = true;
+				
+			}
 			
 		}
 		
@@ -72,7 +101,7 @@ public class ShaderAsset extends GraphicAsset implements IShader
 	@Override
 	public String getSource()
 	{
-		return this.src;
+		return this.source;
 	}
 	
 	@Override
@@ -92,13 +121,25 @@ public class ShaderAsset extends GraphicAsset implements IShader
 	{
 		String src = IOHelper.readTextToOneLine(in);
 		
+		//Logger.debug("Source for %s: \"%s\"", this, src);
+		
+		if (src == null || src.equals(""))
+		{
+			return false;
+		}
+		
 		synchronized (this)
 		{
-			this.src = src;
+			this.source = src;
 			
 		}
 		
-		return this.src != null;
+		if (this.source == null || this.source.equals(""))
+		{
+			throw new NullPointerException();
+		}
+		
+		return true;
 	}
 	
 	@Override
@@ -112,7 +153,7 @@ public class ShaderAsset extends GraphicAsset implements IShader
 			
 			synchronized (this)
 			{
-				this.src = s.src;
+				this.source = s.source;
 				this.id = s.id;
 				
 			}
