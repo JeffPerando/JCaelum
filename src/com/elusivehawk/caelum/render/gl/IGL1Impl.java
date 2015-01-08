@@ -111,15 +111,15 @@ public interface IGL1Impl
 	
 	void glStencilOp(int fail, int zfail, int zpass);
 	
-	void glTexImage2D(int target, int level, int internalFormat, int width, int height, int border, int format, int type, ByteBuffer pixels);
+	void glTexImage2D(int target, int level, int internalFormat, int width, int height, int border, int format, int type, Buffer pixels);
 	
-	void glTexImage3D(int target, int level, int internalFormat, int width, int height, int depth, int border, int format, int type, ByteBuffer pixels);
+	void glTexImage3D(int target, int level, int internalFormat, int width, int height, int depth, int border, int format, int type, Buffer pixels);
 	
 	void glTexParameterf(int target, int pname, float param);
 	
-	void glTexParameterx(int target, int pname, int param);
+	void glTexParameteri(int target, int pname, int param);
 	
-	void glTexSubImage2D(int target, int level, int xoffset, int yoffset, int width, int height, int format, int type, ByteBuffer pixels);
+	void glTexSubImage2D(int target, int level, int xoffset, int yoffset, int width, int height, int format, int type, Buffer pixels);
 	
 	void glViewport(int x, int y, int width, int height);
 	
