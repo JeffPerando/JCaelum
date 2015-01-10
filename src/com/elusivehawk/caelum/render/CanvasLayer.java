@@ -145,7 +145,7 @@ public class CanvasLayer implements IRenderable
 		
 	}
 	
-	public int drawImage(Rectangle r, Icon icon)
+	public void drawImage(Rectangle r, Icon icon)
 	{
 		int pos = this.images * Canvas.FLOATS_PER_IMG;
 		
@@ -167,7 +167,6 @@ public class CanvasLayer implements IRenderable
 		this.images++;
 		this.updateImgBuf = true;
 		
-		return this.images - 1;
 	}
 	
 	public void redrawImage(int image, Rectangle r, Icon icon)

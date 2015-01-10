@@ -239,6 +239,7 @@ public class Canvas extends RenderableObj
 	public void clear()
 	{
 		this.currentLayer = this.layers.get(0);
+		this.layers.position(0);
 		
 		this.layers.forEach(((layer) ->
 		{
@@ -254,35 +255,27 @@ public class Canvas extends RenderableObj
 		
 	}
 	
-	public int drawImage(float x, float y, float z, float w)
+	public void drawImage(float x, float y, float z, float w)
 	{
-		return this.drawImage(new Rectangle(x, y, z, w));
-	}
-	
-	public int drawImage(float x, float y, float z, float w, Icon icon)
-	{
-		return this.drawImage(new Rectangle(x, y, z, w), icon);
-	}
-	
-	public int drawImage(Rectangle r)
-	{
-		return this.drawImage(r, Icon.BLANK_ICON);
-	}
-	
-	public int drawImage(Rectangle r, Icon icon)
-	{
-		return this.currentLayer.drawImage(r, icon);
-	}
-	
-	public void redrawImage(int image, float x, float y, float z, float w, Icon icon)
-	{
-		this.redrawImage(image, new Rectangle(x, y, z, w), icon);
+		this.drawImage(new Rectangle(x, y, z, w));
 		
 	}
 	
-	public void redrawImage(int image, Rectangle r, Icon icon)
+	public void drawImage(float x, float y, float z, float w, Icon icon)
 	{
-		this.currentLayer.redrawImage(image, r, icon);
+		this.drawImage(new Rectangle(x, y, z, w), icon);
+		
+	}
+	
+	public void drawImage(Rectangle r)
+	{
+		this.drawImage(r, Icon.BLANK_ICON);
+		
+	}
+	
+	public void drawImage(Rectangle r, Icon icon)
+	{
+		this.currentLayer.drawImage(r, icon);
 		
 	}
 	

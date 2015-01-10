@@ -23,7 +23,6 @@ public class Button implements IGuiComponent
 	
 	private Object attachment = null;
 	private boolean active = true;
-	private int img = -1, lastState = -1;
 	
 	public Button(float x, float y, float z, float w)
 	{
@@ -43,18 +42,7 @@ public class Button implements IGuiComponent
 	@Override
 	public void drawComponent(Canvas canvas, int state)
 	{
-		if (this.img == -1)
-		{
-			this.img = canvas.drawImage(this.bounds, this.icons[state]);
-			
-		}
-		else if (state != this.lastState)
-		{
-			canvas.redrawImage(this.img, this.bounds, this.icons[state]);
-			
-		}
-		
-		this.lastState = state;
+		canvas.drawImage(this.bounds, this.icons[state]);
 		
 	}
 	
