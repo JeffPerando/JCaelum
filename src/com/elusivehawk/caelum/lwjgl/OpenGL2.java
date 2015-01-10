@@ -4,7 +4,6 @@ package com.elusivehawk.caelum.lwjgl;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import com.elusivehawk.caelum.render.gl.IGL2Impl;
 import com.elusivehawk.util.storage.BufferHelper;
@@ -251,12 +250,6 @@ public class OpenGL2 implements IGL2Impl
 	{
 		GL20.glGetVertexAttrib(index, pname, params);
 		
-	}
-	
-	@Override
-	public boolean glIsEnabled(int cap)
-	{
-		return GL11.glIsEnabled(cap);
 	}
 	
 	@Override

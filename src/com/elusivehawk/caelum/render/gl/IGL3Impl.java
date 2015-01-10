@@ -215,8 +215,6 @@ public interface IGL3Impl
 	
 	int[] glGetUniformIndices(int program, String[] uniformNames);
 	
-	int glGetUniformLocation(int program, String name);
-	
 	int[] glGetUniformu(int program, int location, int argcount);
 	
 	int[] glGetVertexAttribI(int index, int pname, int argcount);

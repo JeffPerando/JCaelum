@@ -91,6 +91,8 @@ public interface IGL1Impl
 	
 	boolean glIsBuffer(int buffer);
 	
+	boolean glIsEnabled(int cap);
+	
 	boolean glIsTexture(int texture);
 	
 	void glLogicOp(int op);

@@ -923,15 +923,6 @@ public final class GL3
 		return ret;
 	}
 	
-	public static int glGetUniformLocation(int program, String name) throws GLException
-	{
-		int ret = impl.glGetUniformLocation(program, name);
-		
-		RenderHelper.checkForGLError();
-		
-		return ret;
-	}
-	
 	public static int[] glGetUniformu(int program, int location, int argcount) throws GLException
 	{
 		int[] ret = impl.glGetUniformu(program, location, argcount);

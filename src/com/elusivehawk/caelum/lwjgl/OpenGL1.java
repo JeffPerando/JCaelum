@@ -342,6 +342,12 @@ public class OpenGL1 implements IGL1Impl
 	}
 	
 	@Override
+	public boolean glIsEnabled(int cap)
+	{
+		return GL11.glIsEnabled(cap);
+	}
+	
+	@Override
 	public boolean glIsTexture(int texture)
 	{
 		return GL11.glIsTexture(texture);

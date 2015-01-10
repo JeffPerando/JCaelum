@@ -441,6 +441,11 @@ public final class GL1
 		return impl.glIsBuffer(buffer);
 	}
 	
+	public static boolean glIsEnabled(int cap)
+	{
+		return impl.glIsEnabled(cap);
+	}
+	
 	public static boolean glIsTexture(int texture)
 	{
 		return impl.glIsTexture(texture);

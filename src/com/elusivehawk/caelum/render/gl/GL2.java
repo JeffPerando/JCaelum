@@ -358,11 +358,39 @@ public final class GL2
 		return ret;
 	}
 	
+	public static void glGetUniform(String location, FloatBuffer params)
+	{
+		int p = GL1.glGetInteger(GLConst.GL_CURRENT_PROGRAM);
+		
+		glGetUniform(p, GL2.glGetUniformLocation(p, location), params);
+		
+	}
+	
+	public static void glGetUniform(int location, FloatBuffer params)
+	{
+		glGetUniform(GL1.glGetInteger(GLConst.GL_CURRENT_PROGRAM), location, params);
+		
+	}
+	
 	public static void glGetUniform(int program, int location, FloatBuffer params) throws GLException
 	{
 		impl.glGetUniform(program, location, params);
 		
 		RenderHelper.checkForGLError();
+		
+	}
+	
+	public static void glGetUniform(String location, IntBuffer params)
+	{
+		int p = GL1.glGetInteger(GLConst.GL_CURRENT_PROGRAM);
+		
+		glGetUniform(p, GL2.glGetUniformLocation(p, location), params);
+		
+	}
+	
+	public static void glGetUniform(int location, IntBuffer params)
+	{
+		glGetUniform(GL1.glGetInteger(GLConst.GL_CURRENT_PROGRAM), location, params);
 		
 	}
 	
@@ -405,11 +433,6 @@ public final class GL2
 	}
 	
 	//String glGetVertexAttribPointer(int index, int pname, long result_size);
-	
-	public static boolean glIsEnabled(int cap)
-	{
-		return impl.glIsEnabled(cap);
-	}
 	
 	public static boolean glIsProgram(int program)
 	{

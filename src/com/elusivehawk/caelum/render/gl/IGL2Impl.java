@@ -87,8 +87,6 @@ public interface IGL2Impl
 	
 	//String glGetVertexAttribPointer(int index, int pname, long result_size);
 	
-	boolean glIsEnabled(int cap);
-	
 	boolean glIsProgram(int program);
 	
 	boolean glIsShader(int shader);

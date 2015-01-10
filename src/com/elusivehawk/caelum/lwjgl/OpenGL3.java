@@ -4,10 +4,12 @@ package com.elusivehawk.caelum.lwjgl;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL31;
 import org.lwjgl.opengl.GL32;
 import org.lwjgl.opengl.GL33;
+import org.lwjgl.opengl.GL40;
 import com.elusivehawk.caelum.render.gl.GLConst;
 import com.elusivehawk.caelum.render.gl.IGL3Impl;
 import com.elusivehawk.util.storage.BufferHelper;
@@ -252,7 +254,7 @@ public class OpenGL3 implements IGL3Impl
 	@Override
 	public void glDrawElementsIndirect(int mode, int type, long indirect_buffer_offset)
 	{
-		//TODO Unsupported?
+		GL40.glDrawElementsIndirect(mode, type, indirect_buffer_offset);
 		
 	}
 	
@@ -716,7 +718,11 @@ public class OpenGL3 implements IGL3Impl
 	@Override
 	public int glGetSynci(long sync, int pname)
 	{
-		return 0;//TODO Check usage
+		IntBuffer ret = BufferHelper.createIntBuffer(1);
+		
+		GL32.glGetSynci(sync, pname, ret);
+		
+		return ret.get();
 	}
 	
 	@Override
@@ -771,12 +777,6 @@ public class OpenGL3 implements IGL3Impl
 		GL31.glGetUniformIndices(program, uniformNames, BufferHelper.createWrapper(ret));
 		
 		return ret;
-	}
-	
-	@Override
-	public int glGetUniformLocation(int program, String name)
-	{
-		return 0;//TODO Unsupported?
 	}
 	
 	@Override
