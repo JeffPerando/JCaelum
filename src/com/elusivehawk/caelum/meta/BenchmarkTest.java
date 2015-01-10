@@ -1,19 +1,15 @@
 
 package com.elusivehawk.caelum.meta;
 
-import java.io.IOException;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
-import com.elusivehawk.caelum.DisplaySettings;
-import com.elusivehawk.caelum.lwjgl.LWJGLDisplayImpl;
-import com.elusivehawk.caelum.render.gl.GLConst;
+import com.elusivehawk.caelum.render.Icon;
+import com.elusivehawk.caelum.render.IconGrid;
 import com.elusivehawk.util.Logger;
-import com.elusivehawk.util.ShutdownHelper;
 
 /**
  * 
  * Test log:
  * <p>
+ * IconGrid testing.<br>
  * LWJGLDisplayImpl testing.<br>
  * Tokenizer testing again.<br>
  * MathHelper testing.<br>
@@ -45,79 +41,19 @@ public class BenchmarkTest
 	{
 		Logger.verbose("Beginning bench testing...");
 		
-		Thread thread = new Thread((() ->
-		{
-			if (GLFW.glfwInit() == 0)
-			{
-				Logger.warn("NOPE!");
-				return;
-			}
-			
-			LWJGLDisplayImpl display = new LWJGLDisplayImpl();
-			
-			try
-			{
-				display.createDisplay(new DisplaySettings());
-				
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-				
-			}
-			
-			GL11.glViewport(0, 0, display.getWidth(), display.getHeight());
-			
-			for (int c = 0; c < 1000; c++)
-			{
-				display.preRenderDisplay();
-				
-				if (display.isCloseRequested())
-				{
-					try
-					{
-						display.close();
-						
-					}
-					catch (Throwable e)
-					{
-						Logger.err(e);
-						
-					}
-					
-					ShutdownHelper.exit(0);
-					
-				}
-				
-				GL11.glClear(GLConst.GL_COLOR_BUFFER_BIT | GLConst.GL_DEPTH_BUFFER_BIT | GLConst.GL_STENCIL_BUFFER_BIT);
-				
-				GL11.glBegin(GL11.GL_TRIANGLES);
-				
-				GL11.glVertex2f(0.2f, 0.2f);
-				GL11.glVertex2f(0.2f, 0.5f);
-				GL11.glVertex2f(0.5f, 0.2f);
-				
-				GL11.glEnd();
-				
-				display.updateDisplay();
-				
-				try
-				{
-					Thread.sleep(1L);
-				}
-				catch (InterruptedException e){}
-				
-			}
-			
-			try
-			{
-				display.close();
-			}
-			catch (IOException e){}
-			
-		}));
+		IconGrid grid = new IconGrid(64, 64);
 		
-		thread.start();
+		for (int x = 0; x < grid.getWidth(); x++)
+		{
+			for (int y = 0; y < grid.getHeight(); y++)
+			{
+				Icon icon = grid.getIcon(x, y);
+				
+				Logger.info("Icon %sx%s: [%s, %s, %s, %s]", x + 1, y + 1, icon.getX(0), icon.getY(0), icon.getX(3), icon.getY(3));
+				
+			}
+			
+		}
 		
 		Logger.verbose("Th-th-th-th-That's all, folks!");
 		
