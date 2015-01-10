@@ -2,10 +2,11 @@
 package com.elusivehawk.caelum.render;
 
 import java.io.DataInputStream;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import com.elusivehawk.caelum.assets.EnumAssetType;
+import com.elusivehawk.caelum.physics.Shape;
 import com.elusivehawk.caelum.render.gl.GLEnumDrawType;
-import com.elusivehawk.caelum.render.gl.GLVertexArray;
-import com.elusivehawk.util.IPopulator;
 
 /**
  * 
@@ -13,12 +14,12 @@ import com.elusivehawk.util.IPopulator;
  * 
  * @author Elusivehawk
  */
-public class Mesh extends GraphicAsset implements IPopulator<GLVertexArray>
+public class MeshAsset extends GraphicAsset implements IMesh
 {
 	private int indices = 0, polyCount = 0;
 	private GLEnumDrawType drawType = GLEnumDrawType.GL_TRIANGLES;
 	
-	public Mesh(String filepath)
+	public MeshAsset(String filepath)
 	{
 		super(filepath, EnumAssetType.MESH);
 		
@@ -32,10 +33,23 @@ public class Mesh extends GraphicAsset implements IPopulator<GLVertexArray>
 	}
 	
 	@Override
-	public void populate(GLVertexArray obj)
+	public Shape getCullBox()
+	{
+		return null;
+	}
+	
+	@Override
+	public FloatBuffer getVertexData()
 	{
 		// TODO Auto-generated method stub
-		
+		return null;
+	}
+	
+	@Override
+	public IntBuffer getIndices()
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	@Override
@@ -43,21 +57,6 @@ public class Mesh extends GraphicAsset implements IPopulator<GLVertexArray>
 	{
 		// TODO Auto-generated method stub
 		return false;
-	}
-	
-	public int getIndiceCount()
-	{
-		return this.indices;
-	}
-	
-	public int getPolyCount()
-	{
-		return this.polyCount;
-	}
-	
-	public GLEnumDrawType getDrawType()
-	{
-		return this.drawType;
 	}
 	
 }
