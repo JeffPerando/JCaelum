@@ -10,6 +10,6 @@ package com.elusivehawk.caelum.render;
 @FunctionalInterface
 public interface IPostRenderer
 {
-	void postRender(RenderContext rcon);
+	void postRender(RenderContext rcon) throws RenderException;
 	
 }

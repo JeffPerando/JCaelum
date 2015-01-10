@@ -35,13 +35,13 @@ public class TextureImage implements ITexture
 	}
 	
 	@Override
-	public void preRender(RenderContext rcon, double delta)
+	public void preRender(RenderContext rcon)
 	{
 		if (this.tex == 0)
 		{
 			this.tex = RenderHelper.genTexture(this.type, this.image);
 			
-			rcon.registerCleanable(this);
+			rcon.registerDeletable(this);
 			
 		}
 		

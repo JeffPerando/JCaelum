@@ -8,17 +8,13 @@ import com.elusivehawk.caelum.DisplaySettings;
 import com.elusivehawk.caelum.Game;
 import com.elusivehawk.caelum.input.InputEvent;
 import com.elusivehawk.caelum.physics.IPhysicsSimulator;
-import com.elusivehawk.caelum.prefab.gui.Button;
 import com.elusivehawk.caelum.prefab.gui.Gui;
 import com.elusivehawk.caelum.render.Canvas;
-import com.elusivehawk.caelum.render.Icon;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
 import com.elusivehawk.caelum.render.tex.Color;
-import com.elusivehawk.caelum.render.tex.ColorFormat;
 import com.elusivehawk.caelum.render.tex.ITexture;
 import com.elusivehawk.caelum.render.tex.TextureAsset;
-import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.RNG;
 import com.elusivehawk.util.Version;
 
@@ -94,16 +90,15 @@ public final class ExampleGame extends Game
 	}
 	
 	@Override
-	public void render(RenderContext rcon) throws RenderException
+	public boolean render(RenderContext rcon) throws RenderException
 	{
-		this.canvas.render(rcon);
-		
+		return this.canvas.render(rcon);
 	}
 	
 	@Override
-	public void preRender(RenderContext rcon, double delta)
+	public void preRender(RenderContext rcon)
 	{
-		this.canvas.preRender(rcon, delta);
+		this.canvas.preRender(rcon);
 		
 	}
 	

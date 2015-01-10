@@ -52,16 +52,42 @@ public abstract class Component implements IRenderable, IUpdatable
 	}
 	
 	@Override
-	public void render(RenderContext rcon) throws RenderException
+	public boolean render(RenderContext rcon) throws RenderException
 	{
-		this.forEveryChild(((child) -> {child.render(rcon);}));
+		if (this.childList == null)
+		{
+			return false;
+		}
 		
+		boolean ret = false;
+		
+		for (int c = this.minPriority; c < this.maxPriority; c++)
+		{
+			List<Component> children = this.childMap.get(c);
+			
+			if (children != null)
+			{
+				for (Component child : children)
+				{
+					if (child.render(rcon))
+					{
+						ret = true;
+						
+					}
+					
+				}
+				
+			}
+			
+		}
+		
+		return ret;
 	}
 	
 	@Override
-	public void preRender(RenderContext rcon, double delta)
+	public void preRender(RenderContext rcon)
 	{
-		this.forEveryChild(((child) -> {child.preRender(rcon, delta);}));
+		this.forEveryChild(((child) -> {child.preRender(rcon);}));
 		
 	}
 	

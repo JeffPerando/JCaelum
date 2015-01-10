@@ -40,11 +40,13 @@ public final class RenderContext implements Closeable, IUpdatable
 	private final DirtableStorage<Boolean> flipScreen = new DirtableStorage<Boolean>(false).setEnableNull(false);
 	private final DirtableStorage<ICamera> cameraStorage = new DirtableStorage<ICamera>();
 	
-	private final List<IDeletable> cleanables = Lists.newArrayList();
+	private final List<IDeletable> deletables = Lists.newArrayList();
 	private final List<IPreRenderer> preRenderers = Lists.newArrayList();
 	private final List<IPostRenderer> postRenderers = Lists.newArrayList();
 	
 	private boolean initiated = false, rendering = false;
+	
+	private double delta = 0;
 	
 	private ITexture notex = null;
 	
@@ -85,13 +87,19 @@ public final class RenderContext implements Closeable, IUpdatable
 		
 		this.rendering = true;
 		
+		this.delta = delta;
+		
 		try
 		{
 			GL1.glClear(CLEAR_BITS);
 			
-			this.preRenderers.forEach(((preR) -> {preR.preRender(this, delta);}));
+			this.preRenderers.forEach(((preR) -> {preR.preRender(this);}));
 			
-			this.renderGame();
+			if (!this.renderGame())
+			{
+				Logger.warn("Could not render frame for display %s! This is a bug!", this.display);
+				
+			}
 			
 			this.postRenderers.forEach(((postR) -> {postR.postRender(this);}));
 			
@@ -123,9 +131,9 @@ public final class RenderContext implements Closeable, IUpdatable
 	@Override
 	public void close()
 	{
-		this.cleanables.forEach(((gl) -> {gl.delete(this);}));
+		this.deletables.forEach(((gl) -> {gl.delete(this);}));
 		
-		this.cleanables.clear();
+		this.deletables.clear();
 		
 	}
 	
@@ -174,7 +182,7 @@ public final class RenderContext implements Closeable, IUpdatable
 	
 	//XXX Hooks
 	
-	public void renderGame(ICamera cam) throws RenderException
+	public boolean renderGame(ICamera cam) throws RenderException
 	{
 		assert cam != null;
 		
@@ -182,9 +190,11 @@ public final class RenderContext implements Closeable, IUpdatable
 		
 		this.cameraStorage.set(cam);
 		
+		boolean ret = false;
+		
 		try
 		{
-			this.renderGame();
+			ret = this.renderGame();
 			
 		}
 		catch (RenderException e)
@@ -197,20 +207,23 @@ public final class RenderContext implements Closeable, IUpdatable
 			
 		}
 		
+		return ret;
 	}
 	
-	public void renderGame() throws RenderException
+	public boolean renderGame() throws RenderException
 	{
 		if (this.renders == RenderConst.RECURSIVE_LIMIT)
 		{
-			return;
+			return false;
 		}
 		
 		this.renders++;
 		
+		boolean ret = false;
+		
 		try
 		{
-			this.renderer.render(this);
+			ret = this.renderer.render(this);
 			
 		}
 		catch (RenderException e)
@@ -223,6 +236,7 @@ public final class RenderContext implements Closeable, IUpdatable
 			
 		}
 		
+		return ret;
 	}
 	
 	public synchronized void onScreenFlipped(boolean flip)
@@ -284,6 +298,11 @@ public final class RenderContext implements Closeable, IUpdatable
 	public Display getDisplay()
 	{
 		return this.display;
+	}
+	
+	public double getDelta()
+	{
+		return this.delta;
 	}
 	
 	public Shaders getDefaultShaders()
@@ -350,13 +369,19 @@ public final class RenderContext implements Closeable, IUpdatable
 	
 	//XXX Setters and registries
 	
-	public void registerCleanable(IDeletable gl)
+	public void registerDeletable(IDeletable d)
 	{
-		if (!this.cleanables.contains(gl))
+		if (!this.deletables.contains(d))
 		{
-			this.cleanables.add(gl);
+			this.deletables.add(d);
 			
 		}
+		
+	}
+	
+	public void removeDeletable(IDeletable d)
+	{
+		this.deletables.remove(d);
 		
 	}
 	

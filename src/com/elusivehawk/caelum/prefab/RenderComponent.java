@@ -47,21 +47,26 @@ public class RenderComponent extends Component
 	}
 	
 	@Override
-	public void preRender(RenderContext rcon, double delta)
+	public void preRender(RenderContext rcon)
 	{
-		this.renderable.preRender(rcon, delta);
+		this.renderable.preRender(rcon);
 		
-		super.preRender(rcon, delta);
+		super.preRender(rcon);
 		
 	}
 	
 	@Override
-	public void render(RenderContext rcon)
+	public boolean render(RenderContext rcon)
 	{
-		this.renderable.render(rcon);
+		boolean ret = this.renderable.render(rcon);
 		
-		super.render(rcon);
+		if (super.render(rcon) && !ret)
+		{
+			ret = true;
+			
+		}
 		
+		return ret;
 	}
 	
 	@Override

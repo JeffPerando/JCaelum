@@ -86,7 +86,7 @@ public class GLBuffer implements IBindable, IDeletable
 		
 		if (!this.initiated)
 		{
-			rcon.registerCleanable(this);
+			rcon.registerDeletable(this);
 			
 			this.initiated = true;
 			

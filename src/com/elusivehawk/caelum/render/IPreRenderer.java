@@ -10,6 +10,6 @@ package com.elusivehawk.caelum.render;
 @FunctionalInterface
 public interface IPreRenderer
 {
-	void preRender(RenderContext rcon, double delta);
+	void preRender(RenderContext rcon) throws RenderException;
 	
 }

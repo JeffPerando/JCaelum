@@ -66,7 +66,7 @@ public class GLVertexArray implements IBindable, IDeletable
 		if (this.id == 0)
 		{
 			this.id = GL3.glGenVertexArray();
-			rcon.registerCleanable(this);
+			rcon.registerDeletable(this);
 			
 		}
 		

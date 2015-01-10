@@ -35,7 +35,7 @@ public abstract class Camera3D implements ICamera
 	}
 	
 	@Override
-	public void preRender(RenderContext rcon, double delta)
+	public void preRender(RenderContext rcon)
 	{
 		if (this.updateProj)
 		{

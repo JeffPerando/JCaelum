@@ -41,7 +41,7 @@ public class TextureAsset extends GraphicAsset implements ITexture
 	}
 	
 	@Override
-	public void preRender(RenderContext rcon, double delta)
+	public void preRender(RenderContext rcon)
 	{
 		if (this.frames == null)
 		{

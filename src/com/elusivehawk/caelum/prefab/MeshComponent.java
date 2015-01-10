@@ -1,7 +1,7 @@
 
 package com.elusivehawk.caelum.prefab;
 
-import com.elusivehawk.caelum.render.Mesh;
+import com.elusivehawk.caelum.render.IMesh;
 import com.elusivehawk.caelum.render.MeshRenderer;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
@@ -19,7 +19,7 @@ public class MeshComponent extends PositionedComponent
 {
 	private final MeshRenderer meshRenderer;
 	
-	public MeshComponent(Component parent, Mesh mesh)
+	public MeshComponent(Component parent, IMesh mesh)
 	{
 		this(parent, new MeshRenderer(mesh));
 		
@@ -31,7 +31,7 @@ public class MeshComponent extends PositionedComponent
 		
 	}
 	
-	public MeshComponent(Component parent, int p, Mesh mesh, IPopulator<Component> pop)
+	public MeshComponent(Component parent, int p, IMesh mesh, IPopulator<Component> pop)
 	{
 		this(parent, p, new MeshRenderer(mesh), pop);
 		
@@ -45,7 +45,7 @@ public class MeshComponent extends PositionedComponent
 		
 	}
 	
-	public MeshComponent(Component parent, int p, Mesh mesh)
+	public MeshComponent(Component parent, int p, IMesh mesh)
 	{
 		this(parent, p, new MeshRenderer(mesh));
 		
@@ -63,21 +63,26 @@ public class MeshComponent extends PositionedComponent
 	}
 	
 	@Override
-	public void preRender(RenderContext rcon, double delta)
+	public void preRender(RenderContext rcon)
 	{
-		this.meshRenderer.preRender(rcon, delta);
+		this.meshRenderer.preRender(rcon);
 		
-		super.preRender(rcon, delta);
+		super.preRender(rcon);
 		
 	}
 	
 	@Override
-	public void render(RenderContext rcon) throws RenderException
+	public boolean render(RenderContext rcon) throws RenderException
 	{
-		this.meshRenderer.render(rcon);
+		boolean ret = this.meshRenderer.render(rcon);
 		
-		super.render(rcon);
+		if (super.render(rcon) && !ret)
+		{
+			ret = true;
+			
+		}
 		
+		return ret;
 	}
 	
 	@Override

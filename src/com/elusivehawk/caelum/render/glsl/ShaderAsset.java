@@ -79,7 +79,7 @@ public class ShaderAsset extends GraphicAsset implements IShader
 		
 		if (glid != 0)
 		{
-			rcon.registerCleanable(this);
+			rcon.registerDeletable(this);
 			
 			synchronized (this)
 			{

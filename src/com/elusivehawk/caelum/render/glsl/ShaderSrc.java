@@ -48,7 +48,7 @@ public class ShaderSrc implements IShader
 	{
 		int glid = RenderHelper.compileShader(this);
 		
-		rcon.registerCleanable(this);
+		rcon.registerDeletable(this);
 		
 		synchronized (this)
 		{

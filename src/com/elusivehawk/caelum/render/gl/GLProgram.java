@@ -10,7 +10,6 @@ import com.elusivehawk.caelum.render.glsl.Shaders;
 import com.elusivehawk.util.IDirty;
 import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.Logger;
-import com.elusivehawk.util.storage.ArrayHelper;
 
 /**
  * 
@@ -39,25 +38,11 @@ public final class GLProgram implements IBindable, IDeletable, IDirty
 		
 	}
 	
-	public GLProgram(IShader[] sh)
-	{
-		this();
-		
-		if (!ArrayHelper.isNullOrEmpty(sh))
-		{
-			for (IShader s : sh)
-			{
-				attachShader(s);
-				
-			}
-			
-		}
-		
-	}
-	
 	@SuppressWarnings("unqualified-field-access")
 	public GLProgram(Shaders shs)
 	{
+		assert shs != null;
+		
 		shaders = shs;
 		
 	}
@@ -105,7 +90,7 @@ public final class GLProgram implements IBindable, IDeletable, IDirty
 		if (this.id == 0)
 		{
 			this.id = GL2.glCreateProgram();
-			rcon.registerCleanable(this);
+			rcon.registerDeletable(this);
 			
 		}
 		

@@ -66,7 +66,7 @@ public class GLFramebuffer implements IBindable, IDeletable
 		}
 		else
 		{
-			rcon.registerCleanable(this);
+			rcon.registerDeletable(this);
 			
 			this.id = GL3.glGenFramebuffer();
 			

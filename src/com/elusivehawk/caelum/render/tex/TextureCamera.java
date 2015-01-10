@@ -3,6 +3,7 @@ package com.elusivehawk.caelum.render.tex;
 
 import com.elusivehawk.caelum.render.ICamera;
 import com.elusivehawk.caelum.render.RenderContext;
+import com.elusivehawk.caelum.render.RenderException;
 
 /**
  * 
@@ -32,17 +33,16 @@ public class TextureCamera extends RenderableTexture
 	}
 	
 	@Override
-	public void preRender(RenderContext rcon, double delta)
+	public void preRender(RenderContext rcon)
 	{
-		this.cam.preRender(rcon, delta);
+		this.cam.preRender(rcon);
 		
 	}
 	
 	@Override
-	public void renderTexture(RenderContext rcon)
+	public boolean renderTexture(RenderContext rcon) throws RenderException
 	{
-		rcon.renderGame(this.cam);
-		
+		return rcon.renderGame(this.cam);
 	}
 	
 }
