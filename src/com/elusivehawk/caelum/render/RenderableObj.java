@@ -5,11 +5,9 @@ import com.elusivehawk.caelum.render.gl.GL1;
 import com.elusivehawk.caelum.render.gl.GL2;
 import com.elusivehawk.caelum.render.gl.GLConst;
 import com.elusivehawk.caelum.render.gl.GLProgram;
-import com.elusivehawk.caelum.render.gl.GLVertexArray;
 import com.elusivehawk.caelum.render.tex.Color;
 import com.elusivehawk.caelum.render.tex.ITexture;
 import com.elusivehawk.caelum.render.tex.Material;
-import com.elusivehawk.util.storage.DirtableStorage;
 
 /**
  * 
@@ -21,57 +19,42 @@ public abstract class RenderableObj implements /*IFilterable, */IRenderable
 {
 	protected final GLProgram program;
 	
-	protected final GLVertexArray vao = new GLVertexArray();
-	protected final DirtableStorage<Material> mat = new DirtableStorage<Material>(null).setSync();
-	
 	protected boolean initiated = false, zBuffer = true;
 	
 	//protected Filters filters = null;
 	
 	protected int renderCount = 0;
 	
-	protected RenderableObj()
-	{
-		this(new GLProgram());
-		
-	}
-	
 	@SuppressWarnings("unqualified-field-access")
 	protected RenderableObj(GLProgram p)
 	{
+		assert p != null;
+		
 		program = p;
 		
 	}
 	
 	@Override
-	public void render(RenderContext rcon) throws RenderException
+	public boolean render(RenderContext rcon) throws RenderException
 	{
 		if (!this.initiated)
 		{
-			return;
+			return false;
 		}
 		
-		ICamera cam = rcon.getCamera();
-		
-		if (this.isCulled(cam))
+		if (!this.canRender(rcon))
 		{
-			return;
+			return false;
 		}
 		
 		if (this.renderCount == RenderConst.RECURSIVE_LIMIT)
 		{
-			return;
+			return false;
 		}
 		
 		this.renderCount++;
 		
-		if (!this.mat.isNull())
-		{
-			this.mat.get().render(rcon);
-			
-		}
-		
-		boolean zBuffer = GL2.glIsEnabled(GLConst.GL_DEPTH_TEST);
+		boolean zBuffer = GL1.glIsEnabled(GLConst.GL_DEPTH_TEST);
 		
 		if (zBuffer != this.zBuffer)
 		{
@@ -88,43 +71,22 @@ public abstract class RenderableObj implements /*IFilterable, */IRenderable
 			
 		}
 		
+		boolean ret = false;
+		
 		if (this.program.bind(rcon))
 		{
-			if (this.vao.bind(rcon))
+			if (rcon.doUpdateCamera())
 			{
-				if (rcon.doUpdateCamera())
-				{
-					GL2.glUniformMatrix4fv("view", cam.getView().asBuffer());
-					GL2.glUniformMatrix4fv("proj", cam.getProjection().asBuffer());
-					
-				}
+				ICamera cam = rcon.getCamera();
 				
-				if (!this.mat.isNull())
-				{
-					if (this.mat.isDirty())
-					{
-						this.updateMatUniforms(rcon);
-						
-						this.mat.setIsDirty(false);
-						
-					}
-					else if (!this.mat.get().isStatic())
-					{
-						this.updateMatUniforms(rcon);
-						
-					}
-					
-				}
-				
-				this.updateMatUniforms(rcon);
-				
-				this.doRender(rcon);
-				
-				rcon.releaseTextures();
+				GL2.glUniformMatrix4fv("view", cam.getView().asBuffer());
+				GL2.glUniformMatrix4fv("proj", cam.getProjection().asBuffer());
 				
 			}
 			
-			this.vao.unbind(rcon);
+			ret = this.doRender(rcon);
+			
+			rcon.releaseTextures();
 			
 		}
 		
@@ -132,10 +94,11 @@ public abstract class RenderableObj implements /*IFilterable, */IRenderable
 		
 		this.renderCount--;
 		
+		return ret;
 	}
 	
 	@Override
-	public void preRender(RenderContext rcon, double delta)
+	public void preRender(RenderContext rcon)
 	{
 		if (!this.initiated)
 		{
@@ -145,12 +108,6 @@ public abstract class RenderableObj implements /*IFilterable, */IRenderable
 			}
 			
 			this.initiated = true;
-			
-		}
-		
-		if (!this.mat.isNull())
-		{
-			this.mat.get().preRender(rcon, delta);
 			
 		}
 		
@@ -167,17 +124,6 @@ public abstract class RenderableObj implements /*IFilterable, */IRenderable
 		}
 		
 		this.program.unbind(rcon);
-		
-	}
-	
-	@Override
-	public void postRender(RenderContext rcon)
-	{
-		if (!this.mat.isNull())
-		{
-			this.mat.get().postRender(rcon);
-			
-		}
 		
 	}
 	
@@ -248,14 +194,6 @@ public abstract class RenderableObj implements /*IFilterable, */IRenderable
 		
 	}
 	
-	public void setMaterial(Material m)
-	{
-		assert m.locked();
-		
-		this.mat.set(m);
-		
-	}
-	
 	public synchronized RenderableObj setEnableZBuffer(boolean z)
 	{
 		this.zBuffer = z;
@@ -263,26 +201,15 @@ public abstract class RenderableObj implements /*IFilterable, */IRenderable
 		return this;
 	}
 	
-	public boolean isCulled(ICamera cam)
+	public boolean canRender(RenderContext rcon)
 	{
-		return false;
-	}
-	
-	private void updateMatUniforms(RenderContext rcon)
-	{
-		Material m = this.mat.get();
-		
-		GL2.glUniform1i("mat.tex", rcon.bindTexture(m.tex()));
-		GL2.glUniform1i("mat.renTex", rcon.bindTexture(m.renTex()));
-		GL2.glUniform1i("mat.glowTex", rcon.bindTexture(m.glowTex()));
-		GL2.glUniform4f("mat.filter", m.filter().asFloats());
-		GL2.glUniform1f("mat.shine", m.shine());
-		GL2.glUniform1i("mat.invert", m.invert() ? 1 : 0);
-		
+		return true;
 	}
 	
 	protected abstract boolean initiate(RenderContext rcon);
 	
-	protected abstract void doRender(RenderContext rcon) throws RenderException;
+	protected abstract boolean doRender(RenderContext rcon) throws RenderException;
+	
+	public abstract void setMaterial(Material mat);
 	
 }

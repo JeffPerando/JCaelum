@@ -3,27 +3,28 @@ package com.elusivehawk.caelum.render;
 
 import java.nio.FloatBuffer;
 import com.elusivehawk.caelum.CaelumException;
-import com.elusivehawk.caelum.render.gl.GL1;
 import com.elusivehawk.caelum.render.gl.GLBuffer;
-import com.elusivehawk.caelum.render.gl.GLConst;
 import com.elusivehawk.caelum.render.gl.GLEnumBufferTarget;
 import com.elusivehawk.caelum.render.gl.GLEnumDataUsage;
 import com.elusivehawk.caelum.render.gl.GLProgram;
+import com.elusivehawk.caelum.render.gl.GLVertexArray;
+import com.elusivehawk.caelum.render.tex.Material;
 import com.elusivehawk.util.math.Quaternion;
 import com.elusivehawk.util.math.Vector;
-import com.elusivehawk.util.storage.BufferHelper;
 
 /**
  * 
- * Used to render static {@link Mesh}es with non-static information (i.e. rotation)
+ * Used to render static {@link IMesh mesh}es with non-static information (i.e. rotation)
  * 
  * @author Elusivehawk
  * 
- * @see Mesh
+ * @see IMesh
  * @see RenderableObj
  */
 public class MeshRenderer extends RenderableObj implements Quaternion.Listener, Vector.Listener
 {
+	private final IMesh mesh;
+	
 	protected final Vector
 			offset = new Vector(),
 			pos = new Vector(),
@@ -33,7 +34,7 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 			rotOff = new Quaternion(),
 			rot = new Quaternion();
 	
-	protected final Mesh mesh;
+	protected final GLVertexArray vao = new GLVertexArray();
 	
 	protected GLBuffer vbo = null;
 	protected FloatBuffer buf = null;
@@ -42,17 +43,14 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 	//protected IModelAnimation anim = null, lastAnim = null;
 	protected int texFrame = 0;
 	
-	@SuppressWarnings("unqualified-field-access")
-	public MeshRenderer(Mesh m)
+	public MeshRenderer(IMesh m)
 	{
-		assert m != null;
-		
-		mesh = m;
+		this(new GLProgram(), m);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public MeshRenderer(Mesh m, GLProgram program)
+	public MeshRenderer(GLProgram program, IMesh m)
 	{
 		super(program);
 		
@@ -63,34 +61,7 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 	}
 	
 	@Override
-	protected boolean initiate(RenderContext rcon)
-	{
-		/*if (!this.mesh.isLoaded())
-		{
-			this.mesh.initiate(rcon);
-			
-			if (!this.mesh.isLoaded())
-			{
-				return false;
-			}
-			
-		}*/
-		
-		this.buf = BufferHelper.createFloatBuffer(this.mesh.getIndiceCount() * 16);
-		this.vbo = new GLBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW, this.buf);
-		
-		this.mesh.populate(this.vao);
-		this.vao.addVBO(this.vbo);
-		
-		return true;
-	}
-	
-	@Override
-	protected void doRender(RenderContext rcon) throws RenderException
-	{
-		GL1.glDrawElements(this.mesh.getDrawType(), this.mesh.getPolyCount(), GLConst.GL_UNSIGNED_INT, 0);
-		
-	}
+	public void postRender(RenderContext rcon) throws RenderException{}
 	
 	@Override
 	public synchronized void onVecChanged(Vector vec)
@@ -109,7 +80,52 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 	}
 	
 	@Override
-	public void preRender(RenderContext rcon, double delta)
+	protected boolean initiate(RenderContext rcon)
+	{
+		/*if (!this.mesh.isLoaded())
+		{
+			this.mesh.initiate(rcon);
+			
+			if (!this.mesh.isLoaded())
+			{
+				return false;
+			}
+			
+		}*/
+		
+		//this.buf = BufferHelper.createFloatBuffer(this.mesh.getIndiceCount() * 16);
+		this.vbo = new GLBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW, this.buf);
+		
+		//this.mesh.populate(this.vao);
+		this.vao.addVBO(this.vbo);
+		
+		return true;
+	}
+	
+	@Override
+	protected boolean doRender(RenderContext rcon) throws RenderException
+	{
+		if (!this.vao.bind(rcon))
+		{
+			return false;
+		}
+		
+		//GL1.glDrawElements(this.mesh.getDrawType(), this.mesh.getPolyCount(), GLConst.GL_UNSIGNED_INT, 0);
+		
+		this.vao.unbind(rcon);
+		
+		return true;
+	}
+	
+	@Override
+	public void setMaterial(Material mat)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void preRender(RenderContext rcon)
 	{
 		/*if (this.anim != null && !this.isAnimationPaused())
 		{
@@ -140,20 +156,7 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 	@Override
 	public String toString()
 	{
-		return String.format("%s:%s-%s-%s", this.mesh.filepath, this.pos.toString(), this.scale.toString(), this.rot.toString());
-	}
-	
-	@Override
-	public boolean isCulled(ICamera cam)
-	{
-		if (this.mesh == null)
-		{
-			return true;
-		}
-		
-		//TODO Finish
-		
-		return false;
+		return String.format("%s:%s-%s-%s", this.mesh, this.pos.toString(), this.scale.toString(), this.rot.toString());
 	}
 	
 	/*@Override
@@ -205,7 +208,7 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 		
 	}*/
 	
-	public Mesh getMesh()
+	public IMesh getMesh()
 	{
 		return this.mesh;
 	}
