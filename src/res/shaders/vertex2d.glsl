@@ -14,15 +14,6 @@ void main(void)
 	frag_tex = in_tex;
 	frag_mat = in_mat;
 	
-	vec4 vtx = vec4(in_pos.xy, 0.0, 1.0);
-	
-	if (flip)
-	{
-		vtx.x = in_pos.y;
-		vtx.y = in_pos.x;
-		
-	}
-	
-	gl_Position = vtx;
+	gl_Position = vec4(flip ? in_pos.yx : in_pos.xy, 0.0, 1.0);
 	
 }

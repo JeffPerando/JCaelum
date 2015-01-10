@@ -35,7 +35,7 @@ void main(void)
 	
 	vec4 fin = vec4((mat.filter.xyz * mat.filter.w) + (mixed.xyz * mixed.w), 0);
 	
-	if (invert[m])
+	if (mat.invert)
 	{
 		fin.xyz = (1 - fin.xyz);
 		
