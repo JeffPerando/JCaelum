@@ -409,21 +409,25 @@ public final class CaelumEngine
 		
 		//XXX Create display
 		
-		DisplaySettings settings = this.game.getDisplaySettings();
-		
-		if (settings == null)
+		if (!this.game.isGameHeadless())
 		{
-			settings = new DisplaySettings();
+			DisplaySettings settings = this.game.getDisplaySettings();
+			
+			if (settings == null)
+			{
+				settings = new DisplaySettings();
+				
+			}
+			
+			this.display = createDisplay("default", settings, g);
+			
+			this.display.createInputType(EnumInputType.KEYBOARD);
+			this.display.createInputType(EnumInputType.MOUSE);
+			
+			this.display.addInputListener(EnumInputType.KEYBOARD, g);
+			this.display.addInputListener(EnumInputType.MOUSE, g);
 			
 		}
-		
-		this.display = createDisplay("default", settings, g);
-		
-		this.display.createInputType(EnumInputType.KEYBOARD);
-		this.display.createInputType(EnumInputType.MOUSE);
-		
-		this.display.addInputListener(EnumInputType.KEYBOARD, g);
-		this.display.addInputListener(EnumInputType.MOUSE, g);
 		
 		//XXX Initiate game
 		
@@ -443,7 +447,13 @@ public final class CaelumEngine
 		//XXX Create game threads
 		
 		this.threads.put(EnumEngineFeature.LOGIC, new ThreadGameLoop(this.game, this.displays));
-		this.threads.put(EnumEngineFeature.RENDER, new ThreadGameRender(this.displays, this.game.getUpdateCount()));
+		
+		if (!this.game.isGameHeadless())
+		{
+			this.threads.put(EnumEngineFeature.RENDER, new ThreadGameRender(this.displays, this.game.getUpdateCount()));
+			
+		}
+		
 		/*this.threads.put(EnumEngineFeature.SOUND, new ThreadSoundPlayer());
 		
 		IPhysicsSimulator ph = this.game.getPhysicsSimulator();

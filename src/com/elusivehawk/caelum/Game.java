@@ -50,6 +50,11 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 		return 30;
 	}
 	
+	public boolean isGameHeadless()
+	{
+		return false;
+	}
+	
 	//XXX Abstract methods
 	
 	public abstract Version getGameVersion();
