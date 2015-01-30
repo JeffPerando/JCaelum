@@ -50,14 +50,14 @@ public abstract class GameStateGame extends Game
 	}
 	
 	@Override
-	public boolean render(RenderContext rcon)
+	public void render(RenderContext rcon)
 	{
 		if (this.state != null)
 		{
-			return this.state.render(rcon);
+			this.state.render(rcon);
+			
 		}
 		
-		return false;
 	}
 	
 	@Override

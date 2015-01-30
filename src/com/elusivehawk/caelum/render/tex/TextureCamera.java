@@ -40,9 +40,10 @@ public class TextureCamera extends RenderableTexture
 	}
 	
 	@Override
-	public boolean renderTexture(RenderContext rcon) throws RenderException
+	public void renderTexture(RenderContext rcon) throws RenderException
 	{
-		return rcon.renderGame(this.cam);
+		rcon.renderGame(this.cam);
+		
 	}
 	
 }

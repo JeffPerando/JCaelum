@@ -27,7 +27,7 @@ public class CanvasLayer implements IRenderable
 	private final Canvas parent;
 	private final GLBuffer vertex;
 	
-	private final DirtableStorage<Material> mat = new DirtableStorage<Material>(null).setSync();
+	private final DirtableStorage<Material> mat = new DirtableStorage<Material>().setSync();
 	private final GLVertexArray vao = new GLVertexArray();
 	
 	private FloatBuffer imgbuf = BufferHelper.createFloatBuffer(Canvas.FLOATS_PER_IMG * 12);
@@ -42,24 +42,24 @@ public class CanvasLayer implements IRenderable
 		parent = cvs;
 		vertex = new GLBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_STREAM_DRAW, GLEnumDataType.GL_FLOAT, imgbuf);
 		
-		vertex.addAttrib(0, 2, GLConst.GL_FLOAT, false, 16, 0);		//Position data
-		vertex.addAttrib(1, 2, GLConst.GL_FLOAT, false, 16, 8);		//Texture off
+		vertex.addAttrib(0, 2, GLConst.GL_FLOAT, 16, 0);		//Position data
+		vertex.addAttrib(1, 2, GLConst.GL_FLOAT, 16, 8);		//Texture off
 		
 		vao.addVBO(vertex);
 		
 	}
 	
 	@Override
-	public boolean render(RenderContext rcon) throws RenderException
+	public void render(RenderContext rcon) throws RenderException
 	{
 		if (this.images == 0)
 		{
-			return false;
+			return;
 		}
 		
 		if (!this.vao.bind(rcon))
 		{
-			return false;
+			return;
 		}
 		
 		if (!this.mat.isNull())
@@ -78,7 +78,6 @@ public class CanvasLayer implements IRenderable
 			
 		}
 		
-		return true;
 	}
 	
 	@Override
@@ -126,6 +125,11 @@ public class CanvasLayer implements IRenderable
 			
 		}
 		
+	}
+	
+	public Material getMaterial()
+	{
+		return this.mat.get();
 	}
 	
 	public int getImageCount()
@@ -193,8 +197,6 @@ public class CanvasLayer implements IRenderable
 		this.imgbuf.clear();
 		this.images = 0;
 		this.sub = null;
-		
-		this.vertex.updateVBO(this.imgbuf, 0);
 		
 	}
 	

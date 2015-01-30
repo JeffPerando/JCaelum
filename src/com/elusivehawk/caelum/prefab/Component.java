@@ -52,36 +52,10 @@ public abstract class Component implements IRenderable, IUpdatable
 	}
 	
 	@Override
-	public boolean render(RenderContext rcon) throws RenderException
+	public void render(RenderContext rcon) throws RenderException
 	{
-		if (this.childList == null)
-		{
-			return false;
-		}
+		this.forEveryChild(((child) -> {child.render(rcon);}));
 		
-		boolean ret = false;
-		
-		for (int c = this.minPriority; c < this.maxPriority; c++)
-		{
-			List<Component> children = this.childMap.get(c);
-			
-			if (children != null)
-			{
-				for (Component child : children)
-				{
-					if (child.render(rcon))
-					{
-						ret = true;
-						
-					}
-					
-				}
-				
-			}
-			
-		}
-		
-		return ret;
 	}
 	
 	@Override
@@ -101,6 +75,11 @@ public abstract class Component implements IRenderable, IUpdatable
 	public Component getParent()
 	{
 		return this.parent;
+	}
+	
+	public Component getNucleas()
+	{
+		return this.parent == null ? this : this.parent.getNucleas();
 	}
 	
 	public int getPriority()
@@ -129,10 +108,20 @@ public abstract class Component implements IRenderable, IUpdatable
 		
 		if (comp == null)
 		{
-			return;
+			throw new NullPointerException();
 		}
 		
 		if (comp == this.parent)
+		{
+			return;
+		}
+		
+		if (comp.hasChild(this))
+		{
+			return;
+		}
+		
+		if (this.parent != null && this.parent.hasChild(comp))
 		{
 			return;
 		}
@@ -182,6 +171,29 @@ public abstract class Component implements IRenderable, IUpdatable
 				this.childList.remove(comp);
 				
 				return true;
+			}
+			
+		}
+		
+		return false;
+	}
+	
+	public boolean hasChild(Component comp)
+	{
+		if (this.childList != null)
+		{
+			for (Component child : this.childList)
+			{
+				if (child == comp)
+				{
+					return true;
+				}
+				
+				if (child.hasChild(comp))
+				{
+					return true;
+				}
+				
 			}
 			
 		}

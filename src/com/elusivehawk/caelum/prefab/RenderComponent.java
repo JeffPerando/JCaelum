@@ -56,17 +56,12 @@ public class RenderComponent extends Component
 	}
 	
 	@Override
-	public boolean render(RenderContext rcon)
+	public void render(RenderContext rcon)
 	{
-		boolean ret = this.renderable.render(rcon);
+		this.renderable.render(rcon);
 		
-		if (super.render(rcon) && !ret)
-		{
-			ret = true;
-			
-		}
+		super.render(rcon);
 		
-		return ret;
 	}
 	
 	@Override

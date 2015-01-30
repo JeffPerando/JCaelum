@@ -127,8 +127,6 @@ public final class GLProgram implements IBindable, IDeletable, IDirty
 	
 	private boolean relink(RenderContext rcon)
 	{
-		this.shaders.detach(rcon, this);
-		
 		if (!this.shaders.attachShaders(rcon, this))
 		{
 			return false;

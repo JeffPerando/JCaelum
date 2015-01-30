@@ -18,9 +18,9 @@ public class ModelPoint
 	@SuppressWarnings("unqualified-field-access")
 	public ModelPoint(Vector v, Vector t, Vector n)
 	{
-		vtx = v.clone().setImmutable();
-		tex = t.clone().setImmutable();
-		norm = n.clone().setImmutable();
+		vtx = v.isImmutable() ? v : v.clone().setImmutable();
+		tex = t == null ? null : t.isImmutable() ? t : t.clone().setImmutable();
+		norm = n == null ? null : n.isImmutable() ? n : n.clone().setImmutable();
 		
 	}
 	
@@ -39,12 +39,12 @@ public class ModelPoint
 			return false;
 		}
 		
-		if (!this.tex.equals(mp.tex))
+		if (this.tex != mp.tex && !this.tex.equals(mp.tex))
 		{
 			return false;
 		}
 		
-		if (!this.norm.equals(mp.norm))
+		if (this.norm != mp.norm && !this.norm.equals(mp.norm))
 		{
 			return false;
 		}

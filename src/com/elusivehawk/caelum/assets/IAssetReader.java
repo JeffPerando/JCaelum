@@ -12,6 +12,6 @@ import java.io.DataInputStream;
 @FunctionalInterface
 public interface IAssetReader
 {
-	Object readAsset(DataInputStream in) throws Throwable;
+	Object readAsset(Asset asset, DataInputStream in) throws Throwable;
 	
 }

@@ -127,17 +127,14 @@ public final class Material implements IBindable, IRenderable, IJsonSerializer
 	}
 	
 	@Override
-	public boolean render(RenderContext rcon) throws RenderException
+	public void render(RenderContext rcon) throws RenderException
 	{
-		boolean ret = false;
-		
 		if (this.renTex != null)
 		{
-			ret = this.renTex.render(rcon);
+			this.renTex.render(rcon);
 			
 		}
 		
-		return ret;
 	}
 	
 	@Override

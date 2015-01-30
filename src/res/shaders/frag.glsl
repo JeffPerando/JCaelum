@@ -31,7 +31,7 @@ out vec4 out_color;
 
 void main(void)
 {
-	vec4 mixed = mix(texture(mat.tex, frag_tex), texture(mat.renTex, frag_tex), shines[m]);
+	vec4 mixed = mix(texture(mat.tex, frag_tex), texture(mat.renTex, frag_tex), mat.shine);
 	
 	vec4 fin = vec4((mat.filter.xyz * mat.filter.w) + (mixed.xyz * mixed.w), 0);
 	

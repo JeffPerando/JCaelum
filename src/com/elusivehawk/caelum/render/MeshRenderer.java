@@ -2,15 +2,23 @@
 package com.elusivehawk.caelum.render;
 
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import com.elusivehawk.caelum.CaelumException;
+import com.elusivehawk.caelum.render.gl.GL1;
+import com.elusivehawk.caelum.render.gl.GL2;
 import com.elusivehawk.caelum.render.gl.GLBuffer;
+import com.elusivehawk.caelum.render.gl.GLConst;
 import com.elusivehawk.caelum.render.gl.GLEnumBufferTarget;
 import com.elusivehawk.caelum.render.gl.GLEnumDataUsage;
+import com.elusivehawk.caelum.render.gl.GLEnumDrawType;
 import com.elusivehawk.caelum.render.gl.GLProgram;
 import com.elusivehawk.caelum.render.gl.GLVertexArray;
 import com.elusivehawk.caelum.render.tex.Material;
+import com.elusivehawk.util.math.MatrixHelper;
 import com.elusivehawk.util.math.Quaternion;
 import com.elusivehawk.util.math.Vector;
+import com.elusivehawk.util.storage.BufferHelper;
+import com.elusivehawk.util.storage.DirtableStorage;
 
 /**
  * 
@@ -25,23 +33,23 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 {
 	private final IMesh mesh;
 	
-	protected final Vector
+	private final Vector
 			offset = new Vector(),
 			pos = new Vector(),
 			scale = new Vector(1f, 1f, 1f);
 	
-	protected final Quaternion
+	private final Quaternion
 			rotOff = new Quaternion(),
 			rot = new Quaternion();
 	
-	protected final GLVertexArray vao = new GLVertexArray();
+	private final GLVertexArray vao = new GLVertexArray();
+	private final DirtableStorage<Material> mat = new DirtableStorage<Material>().setSync();
 	
-	protected GLBuffer vbo = null;
-	protected FloatBuffer buf = null;
+	private GLBuffer meshbuf = null, animbuf = null;
+	private FloatBuffer buf = null;
+	private GLEnumDrawType draw = null;
 	
-	//protected int frame = 0;
-	//protected IModelAnimation anim = null, lastAnim = null;
-	protected int texFrame = 0;
+	private int texFrame = 0, polyCount = 0;
 	
 	public MeshRenderer(IMesh m)
 	{
@@ -61,13 +69,20 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 	}
 	
 	@Override
-	public void postRender(RenderContext rcon) throws RenderException{}
+	public void postRender(RenderContext rcon) throws RenderException
+	{
+		if (!this.mat.isNull())
+		{
+			this.mat.get().postRender(rcon);
+			
+		}
+		
+	}
 	
 	@Override
 	public synchronized void onVecChanged(Vector vec)
 	{
 		this.offset.add(vec, this.pos);
-		//this.setIsDirty(true);
 		
 	}
 	
@@ -75,81 +90,137 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 	public synchronized void onQuatChanged(Quaternion q)
 	{
 		this.rotOff.add(q, this.rot);
-		//this.setIsDirty(true);
 		
 	}
 	
 	@Override
 	protected boolean initiate(RenderContext rcon)
 	{
-		/*if (!this.mesh.isLoaded())
+		MeshData data = this.mesh.getData();
+		
+		if (data == null)
 		{
-			this.mesh.initiate(rcon);
-			
-			if (!this.mesh.isLoaded())
-			{
-				return false;
-			}
-			
-		}*/
+			return false;
+		}
 		
-		//this.buf = BufferHelper.createFloatBuffer(this.mesh.getIndiceCount() * 16);
-		this.vbo = new GLBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW, this.buf);
+		FloatBuffer vtx = data.vertex;
+		IntBuffer ind = data.indices;
 		
-		//this.mesh.populate(this.vao);
-		this.vao.addVBO(this.vbo);
+		if (data.isTriStrip)
+		{
+			this.draw = GLEnumDrawType.GL_TRIANGLE_STRIP;
+			this.polyCount = ind.capacity() - 2;
+			
+		}
+		else
+		{
+			this.draw = GLEnumDrawType.GL_TRIANGLES;
+			this.polyCount = ind.capacity() / 3;
+			
+		}
+		
+		this.buf = BufferHelper.createFloatBuffer(vtx.capacity() / 3 * 16);
+		
+		this.meshbuf = new GLBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_STATIC_DRAW, vtx);
+		this.animbuf = new GLBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW, this.buf);
+		
+		int size = 12 + (data.useTex ? data.texSize * 4 : 0) + (data.useNorm ? 12 : 0);
+		
+		this.meshbuf.addAttrib(0, 3, GLConst.GL_FLOAT, size, 0);
+		
+		int off = 12;
+		
+		if (data.useTex)
+		{
+			this.meshbuf.addAttrib(1, data.texSize, GLConst.GL_FLOAT, size, off);
+			off += (data.texSize * 4);
+			
+		}
+		
+		if (data.useNorm)
+		{
+			this.meshbuf.addAttrib(2, 3, GLConst.GL_FLOAT, size, off);
+			
+		}
+		
+		this.animbuf.addAttrib(3, 4, GLConst.GL_FLOAT, 64, 0);
+		this.animbuf.addAttrib(4, 4, GLConst.GL_FLOAT, 64, 16);
+		this.animbuf.addAttrib(5, 4, GLConst.GL_FLOAT, 64, 32);
+		this.animbuf.addAttrib(6, 4, GLConst.GL_FLOAT, 64, 48);
+		
+		this.vao.addVBO(this.meshbuf);
+		this.vao.addVBO(this.animbuf);
+		
+		if (ind != null)
+		{
+			this.vao.addVBO(new GLBuffer(GLEnumBufferTarget.GL_ELEMENT_ARRAY_BUFFER, GLEnumDataUsage.GL_STATIC_DRAW, ind));
+			
+		}
 		
 		return true;
 	}
 	
 	@Override
-	protected boolean doRender(RenderContext rcon) throws RenderException
+	protected void doRender(RenderContext rcon) throws RenderException
 	{
-		if (!this.vao.bind(rcon))
+		if (!this.mat.isNull())
 		{
-			return false;
+			this.mat.get().render(rcon);
+			
 		}
 		
-		//GL1.glDrawElements(this.mesh.getDrawType(), this.mesh.getPolyCount(), GLConst.GL_UNSIGNED_INT, 0);
+		if (this.vao.bind(rcon))
+		{
+			Material m = this.mat.get();
+			
+			if (m == null || m.bind(rcon))
+			{
+				GL1.glDrawElements(this.draw, this.polyCount, GLConst.GL_UNSIGNED_INT, 0);
+				
+			}
+			
+			if (m != null)
+			{
+				m.unbind(rcon);
+				
+			}
+			
+		}
 		
 		this.vao.unbind(rcon);
 		
-		return true;
 	}
 	
 	@Override
 	public void setMaterial(Material mat)
 	{
-		// TODO Auto-generated method stub
+		this.mat.set(mat);
 		
 	}
 	
 	@Override
 	public void preRender(RenderContext rcon)
 	{
-		/*if (this.anim != null && !this.isAnimationPaused())
+		if (!this.mat.isNull())
 		{
-			boolean usedBefore = this.anim == this.lastAnim;
+			this.mat.get().preRender(rcon);
 			
-			if (!usedBefore)
+		}
+		
+		if (this.pos.isDirty() || this.rot.isDirty())
+		{
+			if (this.program.bind(rcon))
 			{
-				this.frame = 0;
+				GL2.glUniformMatrix4f("model", MatrixHelper.createHomogenousMatrix(this.rot, this.scale, this.pos));
 				
 			}
 			
-			boolean fin = (this.frame == this.anim.getFrameCount());
+			this.program.unbind(rcon);
 			
-			if (this.anim.update(this, usedBefore, fin))
-			{
-				this.buf.rewind();
-				
-				this.vbo.updateEntireVBO(this.buf, context);
-				
-			}
+			this.pos.setIsDirty(false);
+			this.rot.setIsDirty(false);
 			
-			this.frame = (fin ? 0 : this.frame + 1);
-			
-		}*/
+		}
 		
 	}
 	
@@ -159,64 +230,10 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 		return String.format("%s:%s-%s-%s", this.mesh, this.pos.toString(), this.scale.toString(), this.rot.toString());
 	}
 	
-	/*@Override
-	protected void manipulateProgram(RenderContext rcon)
-	{
-		super.manipulateProgram(rcon);
-		
-		if (this.rot.isDirty() || this.scale.isDirty() || this.pos.isDirty())
-		{
-			GL2.glUniformMatrix4f("model", MatrixHelper.createHomogenousMatrix(this.rot, this.scale, this.pos));
-			
-			this.rot.setIsDirty(false);
-			this.scale.setIsDirty(false);
-			this.pos.setIsDirty(false);
-			
-		}
-		
-	}
-	
-	public synchronized void setVector(EnumVectorType type, Vector vec)
-	{
-		this.vecs.get(type).set(vec);
-		
-		this.setIsDirty(true);
-		
-	}
-	
-	public synchronized void setModelAnimation(IModelAnimation a)
-	{
-		this.lastAnim = this.anim;
-		
-		this.anim = a;
-		
-	}
-	
-	public synchronized void setFrame(int f)
-	{
-		this.frame = f;
-		
-	}
-	
-	public synchronized void setIndice(int i, Matrix m)
-	{
-		this.buf.position(i * 16);
-		
-		m.save(this.buf);
-		
-		this.setIsDirty(true);
-		
-	}*/
-	
 	public IMesh getMesh()
 	{
 		return this.mesh;
 	}
-	
-	/*public int getCurrentFrame()
-	{
-		return this.frame;
-	}*/
 	
 	public int getCurrentTexFrame()
 	{

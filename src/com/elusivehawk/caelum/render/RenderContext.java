@@ -95,11 +95,7 @@ public final class RenderContext implements Closeable, IUpdatable
 			
 			this.preRenderers.forEach(((preR) -> {preR.preRender(this);}));
 			
-			if (!this.renderGame())
-			{
-				Logger.warn("Could not render frame for display %s! This is a bug!", this.display);
-				
-			}
+			this.renderGame();
 			
 			this.postRenderers.forEach(((postR) -> {postR.postRender(this);}));
 			
@@ -182,7 +178,7 @@ public final class RenderContext implements Closeable, IUpdatable
 	
 	//XXX Hooks
 	
-	public boolean renderGame(ICamera cam) throws RenderException
+	public void renderGame(ICamera cam) throws RenderException
 	{
 		assert cam != null;
 		
@@ -190,11 +186,9 @@ public final class RenderContext implements Closeable, IUpdatable
 		
 		this.cameraStorage.set(cam);
 		
-		boolean ret = false;
-		
 		try
 		{
-			ret = this.renderGame();
+			this.renderGame();
 			
 		}
 		catch (RenderException e)
@@ -207,23 +201,20 @@ public final class RenderContext implements Closeable, IUpdatable
 			
 		}
 		
-		return ret;
 	}
 	
-	public boolean renderGame() throws RenderException
+	public void renderGame() throws RenderException
 	{
 		if (this.renders == RenderConst.RECURSIVE_LIMIT)
 		{
-			return false;
+			return;
 		}
 		
 		this.renders++;
 		
-		boolean ret = false;
-		
 		try
 		{
-			ret = this.renderer.render(this);
+			this.renderer.render(this);
 			
 		}
 		catch (RenderException e)
@@ -236,7 +227,6 @@ public final class RenderContext implements Closeable, IUpdatable
 			
 		}
 		
-		return ret;
 	}
 	
 	public synchronized void onScreenFlipped(boolean flip)

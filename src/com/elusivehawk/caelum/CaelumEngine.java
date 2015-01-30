@@ -4,7 +4,6 @@ package com.elusivehawk.caelum;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,7 +13,6 @@ import com.elusivehawk.caelum.render.IRenderable;
 import com.elusivehawk.caelum.render.ThreadGameRender;
 import com.elusivehawk.util.CompInfo;
 import com.elusivehawk.util.EnumLogType;
-import com.elusivehawk.util.EnumOS;
 import com.elusivehawk.util.HashGen;
 import com.elusivehawk.util.IPausable;
 import com.elusivehawk.util.Internal;
@@ -54,7 +52,7 @@ public final class CaelumEngine
 	private final AssetManager assets = new AssetManager();
 	
 	private final Map<String, String> startargs = Maps.newHashMap();
-	private final List<String> startupPrefixes = Lists.newArrayList();
+	private final List<String> startupPrefixes = Arrays.asList("env:", "gamefac:", "verbose:");
 	
 	private File nativeLocation = null;
 	private IGameEnvironment env = null;
@@ -65,40 +63,7 @@ public final class CaelumEngine
 	private Display display = null;
 	private DisplayManager displays = null;
 	
-	private CaelumEngine()
-	{
-		if (CompInfo.OS != EnumOS.ANDROID)
-		{
-			Runtime.getRuntime().addShutdownHook(new Thread((() ->
-			{
-				CaelumEngine.instance().shutDownGame();
-				CaelumEngine.instance().clearGameEnv();
-				
-			})));
-			
-		}
-		
-		this.startupPrefixes.add("env:");
-		this.startupPrefixes.add("gamefac:");
-		this.startupPrefixes.add("verbose:");
-		
-		Iterator<String> itr = this.startupPrefixes.iterator();
-		String prefix;
-		
-		while (itr.hasNext())
-		{
-			prefix = itr.next();
-			
-			if (!prefix.endsWith(":"))
-			{
-				Logger.wtf("Prefix is missing colon: %s", prefix);
-				itr.remove();
-				
-			}
-			
-		}
-		
-	}
+	private CaelumEngine(){}
 	
 	public static CaelumEngine instance()
 	{
@@ -176,6 +141,13 @@ public final class CaelumEngine
 	@Internal
 	public static void main(String... args)
 	{
+		Runtime.getRuntime().addShutdownHook(new Thread((() ->
+		{
+			CaelumEngine.instance().shutDownGame();
+			CaelumEngine.instance().clearGameEnv();
+			
+		})));
+		
 		instance().createGameEnv(args);
 		instance().startGame();
 		instance().pauseGame(false);
@@ -205,7 +177,7 @@ public final class CaelumEngine
 	@Internal
 	public void createGameEnv(String... args)
 	{
-		if (this.game != null)
+		if (this.env != null)
 		{
 			return;
 		}

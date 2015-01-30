@@ -1,7 +1,10 @@
 
 package com.elusivehawk.caelum.render;
 
+import com.elusivehawk.caelum.render.gl.GLProgram;
 import com.elusivehawk.caelum.render.glsl.Shaders;
+import com.elusivehawk.caelum.render.tex.Material;
+import com.elusivehawk.util.IPopulator;
 
 /**
  * 
@@ -20,9 +23,25 @@ public class CanvasBufferer implements IRenderable
 		
 	}
 	
+	public CanvasBufferer(IPopulator<CanvasBufferer> pop)
+	{
+		this();
+		
+		pop.populate(this);
+		
+	}
+	
 	public CanvasBufferer(Shaders shs)
 	{
 		this(shs, 1);
+		
+	}
+	
+	public CanvasBufferer(Shaders shs, IPopulator<CanvasBufferer> pop)
+	{
+		this(shs);
+		
+		pop.populate(this);
 		
 	}
 	
@@ -32,12 +51,30 @@ public class CanvasBufferer implements IRenderable
 		
 	}
 	
+	public CanvasBufferer(int layers, IPopulator<CanvasBufferer> pop)
+	{
+		this(layers);
+		
+		pop.populate(this);
+		
+	}
+	
 	@SuppressWarnings("unqualified-field-access")
 	public CanvasBufferer(Shaders shs, int layers)
 	{
-		canvas = new Canvas(shs, layers);
-		bufone = new Canvas(shs, layers);
-		buftwo = new Canvas(shs, layers);
+		GLProgram p = new GLProgram(shs);
+		
+		canvas = new Canvas(p, layers);
+		bufone = new Canvas(p, layers);
+		buftwo = new Canvas(p, layers);
+		
+	}
+	
+	public CanvasBufferer(Shaders shs, int layers, IPopulator<CanvasBufferer> pop)
+	{
+		this(shs, layers);
+		
+		pop.populate(this);
 		
 	}
 	
@@ -71,9 +108,10 @@ public class CanvasBufferer implements IRenderable
 	}
 	
 	@Override
-	public boolean render(RenderContext rcon) throws RenderException
+	public void render(RenderContext rcon) throws RenderException
 	{
-		return this.canvas.render(rcon);
+		this.canvas.render(rcon);
+		
 	}
 	
 	public Canvas getCanvas()
@@ -89,6 +127,22 @@ public class CanvasBufferer implements IRenderable
 		this.buftwo = buf_tmp;
 		
 		this.swap = true;
+		
+	}
+	
+	public void setMaterial(Material m)
+	{
+		this.canvas.setMaterial(m);
+		this.bufone.setMaterial(m);
+		this.buftwo.setMaterial(m);
+		
+	}
+	
+	public void setMaterial(int layer, Material m)
+	{
+		this.canvas.setMaterial(layer, m);
+		this.bufone.setMaterial(layer, m);
+		this.buftwo.setMaterial(layer, m);
 		
 	}
 	

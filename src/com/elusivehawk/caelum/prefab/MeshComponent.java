@@ -72,17 +72,12 @@ public class MeshComponent extends PositionedComponent
 	}
 	
 	@Override
-	public boolean render(RenderContext rcon) throws RenderException
+	public void render(RenderContext rcon) throws RenderException
 	{
-		boolean ret = this.meshRenderer.render(rcon);
+		this.meshRenderer.render(rcon);
 		
-		if (super.render(rcon) && !ret)
-		{
-			ret = true;
-			
-		}
+		super.render(rcon);
 		
-		return ret;
 	}
 	
 	@Override

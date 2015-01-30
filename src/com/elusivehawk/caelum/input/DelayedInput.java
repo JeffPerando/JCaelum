@@ -11,7 +11,8 @@ import com.elusivehawk.util.DelayedUpdater;
  */
 public abstract class DelayedInput extends Input
 {
-	private final DelayedUpdater updater = new DelayedUpdater(0.1, ((delta) -> {super.update(delta);}));
+	@SuppressWarnings("synthetic-access")
+	private final DelayedUpdater updater = new DelayedUpdater(0.1, super::update);
 	
 	public DelayedInput(InputManager mgr)
 	{

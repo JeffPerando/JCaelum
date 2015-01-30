@@ -68,9 +68,9 @@ public class ShaderBuilder implements IPopulator<ShaderBuilder>
 	@Override
 	public void populate(ShaderBuilder b)
 	{
-		this.constants.forEach(((cnst) -> {b.addConst(cnst);}));
-		this.params.forEach(((param) -> {b.addParam(param);}));
-		this.methods.forEach(((method) -> {b.addMethod(method);}));
+		this.constants.forEach(b::addConst);
+		this.params.forEach(b::addParam);
+		this.methods.forEach(b::addMethod);
 		
 	}
 	
@@ -89,20 +89,11 @@ public class ShaderBuilder implements IPopulator<ShaderBuilder>
 		
 		b.append("\n");
 		
-		this.params.forEach(((param) ->
-		{
-			b.append(param.toString());
-			
-		}));
+		this.params.forEach(b::append);
 		
 		b.append("\n");
 		
-		
-		this.methods.forEach(((method) ->
-		{
-			b.append(method.toString());
-			
-		}));
+		this.methods.forEach(b::append);
 		
 		b.append("\n");
 		

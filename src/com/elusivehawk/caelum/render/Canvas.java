@@ -109,6 +109,8 @@ public class Canvas extends RenderableObj
 		}
 		while (layers.size() < layerCount);
 		
+		currentLayer = layers.get(0);
+		
 	}
 	
 	public Canvas(GLProgram program, int layers, IPopulator<Canvas> pop)
@@ -122,7 +124,11 @@ public class Canvas extends RenderableObj
 	@Override
 	public void postRender(RenderContext rcon)
 	{
-		this.layers.forEach(((layer) -> {layer.postRender(rcon);}));
+		for (int c = 0; c < this.layers.size(); c++)
+		{
+			this.layers.get(c).postRender(rcon);
+			
+		}
 		
 	}
 	
@@ -138,21 +144,14 @@ public class Canvas extends RenderableObj
 	}
 	
 	@Override
-	protected boolean doRender(RenderContext rcon) throws RenderException
+	protected void doRender(RenderContext rcon) throws RenderException
 	{
-		boolean ret = false;
-		
-		for (int c = 0; c < this.layers.size(); c++)
+		this.layers.forEach(((layer) ->
 		{
-			if (this.layers.get(c).render(rcon) && !ret)
-			{
-				ret = true;
-				
-			}
+			layer.render(rcon);
 			
-		}
+		}));
 		
-		return ret;
 	}
 	
 	@Override
@@ -165,7 +164,11 @@ public class Canvas extends RenderableObj
 	@Override
 	public void preRender(RenderContext rcon)
 	{
-		this.layers.forEach(((layer) -> {layer.preRender(rcon);}));
+		for (int c = 0; c < this.layers.size(); c++)
+		{
+			this.layers.get(c).preRender(rcon);
+			
+		}
 		
 	}
 	
@@ -176,9 +179,24 @@ public class Canvas extends RenderableObj
 		throw new UnsupportedOperationException("Canvases cannot change their Z buffering status, you nincompoop.");
 	}
 	
+	public Material getMaterial()
+	{
+		return this.currentLayer.getMaterial();
+	}
+	
+	public Material getMaterial(int layer)
+	{
+		return this.layers.get(layer).getMaterial();
+	}
+	
 	public int getImageCount()
 	{
 		return this.currentLayer.getImageCount();
+	}
+	
+	public int getImageCount(int layer)
+	{
+		return this.layers.get(layer).getImageCount();
 	}
 	
 	public int getLayerCount()
@@ -203,31 +221,33 @@ public class Canvas extends RenderableObj
 		
 	}
 	
-	public Canvas setEnableCoordCorrection(boolean b)
+	public void setEnableCoordCorrection(boolean b)
 	{
 		this.correctCoords = b;
 		
-		return this;
+	}
+	
+	public void setMaterial(int layer, Material m)
+	{
+		this.layers.get(layer).setMaterial(m);
+		
 	}
 	
 	public void createLayer()
 	{
-		this.currentLayer = new CanvasLayer(this);
-		
-		this.layers.add(this.currentLayer);
+		this.layers.add(new CanvasLayer(this));
 		
 	}
 	
-	public boolean nextLayer()
+	public void nextLayer()
 	{
-		if (this.layers.hasNext())
-		{
-			this.currentLayer = this.layers.next();
-			
-			return true;
-		}
+		this.currentLayer = this.layers.next();
 		
-		return false;
+	}
+	
+	public boolean hasNextLayer()
+	{
+		return this.layers.hasNext();
 	}
 	
 	public void setLayer(int layer)
@@ -241,17 +261,23 @@ public class Canvas extends RenderableObj
 		this.currentLayer = this.layers.get(0);
 		this.layers.position(0);
 		
-		this.layers.forEach(((layer) ->
+		for (int c = 0; c < this.layers.size(); c++)
 		{
-			layer.clear();
+			this.layers.get(c).clear();
 			
-		}));
+		}
 		
 	}
 	
-	public void clearCurrentLayer()
+	public void clearLayer()
 	{
 		this.currentLayer.clear();
+		
+	}
+	
+	public void clearLayer(int layer)
+	{
+		this.layers.get(layer).clear();
 		
 	}
 	

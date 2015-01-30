@@ -39,4 +39,11 @@ public final class RenderConst
 			new ShaderParameter(GLSLEnumInType.OUT, "vec4", "out_color")
 		};
 	
+	public static final Icon SKYBOX_TOP = new Icon(0.25f, 1 / 3f, 0.5f, 2 / 3f);
+	public static final Icon SKYBOX_BOTTOM = new Icon(0.75f, 1 / 3f, 1f, 2 / 3f);
+	public static final Icon SKYBOX_FRONT = new Icon(0.25f, 0f, 0.5f, 1 / 3f);
+	public static final Icon SKYBOX_BACK = new Icon(0.25f, 2 / 3f, 0.5f, 1f);
+	public static final Icon SKYBOX_LEFT = new Icon(0f, 1 / 3f, 0.25f, 2 / 3f);
+	public static final Icon SKYBOX_RIGHT = new Icon(0.5f, 1 / 3f, 0.75f, 2 / 3f);
+	
 }

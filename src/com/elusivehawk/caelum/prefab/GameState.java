@@ -56,21 +56,10 @@ public class GameState extends AbstractGameComponent
 	}
 	
 	@Override
-	public boolean render(RenderContext rcon) throws RenderException
+	public void render(RenderContext rcon) throws RenderException
 	{
-		boolean ret = false;
+		this.renderers.forEach(((r) -> {r.render(rcon);}));
 		
-		for (IRenderable renderer : this.renderers)
-		{
-			if (renderer.render(rcon) && !ret)
-			{
-				ret = true;
-				
-			}
-			
-		}
-		
-		return ret;
 	}
 	
 	@Override

@@ -46,17 +46,15 @@ public abstract class RenderableTexture implements ITexture, IRenderable
 	}
 	
 	@Override
-	public boolean render(RenderContext rcon) throws RenderException
+	public void render(RenderContext rcon) throws RenderException
 	{
-		boolean ret = false;
-		
 		if (!this.rendered)
 		{
 			if (this.fbo.bind(rcon))
 			{
 				try
 				{
-					ret = this.renderTexture(rcon);
+					this.renderTexture(rcon);
 					
 				}
 				catch (RenderException e)
@@ -75,7 +73,6 @@ public abstract class RenderableTexture implements ITexture, IRenderable
 			
 		}
 		
-		return ret;
 	}
 	
 	@Override
@@ -90,6 +87,6 @@ public abstract class RenderableTexture implements ITexture, IRenderable
 		return false;
 	}
 	
-	public abstract boolean renderTexture(RenderContext rcon) throws RenderException;
+	public abstract void renderTexture(RenderContext rcon) throws RenderException;
 	
 }

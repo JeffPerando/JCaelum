@@ -6,6 +6,10 @@ import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import com.elusivehawk.caelum.assets.readers.GIFAssetReader;
+import com.elusivehawk.caelum.assets.readers.JSONAssetReader;
+import com.elusivehawk.caelum.assets.readers.OBJAssetReader;
+import com.elusivehawk.caelum.assets.readers.PNGAssetReader;
 import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.storage.SyncList;
@@ -19,19 +23,26 @@ import com.google.common.collect.Maps;
  */
 public final class AssetManager
 {
-	private final List<IAssetReceiver> receivers = new SyncList<IAssetReceiver>();
+	private final List<IAssetReceiver> receivers = SyncList.newList();
 	private final Map<EnumAssetType, List<Asset>> assets = Maps.newHashMap();
 	private final Map<String, IAssetReader> readers = Maps.newHashMap();
 	
-	private IAssetStreamer sProvider = ((path) ->
-	{
-		return this.getClass().getResourceAsStream(path);
-	});
+	private IAssetStreamer sProvider = this.getClass()::getResourceAsStream;
 	
 	public AssetManager()
 	{
-		setReader("gif", new GIFReader());
-		setReader("png", new PNGReader());
+		//XXX Generic formats
+		
+		setReader("json", new JSONAssetReader());
+		
+		//XXX Image formats
+		
+		setReader("gif", new GIFAssetReader());
+		setReader("png", new PNGAssetReader());
+		
+		//XXX Model formats
+		
+		setReader("obj", new OBJAssetReader());
 		
 	}
 	
@@ -43,7 +54,7 @@ public final class AssetManager
 		
 		try
 		{
-			ret = ar.readAsset(in);
+			ret = ar.readAsset(a, in);
 			
 		}
 		catch (Throwable e)

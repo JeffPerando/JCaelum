@@ -22,8 +22,8 @@ public class Tessellator
 {
 	public static final int FLOATS_PER_INDEX = 3 + 2 + 3;//Vertex + Texture + Normal
 	
-	private List<ModelPoint> points = Lists.newArrayList();
-	private List<Integer> indices = Lists.newArrayList();
+	private final List<ModelPoint> points = Lists.newArrayList();
+	private final List<Integer> indices = Lists.newArrayList();
 	
 	private FloatBuffer fs_ret = null;
 	private IntBuffer in_ret = null;
@@ -44,7 +44,7 @@ public class Tessellator
 	
 	public int vertex(Vector vtx)
 	{
-		return this.vertexTex(vtx, new Vector(2));
+		return this.vertexTex(vtx, new Vector(2).setImmutable());
 	}
 	
 	public int vertexTex(float x, float y, float z, float u, float v)
@@ -54,12 +54,12 @@ public class Tessellator
 	
 	public int vertexTex(Vector vtx, Vector tex)
 	{
-		return this.point(vtx, tex, new Vector(3));
+		return this.point(vtx, tex, new Vector(3).setImmutable());
 	}
 	
 	public int point(float x, float y, float z, float u, float v, float nx, float ny, float nz)
 	{
-		return this.point(new Vector(x, y, z), new Vector(u, v), new Vector(nx, ny, nz));
+		return this.point(new Vector(x, y, z).setImmutable(), new Vector(u, v).setImmutable(), new Vector(nx, ny, nz).setImmutable());
 	}
 	
 	public int point(Vector vtx, Vector tex, Vector n)
@@ -76,6 +76,7 @@ public class Tessellator
 		if (i == -1)
 		{
 			i = this.points.size();
+			
 			this.points.add(point);
 			
 		}
@@ -85,16 +86,6 @@ public class Tessellator
 		this.optimized = false;
 		
 		return i;
-	}
-	
-	public FloatBuffer getVertexData()
-	{
-		return this.fs_ret;
-	}
-	
-	public IntBuffer getIndices()
-	{
-		return this.in_ret;
 	}
 	
 	public void reset()
@@ -108,44 +99,49 @@ public class Tessellator
 		
 	}
 	
-	public void finish()
+	public MeshData finish()
 	{
-		if (this.done)
-		{
-			throw new CaelumException("Already done!");
-		}
-		
+		return this.finish(false);
+	}
+	
+	public MeshData finish(boolean optimize)
+	{
 		if (this.points.isEmpty())
 		{
 			throw new CaelumException("You didn't load any points!");
 		}
 		
-		FloatBuffer fs = BufferHelper.createFloatBuffer(FLOATS_PER_INDEX * this.points.size());
-		
-		for (ModelPoint point : this.points)
+		if (optimize && !this.optimize())
 		{
-			fs.put(ArrayHelper.asFloats(point.vtx.multiget(MathConst.XYZ)));
-			fs.put(ArrayHelper.asFloats(point.tex.multiget(MathConst.XY)));
-			fs.put(ArrayHelper.asFloats(point.norm.multiget(MathConst.XYZ)));
+			throw new CaelumException("Could not optimize!");
+		}
+		
+		if (!this.done)
+		{
+			FloatBuffer fs = BufferHelper.createFloatBuffer(this.points.size() * FLOATS_PER_INDEX);
+			
+			this.points.forEach(((point) ->
+			{
+				fs.put(ArrayHelper.asFloats(point.vtx.multiget(MathConst.XYZ)));
+				fs.put(ArrayHelper.asFloats(point.tex.multiget(MathConst.XY)));
+				fs.put(ArrayHelper.asFloats(point.norm.multiget(MathConst.XYZ)));
+				
+			}));
+			
+			this.fs_ret = fs.asReadOnlyBuffer();
+			this.in_ret = BufferHelper.makeIntBuffer(this.indices).asReadOnlyBuffer();
+			this.done = true;
 			
 		}
 		
-		this.fs_ret = fs.asReadOnlyBuffer();
-		this.in_ret = BufferHelper.makeIntBuffer(this.indices).asReadOnlyBuffer();
-		this.done = true;
-		
+		return new MeshData(this.fs_ret, this.in_ret, null, this.optimized, false, true, true);
 	}
 	
-	public boolean isOptimized()
-	{
-		return this.optimized;
-	}
-	
-	public boolean optimize()
+	private boolean optimize()
 	{
 		if (this.done)
 		{
-			return false;
+			return this.optimized;
 		}
 		
 		if (this.optimized)
@@ -153,12 +149,12 @@ public class Tessellator
 			return true;
 		}
 		
-		if (this.points.size() < 2)
+		if (this.indices.size() < 6)
 		{
 			return false;
 		}
 		
-		if (this.points.size() % 3 != 0)
+		if (this.indices.size() % 3 != 0)
 		{
 			return false;
 		}
@@ -169,6 +165,23 @@ public class Tessellator
 		{
 			triangles.add(new Triangle(this.indices.get(c), this.indices.get(c + 1), this.indices.get(c + 2)));
 			
+		}
+		
+		boolean opd = true;
+		
+		for (int c = 1; c < triangles.size(); c++)
+		{
+			if (!triangles.get(c).canGoAheadOf(triangles.get(c - 1)))
+			{
+				opd = false;
+				break;
+			}
+			
+		}
+		
+		if (opd)
+		{
+			return true;
 		}
 		
 		List<Triangle> optimized = Lists.newArrayList();
@@ -241,13 +254,12 @@ public class Tessellator
 		
 		newind.add(first.a);
 		newind.add(first.b);
-		newind.add(first.c);
 		
-		for (int c = 1; c < optimized.size(); c++)
+		optimized.forEach(((tri) ->
 		{
-			newind.add(optimized.get(c).c);
+			newind.add(tri.c);
 			
-		}
+		}));
 		
 		this.indices.clear();
 		this.indices.addAll(newind);

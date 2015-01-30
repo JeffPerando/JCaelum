@@ -9,19 +9,17 @@ package com.elusivehawk.caelum.render;
  */
 public interface IRenderable extends IPreRenderer, IPostRenderer
 {
-	boolean render(RenderContext rcon) throws RenderException;
+	void render(RenderContext rcon) throws RenderException;
 	
-	default boolean render(RenderContext rcon, ICamera cam) throws RenderException
+	default void render(RenderContext rcon, ICamera cam) throws RenderException
 	{
 		ICamera cam_tmp = rcon.getCamera();
 		
 		rcon.setCamera(cam);
 		
-		boolean ret = false;
-		
 		try
 		{
-			ret = this.render(rcon);
+			this.render(rcon);
 			
 		}
 		catch (RenderException e)
@@ -34,7 +32,6 @@ public interface IRenderable extends IPreRenderer, IPostRenderer
 			
 		}
 		
-		return ret;
 	}
 	
 }

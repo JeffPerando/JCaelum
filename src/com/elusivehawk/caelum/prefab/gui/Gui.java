@@ -3,8 +3,10 @@ package com.elusivehawk.caelum.prefab.gui;
 
 import java.util.List;
 import com.elusivehawk.caelum.input.IInputListener;
+import com.elusivehawk.caelum.input.InputConst;
 import com.elusivehawk.caelum.input.InputEvent;
 import com.elusivehawk.caelum.input.MouseEvent;
+import com.elusivehawk.caelum.render.Canvas;
 import com.elusivehawk.util.IDirty;
 import com.elusivehawk.util.IPopulator;
 import com.google.common.collect.Lists;
@@ -25,6 +27,7 @@ public class Gui implements IInputListener, IDirty
 					STATE_COUNT = 4;
 	
 	private final List<IGuiComponent> components = Lists.newArrayList();
+	private final boolean[] isMouseDown = new boolean[InputConst.MOUSE_BUTTONS];
 	
 	private IGuiComponent active = null, lastClicked = null;
 	private boolean dirty = true, mouseDown = false;
@@ -51,39 +54,6 @@ public class Gui implements IInputListener, IDirty
 		this.dirty = b;
 		
 	}
-	
-	/*@Override
-	public void preRender(RenderContext rcon, double delta)
-	{
-		if (this.isDirty())
-		{
-			this.components.forEach(((comp) ->
-			{
-				comp.drawComponent(this.canvas, (comp.isActive() ? (comp == this.active ? (this.mouseDown ? PUSHED : HIGHLIGHTED) : DEFAULT) : INACTIVE));
-				
-			}));
-			
-			this.setIsDirty(false);
-			
-		}
-		
-		this.canvas.preRender(rcon, delta);
-		
-	}
-	
-	@Override
-	public void postRender(RenderContext rcon)
-	{
-		this.canvas.postRender(rcon);
-		
-	}
-	
-	@Override
-	public void render(RenderContext rcon) throws RenderException
-	{
-		this.canvas.render(rcon);
-		
-	}*/
 	
 	@Override
 	public void onInputReceived(InputEvent event, double delta)
@@ -141,14 +111,18 @@ public class Gui implements IInputListener, IDirty
 							synchronized (this)
 							{
 								this.lastClicked = this.active;
-								this.mouseDown = false;
+								this.isMouseDown[c] = false;
 								
 							}
 							
 						}; break;
 						case DOWN:
 						{
-							synchronized (this){this.mouseDown = true;}
+							synchronized (this)
+							{
+								this.isMouseDown[c] = true;
+								
+							}
 							
 							this.setIsDirty(true);
 							
@@ -157,6 +131,20 @@ public class Gui implements IInputListener, IDirty
 					}
 					
 				}
+				
+				boolean down = false;
+				
+				for (int c = 0; c < this.isMouseDown.length; c++)
+				{
+					if (this.isMouseDown[c])
+					{
+						down = true;
+						break;
+					}
+					
+				}
+				
+				this.mouseDown = down;
 				
 			}
 			
@@ -177,6 +165,22 @@ public class Gui implements IInputListener, IDirty
 		this.setIsDirty(true);
 		
 		return this;
+	}
+	
+	public void draw(Canvas canvas)
+	{
+		if (this.isDirty())
+		{
+			this.components.forEach(((comp) ->
+			{
+				comp.drawComponent(canvas, (comp.isActive() ? (comp == this.active ? (this.mouseDown ? PUSHED : HIGHLIGHTED) : DEFAULT) : INACTIVE));
+				
+			}));
+			
+			this.setIsDirty(false);
+			
+		}
+		
 	}
 	
 }

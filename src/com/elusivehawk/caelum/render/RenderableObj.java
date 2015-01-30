@@ -35,21 +35,21 @@ public abstract class RenderableObj implements /*IFilterable, */IRenderable
 	}
 	
 	@Override
-	public boolean render(RenderContext rcon) throws RenderException
+	public void render(RenderContext rcon) throws RenderException
 	{
 		if (!this.initiated)
 		{
-			return false;
+			return;
 		}
 		
 		if (!this.canRender(rcon))
 		{
-			return false;
+			return;
 		}
 		
 		if (this.renderCount == RenderConst.RECURSIVE_LIMIT)
 		{
-			return false;
+			return;
 		}
 		
 		this.renderCount++;
@@ -71,8 +71,6 @@ public abstract class RenderableObj implements /*IFilterable, */IRenderable
 			
 		}
 		
-		boolean ret = false;
-		
 		if (this.program.bind(rcon))
 		{
 			if (rcon.doUpdateCamera())
@@ -84,7 +82,7 @@ public abstract class RenderableObj implements /*IFilterable, */IRenderable
 				
 			}
 			
-			ret = this.doRender(rcon);
+			this.doRender(rcon);
 			
 			rcon.releaseTextures();
 			
@@ -94,7 +92,6 @@ public abstract class RenderableObj implements /*IFilterable, */IRenderable
 		
 		this.renderCount--;
 		
-		return ret;
 	}
 	
 	@Override
@@ -208,7 +205,7 @@ public abstract class RenderableObj implements /*IFilterable, */IRenderable
 	
 	protected abstract boolean initiate(RenderContext rcon);
 	
-	protected abstract boolean doRender(RenderContext rcon) throws RenderException;
+	protected abstract void doRender(RenderContext rcon) throws RenderException;
 	
 	public abstract void setMaterial(Material mat);
 	

@@ -40,9 +40,10 @@ public class TextureRenderer extends RenderableTexture
 	}
 	
 	@Override
-	public boolean renderTexture(RenderContext rcon) throws RenderException
+	public void renderTexture(RenderContext rcon) throws RenderException
 	{
-		return this.renderer.render(rcon);
+		this.renderer.render(rcon);
+		
 	}
 	
 	@Override

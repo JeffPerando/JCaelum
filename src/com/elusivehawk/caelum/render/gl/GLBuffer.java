@@ -170,19 +170,25 @@ public class GLBuffer implements IBindable, IDeletable
 		
 	}
 	
+	public void addAttrib(int index, int size, int type, int stride, long first)
+	{
+		this.addAttrib(index, size, type, false, stride, first);
+		
+	}
+	
 	public void addAttrib(int index, int size, int type, boolean normalized, int stride, long first)
 	{
-		this.addVertexAttrib(index, size, type, false, normalized, stride, first);
+		this.addAttrib(index, size, type, false, normalized, stride, first);
 		
 	}
 	
-	public void addVertexAttrib(int index, int size, int type, boolean unsigned, boolean normalized, int stride, long first)
+	public void addAttrib(int index, int size, int type, boolean unsigned, boolean normalized, int stride, long first)
 	{
-		this.addVertexAttrib(new VertexAttrib(index, size, type, unsigned, normalized, stride, first));
+		this.addAttrib(new VertexAttrib(index, size, type, unsigned, normalized, stride, first));
 		
 	}
 	
-	public void addVertexAttrib(VertexAttrib attrib)
+	public void addAttrib(VertexAttrib attrib)
 	{
 		assert attrib != null;
 		

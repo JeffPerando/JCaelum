@@ -1,22 +1,21 @@
 
 package com.elusivehawk.caelum.meta;
 
-import java.util.Random;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import com.elusivehawk.caelum.CaelumEngine;
 import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.DisplaySettings;
 import com.elusivehawk.caelum.Game;
 import com.elusivehawk.caelum.input.InputEvent;
 import com.elusivehawk.caelum.physics.IPhysicsSimulator;
-import com.elusivehawk.caelum.prefab.gui.Gui;
-import com.elusivehawk.caelum.render.Canvas;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
+import com.elusivehawk.caelum.render.SimpleRenderer;
+import com.elusivehawk.caelum.render.gl.GLEnumDrawType;
 import com.elusivehawk.caelum.render.tex.Color;
-import com.elusivehawk.caelum.render.tex.ITexture;
-import com.elusivehawk.caelum.render.tex.TextureAsset;
-import com.elusivehawk.util.RNG;
 import com.elusivehawk.util.Version;
+import com.elusivehawk.util.storage.BufferHelper;
 
 /**
  * 
@@ -27,10 +26,15 @@ import com.elusivehawk.util.Version;
 public final class ExampleGame extends Game
 {
 	public static final Version VERSION = new Version(1, 0, 0);
-	//public static final int RANDOM_MATERIAL_CAP = 4;
+	/*public static final int RANDOM_MATERIAL_CAP = 4;
 	
 	private Canvas canvas = new Canvas();
-	private Gui gui = new Gui();
+	private Gui gui = new Gui();*/
+	
+	private final FloatBuffer vtx = BufferHelper.makeFloatBuffer(new float[]{-1, -1, -1, 1, -1, -1, -1, 1, -1, -1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1, 1, 1, 1, 1});
+	private final IntBuffer ind = BufferHelper.makeIntBuffer(new int[]{0, 1, 4, 5, 6, 1, 3, 0, 2, 4, 7, 6, 2, 3});
+	
+	private final SimpleRenderer renderer = new SimpleRenderer(this.vtx, this.ind, GLEnumDrawType.GL_TRIANGLE_STRIP, 12);
 	
 	public ExampleGame()
 	{
@@ -40,16 +44,16 @@ public final class ExampleGame extends Game
 	
 	public static void main(String... args)
 	{
-		CaelumEngine.start((() -> {return new ExampleGame();}), args);
+		CaelumEngine.start(ExampleGame::new, args);
 		
 	}
 	
 	@Override
 	public void onInputReceived(InputEvent event, double delta)
 	{
-		this.gui.onInputReceived(event, delta);
+		/*this.gui.onInputReceived(event, delta);
 		
-		/*if (event instanceof KeyEvent)
+		if (event instanceof KeyEvent)
 		{
 			KeyEvent ke = (KeyEvent)event;
 			
@@ -90,22 +94,23 @@ public final class ExampleGame extends Game
 	}
 	
 	@Override
-	public boolean render(RenderContext rcon) throws RenderException
+	public void render(RenderContext rcon) throws RenderException
 	{
-		return this.canvas.render(rcon);
+		this.renderer.render(rcon);
+		
 	}
 	
 	@Override
 	public void preRender(RenderContext rcon)
 	{
-		this.canvas.preRender(rcon);
+		this.renderer.preRender(rcon);
 		
 	}
 	
 	@Override
 	public void postRender(RenderContext rcon)
 	{
-		this.canvas.postRender(rcon);
+		this.renderer.postRender(rcon);
 		
 	}
 	
@@ -131,20 +136,20 @@ public final class ExampleGame extends Game
 	@Override
 	public void initiate(Display display) throws Throwable
 	{
-		Random rng = RNG.rng();
+		/*Random rng = RNG.rng();
 		
 		ITexture tex = new TextureAsset("/res/gui_buttons.png");
 		
-		/*this.canvas.setMaterial(tex);
+		this.canvas.setMaterial(tex);
 		this.canvas.setMaterial(tex, Color.RED);
 		this.canvas.setMaterial(tex, true);
 		this.canvas.setMaterial(tex, Color.GREY);
 		
-		this.canvas.setMaterial(new TextureAsset("/res/test.png"), new Color(ColorFormat.RGB, rng.nextFloat(), rng.nextFloat(), rng.nextFloat()));*/
+		this.canvas.setMaterial(new TextureAsset("/res/test.png"), new Color(ColorFormat.RGB, rng.nextFloat(), rng.nextFloat(), rng.nextFloat()));
 		
 		this.canvas.drawImage(0f, 0f, 1f, 1f);
 		
-		/*this.gui.addComponent(new Button(0.0f, 0.7f, 0.25f, 0.9f, new Icon(0.0f, 0.0f, 0.5f, 0.5f)).setLeftClick(((d, button) ->
+		this.gui.addComponent(new Button(0.0f, 0.7f, 0.25f, 0.9f, new Icon(0.0f, 0.0f, 0.5f, 0.5f)).setLeftClick(((d, button) ->
 		{
 			Logger.info("Button #1 clicked!");
 			
