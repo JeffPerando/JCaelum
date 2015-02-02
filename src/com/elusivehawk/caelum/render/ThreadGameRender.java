@@ -39,16 +39,7 @@ public final class ThreadGameRender extends ThreadTimed
 			return;
 		}
 		
-		try
-		{
-			this.displays.update(delta);
-			
-		}
-		catch (Throwable e)
-		{
-			Logger.err("Error caught during render phase:", e);
-			
-		}
+		this.displays.update(delta);
 		
 	}
 	

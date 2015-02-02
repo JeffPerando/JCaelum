@@ -56,7 +56,6 @@ object CaelumEngineScala
 			
 		}));
 		
-		
 		createGameEnv(args);
 		startGame;
 		setPaused(false);
