@@ -39,7 +39,7 @@ public abstract class Camera3D implements ICamera
 	{
 		if (this.updateProj)
 		{
-			Matrix m = MatrixHelper.createProjectionMatrix(this.fov, rcon.getDisplay().getAspectRatio(), this.zFar, this.zNear);
+			Matrix m = MatrixHelper.projection(this.fov, rcon.getDisplay().getAspectRatio(), this.zFar, this.zNear);
 			
 			synchronized (this)
 			{

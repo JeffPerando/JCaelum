@@ -7,7 +7,7 @@ import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.gl.GL2;
 import com.elusivehawk.caelum.render.gl.GLException;
 import com.elusivehawk.caelum.render.gl.GLProgram;
-import com.elusivehawk.util.IDirty;
+import com.elusivehawk.util.Dirtable;
 
 /**
  * 
@@ -15,25 +15,11 @@ import com.elusivehawk.util.IDirty;
  * 
  * @author Elusivehawk
  */
-public class Shaders implements IDeletable, IDirty
+public class Shaders extends Dirtable implements IDeletable
 {
 	private final IShader[] shaders = new ShaderAsset[RenderConst.SHADER_COUNT];
 	
 	private int shCount = 0;
-	private boolean dirty = false;
-	
-	@Override
-	public boolean isDirty()
-	{
-		return this.dirty;
-	}
-
-	@Override
-	public synchronized void setIsDirty(boolean b)
-	{
-		this.dirty = b;
-		
-	}
 	
 	@Override
 	public void delete(RenderContext rcon)
@@ -108,8 +94,8 @@ public class Shaders implements IDeletable, IDirty
 		synchronized (this)
 		{
 			this.shaders[sh.getType().ordinal()] = sh;
-			this.dirty = true;
 			this.shCount++;
+			this.setIsDirty(true);
 			
 		}
 		

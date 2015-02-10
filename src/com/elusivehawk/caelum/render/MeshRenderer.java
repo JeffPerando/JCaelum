@@ -211,7 +211,7 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 		{
 			if (this.program.bind(rcon))
 			{
-				GL2.glUniformMatrix4f("model", MatrixHelper.createHomogenousMatrix(this.rot, this.scale, this.pos));
+				GL2.glUniformMatrix4f("model", MatrixHelper.homogenous(this.rot, this.scale, this.pos));
 				
 			}
 			
