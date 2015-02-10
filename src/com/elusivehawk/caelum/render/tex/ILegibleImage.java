@@ -2,7 +2,7 @@
 package com.elusivehawk.caelum.render.tex;
 
 import java.nio.ByteBuffer;
-import java.util.function.BiConsumer;
+import com.elusivehawk.caelum.render.Icon;
 import com.elusivehawk.util.storage.BufferHelper;
 
 /**
@@ -34,41 +34,74 @@ public interface ILegibleImage
 		
 	}
 	
-	default ByteBuffer toBytes()
+	default ILegibleImage subImage(Icon icon)
 	{
-		return toBytes(this.getFormat());
+		return this.subImage(icon.getX(), icon.getY(), icon.getW(), icon.getH());
 	}
 	
-	default ByteBuffer toBytes(ColorFormat format)
+	default ILegibleImage subImage(float x, float y, float w, float h)
 	{
-		ByteBuffer buf = BufferHelper.createByteBuffer(this.getWidth() * this.getHeight() * format.filterCount());
+		int xp = (int)(x * this.getWidth());
+		int yp = (int)(y * this.getHeight());
+		int wp = (int)(w - x * this.getWidth());
+		int hp = (int)(h - y * this.getHeight());
 		
-		Color col = new Color(this.getFormat());
-		Color n = new Color(format);
+		ILegibleImage ret = new LegibleByteImage(this.getFormat(), wp, hp);
 		
-		this.forEach(((x, y) ->
+		for (int a = 0; a < wp; a++)
 		{
-			n.setColor(col.setColor(this.getPixel(x, y))).writeToBuffer(buf);
-			
-		}));
-		
-		buf.flip();
-		
-		return buf;
-	}
-	
-	default void forEach(BiConsumer<Integer, Integer> consumer)
-	{
-		for (int x = 0; x < this.getWidth(); x++)
-		{
-			for (int y = 0; y < this.getHeight(); y++)
+			for (int b = 0; b < hp; b++)
 			{
-				consumer.accept(x, y);
+				ret.setPixel(a, b, this.getPixel(a + xp, b + yp));
 				
 			}
 			
 		}
 		
+		return ret;
+	}
+	
+	default ByteBuffer toBytes()
+	{
+		return this.toBytes(this.getFormat());
+	}
+	
+	default ByteBuffer toBytes(ColorFormat format)
+	{
+		return this.toBytes(Icon.BLANK_ICON, format);
+	}
+	
+	default ByteBuffer toBytes(Icon icon)
+	{
+		return this.toBytes(icon, this.getFormat());
+	}
+	
+	default ByteBuffer toBytes(Icon icon, ColorFormat format)
+	{
+		int xoff = (int)(this.getWidth() * icon.getX());
+		int yoff = (int)(this.getHeight() * icon.getY());
+		
+		int w = (int)(this.getWidth() * icon.getW() - icon.getX());
+		int h = (int)(this.getHeight() * icon.getH() - icon.getY());
+		
+		ByteBuffer buf = BufferHelper.createByteBuffer(w * h * format.filterCount());
+		
+		Color col = new Color(this.getFormat());
+		Color n = new Color(format);
+		
+		for (int x = 0; x < w; x++)
+		{
+			for (int y = 0; y < h; y++)
+			{
+				n.setColor(col.setColor(this.getPixel(x + xoff, y + yoff))).writeToBuffer(buf);
+				
+			}
+			
+		}
+		
+		buf.flip();
+		
+		return buf;
 	}
 	
 }
