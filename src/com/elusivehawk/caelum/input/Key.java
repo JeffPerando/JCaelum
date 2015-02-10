@@ -1,12 +1,7 @@
 
 package com.elusivehawk.caelum.input;
 
-import static com.elusivehawk.caelum.input.EnumKeyType.FUNCTIONAL;
-import static com.elusivehawk.caelum.input.EnumKeyType.F_KEY;
-import static com.elusivehawk.caelum.input.EnumKeyType.LETTER;
-import static com.elusivehawk.caelum.input.EnumKeyType.MISC;
-import static com.elusivehawk.caelum.input.EnumKeyType.NUMBER;
-import static com.elusivehawk.caelum.input.EnumKeyType.SYMBOL;
+import static com.elusivehawk.caelum.input.EnumKeyType.*;
 
 /**
  * 

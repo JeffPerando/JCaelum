@@ -4,7 +4,7 @@ package com.elusivehawk.caelum.prefab;
 import com.elusivehawk.caelum.CaelumEngine;
 import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.Game;
-import com.elusivehawk.caelum.input.InputEvent;
+import com.elusivehawk.caelum.input.Input;
 import com.elusivehawk.caelum.physics.IPhysicsSimulator;
 import com.elusivehawk.caelum.render.RenderContext;
 
@@ -25,11 +25,11 @@ public abstract class GameStateGame extends Game
 	}
 	
 	@Override
-	public void onInputReceived(InputEvent event, double delta)
+	public void onInputReceived(Input input, double delta)
 	{
 		if (this.state != null)
 		{
-			this.state.onInputReceived(event, delta);
+			this.state.onInputReceived(input, delta);
 			
 		}
 		

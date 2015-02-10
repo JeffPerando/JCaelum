@@ -2,8 +2,8 @@
 package com.elusivehawk.caelum;
 
 import java.io.Closeable;
-import com.elusivehawk.caelum.input.EnumInputType;
 import com.elusivehawk.caelum.input.IInputListener;
+import com.elusivehawk.caelum.input.Input;
 import com.elusivehawk.caelum.input.InputManager;
 import com.elusivehawk.caelum.render.IRenderable;
 import com.elusivehawk.caelum.render.RenderContext;
@@ -115,9 +115,15 @@ public class Display implements Closeable, IUpdatable
 		
 	}
 	
-	public void pollInput(double delta)
+	public void updateInput(double delta)
 	{
 		this.input.update(delta);
+		
+	}
+	
+	public void sendInputEvents(double delta)
+	{
+		this.input.sendInputEvents(delta);
 		
 	}
 	
@@ -198,33 +204,17 @@ public class Display implements Closeable, IUpdatable
 		
 	}
 	
-	public void addInputListener(IInputListener lis)
-	{
-		for (EnumInputType type : EnumInputType.values())
-		{
-			this.addInputListener(type, lis);
-			
-		}
-		
-	}
-	
-	public void addInputListener(EnumInputType type, IInputListener lis)
+	public void addInputListener(Class<? extends Input> type, IInputListener lis)
 	{
 		this.input.addListener(type, lis);
 		
 	}
 	
-	public void createInputType(EnumInputType type)
+	public void createInputType(Class<? extends Input> type)
 	{
 		assert type != null;
 		
 		this.input.createInputType(type);
-		
-	}
-	
-	public void sendInputEvents(double delta)
-	{
-		this.input.sendInputEvents(delta);
 		
 	}
 	

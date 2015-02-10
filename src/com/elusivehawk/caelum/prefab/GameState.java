@@ -7,7 +7,7 @@ import com.elusivehawk.caelum.CaelumException;
 import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.Game;
 import com.elusivehawk.caelum.input.IInputListener;
-import com.elusivehawk.caelum.input.InputEvent;
+import com.elusivehawk.caelum.input.Input;
 import com.elusivehawk.caelum.physics.IPhysicsSimulator;
 import com.elusivehawk.caelum.render.IRenderable;
 import com.elusivehawk.caelum.render.RenderContext;
@@ -38,11 +38,11 @@ public class GameState extends AbstractGameComponent
 	}
 	
 	@Override
-	public void onInputReceived(InputEvent event, double delta)
+	public void onInputReceived(Input input, double delta)
 	{
 		if (this.inputLis != null)
 		{
-			this.inputLis.onInputReceived(event, delta);
+			this.inputLis.onInputReceived(input, delta);
 			
 		}
 		

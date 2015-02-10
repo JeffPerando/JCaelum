@@ -3,13 +3,10 @@ package com.elusivehawk.caelum.lwjgl;
 
 import java.util.List;
 import org.lwjgl.glfw.GLFW;
-import com.elusivehawk.caelum.Display;
-import com.elusivehawk.caelum.input.DelayedInput;
-import com.elusivehawk.caelum.input.EnumInputType;
-import com.elusivehawk.caelum.input.InputManager;
+import com.elusivehawk.caelum.input.IInputImpl;
+import com.elusivehawk.caelum.input.Input;
 import com.elusivehawk.caelum.input.Key;
-import com.elusivehawk.caelum.input.KeyEvent;
-import com.elusivehawk.caelum.input.PasteEvent;
+import com.elusivehawk.caelum.input.Keyboard;
 import com.elusivehawk.util.storage.Tuple;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -20,7 +17,7 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-public class LWJGLKeyboard extends DelayedInput
+public class LWJGLKeyboardImpl implements IInputImpl
 {
 	public static final ImmutableList<Tuple<Integer, Key>> GLFW_ENUMS;
 	
@@ -130,63 +127,53 @@ public class LWJGLKeyboard extends DelayedInput
 		
 	}
 	
-	public LWJGLKeyboard(InputManager mgr)
-	{
-		super(mgr);
-		
-	}
-	
 	@Override
 	public void close(){}
 	
 	@Override
-	public EnumInputType getType()
+	public void updateInput(double delta, Input input)
 	{
-		return EnumInputType.KEYBOARD;
-	}
-	
-	@Override
-	protected void pollInput(Display display)
-	{
-		long window = ((LWJGLDisplayImpl)display.getImpl()).getWindowId();
+		Keyboard kb = (Keyboard)input;
+		
+		long window = ((LWJGLDisplayImpl)input.getDisplay().getImpl()).getWindowId();
 		
 		for (Tuple<Integer, Key> t : GLFW_ENUMS)
 		{
+			Key key = t.two;
+			
 			int status = GLFW.glfwGetKey(window, t.one);
 			
 			boolean down = (status == GLFW.GLFW_PRESS);
-			boolean downPrev = this.downKeys.contains(t.two);
+			boolean downPrev = this.downKeys.contains(key);
 			
-			if (down || downPrev)
+			if (down)
 			{
-				if (down)
+				if (!downPrev)
 				{
-					if (!downPrev)
-					{
-						this.downKeys.add(t.two);
-						
-					}
+					this.downKeys.add(key);
 					
-				}
-				else
-				{
-					this.downKeys.remove(t.two);
+					kb.onKeyPushed(key, delta);
 					
 				}
 				
-				this.manager.queueInputEvent(new KeyEvent(display, t.two, down, downPrev));
+			}
+			else if (downPrev)
+			{
+				this.downKeys.remove(key);
+				
+				kb.onKeyRaised(key);
 				
 			}
 			
 		}
 		
-		if (this.downKeys.contains(Key.CONTROL) && this.downKeys.contains(Key.V))
+		if (kb.areKeysDown(Key.CONTROL, Key.V))
 		{
 			String paste = GLFW.glfwGetClipboardString(window);
 			
 			if (paste != null)
 			{
-				this.manager.queueInputEvent(new PasteEvent(display, paste));
+				kb.setPasted(paste);
 				
 			}
 			

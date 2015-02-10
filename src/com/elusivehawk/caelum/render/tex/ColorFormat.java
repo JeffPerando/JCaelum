@@ -1,11 +1,14 @@
 
 package com.elusivehawk.caelum.render.tex;
 
+import static com.elusivehawk.caelum.render.tex.ColorFilter.ALPHA;
+import static com.elusivehawk.caelum.render.tex.ColorFilter.BLUE;
+import static com.elusivehawk.caelum.render.tex.ColorFilter.GREEN;
+import static com.elusivehawk.caelum.render.tex.ColorFilter.RED;
 import java.util.Map;
 import com.elusivehawk.caelum.render.gl.GLConst;
 import com.elusivehawk.util.storage.Bitmask;
 import com.google.common.collect.Maps;
-import static com.elusivehawk.caelum.render.tex.ColorFilter.*;
 
 /**
  * 

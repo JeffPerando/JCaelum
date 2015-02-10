@@ -52,7 +52,7 @@ public final class ThreadGameRender extends ThreadTimed
 	@Override
 	public void postUpdate(double delta) throws Throwable
 	{
-		this.displays.pollInput(delta);
+		this.displays.updateInput(delta);
 		
 	}
 	

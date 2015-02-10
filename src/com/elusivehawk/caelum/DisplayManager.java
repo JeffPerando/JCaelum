@@ -87,9 +87,15 @@ public final class DisplayManager implements Closeable, IUpdatable
 		
 	}
 	
-	public void pollInput(double delta)
+	public void updateInput(double delta)
 	{
-		this.displays.forEach(((display) -> {display.pollInput(delta);}));
+		this.displays.forEach(((display) -> {display.updateInput(delta);}));
+		
+	}
+	
+	public void sendInputEvents(double delta)
+	{
+		this.displays.forEach(((display) -> {display.sendInputEvents(delta);}));
 		
 	}
 	
@@ -129,12 +135,6 @@ public final class DisplayManager implements Closeable, IUpdatable
 		}
 		
 		return null;
-	}
-	
-	public void sendInputEvents(double delta)
-	{
-		this.displays.forEach(((display) -> {display.sendInputEvents(delta);}));
-		
 	}
 	
 }

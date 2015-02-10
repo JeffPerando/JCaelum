@@ -7,13 +7,18 @@ import com.elusivehawk.caelum.CaelumEngine;
 import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.DisplaySettings;
 import com.elusivehawk.caelum.Game;
-import com.elusivehawk.caelum.input.InputEvent;
+import com.elusivehawk.caelum.input.Input;
+import com.elusivehawk.caelum.input.Key;
+import com.elusivehawk.caelum.input.Keyboard;
+import com.elusivehawk.caelum.input.Mouse;
 import com.elusivehawk.caelum.physics.IPhysicsSimulator;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
 import com.elusivehawk.caelum.render.SimpleRenderer;
 import com.elusivehawk.caelum.render.gl.GLEnumDrawType;
 import com.elusivehawk.caelum.render.tex.Color;
+import com.elusivehawk.util.EnumLogType;
+import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.Version;
 import com.elusivehawk.util.storage.BufferHelper;
 
@@ -49,47 +54,34 @@ public final class ExampleGame extends Game
 	}
 	
 	@Override
-	public void onInputReceived(InputEvent event, double delta)
+	public void onInputReceived(Input input, double delta)
 	{
-		/*this.gui.onInputReceived(event, delta);
+		//this.gui.onInputReceived(input, delta);
 		
-		if (event instanceof KeyEvent)
+		if (input instanceof Keyboard)
 		{
-			KeyEvent ke = (KeyEvent)event;
+			Keyboard kb = (Keyboard)input;
 			
-			if (ke.down)
+			kb.getDownKeys().forEach(((key) ->
 			{
-				if (ke.key == Key.ESCAPE)
-				{
-					event.display.close();
-					
-				}
-				else
-				{
-					Logger.log(EnumLogType.DEBUG, "Key down: %s", ke.key);
-					
-				}
+				Logger.log(EnumLogType.DEBUG, "Key down: %s", key);
 				
-			}
-			else
+			}));
+			
+			if (kb.isKeyDown(Key.CONTROL) && kb.isKeyDown(Key.V))
 			{
-				Logger.log(EnumLogType.DEBUG, "Key up: %s", ke.key);
+				Logger.log(EnumLogType.DEBUG, "Pasted: %s", kb.getPaste());
 				
 			}
 			
 		}
-		else if (event instanceof MouseEvent)
+		else if (input instanceof Mouse)
 		{
-			MouseEvent me = (MouseEvent)event;
+			Mouse m = (Mouse)input;
 			
-			Logger.log(EnumLogType.DEBUG, "Mouse pos: %s; Delta: %s", me.pos, me.delta);
+			Logger.log(EnumLogType.DEBUG, "Mouse pos: %s; Delta: %s", m.getPosition(), m.getDelta());
 			
 		}
-		else if (event instanceof PasteEvent)
-		{
-			Logger.log(EnumLogType.DEBUG, "Pasted: %s", ((PasteEvent)event).pasted);
-			
-		}*/
 		
 	}
 	

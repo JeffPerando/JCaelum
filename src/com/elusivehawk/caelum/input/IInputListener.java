@@ -10,6 +10,6 @@ package com.elusivehawk.caelum.input;
 @FunctionalInterface
 public interface IInputListener
 {
-	void onInputReceived(InputEvent event, double delta);
+	void onInputReceived(Input input, double delta);
 	
 }

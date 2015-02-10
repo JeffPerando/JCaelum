@@ -3,11 +3,11 @@ package com.elusivehawk.caelum.prefab.gui;
 
 import java.util.List;
 import com.elusivehawk.caelum.input.IInputListener;
+import com.elusivehawk.caelum.input.Input;
 import com.elusivehawk.caelum.input.InputConst;
-import com.elusivehawk.caelum.input.InputEvent;
-import com.elusivehawk.caelum.input.MouseEvent;
+import com.elusivehawk.caelum.input.Mouse;
 import com.elusivehawk.caelum.render.Canvas;
-import com.elusivehawk.util.IDirty;
+import com.elusivehawk.util.Dirtable;
 import com.elusivehawk.util.IPopulator;
 import com.google.common.collect.Lists;
 
@@ -17,7 +17,7 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-public class Gui implements IInputListener, IDirty
+public class Gui extends Dirtable implements IInputListener
 {
 	public static final int
 					DEFAULT = 0,
@@ -30,7 +30,6 @@ public class Gui implements IInputListener, IDirty
 	private final boolean[] isMouseDown = new boolean[InputConst.MOUSE_BUTTONS];
 	
 	private IGuiComponent active = null, lastClicked = null;
-	private boolean dirty = true, mouseDown = false;
 	
 	public Gui(){}
 	
@@ -43,29 +42,16 @@ public class Gui implements IInputListener, IDirty
 	}
 	
 	@Override
-	public boolean isDirty()
-	{
-		return this.dirty;
-	}
-
-	@Override
-	public synchronized void setIsDirty(boolean b)
-	{
-		this.dirty = b;
-		
-	}
-	
-	@Override
-	public void onInputReceived(InputEvent event, double delta)
+	public void onInputReceived(Input input, double delta)
 	{
 		if (this.components.isEmpty())
 		{
 			return;
 		}
 		
-		if (event instanceof MouseEvent)
+		if (input instanceof Mouse)
 		{
-			MouseEvent me = (MouseEvent)event;
+			Mouse m = (Mouse)input;
 			
 			IGuiComponent a = null;
 			
@@ -76,7 +62,7 @@ public class Gui implements IInputListener, IDirty
 					continue;
 				}
 				
-				if (comp.getBounds().within(me.pos))
+				if (comp.getBounds().within(m.getPosition()))
 				{
 					a = comp;
 					break;
@@ -98,14 +84,13 @@ public class Gui implements IInputListener, IDirty
 			
 			if (this.active != null)
 			{
-				for (int c = 0; c < me.status.length; c++)
+				for (int c = 0; c < InputConst.MOUSE_BUTTONS; c++)
 				{
-					switch (me.status[c])
+					switch (m.getStatus(c))
 					{
-						case UP: continue;
 						case LIFTED:
 						{
-							this.active.onClicked(event.display, c);
+							this.active.onClicked(m.getDisplay(), c);
 							this.setIsDirty(true);
 							
 							synchronized (this)
@@ -131,20 +116,6 @@ public class Gui implements IInputListener, IDirty
 					}
 					
 				}
-				
-				boolean down = false;
-				
-				for (int c = 0; c < this.isMouseDown.length; c++)
-				{
-					if (this.isMouseDown[c])
-					{
-						down = true;
-						break;
-					}
-					
-				}
-				
-				this.mouseDown = down;
 				
 			}
 			
@@ -173,7 +144,7 @@ public class Gui implements IInputListener, IDirty
 		{
 			this.components.forEach(((comp) ->
 			{
-				comp.drawComponent(canvas, (comp.isActive() ? (comp == this.active ? (this.mouseDown ? PUSHED : HIGHLIGHTED) : DEFAULT) : INACTIVE));
+				comp.drawComponent(canvas, (comp.isActive() ? (comp == this.active ? (this.isMouseDown[InputConst.MOUSE_LEFT] ? PUSHED : HIGHLIGHTED) : DEFAULT) : INACTIVE));
 				
 			}));
 			

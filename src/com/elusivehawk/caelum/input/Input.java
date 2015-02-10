@@ -2,8 +2,9 @@
 package com.elusivehawk.caelum.input;
 
 import java.io.Closeable;
-import com.elusivehawk.caelum.CaelumException;
+import java.io.IOException;
 import com.elusivehawk.caelum.Display;
+import com.elusivehawk.util.Dirtable;
 import com.elusivehawk.util.IUpdatable;
 
 /**
@@ -12,47 +13,52 @@ import com.elusivehawk.util.IUpdatable;
  * 
  * @author Elusivehawk
  */
-public abstract class Input implements IUpdatable, Closeable
+public abstract class Input extends Dirtable implements IUpdatable, Closeable
 {
-	protected final InputManager manager;
-	
-	private boolean initiated = false;
+	private final Display display;
+	private final IInputImpl impl;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Input(InputManager mgr)
+	public Input(Display screen, IInputImpl implementation)
 	{
-		assert mgr != null;
+		display = screen;
+		impl = implementation;
 		
-		manager = mgr;
+	}
+	
+	@Override
+	public void close() throws IOException
+	{
+		if (this.impl != null)
+		{
+			this.impl.close();
+			
+		}
 		
 	}
 	
 	@Override
 	public void update(double delta) throws Throwable
 	{
-		if (!this.initiated)
+		this.updateInput(delta);
+		
+	}
+	
+	public Display getDisplay()
+	{
+		return this.display;
+	}
+	
+	protected void updateImpl(double delta) throws Throwable
+	{
+		if (this.impl != null)
 		{
-			throw new CaelumException("Input not initiated!");
+			this.impl.updateInput(delta, this);
+			
 		}
 		
-		this.pollInput(this.manager.getDisplay());
-		
 	}
 	
-	public String getName()
-	{
-		return this.getClass().getSimpleName();
-	}
-	
-	public boolean initiateInput()
-	{
-		this.initiated = true;
-		
-		return true;
-	}
-	
-	public abstract EnumInputType getType();
-	
-	protected abstract void pollInput(Display display);
+	public abstract void updateInput(double delta) throws Throwable;
 	
 }

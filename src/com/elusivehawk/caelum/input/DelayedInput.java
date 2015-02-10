@@ -1,6 +1,7 @@
 
 package com.elusivehawk.caelum.input;
 
+import com.elusivehawk.caelum.Display;
 import com.elusivehawk.util.DelayedUpdater;
 
 /**
@@ -11,12 +12,20 @@ import com.elusivehawk.util.DelayedUpdater;
  */
 public abstract class DelayedInput extends Input
 {
-	@SuppressWarnings("synthetic-access")
-	private final DelayedUpdater updater = new DelayedUpdater(0.1, super::update);
+	private final DelayedUpdater updater;
 	
-	public DelayedInput(InputManager mgr)
+	public DelayedInput(Display screen, IInputImpl implementation)
 	{
-		super(mgr);
+		this(0.1, screen, implementation);
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public DelayedInput(double delay, Display screen, IInputImpl implementation)
+	{
+		super(screen, implementation);
+		
+		updater = new DelayedUpdater(delay, this::updateInput);
 		
 	}
 	

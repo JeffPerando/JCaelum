@@ -75,4 +75,24 @@ public class Icon
 		return this.stats;
 	}
 	
+	public float getX()
+	{
+		return this.stats[0];
+	}
+	
+	public float getY()
+	{
+		return this.stats[1];
+	}
+	
+	public float getW()
+	{
+		return this.stats[2];
+	}
+	
+	public float getH()
+	{
+		return this.stats[3];
+	}
+	
 }

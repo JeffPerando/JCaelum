@@ -1,9 +1,8 @@
 
 package com.elusivehawk.caelum;
 
-import com.elusivehawk.caelum.input.EnumInputType;
+import com.elusivehawk.caelum.input.IInputImpl;
 import com.elusivehawk.caelum.input.Input;
-import com.elusivehawk.caelum.input.InputManager;
 import com.elusivehawk.util.EnumOS;
 import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.parse.json.JsonObject;
@@ -38,6 +37,6 @@ public interface IGameEnvironment
 	
 	IDisplayImpl createDisplay() throws Throwable;
 	
-	Input createInput(InputManager inmgr, EnumInputType type);
+	IInputImpl createInputImpl(Class<? extends Input> type);
 	
 }

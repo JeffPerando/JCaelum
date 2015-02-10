@@ -7,8 +7,8 @@ package com.elusivehawk.caelum.input;
  * 
  * @author Elusivehawk
  */
-public enum EnumInputType
+public enum EnumKeyStatus
 {
-	CONTROLLER, KEYBOARD, MOUSE, WHEEL, OTHER;
+	DOWN, RELEASED, UP;
 	
 }

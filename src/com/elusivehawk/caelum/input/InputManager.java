@@ -2,6 +2,7 @@
 package com.elusivehawk.caelum.input;
 
 import java.io.Closeable;
+import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
 import com.elusivehawk.caelum.CaelumException;
@@ -19,12 +20,11 @@ import com.google.common.collect.Maps;
  * 
  * @author Elusivehawk
  */
-public final class InputManager implements Closeable, IUpdatable
+public final class InputManager implements IUpdatable, Closeable
 {
-	private final List<EnumInputType> types = Lists.newArrayList();
+	private final List<Class<? extends Input>> types = Lists.newArrayList();
 	private final List<Input> input = Lists.newArrayList();
-	private final Map<EnumInputType, List<IInputListener>> listeners = Maps.newHashMap();
-	private final List<InputEvent> eventQueue = SyncList.newList();
+	private final Map<Class<? extends Input>, List<IInputListener>> listeners = Maps.newHashMap();
 	
 	private final Display display;
 	
@@ -34,6 +34,26 @@ public final class InputManager implements Closeable, IUpdatable
 	public InputManager(Display window)
 	{
 		display = window;
+		
+	}
+	
+	@Override
+	public void close()
+	{
+		this.input.forEach(((input) ->
+		{
+			try
+			{
+				input.close();
+				
+			}
+			catch (Exception e)
+			{
+				Logger.err(e);
+				
+			}
+			
+		}));
 		
 	}
 	
@@ -67,19 +87,15 @@ public final class InputManager implements Closeable, IUpdatable
 		
 	}
 	
-	@Override
-	public void close()
+	public void sendInputEvents(double delta)
 	{
-		this.input.forEach(((in) ->
+		this.input.forEach(((input) ->
 		{
-			try
+			if (input.isDirty())
 			{
-				in.close();
+				this.updateListeners(input, delta);
 				
-			}
-			catch (Exception e)
-			{
-				Logger.err(e);
+				input.setIsDirty(false);
 				
 			}
 			
@@ -99,31 +115,53 @@ public final class InputManager implements Closeable, IUpdatable
 			return;
 		}
 		
-		for (EnumInputType type : this.types)
+		for (Class<? extends Input> type : this.types)
 		{
-			Input in = ge.createInput(this, type);
+			IInputImpl impl = ge.createInputImpl(type);
 			
-			if (in == null)
+			if (impl == null)
 			{
-				continue;
+				Logger.warn("Could not create implementation for type %s", type.getSimpleName());
+				
 			}
 			
-			if (in.getType() != type)
+			Input in = null;
+			
+			try
 			{
-				continue;
+				Constructor<? extends Input> con = type.getConstructor(Display.class, IInputImpl.class);
+				
+				if (con == null)
+				{
+					if (impl != null)
+					{
+						throw new CaelumException("Cannot find constructor for input type \"%s\": Has implementation, but does not have a constructor that accepts it", type.getSimpleName());
+					}
+					
+					con = type.getConstructor(Display.class);
+					
+					if (con == null)
+					{
+						throw new CaelumException("Cannot find constructor for input type \"%s\"", type.getSimpleName());
+					}
+					
+					in = con.newInstance(this.display);
+					
+				}
+				else
+				{
+					in = con.newInstance(this.display, impl);
+					
+				}
+				
+			}
+			catch (Throwable e)
+			{
+				Logger.err(e);
+				
 			}
 			
 			this.input.add(in);
-			
-		}
-		
-		for (Input in : this.input)
-		{
-			if (!in.initiateInput())
-			{
-				this.input.remove(in);
-				
-			}
 			
 		}
 		
@@ -131,40 +169,7 @@ public final class InputManager implements Closeable, IUpdatable
 		
 	}
 	
-	public void queueInputEvent(InputEvent event)
-	{
-		assert event != null;
-		
-		this.eventQueue.add(event);
-		
-	}
-	
-	public void sendInputEvents(double delta)
-	{
-		if (this.listeners.isEmpty() || this.eventQueue.isEmpty())
-		{
-			return;
-		}
-		
-		for (int c = 0; c < this.eventQueue.size(); c++)
-		{
-			InputEvent event = this.eventQueue.get(c);
-			
-			List<IInputListener> inList = this.listeners.get(event.type);
-			
-			if (inList != null)
-			{
-				inList.forEach(((lis) -> {lis.onInputReceived(event, delta);}));
-				
-			}
-			
-			this.eventQueue.remove(c);
-			
-		}
-		
-	}
-	
-	public void createInputType(EnumInputType type)
+	public void createInputType(Class<? extends Input> type)
 	{
 		if (!this.types.contains(type))
 		{
@@ -174,7 +179,7 @@ public final class InputManager implements Closeable, IUpdatable
 		
 	}
 	
-	public void addListener(EnumInputType type, IInputListener lis)
+	public void addListener(Class<? extends Input> type, IInputListener lis)
 	{
 		assert type != null;
 		assert lis != null;
@@ -184,11 +189,24 @@ public final class InputManager implements Closeable, IUpdatable
 		if (inList == null)
 		{
 			inList = SyncList.newList();
+			
 			this.listeners.put(type, inList);
 			
 		}
 		
 		inList.add(lis);
+		
+	}
+	
+	private void updateListeners(Input input, double delta)
+	{
+		List<IInputListener> list = this.listeners.get(input.getClass());
+		
+		if (list != null)
+		{
+			list.forEach(((lis) -> {lis.onInputReceived(input, delta);}));
+			
+		}
 		
 	}
 	
