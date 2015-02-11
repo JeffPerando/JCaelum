@@ -47,7 +47,11 @@ public class Mouse extends Input
 		{
 			if (this.buttons[c] == EnumMouseClick.LIFTED)
 			{
-				this.buttons[c] = EnumMouseClick.UP;
+				synchronized (this)
+				{
+					this.buttons[c] = EnumMouseClick.UP;
+					
+				}
 				
 			}
 			

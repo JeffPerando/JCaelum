@@ -23,7 +23,7 @@ public class Keyboard extends DelayedInput
 	private final List<Tuple<Key[], Consumer<Keyboard>>> hooks = Lists.newArrayList();
 	
 	private final List<Key> downKeys = SyncList.newList();
-	private final Map<Key, EnumKeyStatus> keyStats = Maps.newEnumMap(Key.class);
+	private final Map<Key, EnumKeyStatus> keyStats = Maps.newConcurrentMap();
 	private final double[] keyTime = new double[InputConst.KEY_COUNT];
 	private final DirtableStorage<String> paste = new DirtableStorage<String>().setSync();
 	
@@ -135,15 +135,19 @@ public class Keyboard extends DelayedInput
 	
 	public void onKeyPushed(Key key, double delta)
 	{
-		double kd = this.keyTime[key.ordinal()];
-		
 		synchronized (this)
 		{
-			this.keyTime[key.ordinal()] = (kd == 0 ? delta : kd + delta);
+			this.keyTime[key.ordinal()] += delta;
 			
 		}
 		
-		if (!this.downKeys.contains(key))
+		if (key.isLock() && this.getStatus(key) == EnumKeyStatus.DOWN)
+		{
+			this.downKeys.remove(key);
+			this.keyStats.put(key, EnumKeyStatus.RELEASED);
+			
+		}
+		else if (!this.downKeys.contains(key))
 		{
 			this.downKeys.add(key);
 			this.keyStats.put(key, EnumKeyStatus.DOWN);
@@ -156,6 +160,11 @@ public class Keyboard extends DelayedInput
 	
 	public void onKeyRaised(Key key)
 	{
+		if (key.isLock())
+		{
+			return;
+		}
+		
 		int i = this.downKeys.indexOf(key);
 		
 		if (i != -1)

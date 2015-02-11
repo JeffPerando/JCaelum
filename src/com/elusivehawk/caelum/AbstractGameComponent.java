@@ -9,7 +9,7 @@ import com.elusivehawk.util.IUpdatable;
 
 /**
  * 
- * An abstract class that is meant to unify some {@link Game} and {@link GameState} classes.
+ * 
  * 
  * @author Elusivehawk
  * 

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import com.elusivehawk.caelum.assets.AssetManager;
+import com.elusivehawk.caelum.input.InputManager;
 import com.elusivehawk.caelum.input.Keyboard;
 import com.elusivehawk.caelum.input.Mouse;
 import com.elusivehawk.caelum.render.IRenderable;
@@ -394,11 +395,13 @@ public final class CaelumEngine
 			
 			this.display = createDisplay("default", settings, g);
 			
-			this.display.createInputType(Keyboard.class);
-			this.display.createInputType(Mouse.class);
+			InputManager input = this.display.getInput();
 			
-			this.display.addInputListener(Keyboard.class, g);
-			this.display.addInputListener(Mouse.class, g);
+			input.addInput(new Keyboard(this.display));
+			input.addInput(new Mouse(this.display));
+			
+			input.addListener(Keyboard.class, g);
+			input.addListener(Mouse.class, g);
 			
 		}
 		

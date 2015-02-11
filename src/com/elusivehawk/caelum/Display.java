@@ -2,8 +2,6 @@
 package com.elusivehawk.caelum;
 
 import java.io.Closeable;
-import com.elusivehawk.caelum.input.IInputListener;
-import com.elusivehawk.caelum.input.Input;
 import com.elusivehawk.caelum.input.InputManager;
 import com.elusivehawk.caelum.render.IRenderable;
 import com.elusivehawk.caelum.render.RenderContext;
@@ -194,6 +192,11 @@ public class Display implements Closeable, IUpdatable
 		return this.impl;
 	}
 	
+	public InputManager getInput()
+	{
+		return this.input;
+	}
+	
 	public boolean isInitiated()
 	{
 		return this.initiated;
@@ -205,20 +208,6 @@ public class Display implements Closeable, IUpdatable
 		
 		this.settings = ds;
 		this.refresh = true;
-		
-	}
-	
-	public void addInputListener(Class<? extends Input> type, IInputListener lis)
-	{
-		this.input.addListener(type, lis);
-		
-	}
-	
-	public void createInputType(Class<? extends Input> type)
-	{
-		assert type != null;
-		
-		this.input.createInputType(type);
 		
 	}
 	

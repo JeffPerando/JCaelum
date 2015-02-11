@@ -2,7 +2,6 @@
 package com.elusivehawk.caelum.input;
 
 import java.io.Closeable;
-import java.lang.reflect.Constructor;
 import java.util.List;
 import com.elusivehawk.caelum.CaelumException;
 import com.elusivehawk.caelum.Display;
@@ -42,7 +41,7 @@ public final class InputManager implements IUpdatable, Closeable
 				input.close();
 				
 			}
-			catch (Exception e)
+			catch (Throwable e)
 			{
 				Logger.err(e);
 				
@@ -122,24 +121,21 @@ public final class InputManager implements IUpdatable, Closeable
 		
 	}
 	
-	public void createInputType(Class<? extends Input> type)
+	public void addInput(Input input)
 	{
-		try
+		assert input != null;
+		assert input.getDisplay() == this.display;
+		
+		for (Input in : this.input)
 		{
-			Constructor<? extends Input> con = type.getConstructor(Display.class);
-			
-			if (con != null)
+			if (in.getClass().isInstance(input))
 			{
-				this.input.add(con.newInstance(this.display));
-				
+				throw new InputException("Duplicate input receptical of type %s", in.getClass());
 			}
 			
 		}
-		catch (Throwable e)
-		{
-			Logger.err(e);
-			
-		}
+		
+		this.input.add(input);
 		
 	}
 	
@@ -156,11 +152,6 @@ public final class InputManager implements IUpdatable, Closeable
 			
 		}
 		
-	}
-	
-	public Display getDisplay()
-	{
-		return this.display;
 	}
 	
 	public Input getInput(Class<? extends Input> type)

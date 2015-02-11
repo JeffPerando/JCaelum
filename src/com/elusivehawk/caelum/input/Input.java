@@ -4,7 +4,6 @@ package com.elusivehawk.caelum.input;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.List;
-import com.elusivehawk.caelum.CaelumException;
 import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.IGameEnvironment;
 import com.elusivehawk.util.Dirtable;
@@ -49,10 +48,18 @@ public abstract class Input extends Dirtable implements IUpdatable, Closeable
 	{
 		if (!this.initiated)
 		{
-			throw new CaelumException("Input not initiated: %s", this);
+			throw new InputException("Input not initiated: %s", this);
 		}
 		
-		this.updateInput(delta);
+		try
+		{
+			this.updateInput(delta);
+			
+		}
+		catch (Throwable e)
+		{
+			throw new InputException(e);
+		}
 		
 	}
 	
