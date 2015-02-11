@@ -115,18 +115,6 @@ public class Display implements Closeable, IUpdatable
 		
 	}
 	
-	public void updateInput(double delta)
-	{
-		this.input.update(delta);
-		
-	}
-	
-	public void sendInputEvents(double delta)
-	{
-		this.input.sendInputEvents(delta);
-		
-	}
-	
 	public void initDisplay(IGameEnvironment ge) throws Throwable
 	{
 		IDisplayImpl imp = ge.createDisplay();
@@ -157,6 +145,22 @@ public class Display implements Closeable, IUpdatable
 		}
 		
 		imp.postInit();
+		
+	}
+	
+	public void updateInput(double delta)
+	{
+		this.input.update(delta);
+		
+	}
+	
+	public void sendInputEvents(double delta)
+	{
+		if (this.initiated)
+		{
+			this.input.sendInputEvents(delta);
+			
+		}
 		
 	}
 	

@@ -110,7 +110,7 @@ public enum Key
 	
 	public final EnumKeyType keyType;
 	
-	private final Character lower, upper;
+	private final char lower, upper;
 	private final boolean isLock;
 	
 	Key(EnumKeyType type)
@@ -146,9 +146,14 @@ public enum Key
 		
 	}
 	
-	public Character getChar(boolean caps)
+	public char toChar(Keyboard kb)
 	{
-		return caps ? this.upper : this.lower;
+		if (kb.isKeyDown(SHIFT) || (this.keyType == LETTER && kb.isKeyDown(CAPS_LOCK)))
+		{
+			return this.upper;
+		}
+		
+		return this.lower;
 	}
 	
 	public boolean isLock()

@@ -11,8 +11,9 @@ public final class InputConst
 {
 	private InputConst(){}
 	
-	public static final int MOUSE_BUTTONS = 8;
+	public static final int KEY_COUNT = Key.values().length;
 	
+	public static final int MOUSE_BUTTONS = 8;
 	public static final int
 					MOUSE_NONE = -1,
 					MOUSE_LEFT = 0,

@@ -28,9 +28,9 @@ public class Mouse extends Input
 	private final DirtableStorage<Boolean> grab = new DirtableStorage<Boolean>().setSync();
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Mouse(Display screen, IInputImpl implementation)
+	public Mouse(Display screen)
 	{
-		super(screen, implementation);
+		super(screen);
 		
 		for (int c = 0; c < buttons.length; c++)
 		{
@@ -55,6 +55,11 @@ public class Mouse extends Input
 		
 		this.updateImpl(delta);
 		
+	}
+	
+	@Override
+	public void triggerHooks(double delta)
+	{
 		this.hooks.forEach(((tuple) ->
 		{
 			for (int button : tuple.one)
@@ -69,6 +74,8 @@ public class Mouse extends Input
 			tuple.two.accept(this);
 			
 		}));
+		
+		super.triggerHooks(delta);
 		
 	}
 	
@@ -88,9 +95,29 @@ public class Mouse extends Input
 		return this.pos;
 	}
 	
+	public float getX()
+	{
+		return this.pos.get(0);
+	}
+	
+	public float getY()
+	{
+		return this.pos.get(1);
+	}
+	
 	public Vector getDelta()
 	{
 		return this.deltaPos;
+	}
+	
+	public float getXD()
+	{
+		return this.deltaPos.get(0);
+	}
+	
+	public float getYD()
+	{
+		return this.deltaPos.get(1);
 	}
 	
 	public ILegibleImage getIcon()
@@ -117,7 +144,11 @@ public class Mouse extends Input
 	{
 		if (this.buttons[button] != EnumMouseClick.DOWN)
 		{
-			this.buttons[button] = EnumMouseClick.DOWN;
+			synchronized (this)
+			{
+				this.buttons[button] = EnumMouseClick.DOWN;
+				
+			}
 			
 			this.setIsDirty(true);
 			
@@ -129,7 +160,11 @@ public class Mouse extends Input
 	{
 		if (this.buttons[button] == EnumMouseClick.DOWN)
 		{
-			this.buttons[button] = EnumMouseClick.LIFTED;
+			synchronized (this)
+			{
+				this.buttons[button] = EnumMouseClick.LIFTED;
+				
+			}
 			
 			this.setIsDirty(true);
 			

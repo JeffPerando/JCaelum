@@ -24,12 +24,12 @@ public class Keyboard extends DelayedInput
 	
 	private final List<Key> downKeys = SyncList.newList();
 	private final Map<Key, EnumKeyStatus> keyStats = Maps.newEnumMap(Key.class);
-	private final Map<Key, Double> keyTime = Maps.newEnumMap(Key.class);
-	private final DirtableStorage<String> paste = new DirtableStorage<String>();
+	private final double[] keyTime = new double[InputConst.KEY_COUNT];
+	private final DirtableStorage<String> paste = new DirtableStorage<String>().setSync();
 	
-	public Keyboard(Display screen, IInputImpl impl)
+	public Keyboard(Display screen)
 	{
-		super(screen, impl);
+		super(screen);
 		
 	}
 	
@@ -41,7 +41,12 @@ public class Keyboard extends DelayedInput
 			if (entry.getValue() == EnumKeyStatus.RELEASED)
 			{
 				this.keyStats.remove(entry.getKey());
-				this.keyTime.remove(entry.getKey());
+				
+				synchronized (this)
+				{
+					this.keyTime[entry.getKey().ordinal()] = 0;
+					
+				}
 				
 			}
 			
@@ -49,6 +54,11 @@ public class Keyboard extends DelayedInput
 		
 		this.updateImpl(delta);
 		
+	}
+	
+	@Override
+	public void triggerHooks(double delta)
+	{
 		this.hooks.forEach(((tuple) ->
 		{
 			if (this.areKeysDown(tuple.one))
@@ -58,6 +68,8 @@ public class Keyboard extends DelayedInput
 			}
 			
 		}));
+		
+		super.triggerHooks(delta);
 		
 	}
 	
@@ -113,7 +125,7 @@ public class Keyboard extends DelayedInput
 	
 	public double getDelta(Key key)
 	{
-		return this.keyTime.get(key);
+		return this.keyTime[key.ordinal()];
 	}
 	
 	public String getPaste()
@@ -123,9 +135,13 @@ public class Keyboard extends DelayedInput
 	
 	public void onKeyPushed(Key key, double delta)
 	{
-		Double kd = this.keyTime.get(key);
+		double kd = this.keyTime[key.ordinal()];
 		
-		this.keyTime.put(key, kd == null ? delta : kd + delta);
+		synchronized (this)
+		{
+			this.keyTime[key.ordinal()] = (kd == 0 ? delta : kd + delta);
+			
+		}
 		
 		if (!this.downKeys.contains(key))
 		{

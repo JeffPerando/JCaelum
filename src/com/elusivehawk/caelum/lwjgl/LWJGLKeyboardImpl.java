@@ -144,11 +144,11 @@ public class LWJGLKeyboardImpl implements IInputImpl
 			int status = GLFW.glfwGetKey(window, t.one);
 			
 			boolean down = (status == GLFW.GLFW_PRESS);
-			boolean downPrev = this.downKeys.contains(key);
+			int ki = this.downKeys.indexOf(key);
 			
 			if (down)
 			{
-				if (!downPrev)
+				if (ki == -1)
 				{
 					this.downKeys.add(key);
 					
@@ -157,9 +157,9 @@ public class LWJGLKeyboardImpl implements IInputImpl
 				}
 				
 			}
-			else if (downPrev)
+			else if (ki != -1)
 			{
-				this.downKeys.remove(key);
+				this.downKeys.remove(ki);
 				
 				kb.onKeyRaised(key);
 				

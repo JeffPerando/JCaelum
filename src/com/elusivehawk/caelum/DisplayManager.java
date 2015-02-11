@@ -20,12 +20,11 @@ public final class DisplayManager implements Closeable, IUpdatable
 	private final IGameEnvironment env;
 	private final List<Display> displays = SyncList.newList();
 	
-	/*private IDisplayImpl display = null;
-	private boolean init = false;*/
-	
 	@SuppressWarnings("unqualified-field-access")
 	public DisplayManager(IGameEnvironment ge)
 	{
+		assert ge != null;
+		
 		env = ge;
 		
 	}
