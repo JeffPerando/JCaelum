@@ -15,7 +15,6 @@ import com.elusivehawk.caelum.render.gl.GL2;
 import com.elusivehawk.caelum.render.gl.GL3;
 import com.elusivehawk.util.CompInfo;
 import com.elusivehawk.util.EnumOS;
-import com.elusivehawk.util.parse.json.JsonObject;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -54,7 +53,7 @@ public class LWJGLEnvironment implements IGameEnvironment
 	}
 	
 	@Override
-	public void initiate(JsonObject json, String... args)
+	public void initiate(String... args)
 	{
 		System.setProperty("org.lwjgl.librarypath", CaelumEngine.getNativeLocation().getAbsolutePath());
 		

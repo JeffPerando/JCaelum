@@ -5,7 +5,6 @@ import com.elusivehawk.caelum.input.IInputImpl;
 import com.elusivehawk.caelum.input.Input;
 import com.elusivehawk.util.EnumOS;
 import com.elusivehawk.util.Internal;
-import com.elusivehawk.util.parse.json.JsonObject;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -26,7 +25,7 @@ public interface IGameEnvironment
 	
 	void preInit();
 	
-	void initiate(JsonObject json, String... args);
+	void initiate(String... args);
 	
 	void destroy();
 	

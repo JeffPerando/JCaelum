@@ -25,7 +25,6 @@ import com.elusivehawk.util.concurrent.ThreadStoppable;
 import com.elusivehawk.util.io.FileHelper;
 import com.elusivehawk.util.io.IOHelper;
 import com.elusivehawk.util.parse.ParseHelper;
-import com.elusivehawk.util.parse.json.JsonObject;
 import com.elusivehawk.util.task.TaskManager;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
@@ -48,7 +47,6 @@ public final class CaelumEngine
 	
 	private File nativeLocation = null;
 	private IGameEnvironment env = null;
-	private JsonObject envConfig = null;
 	
 	private Game game = null;
 	private Display display = null;
@@ -168,7 +166,7 @@ public final class CaelumEngine
 		
 		//XXX Initiate game environment
 		
-		this.env.initiate(this.envConfig, args);
+		this.env.initiate(args);
 		
 		//XXX Load display system
 		
@@ -297,7 +295,6 @@ public final class CaelumEngine
 		this.threads.clear();
 		
 		this.env = null;
-		this.envConfig = null;
 		this.displays = null;
 		
 	}
