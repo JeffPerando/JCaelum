@@ -6,11 +6,11 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import com.elusivehawk.caelum.assets.AssetManager;
 import com.elusivehawk.caelum.input.InputManager;
 import com.elusivehawk.caelum.input.Keyboard;
 import com.elusivehawk.caelum.input.Mouse;
+import com.elusivehawk.caelum.lwjgl.LWJGLEnvironment;
 import com.elusivehawk.caelum.render.IRenderable;
 import com.elusivehawk.caelum.render.ThreadGameRender;
 import com.elusivehawk.util.CompInfo;
@@ -19,7 +19,6 @@ import com.elusivehawk.util.HashGen;
 import com.elusivehawk.util.IPausable;
 import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.Logger;
-import com.elusivehawk.util.ReflectionHelper;
 import com.elusivehawk.util.ShutdownHelper;
 import com.elusivehawk.util.Version;
 import com.elusivehawk.util.concurrent.ThreadStoppable;
@@ -27,14 +26,8 @@ import com.elusivehawk.util.io.FileHelper;
 import com.elusivehawk.util.io.IOHelper;
 import com.elusivehawk.util.parse.ParseHelper;
 import com.elusivehawk.util.parse.json.JsonObject;
-import com.elusivehawk.util.parse.json.JsonParseException;
-import com.elusivehawk.util.parse.json.JsonParser;
-import com.elusivehawk.util.parse.json.JsonValue;
-import com.elusivehawk.util.storage.Pair;
-import com.elusivehawk.util.storage.Tuple;
 import com.elusivehawk.util.task.TaskManager;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
@@ -53,14 +46,10 @@ public final class CaelumEngine
 	private final TaskManager tasks = new TaskManager();
 	private final AssetManager assets = new AssetManager();
 	
-	private final Map<String, String> startargs = Maps.newHashMap();
-	private final List<String> startupPrefixes = Arrays.asList("env:", "gamefac:", "verbose:");
-	
 	private File nativeLocation = null;
 	private IGameEnvironment env = null;
 	private JsonObject envConfig = null;
 	
-	private IGameFactory factory = null;
 	private Game game = null;
 	private Display display = null;
 	private DisplayManager displays = null;
@@ -141,89 +130,19 @@ public final class CaelumEngine
 	}
 	
 	@Internal
-	public static void main(String... args)
+	public void start(Game g, String... args)
 	{
-		Runtime.getRuntime().addShutdownHook(new Thread((() ->
+		if (g == null)
 		{
-			CaelumEngine.instance().shutDownGame();
-			CaelumEngine.instance().clearGameEnv();
+			Logger.log(EnumLogType.ERROR, "Could not load game: Game not created by game factory.");
+			ShutdownHelper.exit("NO-GAME-FOUND");
 			
-		})));
-		
-		instance().createGameEnv(args);
-		instance().startGame();
-		instance().pauseGame(false);
-		
-	}
-	
-	/**
-	 * 
-	 * ONLY FOR DEBUGGING AND SMALL GAMES!
-	 * 
-	 * @param gamefac
-	 * @param args
-	 */
-	public static void start(IGameFactory gamefac, String... args)
-	{
-		if (instance().factory != null)
-		{
-			throw new CaelumException("Nuh uh uh, you didn't say the magic word...");
-		}
-		
-		instance().factory = gamefac;
-		
-		main(args);
-		
-	}
-	
-	@Internal
-	public void createGameEnv(String... args)
-	{
-		if (this.env != null)
-		{
 			return;
 		}
 		
-		//XXX Parse the starting arguments
-		
-		List<String> gargs = Lists.newArrayList();
-		Map<String, String> strs = Maps.newHashMap();
-		Pair<String> spl;
-		
-		for (String str : args)
-		{
-			boolean testForGameArg = true;
-			
-			for (String prefix : this.startupPrefixes)
-			{
-				if (str.startsWith(prefix))
-				{
-					spl = ParseHelper.splitFirst(str, ":");
-					strs.put(spl.one, spl.two);
-					testForGameArg = false;
-					
-					break;
-				}
-				
-			}
-			
-			if (testForGameArg)
-			{
-				gargs.add(str);
-				
-			}
-			
-		}
-		
-		this.startargs.putAll(strs);
-		
 		Logger.info("Starting Caelum Engine %s on %s.", VERSION, CompInfo.OS);
 		
-		boolean verbose = !"false".equalsIgnoreCase(this.startargs.get("verbose"));
-		
-		Logger.setEnableVerbosity(verbose);
-		
-		Logger.info("Verbosity is set to \'%s\'", verbose);
+		Logger.info("Verbosity is set to \'%s\'", Logger.enableVerbosity());
 		
 		/*if (DEBUG)
 		{
@@ -237,75 +156,7 @@ public final class CaelumEngine
 		
 		//XXX Load game environment
 		
-		if (this.env == null)
-		{
-			IGameEnvironment gameenv = null;
-			Class<?> clazz = null;
-			String cl = this.startargs.get("env");
-			
-			if (cl == null)
-			{
-				clazz = this.loadEnvironmentFromJson();
-				
-			}
-			else
-			{
-				try
-				{
-					clazz = Class.forName(cl);
-					
-				}
-				catch (Exception e){}
-				
-			}
-			
-			if (clazz == null)
-			{
-				Logger.verbose("Loading default game environment.");
-				
-				try
-				{
-					switch (CompInfo.OS)
-					{
-						case WINDOWS:
-						case MAC:
-						case LINUX: clazz = Class.forName("com.elusivehawk.caelum.lwjgl.LWJGLEnvironment"); break;
-						case ANDROID: clazz = Class.forName("com.elusivehawk.caelum.android.AndroidEnvironment"); break;
-						default: Logger.wtf("Unsupported OS! Enum: %s; OS: %s", CompInfo.OS, System.getProperty("os.name"));
-						
-					}
-					
-				}
-				catch (Exception e){}
-				
-			}
-			else
-			{
-				Logger.warn("Loading custom game environment, this is gonna suck...");
-				
-			}
-			
-			gameenv = (IGameEnvironment)ReflectionHelper.newInstance(clazz, new Class[]{IGameEnvironment.class}, null);
-			
-			if (gameenv == null)
-			{
-				Logger.log(EnumLogType.ERROR, "Unable to load environment: Instance couldn't be created. Class: %s", clazz == null ? "NULL" : clazz.getCanonicalName());
-				ShutdownHelper.exit("NO-ENVIRONMENT-FOUND");
-				
-				return;
-			}
-			
-			if (!gameenv.isCompatible(CompInfo.OS))
-			{
-				Logger.log(EnumLogType.ERROR, "Unable to load environment: Current OS is incompatible. Class: %s; OS: %s", clazz == null ? "NULL" : clazz.getCanonicalName(), CompInfo.OS);
-				ShutdownHelper.exit("NO-ENVIRONMENT-FOUND");
-				
-				return;
-			}
-			
-			this.env = gameenv;
-			
-		}
+		this.env = new LWJGLEnvironment();//TODO Remove; We don't need an environment system.
 		
 		//XXX Pre-initiate game environment
 		
@@ -322,50 +173,6 @@ public final class CaelumEngine
 		//XXX Load display system
 		
 		this.displays = new DisplayManager(this.env);
-		
-		//XXX Load game factory
-		
-		if (this.factory == null)
-		{
-			String gamefac = this.startargs.get("gamefac");
-			
-			if (gamefac == null || gamefac.equals(""))
-			{
-				Logger.wtf("Cannot make game factory: \"gamefac\" argument not provided!");
-				
-			}
-			else
-			{
-				this.factory = (IGameFactory)ReflectionHelper.newInstance(gamefac, new Class<?>[]{IGameFactory.class}, null);
-				
-			}
-			
-		}
-		
-	}
-	
-	@Internal
-	public void startGame()
-	{
-		//XXX Create the game itself
-		
-		if (this.factory == null)
-		{
-			Logger.log(EnumLogType.ERROR, "Game factory not found: Factory not provided");
-			ShutdownHelper.exit("NO-FACTORY-FOUND");
-			
-			return;
-		}
-		
-		Game g = this.factory.createGame();
-		
-		if (g == null)
-		{
-			Logger.log(EnumLogType.ERROR, "Could not load game");
-			ShutdownHelper.exit("NO-GAME-FOUND");
-			
-			return;
-		}
 		
 		this.tasks.start();
 		
@@ -453,42 +260,14 @@ public final class CaelumEngine
 				continue;
 			}
 			
-			if (t.isAlive())
-			{
-				continue;
-			}
-			
-			t.setPaused(true);
 			t.start();
 			
 		}
 		
 	}
 	
-	public void pauseGame(boolean pause)
-	{
-		this.pauseGame(pause, EnumEngineFeature.values());
-		
-	}
-	
-	public void pauseGame(boolean pause, EnumEngineFeature... features)
-	{
-		for (EnumEngineFeature fe : features)
-		{
-			ThreadStoppable t = this.threads.get(fe);
-			
-			if (t != null)
-			{
-				t.setPaused(pause);
-				
-			}
-			
-		}
-		
-	}
-	
 	@Internal
-	public void shutDownGame()
+	public void kill()
 	{
 		if (this.threads.isEmpty())
 		{
@@ -517,21 +296,31 @@ public final class CaelumEngine
 		this.tasks.stop();
 		this.threads.clear();
 		
-	}
-	
-	@Internal
-	public void clearGameEnv()
-	{
-		if (this.game != null)
-		{
-			throw new CaelumException("YOU CLUMSY POOP!");
-		}
-		
-		this.startargs.clear();
-		
 		this.env = null;
 		this.envConfig = null;
 		this.displays = null;
+		
+	}
+	
+	public void pauseGame(boolean pause)
+	{
+		this.pauseGame(pause, EnumEngineFeature.values());
+		
+	}
+	
+	public void pauseGame(boolean pause, EnumEngineFeature... features)
+	{
+		for (EnumEngineFeature fe : features)
+		{
+			ThreadStoppable t = this.threads.get(fe);
+			
+			if (t != null)
+			{
+				t.setPaused(pause);
+				
+			}
+			
+		}
 		
 	}
 	
@@ -694,83 +483,6 @@ public final class CaelumEngine
 			
 		}
 		
-	}
-	
-	@Internal
-	private Class<?> loadEnvironmentFromJson()
-	{
-		File jsonFile = FileHelper.createFile(".", "gameEnv.json");
-		
-		if (!FileHelper.isReal(jsonFile))
-		{
-			return null;
-		}
-		
-		JsonValue<?> j = null;
-		
-		try
-		{
-			j = JsonParser.parse(jsonFile);
-			
-		}
-		catch (JsonParseException e)
-		{
-			Logger.err(e);
-			
-		}
-		
-		if (j == null)
-		{
-			return null;
-		}
-		
-		if (!(j instanceof JsonObject))
-		{
-			return null;
-		}
-		
-		JsonObject json = (JsonObject)j;
-		
-		Object curEnv = json.getValue(CompInfo.OS.toString());
-		
-		if (curEnv == null || (!(curEnv instanceof JsonObject)))
-		{
-			return null;
-		}
-		
-		this.envConfig = (JsonObject)curEnv;
-		Object envLoc = this.envConfig.getValue("lib");
-		
-		if (envLoc == null || (!(envLoc instanceof String)))
-		{
-			return null;
-		}
-		
-		File envLibFile = FileHelper.createFile((String)envLoc);
-		
-		if (!FileHelper.canRead(envLibFile) || !envLibFile.getName().endsWith(".jar"))
-		{
-			return null;
-		}
-		
-		Tuple<ClassLoader, Set<Class<?>>> tuple = ReflectionHelper.loadLibrary(envLibFile);
-		Set<Class<?>> set = tuple.two;
-		
-		if (set == null || set.isEmpty())
-		{
-			return null;
-		}
-		
-		for (Class<?> c : set)
-		{
-			if (IGameEnvironment.class.isAssignableFrom(c))
-			{
-				return c;
-			}
-			
-		}
-		
-		return null;
 	}
 	
 }

@@ -20,6 +20,7 @@ import com.google.common.collect.ImmutableList;
  * 
  * @author Elusivehawk
  */
+@Deprecated
 @Internal
 public interface IGameEnvironment
 {

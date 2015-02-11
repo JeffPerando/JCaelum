@@ -49,7 +49,7 @@ public final class ExampleGame extends Game
 	
 	public static void main(String... args)
 	{
-		CaelumEngine.start(ExampleGame::new, args);
+		CaelumEngine.instance().start(new ExampleGame(), args);
 		
 	}
 	
