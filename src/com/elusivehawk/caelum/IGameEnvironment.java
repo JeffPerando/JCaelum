@@ -12,9 +12,7 @@ import com.google.common.collect.ImmutableList;
  * 
  * Interface for library-specific implementations, such as:<br>
  * <ul>
- * <li>2D rendering implementation</li>
  * <li>Input implementation (Mouse, keyboard, console controller, etc.)</li>
- * <li>Logging</li>
  * <li>Display implementation</li>
  * </ul>
  * 

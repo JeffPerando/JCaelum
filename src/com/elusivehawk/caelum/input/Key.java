@@ -110,7 +110,7 @@ public enum Key
 	
 	public final EnumKeyType keyType;
 	
-	private final char lower, upper;
+	private final Character lower, upper;
 	private final boolean isLock;
 	
 	Key(EnumKeyType type)
