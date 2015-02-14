@@ -5,12 +5,13 @@
 *.ear
 *.log
 
+!/lib/lwjgl/*
+
 /.gradle/*
 /.settings/*
 /bin/*
 /build/*
 /builds/*
-!/lib/lwjgl/*
 /lib/*
 
 .cache
