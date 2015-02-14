@@ -10,8 +10,6 @@
 /bin/*
 /build/*
 /builds/*
-/lib/*
-!/lib/lwjgl/*/*
 
 .cache
 .classpath
