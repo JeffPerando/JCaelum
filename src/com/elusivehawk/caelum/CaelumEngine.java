@@ -111,23 +111,6 @@ public final class CaelumEngine
 	//End hooks
 	
 	@Internal
-	public static void flipScreen(boolean flip)
-	{
-		/*if (instance().rcon != null)
-		{
-			instance().rcon.onScreenFlipped(flip);
-			
-		}*/
-		
-		if (game() != null)
-		{
-			game().onScreenFlipped(flip);
-			
-		}
-		
-	}
-	
-	@Internal
 	public void start(Game g, String... args)
 	{
 		if (g == null)

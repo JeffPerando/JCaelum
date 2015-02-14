@@ -41,7 +41,7 @@ public abstract class NetworkGame extends Game implements INetworkMaster
 	public abstract int getMaxPlayerCount();
 	
 	@Override
-	protected void preInit()
+	public void preInit()
 	{
 		switch (this.side)
 		{
@@ -52,7 +52,7 @@ public abstract class NetworkGame extends Game implements INetworkMaster
 	}
 	
 	@Override
-	public void initiate(Display display) throws Throwable
+	public void initiate() throws Throwable
 	{
 		if (this.side != Side.SERVER)
 		{

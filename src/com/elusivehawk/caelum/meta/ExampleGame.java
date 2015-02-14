@@ -126,7 +126,7 @@ public final class ExampleGame extends Game
 	}
 	
 	@Override
-	public void initiate(Display display) throws Throwable
+	public void initiate() throws Throwable
 	{
 		/*Random rng = RNG.rng();
 		

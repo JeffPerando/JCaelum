@@ -4,7 +4,6 @@ package com.elusivehawk.caelum.prefab;
 import java.util.List;
 import com.elusivehawk.caelum.AbstractGameComponent;
 import com.elusivehawk.caelum.CaelumException;
-import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.Game;
 import com.elusivehawk.caelum.input.IInputListener;
 import com.elusivehawk.caelum.input.Input;
@@ -23,17 +22,22 @@ import com.google.common.collect.Lists;
  */
 public class GameState extends AbstractGameComponent
 {
-	protected IInputListener inputLis = null;
-	protected IPhysicsSimulator psim = null;
+	private final Game master;
 	
-	protected final List<IRenderable> renderers = Lists.newArrayList();
-	protected final List<IUpdatable> modules = Lists.newArrayList();
+	private IInputListener inputLis = null;
+	private IPhysicsSimulator psim = null;
 	
+	private final List<IRenderable> renderers = Lists.newArrayList();
+	private final List<IUpdatable> modules = Lists.newArrayList();
+	
+	@SuppressWarnings("unqualified-field-access")
 	public GameState(Game owner, String title)
 	{
-		super(owner, title);
+		super(title);
 		
 		assert owner != null;
+		
+		master = owner;
 		
 	}
 	
@@ -77,15 +81,21 @@ public class GameState extends AbstractGameComponent
 	}
 	
 	@Override
-	public void initiate(Display display){}
+	public IPhysicsSimulator getPhysicsSimulator()
+	{
+		return this.psim;
+	}
+	
+	@Override
+	public void initiate() throws Throwable{}
 	
 	@Override
 	public void onShutdown(){}
 	
 	@Override
-	public IPhysicsSimulator getPhysicsSimulator()
+	public String toString()
 	{
-		return this.psim;
+		return String.format("%s.%s", this.master.toString(), this.name);
 	}
 	
 	public GameState setInputListener(IInputListener lis)

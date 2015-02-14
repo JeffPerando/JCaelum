@@ -36,14 +36,14 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 	//XXX Overridden methods
 	
 	@Override
-	public String getFormattedName()
+	public String toString()
 	{
 		return this.getGameVersion() == null ? this.name : String.format("%s %s", this.name, this.getGameVersion());
 	}
 	
 	//XXX Optional/technical methods
 	
-	protected void preInit(){}
+	public void preInit(){}
 	
 	public int getUpdateCount()
 	{

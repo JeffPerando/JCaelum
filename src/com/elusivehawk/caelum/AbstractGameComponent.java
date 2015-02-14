@@ -20,20 +20,11 @@ import com.elusivehawk.util.IUpdatable;
  */
 public abstract class AbstractGameComponent implements IInputListener, IUpdatable, IRenderable
 {
-	private final AbstractGameComponent master;
-	
 	protected final String name;
 	
+	@SuppressWarnings("unqualified-field-access")
 	protected AbstractGameComponent(String title)
 	{
-		this(null, title);
-		
-	}
-	
-	@SuppressWarnings("unqualified-field-access")
-	protected AbstractGameComponent(AbstractGameComponent owner, String title)
-	{
-		master = owner;
 		name = title;
 		
 	}
@@ -41,20 +32,8 @@ public abstract class AbstractGameComponent implements IInputListener, IUpdatabl
 	@Override
 	public String toString()
 	{
-		if (this.master == null)
-		{
-			return this.getFormattedName();
-		}
-		
-		return String.format("%s.%s", this.master.master == null ? this.master.name : this.master.toString(), this.name);
-	}
-	
-	public String getFormattedName()
-	{
 		return this.name;
 	}
-	
-	public void onScreenFlipped(boolean flip){}
 	
 	/**
 	 * 
@@ -64,7 +43,7 @@ public abstract class AbstractGameComponent implements IInputListener, IUpdatabl
 	 */
 	public abstract IPhysicsSimulator getPhysicsSimulator();
 	
-	public abstract void initiate(Display display) throws Throwable;
+	public abstract void initiate() throws Throwable;
 	
 	public abstract void onShutdown();
 	

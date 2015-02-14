@@ -1,8 +1,6 @@
 
 package com.elusivehawk.caelum.prefab;
 
-import com.elusivehawk.caelum.CaelumEngine;
-import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.Game;
 import com.elusivehawk.caelum.input.Input;
 import com.elusivehawk.caelum.physics.IPhysicsSimulator;
@@ -36,11 +34,11 @@ public abstract class GameStateGame extends Game
 	}
 	
 	@Override
-	public final void initiate(Display display) throws Throwable
+	public final void initiate() throws Throwable
 	{
 		if (this.nextState != null)
 		{
-			this.nextState.initiate(display);
+			this.nextState.initiate();
 			
 			this.state = this.nextState;
 			this.nextState = null;
@@ -121,24 +119,13 @@ public abstract class GameStateGame extends Game
 			
 			try
 			{
-				this.state.initiate(CaelumEngine.defaultDisplay());
+				this.state.initiate();
 				
 			}
 			catch (Throwable e)
 			{
 				throw new RuntimeException("Error caught during game state initiation:", e);
 			}
-			
-		}
-		
-	}
-	
-	@Override
-	public void onScreenFlipped(boolean flip)
-	{
-		if (this.state != null)
-		{
-			this.state.onScreenFlipped(flip);
 			
 		}
 		
