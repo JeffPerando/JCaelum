@@ -12,21 +12,22 @@ sourceSets
 	{
 		java
 		{
-			srcDir 'java/CaelumEngine/src/'
+			srcDir 'src/'
 		}
 	}
 }
 
 compileJava
 {
-	source = 'java/CaelumEngine/src/'
+	source = ['HawkUtils/src/', 'src/']
 }
 
 dependencies
 {
-	compile group: 'org.lwjgl.lwjgl', name: 'lwjgl', version: '2.9.1'
+	compile files("lib/lwjgl/jar/lwjgl.jar")
+	//compile group: 'org.lwjgl.lwjgl', name: 'lwjgl', version: '2.9.1'
 	compile group: 'com.google.guava', name: 'guava', version: '16.0.1'
-	compile group: 'org.jdom', name: 'jdom2', version: '2.0.5'
+	//compile group: 'org.jdom', name: 'jdom2', version: '2.0.5'
 	compile group: 'org.l33tlabs.twl', name: 'pngdecoder', version: '1.0'
 }
 
@@ -37,19 +38,14 @@ jar
 	version = '1.0.0.0-alpha-test12345'
 	destinationDir = file('builds')
 	
-	manifest
-	{
-		attributes('Main-class': 'com.elusivehawk.engine.CaelumEngine')
-	}
-	
 	exclude "BenchmarkTest.class"
 	exclude "RepoCodeStyle.class"
 	exclude "README.md"
 	
-	/*into("res")
+	into("native/")
 	{
-		from("res/")
-	}*/
+		from("lib/lwjgl/native/")
+	}
 	
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
