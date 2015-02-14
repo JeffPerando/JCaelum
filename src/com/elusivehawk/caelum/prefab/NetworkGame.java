@@ -2,14 +2,13 @@
 package com.elusivehawk.caelum.prefab;
 
 import java.io.IOException;
-import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.Game;
-import com.elusivehawk.util.network.Client;
-import com.elusivehawk.util.network.ConnectionType;
-import com.elusivehawk.util.network.IHost;
-import com.elusivehawk.util.network.INetworkMaster;
-import com.elusivehawk.util.network.Server;
-import com.elusivehawk.util.network.Side;
+import com.elusivehawk.caelum.network.Client;
+import com.elusivehawk.caelum.network.ConnectionType;
+import com.elusivehawk.caelum.network.IHost;
+import com.elusivehawk.caelum.network.INetworkMaster;
+import com.elusivehawk.caelum.network.Server;
+import com.elusivehawk.caelum.network.Side;
 
 /**
  * 

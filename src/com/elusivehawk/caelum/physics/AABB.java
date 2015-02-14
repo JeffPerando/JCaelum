@@ -24,7 +24,7 @@ public class AABB extends Shape
 		
 		assert cubeSize != null;
 		
-		size = cubeSize.setImmutable();
+		size = (Vector)cubeSize.setImmutable();
 		
 		Vector halfSize = cubeSize.clone().divAll(2);
 		

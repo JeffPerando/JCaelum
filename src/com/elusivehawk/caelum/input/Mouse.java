@@ -21,9 +21,9 @@ public class Mouse extends Input
 	private final List<Tuple<int[], Consumer<Mouse>>> hooks = Lists.newArrayList();
 	private final EnumMouseClick[] buttons = new EnumMouseClick[InputConst.MOUSE_BUTTONS];
 	private final Vector
-				pos = new Vector(2).setSync(),
-				oldPos = new Vector(2).setSync(),
-				deltaPos = new Vector(2).setSync();
+				pos = (Vector)new Vector(2).setSync(),
+				oldPos = (Vector)new Vector(2).setSync(),
+				deltaPos = (Vector)new Vector(2).setSync();
 	private final DirtableStorage<ILegibleImage> icon = new DirtableStorage<ILegibleImage>().setSync();
 	private final DirtableStorage<Boolean> grab = new DirtableStorage<Boolean>().setSync();
 	

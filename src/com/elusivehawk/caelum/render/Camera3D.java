@@ -16,8 +16,8 @@ import com.elusivehawk.util.math.Vector;
 @Experimental
 public abstract class Camera3D implements ICamera
 {
-	protected final Vector pos = new Vector(3).setSync();
-	protected final Quaternion rot = new Quaternion().setSync();
+	protected final Vector pos = (Vector)new Vector(3).setSync();
+	protected final Quaternion rot = (Quaternion)new Quaternion().setSync();
 	
 	private float fov, zNear, zFar;
 	

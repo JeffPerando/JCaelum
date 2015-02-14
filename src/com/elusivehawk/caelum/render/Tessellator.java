@@ -44,7 +44,7 @@ public class Tessellator
 	
 	public int vertex(Vector vtx)
 	{
-		return this.vertexTex(vtx, new Vector(2).setImmutable());
+		return this.vertexTex(vtx, (Vector)new Vector(2).setImmutable());
 	}
 	
 	public int vertexTex(float x, float y, float z, float u, float v)
@@ -54,12 +54,12 @@ public class Tessellator
 	
 	public int vertexTex(Vector vtx, Vector tex)
 	{
-		return this.point(vtx, tex, new Vector(3).setImmutable());
+		return this.point(vtx, tex, (Vector)new Vector(3).setImmutable());
 	}
 	
 	public int point(float x, float y, float z, float u, float v, float nx, float ny, float nz)
 	{
-		return this.point(new Vector(x, y, z).setImmutable(), new Vector(u, v).setImmutable(), new Vector(nx, ny, nz).setImmutable());
+		return this.point((Vector)new Vector(x, y, z).setImmutable(), (Vector)new Vector(u, v).setImmutable(), (Vector)new Vector(nx, ny, nz).setImmutable());
 	}
 	
 	public int point(Vector vtx, Vector tex, Vector n)

@@ -32,7 +32,7 @@ public class MeshData
 		
 		vertex = vtx.asReadOnlyBuffer();
 		indices = ind == null ? null : ind.asReadOnlyBuffer();
-		size = vec.clone().setImmutable();
+		size = (Vector)vec.clone().setImmutable();
 		isTriStrip = strip;
 		texSize = tex3d ? 3 : 2;
 		useTex = tex;
@@ -146,7 +146,13 @@ public class MeshData
 		
 		if (indJson != null)
 		{
-			indices = BufferHelper.makeIntBuffer(indJson.toArray(new Long[indJson.length()], Long.class));
+			indices = BufferHelper.createIntBuffer(indJson.length());
+			
+			for (int c = 0; c < indJson.length(); c++)
+			{
+				indices.put(indJson.getValue(c, Long.class, 0L).intValue());
+				
+			}
 			
 		}
 		
