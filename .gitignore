@@ -12,6 +12,12 @@
 /builds/*
 /lib/*
 
+# THIS HAS TO BE LIKE THIS!
+# WITHOUT the slash at the end!
+# Failure to comply will result in
+# your immediate transfer to Mordor!
+!/lib/lwjgl
+
 .cache
 .classpath
 .project
