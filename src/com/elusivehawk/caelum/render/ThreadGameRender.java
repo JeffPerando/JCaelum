@@ -1,6 +1,7 @@
 
 package com.elusivehawk.caelum.render;
 
+import org.lwjgl.glfw.GLFW;
 import com.elusivehawk.caelum.DisplayManager;
 import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.Logger;
@@ -29,6 +30,21 @@ public final class ThreadGameRender extends ThreadTimed
 		displays = dmgr;
 		fps = i;
 		
+	}
+	
+	@Override
+	public boolean initiate()
+	{
+		super.initiate();
+		
+		if (GLFW.glfwInit() == 0)
+		{
+			return false;
+		}
+		
+		GLFW.glfwDefaultWindowHints();
+		
+		return true;
 	}
 	
 	@Override
@@ -66,6 +82,8 @@ public final class ThreadGameRender extends ThreadTimed
 	public void onThreadStopped(boolean failure)
 	{
 		this.displays.close();
+		
+		GLFW.glfwTerminate();
 		
 	}
 	

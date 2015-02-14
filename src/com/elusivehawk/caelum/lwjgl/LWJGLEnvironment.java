@@ -1,9 +1,6 @@
 
 package com.elusivehawk.caelum.lwjgl;
 
-import org.lwjgl.glfw.GLFW;
-import com.elusivehawk.caelum.CaelumEngine;
-import com.elusivehawk.caelum.CaelumException;
 import com.elusivehawk.caelum.IDisplayImpl;
 import com.elusivehawk.caelum.IGameEnvironment;
 import com.elusivehawk.caelum.input.IInputImpl;
@@ -23,6 +20,7 @@ import com.google.common.collect.ImmutableList;
  * 
  * @author Elusivehawk
  */
+@Deprecated
 public class LWJGLEnvironment implements IGameEnvironment
 {
 	public static final String[]
@@ -32,8 +30,6 @@ public class LWJGLEnvironment implements IGameEnvironment
 					MAC_64 = {},
 					LINUX_32 = {"\\linux\\x64\\liblwjgl.so", "\\libnux\\x64\\libopenal.so"},
 					LINUX_64 = {"\\linux\\x86\\liblwjgl.so", "\\libnux\\x86\\libopenal.so"};
-	
-	private boolean initGLFW = false;
 	
 	@Override
 	public boolean isCompatible(EnumOS os)
@@ -55,16 +51,12 @@ public class LWJGLEnvironment implements IGameEnvironment
 	@Override
 	public void initiate(String... args)
 	{
-		System.setProperty("org.lwjgl.librarypath", CaelumEngine.getNativeLocation().getAbsolutePath());
+		//System.setProperty("org.lwjgl.librarypath", CaelumEngine.getNativeLocation().getAbsolutePath());
 		
 	}
 	
 	@Override
-	public void destroy()
-	{
-		GLFW.glfwTerminate();
-		
-	}
+	public void destroy(){}
 	
 	@Override
 	public String getName()
@@ -91,19 +83,6 @@ public class LWJGLEnvironment implements IGameEnvironment
 	@Override
 	public IDisplayImpl createDisplay()
 	{
-		if (!this.initGLFW)
-		{
-			if (GLFW.glfwInit() != 1)
-			{
-				throw new CaelumException("Unable to initiate GLFW");
-			}
-			
-			this.initGLFW = true;
-			
-			GLFW.glfwDefaultWindowHints();
-			
-		}
-		
 		return new LWJGLDisplayImpl();
 	}
 	

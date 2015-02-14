@@ -139,23 +139,25 @@ public final class CaelumEngine
 		
 		this.env = new LWJGLEnvironment();//TODO Remove; We don't need an environment system.
 		
-		//XXX Pre-initiate game environment
-		
-		this.env.preInit();
-		
 		//XXX Load natives
 		
 		this.loadNatives();
 		
-		//XXX Initiate game environment
+		//XXX Set library paths
 		
-		this.env.initiate(args);
+		System.setProperty("org.lwjgl.librarypath", this.nativeLocation.getAbsolutePath());
 		
 		//XXX Load display system
 		
 		this.displays = new DisplayManager(this.env);
 		
+		//XXX Start tasks
+		
 		this.tasks.start();
+		
+		//XXX Pre-init game
+		
+		this.game = g;
 		
 		g.preInit();
 		
@@ -166,8 +168,6 @@ public final class CaelumEngine
 			Logger.warn("The game is missing a Version object!");
 			
 		}
-		
-		this.game = g;
 		
 		//XXX Create display
 		
@@ -197,7 +197,7 @@ public final class CaelumEngine
 		
 		try
 		{
-			g.initiate(this.display);
+			g.initiate();
 			
 		}
 		catch (Throwable e)
