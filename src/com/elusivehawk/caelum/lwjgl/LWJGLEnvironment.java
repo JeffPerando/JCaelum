@@ -22,7 +22,7 @@ public class LWJGLEnvironment implements IGameEnvironment
 {
 	public static final String[]
 					WIN_32 = {"\\windows\\x64\\lwjgl.dll", "\\windows\\x64\\OpenAL32.dll"},
-					WIN_64 = {"\\windows\\x86\\lwjgl.dll", "\\windows\\x86\\OpenAL64.dll"},
+					WIN_64 = {"\\windows\\x86\\lwjgl.dll", "\\windows\\x86\\OpenAL32.dll"},
 					MAC_32 = {"\\macosx\\x64\\liblwjgl.dylib", "\\macosx\\x64\\libopenal.dylib"},
 					MAC_64 = {},
 					LINUX_32 = {"\\linux\\x64\\liblwjgl.so", "\\libnux\\x64\\libopenal.so"},
