@@ -20,7 +20,6 @@ import com.google.common.collect.Maps;
  */
 public abstract class Component implements IRenderable, IUpdatable
 {
-	protected final Component parent;
 	protected final int priority;
 	
 	protected Map<Integer, List<Component>> childMap = null;
@@ -28,26 +27,18 @@ public abstract class Component implements IRenderable, IUpdatable
 	protected int maxPriority = Integer.MIN_VALUE, minPriority = Integer.MAX_VALUE;
 	protected boolean locked = false;
 	
-	public Component(Component owner, int p, IPopulator<Component> pop)
-	{
-		this(owner, p);
-		
-		pop.populate(this);
-		
-	}
-	
 	@SuppressWarnings("unqualified-field-access")
-	public Component(Component owner, int p)
+	public Component(int p)
 	{
-		parent = owner;
 		priority = p;
 		
 	}
 	
-	@Override
-	public void update(double delta)
+	public Component(int p, IPopulator<Component> pop)
 	{
-		this.forEveryChild(((child) -> {child.update(delta);}));
+		this(p);
+		
+		pop.populate(this);
 		
 	}
 	
@@ -115,17 +106,7 @@ public abstract class Component implements IRenderable, IUpdatable
 			throw new NullPointerException();
 		}
 		
-		if (comp == this.parent)
-		{
-			return;
-		}
-		
 		if (comp.hasChild(this))
-		{
-			return;
-		}
-		
-		if (this.parent != null && this.parent.hasChild(comp))
 		{
 			return;
 		}

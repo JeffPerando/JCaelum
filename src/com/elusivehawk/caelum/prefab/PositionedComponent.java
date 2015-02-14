@@ -16,17 +16,17 @@ public class PositionedComponent extends Component implements Quaternion.Listene
 	private final Vector pos = (Vector)new Vector().setSync();
 	private final Quaternion rot = (Quaternion)new Quaternion().setSync();
 	
-	public PositionedComponent(Component owner, int p, IPopulator<Component> pop)
+	public PositionedComponent(int p, IPopulator<Component> pop)
 	{
-		super(owner, p);
+		super(p);
 		
 		pop.populate(this);
 		
 	}
 	
-	public PositionedComponent(Component owner, int p)
+	public PositionedComponent(int p)
 	{
-		super(owner, p);
+		super(p);
 		
 	}
 	

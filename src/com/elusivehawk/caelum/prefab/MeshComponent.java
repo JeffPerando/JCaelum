@@ -19,46 +19,63 @@ public class MeshComponent extends PositionedComponent
 {
 	private final MeshRenderer meshRenderer;
 	
-	public MeshComponent(Component parent, IMesh mesh)
+	public MeshComponent(IMesh mesh)
 	{
-		this(parent, new MeshRenderer(mesh));
+		this(new MeshRenderer(mesh));
 		
 	}
 	
-	public MeshComponent(Component parent, MeshRenderer mr)
+	public MeshComponent(IMesh mesh, IPopulator<Component> pop)
 	{
-		this(parent, 0, mr);
-		
-	}
-	
-	public MeshComponent(Component parent, int p, IMesh mesh, IPopulator<Component> pop)
-	{
-		this(parent, p, new MeshRenderer(mesh), pop);
-		
-	}
-	
-	public MeshComponent(Component parent, int p, MeshRenderer mr, IPopulator<Component> pop)
-	{
-		this(parent, p, mr);
+		this(mesh);
 		
 		pop.populate(this);
 		
 	}
 	
-	public MeshComponent(Component parent, int p, IMesh mesh)
+	public MeshComponent(MeshRenderer mr)
 	{
-		this(parent, p, new MeshRenderer(mesh));
+		this(0, mr);
+		
+	}
+	
+	public MeshComponent(MeshRenderer mr, IPopulator<Component> pop)
+	{
+		this(mr);
+		
+		pop.populate(this);
+		
+	}
+	public MeshComponent(int p, IMesh mesh)
+	{
+		this(p, new MeshRenderer(mesh));
+		
+	}
+	
+	public MeshComponent(int p, IMesh mesh, IPopulator<Component> pop)
+	{
+		this(p, mesh);
+		
+		pop.populate(this);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public MeshComponent(Component parent, int p, MeshRenderer mr)
+	public MeshComponent(int p, MeshRenderer mr)
 	{
-		super(parent, p);
+		super(p);
 		
 		assert mr != null;
 		
 		meshRenderer = mr;
+		
+	}
+	
+	public MeshComponent(int p, MeshRenderer mr, IPopulator<Component> pop)
+	{
+		this(p, mr);
+		
+		pop.populate(this);
 		
 	}
 	

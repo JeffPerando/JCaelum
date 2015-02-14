@@ -15,34 +15,36 @@ public class RenderComponent extends Component
 {
 	protected final IRenderable renderable;
 	
-	public RenderComponent(Component parent, IRenderable r)
+	public RenderComponent(IRenderable r)
 	{
-		this(parent, 0, r);
+		this(0, r);
 		
 	}
 	
-	public RenderComponent(Component parent, IRenderable r, IPopulator<Component> pop)
+	public RenderComponent(IRenderable r, IPopulator<Component> pop)
 	{
-		this(parent, 0, r, pop);
-		
-	}
-	
-	public RenderComponent(Component parent, int p, IRenderable r, IPopulator<Component> pop)
-	{
-		this(parent, p, r);
+		this(0, r);
 		
 		pop.populate(this);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public RenderComponent(Component parent, int p, IRenderable r)
+	public RenderComponent(int p, IRenderable r)
 	{
-		super(parent, p);
+		super(p);
 		
 		assert r != null;
 		
 		renderable = r;
+		
+	}
+	
+	public RenderComponent(int p, IRenderable r, IPopulator<Component> pop)
+	{
+		this(p, r);
+		
+		pop.populate(this);
 		
 	}
 	
