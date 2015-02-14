@@ -2,6 +2,7 @@
 package com.elusivehawk.caelum.render.tex;
 
 import com.elusivehawk.caelum.CaelumException;
+import com.elusivehawk.caelum.assets.Asset;
 import com.elusivehawk.caelum.render.IBindable;
 import com.elusivehawk.caelum.render.IRenderable;
 import com.elusivehawk.caelum.render.RenderContext;
@@ -127,17 +128,6 @@ public final class Material implements IBindable, IRenderable, IJsonSerializer
 	}
 	
 	@Override
-	public void render(RenderContext rcon) throws RenderException
-	{
-		if (this.renTex != null)
-		{
-			this.renTex.render(rcon);
-			
-		}
-		
-	}
-	
-	@Override
 	public void preRender(RenderContext rcon)
 	{
 		if (this.tex != null)
@@ -172,6 +162,40 @@ public final class Material implements IBindable, IRenderable, IJsonSerializer
 	}
 	
 	@Override
+	public void delete(RenderContext rcon)
+	{
+		if (this.tex != null && !(this.tex instanceof Asset))
+		{
+			this.tex.delete(rcon);
+			
+		}
+		
+		if (this.renTex != null)
+		{
+			this.renTex.delete(rcon);
+			
+		}
+		
+		if (this.glowTex != null && !(this.glowTex instanceof Asset))
+		{
+			this.glowTex.delete(rcon);
+			
+		}
+		
+	}
+	
+	@Override
+	public void render(RenderContext rcon) throws RenderException
+	{
+		if (this.renTex != null)
+		{
+			this.renTex.render(rcon);
+			
+		}
+		
+	}
+	
+	@Override
 	public boolean bind(RenderContext rcon)
 	{
 		if (!this.locked())
@@ -190,13 +214,13 @@ public final class Material implements IBindable, IRenderable, IJsonSerializer
 		
 		if (!this.initiated)
 		{
-			GL2.glUniform1i("mat.tex", (this.texBind = t));
-			GL2.glUniform1i("mat.renTex", (this.renBind = r));
-			GL2.glUniform1i("mat.glowTex", (this.glowBind = g));
+			GL2.glUniform1("mat.tex", (this.texBind = t));
+			GL2.glUniform1("mat.renTex", (this.renBind = r));
+			GL2.glUniform1("mat.glowTex", (this.glowBind = g));
 			
-			GL2.glUniform4f("mat.filter", this.filter.asFloats());
-			GL2.glUniform1f("mat.shine", this.shine);
-			GL2.glUniform1i("mat.invert", this.invert ? 1 : 0);
+			GL2.glUniform4("mat.filter", this.filter.asFloats());
+			GL2.glUniform1("mat.shine", this.shine);
+			GL2.glUniform1("mat.invert", this.invert ? 1 : 0);
 			
 			this.initiated = true;
 			
@@ -204,19 +228,19 @@ public final class Material implements IBindable, IRenderable, IJsonSerializer
 		
 		if (t != this.texBind)
 		{
-			GL2.glUniform1i("mat.tex", (this.texBind = t));
+			GL2.glUniform1("mat.tex", (this.texBind = t));
 			
 		}
 		
 		if (r != this.renBind)
 		{
-			GL2.glUniform1i("mat.renTex", (this.renBind = r));
+			GL2.glUniform1("mat.renTex", (this.renBind = r));
 			
 		}
 		
 		if (g != this.glowBind)
 		{
-			GL2.glUniform1i("mat.glowTex", (this.glowBind = g));
+			GL2.glUniform1("mat.glowTex", (this.glowBind = g));
 			
 		}
 		

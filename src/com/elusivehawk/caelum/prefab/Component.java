@@ -52,9 +52,9 @@ public abstract class Component implements IRenderable, IUpdatable
 	}
 	
 	@Override
-	public void render(RenderContext rcon) throws RenderException
+	public void update(double delta)
 	{
-		this.forEveryChild(((child) -> {child.render(rcon);}));
+		this.forEveryChild(((child) -> {child.update(delta);}));
 		
 	}
 	
@@ -72,14 +72,18 @@ public abstract class Component implements IRenderable, IUpdatable
 		
 	}
 	
-	public Component getParent()
+	@Override
+	public void delete(RenderContext rcon)
 	{
-		return this.parent;
+		this.forEveryChild(false, ((child) -> {child.delete(rcon);}));
+		
 	}
 	
-	public Component getNucleas()
+	@Override
+	public void render(RenderContext rcon) throws RenderException
 	{
-		return this.parent == null ? this : this.parent.getNucleas();
+		this.forEveryChild(((child) -> {child.render(rcon);}));
+		
 	}
 	
 	public int getPriority()

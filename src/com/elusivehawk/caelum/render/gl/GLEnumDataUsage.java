@@ -21,18 +21,13 @@ public enum GLEnumDataUsage
 	GL_DYNAMIC_DRAW(GLConst.GL_DYNAMIC_DRAW),
 	GL_DYNAMIC_READ(GLConst.GL_DYNAMIC_READ);
 	
-	private final int glId;
+	public final int gl;
 	
 	@SuppressWarnings("unqualified-field-access")
-	GLEnumDataUsage(int gl)
+	GLEnumDataUsage(int glId)
 	{
-		glId = gl;
+		gl = glId;
 		
-	}
-	
-	public int getGLId()
-	{
-		return this.glId;
 	}
 	
 }

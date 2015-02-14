@@ -15,13 +15,11 @@ import com.elusivehawk.caelum.render.tex.Material;
  * 
  * @author Elusivehawk
  */
-public abstract class RenderableObj implements /*IFilterable, */IRenderable
+public abstract class RenderableObj implements IRenderable
 {
 	protected final GLProgram program;
 	
-	protected boolean initiated = false, zBuffer = true;
-	
-	//protected Filters filters = null;
+	protected boolean initiated = false, zBuffer = true, preRendered = false;
 	
 	protected int renderCount = 0;
 	
@@ -35,9 +33,60 @@ public abstract class RenderableObj implements /*IFilterable, */IRenderable
 	}
 	
 	@Override
+	public void preRender(RenderContext rcon)
+	{
+		if (!this.initiated)
+		{
+			if (!this.initiate(rcon))
+			{
+				return;
+			}
+			
+			this.initiated = true;
+			
+		}
+		
+		/*if (this.program.bind(rcon))
+		{
+			//this.manipulateProgram(rcon);
+			
+			if (rcon.doUpdateScreenFlipUniform())
+			{
+				GL2.glUniform1("flip", rcon.isScreenFlipped());
+				
+			}
+			
+		}
+		
+		this.program.unbind(rcon);*/
+		
+		this.preRendered = true;
+		
+	}
+	
+	@Override
+	public void postRender(RenderContext rcon)
+	{
+		this.preRendered = false;
+		
+	}
+	
+	@Override
+	public void delete(RenderContext rcon)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
 	public void render(RenderContext rcon) throws RenderException
 	{
 		if (!this.initiated)
+		{
+			return;
+		}
+		
+		if (!this.preRendered)
 		{
 			return;
 		}
@@ -75,10 +124,10 @@ public abstract class RenderableObj implements /*IFilterable, */IRenderable
 		{
 			if (rcon.doUpdateCamera())
 			{
-				ICamera cam = rcon.getCamera();
+				Camera cam = rcon.getCamera();
 				
-				GL2.glUniformMatrix4fv("view", cam.getView().asBuffer());
-				GL2.glUniformMatrix4fv("proj", cam.getProjection().asBuffer());
+				GL2.glUniformMatrix4("view", cam.getView());
+				GL2.glUniformMatrix4("proj", cam.getProjection());
 				
 			}
 			
@@ -93,79 +142,6 @@ public abstract class RenderableObj implements /*IFilterable, */IRenderable
 		this.renderCount--;
 		
 	}
-	
-	@Override
-	public void preRender(RenderContext rcon)
-	{
-		if (!this.initiated)
-		{
-			if (!this.initiate(rcon))
-			{
-				return;
-			}
-			
-			this.initiated = true;
-			
-		}
-		
-		if (this.program.bind(rcon))
-		{
-			//this.manipulateProgram(rcon);
-			
-			if (rcon.doUpdateScreenFlipUniform())
-			{
-				GL2.glUniform1i("flip", rcon.isScreenFlipped() ? 1 : 0);
-				
-			}
-			
-		}
-		
-		this.program.unbind(rcon);
-		
-	}
-	
-	/*@Override
-	public int addFilter(UUID type, IFilter f)
-	{
-		if (this.filters == null)
-		{
-			this.setFilters(new Filters());
-			
-		}
-		
-		return this.filters.addFilter(type, f);
-	}
-	
-	@Override
-	public void removeFilter(UUID type, IFilter f)
-	{
-		if (this.filters != null)
-		{
-			this.filters.removeFilter(type, f);
-			
-		}
-		
-	}
-	
-	@Override
-	public void removeFilter(UUID type, int i)
-	{
-		if (this.filters != null)
-		{
-			this.filters.removeFilter(type, i);
-			
-		}
-		
-	}
-	
-	public synchronized RenderableObj setFilters(Filters fs)
-	{
-		assert fs != null;
-		
-		this.filters = fs;
-		
-		return this;
-	}*/
 	
 	public void setMaterial(Color col)
 	{

@@ -13,7 +13,7 @@ import com.elusivehawk.util.Logger;
 
 /**
  * 
- * A class to help work with OpenGL's program system.
+ * 
  * 
  * @author Elusivehawk
  */
@@ -22,7 +22,7 @@ public final class GLProgram implements IBindable, IDeletable, IDirty
 	private final Shaders shaders;
 	
 	private int id = 0;
-	private boolean relink = true;
+	private boolean relink = true, deleted = false;
 	
 	public GLProgram()
 	{
@@ -63,27 +63,31 @@ public final class GLProgram implements IBindable, IDeletable, IDirty
 	@Override
 	public void delete(RenderContext rcon)
 	{
+		if (this.deleted)
+		{
+			return;
+		}
+		
 		if (this.isBound(rcon))
 		{
 			this.unbind(rcon);
 			
 		}
 		
-		this.shaders.delete(rcon);
-		
 		GL2.glDeleteProgram(this);
+		
+		rcon.removeDeletable(this);
+		
+		this.id = 0;
+		this.deleted = true;
 		
 	}
 	
 	@Override
 	public boolean bind(RenderContext rcon)
 	{
-		int bp = GL1.glGetInteger(GLConst.GL_CURRENT_PROGRAM);
-		
-		if (bp != 0 && bp != this.id)
+		if (this.deleted)
 		{
-			Logger.debug("Failed to bind program %s; Current program ID: %s", this.id, bp);
-			
 			return false;
 		}
 		
@@ -92,6 +96,15 @@ public final class GLProgram implements IBindable, IDeletable, IDirty
 			this.id = GL2.glCreateProgram();
 			rcon.registerDeletable(this);
 			
+		}
+		
+		int bp = GL1.glGetInteger(GLConst.GL_CURRENT_PROGRAM);
+		
+		if (bp != 0 && bp != this.id)
+		{
+			Logger.debug("Failed to bind program %s; Current program ID: %s", this.id, bp);
+			
+			return false;
 		}
 		
 		if ((this.relink || this.shaders.isDirty()) && !this.relink(rcon))
@@ -143,6 +156,11 @@ public final class GLProgram implements IBindable, IDeletable, IDirty
 	
 	public boolean attachShader(IShader sh)
 	{
+		if (this.deleted)
+		{
+			return false;
+		}
+		
 		if (this.shaders.addShader(sh))
 		{
 			this.relink = true;
@@ -154,6 +172,11 @@ public final class GLProgram implements IBindable, IDeletable, IDirty
 	
 	public int attachShaders(Shaders shs)
 	{
+		if (this.deleted)
+		{
+			return 0;
+		}
+		
 		int ret = 0;
 		
 		for (GLSLEnumShaderType st : GLSLEnumShaderType.values())

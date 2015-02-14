@@ -37,10 +37,11 @@ public final class RenderContext implements Closeable, IUpdatable
 				shaders = new Shaders(),
 				shaders2d = new Shaders();
 	
-	private final DirtableStorage<Boolean> flipScreen = new DirtableStorage<Boolean>(false).setEnableNull(false);
-	private final DirtableStorage<ICamera> cameraStorage = new DirtableStorage<ICamera>();
+	private final DirtableStorage<Camera> cameraStorage = new DirtableStorage<Camera>();
 	
-	private final List<IDeletable> deletables = Lists.newArrayList();
+	private final List<IDeletable>
+				deletables = Lists.newArrayList(),
+				schDeletes = Lists.newArrayList();
 	private final List<IPreRenderer> preRenderers = Lists.newArrayList();
 	private final List<IPostRenderer> postRenderers = Lists.newArrayList();
 	
@@ -67,6 +68,7 @@ public final class RenderContext implements Closeable, IUpdatable
 		
 		preRenderers.add(r);
 		postRenderers.add(r);
+		deletables.add(r);
 		
 	}
 	
@@ -106,15 +108,23 @@ public final class RenderContext implements Closeable, IUpdatable
 		}
 		finally
 		{
-			if (this.flipScreen.isDirty())
-			{
-				this.flipScreen.setIsDirty(false);
-				
-			}
-			
 			if (this.cameraStorage.isDirty())
 			{
 				this.cameraStorage.setIsDirty(false);
+				
+			}
+			
+			if (!this.schDeletes.isEmpty())
+			{
+				this.schDeletes.forEach(((d) ->
+				{
+					d.delete(this);
+					
+				}));
+				
+				this.deletables.removeAll(this.schDeletes);
+				
+				this.schDeletes.clear();
 				
 			}
 			
@@ -178,11 +188,11 @@ public final class RenderContext implements Closeable, IUpdatable
 	
 	//XXX Hooks
 	
-	public void renderGame(ICamera cam) throws RenderException
+	public void renderGame(Camera cam) throws RenderException
 	{
 		assert cam != null;
 		
-		ICamera cam_tmp = this.cameraStorage.get();
+		Camera cam_tmp = this.cameraStorage.get();
 		
 		this.cameraStorage.set(cam);
 		
@@ -226,12 +236,6 @@ public final class RenderContext implements Closeable, IUpdatable
 			this.renders--;
 			
 		}
-		
-	}
-	
-	public synchronized void onScreenFlipped(boolean flip)
-	{
-		this.flipScreen.set(flip);
 		
 	}
 	
@@ -335,17 +339,7 @@ public final class RenderContext implements Closeable, IUpdatable
 		return this.renders;
 	}
 	
-	public boolean isScreenFlipped()
-	{
-		return this.flipScreen.get();
-	}
-	
-	public boolean doUpdateScreenFlipUniform()
-	{
-		return this.flipScreen.isDirty();
-	}
-	
-	public ICamera getCamera()
+	public Camera getCamera()
 	{
 		return this.cameraStorage.get();
 	}
@@ -372,6 +366,14 @@ public final class RenderContext implements Closeable, IUpdatable
 	public void removeDeletable(IDeletable d)
 	{
 		this.deletables.remove(d);
+		
+	}
+	
+	public void scheduleDeletion(IDeletable d)
+	{
+		assert d != null;
+		
+		this.schDeletes.add(d);
 		
 	}
 	
@@ -402,7 +404,7 @@ public final class RenderContext implements Closeable, IUpdatable
 		
 	}
 	
-	public void setCamera(ICamera cam)
+	public void setCamera(Camera cam)
 	{
 		assert cam != null;
 		

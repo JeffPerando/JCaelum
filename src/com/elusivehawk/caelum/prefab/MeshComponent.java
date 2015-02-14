@@ -72,20 +72,29 @@ public class MeshComponent extends PositionedComponent
 	}
 	
 	@Override
-	public void render(RenderContext rcon) throws RenderException
-	{
-		this.meshRenderer.render(rcon);
-		
-		super.render(rcon);
-		
-	}
-	
-	@Override
 	public void postRender(RenderContext rcon)
 	{
 		this.meshRenderer.postRender(rcon);
 		
 		super.postRender(rcon);
+		
+	}
+	
+	@Override
+	public void delete(RenderContext rcon)
+	{
+		this.meshRenderer.delete(rcon);
+		
+		super.delete(rcon);
+		
+	}
+	
+	@Override
+	public void render(RenderContext rcon) throws RenderException
+	{
+		this.meshRenderer.render(rcon);
+		
+		super.render(rcon);
 		
 	}
 	

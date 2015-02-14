@@ -7,9 +7,6 @@ import com.elusivehawk.caelum.input.IInputImpl;
 import com.elusivehawk.caelum.input.Input;
 import com.elusivehawk.caelum.input.Keyboard;
 import com.elusivehawk.caelum.input.Mouse;
-import com.elusivehawk.caelum.render.gl.GL1;
-import com.elusivehawk.caelum.render.gl.GL2;
-import com.elusivehawk.caelum.render.gl.GL3;
 import com.elusivehawk.util.CompInfo;
 import com.elusivehawk.util.EnumOS;
 import com.google.common.collect.ImmutableList;
@@ -40,9 +37,9 @@ public class LWJGLEnvironment implements IGameEnvironment
 	@Override
 	public void preInit()
 	{
-		GL1.setImpl(new OpenGL1());
-		GL2.setImpl(new OpenGL2());
-		GL3.setImpl(new OpenGL3());
+		//GL1.setImpl(new OpenGL1());
+		//GL2.setImpl(new OpenGL2());
+		//GL3.setImpl(new OpenGL3());
 		
 		//System.setProperty("org.lwjgl.opengl.Display.noinput", "true");
 		

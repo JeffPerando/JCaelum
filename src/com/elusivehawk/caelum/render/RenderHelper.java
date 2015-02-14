@@ -69,7 +69,7 @@ public final class RenderHelper
 		
 		try
 		{
-			tex = GL1.glGenTextures();
+			tex = GL1.glGenTexture();
 			
 			GL1.glActiveTexture(GLConst.GL_TEXTURE0);
 			GL1.glBindTexture(type, tex);
@@ -108,7 +108,7 @@ public final class RenderHelper
 	
 	public static void checkForGLError() throws GLException
 	{
-		GLEnumError err = GL1.glGetError();
+		GLEnumError err = GL1.glGetErrorEnum();
 		
 		if (err != GLEnumError.GL_NO_ERROR)
 		{
@@ -141,14 +141,14 @@ public final class RenderHelper
 		GL2.glShaderSource(id, src);
 		GL2.glCompileShader(id);
 		
-		int status = GL2.glGetShaderi(id, GLSLEnumSStatus.GL_COMPILE_STATUS);
+		int status = GL2.glGetShader(id, GLSLEnumSStatus.GL_COMPILE_STATUS);
 		
 		if (status == GLConst.GL_FALSE)
 		{
 			if (CompInfo.DEBUG)
 			{
 				Logger.warn("Cannot compile shader %s", shader);
-				Logger.info("Shader log for shader %s (ID %s) of type %s:\n%s", shader, id, shader.getType(), GL2.glGetShaderInfoLog(id, GL2.glGetShaderi(id, GLSLEnumSStatus.GL_INFO_LOG_LENGTH)));
+				Logger.info("Shader log for shader %s (ID %s) of type %s:\n%s", shader, id, shader.getType(), GL2.glGetShaderInfoLog(id, GL2.glGetShader(id, GLSLEnumSStatus.GL_INFO_LOG_LENGTH)));
 				
 			}
 			

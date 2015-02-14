@@ -15,6 +15,12 @@ public class Rectangle
 {
 	public final float x, y, z, w;
 	
+	public Rectangle(Rectangle r)
+	{
+		this(r.x, r.y, r.z, r.w);
+		
+	}
+	
 	@SuppressWarnings("unqualified-field-access")
 	public Rectangle(float xStart, float yStart, float xEnd, float yEnd)
 	{
@@ -25,12 +31,6 @@ public class Rectangle
 		y = yStart;
 		z = xEnd;
 		w = yEnd;
-		
-	}
-	
-	public Rectangle(Rectangle r)
-	{
-		this(r.x, r.y, r.z, r.w);
 		
 	}
 	
@@ -90,7 +90,12 @@ public class Rectangle
 	
 	public Rectangle interpolate(Rectangle r)
 	{
-		return new Rectangle(this.interpolateX(r.x), this.interpolateY(r.y), this.interpolateX(r.z), this.interpolateY(r.w));
+		return this.interpolate(r.x, r.y, r.z, r.w);
+	}
+	
+	public Rectangle interpolate(float x, float y, float z, float w)
+	{
+		return new Rectangle(this.interpolateX(x), this.interpolateY(y), this.interpolateX(z), this.interpolateY(w));
 	}
 	
 }

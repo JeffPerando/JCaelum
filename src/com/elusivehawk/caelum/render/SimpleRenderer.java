@@ -13,7 +13,6 @@ import com.elusivehawk.caelum.render.gl.GLProgram;
 import com.elusivehawk.caelum.render.gl.GLVertexArray;
 import com.elusivehawk.caelum.render.tex.ITexture;
 import com.elusivehawk.caelum.render.tex.TextureAsset;
-import com.elusivehawk.util.Logger;
 
 /**
  * 
@@ -23,31 +22,30 @@ import com.elusivehawk.util.Logger;
  */
 public class SimpleRenderer implements IRenderable
 {
-	private final GLBuffer vertex, indices;
+	private final FloatBuffer vertex;
+	private final IntBuffer indices;
 	private final GLEnumDrawType type;
-	private final int polyCount;
+	private final int indCount;
+	
+	private final ITexture tex;
 	
 	private final GLVertexArray vao = new GLVertexArray();
-	private final ITexture tex;
+	private final GLBuffer vtxbuf = new GLBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER);
+	private final GLBuffer indbuf = new GLBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER);
 	
 	private GLProgram program = null;
 	
 	private boolean initiated = false;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public SimpleRenderer(FloatBuffer vtx, IntBuffer ind, GLEnumDrawType dtype, int count)
+	public SimpleRenderer(FloatBuffer vtx, IntBuffer ind, GLEnumDrawType dtype)
 	{
-		vertex = new GLBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_STATIC_DRAW, vtx);
-		indices = new GLBuffer(GLEnumBufferTarget.GL_ELEMENT_ARRAY_BUFFER, GLEnumDataUsage.GL_STATIC_DRAW, ind);
+		vertex = vtx;
+		indices = ind;
 		type = dtype;
-		polyCount = count;
+		indCount = ind.capacity();
 		
 		tex = new TextureAsset("/res/test.png");
-		
-		vertex.addAttrib(0, 3, GLConst.GL_FLOAT, false, 12, 0);
-		
-		vao.addVBO(vertex);
-		vao.addVBO(indices);
 		
 	}
 	
@@ -57,6 +55,14 @@ public class SimpleRenderer implements IRenderable
 		if (!this.initiated)
 		{
 			this.program = new GLProgram(rcon.getDefaultShaders());
+			
+			this.vtxbuf.init(rcon, this.vertex, GLEnumDataUsage.GL_STATIC_DRAW);
+			this.indbuf.init(rcon, this.indices, GLEnumDataUsage.GL_STATIC_DRAW);
+			
+			this.vtxbuf.addAttrib(0, 3, GLConst.GL_FLOAT, false, 12, 0);
+			
+			this.vao.addVBO(this.vtxbuf);
+			this.vao.addVBO(this.indbuf);
 			
 			this.initiated = true;
 			
@@ -68,20 +74,30 @@ public class SimpleRenderer implements IRenderable
 	public void postRender(RenderContext rcon) throws RenderException{}
 	
 	@Override
+	public void delete(RenderContext rcon)
+	{
+		if (this.initiated)
+		{
+			this.program.delete(rcon);
+			this.vao.delete(rcon);
+			this.vtxbuf.delete(rcon);
+			this.indbuf.delete(rcon);
+			
+		}
+		
+	}
+	
+	@Override
 	public void render(RenderContext rcon) throws RenderException
 	{
 		if (this.program.bind(rcon))
 		{
-			Logger.debug("PROGRAM BOUND");
-			
 			if (this.vao.bind(rcon))
 			{
-				Logger.debug("VAO BOUND");
-				
 				GL1.glActiveTexture(GLConst.GL_TEXTURE0);
 				GL1.glBindTexture(this.tex);
 				
-				GL1.glDrawArrays(this.type, 0, this.polyCount);
+				GL1.glDrawArrays(this.type, 0, this.indCount);
 				
 				GL1.glBindTexture(GLConst.GL_TEXTURE_2D, 0);
 				

@@ -24,24 +24,14 @@ public enum GLEnumBufferTarget
 	GL_TRANSFORM_FEEDBACK_BUFFER(GLConst.GL_TRANSFORM_FEEDBACK_BUFFER, GLConst.GL_TRANSFORM_FEEDBACK_BUFFER_BINDING),
 	GL_UNIFORM_BUFFER(GLConst.GL_UNIFORM_BUFFER, GLConst.GL_UNIFORM_BUFFER_BINDING);
 	
-	private final int glId, bindId;
+	public final int gl, bind;
 	
 	@SuppressWarnings("unqualified-field-access")
-	GLEnumBufferTarget(int gl, int bind)
+	GLEnumBufferTarget(int glId, int bindId)
 	{
-		glId = gl;
-		bindId = bind;
+		gl = glId;
+		bind = bindId;
 		
-	}
-	
-	public int getGLId()
-	{
-		return this.glId;
-	}
-	
-	public int getBindID()
-	{
-		return this.bindId;
 	}
 	
 }

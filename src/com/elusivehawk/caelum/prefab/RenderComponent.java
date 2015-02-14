@@ -56,20 +56,29 @@ public class RenderComponent extends Component
 	}
 	
 	@Override
-	public void render(RenderContext rcon)
-	{
-		this.renderable.render(rcon);
-		
-		super.render(rcon);
-		
-	}
-	
-	@Override
 	public void postRender(RenderContext rcon)
 	{
 		this.renderable.postRender(rcon);
 		
 		super.postRender(rcon);
+		
+	}
+	
+	@Override
+	public void delete(RenderContext rcon)
+	{
+		this.renderable.delete(rcon);
+		
+		super.delete(rcon);
+		
+	}
+	
+	@Override
+	public void render(RenderContext rcon)
+	{
+		this.renderable.render(rcon);
+		
+		super.render(rcon);
 		
 	}
 	

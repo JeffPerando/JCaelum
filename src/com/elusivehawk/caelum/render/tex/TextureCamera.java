@@ -1,7 +1,7 @@
 
 package com.elusivehawk.caelum.render.tex;
 
-import com.elusivehawk.caelum.render.ICamera;
+import com.elusivehawk.caelum.render.Camera;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
 
@@ -13,16 +13,16 @@ import com.elusivehawk.caelum.render.RenderException;
  */
 public class TextureCamera extends RenderableTexture
 {
-	private final ICamera cam;
+	private final Camera cam;
 	
-	public TextureCamera(ICamera camera)
+	public TextureCamera(Camera camera)
 	{
 		this(camera, true);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public TextureCamera(ICamera camera, boolean depth)
+	public TextureCamera(Camera camera, boolean depth)
 	{
 		super(depth);
 		

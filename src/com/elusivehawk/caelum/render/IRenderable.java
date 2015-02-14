@@ -7,13 +7,13 @@ package com.elusivehawk.caelum.render;
  * 
  * @author Elusivehawk
  */
-public interface IRenderable extends IPreRenderer, IPostRenderer
+public interface IRenderable extends IPreRenderer, IPostRenderer, IDeletable
 {
 	void render(RenderContext rcon) throws RenderException;
 	
-	default void render(RenderContext rcon, ICamera cam) throws RenderException
+	default void render(RenderContext rcon, Camera cam) throws RenderException
 	{
-		ICamera cam_tmp = rcon.getCamera();
+		Camera cam_tmp = rcon.getCamera();
 		
 		rcon.setCamera(cam);
 		

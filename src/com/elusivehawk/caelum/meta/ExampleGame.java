@@ -4,7 +4,6 @@ package com.elusivehawk.caelum.meta;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import com.elusivehawk.caelum.CaelumEngine;
-import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.DisplaySettings;
 import com.elusivehawk.caelum.Game;
 import com.elusivehawk.caelum.input.Input;
@@ -39,7 +38,7 @@ public final class ExampleGame extends Game
 	private final FloatBuffer vtx = BufferHelper.makeFloatBuffer(new float[]{-1, -1, -1, 1, -1, -1, -1, 1, -1, -1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1, 1, 1, 1, 1});
 	private final IntBuffer ind = BufferHelper.makeIntBuffer(new int[]{0, 1, 4, 5, 6, 1, 3, 0, 2, 4, 7, 6, 2, 3});
 	
-	private final SimpleRenderer renderer = new SimpleRenderer(this.vtx, this.ind, GLEnumDrawType.GL_TRIANGLE_STRIP, 12);
+	private final SimpleRenderer renderer = new SimpleRenderer(this.vtx, this.ind, GLEnumDrawType.GL_TRIANGLE_STRIP);
 	
 	public ExampleGame()
 	{
@@ -68,7 +67,7 @@ public final class ExampleGame extends Game
 				
 			}));
 			
-			if (kb.isKeyDown(Key.CONTROL) && kb.isKeyDown(Key.V))
+			if (kb.areKeysDown(Key.CONTROL, Key.V))
 			{
 				Logger.log(EnumLogType.DEBUG, "Pasted: %s", kb.getPaste());
 				
@@ -86,13 +85,6 @@ public final class ExampleGame extends Game
 	}
 	
 	@Override
-	public void render(RenderContext rcon) throws RenderException
-	{
-		this.renderer.render(rcon);
-		
-	}
-	
-	@Override
 	public void preRender(RenderContext rcon)
 	{
 		this.renderer.preRender(rcon);
@@ -103,6 +95,20 @@ public final class ExampleGame extends Game
 	public void postRender(RenderContext rcon)
 	{
 		this.renderer.postRender(rcon);
+		
+	}
+	
+	@Override
+	public void delete(RenderContext rcon)
+	{
+		this.renderer.delete(rcon);
+		
+	}
+	
+	@Override
+	public void render(RenderContext rcon) throws RenderException
+	{
+		this.renderer.render(rcon);
 		
 	}
 	

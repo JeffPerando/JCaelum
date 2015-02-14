@@ -13,8 +13,8 @@ import com.elusivehawk.util.math.Vector;
  */
 public class PositionedComponent extends Component implements Quaternion.Listener, Vector.Listener
 {
-	private final Vector pos = new Vector().setSync();
-	private final Quaternion rot = new Quaternion().setSync();
+	private final Vector pos = (Vector)new Vector().setSync();
+	private final Quaternion rot = (Quaternion)new Quaternion().setSync();
 	
 	public PositionedComponent(Component owner, int p, IPopulator<Component> pop)
 	{

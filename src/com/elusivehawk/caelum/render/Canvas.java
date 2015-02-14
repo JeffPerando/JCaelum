@@ -172,6 +172,15 @@ public class Canvas extends RenderableObj
 		
 	}
 	
+	@Override
+	public void delete(RenderContext rcon)
+	{
+		super.delete(rcon);
+		
+		this.layers.forEach(((layer) -> {layer.delete(rcon);}));
+		
+	}
+	
 	@SuppressWarnings("sync-override")
 	@Override
 	public RenderableObj setEnableZBuffer(boolean z)
@@ -209,15 +218,15 @@ public class Canvas extends RenderableObj
 		return this.correctCoords;
 	}
 	
-	public void setSubCanvas(float xmin, float ymin, float xmax, float ymax)
+	public void createSubCanvas(Rectangle r)
 	{
-		this.setSubCanvas(new Rectangle(xmin, ymin, xmax, ymax));
+		this.createSubCanvas(r.x, r.y, r.z, r.w);
 		
 	}
 	
-	public void setSubCanvas(Rectangle r)
+	public void createSubCanvas(float xmin, float ymin, float xmax, float ymax)
 	{
-		this.currentLayer.setSubCanvas(r);
+		this.currentLayer.createSubCanvas(xmin, ymin, xmax, ymax);
 		
 	}
 	

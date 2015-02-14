@@ -60,14 +60,7 @@ public class GameState extends AbstractGameComponent
 	}
 	
 	@Override
-	public void render(RenderContext rcon) throws RenderException
-	{
-		this.renderers.forEach(((r) -> {r.render(rcon);}));
-		
-	}
-	
-	@Override
-	public void preRender(RenderContext rcon)
+	public void preRender(RenderContext rcon) throws RenderException
 	{
 		this.renderers.forEach(((r) -> {r.preRender(rcon);}));
 		
@@ -77,6 +70,20 @@ public class GameState extends AbstractGameComponent
 	public void postRender(RenderContext rcon) throws RenderException
 	{
 		this.renderers.forEach(((r) -> {r.postRender(rcon);}));
+		
+	}
+	
+	@Override
+	public void delete(RenderContext rcon)
+	{
+		this.renderers.forEach(((r) -> {r.delete(rcon);}));
+		
+	}
+	
+	@Override
+	public void render(RenderContext rcon) throws RenderException
+	{
+		this.renderers.forEach(((r) -> {r.render(rcon);}));
 		
 	}
 	

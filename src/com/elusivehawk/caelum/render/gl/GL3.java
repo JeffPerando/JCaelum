@@ -2,7 +2,16 @@
 package com.elusivehawk.caelum.render.gl;
 
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.nio.LongBuffer;
+import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL31;
+import org.lwjgl.opengl.GL32;
+import org.lwjgl.opengl.GL33;
+import org.lwjgl.opengl.GL40;
 import com.elusivehawk.caelum.render.RenderHelper;
+import com.elusivehawk.util.storage.BufferHelper;
 
 /**
  * 
@@ -12,22 +21,11 @@ import com.elusivehawk.caelum.render.RenderHelper;
  */
 public final class GL3
 {
-	private static IGL3Impl impl = null;
-	
 	private GL3(){}
-	
-	public static void setImpl(IGL3Impl gl)
-	{
-		assert impl == null;
-		assert gl != null;
-		
-		impl = gl;
-		
-	}
 	
 	public static void glBeginConditionalRender(int id, int mode) throws GLException
 	{
-		impl.glBeginConditionalRender(id, mode);
+		GL30.glBeginConditionalRender(id, mode);
 		
 		RenderHelper.checkForGLError();
 		
@@ -35,7 +33,7 @@ public final class GL3
 	
 	public static void glBeginTransformFeedback(int primitiveMode) throws GLException
 	{
-		impl.glBeginTransformFeedback(primitiveMode);
+		GL30.glBeginTransformFeedback(primitiveMode);
 		
 		RenderHelper.checkForGLError();
 		
@@ -43,7 +41,7 @@ public final class GL3
 	
 	public static void glBindBufferBase(int target, int index, int buffer) throws GLException
 	{
-		impl.glBindBufferBase(target, index, buffer);
+		GL30.glBindBufferBase(target, index, buffer);
 		
 		RenderHelper.checkForGLError();
 		
@@ -51,7 +49,7 @@ public final class GL3
 	
 	public static void glBindBufferRange(int target, int index, int buffer, long offset, long size) throws GLException
 	{
-		impl.glBindBufferRange(target, index, buffer, offset, size);
+		GL30.glBindBufferRange(target, index, buffer, offset, size);
 		
 		RenderHelper.checkForGLError();
 		
@@ -59,7 +57,7 @@ public final class GL3
 	
 	public static void glBindFragDataLocation(int program, int colorNumber, String name) throws GLException
 	{
-		impl.glBindFragDataLocation(program, colorNumber, name);
+		GL30.glBindFragDataLocation(program, colorNumber, name);
 		
 		RenderHelper.checkForGLError();
 		
@@ -67,7 +65,7 @@ public final class GL3
 	
 	public static void glBindFragDataLocationIndexed(int program, int colorNumber, int index, String name) throws GLException
 	{
-		impl.glBindFragDataLocationIndexed(program, colorNumber, index, name);
+		GL33.glBindFragDataLocationIndexed(program, colorNumber, index, name);
 		
 		RenderHelper.checkForGLError();
 		
@@ -81,7 +79,7 @@ public final class GL3
 	
 	public static void glBindFramebuffer(int target, int framebuffer) throws GLException
 	{
-		impl.glBindFramebuffer(target, framebuffer);
+		GL30.glBindFramebuffer(target, framebuffer);
 		
 	}
 	
@@ -93,7 +91,7 @@ public final class GL3
 	
 	public static void glBindRenderbuffer(int target, int renderbuffer) throws GLException
 	{
-		impl.glBindRenderbuffer(target, renderbuffer);
+		GL30.glBindRenderbuffer(target, renderbuffer);
 		
 		RenderHelper.checkForGLError();
 		
@@ -101,7 +99,7 @@ public final class GL3
 	
 	public static void glBindSampler(int unit, int sampler) throws GLException
 	{
-		impl.glBindSampler(unit, sampler);
+		GL33.glBindSampler(unit, sampler);
 		
 		RenderHelper.checkForGLError();
 		
@@ -115,7 +113,7 @@ public final class GL3
 	
 	public static void glBindVertexArray(int array) throws GLException
 	{
-		impl.glBindVertexArray(array);
+		GL30.glBindVertexArray(array);
 		
 		RenderHelper.checkForGLError();
 		
@@ -123,7 +121,7 @@ public final class GL3
 	
 	public static void glBlitFramebuffer(int srcX0, int srcY0, int srcX1, int srcY1, int dstX0, int dstY0, int dstX1, int dstY1, int mask, int filter) throws GLException
 	{
-		impl.glBlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
+		GL30.glBlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
 		
 		RenderHelper.checkForGLError();
 		
@@ -136,7 +134,7 @@ public final class GL3
 	
 	public static int glCheckFramebufferStatus(int target) throws GLException
 	{
-		int ret = impl.glCheckFramebufferStatus(target);
+		int ret = GL30.glCheckFramebufferStatus(target);
 		
 		RenderHelper.checkForGLError();
 		
@@ -145,13 +143,13 @@ public final class GL3
 	
 	public static void glClampColor(int target, int clamp) throws GLException
 	{
-		impl.glClampColor(target, clamp);
+		GL30.glClampColor(target, clamp);
 		
 	}
 	
 	public static void glClearBufferfi(int buffer, int drawbuffer, float depth, int stencil) throws GLException
 	{
-		impl.glClearBufferfi(buffer, drawbuffer, depth, stencil);
+		GL30.glClearBufferfi(buffer, drawbuffer, depth, stencil);
 		
 		RenderHelper.checkForGLError();
 		
@@ -159,7 +157,7 @@ public final class GL3
 	
 	public static int glClientWaitSync(long sync, int flags, long timeout) throws GLException
 	{
-		int ret = impl.glClientWaitSync(sync, flags, timeout);
+		int ret = GL32.glClientWaitSync(sync, flags, timeout);
 		
 		RenderHelper.checkForGLError();
 		
@@ -168,7 +166,7 @@ public final class GL3
 	
 	public static void glColorMaski(int buf, boolean r, boolean g, boolean b, boolean a) throws GLException
 	{
-		impl.glColorMaski(buf, r, g, b, a);
+		GL30.glColorMaski(buf, r, g, b, a);
 		
 		RenderHelper.checkForGLError();
 		
@@ -176,7 +174,7 @@ public final class GL3
 	
 	public static void glCopyBufferSubData(int readtarget, int writetarget, long readoffset, long writeoffset, long size) throws GLException
 	{
-		impl.glCopyBufferSubData(readtarget, writetarget, readoffset, writeoffset, size);
+		GL31.glCopyBufferSubData(readtarget, writetarget, readoffset, writeoffset, size);
 		
 		RenderHelper.checkForGLError();
 		
@@ -184,15 +182,15 @@ public final class GL3
 	
 	public static void glDeleteFramebuffer(int framebuffer) throws GLException
 	{
-		impl.glDeleteFramebuffer(framebuffer);
+		GL30.glDeleteFramebuffers(framebuffer);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glDeleteFramebuffers(int[] framebuffers) throws GLException
+	public static void glDeleteFramebuffers(IntBuffer framebuffers) throws GLException
 	{
-		impl.glDeleteFramebuffers(framebuffers);
+		GL30.glDeleteFramebuffers(framebuffers);
 		
 		RenderHelper.checkForGLError();
 		
@@ -200,15 +198,15 @@ public final class GL3
 	
 	public static void glDeleteRenderbuffer(int renderbuffer) throws GLException
 	{
-		impl.glDeleteRenderbuffer(renderbuffer);
+		GL30.glDeleteRenderbuffers(renderbuffer);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glDeleteRenderbuffers(int[] renderbuffer) throws GLException
+	public static void glDeleteRenderbuffers(IntBuffer renderbuffer) throws GLException
 	{
-		impl.glDeleteRenderbuffers(renderbuffer);
+		GL30.glDeleteRenderbuffers(renderbuffer);
 		
 		RenderHelper.checkForGLError();
 		
@@ -216,15 +214,15 @@ public final class GL3
 	
 	public static void glDeleteSampler(int sampler) throws GLException
 	{
-		impl.glDeleteSampler(sampler);
+		GL33.glDeleteSamplers(sampler);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glDeleteSamplers(int[] samplers) throws GLException
+	public static void glDeleteSamplers(IntBuffer samplers) throws GLException
 	{
-		impl.glDeleteSamplers(samplers);
+		GL33.glDeleteSamplers(samplers);
 		
 		RenderHelper.checkForGLError();
 		
@@ -232,7 +230,7 @@ public final class GL3
 	
 	public static void glDeleteSync(long sync) throws GLException
 	{
-		impl.glDeleteSync(sync);
+		GL32.glDeleteSync(sync);
 		
 		RenderHelper.checkForGLError();
 		
@@ -240,15 +238,15 @@ public final class GL3
 	
 	public static void glDeleteVertexArray(int array) throws GLException
 	{
-		impl.glDeleteVertexArray(array);
+		GL30.glDeleteVertexArrays(array);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glDeleteVertexArrays(int[] arrays) throws GLException
+	public static void glDeleteVertexArrays(IntBuffer arrays) throws GLException
 	{
-		impl.glDeleteVertexArrays(arrays);
+		GL30.glDeleteVertexArrays(arrays);
 		
 		RenderHelper.checkForGLError();
 		
@@ -256,7 +254,7 @@ public final class GL3
 	
 	public static void glDisablei(int target, int index) throws GLException
 	{
-		impl.glDisablei(target, index);
+		GL30.glDisablei(target, index);
 		
 		RenderHelper.checkForGLError();
 		
@@ -264,7 +262,7 @@ public final class GL3
 	
 	public static void glDrawArraysInstanced(int mode, int first, int argcount, int primcount) throws GLException
 	{
-		impl.glDrawArraysInstanced(mode, first, argcount, primcount);
+		GL31.glDrawArraysInstanced(mode, first, argcount, primcount);
 		
 		RenderHelper.checkForGLError();
 		
@@ -272,7 +270,7 @@ public final class GL3
 	
 	public static void glDrawElementsBaseVertex(int mode, int indices_count, int type, long indices_buffer_offset, int basevertex) throws GLException
 	{
-		impl.glDrawElementsBaseVertex(mode, indices_count, type, indices_buffer_offset, basevertex);
+		GL32.glDrawElementsBaseVertex(mode, indices_count, type, indices_buffer_offset, basevertex);
 		
 		RenderHelper.checkForGLError();
 		
@@ -280,7 +278,7 @@ public final class GL3
 	
 	public static void glDrawElementsIndirect(int mode, int type, long indirect_buffer_offset) throws GLException
 	{
-		impl.glDrawElementsIndirect(mode, type, indirect_buffer_offset);
+		GL40.glDrawElementsIndirect(mode, type, indirect_buffer_offset);//TODO Move to GL4
 		
 		RenderHelper.checkForGLError();
 		
@@ -288,7 +286,7 @@ public final class GL3
 	
 	public static void glDrawElementsInstanced(int mode, int indices_count, int type, long indices_buffer_offset, int primcount) throws GLException
 	{
-		impl.glDrawElementsInstanced(mode, indices_count, type, indices_buffer_offset, primcount);
+		GL31.glDrawElementsInstanced(mode, indices_count, type, indices_buffer_offset, primcount);
 		
 		RenderHelper.checkForGLError();
 		
@@ -296,7 +294,7 @@ public final class GL3
 	
 	public static void glDrawElementsInstancedBaseVertex(int mode, int indices_count, int type, long indices_buffer_offset, int primcount, int basevertex) throws GLException
 	{
-		impl.glDrawElementsInstancedBaseVertex(mode, indices_count, type, indices_buffer_offset, primcount, basevertex);
+		GL32.glDrawElementsInstancedBaseVertex(mode, indices_count, type, indices_buffer_offset, primcount, basevertex);
 		
 		RenderHelper.checkForGLError();
 		
@@ -304,7 +302,7 @@ public final class GL3
 	
 	public static void glDrawRangeElementsBaseVertex(int mode, int start, int end, int indices_count, int type, long indices_buffer_offset, int basevertex) throws GLException
 	{
-		impl.glDrawRangeElementsBaseVertex(mode, start, end, indices_count, type, indices_buffer_offset, basevertex);
+		GL32.glDrawRangeElementsBaseVertex(mode, start, end, indices_count, type, indices_buffer_offset, basevertex);
 		
 		RenderHelper.checkForGLError();
 		
@@ -312,7 +310,7 @@ public final class GL3
 	
 	public static void glEnablei(int target, int index) throws GLException
 	{
-		impl.glEnablei(target, index);
+		GL30.glEnablei(target, index);
 		
 		RenderHelper.checkForGLError();
 		
@@ -320,7 +318,7 @@ public final class GL3
 	
 	public static void glEndConditionalRender() throws GLException
 	{
-		impl.glEndConditionalRender();
+		GL30.glEndConditionalRender();
 		
 		RenderHelper.checkForGLError();
 		
@@ -328,7 +326,7 @@ public final class GL3
 	
 	public static void glEndTransformFeedback() throws GLException
 	{
-		impl.glEndTransformFeedback();
+		GL30.glEndTransformFeedback();
 		
 		RenderHelper.checkForGLError();
 		
@@ -336,7 +334,7 @@ public final class GL3
 	
 	public static long glFenceSync(int condition, int flags) throws GLException
 	{
-		long ret = impl.glFenceSync(condition, flags);
+		long ret = GL32.glFenceSync(condition, flags);
 		
 		RenderHelper.checkForGLError();
 		
@@ -345,7 +343,7 @@ public final class GL3
 	
 	public static void glFlushMappedBufferRange(int target, long offset, long length) throws GLException
 	{
-		impl.glFlushMappedBufferRange(target, offset, length);
+		GL30.glFlushMappedBufferRange(target, offset, length);
 		
 		RenderHelper.checkForGLError();
 		
@@ -365,7 +363,7 @@ public final class GL3
 	
 	public static void glFramebufferRenderbuffer(int target, int attachment, int renderbuffertarget, int renderbuffer) throws GLException
 	{
-		impl.glFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer);
+		GL30.glFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer);
 		
 		RenderHelper.checkForGLError();
 		
@@ -385,7 +383,7 @@ public final class GL3
 	
 	public static void glFramebufferTexture(int target, int attachment, int texture, int level) throws GLException
 	{
-		impl.glFramebufferTexture(target, attachment, texture, level);
+		GL32.glFramebufferTexture(target, attachment, texture, level);
 		
 		RenderHelper.checkForGLError();
 		
@@ -405,7 +403,7 @@ public final class GL3
 	
 	public static void glFramebufferTexture1D(int target, int attachment, int textarget, int texture, int level) throws GLException
 	{
-		impl.glFramebufferTexture1D(target, attachment, textarget, texture, level);
+		GL30.glFramebufferTexture1D(target, attachment, textarget, texture, level);
 		
 		RenderHelper.checkForGLError();
 		
@@ -425,7 +423,7 @@ public final class GL3
 	
 	public static void glFramebufferTexture2D(int target, int attachment, int textarget, int texture, int level) throws GLException
 	{
-		impl.glFramebufferTexture2D(target, attachment, textarget, texture, level);
+		GL30.glFramebufferTexture2D(target, attachment, textarget, texture, level);
 		
 		RenderHelper.checkForGLError();
 		
@@ -445,7 +443,7 @@ public final class GL3
 	
 	public static void glFramebufferTexture3D(int target, int attachment, int textarget, int texture, int level, int zoffset) throws GLException
 	{
-		impl.glFramebufferTexture3D(target, attachment, textarget, texture, level, zoffset);
+		GL30.glFramebufferTexture3D(target, attachment, textarget, texture, level, zoffset);
 		
 		RenderHelper.checkForGLError();
 		
@@ -453,7 +451,7 @@ public final class GL3
 	
 	public static void glFramebufferTextureLayer(int target, int attachment, int texture, int level, int layer) throws GLException
 	{
-		impl.glFramebufferTextureLayer(target, attachment, texture, level, layer);
+		GL30.glFramebufferTextureLayer(target, attachment, texture, level, layer);
 		
 		RenderHelper.checkForGLError();
 		
@@ -467,7 +465,7 @@ public final class GL3
 	
 	public static void glGenerateMipmap(int target) throws GLException
 	{
-		impl.glGenerateMipmap(target);
+		GL30.glGenerateMipmap(target);
 		
 		RenderHelper.checkForGLError();
 		
@@ -475,16 +473,18 @@ public final class GL3
 	
 	public static int glGenFramebuffer() throws GLException
 	{
-		int ret = impl.glGenFramebuffer();
+		int ret = GL30.glGenFramebuffers();
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static int[] glGenFramebuffers(int argcount) throws GLException
+	public static IntBuffer glGenFramebuffers(int argcount) throws GLException
 	{
-		int[] ret = impl.glGenFramebuffers(argcount);
+		IntBuffer ret = BufferHelper.createIntBuffer(argcount);
+		
+		GL30.glGenFramebuffers(ret);
 		
 		RenderHelper.checkForGLError();
 		
@@ -493,16 +493,18 @@ public final class GL3
 	
 	public static int glGenRenderbuffer() throws GLException
 	{
-		int ret = impl.glGenRenderbuffer();
+		int ret = GL30.glGenRenderbuffers();
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static int[] glGenRenderbuffers(int argcount) throws GLException
+	public static IntBuffer glGenRenderbuffers(int argcount) throws GLException
 	{
-		int[] ret = impl.glGenRenderbuffers(argcount);
+		IntBuffer ret = BufferHelper.createIntBuffer(argcount);
+		
+		GL30.glGenRenderbuffers(ret);
 		
 		RenderHelper.checkForGLError();
 		
@@ -511,16 +513,18 @@ public final class GL3
 	
 	public static int glGenSampler() throws GLException
 	{
-		int ret = impl.glGenSampler();
+		int ret = GL33.glGenSamplers();
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static int[] glGenSamplers(int argcount) throws GLException
+	public static IntBuffer glGenSamplers(int argcount) throws GLException
 	{
-		int[] ret = impl.glGenSamplers(argcount);
+		IntBuffer ret = BufferHelper.createIntBuffer(argcount);
+		
+		GL33.glGenSamplers(ret);
 		
 		RenderHelper.checkForGLError();
 		
@@ -529,16 +533,18 @@ public final class GL3
 	
 	public static int glGenVertexArray() throws GLException
 	{
-		int ret = impl.glGenVertexArray();
+		int ret = GL30.glGenVertexArrays();
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static int[] glGenVertexArrays(int argcount) throws GLException
+	public static IntBuffer glGenVertexArrays(int argcount) throws GLException
 	{
-		int[] ret = impl.glGenVertexArrays(argcount);
+		IntBuffer ret = BufferHelper.createIntBuffer(argcount);
+		
+		GL30.glGenVertexArrays(ret);
 		
 		RenderHelper.checkForGLError();
 		
@@ -547,7 +553,7 @@ public final class GL3
 	
 	public static String glGetActiveUniformBlockName(int program, int uniformBlockIndex, int bufSize) throws GLException
 	{
-		String ret = impl.glGetActiveUniformBlockName(program, uniformBlockIndex, bufSize);
+		String ret = GL31.glGetActiveUniformBlockName(program, uniformBlockIndex, bufSize);
 		
 		RenderHelper.checkForGLError();
 		
@@ -556,16 +562,18 @@ public final class GL3
 	
 	public static String glGetActiveUniformName(int program, int uniformIndex, int bufSize) throws GLException
 	{
-		String ret = impl.glGetActiveUniformName(program, uniformIndex, bufSize);
+		String ret = GL31.glGetActiveUniformName(program, uniformIndex, bufSize);
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static int[] glGetActiveUniforms(int program, int[] uniformIndices, int pname) throws GLException
+	public static IntBuffer glGetActiveUniforms(int program, IntBuffer uniformIndices, int pname) throws GLException
 	{
-		int[] ret = impl.glGetActiveUniforms(program, uniformIndices, pname);
+		IntBuffer ret = BufferHelper.createIntBuffer(uniformIndices.capacity());
+		
+		GL31.glGetActiveUniforms(program, uniformIndices, pname, ret);
 		
 		RenderHelper.checkForGLError();
 		
@@ -574,7 +582,7 @@ public final class GL3
 	
 	public static int glGetActiveUniformsi(int program, int uniformIndex, int pname) throws GLException
 	{
-		int ret = impl.glGetActiveUniformsi(program, uniformIndex, pname);
+		int ret = GL31.glGetActiveUniformsi(program, uniformIndex, pname);
 		
 		RenderHelper.checkForGLError();
 		
@@ -583,25 +591,29 @@ public final class GL3
 	
 	public static boolean glGetBoolean(int value, int index) throws GLException
 	{
-		boolean ret = impl.glGetBoolean(value, index);
+		boolean ret = GL30.glGetBooleani(value, index);
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static boolean[] glGetBoolean(int value, int index, int argcount) throws GLException
+	public static ByteBuffer glGetBoolean(int value, int index, int argcount) throws GLException
 	{
-		boolean[] ret = impl.glGetBoolean(value, index, argcount);
+		ByteBuffer ret = BufferHelper.createByteBuffer(argcount);
+		
+		GL30.glGetBooleani(value, index, ret);
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static long[] glGetBufferParameter(int target, int pname, int argcount) throws GLException
+	public static LongBuffer glGetBufferParameter(int target, int pname, int argcount) throws GLException
 	{
-		long[] ret = impl.glGetBufferParameter(target, pname, argcount);
+		LongBuffer ret = BufferHelper.createLongBuffer(argcount);
+		
+		GL32.glGetBufferParameter(target, pname, ret);
 		
 		RenderHelper.checkForGLError();
 		
@@ -610,7 +622,7 @@ public final class GL3
 	
 	public static long glGetBufferParameteri64(int target, int pname) throws GLException
 	{
-		long ret = impl.glGetBufferParameteri64(target, pname);
+		long ret = GL32.glGetBufferParameteri64(target, pname);
 		
 		RenderHelper.checkForGLError();
 		
@@ -619,7 +631,7 @@ public final class GL3
 	
 	public static int glGetFragDataIndex(int program, String name) throws GLException
 	{
-		int ret = impl.glGetFragDataIndex(program, name);
+		int ret = GL33.glGetFragDataIndex(program, name);
 		
 		RenderHelper.checkForGLError();
 		
@@ -628,16 +640,18 @@ public final class GL3
 	
 	public static int glGetFragDataLocation(int program, String name) throws GLException
 	{
-		int ret = impl.glGetFragDataLocation(program, name);
+		int ret = GL30.glGetFragDataLocation(program, name);
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static int[] glGetFramebufferAttachmentParameter(int target, int attachment, int pname, int argcount)
+	public static IntBuffer glGetFramebufferAttachmentParameter(int target, int attachment, int pname, int argcount)
 	{
-		int[] ret = impl.glGetFramebufferAttachmentParameter(target, attachment, pname, argcount);
+		IntBuffer ret = BufferHelper.createIntBuffer(argcount);
+		
+		GL30.glGetFramebufferAttachmentParameter(target, attachment, pname, ret);
 		
 		RenderHelper.checkForGLError();
 		
@@ -646,7 +660,7 @@ public final class GL3
 	
 	public static int glGetFramebufferAttachmentParameteri(int target, int attachment, int pname) throws GLException
 	{
-		int ret = impl.glGetFramebufferAttachmentParameteri(target, attachment, pname);
+		int ret = GL30.glGetFramebufferAttachmentParameteri(target, attachment, pname);
 		
 		RenderHelper.checkForGLError();
 		
@@ -655,25 +669,27 @@ public final class GL3
 	
 	public static int glGetIntegeri(int value, int index) throws GLException
 	{
-		int ret = impl.glGetIntegeri(value, index);
+		int ret = GL30.glGetIntegeri(value, index);
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static int[] glGetInteger(int value, int index, int argcount) throws GLException
+	public static IntBuffer glGetInteger(int value, int index, int argcount) throws GLException
 	{
-		int[] ret = impl.glGetInteger(value, index, argcount);
+		IntBuffer ret = BufferHelper.createIntBuffer(argcount);
+		
+		GL30.glGetInteger(value, index, ret);
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static long glGetInteger64i(int pname) throws GLException
+	public static long glGetInteger64(int pname) throws GLException
 	{
-		long ret = impl.glGetInteger64i(pname);
+		long ret = GL32.glGetInteger64(pname);
 		
 		RenderHelper.checkForGLError();
 		
@@ -682,43 +698,51 @@ public final class GL3
 	
 	public static long glGetInteger64i(int value, int index) throws GLException
 	{
-		long ret = impl.glGetInteger64i(value, index);
+		long ret = GL32.glGetInteger64i(value, index);
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static long[] glGetInteger64(int value, int index, int argcount) throws GLException
+	public static LongBuffer glGetInteger64(int value, int index, int argcount) throws GLException
 	{
-		long[] ret = impl.glGetInteger64(value, index, argcount);
+		LongBuffer ret = BufferHelper.createLongBuffer(argcount);
+		
+		GL32.glGetInteger64i(value, index, ret);
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static long[] glGetInteger64(int pname, int argcount) throws GLException
+	public static LongBuffer glGetInteger64(int pname, int argcount) throws GLException
 	{
-		long[] ret = impl.glGetInteger64(pname, argcount);
+		LongBuffer ret = BufferHelper.createLongBuffer(argcount);
+		
+		GL32.glGetInteger64(pname, ret);
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static float[] glGetMultisample(int pname, int index, int argcount) throws GLException
+	public static FloatBuffer glGetMultisample(int pname, int index, int argcount) throws GLException
 	{
-		float[] ret = impl.glGetMultisample(pname, index, argcount);
+		FloatBuffer ret = BufferHelper.createFloatBuffer(argcount);
+		
+		GL32.glGetMultisample(pname, index, ret);
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static long[] glGetQueryObject(int id, int pname, int argcount) throws GLException
+	public static LongBuffer glGetQueryObject(int id, int pname, int argcount) throws GLException
 	{
-		long[] ret = impl.glGetQueryObject(id, pname, argcount);
+		LongBuffer ret = BufferHelper.createLongBuffer(argcount);
+		
+		GL33.glGetQueryObject(id, pname, ret);
 		
 		RenderHelper.checkForGLError();
 		
@@ -727,7 +751,7 @@ public final class GL3
 	
 	public static long glGetQueryObjecti64(int id, int pname) throws GLException
 	{
-		long ret = impl.glGetQueryObjecti64(id, pname);
+		long ret = GL33.glGetQueryObjecti64(id, pname);
 		
 		RenderHelper.checkForGLError();
 		
@@ -736,16 +760,18 @@ public final class GL3
 	
 	public static long glGetQueryObjectui64(int id, int pname) throws GLException
 	{
-		long ret = impl.glGetQueryObjectui64(id, pname);
+		long ret = GL33.glGetQueryObjectui64(id, pname);
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static int[] glGetRenderbufferParameter(int target, int pname, int argcount) throws GLException
+	public static IntBuffer glGetRenderbufferParameter(int target, int pname, int argcount) throws GLException
 	{
-		int[] ret = impl.glGetRenderbufferParameter(target, pname, argcount);
+		IntBuffer ret = BufferHelper.createIntBuffer(argcount);
+		
+		GL30.glGetRenderbufferParameter(target, pname, ret);
 		
 		RenderHelper.checkForGLError();
 		
@@ -754,25 +780,29 @@ public final class GL3
 	
 	public static int glGetRenderbufferParameteri(int target, int pname) throws GLException
 	{
-		int ret = impl.glGetRenderbufferParameteri(target, pname);
+		int ret = GL30.glGetRenderbufferParameteri(target, pname);
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static float[] glGetSamplerParameter(int sampler, int pname, int argcount) throws GLException
+	public static FloatBuffer glGetSamplerParameter(int sampler, int pname, int argcount) throws GLException
 	{
-		float[] ret = impl.glGetSamplerParameter(sampler, pname, argcount);
+		FloatBuffer ret = BufferHelper.createFloatBuffer(argcount);
+		
+		GL33.glGetSamplerParameter(sampler, pname, ret);
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static int[] glGetSamplerParameteri(int sampler, int pname, int argcount) throws GLException
+	public static IntBuffer glGetSamplerParameteri(int sampler, int pname, int argcount) throws GLException
 	{
-		int[] ret = impl.glGetSamplerParameteri(sampler, pname, argcount);
+		IntBuffer ret = BufferHelper.createIntBuffer(argcount);
+		
+		GL33.glGetSamplerParameter(sampler, pname, ret);
 		
 		RenderHelper.checkForGLError();
 		
@@ -781,7 +811,7 @@ public final class GL3
 	
 	public static float glGetSamplerParameterf(int sampler, int pname) throws GLException
 	{
-		float ret = impl.glGetSamplerParameterf(sampler, pname);
+		float ret = GL33.glGetSamplerParameterf(sampler, pname);
 		
 		RenderHelper.checkForGLError();
 		
@@ -790,16 +820,18 @@ public final class GL3
 	
 	public static int glGetSamplerParameteri(int sampler, int pname) throws GLException
 	{
-		int ret = impl.glGetSamplerParameteri(sampler, pname);
+		int ret = GL33.glGetSamplerParameteri(sampler, pname);
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static int[] glGetSamplerParameterI(int sampler, int pname, int argcount) throws GLException
+	public static IntBuffer glGetSamplerParameterI(int sampler, int pname, int argcount) throws GLException
 	{
-		int[] ret = impl.glGetSamplerParameterI(sampler, pname, argcount);
+		IntBuffer ret = BufferHelper.createIntBuffer(argcount);
+		
+		GL33.glGetSamplerParameterI(sampler, pname, ret);
 		
 		RenderHelper.checkForGLError();
 		
@@ -808,16 +840,18 @@ public final class GL3
 	
 	public static int glGetSamplerParameterIi(int sampler, int pname) throws GLException
 	{
-		int ret = impl.glGetSamplerParameterIi(sampler, pname);
+		int ret = GL33.glGetSamplerParameterIi(sampler, pname);
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static int[] glGetSamplerParameterIu(int sampler, int pname, int argcount) throws GLException
+	public static IntBuffer glGetSamplerParameterIu(int sampler, int pname, int argcount) throws GLException
 	{
-		int[] ret = impl.glGetSamplerParameterIu(sampler, pname, argcount);
+		IntBuffer ret = BufferHelper.createIntBuffer(argcount);
+		
+		GL33.glGetSamplerParameterIu(sampler, pname, ret);
 		
 		RenderHelper.checkForGLError();
 		
@@ -826,7 +860,7 @@ public final class GL3
 	
 	public static int glGetSamplerParameterIui(int sampler, int pname) throws GLException
 	{
-		int ret = impl.glGetSamplerParameterIui(sampler, pname);
+		int ret = GL33.glGetSamplerParameterIui(sampler, pname);
 		
 		RenderHelper.checkForGLError();
 		
@@ -835,34 +869,38 @@ public final class GL3
 	
 	public static String glGetStringi(int name, int index) throws GLException
 	{
-		String ret = impl.glGetStringi(name, index);
+		String ret = GL30.glGetStringi(name, index);
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static int[] glGetSync(long sync, int pname, int[] length, int argcount) throws GLException
+	public static IntBuffer glGetSync(long sync, int pname, IntBuffer length) throws GLException
 	{
-		int[] ret = impl.glGetSync(sync, pname, length, argcount);
+		IntBuffer ret = BufferHelper.createIntBuffer(length.capacity());
+		
+		GL32.glGetSync(sync, pname, length, ret);
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static int glGetSynci(long sync, int pname) throws GLException
+	public static int glGetSynci(long sync, int pname, IntBuffer length) throws GLException
 	{
-		int ret = impl.glGetSynci(sync, pname);
+		int ret = GL32.glGetSynci(sync, pname, length);
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static int[] glGetTexParameterI(int target, int pname, int argcount) throws GLException
+	public static IntBuffer glGetTexParameterI(int target, int pname, int argcount) throws GLException
 	{
-		int[] ret = impl.glGetTexParameterI(target, pname, argcount);
+		IntBuffer ret = BufferHelper.createIntBuffer(argcount);
+		
+		GL30.glGetTexParameterI(target, pname, ret);
 		
 		RenderHelper.checkForGLError();
 		
@@ -871,16 +909,18 @@ public final class GL3
 	
 	public static int glGetTexParameterIi(int target, int pname) throws GLException
 	{
-		int ret = impl.glGetTexParameterIi(target, pname);
+		int ret = GL30.glGetTexParameterIi(target, pname);
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static int[] glGetTexParameterIu(int target, int pname, int argcount) throws GLException
+	public static IntBuffer glGetTexParameterIu(int target, int pname, int argcount) throws GLException
 	{
-		int[] ret = impl.glGetTexParameterIu(target, pname, argcount);
+		IntBuffer ret = BufferHelper.createIntBuffer(argcount);
+		
+		GL30.glGetTexParameterIu(target, pname, ret);
 		
 		RenderHelper.checkForGLError();
 		
@@ -889,16 +929,16 @@ public final class GL3
 	
 	public static int glGetTexParameterIui(int target, int pname) throws GLException
 	{
-		int ret = impl.glGetTexParameterIui(target, pname);
+		int ret = GL30.glGetTexParameterIui(target, pname);
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static String glGetTransformFeedbackVarying(int program, int index, int bufSize, int[] size, int[] type) throws GLException
+	public static String glGetTransformFeedbackVarying(int program, int index, int bufSize, IntBuffer size, IntBuffer type) throws GLException
 	{
-		String ret = impl.glGetTransformFeedbackVarying(program, index, bufSize, size, type);
+		String ret = GL30.glGetTransformFeedbackVarying(program, index, bufSize, size, type);
 		
 		RenderHelper.checkForGLError();
 		
@@ -907,43 +947,51 @@ public final class GL3
 	
 	public static int glGetUniformBlockIndex(int program, String uniformBlockName) throws GLException
 	{
-		int ret = impl.glGetUniformBlockIndex(program, uniformBlockName);
+		int ret = GL31.glGetUniformBlockIndex(program, uniformBlockName);
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static int[] glGetUniformIndices(int program, String[] uniformNames) throws GLException
+	public static IntBuffer glGetUniformIndices(int program, String[] uniformNames) throws GLException
 	{
-		int[] ret = impl.glGetUniformIndices(program, uniformNames);
+		IntBuffer ret = BufferHelper.createIntBuffer(uniformNames.length);
+		
+		GL31.glGetUniformIndices(program, uniformNames, ret);
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static int[] glGetUniformu(int program, int location, int argcount) throws GLException
+	public static IntBuffer glGetUniformu(int program, int location, int argcount) throws GLException
 	{
-		int[] ret = impl.glGetUniformu(program, location, argcount);
+		IntBuffer ret = BufferHelper.createIntBuffer(argcount);
+		
+		GL30.glGetUniformu(program, location, ret);
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static int[] glGetVertexAttribI(int index, int pname, int argcount) throws GLException
+	public static IntBuffer glGetVertexAttribI(int index, int pname, int argcount) throws GLException
 	{
-		int[] ret = impl.glGetVertexAttribI(index, pname, argcount);
+		IntBuffer ret = BufferHelper.createIntBuffer(argcount);
+		
+		GL30.glGetVertexAttribI(index, pname, ret);
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static int[] glGetVertexAttribIu(int index, int pname, int argcount) throws GLException
+	public static IntBuffer glGetVertexAttribIu(int index, int pname, int argcount) throws GLException
 	{
-		int[] ret = impl.glGetVertexAttribIu(index, pname, argcount);
+		IntBuffer ret = BufferHelper.createIntBuffer(argcount);
+		
+		GL30.glGetVertexAttribIu(index, pname, ret);
 		
 		RenderHelper.checkForGLError();
 		
@@ -952,37 +1000,37 @@ public final class GL3
 	
 	public static boolean glIsEnabledi(int target, int index) throws GLException
 	{
-		return impl.glIsEnabledi(target, index);
+		return GL30.glIsEnabledi(target, index);
 	}
 	
 	public static boolean glIsFramebuffer(int framebuffer)
 	{
-		return impl.glIsFramebuffer(framebuffer);
+		return GL30.glIsFramebuffer(framebuffer);
 	}
 	
 	public static boolean glIsRenderbuffer(int renderbuffer)
 	{
-		return impl.glIsRenderbuffer(renderbuffer);
+		return GL30.glIsRenderbuffer(renderbuffer);
 	}
 	
 	public static boolean glIsSampler(int sampler)
 	{
-		return impl.glIsSampler(sampler);
+		return GL33.glIsSampler(sampler);
 	}
 	
 	public static boolean glIsSync(long sync)
 	{
-		return impl.glIsSync(sync);
+		return GL32.glIsSync(sync);
 	}
 	
 	public static boolean glIsVertexArray(int array)
 	{
-		return impl.glIsVertexArray(array);
+		return GL30.glIsVertexArray(array);
 	}
 	
 	public static ByteBuffer glMapBufferRange(int target, long offset, long length, int access, ByteBuffer old_buffer) throws GLException
 	{
-		ByteBuffer ret = impl.glMapBufferRange(target, offset, length, access, old_buffer);
+		ByteBuffer ret = GL30.glMapBufferRange(target, offset, length, access, old_buffer);
 		
 		RenderHelper.checkForGLError();
 		
@@ -991,7 +1039,7 @@ public final class GL3
 	
 	public static void glPrimitiveRestartIndex(int index)
 	{
-		impl.glPrimitiveRestartIndex(index);
+		GL31.glPrimitiveRestartIndex(index);
 		
 		RenderHelper.checkForGLError();
 		
@@ -999,7 +1047,7 @@ public final class GL3
 	
 	public static void glProvokingVertex(int mode) throws GLException
 	{
-		impl.glProvokingVertex(mode);
+		GL32.glProvokingVertex(mode);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1007,7 +1055,7 @@ public final class GL3
 	
 	public static void glQueryCounter(int id, int target) throws GLException
 	{
-		impl.glQueryCounter(id, target);
+		GL33.glQueryCounter(id, target);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1021,7 +1069,7 @@ public final class GL3
 	
 	public static void glRenderbufferStorage(int target, int internalformat, int width, int height) throws GLException
 	{
-		impl.glRenderbufferStorage(target, internalformat, width, height);
+		GL30.glRenderbufferStorage(target, internalformat, width, height);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1029,7 +1077,7 @@ public final class GL3
 	
 	public static void glRenderbufferStorageMultisample(int target, int samples, int internalformat, int width, int height) throws GLException
 	{
-		impl.glRenderbufferStorageMultisample(target, samples, internalformat, width, height);
+		GL30.glRenderbufferStorageMultisample(target, samples, internalformat, width, height);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1037,24 +1085,28 @@ public final class GL3
 	
 	public static void glSampleMaski(int index, int mask) throws GLException
 	{
-		impl.glSampleMaski(index, mask);
+		GL32.glSampleMaski(index, mask);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static float[] glSamplerParameterf(int sampler, int pname, int argcount) throws GLException
+	public static FloatBuffer glSamplerParameterf(int sampler, int pname, int argcount) throws GLException
 	{
-		float[] ret = impl.glSamplerParameterf(sampler, pname, argcount);
+		FloatBuffer ret = BufferHelper.createFloatBuffer(argcount);
+		
+		GL33.glSamplerParameter(sampler, pname, ret);
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static int[] glSamplerParameter(int sampler, int pname, int argcount) throws GLException
+	public static IntBuffer glSamplerParameter(int sampler, int pname, int argcount) throws GLException
 	{
-		int[] ret = impl.glSamplerParameter(sampler, pname, argcount);
+		IntBuffer ret = BufferHelper.createIntBuffer(argcount);
+		
+		GL33.glSamplerParameter(sampler, pname, ret);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1063,7 +1115,7 @@ public final class GL3
 	
 	public static void glSamplerParameterf(int sampler, int pname, float param) throws GLException
 	{
-		impl.glSamplerParameterf(sampler, pname, param);
+		GL33.glSamplerParameterf(sampler, pname, param);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1071,24 +1123,28 @@ public final class GL3
 	
 	public static void glSamplerParameteri(int sampler, int pname, int param) throws GLException
 	{
-		impl.glSamplerParameteri(sampler, pname, param);
+		GL33.glSamplerParameteri(sampler, pname, param);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static int[] glSamplerParameterI(int sampler, int pname, int argcount) throws GLException
+	public static IntBuffer glSamplerParameterI(int sampler, int pname, int argcount) throws GLException
 	{
-		int[] ret = impl.glSamplerParameterI(sampler, pname, argcount);
+		IntBuffer ret = BufferHelper.createIntBuffer(argcount);
+		
+		GL33.glSamplerParameterI(sampler, pname, ret);
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static int[] glSamplerParameterIu(int sampler, int pname, int argcount) throws GLException
+	public static IntBuffer glSamplerParameterIu(int sampler, int pname, int argcount) throws GLException
 	{
-		int[] ret = impl.glSamplerParameterIu(sampler, pname, argcount);
+		IntBuffer ret = BufferHelper.createIntBuffer(argcount);
+		
+		GL33.glSamplerParameterIu(sampler, pname, ret);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1097,7 +1153,7 @@ public final class GL3
 	
 	public static void glTexBuffer(int target, int internalformat, int buffer) throws GLException
 	{
-		impl.glTexBuffer(target, internalformat, buffer);
+		GL31.glTexBuffer(target, internalformat, buffer);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1105,7 +1161,7 @@ public final class GL3
 	
 	public static void glTexImage2DMultisample(int target, int samples, int internalformat, int width, int height, boolean fixedsamplelocations) throws GLException
 	{
-		impl.glTexImage2DMultisample(target, samples, internalformat, width, height, fixedsamplelocations);
+		GL32.glTexImage2DMultisample(target, samples, internalformat, width, height, fixedsamplelocations);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1113,15 +1169,17 @@ public final class GL3
 	
 	public static void glTexImage3DMultisample(int target, int samples, int internalformat, int width, int height, int depth, boolean fixedsamplelocations) throws GLException
 	{
-		impl.glTexImage3DMultisample(target, samples, internalformat, width, height, depth, fixedsamplelocations);
+		GL32.glTexImage3DMultisample(target, samples, internalformat, width, height, depth, fixedsamplelocations);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static int[] glTexParameterI(int target, int pname, int argcount) throws GLException
+	public static IntBuffer glTexParameterI(int target, int pname, int argcount) throws GLException
 	{
-		int[] ret = impl.glTexParameterI(target, pname, argcount);
+		IntBuffer ret = BufferHelper.createIntBuffer(argcount);
+		
+		GL30.glTexParameterI(target, pname, ret);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1130,15 +1188,17 @@ public final class GL3
 	
 	public static void glTexParameterIi(int target, int pname, int param) throws GLException
 	{
-		impl.glTexParameterIi(target, pname, param);
+		GL30.glTexParameterIi(target, pname, param);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static int[] glTexParameterIu(int target, int pname, int argcount) throws GLException
+	public static IntBuffer glTexParameterIu(int target, int pname, int argcount) throws GLException
 	{
-		int[] ret = impl.glTexParameterIu(target, pname, argcount);
+		IntBuffer ret = BufferHelper.createIntBuffer(argcount);
+		
+		GL30.glTexParameterIu(target, pname, ret);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1147,7 +1207,7 @@ public final class GL3
 	
 	public static void glTexParameterIui(int target, int pname, int param) throws GLException
 	{
-		impl.glTexParameterIui(target, pname, param);
+		GL30.glTexParameterIui(target, pname, param);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1155,7 +1215,7 @@ public final class GL3
 	
 	public static void glTransformFeedbackVaryings(int program, String[] varyings, int bufferMode) throws GLException
 	{
-		impl.glTransformFeedbackVaryings(program, varyings, bufferMode);
+		GL30.glTransformFeedbackVaryings(program, varyings, bufferMode);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1163,7 +1223,7 @@ public final class GL3
 	
 	public static void glUniformBlockBinding(int program, int uniformBlockIndex, int uniformBlockBinding) throws GLException
 	{
-		impl.glUniformBlockBinding(program, uniformBlockIndex, uniformBlockBinding);
+		GL31.glUniformBlockBinding(program, uniformBlockIndex, uniformBlockBinding);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1171,15 +1231,15 @@ public final class GL3
 	
 	public static void glVertexAttribDivisor(int index, int divisor) throws GLException
 	{
-		impl.glVertexAttribDivisor(index, divisor);
+		GL33.glVertexAttribDivisor(index, divisor);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glVertexAttribI1(int index, int[] v) throws GLException
+	public static void glVertexAttribI1(int index, IntBuffer v) throws GLException
 	{
-		impl.glVertexAttribI1(index, v);
+		GL30.glVertexAttribI1(index, v);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1187,15 +1247,15 @@ public final class GL3
 	
 	public static void glVertexAttribI1i(int index, int x) throws GLException
 	{
-		impl.glVertexAttribI1i(index, x);
+		GL30.glVertexAttribI1i(index, x);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glVertexAttribI1u(int index, int[] v) throws GLException
+	public static void glVertexAttribI1u(int index, IntBuffer v) throws GLException
 	{
-		impl.glVertexAttribI1u(index, v);
+		GL30.glVertexAttribI1u(index, v);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1203,15 +1263,15 @@ public final class GL3
 	
 	public static void glVertexAttribI1ui(int index, int x) throws GLException
 	{
-		impl.glVertexAttribI1ui(index, x);
+		GL30.glVertexAttribI1ui(index, x);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glVertexAttribI2(int index, int[] v) throws GLException
+	public static void glVertexAttribI2(int index, IntBuffer v) throws GLException
 	{
-		impl.glVertexAttribI2(index, v);
+		GL30.glVertexAttribI2(index, v);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1219,15 +1279,15 @@ public final class GL3
 	
 	public static void glVertexAttribI2i(int index, int x, int y) throws GLException
 	{
-		impl.glVertexAttribI2i(index, x, y);
+		GL30.glVertexAttribI2i(index, x, y);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glVertexAttribI2u(int index, int[] v) throws GLException
+	public static void glVertexAttribI2u(int index, IntBuffer v) throws GLException
 	{
-		impl.glVertexAttribI2u(index, v);
+		GL30.glVertexAttribI2u(index, v);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1235,15 +1295,15 @@ public final class GL3
 	
 	public static void glVertexAttribI2ui(int index, int x, int y) throws GLException
 	{
-		impl.glVertexAttribI2ui(index, x, y);
+		GL30.glVertexAttribI2ui(index, x, y);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glVertexAttribI3(int index, int[] v) throws GLException
+	public static void glVertexAttribI3(int index, IntBuffer v) throws GLException
 	{
-		impl.glVertexAttribI3(index, v);
+		GL30.glVertexAttribI3(index, v);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1251,15 +1311,15 @@ public final class GL3
 	
 	public static void glVertexAttribI3i(int index, int x, int y, int z) throws GLException
 	{
-		impl.glVertexAttribI3i(index, x, y, z);
+		GL30.glVertexAttribI3i(index, x, y, z);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glVertexAttribI3u(int index, int[] v) throws GLException
+	public static void glVertexAttribI3u(int index, IntBuffer v) throws GLException
 	{
-		impl.glVertexAttribI3u(index, v);
+		GL30.glVertexAttribI3u(index, v);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1267,15 +1327,15 @@ public final class GL3
 	
 	public static void glVertexAttribI3ui(int index, int x, int y, int z) throws GLException
 	{
-		impl.glVertexAttribI3ui(index, x, y, z);
+		GL30.glVertexAttribI3ui(index, x, y, z);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glVertexAttribI4(int index, int[] v) throws GLException
+	public static void glVertexAttribI4(int index, IntBuffer v) throws GLException
 	{
-		impl.glVertexAttribI4(index, v);
+		GL30.glVertexAttribI4(index, v);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1283,15 +1343,15 @@ public final class GL3
 	
 	public static void glVertexAttribI4i(int index, int x, int y, int z, int w) throws GLException
 	{
-		impl.glVertexAttribI4i(index, x, y, z, w);
+		GL30.glVertexAttribI4i(index, x, y, z, w);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glVertexAttribI4u(int index, int[] v) throws GLException
+	public static void glVertexAttribI4u(int index, IntBuffer v) throws GLException
 	{
-		impl.glVertexAttribI4u(index, v);
+		GL30.glVertexAttribI4u(index, v);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1299,15 +1359,15 @@ public final class GL3
 	
 	public static void glVertexAttribI4ui(int index, int x, int y, int z, int w) throws GLException
 	{
-		impl.glVertexAttribI4ui(index, x, y, z, w);
+		GL30.glVertexAttribI4ui(index, x, y, z, w);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glVertexAttribIPointer(int index, int size, int type, int stride, int[] buffer) throws GLException
+	public static void glVertexAttribIPointer(int index, int size, int type, int stride, IntBuffer buffer) throws GLException
 	{
-		impl.glVertexAttribIPointer(index, size, type, stride, buffer);
+		GL30.glVertexAttribIPointer(index, size, type, stride, buffer);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1315,15 +1375,15 @@ public final class GL3
 	
 	public static void glVertexAttribIPointer(int index, int size, int type, int stride, long buffer_buffer_offset) throws GLException
 	{
-		impl.glVertexAttribIPointer(index, size, type, stride, buffer_buffer_offset);
+		GL30.glVertexAttribIPointer(index, size, type, stride, buffer_buffer_offset);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glVertexAttribP1u(int index, int type, boolean normalized, int[] value) throws GLException
+	public static void glVertexAttribP1u(int index, int type, boolean normalized, IntBuffer value) throws GLException
 	{
-		impl.glVertexAttribP1u(index, type, normalized, value);
+		GL33.glVertexAttribP1u(index, type, normalized, value);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1331,15 +1391,15 @@ public final class GL3
 	
 	public static void glVertexAttribP1ui(int index, int type, boolean normalized, int value) throws GLException
 	{
-		impl.glVertexAttribP1ui(index, type, normalized, value);
+		GL33.glVertexAttribP1ui(index, type, normalized, value);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glVertexAttribP2u(int index, int type, boolean normalized, int[] value) throws GLException
+	public static void glVertexAttribP2u(int index, int type, boolean normalized, IntBuffer value) throws GLException
 	{
-		impl.glVertexAttribP2u(index, type, normalized, value);
+		GL33.glVertexAttribP2u(index, type, normalized, value);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1347,15 +1407,15 @@ public final class GL3
 	
 	public static void glVertexAttribP2ui(int index, int type, boolean normalized, int value) throws GLException
 	{
-		impl.glVertexAttribP2ui(index, type, normalized, value);
+		GL33.glVertexAttribP2ui(index, type, normalized, value);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glVertexAttribP3u(int index, int type, boolean normalized, int[] value) throws GLException
+	public static void glVertexAttribP3u(int index, int type, boolean normalized, IntBuffer value) throws GLException
 	{
-		impl.glVertexAttribP3u(index, type, normalized, value);
+		GL33.glVertexAttribP3u(index, type, normalized, value);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1363,15 +1423,15 @@ public final class GL3
 	
 	public static void glVertexAttribP3ui(int index, int type, boolean normalized, int value) throws GLException
 	{
-		impl.glVertexAttribP3ui(index, type, normalized, value);
+		GL33.glVertexAttribP3ui(index, type, normalized, value);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glVertexAttribP4u(int index, int type, boolean normalized, int[] value) throws GLException
+	public static void glVertexAttribP4u(int index, int type, boolean normalized, IntBuffer value) throws GLException
 	{
-		impl.glVertexAttribP4u(index, type, normalized, value);
+		GL33.glVertexAttribP4u(index, type, normalized, value);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1379,15 +1439,15 @@ public final class GL3
 	
 	public static void glVertexAttribP4ui(int index, int type, boolean normalized, int value) throws GLException
 	{
-		impl.glVertexAttribP4ui(index, type, normalized, value);
+		GL33.glVertexAttribP4ui(index, type, normalized, value);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glVertexP2u(int type, int[] value) throws GLException
+	public static void glVertexP2u(int type, IntBuffer value) throws GLException
 	{
-		impl.glVertexP2u(type, value);
+		GL33.glVertexP2u(type, value);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1395,15 +1455,15 @@ public final class GL3
 	
 	public static void glVertexP2ui(int type, int value) throws GLException
 	{
-		impl.glVertexP2ui(type, value);
+		GL33.glVertexP2ui(type, value);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glVertexP3u(int type, int[] value) throws GLException
+	public static void glVertexP3u(int type, IntBuffer value) throws GLException
 	{
-		impl.glVertexP3u(type, value);
+		GL33.glVertexP3u(type, value);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1411,15 +1471,15 @@ public final class GL3
 	
 	public static void glVertexP3ui(int type, int value) throws GLException
 	{
-		impl.glVertexP3ui(type, value);
+		GL33.glVertexP3ui(type, value);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glVertexP4u(int type, int[] value) throws GLException
+	public static void glVertexP4u(int type, IntBuffer value) throws GLException
 	{
-		impl.glVertexP4u(type, value);
+		GL33.glVertexP4u(type, value);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1427,7 +1487,7 @@ public final class GL3
 	
 	public static void glVertexP4ui(int type, int value) throws GLException
 	{
-		impl.glVertexP4ui(type, value);
+		GL33.glVertexP4ui(type, value);
 		
 		RenderHelper.checkForGLError();
 		
@@ -1435,7 +1495,7 @@ public final class GL3
 	
 	public static void glWaitSync(long sync, int flags, long timeout) throws GLException
 	{
-		impl.glWaitSync(sync, flags, timeout);
+		GL32.glWaitSync(sync, flags, timeout);
 		
 		RenderHelper.checkForGLError();
 		

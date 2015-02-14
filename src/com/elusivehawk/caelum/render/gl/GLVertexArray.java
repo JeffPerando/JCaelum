@@ -20,12 +20,14 @@ public class GLVertexArray implements IBindable, IDeletable
 	private final List<Integer> attribs = Lists.newArrayList();
 	
 	private int id = 0;
-	private boolean initiated = false;
+	private boolean initiated = false, deleted = false;
 	
 	public GLVertexArray(){}
 	
 	public GLVertexArray(IPopulator<GLVertexArray> pop)
 	{
+		this();
+		
 		pop.populate(this);
 		
 	}
@@ -33,6 +35,11 @@ public class GLVertexArray implements IBindable, IDeletable
 	@Override
 	public void delete(RenderContext rcon)
 	{
+		if (this.deleted)
+		{
+			return;
+		}
+		
 		if (!this.initiated)
 		{
 			return;
@@ -45,6 +52,8 @@ public class GLVertexArray implements IBindable, IDeletable
 		}
 		
 		GL3.glDeleteVertexArray(this.id);
+		
+		this.deleted = true;
 		
 	}
 	
@@ -63,17 +72,12 @@ public class GLVertexArray implements IBindable, IDeletable
 			return false;
 		}
 		
-		if (this.id == 0)
-		{
-			this.id = GL3.glGenVertexArray();
-			rcon.registerDeletable(this);
-			
-		}
-		
-		GL3.glBindVertexArray(this);
-		
 		if (!this.initiated)
 		{
+			this.id = GL3.glGenVertexArray();
+			
+			rcon.registerDeletable(this);
+			
 			this.buffers.forEach(((vbo) ->
 			{
 				if (vbo.getTarget() == GLEnumBufferTarget.GL_ARRAY_BUFFER)
@@ -104,16 +108,7 @@ public class GLVertexArray implements IBindable, IDeletable
 			
 		}
 		
-		this.buffers.forEach(((ab) ->
-		{
-			if (ab.needsUpdating())
-			{
-				ab.bind(rcon);//Automates re-uploading
-				ab.unbind(rcon);
-				
-			}
-			
-		}));
+		GL3.glBindVertexArray(this);
 		
 		GL2.glEnableVertexAttribArrays(this.attribs);
 		

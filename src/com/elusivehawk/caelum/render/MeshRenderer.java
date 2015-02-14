@@ -42,10 +42,12 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 			rotOff = new Quaternion(),
 			rot = new Quaternion();
 	
-	private final GLVertexArray vao = new GLVertexArray();
 	private final DirtableStorage<Material> mat = new DirtableStorage<Material>().setSync();
 	
-	private GLBuffer meshbuf = null, animbuf = null;
+	private final GLVertexArray vao = new GLVertexArray();
+	private final GLBuffer meshbuf = new GLBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER);
+	private final GLBuffer animbuf = new GLBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER);
+	
 	private FloatBuffer buf = null;
 	private GLEnumDrawType draw = null;
 	
@@ -119,10 +121,10 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 			
 		}
 		
-		this.buf = BufferHelper.createFloatBuffer(vtx.capacity() / 3 * 16);
+		this.buf = BufferHelper.createFloatBuffer(vtx.capacity() / 3 * 16 * 4);
 		
-		this.meshbuf = new GLBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_STATIC_DRAW, vtx);
-		this.animbuf = new GLBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_DYNAMIC_DRAW, this.buf);
+		this.meshbuf.init(rcon, vtx, GLEnumDataUsage.GL_STATIC_DRAW);
+		this.animbuf.init(rcon, this.buf, GLEnumDataUsage.GL_DYNAMIC_DRAW);
 		
 		int size = 12 + (data.useTex ? data.texSize * 4 : 0) + (data.useNorm ? 12 : 0);
 		
@@ -153,7 +155,7 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 		
 		if (ind != null)
 		{
-			this.vao.addVBO(new GLBuffer(GLEnumBufferTarget.GL_ELEMENT_ARRAY_BUFFER, GLEnumDataUsage.GL_STATIC_DRAW, ind));
+			this.vao.addVBO(new GLBuffer(GLEnumBufferTarget.GL_ELEMENT_ARRAY_BUFFER, ind, GLEnumDataUsage.GL_STATIC_DRAW, rcon));
 			
 		}
 		
@@ -211,7 +213,7 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 		{
 			if (this.program.bind(rcon))
 			{
-				GL2.glUniformMatrix4f("model", MatrixHelper.homogenous(this.rot, this.scale, this.pos));
+				GL2.glUniformMatrix4("model", MatrixHelper.homogenous(this.rot, this.scale, this.pos));
 				
 			}
 			

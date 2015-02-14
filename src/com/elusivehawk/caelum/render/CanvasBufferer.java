@@ -108,6 +108,13 @@ public class CanvasBufferer implements IRenderable
 	}
 	
 	@Override
+	public void delete(RenderContext rcon)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
 	public void render(RenderContext rcon) throws RenderException
 	{
 		this.canvas.render(rcon);

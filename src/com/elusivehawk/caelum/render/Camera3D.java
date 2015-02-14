@@ -14,20 +14,20 @@ import com.elusivehawk.util.math.Vector;
  * @author Elusivehawk
  */
 @Experimental
-public abstract class Camera3D implements ICamera
+public abstract class Camera3D extends Camera
 {
 	protected final Vector pos = (Vector)new Vector(3).setSync();
 	protected final Quaternion rot = (Quaternion)new Quaternion().setSync();
 	
 	private float fov, zNear, zFar;
 	
-	private Matrix view = null;
-	private Matrix proj = null;
 	private boolean updateProj = true, updateView = true;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public Camera3D(float fieldOfView, float nearZ, float farZ)
 	{
+		super(4);
+		
 		fov = fieldOfView;
 		zNear = nearZ;
 		zFar = farZ;
@@ -39,11 +39,10 @@ public abstract class Camera3D implements ICamera
 	{
 		if (this.updateProj)
 		{
-			Matrix m = MatrixHelper.projection(this.fov, rcon.getDisplay().getAspectRatio(), this.zFar, this.zNear);
+			MatrixHelper.projection(this.fov, rcon.getDisplay().getAspectRatio(), this.zFar, this.zNear, this.proj);
 			
 			synchronized (this)
 			{
-				this.proj = m;
 				this.updateProj = false;
 				
 			}
@@ -52,11 +51,10 @@ public abstract class Camera3D implements ICamera
 		
 		if (this.updateView)
 		{
-			Matrix m = this.calcView();
+			this.calcView(this.view);
 			
 			synchronized (this)
 			{
-				this.view = m;
 				this.updateView = false;
 				
 			}
@@ -122,6 +120,6 @@ public abstract class Camera3D implements ICamera
 		
 	}
 	
-	protected abstract Matrix calcView();
+	protected abstract void calcView(Matrix dest);
 	
 }

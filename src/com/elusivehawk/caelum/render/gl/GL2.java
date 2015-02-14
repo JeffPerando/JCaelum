@@ -1,9 +1,9 @@
 
 package com.elusivehawk.caelum.render.gl;
 
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import org.lwjgl.opengl.GL20;
 import com.elusivehawk.caelum.render.RenderHelper;
 import com.elusivehawk.caelum.render.glsl.GLSLEnumSStatus;
 import com.elusivehawk.caelum.render.glsl.GLSLEnumShaderType;
@@ -20,18 +20,7 @@ import com.elusivehawk.util.storage.BufferHelper;
  */
 public final class GL2
 {
-	private static IGL2Impl impl = null;
-	
 	private GL2(){}
-	
-	public static void setImpl(IGL2Impl gl)
-	{
-		assert impl == null;
-		assert gl != null;
-		
-		impl = gl;
-		
-	}
 	
 	public static void glAttachShader(GLProgram program, IShader shader) throws GLException
 	{
@@ -41,7 +30,7 @@ public final class GL2
 	
 	public static void glAttachShader(int program, int shader) throws GLException
 	{
-		impl.glAttachShader(program, shader);
+		GL20.glAttachShader(program, shader);
 		
 		RenderHelper.checkForGLError();
 		
@@ -49,7 +38,7 @@ public final class GL2
 	
 	public static void glBindAttribLocation(int program, int index, String name) throws GLException
 	{
-		impl.glBindAttribLocation(program, index, name);
+		GL20.glBindAttribLocation(program, index, name);
 		
 		RenderHelper.checkForGLError();
 		
@@ -57,7 +46,7 @@ public final class GL2
 	
 	public static void glBlendEquationSeparate(int modeRGB, int modeAlpha) throws GLException
 	{
-		impl.glBlendEquationSeparate(modeRGB, modeAlpha);
+		GL20.glBlendEquationSeparate(modeRGB, modeAlpha);
 		
 		RenderHelper.checkForGLError();
 		
@@ -71,7 +60,7 @@ public final class GL2
 	
 	public static void glCompileShader(int shader) throws GLException
 	{
-		impl.glCompileShader(shader);
+		GL20.glCompileShader(shader);
 		
 		RenderHelper.checkForGLError();
 		
@@ -79,7 +68,7 @@ public final class GL2
 	
 	public static int glCreateProgram() throws GLException
 	{
-		int ret = impl.glCreateProgram();
+		int ret = GL20.glCreateProgram();
 		
 		RenderHelper.checkForGLError();
 		
@@ -93,7 +82,7 @@ public final class GL2
 	
 	public static int glCreateShader(int type) throws GLException
 	{
-		int ret = impl.glCreateShader(type);
+		int ret = GL20.glCreateShader(type);
 		
 		RenderHelper.checkForGLError();
 		
@@ -108,7 +97,7 @@ public final class GL2
 	
 	public static void glDeleteProgram(int program) throws GLException
 	{
-		impl.glDeleteProgram(program);
+		GL20.glDeleteProgram(program);
 		
 		RenderHelper.checkForGLError();
 		
@@ -122,7 +111,7 @@ public final class GL2
 	
 	public static void glDeleteShader(int shader) throws GLException
 	{
-		impl.glDeleteShader(shader);
+		GL20.glDeleteShader(shader);
 		
 		RenderHelper.checkForGLError();
 		
@@ -136,7 +125,7 @@ public final class GL2
 	
 	public static void glDetachShader(int program, int shader) throws GLException
 	{
-		impl.glDetachShader(program, shader);
+		GL20.glDetachShader(program, shader);
 		
 		RenderHelper.checkForGLError();
 		
@@ -150,7 +139,7 @@ public final class GL2
 	
 	public static void glDisableVertexAttribArray(int index) throws GLException
 	{
-		impl.glDisableVertexAttribArray(index);
+		GL20.glDisableVertexAttribArray(index);
 		
 		RenderHelper.checkForGLError();
 		
@@ -158,15 +147,15 @@ public final class GL2
 	
 	public static void glDrawBuffer(int buffer) throws GLException
 	{
-		impl.glDrawBuffer(buffer);
+		GL20.glDrawBuffers(buffer);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glDrawBuffers(int[] buffers) throws GLException
+	public static void glDrawBuffers(IntBuffer buffers) throws GLException
 	{
-		impl.glDrawBuffers(buffers);
+		GL20.glDrawBuffers(buffers);
 		
 		RenderHelper.checkForGLError();
 		
@@ -180,86 +169,15 @@ public final class GL2
 	
 	public static void glEnableVertexAttribArray(int index) throws GLException
 	{
-		impl.glEnableVertexAttribArray(index);
+		GL20.glEnableVertexAttribArray(index);
 		
 		RenderHelper.checkForGLError();
 		
-	}
-	
-	public static String glGetActiveAttrib(int program, int index, int maxLength) throws GLException
-	{
-		String ret = impl.glGetActiveAttrib(program, index, maxLength);
-		
-		RenderHelper.checkForGLError();
-		
-		return ret;
-	}
-	
-	public static String glGetActiveAttrib(int program, int index, int maxLength, IntBuffer sizeType) throws GLException
-	{
-		String ret = impl.glGetActiveAttrib(program, index, maxLength, sizeType);
-		
-		RenderHelper.checkForGLError();
-		
-		return ret;
-	}
-	
-	public static int glGetActiveAttribSize(int program, int index) throws GLException
-	{
-		int ret = impl.glGetActiveAttribSize(program, index);
-		
-		RenderHelper.checkForGLError();
-		
-		return ret;
-	}
-	
-	public static int glGetActiveAttribType(int program, int index) throws GLException
-	{
-		int ret = impl.glGetActiveAttribType(program, index);
-		
-		RenderHelper.checkForGLError();
-		
-		return ret;
-	}
-	
-	public static String glGetActiveUniform(int program, int index, int maxLength) throws GLException
-	{
-		String ret = impl.glGetActiveUniform(program, index, maxLength);
-		
-		RenderHelper.checkForGLError();
-		
-		return ret;
-	}
-	
-	public static String glGetActiveUniform(int program, int index, int maxLength, IntBuffer sizeType) throws GLException
-	{
-		String ret = impl.glGetActiveUniform(program, index, maxLength, sizeType);
-		
-		RenderHelper.checkForGLError();
-		
-		return ret;
-	}
-	
-	public static void glGetActiveUniform(int program, int index, IntBuffer length, IntBuffer size, IntBuffer type, ByteBuffer name) throws GLException
-	{
-		impl.glGetActiveUniform(program, index, length, size, type, name);
-		
-		RenderHelper.checkForGLError();
-		
-	}
-	
-	public static int glGetActiveUniformType(int program, int index) throws GLException
-	{
-		int ret = impl.glGetActiveUniformType(program, index);
-		
-		RenderHelper.checkForGLError();
-		
-		return ret;
 	}
 	
 	public static void glGetAttachedShaders(int program, IntBuffer count, IntBuffer shaders) throws GLException
 	{
-		impl.glGetAttachedShaders(program, count, shaders);
+		GL20.glGetAttachedShaders(program, count, shaders);
 		
 		RenderHelper.checkForGLError();
 		
@@ -267,29 +185,21 @@ public final class GL2
 	
 	public static int glGetAttribLocation(int program, String name) throws GLException
 	{
-		int ret = impl.glGetAttribLocation(program, name);
+		int ret = GL20.glGetAttribLocation(program, name);
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static void glGetProgram(int program, int pname, IntBuffer params) throws GLException
+	public static int glGetProgram(GLProgram program, GLEnumPStatus status) throws GLException
 	{
-		impl.glGetProgram(program, pname, params);
-		
-		RenderHelper.checkForGLError();
-		
+		return glGetProgram(program.getId(), status.gl);
 	}
 	
-	public static int glGetProgrami(GLProgram program, GLEnumPStatus status) throws GLException
+	public static int glGetProgram(int program, int pname) throws GLException
 	{
-		return glGetProgrami(program.getId(), status.gl);
-	}
-	
-	public static int glGetProgrami(int program, int pname) throws GLException
-	{
-		int ret = impl.glGetProgrami(program, pname);
+		int ret = GL20.glGetProgrami(program, pname);
 		
 		RenderHelper.checkForGLError();
 		
@@ -298,42 +208,26 @@ public final class GL2
 	
 	public static String glGetProgramInfoLog(int program, int maxLength) throws GLException
 	{
-		String ret = impl.glGetProgramInfoLog(program, maxLength);
+		String ret = GL20.glGetProgramInfoLog(program, maxLength);
 		
 		RenderHelper.checkForGLError();
 		
 		return ret;
 	}
 	
-	public static void glGetProgramInfoLog(int program, IntBuffer length, ByteBuffer infoLog) throws GLException
+	public static int glGetShader(int shader, GLSLEnumSStatus status) throws GLException
 	{
-		impl.glGetProgramInfoLog(program, length, infoLog);
-		
-		RenderHelper.checkForGLError();
-		
+		return glGetShader(shader, status.gl);
 	}
 	
-	public static void glGetShader(int shader, int pname, IntBuffer params) throws GLException
+	public static int glGetShader(IShader shader, GLSLEnumSStatus status) throws GLException
 	{
-		impl.glGetShader(shader, pname, params);
-		
-		RenderHelper.checkForGLError();
-		
+		return glGetShader(shader.getShaderId(), status.gl);
 	}
 	
-	public static int glGetShaderi(int shader, GLSLEnumSStatus status) throws GLException
+	public static int glGetShader(int shader, int pname) throws GLException
 	{
-		return glGetShaderi(shader, status.gl);
-	}
-	
-	public static int glGetShaderi(IShader shader, GLSLEnumSStatus status) throws GLException
-	{
-		return glGetShaderi(shader.getShaderId(), status.gl);
-	}
-	
-	public static int glGetShaderi(int shader, int pname) throws GLException
-	{
-		int ret = impl.glGetShaderi(shader, pname);
+		int ret = GL20.glGetShaderi(shader, pname);
 		
 		RenderHelper.checkForGLError();
 		
@@ -342,7 +236,7 @@ public final class GL2
 	
 	public static String glGetShaderInfoLog(int shader, int maxLength) throws GLException
 	{
-		String ret = impl.glGetShaderInfoLog(shader, maxLength);
+		String ret = GL20.glGetShaderInfoLog(shader, maxLength);
 		
 		RenderHelper.checkForGLError();
 		
@@ -351,7 +245,7 @@ public final class GL2
 	
 	public static String glGetShaderSource(int shader, int maxLength) throws GLException
 	{
-		String ret = impl.glGetShaderSource(shader, maxLength);
+		String ret = GL20.glGetShaderSource(shader, maxLength);
 		
 		RenderHelper.checkForGLError();
 		
@@ -374,7 +268,7 @@ public final class GL2
 	
 	public static void glGetUniform(int program, int location, FloatBuffer params) throws GLException
 	{
-		impl.glGetUniform(program, location, params);
+		GL20.glGetUniform(program, location, params);
 		
 		RenderHelper.checkForGLError();
 		
@@ -396,7 +290,7 @@ public final class GL2
 	
 	public static void glGetUniform(int program, int location, IntBuffer params) throws GLException
 	{
-		impl.glGetUniform(program, location, params);
+		GL20.glGetUniform(program, location, params);
 		
 		RenderHelper.checkForGLError();
 		
@@ -409,7 +303,7 @@ public final class GL2
 	
 	public static int glGetUniformLocation(int program, String name) throws GLException
 	{
-		int ret = impl.glGetUniformLocation(program, name);
+		int ret = GL20.glGetUniformLocation(program, name);
 		
 		RenderHelper.checkForGLError();
 		
@@ -418,7 +312,7 @@ public final class GL2
 	
 	public static void glGetVertexAttrib(int index, int pname, FloatBuffer params) throws GLException
 	{
-		impl.glGetVertexAttrib(index, pname, params);
+		GL20.glGetVertexAttrib(index, pname, params);
 		
 		RenderHelper.checkForGLError();
 		
@@ -426,17 +320,20 @@ public final class GL2
 	
 	public static void glGetVertexAttrib(int index, int pname, IntBuffer params) throws GLException
 	{
-		impl.glGetVertexAttrib(index, pname, params);
+		GL20.glGetVertexAttrib(index, pname, params);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	//String glGetVertexAttribPointer(int index, int pname, long result_size);
+	public static long glGetVertexAttribPointer(int index, int pname)
+	{
+		return GL20.glGetVertexAttribPointer(index, pname);
+	}
 	
 	public static boolean glIsProgram(int program)
 	{
-		return impl.glIsProgram(program);
+		return GL20.glIsProgram(program);
 	}
 	
 	public static boolean glIsShader(IShader shader)
@@ -446,7 +343,7 @@ public final class GL2
 	
 	public static boolean glIsShader(int shader)
 	{
-		return impl.glIsShader(shader);
+		return GL20.glIsShader(shader);
 	}
 	
 	public static void glLinkProgram(GLProgram program) throws GLException
@@ -457,7 +354,7 @@ public final class GL2
 	
 	public static void glLinkProgram(int program) throws GLException
 	{
-		impl.glLinkProgram(program);
+		GL20.glLinkProgram(program);
 		
 		RenderHelper.checkForGLError();
 		
@@ -465,7 +362,7 @@ public final class GL2
 	
 	public static void glShaderSource(int shader, String string) throws GLException
 	{
-		impl.glShaderSource(shader, string);
+		GL20.glShaderSource(shader, string);
 		
 		RenderHelper.checkForGLError();
 		
@@ -473,7 +370,7 @@ public final class GL2
 	
 	public static void glStencilFuncSeparate(int face, int func, int ref, int mask) throws GLException
 	{
-		impl.glStencilFuncSeparate(face, func, ref, mask);
+		GL20.glStencilFuncSeparate(face, func, ref, mask);
 		
 		RenderHelper.checkForGLError();
 		
@@ -481,7 +378,7 @@ public final class GL2
 	
 	public static void glStencilMaskSeparate(int face, int mask) throws GLException
 	{
-		impl.glStencilMaskSeparate(face, mask);
+		GL20.glStencilMaskSeparate(face, mask);
 		
 		RenderHelper.checkForGLError();
 		
@@ -489,7 +386,7 @@ public final class GL2
 	
 	public static void glStencilOpSeparate(int face, int sfail, int dpfail, int dppass) throws GLException
 	{
-		impl.glStencilOpSeparate(face, sfail, dpfail, dppass);
+		GL20.glStencilOpSeparate(face, sfail, dpfail, dppass);
 		
 		RenderHelper.checkForGLError();
 		
@@ -529,13 +426,13 @@ public final class GL2
 	{
 		switch (type)
 		{
-			case ONE: glUniform1fv(location, 1, data); break;
-			case TWO: glUniform2fv(location, 1, data); break;
-			case THREE: glUniform3fv(location, 1, data); break;
-			case FOUR: glUniform4fv(location, 1, data); break;
-			case M_TWO: glUniformMatrix2fv(location, 1, transpose, data); break;
-			case M_THREE: glUniformMatrix3fv(location, 1, transpose, data); break;
-			case M_FOUR: glUniformMatrix4fv(location, 1, transpose, data); break;
+			case ONE: glUniform1(location, data); break;
+			case TWO: glUniform2(location, data); break;
+			case THREE: glUniform3(location, data); break;
+			case FOUR: glUniform4(location, data); break;
+			case M_TWO: glUniformMatrix2(location, transpose, data); break;
+			case M_THREE: glUniformMatrix3(location, transpose, data); break;
+			case M_FOUR: glUniformMatrix4(location, transpose, data); break;
 			default: throw new GLException("Weird uniform enum: %s", type);
 		}
 		
@@ -563,324 +460,299 @@ public final class GL2
 	{
 		switch (type)
 		{
-			case ONE: glUniform1i(location, data.get()); break;
-			case TWO: glUniform2i(location, data.get(), data.get()); break;
-			case THREE: glUniform3i(location, data.get(), data.get(), data.get()); break;
-			case FOUR: glUniform4i(location, data.get(), data.get(), data.get(), data.get()); break;
+			case ONE: glUniform1(location, data.get()); break;
+			case TWO: glUniform2(location, data.get(), data.get()); break;
+			case THREE: glUniform3(location, data.get(), data.get(), data.get()); break;
+			case FOUR: glUniform4(location, data.get(), data.get(), data.get(), data.get()); break;
 			default: throw new GLException("Weird uniform enum: %s", type);
 		}
 		
 	}
 	
-	public static void glUniform1f(String location, float x) throws GLException
+	public static void glUniform1(String location, float x) throws GLException
 	{
-		glUniform1f(glGetUniformLocation(location), x);
+		glUniform1(glGetUniformLocation(location), x);
 		
 	}
 	
-	public static void glUniform1f(int location, float x) throws GLException
+	public static void glUniform1(int location, float x) throws GLException
 	{
-		impl.glUniform1f(location, x);
+		GL20.glUniform1f(location, x);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glUniform1fv(int location, int count, FloatBuffer v) throws GLException
+	public static void glUniform1(int location, FloatBuffer value) throws GLException
 	{
-		impl.glUniform1fv(location, count, v);
+		GL20.glUniform1(location, value);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glUniform1i(String location, boolean x) throws GLException
+	public static void glUniform1(String location, boolean x) throws GLException
 	{
-		glUniform1i(glGetUniformLocation(location), x);
+		glUniform1(glGetUniformLocation(location), x);
 		
 	}
 	
-	public static void glUniform1i(int location, boolean x) throws GLException
+	public static void glUniform1(int location, boolean x) throws GLException
 	{
-		glUniform1i(location, x ? 1 : 0);
+		glUniform1(location, x ? 1 : 0);
 		
 	}
 	
-	public static void glUniform1i(String location, int x) throws GLException
+	public static void glUniform1(String location, int x) throws GLException
 	{
-		glUniform1i(glGetUniformLocation(location), x);
+		glUniform1(glGetUniformLocation(location), x);
 		
 	}
 	
-	public static void glUniform1i(int location, int x) throws GLException
+	public static void glUniform1(int location, int x) throws GLException
 	{
-		impl.glUniform1i(location, x);
+		GL20.glUniform1i(location, x);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glUniform1iv(int location, int count, IntBuffer v) throws GLException
+	public static void glUniform1(int location, IntBuffer v) throws GLException
 	{
-		impl.glUniform1iv(location, count, v);
+		GL20.glUniform1(location, v);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glUniform2f(String location, Vector vec) throws GLException
+	public static void glUniform2(String location, Vector vec) throws GLException
 	{
-		glUniform2f(glGetUniformLocation(location), vec);
+		glUniform2(glGetUniformLocation(location), vec);
 		
 	}
 	
-	public static void glUniform2f(int location, Vector vec) throws GLException
+	public static void glUniform2(int location, Vector vec) throws GLException
 	{
-		glUniform2f(location, vec.get(0), vec.get(1));
+		glUniform2(location, vec.get(0), vec.get(1));
 		
 	}
 	
-	public static void glUniform2f(String location, float x, float y) throws GLException
+	public static void glUniform2(String location, float x, float y) throws GLException
 	{
-		glUniform2f(glGetUniformLocation(location), x, y);
+		glUniform2(glGetUniformLocation(location), x, y);
 		
 	}
 	
-	public static void glUniform2f(int location, float x, float y) throws GLException
+	public static void glUniform2(int location, float x, float y) throws GLException
 	{
-		impl.glUniform2f(location, x, y);
+		GL20.glUniform2f(location, x, y);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glUniform2fv(int location, int count, FloatBuffer v) throws GLException
+	public static void glUniform2(int location, FloatBuffer v) throws GLException
 	{
-		impl.glUniform2fv(location, count, v);
+		GL20.glUniform2(location, v);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glUniform2i(String location, int x, int y) throws GLException
+	public static void glUniform2(String location, int x, int y) throws GLException
 	{
-		glUniform2i(glGetUniformLocation(location), x, y);
+		glUniform2(glGetUniformLocation(location), x, y);
 		
 	}
 	
-	public static void glUniform2i(int location, int x, int y) throws GLException
+	public static void glUniform2(int location, int x, int y) throws GLException
 	{
-		impl.glUniform2i(location, x, y);
+		GL20.glUniform2i(location, x, y);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glUniform2iv(int location, int count, IntBuffer v) throws GLException
+	public static void glUniform2(int location, IntBuffer v) throws GLException
 	{
-		impl.glUniform2iv(location, count, v);
+		GL20.glUniform2(location, v);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glUniform3f(String location, Vector vec) throws GLException
+	public static void glUniform3(String location, Vector vec) throws GLException
 	{
-		glUniform3f(glGetUniformLocation(location), vec);
+		glUniform3(glGetUniformLocation(location), vec);
 		
 	}
 	
-	public static void glUniform3f(int location, Vector vec) throws GLException
+	public static void glUniform3(int location, Vector vec) throws GLException
 	{
-		glUniform3f(location, vec.get(0), vec.get(1), vec.get(2));
+		glUniform3(location, vec.get(0), vec.get(1), vec.get(2));
 		
 	}
 	
-	public static void glUniform3f(String location, float... data) throws GLException
+	public static void glUniform3(String location, float... data) throws GLException
 	{
-		glUniform3f(location, data[0], data[1], data[2]);
+		glUniform3(location, data[0], data[1], data[2]);
 		
 	}
 	
-	public static void glUniform3f(String location, float x, float y, float z) throws GLException
+	public static void glUniform3(String location, float x, float y, float z) throws GLException
 	{
-		glUniform3f(glGetUniformLocation(location), x, y, z);
+		glUniform3(glGetUniformLocation(location), x, y, z);
 		
 	}
 	
-	public static void glUniform3f(int location, float x, float y, float z) throws GLException
+	public static void glUniform3(int location, float x, float y, float z) throws GLException
 	{
-		impl.glUniform3f(location, x, y, z);
+		GL20.glUniform3f(location, x, y, z);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glUniform3fv(int location, int count, FloatBuffer v) throws GLException
+	public static void glUniform3(int location, FloatBuffer v) throws GLException
 	{
-		impl.glUniform3fv(location, count, v);
+		GL20.glUniform3(location, v);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glUniform3i(String location, int x, int y, int z) throws GLException
+	public static void glUniform3(String location, int x, int y, int z) throws GLException
 	{
-		glUniform3i(glGetUniformLocation(location), x, y, z);
+		glUniform3(glGetUniformLocation(location), x, y, z);
 		
 	}
 	
-	public static void glUniform3i(int location, int x, int y, int z) throws GLException
+	public static void glUniform3(int location, int x, int y, int z) throws GLException
 	{
-		impl.glUniform3i(location, x, y, z);
+		GL20.glUniform3i(location, x, y, z);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glUniform3iv(int location, int count, IntBuffer v) throws GLException
+	public static void glUniform3(int location, IntBuffer v) throws GLException
 	{
-		impl.glUniform3iv(location, count, v);
+		GL20.glUniform3(location, v);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glUniform4f(String location, Vector vec) throws GLException
+	public static void glUniform4(String location, Vector vec) throws GLException
 	{
-		glUniform4f(glGetUniformLocation(location), vec);
+		glUniform4(glGetUniformLocation(location), vec);
 		
 	}
 	
-	public static void glUniform4f(int location, Vector vec) throws GLException
+	public static void glUniform4(int location, Vector vec) throws GLException
 	{
-		glUniform4f(location, vec.get(0), vec.get(1), vec.get(2), vec.get(3));
+		glUniform4(location, vec.get(0), vec.get(1), vec.get(2), vec.get(3));
 		
 	}
 	
-	public static void glUniform4f(String location, float[] data)
+	public static void glUniform4(String location, float[] data)
 	{
-		glUniform4f(location, data[0], data[1], data[2], data[3]);
+		glUniform4(location, data[0], data[1], data[2], data[3]);
 		
 	}
 	
-	public static void glUniform4f(String location, float x, float y, float z, float w) throws GLException
+	public static void glUniform4(String location, float x, float y, float z, float w) throws GLException
 	{
-		glUniform4f(glGetUniformLocation(location), x, y, z, w);
+		glUniform4(glGetUniformLocation(location), x, y, z, w);
 		
 	}
 	
-	public static void glUniform4f(int location, float x, float y, float z, float w) throws GLException
+	public static void glUniform4(int location, float x, float y, float z, float w) throws GLException
 	{
-		impl.glUniform4f(location, x, y, z, w);
+		GL20.glUniform4f(location, x, y, z, w);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glUniform4fv(int location, int count, FloatBuffer v) throws GLException
+	public static void glUniform4(int location, FloatBuffer v) throws GLException
 	{
-		impl.glUniform4fv(location, count, v);
+		GL20.glUniform4(location, v);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glUniform4i(String location, int x, int y, int z, int w) throws GLException
+	public static void glUniform4(String location, int x, int y, int z, int w) throws GLException
 	{
-		glUniform4i(glGetUniformLocation(location), x, y, z, w);
+		glUniform4(glGetUniformLocation(location), x, y, z, w);
 		
 	}
 	
-	public static void glUniform4i(int location, int x, int y, int z, int w) throws GLException
+	public static void glUniform4(int location, int x, int y, int z, int w) throws GLException
 	{
-		impl.glUniform4i(location, x, y, z, w);
+		GL20.glUniform4i(location, x, y, z, w);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glUniform4iv(int location, int count, IntBuffer v) throws GLException
+	public static void glUniform4(int location, IntBuffer v) throws GLException
 	{
-		impl.glUniform4iv(location, count, v);
+		GL20.glUniform4(location, v);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glUniformMatrix2fv(int location, int count, boolean transpose, FloatBuffer value) throws GLException
+	public static void glUniformMatrix2(int location, boolean transpose, FloatBuffer value) throws GLException
 	{
-		impl.glUniformMatrix2fv(location, count, transpose, value);
+		GL20.glUniformMatrix2(location, transpose, value);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glUniformMatrix3fv(int location, int count, boolean transpose, FloatBuffer value) throws GLException
+	public static void glUniformMatrix3(int location, boolean transpose, FloatBuffer value) throws GLException
 	{
-		impl.glUniformMatrix3fv(location, count, transpose, value);
+		GL20.glUniformMatrix3(location, transpose, value);
 		
 		RenderHelper.checkForGLError();
 		
 	}
 	
-	public static void glUniformMatrix4f(String location, Matrix m) throws GLException
+	public static void glUniformMatrix4(String location, Matrix m) throws GLException
 	{
-		glUniformMatrix4fv(location, m.asBuffer());
+		glUniformMatrix4(location, m.asBuffer());
 		
 	}
 	
-	public static void glUniformMatrix4fv(String location, FloatBuffer value) throws GLException
+	public static void glUniformMatrix4(String location, FloatBuffer value) throws GLException
 	{
-		glUniformMatrix4fv(location, 1, false, value);
+		glUniformMatrix4(location, false, value);
 		
 	}
 	
-	public static void glUniformMatrix4fv(String location, int count, FloatBuffer value) throws GLException
+	public static void glUniformMatrix4(String location, boolean transpose, FloatBuffer value) throws GLException
 	{
-		glUniformMatrix4fv(location, count, false, value);
+		glUniformMatrix4(location, transpose, value);
 		
 	}
 	
-	public static void glUniformMatrix4fv(String location, boolean transpose, FloatBuffer value) throws GLException
+	public static void glUniformMatrix4(int location, Matrix m) throws GLException
 	{
-		glUniformMatrix4fv(location, 1, transpose, value);
+		glUniformMatrix4(location, m.asBuffer());
+		
+	}
+	public static void glUniformMatrix4(int location, FloatBuffer value) throws GLException
+	{
+		glUniformMatrix4(location, false, value);
 		
 	}
 	
-	public static void glUniformMatrix4fv(String location, int count, boolean transpose, FloatBuffer value) throws GLException
+	public static void glUniformMatrix4(int location, boolean transpose, FloatBuffer value) throws GLException
 	{
-		glUniformMatrix4fv(glGetUniformLocation(location), count, transpose, value);
-		
-	}
-	
-	public static void glUniformMatrix4f(int location, Matrix m) throws GLException
-	{
-		glUniformMatrix4fv(location, m.asBuffer());
-		
-	}
-	
-	public static void glUniformMatrix4fv(int location, FloatBuffer value) throws GLException
-	{
-		glUniformMatrix4fv(location, 1, false, value);
-		
-	}
-	
-	public static void glUniformMatrix4fv(int location, int count, FloatBuffer value) throws GLException
-	{
-		glUniformMatrix4fv(location, count, false, value);
-		
-	}
-	
-	public static void glUniformMatrix4fv(int location, boolean transpose, FloatBuffer value) throws GLException
-	{
-		glUniformMatrix4fv(location, 1, transpose, value);
-		
-	}
-	
-	public static void glUniformMatrix4fv(int location, int count, boolean transpose, FloatBuffer value) throws GLException
-	{
-		impl.glUniformMatrix4fv(location, count, transpose, value);
+		GL20.glUniformMatrix4(location, transpose, value);
 		
 		RenderHelper.checkForGLError();
 		
@@ -894,7 +766,7 @@ public final class GL2
 	
 	public static void glUseProgram(int program) throws GLException
 	{
-		impl.glUseProgram(program);
+		GL20.glUseProgram(program);
 		
 		RenderHelper.checkForGLError();
 		
@@ -908,7 +780,7 @@ public final class GL2
 	
 	public static void glValidateProgram(int program) throws GLException
 	{
-		impl.glValidateProgram(program);
+		GL20.glValidateProgram(program);
 		
 		RenderHelper.checkForGLError();
 		
@@ -916,7 +788,7 @@ public final class GL2
 	
 	public static void glVertexAttrib1f(int index, float x) throws GLException
 	{
-		impl.glVertexAttrib1f(index, x);
+		GL20.glVertexAttrib1f(index, x);
 		
 		RenderHelper.checkForGLError();
 		
@@ -924,7 +796,7 @@ public final class GL2
 	
 	public static void glVertexAttrib2f(int index, float x, float y) throws GLException
 	{
-		impl.glVertexAttrib2f(index, x, y);
+		GL20.glVertexAttrib2f(index, x, y);
 		
 		RenderHelper.checkForGLError();
 		
@@ -932,7 +804,7 @@ public final class GL2
 	
 	public static void glVertexAttrib3f(int index, float x, float y, float z) throws GLException
 	{
-		impl.glVertexAttrib3f(index, x, y, z);
+		GL20.glVertexAttrib3f(index, x, y, z);
 		
 		RenderHelper.checkForGLError();
 		
@@ -940,7 +812,7 @@ public final class GL2
 	
 	public static void glVertexAttrib4f(int index, float x, float y, float z, float w) throws GLException
 	{
-		impl.glVertexAttrib4f(index, x, y, z, w);
+		GL20.glVertexAttrib4f(index, x, y, z, w);
 		
 		RenderHelper.checkForGLError();
 		
@@ -948,19 +820,13 @@ public final class GL2
 	
 	public static void glVertexAttribPointer(VertexAttrib attrib)
 	{
-		glVertexAttribPointer(attrib.index, attrib.size, attrib.type, attrib.unsigned, attrib.normalized, attrib.stride, attrib.first);
+		glVertexAttribPointer(attrib.index, attrib.size, attrib.type, attrib.normalized, attrib.stride, attrib.first);
 		
 	}
 	
 	public static void glVertexAttribPointer(int index, int size, int type, boolean normalized, int stride, long first) throws GLException
 	{
-		glVertexAttribPointer(index, size, type, false, normalized, stride, first);
-		
-	}
-	
-	public static void glVertexAttribPointer(int index, int size, int type, boolean unsigned, boolean normalized, int stride, long first) throws GLException
-	{
-		impl.glVertexAttribPointer(index, size, type, unsigned, normalized, stride, first);
+		GL20.glVertexAttribPointer(index, size, type, normalized, stride, first);
 		
 		RenderHelper.checkForGLError();
 		

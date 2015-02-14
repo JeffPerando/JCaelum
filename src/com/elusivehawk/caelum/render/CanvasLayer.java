@@ -1,13 +1,12 @@
 
 package com.elusivehawk.caelum.render;
 
-import java.nio.FloatBuffer;
+import java.nio.ByteBuffer;
 import com.elusivehawk.caelum.prefab.Rectangle;
 import com.elusivehawk.caelum.render.gl.GL1;
 import com.elusivehawk.caelum.render.gl.GLBuffer;
 import com.elusivehawk.caelum.render.gl.GLConst;
 import com.elusivehawk.caelum.render.gl.GLEnumBufferTarget;
-import com.elusivehawk.caelum.render.gl.GLEnumDataType;
 import com.elusivehawk.caelum.render.gl.GLEnumDataUsage;
 import com.elusivehawk.caelum.render.gl.GLEnumDrawType;
 import com.elusivehawk.caelum.render.gl.GLVertexArray;
@@ -25,27 +24,95 @@ import com.elusivehawk.util.storage.DirtableStorage;
 public class CanvasLayer implements IRenderable
 {
 	private final Canvas parent;
-	private final GLBuffer vertex;
 	
 	private final DirtableStorage<Material> mat = new DirtableStorage<Material>().setSync();
 	private final GLVertexArray vao = new GLVertexArray();
+	private final GLBuffer vertex = new GLBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER);
 	
-	private FloatBuffer imgbuf = BufferHelper.createFloatBuffer(Canvas.FLOATS_PER_IMG * 12);
-	private Rectangle sub = null;
+	private ByteBuffer imgbuf = BufferHelper.createByteBuffer(Canvas.FLOATS_PER_IMG * 12 * 4);
+	private SubCanvas sub = null;
 	private int images = 0;
 	
-	private boolean expanded = false, updateImgBuf = false;
+	private boolean initiated = false, expanded = false, updateImgBuf = false;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public CanvasLayer(Canvas cvs)
 	{
 		parent = cvs;
-		vertex = new GLBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, GLEnumDataUsage.GL_STREAM_DRAW, GLEnumDataType.GL_FLOAT, imgbuf);
 		
-		vertex.addAttrib(0, 2, GLConst.GL_FLOAT, 16, 0);		//Position data
-		vertex.addAttrib(1, 2, GLConst.GL_FLOAT, 16, 8);		//Texture off
+	}
+	
+	@Override
+	public void preRender(RenderContext rcon)
+	{
+		if (!this.initiated)
+		{
+			this.vertex.init(rcon, this.imgbuf, GLEnumDataUsage.GL_STREAM_DRAW);
+			
+			this.vertex.addAttrib(0, 2, GLConst.GL_FLOAT, 16, 0);		//Position data
+			this.vertex.addAttrib(1, 2, GLConst.GL_FLOAT, 16, 8);		//Texture off
+			
+			this.vao.addVBO(this.vertex);
+			
+			this.initiated = true;
+			
+		}
 		
-		vao.addVBO(vertex);
+		if (!this.mat.isNull())
+		{
+			this.mat.get().preRender(rcon);
+			
+		}
+		
+		if (this.imgbuf.position() != 0)
+		{
+			this.imgbuf.position(0);
+			
+		}
+		
+		if (this.updateImgBuf)
+		{
+			if (this.expanded)
+			{
+				this.vertex.init(rcon, this.imgbuf, GLEnumDataUsage.GL_STREAM_DRAW);
+				
+				this.expanded = false;
+				
+			}
+			else
+			{
+				this.vertex.update(rcon, this.imgbuf, 0);
+				
+			}
+			
+			this.updateImgBuf = false;
+			
+		}
+		
+	}
+	
+	@Override
+	public void postRender(RenderContext rcon) throws RenderException
+	{
+		if (!this.mat.isNull())
+		{
+			this.mat.get().postRender(rcon);
+			
+		}
+		
+	}
+	
+	@Override
+	public void delete(RenderContext rcon)
+	{
+		this.vertex.delete(rcon);
+		this.vao.delete(rcon);
+		
+		if (!this.mat.isNull())
+		{
+			this.mat.get().delete(rcon);
+			
+		}
 		
 	}
 	
@@ -80,53 +147,6 @@ public class CanvasLayer implements IRenderable
 		
 	}
 	
-	@Override
-	public void preRender(RenderContext rcon)
-	{
-		if (!this.mat.isNull())
-		{
-			this.mat.get().preRender(rcon);
-			
-		}
-		
-		if (this.imgbuf.position() != 0)
-		{
-			this.imgbuf.position(0);
-			
-		}
-		
-		if (this.updateImgBuf)
-		{
-			if (this.expanded)
-			{
-				this.vertex.uploadBuffer(this.imgbuf);
-				
-				this.expanded = false;
-				
-			}
-			else
-			{
-				this.vertex.updateVBO(this.imgbuf, 0);
-				
-			}
-			
-			this.updateImgBuf = false;
-			
-		}
-		
-	}
-	
-	@Override
-	public void postRender(RenderContext rcon) throws RenderException
-	{
-		if (!this.mat.isNull())
-		{
-			this.mat.get().postRender(rcon);
-			
-		}
-		
-	}
-	
 	public Material getMaterial()
 	{
 		return this.mat.get();
@@ -143,9 +163,24 @@ public class CanvasLayer implements IRenderable
 		
 	}
 	
-	public void setSubCanvas(Rectangle r)
+	public void createSubCanvas(Rectangle r)
 	{
-		this.sub = r;
+		this.createSubCanvas(r.x, r.y, r.z, r.w);
+		
+	}
+	
+	public void createSubCanvas(float x, float y, float z, float w)
+	{
+		if (this.sub == null)
+		{
+			this.sub = new SubCanvas(x, y, z, w);
+			
+		}
+		else
+		{
+			this.sub.createSubCanvas(x, y, z, w);
+			
+		}
 		
 	}
 	
@@ -233,10 +268,10 @@ public class CanvasLayer implements IRenderable
 			
 		}
 		
-		this.imgbuf.put(x);
-		this.imgbuf.put(y);
-		this.imgbuf.put(icon.getX(corner));
-		this.imgbuf.put(icon.getY(corner));
+		this.imgbuf.putFloat(x);
+		this.imgbuf.putFloat(y);
+		this.imgbuf.putFloat(icon.getX(corner));
+		this.imgbuf.putFloat(icon.getY(corner));
 		
 	}
 	

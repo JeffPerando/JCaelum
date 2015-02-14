@@ -1,73 +1,140 @@
 
 package com.elusivehawk.caelum.render.gl;
 
-import java.nio.Buffer;
-import java.util.Iterator;
+import java.nio.ByteBuffer;
+import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 import java.util.List;
 import com.elusivehawk.caelum.render.IBindable;
 import com.elusivehawk.caelum.render.IDeletable;
 import com.elusivehawk.caelum.render.RenderContext;
+import com.elusivehawk.caelum.render.RenderException;
+import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.storage.SyncList;
-import com.elusivehawk.util.storage.Tuple;
 
 /**
  * 
- * Similar in concept to {@link GLProgram}, but with VBOs.
+ * 
  * 
  * @author Elusivehawk
  */
 public class GLBuffer implements IBindable, IDeletable
 {
-	private final List<Tuple<Buffer, Integer>> uploads = SyncList.newList();
+	private final GLEnumBufferTarget t;
+	
 	private final List<VertexAttrib> attribs = SyncList.newList();
 	
-	private final GLEnumBufferTarget t;
-	private final GLEnumDataUsage loadMode;
-	private final GLEnumDataType dataType;
-	
-	private Buffer initBuf = null;
 	private int id = 0;
-	private boolean initiated = false;
+	private boolean initiated = false, deleted = false;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public GLBuffer(GLEnumBufferTarget target, GLEnumDataUsage mode, GLEnumDataType type, Buffer buf)
-	{
-		this(target, mode, type);
-		
-		assert type.isCompatible(buf);
-		
-		initBuf = buf;
-		
-	}
-	
-	@SuppressWarnings("unqualified-field-access")
-	public GLBuffer(GLEnumBufferTarget target, GLEnumDataUsage mode, Buffer buf)
-	{
-		this(target, mode, GLEnumDataType.findCompatibleType(buf));
-		
-		initBuf = buf;
-		
-	}
-	
-	@SuppressWarnings("unqualified-field-access")
-	public GLBuffer(GLEnumBufferTarget target, GLEnumDataUsage mode, GLEnumDataType type)
+	public GLBuffer(GLEnumBufferTarget target)
 	{
 		assert target != null;
-		assert mode != null;
-		assert type != null;
 		
 		t = target;
-		loadMode = mode;
-		dataType = type;
+		
+	}
+	
+	public GLBuffer(GLEnumBufferTarget target, IPopulator<GLBuffer> pop)
+	{
+		this(target);
+		
+		pop.populate(this);
+		
+	}
+	
+	public GLBuffer(GLEnumBufferTarget target, ByteBuffer buf, GLEnumDataUsage usage, RenderContext rcon)
+	{
+		this(target);
+		
+		init(rcon, buf, usage);
+		
+	}
+	
+	public GLBuffer(GLEnumBufferTarget target, ByteBuffer buf, GLEnumDataUsage usage, RenderContext rcon, IPopulator<GLBuffer> pop)
+	{
+		this(target, buf, usage, rcon);
+		
+		pop.populate(this);
+		
+	}
+
+	public GLBuffer(GLEnumBufferTarget target, DoubleBuffer buf, GLEnumDataUsage usage, RenderContext rcon)
+	{
+		this(target);
+		
+		init(rcon, buf, usage);
+		
+	}
+	
+	public GLBuffer(GLEnumBufferTarget target, DoubleBuffer buf, GLEnumDataUsage usage, RenderContext rcon, IPopulator<GLBuffer> pop)
+	{
+		this(target, buf, usage, rcon);
+		
+		pop.populate(this);
+		
+	}
+
+	public GLBuffer(GLEnumBufferTarget target, FloatBuffer buf, GLEnumDataUsage usage, RenderContext rcon)
+	{
+		this(target);
+		
+		init(rcon, buf, usage);
+		
+	}
+	
+	public GLBuffer(GLEnumBufferTarget target, FloatBuffer buf, GLEnumDataUsage usage, RenderContext rcon, IPopulator<GLBuffer> pop)
+	{
+		this(target, buf, usage, rcon);
+		
+		pop.populate(this);
+		
+	}
+
+	public GLBuffer(GLEnumBufferTarget target, IntBuffer buf, GLEnumDataUsage usage, RenderContext rcon)
+	{
+		this(target);
+		
+		init(rcon, buf, usage);
+		
+	}
+	
+	public GLBuffer(GLEnumBufferTarget target, IntBuffer buf, GLEnumDataUsage usage, RenderContext rcon, IPopulator<GLBuffer> pop)
+	{
+		this(target, buf, usage, rcon);
+		
+		pop.populate(this);
+		
+	}
+	
+	public GLBuffer(GLEnumBufferTarget target, ShortBuffer buf, GLEnumDataUsage usage, RenderContext rcon)
+	{
+		this(target);
+		
+		init(rcon, buf, usage);
+		
+	}
+	
+	public GLBuffer(GLEnumBufferTarget target, ShortBuffer buf, GLEnumDataUsage usage, RenderContext rcon, IPopulator<GLBuffer> pop)
+	{
+		this(target, buf, usage, rcon);
+		
+		pop.populate(this);
 		
 	}
 	
 	@Override
 	public void delete(RenderContext rcon)
 	{
-		if (this.id != 0)
+		if (this.initiated && !this.deleted)
 		{
 			GL1.glDeleteBuffers(this);
+			
+			this.id = 0;
+			this.deleted = true;
 			
 		}
 		
@@ -76,46 +143,17 @@ public class GLBuffer implements IBindable, IDeletable
 	@Override
 	public boolean bind(RenderContext rcon)
 	{
-		if (this.id == 0)
+		if (this.deleted)
 		{
-			this.id = GL1.glGenBuffers();
-			
+			return false;
 		}
-		
-		GL1.glBindBuffer(this);
 		
 		if (!this.initiated)
 		{
-			rcon.registerDeletable(this);
-			
-			this.initiated = true;
-			
+			return false;
 		}
 		
-		if (this.initBuf != null)
-		{
-			GL1.glBufferData(this.t, this.dataType, this.initBuf, this.loadMode);
-			
-			this.initBuf = null;
-			
-		}
-		
-		if (!this.uploads.isEmpty())
-		{
-			Iterator<Tuple<Buffer, Integer>> itr = this.uploads.iterator();
-			Tuple<Buffer, Integer> pair;
-			
-			while (itr.hasNext())
-			{
-				pair = itr.next();
-				
-				GL1.glBufferSubData(this.t, pair.two, this.dataType, pair.one);
-				
-				this.uploads.remove(pair);
-				
-			}
-			
-		}
+		GL1.glBindBuffer(this);
 		
 		return true;
 	}
@@ -130,17 +168,12 @@ public class GLBuffer implements IBindable, IDeletable
 	@Override
 	public boolean isBound(RenderContext rcon)
 	{
-		return this.id != 0 && GL1.glGetInteger(this.t.getBindID()) == this.id;
+		return GL1.glGetInteger(this.t.bind) == this.id;
 	}
 	
 	public GLEnumBufferTarget getTarget()
 	{
 		return this.t;
-	}
-	
-	public GLEnumDataType getDataType()
-	{
-		return this.dataType;
 	}
 	
 	public int getId()
@@ -153,23 +186,6 @@ public class GLBuffer implements IBindable, IDeletable
 		return this.attribs;
 	}
 	
-	public boolean needsUpdating()
-	{
-		return this.initBuf != null || !this.uploads.isEmpty();
-	}
-	
-	public void updateVBO(Buffer buf, int offset)
-	{
-		this.uploads.add(Tuple.create(buf, offset));
-		
-	}
-	
-	public synchronized void uploadBuffer(Buffer buf)
-	{
-		this.initBuf = buf;
-		
-	}
-	
 	public void addAttrib(int index, int size, int type, int stride, long first)
 	{
 		this.addAttrib(index, size, type, false, stride, first);
@@ -178,13 +194,7 @@ public class GLBuffer implements IBindable, IDeletable
 	
 	public void addAttrib(int index, int size, int type, boolean normalized, int stride, long first)
 	{
-		this.addAttrib(index, size, type, false, normalized, stride, first);
-		
-	}
-	
-	public void addAttrib(int index, int size, int type, boolean unsigned, boolean normalized, int stride, long first)
-	{
-		this.addAttrib(new VertexAttrib(index, size, type, unsigned, normalized, stride, first));
+		this.addAttrib(new VertexAttrib(index, size, type, normalized, stride, first));
 		
 	}
 	
@@ -206,6 +216,191 @@ public class GLBuffer implements IBindable, IDeletable
 		}
 		
 		this.attribs.add(attrib);
+		
+	}
+	
+	public void init(RenderContext rcon, ByteBuffer buf, GLEnumDataUsage usage)
+	{
+		if (!this.initiated)
+		{
+			this.id = GL1.glGenBuffer();
+			
+			rcon.registerDeletable(this);
+			
+			this.initiated = true;
+			
+		}
+		
+		this.bind(rcon);
+		
+		GL1.glBufferData(this.t, buf, usage);
+		
+		this.unbind(rcon);
+		
+	}
+	
+	public void init(RenderContext rcon, DoubleBuffer buf, GLEnumDataUsage usage)
+	{
+		if (!this.initiated)
+		{
+			this.id = GL1.glGenBuffer();
+			
+			rcon.registerDeletable(this);
+			
+			this.initiated = true;
+			
+		}
+		
+		this.bind(rcon);
+		
+		GL1.glBufferData(this.t, buf, usage);
+		
+		this.unbind(rcon);
+		
+	}
+	
+	public void init(RenderContext rcon, FloatBuffer buf, GLEnumDataUsage usage)
+	{
+		if (!this.initiated)
+		{
+			this.id = GL1.glGenBuffer();
+			
+			rcon.registerDeletable(this);
+			
+			this.initiated = true;
+			
+		}
+		
+		this.bind(rcon);
+		
+		GL1.glBufferData(this.t, buf, usage);
+		
+		this.unbind(rcon);
+		
+	}
+	
+	public void init(RenderContext rcon, IntBuffer buf, GLEnumDataUsage usage)
+	{
+		if (!this.initiated)
+		{
+			this.id = GL1.glGenBuffer();
+			
+			rcon.registerDeletable(this);
+			
+			this.initiated = true;
+			
+		}
+		
+		this.bind(rcon);
+		
+		GL1.glBufferData(this.t, buf, usage);
+		
+		this.unbind(rcon);
+		
+	}
+	
+	public void init(RenderContext rcon, ShortBuffer buf, GLEnumDataUsage usage)
+	{
+		if (!this.initiated)
+		{
+			this.id = GL1.glGenBuffer();
+			
+			rcon.registerDeletable(this);
+			
+			this.initiated = true;
+			
+		}
+		
+		this.bind(rcon);
+		
+		GL1.glBufferData(this.t, buf, usage);
+		
+		this.unbind(rcon);
+		
+	}
+	
+	public void update(RenderContext rcon, ByteBuffer buf, long offset)
+	{
+		if (!this.isBound(rcon))
+		{
+			if (!this.bind(rcon))
+			{
+				throw new RenderException("Cannot update %s, binding failed!", this);
+			}
+			
+		}
+		
+		GL1.glBufferSubData(this.t, offset, buf);
+		
+		this.unbind(rcon);
+		
+	}
+	
+	public void update(RenderContext rcon, DoubleBuffer buf, long offset)
+	{
+		if (!this.isBound(rcon))
+		{
+			if (!this.bind(rcon))
+			{
+				throw new RenderException("Cannot update %s, binding failed!", this);
+			}
+			
+		}
+		
+		GL1.glBufferSubData(this.t, offset, buf);
+		
+		this.unbind(rcon);
+		
+	}
+	
+	public void update(RenderContext rcon, FloatBuffer buf, long offset)
+	{
+		if (!this.isBound(rcon))
+		{
+			if (!this.bind(rcon))
+			{
+				throw new RenderException("Cannot update %s, binding failed!", this);
+			}
+			
+		}
+		
+		GL1.glBufferSubData(this.t, offset, buf);
+		
+		this.unbind(rcon);
+		
+	}
+	
+	public void update(RenderContext rcon, IntBuffer buf, long offset)
+	{
+		if (!this.isBound(rcon))
+		{
+			if (!this.bind(rcon))
+			{
+				throw new RenderException("Cannot update %s, binding failed!", this);
+			}
+			
+		}
+		
+		GL1.glBufferSubData(this.t, offset, buf);
+		
+		this.unbind(rcon);
+		
+	}
+	
+	public void update(RenderContext rcon, ShortBuffer buf, long offset)
+	{
+		if (!this.isBound(rcon))
+		{
+			if (!this.bind(rcon))
+			{
+				throw new RenderException("Cannot update %s, binding failed!", this);
+			}
+			
+		}
+		
+		GL1.glBufferSubData(this.t, offset, buf);
+		
+		this.unbind(rcon);
 		
 	}
 	
