@@ -3,7 +3,7 @@ package com.elusivehawk.caelum.prefab;
 
 import com.elusivehawk.util.math.MathConst;
 import com.elusivehawk.util.math.MathHelper;
-import com.elusivehawk.util.math.Vector;
+import com.elusivehawk.util.math.VectorF;
 
 /**
  * 
@@ -73,7 +73,7 @@ public class Rectangle
 		return true;
 	}
 	
-	public boolean within(Vector point)
+	public boolean within(VectorF point)
 	{
 		return MathHelper.bounds(point.get(MathConst.X), this.x, this.z) && MathHelper.bounds(point.get(MathConst.Y), this.y, this.w);
 	}

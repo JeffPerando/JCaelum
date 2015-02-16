@@ -3,7 +3,7 @@ package com.elusivehawk.caelum.physics;
 
 import com.elusivehawk.caelum.Experimental;
 import com.elusivehawk.util.IUpdatable;
-import com.elusivehawk.util.math.Vector;
+import com.elusivehawk.util.math.VectorF;
 
 /**
  * 
@@ -12,13 +12,13 @@ import com.elusivehawk.util.math.Vector;
  * @author Elusivehawk
  */
 @Experimental
-public abstract class Shape implements Vector.Listener, IUpdatable
+public abstract class Shape implements VectorF.Listener, IUpdatable
 {
-	protected final Vector pos = new Vector();
+	protected final VectorF pos = new VectorF();
 	protected volatile boolean moveable = true;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Shape(Vector position)
+	public Shape(VectorF position)
 	{
 		pos.set(position);
 		pos.addListener(this);
@@ -36,9 +36,9 @@ public abstract class Shape implements Vector.Listener, IUpdatable
 	}
 	
 	@Override
-	public void onVecChanged(Vector vec){}
+	public void onVecChanged(VectorF vec){}
 	
-	public Vector getPosition()
+	public VectorF getPosition()
 	{
 		return this.pos;
 	}
@@ -60,8 +60,8 @@ public abstract class Shape implements Vector.Listener, IUpdatable
 		return this.collides(shape.createNearestPoint(this.getPosition()));
 	}
 	
-	public abstract boolean collides(Vector vec);
+	public abstract boolean collides(VectorF vec);
 	
-	public abstract Vector createNearestPoint(Vector otherPos);
+	public abstract VectorF createNearestPoint(VectorF otherPos);
 	
 }

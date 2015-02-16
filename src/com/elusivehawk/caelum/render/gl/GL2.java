@@ -8,8 +8,8 @@ import com.elusivehawk.caelum.render.RenderHelper;
 import com.elusivehawk.caelum.render.glsl.GLSLEnumSStatus;
 import com.elusivehawk.caelum.render.glsl.GLSLEnumShaderType;
 import com.elusivehawk.caelum.render.glsl.IShader;
-import com.elusivehawk.util.math.Matrix;
-import com.elusivehawk.util.math.Vector;
+import com.elusivehawk.util.math.MatrixF;
+import com.elusivehawk.util.math.VectorF;
 import com.elusivehawk.util.storage.BufferHelper;
 
 /**
@@ -525,13 +525,13 @@ public final class GL2
 		
 	}
 	
-	public static void glUniform2(String location, Vector vec) throws GLException
+	public static void glUniform2(String location, VectorF vec) throws GLException
 	{
 		glUniform2(glGetUniformLocation(location), vec);
 		
 	}
 	
-	public static void glUniform2(int location, Vector vec) throws GLException
+	public static void glUniform2(int location, VectorF vec) throws GLException
 	{
 		glUniform2(location, vec.get(0), vec.get(1));
 		
@@ -581,13 +581,13 @@ public final class GL2
 		
 	}
 	
-	public static void glUniform3(String location, Vector vec) throws GLException
+	public static void glUniform3(String location, VectorF vec) throws GLException
 	{
 		glUniform3(glGetUniformLocation(location), vec);
 		
 	}
 	
-	public static void glUniform3(int location, Vector vec) throws GLException
+	public static void glUniform3(int location, VectorF vec) throws GLException
 	{
 		glUniform3(location, vec.get(0), vec.get(1), vec.get(2));
 		
@@ -643,13 +643,13 @@ public final class GL2
 		
 	}
 	
-	public static void glUniform4(String location, Vector vec) throws GLException
+	public static void glUniform4(String location, VectorF vec) throws GLException
 	{
 		glUniform4(glGetUniformLocation(location), vec);
 		
 	}
 	
-	public static void glUniform4(int location, Vector vec) throws GLException
+	public static void glUniform4(int location, VectorF vec) throws GLException
 	{
 		glUniform4(location, vec.get(0), vec.get(1), vec.get(2), vec.get(3));
 		
@@ -721,7 +721,7 @@ public final class GL2
 		
 	}
 	
-	public static void glUniformMatrix4(String location, Matrix m) throws GLException
+	public static void glUniformMatrix4(String location, MatrixF m) throws GLException
 	{
 		glUniformMatrix4(location, m.asBuffer());
 		
@@ -739,7 +739,7 @@ public final class GL2
 		
 	}
 	
-	public static void glUniformMatrix4(int location, Matrix m) throws GLException
+	public static void glUniformMatrix4(int location, MatrixF m) throws GLException
 	{
 		glUniformMatrix4(location, m.asBuffer());
 		

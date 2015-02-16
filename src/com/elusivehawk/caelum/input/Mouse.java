@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.render.tex.ILegibleImage;
-import com.elusivehawk.util.math.Vector;
+import com.elusivehawk.util.math.VectorF;
 import com.elusivehawk.util.storage.DirtableStorage;
 import com.elusivehawk.util.storage.Tuple;
 import com.google.common.collect.Lists;
@@ -20,10 +20,10 @@ public class Mouse extends Input
 {
 	private final List<Tuple<int[], Consumer<Mouse>>> hooks = Lists.newArrayList();
 	private final EnumMouseClick[] buttons = new EnumMouseClick[InputConst.MOUSE_BUTTONS];
-	private final Vector
-				pos = (Vector)new Vector(2).setSync(),
-				oldPos = (Vector)new Vector(2).setSync(),
-				deltaPos = (Vector)new Vector(2).setSync();
+	private final VectorF
+				pos = (VectorF)new VectorF(2).setSync(),
+				oldPos = (VectorF)new VectorF(2).setSync(),
+				deltaPos = (VectorF)new VectorF(2).setSync();
 	private final DirtableStorage<ILegibleImage> icon = new DirtableStorage<ILegibleImage>().setSync();
 	private final DirtableStorage<Boolean> grab = new DirtableStorage<Boolean>().setSync();
 	
@@ -94,7 +94,7 @@ public class Mouse extends Input
 		return this.buttons[button];
 	}
 	
-	public Vector getPosition()
+	public VectorF getPosition()
 	{
 		return this.pos;
 	}
@@ -109,7 +109,7 @@ public class Mouse extends Input
 		return this.pos.get(1);
 	}
 	
-	public Vector getDelta()
+	public VectorF getDelta()
 	{
 		return this.deltaPos;
 	}

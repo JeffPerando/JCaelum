@@ -1,7 +1,7 @@
 
 package com.elusivehawk.caelum.render;
 
-import com.elusivehawk.util.math.Matrix;
+import com.elusivehawk.util.math.MatrixF;
 
 /**
  * 
@@ -11,22 +11,22 @@ import com.elusivehawk.util.math.Matrix;
  */
 public abstract class Camera implements IPreRenderer
 {
-	protected final Matrix proj, view;
+	protected final MatrixF proj, view;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public Camera(int msize)
 	{
-		proj = (Matrix)new Matrix(msize, msize).setSync();
-		view = (Matrix)new Matrix(msize, msize).setSync();
+		proj = (MatrixF)new MatrixF(msize).setSync();
+		view = (MatrixF)new MatrixF(msize).setSync();
 		
 	}
 	
-	public Matrix getProjection()
+	public MatrixF getProjection()
 	{
 		return this.proj;
 	}
 	
-	public Matrix getView()
+	public MatrixF getView()
 	{
 		return this.view;
 	}

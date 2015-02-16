@@ -6,8 +6,8 @@ import com.elusivehawk.caelum.render.MeshRenderer;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
 import com.elusivehawk.util.IPopulator;
-import com.elusivehawk.util.math.Quaternion;
-import com.elusivehawk.util.math.Vector;
+import com.elusivehawk.util.math.QuaternionF;
+import com.elusivehawk.util.math.VectorF;
 
 /**
  * 
@@ -116,7 +116,7 @@ public class MeshComponent extends PositionedComponent
 	}
 	
 	@Override
-	public void onVecChanged(Vector vec)
+	public void onVecChanged(VectorF vec)
 	{
 		super.onVecChanged(vec);
 		
@@ -125,7 +125,7 @@ public class MeshComponent extends PositionedComponent
 	}
 	
 	@Override
-	public void onQuatChanged(Quaternion q)
+	public void onQuatChanged(QuaternionF q)
 	{
 		super.onQuatChanged(q);
 		

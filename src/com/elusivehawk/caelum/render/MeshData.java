@@ -5,7 +5,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import com.elusivehawk.caelum.CaelumException;
 import com.elusivehawk.util.MakeStruct;
-import com.elusivehawk.util.math.Vector;
+import com.elusivehawk.util.math.VectorF;
 import com.elusivehawk.util.parse.json.JsonArray;
 import com.elusivehawk.util.parse.json.JsonObject;
 import com.elusivehawk.util.storage.BufferHelper;
@@ -21,18 +21,18 @@ public class MeshData
 {
 	public final FloatBuffer vertex;
 	public final IntBuffer indices;
-	public final Vector size;
+	public final VectorF size;
 	public final boolean isTriStrip, useTex, useNorm;
 	public final int texSize;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public MeshData(FloatBuffer vtx, IntBuffer ind, Vector vec, boolean strip, boolean tex3d, boolean tex, boolean norm)
+	public MeshData(FloatBuffer vtx, IntBuffer ind, VectorF vec, boolean strip, boolean tex3d, boolean tex, boolean norm)
 	{
 		assert vtx != null;
 		
 		vertex = vtx.asReadOnlyBuffer();
 		indices = ind == null ? null : ind.asReadOnlyBuffer();
-		size = (Vector)vec.clone().setImmutable();
+		size = (VectorF)vec.clone().setImmutable();
 		isTriStrip = strip;
 		texSize = tex3d ? 3 : 2;
 		useTex = tex;
@@ -124,8 +124,8 @@ public class MeshData
 			
 		}
 		
-		Vector min = new Vector(3);
-		Vector max = new Vector(3);
+		VectorF min = new VectorF(3);
+		VectorF max = new VectorF(3);
 		
 		for (int c = 0; c < vtx.capacity(); c += 3)
 		{
@@ -138,7 +138,7 @@ public class MeshData
 			
 		}
 		
-		Vector size = (Vector)min.absolute().add(max);
+		VectorF size = (VectorF)min.absolute().add(max);
 		
 		IntBuffer indices = null;
 		

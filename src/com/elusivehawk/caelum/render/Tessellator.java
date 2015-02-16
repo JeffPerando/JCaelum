@@ -6,9 +6,7 @@ import java.nio.IntBuffer;
 import java.util.List;
 import com.elusivehawk.caelum.CaelumException;
 import com.elusivehawk.util.IPopulator;
-import com.elusivehawk.util.math.MathConst;
-import com.elusivehawk.util.math.Vector;
-import com.elusivehawk.util.storage.ArrayHelper;
+import com.elusivehawk.util.math.VectorF;
 import com.elusivehawk.util.storage.BufferHelper;
 import com.google.common.collect.Lists;
 
@@ -42,9 +40,9 @@ public class Tessellator
 		return this.vertexTex(x, y, z, 0, 0);
 	}
 	
-	public int vertex(Vector vtx)
+	public int vertex(VectorF vtx)
 	{
-		return this.vertexTex(vtx, (Vector)new Vector(2).setImmutable());
+		return this.vertexTex(vtx, (VectorF)new VectorF(2).setImmutable());
 	}
 	
 	public int vertexTex(float x, float y, float z, float u, float v)
@@ -52,17 +50,17 @@ public class Tessellator
 		return this.point(x, y, z, u, v, 0, 0, 0);
 	}
 	
-	public int vertexTex(Vector vtx, Vector tex)
+	public int vertexTex(VectorF vtx, VectorF tex)
 	{
-		return this.point(vtx, tex, (Vector)new Vector(3).setImmutable());
+		return this.point(vtx, tex, (VectorF)new VectorF(3).setImmutable());
 	}
 	
 	public int point(float x, float y, float z, float u, float v, float nx, float ny, float nz)
 	{
-		return this.point((Vector)new Vector(x, y, z).setImmutable(), (Vector)new Vector(u, v).setImmutable(), (Vector)new Vector(nx, ny, nz).setImmutable());
+		return this.point((VectorF)new VectorF(x, y, z).setImmutable(), (VectorF)new VectorF(u, v).setImmutable(), (VectorF)new VectorF(nx, ny, nz).setImmutable());
 	}
 	
-	public int point(Vector vtx, Vector tex, Vector n)
+	public int point(VectorF vtx, VectorF tex, VectorF n)
 	{
 		if (this.done)
 		{
@@ -122,9 +120,9 @@ public class Tessellator
 			
 			this.points.forEach(((point) ->
 			{
-				fs.put(ArrayHelper.asFloats(point.vtx.multiget(MathConst.XYZ)));
-				fs.put(ArrayHelper.asFloats(point.tex.multiget(MathConst.XY)));
-				fs.put(ArrayHelper.asFloats(point.norm.multiget(MathConst.XYZ)));
+				point.vtx.put(fs);
+				point.tex.put(fs);
+				point.norm.put(fs);
 				
 			}));
 			

@@ -2,8 +2,8 @@
 package com.elusivehawk.caelum.prefab;
 
 import com.elusivehawk.util.IPopulator;
-import com.elusivehawk.util.math.Quaternion;
-import com.elusivehawk.util.math.Vector;
+import com.elusivehawk.util.math.QuaternionF;
+import com.elusivehawk.util.math.VectorF;
 
 /**
  * 
@@ -11,10 +11,10 @@ import com.elusivehawk.util.math.Vector;
  * 
  * @author Elusivehawk
  */
-public class PositionedComponent extends Component implements Quaternion.Listener, Vector.Listener
+public class PositionedComponent extends Component implements QuaternionF.Listener, VectorF.Listener
 {
-	private final Vector pos = (Vector)new Vector().setSync();
-	private final Quaternion rot = (Quaternion)new Quaternion().setSync();
+	private final VectorF pos = (VectorF)new VectorF().setSync();
+	private final QuaternionF rot = (QuaternionF)new QuaternionF().setSync();
 	
 	public PositionedComponent(int p, IPopulator<Component> pop)
 	{
@@ -31,25 +31,25 @@ public class PositionedComponent extends Component implements Quaternion.Listene
 	}
 	
 	@Override
-	public void onVecChanged(Vector vec)
+	public void onVecChanged(VectorF vec)
 	{
 		this.pos.set(vec);
 		
 	}
 	
 	@Override
-	public void onQuatChanged(Quaternion q)
+	public void onQuatChanged(QuaternionF q)
 	{
 		this.rot.set(q);
 		
 	}
 	
-	public Vector getPosition()
+	public VectorF getPosition()
 	{
 		return this.pos;
 	}
 	
-	public Quaternion getRotation()
+	public QuaternionF getRotation()
 	{
 		return this.rot;
 	}

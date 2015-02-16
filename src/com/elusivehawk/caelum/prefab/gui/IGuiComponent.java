@@ -4,7 +4,7 @@ package com.elusivehawk.caelum.prefab.gui;
 import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.prefab.Rectangle;
 import com.elusivehawk.caelum.render.Canvas;
-import com.elusivehawk.util.math.Vector;
+import com.elusivehawk.util.math.VectorF;
 
 /**
  * 
@@ -18,7 +18,7 @@ public interface IGuiComponent
 	
 	void onClicked(Display display, int button);
 	
-	void onDragged(Vector delta);
+	void onDragged(VectorF delta);
 	
 	Rectangle getBounds();
 	

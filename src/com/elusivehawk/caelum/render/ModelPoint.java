@@ -2,7 +2,7 @@
 package com.elusivehawk.caelum.render;
 
 import com.elusivehawk.util.MakeStruct;
-import com.elusivehawk.util.math.Vector;
+import com.elusivehawk.util.math.VectorF;
 
 /**
  * 
@@ -13,14 +13,14 @@ import com.elusivehawk.util.math.Vector;
 @MakeStruct
 public class ModelPoint
 {
-	public final Vector vtx, tex, norm;
+	public final VectorF vtx, tex, norm;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public ModelPoint(Vector v, Vector t, Vector n)
+	public ModelPoint(VectorF v, VectorF t, VectorF n)
 	{
-		vtx = v.isImmutable() ? v : (Vector)v.clone().setImmutable();
-		tex = t == null ? null : t.isImmutable() ? t : (Vector)t.clone().setImmutable();
-		norm = n == null ? null : n.isImmutable() ? n : (Vector)n.clone().setImmutable();
+		vtx = v.isImmutable() ? v : (VectorF)v.clone().setImmutable();
+		tex = t == null ? null : t.isImmutable() ? t : (VectorF)t.clone().setImmutable();
+		norm = n == null ? null : n.isImmutable() ? n : (VectorF)n.clone().setImmutable();
 		
 	}
 	

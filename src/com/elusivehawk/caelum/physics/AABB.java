@@ -3,7 +3,7 @@ package com.elusivehawk.caelum.physics;
 
 import com.elusivehawk.caelum.Experimental;
 import com.elusivehawk.util.math.MathHelper;
-import com.elusivehawk.util.math.Vector;
+import com.elusivehawk.util.math.VectorF;
 
 /**
  * 
@@ -14,19 +14,19 @@ import com.elusivehawk.util.math.Vector;
 @Experimental
 public class AABB extends Shape
 {
-	private final Vector max, min, size;
-	private final Vector maxOff = new Vector(), minOff = new Vector();
+	private final VectorF max, min, size;
+	private final VectorF maxOff = new VectorF(), minOff = new VectorF();
 	
 	@SuppressWarnings("unqualified-field-access")
-	public AABB(Vector position, Vector cubeSize)
+	public AABB(VectorF position, VectorF cubeSize)
 	{
 		super(position);
 		
 		assert cubeSize != null;
 		
-		size = (Vector)cubeSize.setImmutable();
+		size = (VectorF)cubeSize.setImmutable();
 		
-		Vector halfSize = cubeSize.clone().divAll(2);
+		VectorF halfSize = (VectorF)cubeSize.clone().divAll(2);
 		
 		max = position.add(maxOff.set(halfSize), false);
 		min = position.sub(minOff.set(halfSize), false);
@@ -43,7 +43,7 @@ public class AABB extends Shape
 	}
 	
 	@Override
-	public boolean collides(Vector vec)
+	public boolean collides(VectorF vec)
 	{
 		if (vec == null)
 		{
@@ -54,13 +54,13 @@ public class AABB extends Shape
 	}
 	
 	@Override
-	public Vector createNearestPoint(Vector otherPos)
+	public VectorF createNearestPoint(VectorF otherPos)
 	{
 		return MathHelper.clamp(otherPos, this.min, this.max);
 	}
 	
 	@Override
-	public void onVecChanged(Vector vec)
+	public void onVecChanged(VectorF vec)
 	{
 		if (this.pos.isDirty())
 		{
@@ -77,7 +77,7 @@ public class AABB extends Shape
 		return new AABB(this);
 	}
 	
-	public Vector getSize()
+	public VectorF getSize()
 	{
 		return this.size;
 	}

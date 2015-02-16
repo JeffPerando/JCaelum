@@ -11,7 +11,7 @@ import com.elusivehawk.caelum.render.MeshData;
 import com.elusivehawk.caelum.render.ModelPoint;
 import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.io.IOHelper;
-import com.elusivehawk.util.math.Vector;
+import com.elusivehawk.util.math.VectorF;
 import com.elusivehawk.util.storage.BufferHelper;
 import com.google.common.collect.Lists;
 
@@ -26,7 +26,7 @@ public class OBJAssetReader implements IAssetReader
 	@Override
 	public Object readAsset(Asset asset, DataInputStream in) throws Throwable
 	{
-		List<Vector> positions = Lists.newArrayList(),
+		List<VectorF> positions = Lists.newArrayList(),
 				texCoords = Lists.newArrayList(),
 				normals = Lists.newArrayList();
 		List<ModelPoint> points = Lists.newArrayList();
@@ -53,7 +53,7 @@ public class OBJAssetReader implements IAssetReader
 					float y = Float.parseFloat(s[2]);
 					float z = Float.parseFloat(s[3]);
 					
-					positions.add(new Vector(x, y, z));
+					positions.add(new VectorF(x, y, z));
 					
 				} break;
 				case "vt":
@@ -61,7 +61,7 @@ public class OBJAssetReader implements IAssetReader
 					float u = Float.parseFloat(s[1]);
 					float v = Float.parseFloat(s[2]);
 					
-					texCoords.add(new Vector(u, v));
+					texCoords.add(new VectorF(u, v));
 					
 				} break;
 				case "vn":
@@ -70,7 +70,7 @@ public class OBJAssetReader implements IAssetReader
 					float y = Float.parseFloat(s[2]);
 					float z = Float.parseFloat(s[3]);
 					
-					normals.add(new Vector(x, y, z));
+					normals.add(new VectorF(x, y, z));
 					
 				} break;
 				case "tex": break;
@@ -95,8 +95,8 @@ public class OBJAssetReader implements IAssetReader
 							continue;
 						}
 						
-						Vector tex = null;
-						Vector nrm = null;
+						VectorF tex = null;
+						VectorF nrm = null;
 						
 						if (ind.length > 1)
 						{
@@ -165,7 +165,7 @@ public class OBJAssetReader implements IAssetReader
 		
 		for (int c = 0; c < positions.size(); c++)
 		{
-			Vector pos = positions.get(c);
+			VectorF pos = positions.get(c);
 			
 			vtx.put(pos.get(0));
 			vtx.put(pos.get(1));
@@ -173,7 +173,7 @@ public class OBJAssetReader implements IAssetReader
 			
 			if (!texCoords.isEmpty())
 			{
-				Vector tex = texCoords.get(c);
+				VectorF tex = texCoords.get(c);
 				
 				vtx.put(tex.get(0));
 				vtx.put(tex.get(1));
@@ -182,7 +182,7 @@ public class OBJAssetReader implements IAssetReader
 			
 			if (!normals.isEmpty())
 			{
-				Vector n = normals.get(c);
+				VectorF n = normals.get(c);
 				
 				vtx.put(n.get(0));
 				vtx.put(n.get(1));

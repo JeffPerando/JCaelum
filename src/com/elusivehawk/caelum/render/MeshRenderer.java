@@ -15,8 +15,8 @@ import com.elusivehawk.caelum.render.gl.GLProgram;
 import com.elusivehawk.caelum.render.gl.GLVertexArray;
 import com.elusivehawk.caelum.render.tex.Material;
 import com.elusivehawk.util.math.MatrixHelper;
-import com.elusivehawk.util.math.Quaternion;
-import com.elusivehawk.util.math.Vector;
+import com.elusivehawk.util.math.QuaternionF;
+import com.elusivehawk.util.math.VectorF;
 import com.elusivehawk.util.storage.BufferHelper;
 import com.elusivehawk.util.storage.DirtableStorage;
 
@@ -29,18 +29,18 @@ import com.elusivehawk.util.storage.DirtableStorage;
  * @see IMesh
  * @see RenderableObj
  */
-public class MeshRenderer extends RenderableObj implements Quaternion.Listener, Vector.Listener
+public class MeshRenderer extends RenderableObj implements QuaternionF.Listener, VectorF.Listener
 {
 	private final IMesh mesh;
 	
-	private final Vector
-			offset = new Vector(),
-			pos = new Vector(),
-			scale = new Vector(1f, 1f, 1f);
+	private final VectorF
+			offset = new VectorF(),
+			pos = new VectorF(),
+			scale = new VectorF(1f, 1f, 1f);
 	
-	private final Quaternion
-			rotOff = new Quaternion(),
-			rot = new Quaternion();
+	private final QuaternionF
+			rotOff = new QuaternionF(),
+			rot = new QuaternionF();
 	
 	private final DirtableStorage<Material> mat = new DirtableStorage<Material>().setSync();
 	
@@ -82,14 +82,14 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 	}
 	
 	@Override
-	public synchronized void onVecChanged(Vector vec)
+	public synchronized void onVecChanged(VectorF vec)
 	{
 		this.offset.add(vec, this.pos);
 		
 	}
 	
 	@Override
-	public synchronized void onQuatChanged(Quaternion q)
+	public synchronized void onQuatChanged(QuaternionF q)
 	{
 		this.rotOff.add(q, this.rot);
 		
@@ -242,7 +242,7 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 		return this.texFrame;
 	}
 	
-	public MeshRenderer setPosOffset(Vector off)
+	public MeshRenderer setPosOffset(VectorF off)
 	{
 		this.offset.set(off);
 		this.pos.add(this.offset);
@@ -250,7 +250,7 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 		return this;
 	}
 	
-	public MeshRenderer setScale(Vector s)
+	public MeshRenderer setScale(VectorF s)
 	{
 		for (int c = 0; c < s.size(); c++)
 		{
@@ -267,7 +267,7 @@ public class MeshRenderer extends RenderableObj implements Quaternion.Listener, 
 		return this;
 	}
 	
-	public MeshRenderer setRotOffset(Quaternion qoff)
+	public MeshRenderer setRotOffset(QuaternionF qoff)
 	{
 		this.rotOff.set(qoff);
 		this.rot.add(this.rotOff);
