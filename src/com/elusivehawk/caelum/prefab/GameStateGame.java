@@ -34,20 +34,6 @@ public abstract class GameStateGame extends Game
 	}
 	
 	@Override
-	public final void initiate() throws Throwable
-	{
-		if (this.nextState != null)
-		{
-			this.nextState.initiate();
-			
-			this.state = this.nextState;
-			this.nextState = null;
-			
-		}
-		
-	}
-	
-	@Override
 	public void render(RenderContext rcon)
 	{
 		if (this.state != null)
