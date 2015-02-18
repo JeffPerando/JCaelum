@@ -67,6 +67,17 @@ public abstract class GameStateGame extends Game
 	}
 	
 	@Override
+	public void delete(RenderContext rcon)
+	{
+		if (this.state != null)
+		{
+			this.state.delete(rcon);
+			
+		}
+		
+	}
+	
+	@Override
 	public void onShutdown()
 	{
 		if (this.state != null)
@@ -86,12 +97,6 @@ public abstract class GameStateGame extends Game
 	@Override
 	public void update(double delta) throws Throwable
 	{
-		if (this.state != null)
-		{
-			this.state.update(delta);
-			
-		}
-		
 		if (this.nextState != null)
 		{
 			if (this.state != null)
@@ -112,6 +117,12 @@ public abstract class GameStateGame extends Game
 			{
 				throw new RuntimeException("Error caught during game state initiation:", e);
 			}
+			
+		}
+		
+		if (this.state != null)
+		{
+			this.state.update(delta);
 			
 		}
 		
