@@ -12,19 +12,18 @@ uniform struct Material
 } mat;
 
 in vec2 frag_tex;
-in float frag_mat;
 
 out vec4 out_color;
 
 void main(void)
 {
-	vec4 mixed = mix(texture(mat.tex, frag_tex), texture(mat.renTex, frag_tex), shines[m]);
+	vec4 mixed = mix(texture(mat.tex, frag_tex), texture(mat.renTex, frag_tex), mat.shine);
 	
-	vec4 fin = vec4((mat.filter.xyz * mat.filter.w) + (mixed.xyz * mixed.w), 0);
+	vec4 fin = vec4((mat.filter.rgb * mat.filter.a) + (mixed.rgb * mixed.a), 0);
 	
-	if (invert[m])
+	if (mat.invert)
 	{
-		fin.xyz = (1 - fin.xyz);
+		fin.rgb = (1 - fin.rgb);
 		
 	}
 	
@@ -32,9 +31,9 @@ void main(void)
 	
 	vec4 glow = texture(mat.glowTex, frag_tex);
 	
-	if (glow.w < 1)
+	if (glow.a < 1)
 	{
-		fin.xyz += (glow.xyz * glow.w);
+		fin.rgb += (glow.rgb * glow.a);
 		
 	}
 	
