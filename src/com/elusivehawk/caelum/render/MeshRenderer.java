@@ -14,7 +14,7 @@ import com.elusivehawk.caelum.render.gl.GLEnumDrawType;
 import com.elusivehawk.caelum.render.gl.GLProgram;
 import com.elusivehawk.caelum.render.gl.GLVertexArray;
 import com.elusivehawk.caelum.render.tex.Material;
-import com.elusivehawk.util.math.MatrixHelper;
+import com.elusivehawk.util.math.MatrixF;
 import com.elusivehawk.util.math.QuaternionF;
 import com.elusivehawk.util.math.VectorF;
 import com.elusivehawk.util.storage.BufferHelper;
@@ -27,9 +27,9 @@ import com.elusivehawk.util.storage.DirtableStorage;
  * @author Elusivehawk
  * 
  * @see IMesh
- * @see RenderableObj
+ * @see ProgramRenderable
  */
-public class MeshRenderer extends RenderableObj implements QuaternionF.Listener, VectorF.Listener
+public class MeshRenderer extends ProgramRenderable implements QuaternionF.Listener, VectorF.Listener
 {
 	private final IMesh mesh;
 	
@@ -71,27 +71,61 @@ public class MeshRenderer extends RenderableObj implements QuaternionF.Listener,
 	}
 	
 	@Override
-	public void postRender(RenderContext rcon) throws RenderException
+	public void delete(RenderContext rcon)
 	{
-		if (!this.mat.isNull())
-		{
-			this.mat.get().postRender(rcon);
-			
-		}
+		// TODO Auto-generated method stub
 		
 	}
 	
 	@Override
-	public synchronized void onVecChanged(VectorF vec)
+	public void onVecChanged(VectorF vec)
 	{
 		this.offset.add(vec, this.pos);
 		
 	}
 	
 	@Override
-	public synchronized void onQuatChanged(QuaternionF q)
+	public void onQuatChanged(QuaternionF q)
 	{
 		this.rotOff.add(q, this.rot);
+		
+	}
+	
+	@Override
+	protected void doRender(RenderContext rcon) throws RenderException
+	{
+		if (!this.mat.isNull())
+		{
+			this.mat.get().render(rcon);
+			
+		}
+		
+		if (this.vao.bind(rcon))
+		{
+			Material m = this.mat.get();
+			
+			if (m == null || m.bind(rcon))
+			{
+				GL1.glDrawElements(this.draw, this.polyCount, GLConst.GL_UNSIGNED_INT, 0);
+				
+			}
+			
+			if (m != null)
+			{
+				m.unbind(rcon);
+				
+			}
+			
+		}
+		
+		this.vao.unbind(rcon);
+		
+	}
+	
+	@Override
+	public void setMaterial(Material mat)
+	{
+		this.mat.set(mat);
 		
 	}
 	
@@ -163,46 +197,10 @@ public class MeshRenderer extends RenderableObj implements QuaternionF.Listener,
 	}
 	
 	@Override
-	protected void doRender(RenderContext rcon) throws RenderException
-	{
-		if (!this.mat.isNull())
-		{
-			this.mat.get().render(rcon);
-			
-		}
-		
-		if (this.vao.bind(rcon))
-		{
-			Material m = this.mat.get();
-			
-			if (m == null || m.bind(rcon))
-			{
-				GL1.glDrawElements(this.draw, this.polyCount, GLConst.GL_UNSIGNED_INT, 0);
-				
-			}
-			
-			if (m != null)
-			{
-				m.unbind(rcon);
-				
-			}
-			
-		}
-		
-		this.vao.unbind(rcon);
-		
-	}
-	
-	@Override
-	public void setMaterial(Material mat)
-	{
-		this.mat.set(mat);
-		
-	}
-	
-	@Override
 	public void preRender(RenderContext rcon)
 	{
+		super.preRender(rcon);
+		
 		if (!this.mat.isNull())
 		{
 			this.mat.get().preRender(rcon);
@@ -213,7 +211,7 @@ public class MeshRenderer extends RenderableObj implements QuaternionF.Listener,
 		{
 			if (this.program.bind(rcon))
 			{
-				GL2.glUniformMatrix4("model", MatrixHelper.homogenous(this.rot, this.scale, this.pos));
+				GL2.glUniformMatrix4("model", new MatrixF().homogenous(this.rot, this.scale, this.pos));
 				
 			}
 			
@@ -221,6 +219,19 @@ public class MeshRenderer extends RenderableObj implements QuaternionF.Listener,
 			
 			this.pos.setIsDirty(false);
 			this.rot.setIsDirty(false);
+			
+		}
+		
+	}
+	
+	@Override
+	public void postRender(RenderContext rcon) throws RenderException
+	{
+		super.postRender(rcon);
+		
+		if (!this.mat.isNull())
+		{
+			this.mat.get().postRender(rcon);
 			
 		}
 		

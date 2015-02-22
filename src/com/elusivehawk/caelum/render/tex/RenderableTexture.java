@@ -1,9 +1,9 @@
 
 package com.elusivehawk.caelum.render.tex;
 
-import com.elusivehawk.caelum.render.IRenderable;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
+import com.elusivehawk.caelum.render.Renderable;
 import com.elusivehawk.caelum.render.gl.GLFramebuffer;
 
 /**
@@ -12,7 +12,7 @@ import com.elusivehawk.caelum.render.gl.GLFramebuffer;
  * 
  * @author Elusivehawk
  */
-public abstract class RenderableTexture implements ITexture, IRenderable
+public abstract class RenderableTexture extends Renderable implements ITexture
 {
 	private final GLFramebuffer fbo;
 	
@@ -39,37 +39,31 @@ public abstract class RenderableTexture implements ITexture, IRenderable
 	}
 	
 	@Override
-	public void postRender(RenderContext rcon)
+	public void renderImpl(RenderContext rcon) throws RenderException
 	{
-		this.rendered = false;
-		
-	}
-	
-	@Override
-	public void render(RenderContext rcon) throws RenderException
-	{
-		if (!this.rendered)
+		if (this.rendered)
 		{
-			if (this.fbo.bind(rcon))
+			return;
+		}
+		
+		if (this.fbo.bind(rcon))
+		{
+			try
 			{
-				try
-				{
-					this.renderTexture(rcon);
-					
-				}
-				catch (RenderException e)
-				{
-					throw e;
-				}
-				finally
-				{
-					this.fbo.unbind(rcon);
-					
-				}
-				
-				this.rendered = true;
+				this.renderTexture(rcon);
 				
 			}
+			catch (RenderException e)
+			{
+				throw e;
+			}
+			finally
+			{
+				this.fbo.unbind(rcon);
+				
+			}
+			
+			this.rendered = true;
 			
 		}
 		
@@ -85,6 +79,13 @@ public abstract class RenderableTexture implements ITexture, IRenderable
 	public boolean isStatic()
 	{
 		return false;
+	}
+	
+	@Override
+	public void postRender(RenderContext rcon)
+	{
+		this.rendered = false;
+		
 	}
 	
 	public abstract void renderTexture(RenderContext rcon) throws RenderException;

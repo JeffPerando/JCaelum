@@ -4,9 +4,9 @@ package com.elusivehawk.caelum.prefab;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import com.elusivehawk.caelum.render.IRenderable;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
+import com.elusivehawk.caelum.render.Renderable;
 import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.IUpdatable;
 import com.google.common.collect.Lists;
@@ -18,7 +18,7 @@ import com.google.common.collect.Maps;
  * 
  * @author Elusivehawk
  */
-public abstract class Component implements IRenderable, IUpdatable
+public abstract class Component extends Renderable implements IUpdatable
 {
 	protected final int priority;
 	
@@ -50,6 +50,20 @@ public abstract class Component implements IRenderable, IUpdatable
 	}
 	
 	@Override
+	public void delete(RenderContext rcon)
+	{
+		this.forEveryChild(false, ((child) -> {child.delete(rcon);}));
+		
+	}
+	
+	@Override
+	public void renderImpl(RenderContext rcon) throws RenderException
+	{
+		this.forEveryChild(((child) -> {child.render(rcon);}));
+		
+	}
+	
+	@Override
 	public void preRender(RenderContext rcon)
 	{
 		this.forEveryChild(((child) -> {child.preRender(rcon);}));
@@ -60,20 +74,6 @@ public abstract class Component implements IRenderable, IUpdatable
 	public void postRender(RenderContext rcon)
 	{
 		this.forEveryChild(((child) -> {child.postRender(rcon);}));
-		
-	}
-	
-	@Override
-	public void delete(RenderContext rcon)
-	{
-		this.forEveryChild(false, ((child) -> {child.delete(rcon);}));
-		
-	}
-	
-	@Override
-	public void render(RenderContext rcon) throws RenderException
-	{
-		this.forEveryChild(((child) -> {child.render(rcon);}));
 		
 	}
 	

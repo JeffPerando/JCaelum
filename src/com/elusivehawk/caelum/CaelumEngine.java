@@ -11,7 +11,7 @@ import com.elusivehawk.caelum.input.InputManager;
 import com.elusivehawk.caelum.input.Keyboard;
 import com.elusivehawk.caelum.input.Mouse;
 import com.elusivehawk.caelum.lwjgl.LWJGLEnvironment;
-import com.elusivehawk.caelum.render.IRenderable;
+import com.elusivehawk.caelum.render.Renderable;
 import com.elusivehawk.caelum.render.ThreadGameRender;
 import com.elusivehawk.util.CompInfo;
 import com.elusivehawk.util.EnumLogType;
@@ -93,7 +93,7 @@ public final class CaelumEngine
 	
 	//XXX Hooks
 	
-	public static Display createDisplay(String name, DisplaySettings settings, IRenderable renderer)
+	public static Display createDisplay(String name, DisplaySettings settings, Renderable renderer)
 	{
 		return instance().displays.createDisplay(name, settings, renderer);
 	}

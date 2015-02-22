@@ -14,7 +14,7 @@ import com.elusivehawk.util.storage.Buffer;
  * 
  * @author Elusivehawk
  */
-public class Canvas extends RenderableObj
+public class Canvas extends ProgramRenderable
 {
 	public static final int INDICES_PER_IMG = 6;
 	public static final int FLOATS_PER_INDEX = 4;
@@ -122,17 +122,6 @@ public class Canvas extends RenderableObj
 	}
 	
 	@Override
-	public void postRender(RenderContext rcon)
-	{
-		for (int c = 0; c < this.layers.size(); c++)
-		{
-			this.layers.get(c).postRender(rcon);
-			
-		}
-		
-	}
-	
-	@Override
 	protected boolean initiate(RenderContext rcon)
 	{
 		if (this.program.shaderCount() == 0)
@@ -164,26 +153,43 @@ public class Canvas extends RenderableObj
 	@Override
 	public void preRender(RenderContext rcon)
 	{
-		for (int c = 0; c < this.layers.size(); c++)
+		super.preRender(rcon);
+		
+		this.layers.forEach(((layer) ->
 		{
-			this.layers.get(c).preRender(rcon);
+			layer.preRender(rcon);
 			
-		}
+		}));
+		
+	}
+	
+	@Override
+	public void postRender(RenderContext rcon)
+	{
+		super.postRender(rcon);
+		
+		this.layers.forEach(((layer) ->
+		{
+			layer.postRender(rcon);
+			
+		}));
 		
 	}
 	
 	@Override
 	public void delete(RenderContext rcon)
 	{
-		super.delete(rcon);
-		
-		this.layers.forEach(((layer) -> {layer.delete(rcon);}));
+		this.layers.forEach(((layer) ->
+		{
+			layer.delete(rcon);
+			
+		}));
 		
 	}
 	
 	@SuppressWarnings("sync-override")
 	@Override
-	public RenderableObj setEnableZBuffer(boolean z)
+	public ProgramRenderable setEnableZBuffer(boolean z)
 	{
 		throw new UnsupportedOperationException("Canvases cannot change their Z buffering status, you nincompoop.");
 	}

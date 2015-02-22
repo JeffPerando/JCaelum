@@ -12,7 +12,7 @@ import com.elusivehawk.util.IPopulator;
  * 
  * @author Elusivehawk
  */
-public class CanvasBufferer implements IRenderable
+public class CanvasBufferer extends Renderable
 {
 	private Canvas canvas, bufone, buftwo;
 	private boolean swap = false;
@@ -79,8 +79,32 @@ public class CanvasBufferer implements IRenderable
 	}
 	
 	@Override
+	public void delete(RenderContext rcon)
+	{
+		this.canvas.delete(rcon);
+		this.bufone.delete(rcon);
+		this.buftwo.delete(rcon);
+		
+	}
+	
+	@Override
+	public boolean initiate(RenderContext rcon)
+	{
+		return true;
+	}
+	
+	@Override
+	public void renderImpl(RenderContext rcon) throws RenderException
+	{
+		this.canvas.render(rcon);
+		
+	}
+	
+	@Override
 	public void preRender(RenderContext rcon)
 	{
+		super.preRender(rcon);
+		
 		if (this.swap)
 		{
 			Canvas cvs = this.canvas;
@@ -103,21 +127,9 @@ public class CanvasBufferer implements IRenderable
 	@Override
 	public void postRender(RenderContext rcon)
 	{
+		super.postRender(rcon);
+		
 		this.canvas.postRender(rcon);
-		
-	}
-	
-	@Override
-	public void delete(RenderContext rcon)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
-	public void render(RenderContext rcon) throws RenderException
-	{
-		this.canvas.render(rcon);
 		
 	}
 	

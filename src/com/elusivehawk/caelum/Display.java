@@ -3,8 +3,8 @@ package com.elusivehawk.caelum;
 
 import java.io.Closeable;
 import com.elusivehawk.caelum.input.InputManager;
-import com.elusivehawk.caelum.render.IRenderable;
 import com.elusivehawk.caelum.render.RenderContext;
+import com.elusivehawk.caelum.render.Renderable;
 import com.elusivehawk.caelum.render.gl.GL1;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.Logger;
@@ -29,7 +29,7 @@ public class Display implements Closeable, IUpdatable
 	private boolean refresh = true, closed = false, close = false, initiated = false;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Display(String str, DisplaySettings ds, IRenderable r)
+	public Display(String str, DisplaySettings ds, Renderable r)
 	{
 		assert ds != null;
 		assert r != null;
@@ -71,10 +71,13 @@ public class Display implements Closeable, IUpdatable
 				Logger.err(e);
 				
 			}
-			
-			synchronized (this)
+			finally
 			{
-				this.closed = true;
+				synchronized (this)
+				{
+					this.closed = true;
+					
+				}
 				
 			}
 			

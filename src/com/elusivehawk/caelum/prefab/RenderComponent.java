@@ -1,7 +1,7 @@
 
 package com.elusivehawk.caelum.prefab;
 
-import com.elusivehawk.caelum.render.IRenderable;
+import com.elusivehawk.caelum.render.Renderable;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.util.IPopulator;
 
@@ -13,15 +13,15 @@ import com.elusivehawk.util.IPopulator;
  */
 public class RenderComponent extends Component
 {
-	protected final IRenderable renderable;
+	protected final Renderable renderable;
 	
-	public RenderComponent(IRenderable r)
+	public RenderComponent(Renderable r)
 	{
 		this(0, r);
 		
 	}
 	
-	public RenderComponent(IRenderable r, IPopulator<Component> pop)
+	public RenderComponent(Renderable r, IPopulator<Component> pop)
 	{
 		this(0, r);
 		
@@ -30,7 +30,7 @@ public class RenderComponent extends Component
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public RenderComponent(int p, IRenderable r)
+	public RenderComponent(int p, Renderable r)
 	{
 		super(p);
 		
@@ -40,7 +40,7 @@ public class RenderComponent extends Component
 		
 	}
 	
-	public RenderComponent(int p, IRenderable r, IPopulator<Component> pop)
+	public RenderComponent(int p, Renderable r, IPopulator<Component> pop)
 	{
 		this(p, r);
 		
@@ -54,6 +54,15 @@ public class RenderComponent extends Component
 		this.renderable.preRender(rcon);
 		
 		super.preRender(rcon);
+		
+	}
+	
+	@Override
+	public void renderImpl(RenderContext rcon)
+	{
+		this.renderable.render(rcon);
+		
+		super.renderImpl(rcon);
 		
 	}
 	
@@ -72,15 +81,6 @@ public class RenderComponent extends Component
 		this.renderable.delete(rcon);
 		
 		super.delete(rcon);
-		
-	}
-	
-	@Override
-	public void render(RenderContext rcon)
-	{
-		this.renderable.render(rcon);
-		
-		super.render(rcon);
 		
 	}
 	

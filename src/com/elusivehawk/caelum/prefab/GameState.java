@@ -8,7 +8,7 @@ import com.elusivehawk.caelum.Game;
 import com.elusivehawk.caelum.input.IInputListener;
 import com.elusivehawk.caelum.input.Input;
 import com.elusivehawk.caelum.physics.IPhysicsSimulator;
-import com.elusivehawk.caelum.render.IRenderable;
+import com.elusivehawk.caelum.render.Renderable;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
 import com.elusivehawk.util.IUpdatable;
@@ -27,7 +27,7 @@ public class GameState extends AbstractGameComponent
 	private IInputListener inputLis = null;
 	private IPhysicsSimulator psim = null;
 	
-	private final List<IRenderable> renderers = Lists.newArrayList();
+	private final List<Renderable> renderers = Lists.newArrayList();
 	private final List<IUpdatable> modules = Lists.newArrayList();
 	
 	@SuppressWarnings("unqualified-field-access")
@@ -56,6 +56,20 @@ public class GameState extends AbstractGameComponent
 	}
 	
 	@Override
+	public void delete(RenderContext rcon)
+	{
+		this.renderers.forEach(((r) -> {r.delete(rcon);}));
+		
+	}
+	
+	@Override
+	public void renderImpl(RenderContext rcon) throws RenderException
+	{
+		this.renderers.forEach(((r) -> {r.render(rcon);}));
+		
+	}
+	
+	@Override
 	public void preRender(RenderContext rcon) throws RenderException
 	{
 		this.renderers.forEach(((r) -> {r.preRender(rcon);}));
@@ -66,20 +80,6 @@ public class GameState extends AbstractGameComponent
 	public void postRender(RenderContext rcon) throws RenderException
 	{
 		this.renderers.forEach(((r) -> {r.postRender(rcon);}));
-		
-	}
-	
-	@Override
-	public void delete(RenderContext rcon)
-	{
-		this.renderers.forEach(((r) -> {r.delete(rcon);}));
-		
-	}
-	
-	@Override
-	public void render(RenderContext rcon) throws RenderException
-	{
-		this.renderers.forEach(((r) -> {r.render(rcon);}));
 		
 	}
 	
@@ -115,7 +115,7 @@ public class GameState extends AbstractGameComponent
 		return this;
 	}
 	
-	public GameState addRenderer(IRenderable r)
+	public GameState addRenderer(Renderable r)
 	{
 		assert r != null;
 		

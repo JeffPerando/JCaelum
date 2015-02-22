@@ -31,7 +31,7 @@ public final class RenderContext implements Closeable, IUpdatable
 	public static final int CLEAR_BITS = GLConst.GL_COLOR_BUFFER_BIT | GLConst.GL_DEPTH_BUFFER_BIT | GLConst.GL_STENCIL_BUFFER_BIT;
 	
 	private final Display display;
-	private final IRenderable renderer;
+	private final Renderable renderer;
 	
 	private final Shaders
 				shaders = new Shaders(),
@@ -58,7 +58,7 @@ public final class RenderContext implements Closeable, IUpdatable
 	private int nextTex = 0;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public RenderContext(Display d, IRenderable r)
+	public RenderContext(Display d, Renderable r)
 	{
 		assert d != null;
 		assert r != null;
@@ -371,7 +371,7 @@ public final class RenderContext implements Closeable, IUpdatable
 		
 	}
 	
-	public void registerRenderer(IRenderable r)
+	public void registerRenderer(Renderable r)
 	{
 		this.registerPreRenderer(r);
 		this.registerPostRenderer(r);

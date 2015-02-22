@@ -20,7 +20,7 @@ import com.elusivehawk.caelum.render.tex.TextureAsset;
  * 
  * @author Elusivehawk
  */
-public class SimpleRenderer implements IRenderable
+public class SimpleRenderer extends Renderable
 {
 	private final FloatBuffer vertex;
 	private final IntBuffer indices;
@@ -35,8 +35,6 @@ public class SimpleRenderer implements IRenderable
 	
 	private GLProgram program = null;
 	
-	private boolean initiated = false;
-	
 	@SuppressWarnings("unqualified-field-access")
 	public SimpleRenderer(FloatBuffer vtx, IntBuffer ind, GLEnumDrawType dtype)
 	{
@@ -50,45 +48,33 @@ public class SimpleRenderer implements IRenderable
 	}
 	
 	@Override
-	public void preRender(RenderContext rcon) throws RenderException
-	{
-		if (!this.initiated)
-		{
-			this.program = new GLProgram(rcon.getDefaultShaders());
-			
-			this.vtxbuf.init(rcon, this.vertex, GLEnumDataUsage.GL_STATIC_DRAW);
-			this.indbuf.init(rcon, this.indices, GLEnumDataUsage.GL_STATIC_DRAW);
-			
-			this.vtxbuf.addAttrib(0, 3, GLConst.GL_FLOAT, false, 12, 0);
-			
-			this.vao.addVBO(this.vtxbuf);
-			this.vao.addVBO(this.indbuf);
-			
-			this.initiated = true;
-			
-		}
-		
-	}
-	
-	@Override
-	public void postRender(RenderContext rcon) throws RenderException{}
-	
-	@Override
 	public void delete(RenderContext rcon)
 	{
-		if (this.initiated)
-		{
-			this.program.delete(rcon);
-			this.vao.delete(rcon);
-			this.vtxbuf.delete(rcon);
-			this.indbuf.delete(rcon);
-			
-		}
+		this.program.delete(rcon);
+		this.vao.delete(rcon);
+		this.vtxbuf.delete(rcon);
+		this.indbuf.delete(rcon);
 		
 	}
 	
 	@Override
-	public void render(RenderContext rcon) throws RenderException
+	public boolean initiate(RenderContext rcon)
+	{
+		this.program = new GLProgram(rcon.getDefaultShaders());
+		
+		this.vtxbuf.init(rcon, this.vertex, GLEnumDataUsage.GL_STATIC_DRAW);
+		this.indbuf.init(rcon, this.indices, GLEnumDataUsage.GL_STATIC_DRAW);
+		
+		this.vtxbuf.addAttrib(0, 3, GLConst.GL_FLOAT, false, 12, 0);
+		
+		this.vao.addVBO(this.vtxbuf);
+		this.vao.addVBO(this.indbuf);
+		
+		return true;
+	}
+	
+	@Override
+	public void renderImpl(RenderContext rcon) throws RenderException
 	{
 		if (this.program.bind(rcon))
 		{

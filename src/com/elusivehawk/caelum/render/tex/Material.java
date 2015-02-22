@@ -4,9 +4,9 @@ package com.elusivehawk.caelum.render.tex;
 import com.elusivehawk.caelum.CaelumException;
 import com.elusivehawk.caelum.assets.Asset;
 import com.elusivehawk.caelum.render.IBindable;
-import com.elusivehawk.caelum.render.IRenderable;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
+import com.elusivehawk.caelum.render.Renderable;
 import com.elusivehawk.caelum.render.gl.GL2;
 import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.math.MathHelper;
@@ -19,7 +19,7 @@ import com.elusivehawk.util.parse.json.JsonObject;
  * 
  * @author Elusivehawk
  */
-public final class Material implements IBindable, IRenderable, IJsonSerializer
+public final class Material extends Renderable implements IBindable, IJsonSerializer
 {
 	private ITexture tex = null, glowTex = null;
 	private RenderableTexture renTex = null;
@@ -105,63 +105,6 @@ public final class Material implements IBindable, IRenderable, IJsonSerializer
 	}
 	
 	@Override
-	public String toJson(int tabs)
-	{
-		JsonObject ret = new JsonObject();
-		
-		ret.add("filter", this.filter);
-		ret.add("shine", this.shine);
-		
-		if (this.tex instanceof IJsonSerializer)
-		{
-			ret.add("tex", this.tex);
-			
-		}
-		
-		if (this.glowTex instanceof IJsonSerializer)
-		{
-			ret.add("glowTex", this.glowTex);
-			
-		}
-		
-		return ret.toJson(tabs);
-	}
-	
-	@Override
-	public void preRender(RenderContext rcon)
-	{
-		if (this.tex != null)
-		{
-			this.tex.preRender(rcon);
-			
-		}
-		
-		if (this.glowTex != null)
-		{
-			this.glowTex.preRender(rcon);
-			
-		}
-		
-		if (this.renTex != null)
-		{
-			this.renTex.preRender(rcon);
-			
-		}
-		
-	}
-	
-	@Override
-	public void postRender(RenderContext rcon)
-	{
-		if (this.renTex != null)
-		{
-			this.renTex.postRender(rcon);
-			
-		}
-		
-	}
-	
-	@Override
 	public void delete(RenderContext rcon)
 	{
 		if (this.tex != null && !(this.tex instanceof Asset))
@@ -185,14 +128,26 @@ public final class Material implements IBindable, IRenderable, IJsonSerializer
 	}
 	
 	@Override
-	public void render(RenderContext rcon) throws RenderException
+	public String toJson(int tabs)
 	{
-		if (this.renTex != null)
+		JsonObject ret = new JsonObject();
+		
+		ret.add("filter", this.filter);
+		ret.add("shine", this.shine);
+		
+		if (this.tex instanceof IJsonSerializer)
 		{
-			this.renTex.render(rcon);
+			ret.add("tex", this.tex);
 			
 		}
 		
+		if (this.glowTex instanceof IJsonSerializer)
+		{
+			ret.add("glowTex", this.glowTex);
+			
+		}
+		
+		return ret.toJson(tabs);
 	}
 	
 	@Override
@@ -260,6 +215,55 @@ public final class Material implements IBindable, IRenderable, IJsonSerializer
 	public boolean isBound(RenderContext rcon)
 	{
 		return this.bound;
+	}
+	
+	@Override
+	protected void renderImpl(RenderContext rcon) throws RenderException
+	{
+		if (this.renTex != null)
+		{
+			this.renTex.render(rcon);
+			
+		}
+		
+	}
+	
+	@Override
+	public void preRender(RenderContext rcon)
+	{
+		super.preRender(rcon);
+		
+		if (this.tex != null)
+		{
+			this.tex.preRender(rcon);
+			
+		}
+		
+		if (this.glowTex != null)
+		{
+			this.glowTex.preRender(rcon);
+			
+		}
+		
+		if (this.renTex != null)
+		{
+			this.renTex.preRender(rcon);
+			
+		}
+		
+	}
+	
+	@Override
+	public void postRender(RenderContext rcon)
+	{
+		super.postRender(rcon);
+		
+		if (this.renTex != null)
+		{
+			this.renTex.postRender(rcon);
+			
+		}
+		
 	}
 	
 	@Override

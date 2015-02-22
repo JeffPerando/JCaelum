@@ -15,16 +15,14 @@ import com.elusivehawk.caelum.render.tex.Material;
  * 
  * @author Elusivehawk
  */
-public abstract class RenderableObj implements IRenderable
+public abstract class ProgramRenderable extends Renderable
 {
 	protected final GLProgram program;
 	
-	protected boolean initiated = false, zBuffer = true, preRendered = false;
-	
-	protected int renderCount = 0;
+	protected boolean zBuffer = true;
 	
 	@SuppressWarnings("unqualified-field-access")
-	protected RenderableObj(GLProgram p)
+	protected ProgramRenderable(GLProgram p)
 	{
 		assert p != null;
 		
@@ -35,16 +33,7 @@ public abstract class RenderableObj implements IRenderable
 	@Override
 	public void preRender(RenderContext rcon)
 	{
-		if (!this.initiated)
-		{
-			if (!this.initiate(rcon))
-			{
-				return;
-			}
-			
-			this.initiated = true;
-			
-		}
+		super.preRender(rcon);
 		
 		/*if (this.program.bind(rcon))
 		{
@@ -60,49 +49,11 @@ public abstract class RenderableObj implements IRenderable
 		
 		this.program.unbind(rcon);*/
 		
-		this.preRendered = true;
-		
 	}
 	
 	@Override
-	public void postRender(RenderContext rcon)
+	public void renderImpl(RenderContext rcon) throws RenderException
 	{
-		this.preRendered = false;
-		
-	}
-	
-	@Override
-	public void delete(RenderContext rcon)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void render(RenderContext rcon) throws RenderException
-	{
-		if (!this.initiated)
-		{
-			return;
-		}
-		
-		if (!this.preRendered)
-		{
-			return;
-		}
-		
-		if (!this.canRender(rcon))
-		{
-			return;
-		}
-		
-		if (this.renderCount == RenderConst.RECURSIVE_LIMIT)
-		{
-			return;
-		}
-		
-		this.renderCount++;
-		
 		boolean zBuffer = GL1.glIsEnabled(GLConst.GL_DEPTH_TEST);
 		
 		if (zBuffer != this.zBuffer)
@@ -139,8 +90,6 @@ public abstract class RenderableObj implements IRenderable
 		
 		this.program.unbind(rcon);
 		
-		this.renderCount--;
-		
 	}
 	
 	public void setMaterial(Color col)
@@ -167,19 +116,12 @@ public abstract class RenderableObj implements IRenderable
 		
 	}
 	
-	public synchronized RenderableObj setEnableZBuffer(boolean z)
+	public synchronized ProgramRenderable setEnableZBuffer(boolean z)
 	{
 		this.zBuffer = z;
 		
 		return this;
 	}
-	
-	public boolean canRender(RenderContext rcon)
-	{
-		return true;
-	}
-	
-	protected abstract boolean initiate(RenderContext rcon);
 	
 	protected abstract void doRender(RenderContext rcon) throws RenderException;
 	

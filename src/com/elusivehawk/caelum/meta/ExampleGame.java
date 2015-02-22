@@ -1,8 +1,6 @@
 
 package com.elusivehawk.caelum.meta;
 
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import com.elusivehawk.caelum.CaelumEngine;
 import com.elusivehawk.caelum.DisplaySettings;
 import com.elusivehawk.caelum.Game;
@@ -11,15 +9,17 @@ import com.elusivehawk.caelum.input.Key;
 import com.elusivehawk.caelum.input.Keyboard;
 import com.elusivehawk.caelum.input.Mouse;
 import com.elusivehawk.caelum.physics.IPhysicsSimulator;
+import com.elusivehawk.caelum.render.Canvas;
+import com.elusivehawk.caelum.render.Icon;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
-import com.elusivehawk.caelum.render.SimpleRenderer;
-import com.elusivehawk.caelum.render.gl.GLEnumDrawType;
 import com.elusivehawk.caelum.render.tex.Color;
+import com.elusivehawk.caelum.render.tex.ITexture;
+import com.elusivehawk.caelum.render.tex.Material;
+import com.elusivehawk.caelum.render.tex.TextureAsset;
 import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.Version;
-import com.elusivehawk.util.storage.BufferHelper;
 
 /**
  * 
@@ -30,15 +30,15 @@ import com.elusivehawk.util.storage.BufferHelper;
 public final class ExampleGame extends Game
 {
 	public static final Version VERSION = new Version(1, 0, 0);
-	/*public static final int RANDOM_MATERIAL_CAP = 4;
+	public static final int RANDOM_MATERIAL_CAP = 4;
 	
 	private Canvas canvas = new Canvas();
-	private Gui gui = new Gui();*/
+	//private Gui gui = new Gui();
 	
-	private final FloatBuffer vtx = BufferHelper.makeFloatBuffer(new float[]{-1, -1, -1, 1, -1, -1, -1, 1, -1, -1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1, 1, 1, 1, 1});
+	/*private final FloatBuffer vtx = BufferHelper.makeFloatBuffer(new float[]{-1, -1, -1, 1, -1, -1, -1, 1, -1, -1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1, 1, 1, 1, 1});
 	private final IntBuffer ind = BufferHelper.makeIntBuffer(new int[]{0, 1, 4, 5, 6, 1, 3, 0, 2, 4, 7, 6, 2, 3});
 	
-	private final SimpleRenderer renderer = new SimpleRenderer(this.vtx, this.ind, GLEnumDrawType.GL_TRIANGLE_STRIP);
+	private final SimpleRenderer renderer = new SimpleRenderer(this.vtx, this.ind, GLEnumDrawType.GL_TRIANGLE_STRIP);*/
 	
 	public ExampleGame()
 	{
@@ -85,30 +85,16 @@ public final class ExampleGame extends Game
 	}
 	
 	@Override
-	public void preRender(RenderContext rcon)
-	{
-		this.renderer.preRender(rcon);
-		
-	}
-	
-	@Override
-	public void postRender(RenderContext rcon)
-	{
-		this.renderer.postRender(rcon);
-		
-	}
-	
-	@Override
 	public void delete(RenderContext rcon)
 	{
-		this.renderer.delete(rcon);
+		this.canvas.delete(rcon);
 		
 	}
 	
 	@Override
-	public void render(RenderContext rcon) throws RenderException
+	public void renderImpl(RenderContext rcon) throws RenderException
 	{
-		this.renderer.render(rcon);
+		this.canvas.render(rcon);
 		
 	}
 	
@@ -168,11 +154,11 @@ public final class ExampleGame extends Game
 			
 		})));*/
 		
-		/*ITexture testimg = new TextureAsset("/res/test.png");
+		ITexture testimg = new TextureAsset("/res/test.png");
 		
-		this.canvas.addMaterial(new Material().tex(testimg).lock());
+		this.canvas.setMaterial(new Material().tex(testimg).lock());
 		
-		for (int c = 0; c < RANDOM_MATERIAL_CAP; c++)
+		/*for (int c = 0; c < RANDOM_MATERIAL_CAP; c++)
 		{
 			this.canvas.addMaterial(new Material(((mat) ->
 			{
@@ -182,14 +168,14 @@ public final class ExampleGame extends Game
 				
 			})).lock());
 			
-		}
+		}*/
 		
 		this.canvas.drawImage(0.2f, 0.2f, 0.8f, 0.8f);
 		
 		this.canvas.drawImage(0.0f, 0.0f, 0.2f, 0.2f, new Icon(0.0f, 0.0f, 0.5f, 0.5f));
 		this.canvas.drawImage(0.8f, 0.8f, 1.0f, 1.0f, new Icon(0.5f, 0.5f, 1.0f, 1.0f));
 		this.canvas.drawImage(0.0f, 0.8f, 0.2f, 1.0f, new Icon(0.0f, 0.5f, 0.5f, 1.0f));
-		this.canvas.drawImage(0.8f, 0.0f, 1.0f, 0.2f, new Icon(0.5f, 0.0f, 1.0f, 0.5f));*/
+		this.canvas.drawImage(0.8f, 0.0f, 1.0f, 0.2f, new Icon(0.5f, 0.0f, 1.0f, 0.5f));
 		
 	}
 	
@@ -206,6 +192,20 @@ public final class ExampleGame extends Game
 	public void update(double delta) throws Throwable
 	{
 		//CaelumEngine.log(EnumLogType.INFO, "Test: %s", delta);
+		
+	}
+	
+	@Override
+	public void preRender(RenderContext rcon)
+	{
+		this.canvas.preRender(rcon);
+		
+	}
+	
+	@Override
+	public void postRender(RenderContext rcon)
+	{
+		this.canvas.postRender(rcon);
 		
 	}
 	

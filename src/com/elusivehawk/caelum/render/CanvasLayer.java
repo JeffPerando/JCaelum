@@ -1,7 +1,7 @@
 
 package com.elusivehawk.caelum.render;
 
-import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import com.elusivehawk.caelum.prefab.Rectangle;
 import com.elusivehawk.caelum.render.gl.GL1;
 import com.elusivehawk.caelum.render.gl.GLBuffer;
@@ -21,7 +21,7 @@ import com.elusivehawk.util.storage.DirtableStorage;
  * 
  * @author Elusivehawk
  */
-public class CanvasLayer implements IRenderable
+public class CanvasLayer extends Renderable
 {
 	private final Canvas parent;
 	
@@ -29,11 +29,17 @@ public class CanvasLayer implements IRenderable
 	private final GLVertexArray vao = new GLVertexArray();
 	private final GLBuffer vertex = new GLBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER);
 	
-	private ByteBuffer imgbuf = BufferHelper.createByteBuffer(Canvas.FLOATS_PER_IMG * 12 * 4);
+	private FloatBuffer imgbuf = BufferHelper.createFloatBuffer(Canvas.FLOATS_PER_IMG * 12);
 	private SubCanvas sub = null;
 	private int images = 0;
 	
-	private boolean initiated = false, expanded = false, updateImgBuf = false;
+	private boolean expanded = false, updateImgBuf = false;
+	
+	public CanvasLayer()
+	{
+		this(null);
+		
+	}
 	
 	@SuppressWarnings("unqualified-field-access")
 	public CanvasLayer(Canvas cvs)
@@ -43,20 +49,67 @@ public class CanvasLayer implements IRenderable
 	}
 	
 	@Override
-	public void preRender(RenderContext rcon)
+	public void delete(RenderContext rcon)
 	{
-		if (!this.initiated)
+		this.vertex.delete(rcon);
+		this.vao.delete(rcon);
+		
+		if (!this.mat.isNull())
 		{
-			this.vertex.init(rcon, this.imgbuf, GLEnumDataUsage.GL_STREAM_DRAW);
-			
-			this.vertex.addAttrib(0, 2, GLConst.GL_FLOAT, 16, 0);		//Position data
-			this.vertex.addAttrib(1, 2, GLConst.GL_FLOAT, 16, 8);		//Texture off
-			
-			this.vao.addVBO(this.vertex);
-			
-			this.initiated = true;
+			this.mat.get().delete(rcon);
 			
 		}
+		
+	}
+	
+	@Override
+	public boolean initiate(RenderContext rcon)
+	{
+		this.vertex.init(rcon, this.imgbuf, GLEnumDataUsage.GL_STREAM_DRAW);
+		
+		this.vertex.addAttrib(0, 2, GLConst.GL_FLOAT, 16, 0);		//Position data
+		this.vertex.addAttrib(1, 2, GLConst.GL_FLOAT, 16, 8);		//Texture off
+		
+		this.vao.addVBO(this.vertex);
+		
+		return true;
+	}
+	
+	@Override
+	public void renderImpl(RenderContext rcon) throws RenderException
+	{
+		if (this.images == 0)
+		{
+			return;
+		}
+		
+		if (!this.vao.bind(rcon))
+		{
+			return;
+		}
+		
+		if (!this.mat.isNull())
+		{
+			this.mat.get().bind(rcon);
+			
+		}
+		
+		GL1.glDrawArrays(GLEnumDrawType.GL_TRIANGLES, 0, this.images * 6);
+		
+		if (!this.mat.isNull())
+		{
+			this.mat.get().unbind(rcon);
+			
+		}
+		
+		this.vao.unbind(rcon);
+		
+	}
+	
+	@Override
+	public void preRender(RenderContext rcon)
+	{
+		super.preRender(rcon);
 		
 		if (!this.mat.isNull())
 		{
@@ -66,7 +119,7 @@ public class CanvasLayer implements IRenderable
 		
 		if (this.imgbuf.position() != 0)
 		{
-			this.imgbuf.position(0);
+			this.imgbuf.flip();
 			
 		}
 		
@@ -94,54 +147,11 @@ public class CanvasLayer implements IRenderable
 	@Override
 	public void postRender(RenderContext rcon) throws RenderException
 	{
+		super.postRender(rcon);
+		
 		if (!this.mat.isNull())
 		{
 			this.mat.get().postRender(rcon);
-			
-		}
-		
-	}
-	
-	@Override
-	public void delete(RenderContext rcon)
-	{
-		this.vertex.delete(rcon);
-		this.vao.delete(rcon);
-		
-		if (!this.mat.isNull())
-		{
-			this.mat.get().delete(rcon);
-			
-		}
-		
-	}
-	
-	@Override
-	public void render(RenderContext rcon) throws RenderException
-	{
-		if (this.images == 0)
-		{
-			return;
-		}
-		
-		if (!this.vao.bind(rcon))
-		{
-			return;
-		}
-		
-		if (!this.mat.isNull())
-		{
-			this.mat.get().bind(rcon);
-			
-		}
-		
-		GL1.glDrawArrays(GLEnumDrawType.GL_TRIANGLES, 0, this.images * 6);
-		
-		this.vao.unbind(rcon);
-		
-		if (!this.mat.isNull())
-		{
-			this.mat.get().unbind(rcon);
 			
 		}
 		
@@ -268,10 +278,10 @@ public class CanvasLayer implements IRenderable
 			
 		}
 		
-		this.imgbuf.putFloat(x);
-		this.imgbuf.putFloat(y);
-		this.imgbuf.putFloat(icon.getX(corner));
-		this.imgbuf.putFloat(icon.getY(corner));
+		this.imgbuf.put(x);
+		this.imgbuf.put(y);
+		this.imgbuf.put(icon.getX(corner));
+		this.imgbuf.put(icon.getY(corner));
 		
 	}
 	

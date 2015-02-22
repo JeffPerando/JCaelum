@@ -3,7 +3,6 @@ package com.elusivehawk.caelum.render;
 
 import com.elusivehawk.caelum.Experimental;
 import com.elusivehawk.util.math.MatrixF;
-import com.elusivehawk.util.math.MatrixHelper;
 import com.elusivehawk.util.math.QuaternionF;
 import com.elusivehawk.util.math.VectorF;
 
@@ -39,7 +38,7 @@ public abstract class Camera3D extends Camera
 	{
 		if (this.updateProj)
 		{
-			MatrixHelper.projection(this.fov, rcon.getDisplay().getAspectRatio(), this.zFar, this.zNear, this.proj);
+			this.proj.resetIdentity().projection(this.fov, rcon.getDisplay().getAspectRatio(), this.zFar, this.zNear);
 			
 			synchronized (this)
 			{

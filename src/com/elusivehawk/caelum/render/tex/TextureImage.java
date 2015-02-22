@@ -2,6 +2,7 @@
 package com.elusivehawk.caelum.render.tex;
 
 import com.elusivehawk.caelum.render.RenderContext;
+import com.elusivehawk.caelum.render.RenderException;
 import com.elusivehawk.caelum.render.RenderHelper;
 import com.elusivehawk.caelum.render.gl.GL1;
 import com.elusivehawk.caelum.render.gl.GLEnumTexture;
@@ -17,6 +18,7 @@ public class TextureImage implements ITexture
 	private final GLEnumTexture type;
 	private final ILegibleImage image;
 	private int tex = 0;
+	private boolean deleted = false;
 	
 	public TextureImage(ILegibleImage img)
 	{
@@ -37,6 +39,11 @@ public class TextureImage implements ITexture
 	@Override
 	public void preRender(RenderContext rcon)
 	{
+		if (this.deleted)
+		{
+			throw new RenderException("Cannot pre-render a deleted texture image");
+		}
+		
 		if (this.tex == 0)
 		{
 			this.tex = RenderHelper.genTexture(this.type, this.image);
@@ -53,6 +60,8 @@ public class TextureImage implements ITexture
 		if (this.tex != 0)
 		{
 			GL1.glDeleteTextures(this.tex);
+			
+			this.deleted = true;
 			
 		}
 		
