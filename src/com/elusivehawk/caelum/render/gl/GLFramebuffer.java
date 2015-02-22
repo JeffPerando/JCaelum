@@ -17,7 +17,7 @@ public class GLFramebuffer implements IBindable, IDeletable
 {
 	private final boolean useDepth;
 	
-	private boolean initiated = false;
+	private boolean initiated = false, deleted = false;
 	private int id = 0, depth = 0, tex = 0, last = 0;
 	
 	public GLFramebuffer()
@@ -36,6 +36,11 @@ public class GLFramebuffer implements IBindable, IDeletable
 	@Override
 	public void delete(RenderContext rcon)
 	{
+		if (this.deleted)
+		{
+			return;
+		}
+		
 		if (this.initiated)
 		{
 			GL3.glDeleteFramebuffer(this.id);
@@ -47,6 +52,8 @@ public class GLFramebuffer implements IBindable, IDeletable
 				GL3.glDeleteRenderbuffer(this.depth);
 				
 			}
+			
+			this.deleted = true;
 			
 		}
 		

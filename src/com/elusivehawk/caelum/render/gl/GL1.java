@@ -556,7 +556,7 @@ public final class GL1
 	
 	public static void glPixelStorei(int pname, int param) throws GLException
 	{
-		GL11.glPixelStoref(pname, param);
+		GL11.glPixelStorei(pname, param);
 		
 		RenderHelper.checkForGLError();
 		

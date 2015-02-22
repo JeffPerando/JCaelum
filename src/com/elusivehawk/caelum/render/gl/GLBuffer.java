@@ -10,7 +10,6 @@ import java.util.List;
 import com.elusivehawk.caelum.render.IBindable;
 import com.elusivehawk.caelum.render.IDeletable;
 import com.elusivehawk.caelum.render.RenderContext;
-import com.elusivehawk.caelum.render.RenderException;
 import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.storage.SyncList;
 
@@ -150,7 +149,17 @@ public class GLBuffer implements IBindable, IDeletable
 		
 		if (!this.initiated)
 		{
-			return false;
+			this.id = GL1.glGenBuffer();
+			
+			rcon.registerDeletable(this);
+			
+			this.initiated = true;
+			
+		}
+		
+		if (this.isBound(rcon))
+		{
+			return true;
 		}
 		
 		GL1.glBindBuffer(this);
@@ -221,186 +230,121 @@ public class GLBuffer implements IBindable, IDeletable
 	
 	public void init(RenderContext rcon, ByteBuffer buf, GLEnumDataUsage usage)
 	{
-		if (!this.initiated)
+		if (this.bind(rcon))
 		{
-			this.id = GL1.glGenBuffer();
+			GL1.glBufferData(this.t, buf, usage);
 			
-			rcon.registerDeletable(this);
-			
-			this.initiated = true;
+			this.unbind(rcon);
 			
 		}
-		
-		this.bind(rcon);
-		
-		GL1.glBufferData(this.t, buf, usage);
-		
-		this.unbind(rcon);
 		
 	}
 	
 	public void init(RenderContext rcon, DoubleBuffer buf, GLEnumDataUsage usage)
 	{
-		if (!this.initiated)
+		if (this.bind(rcon))
 		{
-			this.id = GL1.glGenBuffer();
+			GL1.glBufferData(this.t, buf, usage);
 			
-			rcon.registerDeletable(this);
-			
-			this.initiated = true;
+			this.unbind(rcon);
 			
 		}
-		
-		this.bind(rcon);
-		
-		GL1.glBufferData(this.t, buf, usage);
-		
-		this.unbind(rcon);
 		
 	}
 	
 	public void init(RenderContext rcon, FloatBuffer buf, GLEnumDataUsage usage)
 	{
-		if (!this.initiated)
+		if (this.bind(rcon))
 		{
-			this.id = GL1.glGenBuffer();
+			GL1.glBufferData(this.t, buf, usage);
 			
-			rcon.registerDeletable(this);
-			
-			this.initiated = true;
+			this.unbind(rcon);
 			
 		}
-		
-		this.bind(rcon);
-		
-		GL1.glBufferData(this.t, buf, usage);
-		
-		this.unbind(rcon);
 		
 	}
 	
 	public void init(RenderContext rcon, IntBuffer buf, GLEnumDataUsage usage)
 	{
-		if (!this.initiated)
+		if (this.bind(rcon))
 		{
-			this.id = GL1.glGenBuffer();
+			GL1.glBufferData(this.t, buf, usage);
 			
-			rcon.registerDeletable(this);
-			
-			this.initiated = true;
+			this.unbind(rcon);
 			
 		}
-		
-		this.bind(rcon);
-		
-		GL1.glBufferData(this.t, buf, usage);
-		
-		this.unbind(rcon);
 		
 	}
 	
 	public void init(RenderContext rcon, ShortBuffer buf, GLEnumDataUsage usage)
 	{
-		if (!this.initiated)
+		if (this.bind(rcon))
 		{
-			this.id = GL1.glGenBuffer();
+			GL1.glBufferData(this.t, buf, usage);
 			
-			rcon.registerDeletable(this);
-			
-			this.initiated = true;
+			this.unbind(rcon);
 			
 		}
-		
-		this.bind(rcon);
-		
-		GL1.glBufferData(this.t, buf, usage);
-		
-		this.unbind(rcon);
 		
 	}
 	
 	public void update(RenderContext rcon, ByteBuffer buf, long offset)
 	{
-		if (!this.isBound(rcon))
+		if (this.bind(rcon))
 		{
-			if (!this.bind(rcon))
-			{
-				throw new RenderException("Cannot update %s, binding failed!", this);
-			}
+			GL1.glBufferSubData(this.t, offset, buf);
+			
+			this.unbind(rcon);
 			
 		}
-		
-		GL1.glBufferSubData(this.t, offset, buf);
-		
-		this.unbind(rcon);
 		
 	}
 	
 	public void update(RenderContext rcon, DoubleBuffer buf, long offset)
 	{
-		if (!this.isBound(rcon))
+		if (this.bind(rcon))
 		{
-			if (!this.bind(rcon))
-			{
-				throw new RenderException("Cannot update %s, binding failed!", this);
-			}
+			GL1.glBufferSubData(this.t, offset, buf);
+			
+			this.unbind(rcon);
 			
 		}
-		
-		GL1.glBufferSubData(this.t, offset, buf);
-		
-		this.unbind(rcon);
 		
 	}
 	
 	public void update(RenderContext rcon, FloatBuffer buf, long offset)
 	{
-		if (!this.isBound(rcon))
+		if (this.bind(rcon))
 		{
-			if (!this.bind(rcon))
-			{
-				throw new RenderException("Cannot update %s, binding failed!", this);
-			}
+			GL1.glBufferSubData(this.t, offset, buf);
+			
+			this.unbind(rcon);
 			
 		}
-		
-		GL1.glBufferSubData(this.t, offset, buf);
-		
-		this.unbind(rcon);
 		
 	}
 	
 	public void update(RenderContext rcon, IntBuffer buf, long offset)
 	{
-		if (!this.isBound(rcon))
+		if (this.bind(rcon))
 		{
-			if (!this.bind(rcon))
-			{
-				throw new RenderException("Cannot update %s, binding failed!", this);
-			}
+			GL1.glBufferSubData(this.t, offset, buf);
+			
+			this.unbind(rcon);
 			
 		}
-		
-		GL1.glBufferSubData(this.t, offset, buf);
-		
-		this.unbind(rcon);
 		
 	}
 	
 	public void update(RenderContext rcon, ShortBuffer buf, long offset)
 	{
-		if (!this.isBound(rcon))
+		if (this.bind(rcon))
 		{
-			if (!this.bind(rcon))
-			{
-				throw new RenderException("Cannot update %s, binding failed!", this);
-			}
+			GL1.glBufferSubData(this.t, offset, buf);
+			
+			this.unbind(rcon);
 			
 		}
-		
-		GL1.glBufferSubData(this.t, offset, buf);
-		
-		this.unbind(rcon);
 		
 	}
 	
