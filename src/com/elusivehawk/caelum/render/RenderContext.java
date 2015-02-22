@@ -363,12 +363,6 @@ public final class RenderContext implements Closeable, IUpdatable
 		
 	}
 	
-	public void removeDeletable(IDeletable d)
-	{
-		this.deletables.remove(d);
-		
-	}
-	
 	public void scheduleDeletion(IDeletable d)
 	{
 		assert d != null;

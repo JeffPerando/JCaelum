@@ -76,8 +76,6 @@ public final class GLProgram implements IBindable, IDeletable, IDirty
 		
 		GL2.glDeleteProgram(this);
 		
-		rcon.removeDeletable(this);
-		
 		this.id = 0;
 		this.deleted = true;
 		
