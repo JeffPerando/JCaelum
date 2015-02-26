@@ -143,6 +143,8 @@ public final class CaelumEngine
 		
 		this.loadNatives();
 		
+		Logger.debug("Test: %s", this.nativeLocation.getAbsolutePath());
+		
 		//XXX Set library paths
 		
 		System.setProperty("org.lwjgl.librarypath", this.nativeLocation.getAbsolutePath());
