@@ -1,10 +1,13 @@
 *.class
 
+*.iml
+
 # Package Files #
 *.war
 *.ear
 *.log
 
+/.idea/*
 /.settings/*
 /bin/*
 /build/*
