@@ -107,10 +107,8 @@ public class CanvasLayer extends Renderable
 	}
 	
 	@Override
-	public void preRender(RenderContext rcon)
+	public void preRenderImpl(RenderContext rcon)
 	{
-		super.preRender(rcon);
-		
 		if (!this.mat.isNull())
 		{
 			this.mat.get().preRender(rcon);
@@ -145,10 +143,8 @@ public class CanvasLayer extends Renderable
 	}
 	
 	@Override
-	public void postRender(RenderContext rcon) throws RenderException
+	public void postRenderImpl(RenderContext rcon) throws RenderException
 	{
-		super.postRender(rcon);
-		
 		if (!this.mat.isNull())
 		{
 			this.mat.get().postRender(rcon);

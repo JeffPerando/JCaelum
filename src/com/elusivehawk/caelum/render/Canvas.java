@@ -151,10 +151,8 @@ public class Canvas extends ProgramRenderable
 	}
 	
 	@Override
-	public void preRender(RenderContext rcon)
+	public void preRenderImpl(RenderContext rcon)
 	{
-		super.preRender(rcon);
-		
 		this.layers.forEach(((layer) ->
 		{
 			layer.preRender(rcon);
@@ -164,10 +162,8 @@ public class Canvas extends ProgramRenderable
 	}
 	
 	@Override
-	public void postRender(RenderContext rcon)
+	public void postRenderImpl(RenderContext rcon)
 	{
-		super.postRender(rcon);
-		
 		this.layers.forEach(((layer) ->
 		{
 			layer.postRender(rcon);

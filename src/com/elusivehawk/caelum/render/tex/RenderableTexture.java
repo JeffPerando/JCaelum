@@ -1,9 +1,9 @@
 
 package com.elusivehawk.caelum.render.tex;
 
+import com.elusivehawk.caelum.render.IRenderer;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
-import com.elusivehawk.caelum.render.Renderable;
 import com.elusivehawk.caelum.render.gl.GLFramebuffer;
 
 /**
@@ -12,7 +12,7 @@ import com.elusivehawk.caelum.render.gl.GLFramebuffer;
  * 
  * @author Elusivehawk
  */
-public abstract class RenderableTexture extends Renderable implements ITexture
+public abstract class RenderableTexture implements IRenderer, ITexture
 {
 	private final GLFramebuffer fbo;
 	
@@ -39,7 +39,7 @@ public abstract class RenderableTexture extends Renderable implements ITexture
 	}
 	
 	@Override
-	public void renderImpl(RenderContext rcon) throws RenderException
+	public void render(RenderContext rcon) throws RenderException
 	{
 		if (this.rendered)
 		{

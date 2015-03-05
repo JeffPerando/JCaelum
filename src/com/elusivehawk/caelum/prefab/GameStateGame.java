@@ -3,7 +3,6 @@ package com.elusivehawk.caelum.prefab;
 
 import com.elusivehawk.caelum.Game;
 import com.elusivehawk.caelum.input.Input;
-import com.elusivehawk.caelum.physics.IPhysicsSimulator;
 import com.elusivehawk.caelum.render.RenderContext;
 
 /**
@@ -86,12 +85,6 @@ public abstract class GameStateGame extends Game
 			
 		}
 		
-	}
-	
-	@Override
-	public IPhysicsSimulator getPhysicsSimulator()
-	{
-		return this.state == null ? null : this.state.getPhysicsSimulator();
 	}
 	
 	@Override

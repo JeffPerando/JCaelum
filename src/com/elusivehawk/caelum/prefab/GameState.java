@@ -7,10 +7,9 @@ import com.elusivehawk.caelum.CaelumException;
 import com.elusivehawk.caelum.Game;
 import com.elusivehawk.caelum.input.IInputListener;
 import com.elusivehawk.caelum.input.Input;
-import com.elusivehawk.caelum.physics.IPhysicsSimulator;
-import com.elusivehawk.caelum.render.Renderable;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
+import com.elusivehawk.caelum.render.Renderable;
 import com.elusivehawk.util.IUpdatable;
 import com.google.common.collect.Lists;
 
@@ -25,7 +24,6 @@ public class GameState extends AbstractGameComponent
 	private final Game master;
 	
 	private IInputListener inputLis = null;
-	private IPhysicsSimulator psim = null;
 	
 	private final List<Renderable> renderers = Lists.newArrayList();
 	private final List<IUpdatable> modules = Lists.newArrayList();
@@ -63,7 +61,7 @@ public class GameState extends AbstractGameComponent
 	}
 	
 	@Override
-	public void renderImpl(RenderContext rcon) throws RenderException
+	public void render(RenderContext rcon) throws RenderException
 	{
 		this.renderers.forEach(((r) -> {r.render(rcon);}));
 		
@@ -84,12 +82,6 @@ public class GameState extends AbstractGameComponent
 	}
 	
 	@Override
-	public IPhysicsSimulator getPhysicsSimulator()
-	{
-		return this.psim;
-	}
-	
-	@Override
 	public void initiate() throws Throwable{}
 	
 	@Override
@@ -104,13 +96,6 @@ public class GameState extends AbstractGameComponent
 	public GameState setInputListener(IInputListener lis)
 	{
 		this.inputLis = lis;
-		
-		return this;
-	}
-	
-	public GameState setPhysicsSim(IPhysicsSimulator sim)
-	{
-		this.psim = sim;
 		
 		return this;
 	}

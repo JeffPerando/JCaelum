@@ -130,6 +130,43 @@ public class MeshRenderer extends ProgramRenderable implements QuaternionF.Liste
 	}
 	
 	@Override
+	public void preRenderImpl(RenderContext rcon)
+	{
+		if (!this.mat.isNull())
+		{
+			this.mat.get().preRender(rcon);
+			
+		}
+		
+		if (this.pos.isDirty() || this.rot.isDirty())
+		{
+			if (this.program.bind(rcon))
+			{
+				GL2.glUniformMatrix4("model", new MatrixF().homogenous(this.rot, this.scale, this.pos));
+				
+			}
+			
+			this.program.unbind(rcon);
+			
+			this.pos.setIsDirty(false);
+			this.rot.setIsDirty(false);
+			
+		}
+		
+	}
+	
+	@Override
+	public void postRenderImpl(RenderContext rcon) throws RenderException
+	{
+		if (!this.mat.isNull())
+		{
+			this.mat.get().postRender(rcon);
+			
+		}
+		
+	}
+	
+	@Override
 	protected boolean initiate(RenderContext rcon)
 	{
 		MeshData data = this.mesh.getData();
@@ -194,47 +231,6 @@ public class MeshRenderer extends ProgramRenderable implements QuaternionF.Liste
 		}
 		
 		return true;
-	}
-	
-	@Override
-	public void preRender(RenderContext rcon)
-	{
-		super.preRender(rcon);
-		
-		if (!this.mat.isNull())
-		{
-			this.mat.get().preRender(rcon);
-			
-		}
-		
-		if (this.pos.isDirty() || this.rot.isDirty())
-		{
-			if (this.program.bind(rcon))
-			{
-				GL2.glUniformMatrix4("model", new MatrixF().homogenous(this.rot, this.scale, this.pos));
-				
-			}
-			
-			this.program.unbind(rcon);
-			
-			this.pos.setIsDirty(false);
-			this.rot.setIsDirty(false);
-			
-		}
-		
-	}
-	
-	@Override
-	public void postRender(RenderContext rcon) throws RenderException
-	{
-		super.postRender(rcon);
-		
-		if (!this.mat.isNull())
-		{
-			this.mat.get().postRender(rcon);
-			
-		}
-		
 	}
 	
 	@Override

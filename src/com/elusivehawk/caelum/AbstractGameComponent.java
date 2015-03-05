@@ -2,9 +2,8 @@
 package com.elusivehawk.caelum;
 
 import com.elusivehawk.caelum.input.IInputListener;
-import com.elusivehawk.caelum.physics.IPhysicsSimulator;
 import com.elusivehawk.caelum.prefab.GameState;
-import com.elusivehawk.caelum.render.Renderable;
+import com.elusivehawk.caelum.render.IRenderer;
 import com.elusivehawk.util.IUpdatable;
 
 /**
@@ -18,7 +17,7 @@ import com.elusivehawk.util.IUpdatable;
  * @see GameState
  * @see IUpdatable
  */
-public abstract class AbstractGameComponent extends Renderable implements IInputListener, IUpdatable
+public abstract class AbstractGameComponent implements IInputListener, IUpdatable, IRenderer
 {
 	protected final String name;
 	
@@ -34,14 +33,6 @@ public abstract class AbstractGameComponent extends Renderable implements IInput
 	{
 		return this.name;
 	}
-	
-	/**
-	 * 
-	 * Called during startup.
-	 * 
-	 * @return The physics simulator to use during the game's lifespan.
-	 */
-	public abstract IPhysicsSimulator getPhysicsSimulator();
 	
 	public abstract void initiate() throws Throwable;
 	

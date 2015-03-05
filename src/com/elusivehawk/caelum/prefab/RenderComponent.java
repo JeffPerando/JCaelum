@@ -58,11 +58,11 @@ public class RenderComponent extends Component
 	}
 	
 	@Override
-	public void renderImpl(RenderContext rcon)
+	public void render(RenderContext rcon)
 	{
 		this.renderable.render(rcon);
 		
-		super.renderImpl(rcon);
+		super.render(rcon);
 		
 	}
 	

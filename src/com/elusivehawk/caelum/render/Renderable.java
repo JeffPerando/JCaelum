@@ -7,7 +7,7 @@ package com.elusivehawk.caelum.render;
  * 
  * @author Elusivehawk
  */
-public abstract class Renderable implements IDeletable, IPostRenderer, IPreRenderer
+public abstract class Renderable implements IRenderer
 {
 	private boolean initiated = false, preRendered = false;
 	private int recursiveRenders = 0;
@@ -34,6 +34,8 @@ public abstract class Renderable implements IDeletable, IPostRenderer, IPreRende
 			
 		}
 		
+		this.preRenderImpl(rcon);
+		
 		this.preRendered = true;
 		
 	}
@@ -43,8 +45,11 @@ public abstract class Renderable implements IDeletable, IPostRenderer, IPreRende
 	{
 		this.preRendered = false;
 		
+		this.postRenderImpl(rcon);
+		
 	}
 	
+	@Override
 	public void render(RenderContext rcon) throws RenderException
 	{
 		if (!this.preRendered)
@@ -72,39 +77,17 @@ public abstract class Renderable implements IDeletable, IPostRenderer, IPreRende
 		
 	}
 	
-	public void render(RenderContext rcon, Camera cam) throws RenderException
-	{
-		Camera cam_tmp = rcon.getCamera();
-		
-		rcon.setCamera(cam);
-		
-		try
-		{
-			this.render(rcon);
-			
-		}
-		catch (RenderException e)
-		{
-			throw e;
-		}
-		finally
-		{
-			rcon.setCamera(cam_tmp);
-			
-		}
-		
-	}
-	
 	public boolean isCulled(RenderContext rcon)
 	{
 		return false;
 	}
 	
-	protected boolean initiate(RenderContext rcon)
-	{
-		return true;
-	}
+	protected abstract boolean initiate(RenderContext rcon);
+	
+	protected abstract void preRenderImpl(RenderContext rcon) throws RenderException;
 	
 	protected abstract void renderImpl(RenderContext rcon) throws RenderException;
+	
+	protected abstract void postRenderImpl(RenderContext rcon) throws RenderException;
 	
 }

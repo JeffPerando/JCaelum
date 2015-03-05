@@ -8,7 +8,6 @@ import com.elusivehawk.caelum.input.Input;
 import com.elusivehawk.caelum.input.Key;
 import com.elusivehawk.caelum.input.Keyboard;
 import com.elusivehawk.caelum.input.Mouse;
-import com.elusivehawk.caelum.physics.IPhysicsSimulator;
 import com.elusivehawk.caelum.render.Canvas;
 import com.elusivehawk.caelum.render.Icon;
 import com.elusivehawk.caelum.render.RenderContext;
@@ -19,7 +18,6 @@ import com.elusivehawk.caelum.render.tex.Material;
 import com.elusivehawk.caelum.render.tex.TextureAsset;
 import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.Logger;
-import com.elusivehawk.util.Version;
 
 /**
  * 
@@ -29,7 +27,6 @@ import com.elusivehawk.util.Version;
  */
 public final class ExampleGame extends Game
 {
-	public static final Version VERSION = new Version(1, 0, 0);
 	public static final int RANDOM_MATERIAL_CAP = 4;
 	
 	private Canvas canvas = new Canvas();
@@ -92,16 +89,24 @@ public final class ExampleGame extends Game
 	}
 	
 	@Override
-	public void renderImpl(RenderContext rcon) throws RenderException
+	public void preRender(RenderContext rcon) throws RenderException
+	{
+		this.canvas.preRender(rcon);
+		
+	}
+	
+	@Override
+	public void render(RenderContext rcon) throws RenderException
 	{
 		this.canvas.render(rcon);
 		
 	}
 	
 	@Override
-	public Version getGameVersion()
+	public void postRender(RenderContext rcon) throws RenderException
 	{
-		return VERSION;
+		this.canvas.postRender(rcon);
+		
 	}
 	
 	@Override
@@ -183,29 +188,9 @@ public final class ExampleGame extends Game
 	public void onShutdown(){}
 	
 	@Override
-	public IPhysicsSimulator getPhysicsSimulator()
-	{
-		return null;
-	}
-	
-	@Override
 	public void update(double delta) throws Throwable
 	{
 		//CaelumEngine.log(EnumLogType.INFO, "Test: %s", delta);
-		
-	}
-	
-	@Override
-	public void preRender(RenderContext rcon)
-	{
-		this.canvas.preRender(rcon);
-		
-	}
-	
-	@Override
-	public void postRender(RenderContext rcon)
-	{
-		this.canvas.postRender(rcon);
 		
 	}
 	

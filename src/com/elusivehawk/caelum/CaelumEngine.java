@@ -4,14 +4,13 @@ package com.elusivehawk.caelum;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import com.elusivehawk.caelum.assets.AssetManager;
 import com.elusivehawk.caelum.input.InputManager;
 import com.elusivehawk.caelum.input.Keyboard;
 import com.elusivehawk.caelum.input.Mouse;
 import com.elusivehawk.caelum.lwjgl.LWJGLEnvironment;
-import com.elusivehawk.caelum.render.Renderable;
+import com.elusivehawk.caelum.render.IRenderer;
 import com.elusivehawk.caelum.render.ThreadGameRender;
 import com.elusivehawk.util.CompInfo;
 import com.elusivehawk.util.EnumLogType;
@@ -45,7 +44,7 @@ public final class CaelumEngine
 	private final TaskManager tasks = new TaskManager();
 	private final AssetManager assets = new AssetManager();
 	
-	private File nativeLocation = null;
+	private File natives = null;
 	private IGameEnvironment env = null;
 	
 	private Game game = null;
@@ -76,7 +75,7 @@ public final class CaelumEngine
 	
 	public static File getNativeLocation()
 	{
-		return instance().nativeLocation;
+		return instance().natives;
 	}
 	
 	public static boolean isPaused()
@@ -93,7 +92,7 @@ public final class CaelumEngine
 	
 	//XXX Hooks
 	
-	public static Display createDisplay(String name, DisplaySettings settings, Renderable renderer)
+	public static Display createDisplay(String name, DisplaySettings settings, IRenderer renderer)
 	{
 		return instance().displays.createDisplay(name, settings, renderer);
 	}
@@ -143,11 +142,11 @@ public final class CaelumEngine
 		
 		this.loadNatives();
 		
-		Logger.debug("Test: %s", this.nativeLocation.getAbsolutePath());
+		Logger.debug("Test: %s", this.natives.getAbsolutePath());
 		
 		//XXX Set library paths
 		
-		System.setProperty("org.lwjgl.librarypath", this.nativeLocation.getAbsolutePath());
+		System.setProperty("java.library.path", this.natives.getAbsolutePath());
 		
 		//XXX Load display system
 		
@@ -164,12 +163,6 @@ public final class CaelumEngine
 		g.preInit();
 		
 		Logger.info("Loading %s", g);
-		
-		if (g.getGameVersion() == null)
-		{
-			Logger.warn("The game is missing a Version object!");
-			
-		}
 		
 		//XXX Create display
 		
@@ -309,7 +302,7 @@ public final class CaelumEngine
 	@Internal
 	private void loadNatives()
 	{
-		if (this.nativeLocation != null)
+		if (this.natives != null)
 		{
 			return;
 		}
@@ -321,88 +314,31 @@ public final class CaelumEngine
 			return;
 		}
 		
-		File tmp = FileHelper.createFile(CompInfo.TMP_DIR, String.format(".caelum/%s/natives/%s/%s", VERSION.formatted, this.env.getName(), CompInfo.BUILT ? "" : "dev/"));
+		File tmp = new File(CompInfo.TMP_DIR, String.format("/.caelum/natives/%s/%s", VERSION.formatted, CompInfo.BUILT ? "" : "dev/"));
 		
-		if (!tmp.exists() && !tmp.mkdirs())
+		for (String n : natives)
 		{
-			throw new CaelumException("Could not load natives: Unable to create natives directory");
-		}
-		
-		if (CompInfo.BUILT)
-		{
-			IOHelper.readZip(CompInfo.JAR_DIR, ((zip, entry, name) ->
-			{
-				for (String n : natives)
-				{
-					if (name.endsWith(n))
-					{
-						try
-						{
-							copyNative(zip.getInputStream(entry), new File(tmp, name.contains("/") ? ParseHelper.getSuffix(name, "/") : name));
-							
-						}
-						catch (Exception e)
-						{
-							Logger.err(e);
-							
-						}
-						
-					}
-					
-				}
-				
-			}));
+			Logger.debug("Loading \"%s\"", n);
 			
-		}
-		else
-		{
-			File nLoc = FileHelper.getChild("lib", CompInfo.JAR_DIR.getParentFile());
-			
-			if (nLoc == null)
-			{
-				Logger.wtf("\"Lib\" folder is missing! Expect JNI crashing!");
-				
-				return;
-			}
-			
-			List<File> nativeFiles = FileHelper.getFiles(nLoc, ((file) ->
-			{
-				for (String n : natives)
-				{
-					if (file.getPath().endsWith(n))
-					{
-						return true;
-					}
-					
-				}
-				
-				return false;
-			}));
-			
-			if (nativeFiles.isEmpty())
-			{
-				throw new CaelumException("Could not load natives! THIS IS A BUG! Native directory: %s", nLoc.getAbsolutePath());
-			}
-			
-			for (File n : nativeFiles)
-			{
-				copyNative(FileHelper.createInStream(n), new File(tmp, n.getName()));
-				
-			}
+			copyNative(CaelumEngine.class.getResourceAsStream(n), FileHelper.createFile(tmp, ParseHelper.getSuffix(n, "/")));
 			
 		}
 		
-		this.nativeLocation = tmp;
+		this.natives = tmp;
 		
 	}
 	
 	@Internal
 	private static void copyNative(InputStream is, File dest)
 	{
-		byte[] bytes = IOHelper.readBytes(is, false);
+		Logger.debug("Copying native %s", dest.getAbsolutePath());
+		
+		byte[] bytes = IOHelper.readBytes(is);
 		
 		if (bytes.length == 0)
 		{
+			Logger.debug("Could not read bytes for %s", is);
+			
 			return;
 		}
 		
@@ -430,7 +366,7 @@ public final class CaelumEngine
 		
 		if (hash == null || hash.length == 0)
 		{
-			Logger.log(EnumLogType.ERROR, "Could not generate checksum for \"%s\"; THIS IS A BUG!", name);
+			Logger.err("Could not generate checksum for \"%s\"; THIS IS A BUG!", name);
 			
 			return;
 		}
@@ -463,7 +399,10 @@ public final class CaelumEngine
 		{
 			Logger.warn("Could not copy native: \"%s\"", dest.getName());
 			
+			return;
 		}
+		
+		System.load(dest.getAbsolutePath());
 		
 	}
 	

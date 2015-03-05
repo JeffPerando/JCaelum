@@ -2,7 +2,6 @@
 package com.elusivehawk.caelum;
 
 import com.elusivehawk.util.IPausable;
-import com.elusivehawk.util.Version;
 
 /**
  * 
@@ -38,7 +37,7 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 	@Override
 	public String toString()
 	{
-		return this.getGameVersion() == null ? this.name : String.format("%s %s", this.name, this.getGameVersion());
+		return this.name;
 	}
 	
 	//XXX Optional/technical methods
@@ -56,8 +55,6 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 	}
 	
 	//XXX Abstract methods
-	
-	public abstract Version getGameVersion();
 	
 	public abstract DisplaySettings getDisplaySettings();
 	

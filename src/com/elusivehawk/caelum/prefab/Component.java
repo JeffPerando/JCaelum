@@ -4,9 +4,9 @@ package com.elusivehawk.caelum.prefab;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import com.elusivehawk.caelum.render.IRenderer;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
-import com.elusivehawk.caelum.render.Renderable;
 import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.IUpdatable;
 import com.google.common.collect.Lists;
@@ -18,7 +18,7 @@ import com.google.common.collect.Maps;
  * 
  * @author Elusivehawk
  */
-public abstract class Component extends Renderable implements IUpdatable
+public abstract class Component implements IUpdatable, IRenderer
 {
 	protected final int priority;
 	
@@ -57,16 +57,16 @@ public abstract class Component extends Renderable implements IUpdatable
 	}
 	
 	@Override
-	public void renderImpl(RenderContext rcon) throws RenderException
+	public void preRender(RenderContext rcon)
 	{
-		this.forEveryChild(((child) -> {child.render(rcon);}));
+		this.forEveryChild(((child) -> {child.preRender(rcon);}));
 		
 	}
 	
 	@Override
-	public void preRender(RenderContext rcon)
+	public void render(RenderContext rcon) throws RenderException
 	{
-		this.forEveryChild(((child) -> {child.preRender(rcon);}));
+		this.forEveryChild(((child) -> {child.render(rcon);}));
 		
 	}
 	

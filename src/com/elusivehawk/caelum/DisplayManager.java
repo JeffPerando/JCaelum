@@ -3,7 +3,7 @@ package com.elusivehawk.caelum;
 
 import java.io.Closeable;
 import java.util.List;
-import com.elusivehawk.caelum.render.Renderable;
+import com.elusivehawk.caelum.render.IRenderer;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.ShutdownHelper;
@@ -98,7 +98,7 @@ public final class DisplayManager implements Closeable, IUpdatable
 		
 	}
 	
-	public Display createDisplay(String name, DisplaySettings settings, Renderable renderer)
+	public Display createDisplay(String name, DisplaySettings settings, IRenderer renderer)
 	{
 		if (name == null || name.equalsIgnoreCase(""))
 		{

@@ -4,9 +4,9 @@ package com.elusivehawk.caelum.render.tex;
 import com.elusivehawk.caelum.CaelumException;
 import com.elusivehawk.caelum.assets.Asset;
 import com.elusivehawk.caelum.render.IBindable;
+import com.elusivehawk.caelum.render.IRenderer;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
-import com.elusivehawk.caelum.render.Renderable;
 import com.elusivehawk.caelum.render.gl.GL2;
 import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.math.MathHelper;
@@ -19,7 +19,7 @@ import com.elusivehawk.util.parse.json.JsonObject;
  * 
  * @author Elusivehawk
  */
-public final class Material extends Renderable implements IBindable, IJsonSerializer
+public final class Material implements IRenderer, IBindable, IJsonSerializer
 {
 	private ITexture tex = null, glowTex = null;
 	private RenderableTexture renTex = null;
@@ -218,7 +218,7 @@ public final class Material extends Renderable implements IBindable, IJsonSerial
 	}
 	
 	@Override
-	protected void renderImpl(RenderContext rcon) throws RenderException
+	public void render(RenderContext rcon) throws RenderException
 	{
 		if (this.renTex != null)
 		{
@@ -231,8 +231,6 @@ public final class Material extends Renderable implements IBindable, IJsonSerial
 	@Override
 	public void preRender(RenderContext rcon)
 	{
-		super.preRender(rcon);
-		
 		if (this.tex != null)
 		{
 			this.tex.preRender(rcon);
@@ -256,8 +254,6 @@ public final class Material extends Renderable implements IBindable, IJsonSerial
 	@Override
 	public void postRender(RenderContext rcon)
 	{
-		super.postRender(rcon);
-		
 		if (this.renTex != null)
 		{
 			this.renTex.postRender(rcon);

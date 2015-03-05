@@ -58,23 +58,10 @@ public class SimpleRenderer extends Renderable
 	}
 	
 	@Override
-	public boolean initiate(RenderContext rcon)
-	{
-		this.program = new GLProgram(rcon.getDefaultShaders());
-		
-		this.vtxbuf.init(rcon, this.vertex, GLEnumDataUsage.GL_STATIC_DRAW);
-		this.indbuf.init(rcon, this.indices, GLEnumDataUsage.GL_STATIC_DRAW);
-		
-		this.vtxbuf.addAttrib(0, 3, GLConst.GL_FLOAT, false, 12, 0);
-		
-		this.vao.addVBO(this.vtxbuf);
-		this.vao.addVBO(this.indbuf);
-		
-		return true;
-	}
+	protected void preRenderImpl(RenderContext rcon) throws RenderException{}
 	
 	@Override
-	public void renderImpl(RenderContext rcon) throws RenderException
+	protected void renderImpl(RenderContext rcon) throws RenderException
 	{
 		if (this.program.bind(rcon))
 		{
@@ -95,6 +82,25 @@ public class SimpleRenderer extends Renderable
 		
 		this.program.unbind(rcon);
 		
+	}
+	
+	@Override
+	protected void postRenderImpl(RenderContext rcon) throws RenderException{}
+	
+	@Override
+	public boolean initiate(RenderContext rcon)
+	{
+		this.program = new GLProgram(rcon.getDefaultShaders());
+		
+		this.vtxbuf.init(rcon, this.vertex, GLEnumDataUsage.GL_STATIC_DRAW);
+		this.indbuf.init(rcon, this.indices, GLEnumDataUsage.GL_STATIC_DRAW);
+		
+		this.vtxbuf.addAttrib(0, 3, GLConst.GL_FLOAT, false, 12, 0);
+		
+		this.vao.addVBO(this.vtxbuf);
+		this.vao.addVBO(this.indbuf);
+		
+		return true;
 	}
 	
 }

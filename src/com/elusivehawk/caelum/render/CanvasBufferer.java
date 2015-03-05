@@ -12,7 +12,7 @@ import com.elusivehawk.util.IPopulator;
  * 
  * @author Elusivehawk
  */
-public class CanvasBufferer extends Renderable
+public class CanvasBufferer implements IRenderer
 {
 	private Canvas canvas, bufone, buftwo;
 	private boolean swap = false;
@@ -88,13 +88,7 @@ public class CanvasBufferer extends Renderable
 	}
 	
 	@Override
-	public boolean initiate(RenderContext rcon)
-	{
-		return true;
-	}
-	
-	@Override
-	public void renderImpl(RenderContext rcon) throws RenderException
+	public void render(RenderContext rcon) throws RenderException
 	{
 		this.canvas.render(rcon);
 		
@@ -103,8 +97,6 @@ public class CanvasBufferer extends Renderable
 	@Override
 	public void preRender(RenderContext rcon)
 	{
-		super.preRender(rcon);
-		
 		if (this.swap)
 		{
 			Canvas cvs = this.canvas;
@@ -127,8 +119,6 @@ public class CanvasBufferer extends Renderable
 	@Override
 	public void postRender(RenderContext rcon)
 	{
-		super.postRender(rcon);
-		
 		this.canvas.postRender(rcon);
 		
 	}
