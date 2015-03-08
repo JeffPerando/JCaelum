@@ -45,35 +45,35 @@ public abstract class Component implements IUpdatable, IRenderer
 	@Override
 	public void update(double delta)
 	{
-		this.forEveryChild(((child) -> {child.update(delta);}));
+		this.forEachChild(((child) -> {child.update(delta);}));
 		
 	}
 	
 	@Override
 	public void delete(RenderContext rcon)
 	{
-		this.forEveryChild(false, ((child) -> {child.delete(rcon);}));
+		this.forEachChild(false, ((child) -> {child.delete(rcon);}));
 		
 	}
 	
 	@Override
 	public void preRender(RenderContext rcon)
 	{
-		this.forEveryChild(((child) -> {child.preRender(rcon);}));
+		this.forEachChild(((child) -> {child.preRender(rcon);}));
 		
 	}
 	
 	@Override
 	public void render(RenderContext rcon) throws RenderException
 	{
-		this.forEveryChild(((child) -> {child.render(rcon);}));
+		this.forEachChild(((child) -> {child.render(rcon);}));
 		
 	}
 	
 	@Override
 	public void postRender(RenderContext rcon)
 	{
-		this.forEveryChild(((child) -> {child.postRender(rcon);}));
+		this.forEachChild(((child) -> {child.postRender(rcon);}));
 		
 	}
 	
@@ -165,20 +165,21 @@ public abstract class Component implements IUpdatable, IRenderer
 	
 	public boolean hasChild(Component comp)
 	{
-		if (this.childList != null)
+		if (this.childList == null)
 		{
-			for (Component child : this.childList)
+			return false;
+		}
+		
+		for (Component child : this.childList)
+		{
+			if (child == comp)
 			{
-				if (child == comp)
-				{
-					return true;
-				}
-				
-				if (child.hasChild(comp))
-				{
-					return true;
-				}
-				
+				return true;
+			}
+			
+			if (child.hasChild(comp))
+			{
+				return true;
 			}
 			
 		}
@@ -186,13 +187,51 @@ public abstract class Component implements IUpdatable, IRenderer
 		return false;
 	}
 	
-	public void forEveryChild(Consumer<Component> consumer)
+	@SuppressWarnings("unchecked")
+	public <T extends Component> T getChild(Class<T> clazz)
 	{
-		this.forEveryChild(true, consumer);
+		if (this.childList == null)
+		{
+			return null;
+		}
+		
+		for (Component comp : this.childList)
+		{
+			if (clazz.isInstance(comp))
+			{
+				return (T)comp;
+			}
+			
+		}
+		
+		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T extends Component> List<T> getChildren(Class<T> clazz)
+	{
+		List<T> ret = Lists.newArrayList();
+		
+		this.forEachChild(false, ((comp) ->
+		{
+			if (clazz.isInstance(comp))
+			{
+				ret.add((T)comp);
+				
+			}
+			
+		}));
+		
+		return ret;
+	}
+	
+	public void forEachChild(Consumer<Component> consumer)
+	{
+		this.forEachChild(true, consumer);
 		
 	}
 	
-	public void forEveryChild(boolean usePriority, Consumer<Component> consumer)
+	public void forEachChild(boolean usePriority, Consumer<Component> consumer)
 	{
 		if (this.childList != null)
 		{
