@@ -94,7 +94,7 @@ public class CanvasLayer extends Renderable
 			
 		}
 		
-		GL1.glDrawArrays(GLEnumDrawType.GL_TRIANGLES, 0, this.images * 6);
+		GL1.glDrawArrays(GLEnumDrawType.GL_TRIANGLES, 0, Canvas.INDICES_PER_IMG * this.images);
 		
 		if (!this.mat.isNull())
 		{
