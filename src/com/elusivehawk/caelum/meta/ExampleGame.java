@@ -45,7 +45,7 @@ public final class ExampleGame extends Game
 	
 	public static void main(String... args)
 	{
-		CaelumEngine.instance().start(new ExampleGame(), args);
+		CaelumEngine.start(new ExampleGame(), args);
 		
 	}
 	
@@ -82,9 +82,9 @@ public final class ExampleGame extends Game
 	}
 	
 	@Override
-	public void delete(RenderContext rcon)
+	public void dispose(Object... args)
 	{
-		this.canvas.delete(rcon);
+		this.canvas.dispose(args);
 		
 	}
 	

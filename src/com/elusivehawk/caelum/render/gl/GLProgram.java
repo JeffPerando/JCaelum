@@ -1,8 +1,6 @@
 
 package com.elusivehawk.caelum.render.gl;
 
-import com.elusivehawk.caelum.render.IBindable;
-import com.elusivehawk.caelum.render.IDeletable;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.glsl.GLSLEnumShaderType;
 import com.elusivehawk.caelum.render.glsl.IShader;
@@ -17,12 +15,12 @@ import com.elusivehawk.util.Logger;
  * 
  * @author Elusivehawk
  */
-public final class GLProgram implements IBindable, IDeletable, IDirty
+public final class GLProgram extends GLObject implements IDirty
 {
 	private final Shaders shaders;
 	
 	private int id = 0;
-	private boolean relink = true, deleted = false;
+	private boolean relink = true;
 	
 	public GLProgram()
 	{
@@ -48,6 +46,19 @@ public final class GLProgram implements IBindable, IDeletable, IDirty
 	}
 	
 	@Override
+	public void unbind(RenderContext rcon)
+	{
+		GL2.glUseProgram(0);
+		
+	}
+	
+	@Override
+	public boolean isBound(RenderContext rcon)
+	{
+		return this.id != 0 && GL1.glGetInteger(GLConst.GL_CURRENT_PROGRAM) == this.id;
+	}
+	
+	@Override
 	public boolean isDirty()
 	{
 		return this.shaders.isDirty();
@@ -61,41 +72,8 @@ public final class GLProgram implements IBindable, IDeletable, IDirty
 	}
 	
 	@Override
-	public void delete(RenderContext rcon)
+	public boolean bindImpl(RenderContext rcon)
 	{
-		if (this.deleted)
-		{
-			return;
-		}
-		
-		if (this.isBound(rcon))
-		{
-			this.unbind(rcon);
-			
-		}
-		
-		GL2.glDeleteProgram(this);
-		
-		this.id = 0;
-		this.deleted = true;
-		
-	}
-	
-	@Override
-	public boolean bind(RenderContext rcon)
-	{
-		if (this.deleted)
-		{
-			return false;
-		}
-		
-		if (this.id == 0)
-		{
-			this.id = GL2.glCreateProgram();
-			rcon.registerDeletable(this);
-			
-		}
-		
 		int bp = GL1.glGetInteger(GLConst.GL_CURRENT_PROGRAM);
 		
 		if (bp != 0 && bp != this.id)
@@ -118,16 +96,17 @@ public final class GLProgram implements IBindable, IDeletable, IDirty
 	}
 	
 	@Override
-	public void unbind(RenderContext rcon)
+	protected void initiate(RenderContext rcon)
 	{
-		GL2.glUseProgram(0);
+		this.id = GL2.glCreateProgram();
 		
 	}
 	
 	@Override
-	public boolean isBound(RenderContext rcon)
+	protected void deleteImpl(RenderContext rcon)
 	{
-		return this.id != 0 && GL1.glGetInteger(GLConst.GL_CURRENT_PROGRAM) == this.id;
+		GL2.glDeleteProgram(this);
+		
 	}
 	
 	@Override
@@ -154,7 +133,7 @@ public final class GLProgram implements IBindable, IDeletable, IDirty
 	
 	public boolean attachShader(IShader sh)
 	{
-		if (this.deleted)
+		if (this.isDeleted())
 		{
 			return false;
 		}
@@ -170,7 +149,7 @@ public final class GLProgram implements IBindable, IDeletable, IDirty
 	
 	public int attachShaders(Shaders shs)
 	{
-		if (this.deleted)
+		if (this.isDeleted())
 		{
 			return 0;
 		}

@@ -51,6 +51,8 @@ public class LogicComponent extends Component
 	@Override
 	public void update(double delta)
 	{
+		super.update(delta);
+		
 		try
 		{
 			this.logic.update(delta);
@@ -61,8 +63,6 @@ public class LogicComponent extends Component
 			Logger.err(e);
 			
 		}
-		
-		super.update(delta);
 		
 	}
 	

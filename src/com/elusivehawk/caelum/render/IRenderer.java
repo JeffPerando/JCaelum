@@ -7,7 +7,7 @@ package com.elusivehawk.caelum.render;
  * 
  * @author Elusivehawk
  */
-public interface IRenderer extends IDeletable, IPostRenderer, IPreRenderer
+public interface IRenderer extends IPostRenderer, IPreRenderer
 {
 	void render(RenderContext rcon) throws RenderException;
 	

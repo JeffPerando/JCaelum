@@ -4,6 +4,8 @@ package com.elusivehawk.caelum.prefab;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import com.elusivehawk.caelum.CaelumException;
+import com.elusivehawk.caelum.IDisposable;
 import com.elusivehawk.caelum.render.IRenderer;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
@@ -18,14 +20,14 @@ import com.google.common.collect.Maps;
  * 
  * @author Elusivehawk
  */
-public abstract class Component implements IUpdatable, IRenderer
+public abstract class Component implements IRenderer, IDisposable, IUpdatable
 {
 	protected final int priority;
 	
 	protected Map<Integer, List<Component>> childMap = null;
 	protected List<Component> childList = null;
 	protected int maxPriority = Integer.MIN_VALUE, minPriority = Integer.MAX_VALUE;
-	protected boolean locked = false;
+	protected boolean locked = false, disposed = false;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public Component(int p)
@@ -50,9 +52,16 @@ public abstract class Component implements IUpdatable, IRenderer
 	}
 	
 	@Override
-	public void delete(RenderContext rcon)
+	public void dispose(Object... args)
 	{
-		this.forEachChild(false, ((child) -> {child.delete(rcon);}));
+		if (this.disposed)
+		{
+			throw new CaelumException("One does not simply dispose of a disposed Component.");
+		}
+		
+		this.forEachChild(false, ((child) -> {child.dispose(args);}));
+		
+		this.disposed = true;
 		
 	}
 	

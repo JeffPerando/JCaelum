@@ -18,6 +18,7 @@ public class ShaderSrc implements IShader
 	private final String src;
 	
 	private int id = 0;
+	private RenderContext boundRcon = null;
 	private boolean compiled = false;
 	
 	public ShaderSrc(GLSLEnumShaderType stype, ShaderBuilder builder)
@@ -35,20 +36,39 @@ public class ShaderSrc implements IShader
 		src = source;
 		
 	}
-	
+
 	@Override
 	public void delete(RenderContext rcon)
 	{
 		GL2.glDeleteShader(this.id);
 		
 	}
-	
+
+	@Override
+	public void dispose(Object... args)
+	{
+		if (!this.compiled)
+		{
+			return;
+		}
+		
+		this.boundRcon.scheduleDeletion(this);
+		
+	}
+
 	@Override
 	public void compile(RenderContext rcon) throws RenderException
 	{
+		if (this.compiled)
+		{
+			throw new RenderException("Already compiled!");
+		}
+		
 		int glid = RenderHelper.compileShader(this);
 		
 		rcon.registerDeletable(this);
+		
+		this.boundRcon = rcon;
 		
 		synchronized (this)
 		{
@@ -64,19 +84,19 @@ public class ShaderSrc implements IShader
 	{
 		return this.compiled;
 	}
-	
+
 	@Override
 	public String getSource()
 	{
 		return this.src;
 	}
-	
+
 	@Override
 	public int getShaderId()
 	{
 		return this.id;
 	}
-	
+
 	@Override
 	public GLSLEnumShaderType getType()
 	{

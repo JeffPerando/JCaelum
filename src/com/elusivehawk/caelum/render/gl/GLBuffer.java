@@ -7,8 +7,6 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.List;
-import com.elusivehawk.caelum.render.IBindable;
-import com.elusivehawk.caelum.render.IDeletable;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.storage.SyncList;
@@ -19,14 +17,13 @@ import com.elusivehawk.util.storage.SyncList;
  * 
  * @author Elusivehawk
  */
-public class GLBuffer implements IBindable, IDeletable
+public class GLBuffer extends GLObject
 {
 	private final GLEnumBufferTarget t;
 	
 	private final List<VertexAttrib> attribs = SyncList.newList();
 	
 	private int id = 0;
-	private boolean initiated = false, deleted = false;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public GLBuffer(GLEnumBufferTarget target)
@@ -126,37 +123,21 @@ public class GLBuffer implements IBindable, IDeletable
 	}
 	
 	@Override
-	public void delete(RenderContext rcon)
+	public void unbind(RenderContext rcon)
 	{
-		if (this.initiated && !this.deleted)
-		{
-			GL1.glDeleteBuffers(this);
-			
-			this.id = 0;
-			this.deleted = true;
-			
-		}
+		GL1.glBindBuffer(this.t, 0);
 		
 	}
 	
 	@Override
-	public boolean bind(RenderContext rcon)
+	public boolean isBound(RenderContext rcon)
 	{
-		if (this.deleted)
-		{
-			return false;
-		}
-		
-		if (!this.initiated)
-		{
-			this.id = GL1.glGenBuffer();
-			
-			rcon.registerDeletable(this);
-			
-			this.initiated = true;
-			
-		}
-		
+		return GL1.glGetInteger(this.t.bind) == this.id;
+	}
+	
+	@Override
+	public boolean bindImpl(RenderContext rcon)
+	{
 		if (this.isBound(rcon))
 		{
 			return true;
@@ -168,16 +149,23 @@ public class GLBuffer implements IBindable, IDeletable
 	}
 	
 	@Override
-	public void unbind(RenderContext rcon)
+	protected void initiate(RenderContext rcon)
 	{
-		GL1.glBindBuffer(this.t, 0);
+		this.id = GL1.glGenBuffer();
 		
 	}
 	
 	@Override
-	public boolean isBound(RenderContext rcon)
+	protected void deleteImpl(RenderContext rcon)
 	{
-		return GL1.glGetInteger(this.t.bind) == this.id;
+		if (this.isBound(rcon))
+		{
+			this.unbind(rcon);
+			
+		}
+		
+		GL1.glDeleteBuffers(this);
+		
 	}
 	
 	public GLEnumBufferTarget getTarget()

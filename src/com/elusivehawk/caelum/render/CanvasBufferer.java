@@ -1,6 +1,7 @@
 
 package com.elusivehawk.caelum.render;
 
+import com.elusivehawk.caelum.IDisposable;
 import com.elusivehawk.caelum.render.gl.GLProgram;
 import com.elusivehawk.caelum.render.glsl.Shaders;
 import com.elusivehawk.caelum.render.tex.Material;
@@ -12,7 +13,7 @@ import com.elusivehawk.util.IPopulator;
  * 
  * @author Elusivehawk
  */
-public class CanvasBufferer implements IRenderer
+public class CanvasBufferer implements IRenderer, IDisposable
 {
 	private Canvas canvas, bufone, buftwo;
 	private boolean swap = false;
@@ -79,11 +80,11 @@ public class CanvasBufferer implements IRenderer
 	}
 	
 	@Override
-	public void delete(RenderContext rcon)
+	public void dispose(Object... args)
 	{
-		this.canvas.delete(rcon);
-		this.bufone.delete(rcon);
-		this.buftwo.delete(rcon);
+		this.canvas.dispose(args);
+		this.bufone.dispose(args);
+		this.buftwo.dispose(args);
 		
 	}
 	

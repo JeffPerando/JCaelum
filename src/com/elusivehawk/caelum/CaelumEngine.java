@@ -9,7 +9,6 @@ import com.elusivehawk.caelum.assets.AssetManager;
 import com.elusivehawk.caelum.input.InputManager;
 import com.elusivehawk.caelum.input.Keyboard;
 import com.elusivehawk.caelum.input.Mouse;
-import com.elusivehawk.caelum.lwjgl.LWJGLEnvironment;
 import com.elusivehawk.caelum.render.IRenderer;
 import com.elusivehawk.caelum.render.ThreadGameRender;
 import com.elusivehawk.util.CompInfo;
@@ -45,7 +44,6 @@ public final class CaelumEngine
 	private final AssetManager assets = new AssetManager();
 	
 	private File natives = null;
-	private IGameEnvironment env = null;
 	
 	private Game game = null;
 	private Display display = null;
@@ -109,8 +107,14 @@ public final class CaelumEngine
 	
 	//End hooks
 	
+	public static void start(Game g, String... args)
+	{
+		instance().start0(g, args);
+		
+	}
+	
 	@Internal
-	public void start(Game g, String... args)
+	private void start0(Game g, String... args)
 	{
 		if (g == null)
 		{
@@ -136,8 +140,6 @@ public final class CaelumEngine
 		
 		//XXX Load game environment
 		
-		this.env = new LWJGLEnvironment();//TODO Remove; We don't need an environment system.
-		
 		//XXX Load natives
 		
 		this.loadNatives();
@@ -150,7 +152,7 @@ public final class CaelumEngine
 		
 		//XXX Load display system
 		
-		this.displays = new DisplayManager(this.env);
+		this.displays = new DisplayManager();
 		
 		//XXX Start tasks
 		
@@ -242,8 +244,14 @@ public final class CaelumEngine
 		
 	}
 	
+	public static void kill()
+	{
+		instance().kill0();
+		
+	}
+	
 	@Internal
-	public void kill()
+	private void kill0()
 	{
 		if (this.threads.isEmpty())
 		{
@@ -272,7 +280,6 @@ public final class CaelumEngine
 		this.tasks.stop();
 		this.threads.clear();
 		
-		this.env = null;
 		this.displays = null;
 		
 	}
@@ -307,7 +314,7 @@ public final class CaelumEngine
 			return;
 		}
 		
-		ImmutableList<String> natives = this.env.getNatives();
+		ImmutableList<String> natives = Natives.getNatives();
 		
 		if (natives == null || natives.isEmpty())
 		{

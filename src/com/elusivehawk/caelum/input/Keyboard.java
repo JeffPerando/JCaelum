@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 import com.elusivehawk.caelum.Display;
+import com.elusivehawk.caelum.lwjgl.LWJGLKeyboardImpl;
 import com.elusivehawk.util.storage.DirtableStorage;
 import com.elusivehawk.util.storage.SyncList;
 import com.elusivehawk.util.storage.Tuple;
@@ -29,7 +30,7 @@ public class Keyboard extends DelayedInput
 	
 	public Keyboard(Display screen)
 	{
-		super(screen);
+		super(screen, new LWJGLKeyboardImpl());
 		
 	}
 	

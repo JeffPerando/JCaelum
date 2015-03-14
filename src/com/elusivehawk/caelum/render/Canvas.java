@@ -173,11 +173,11 @@ public class Canvas extends ProgramRenderable
 	}
 	
 	@Override
-	public void delete(RenderContext rcon)
+	public void dispose(Object... args)
 	{
 		this.layers.forEach(((layer) ->
 		{
-			layer.delete(rcon);
+			layer.dispose(args);
 			
 		}));
 		

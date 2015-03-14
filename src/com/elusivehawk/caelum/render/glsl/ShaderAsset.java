@@ -4,7 +4,6 @@ package com.elusivehawk.caelum.render.glsl;
 import java.io.DataInputStream;
 import com.elusivehawk.caelum.assets.Asset;
 import com.elusivehawk.caelum.assets.EnumAssetType;
-import com.elusivehawk.caelum.render.GraphicAsset;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
 import com.elusivehawk.caelum.render.RenderHelper;
@@ -19,9 +18,12 @@ import com.elusivehawk.util.io.IOHelper;
  * 
  * @author Elusivehawk
  */
-public class ShaderAsset extends GraphicAsset implements IShader
+public class ShaderAsset extends Asset implements IShader
 {
 	private final GLSLEnumShaderType gltype;
+	
+	private RenderContext boundRcon = null;
+	private boolean initiated = false;
 	
 	private String source;
 	private int id;
@@ -38,19 +40,6 @@ public class ShaderAsset extends GraphicAsset implements IShader
 		super(filepath, EnumAssetType.SHADER, readNow);
 		
 		gltype = type;
-		
-	}
-	
-	@Override
-	public void delete(RenderContext rcon)
-	{
-		if (this.id != 0)
-		{
-			GL2.glDeleteShader(this);
-			
-			this.id = 0;
-			
-		}
 		
 	}
 	
@@ -79,12 +68,14 @@ public class ShaderAsset extends GraphicAsset implements IShader
 		
 		if (glid != 0)
 		{
+			this.id = glid;
+			
 			rcon.registerDeletable(this);
+			this.boundRcon = rcon;
 			
 			synchronized (this)
 			{
-				this.id = glid;
-				this.loaded = true;
+				this.initiated = true;
 				
 			}
 			
@@ -95,7 +86,7 @@ public class ShaderAsset extends GraphicAsset implements IShader
 	@Override
 	public boolean isCompiled()
 	{
-		return this.isLoaded();
+		return this.initiated;
 	}
 	
 	@Override
@@ -114,6 +105,20 @@ public class ShaderAsset extends GraphicAsset implements IShader
 	public GLSLEnumShaderType getType()
 	{
 		return this.gltype;
+	}
+	
+	@Override
+	public void delete(RenderContext rcon)
+	{
+		if (!this.initiated)
+		{
+			return;
+		}
+		
+		assert rcon == this.boundRcon;
+		
+		GL2.glDeleteShader(this);
+		
 	}
 	
 	@Override
@@ -143,6 +148,19 @@ public class ShaderAsset extends GraphicAsset implements IShader
 	}
 	
 	@Override
+	protected boolean disposeImpl(Object... args)
+	{
+		if (!this.initiated)
+		{
+			return false;
+		}
+		
+		this.boundRcon.scheduleDeletion(this);
+		
+		return true;
+	}
+	
+	@Override
 	public void onExistingAssetFound(Asset a)
 	{
 		super.onExistingAssetFound(a);
@@ -151,8 +169,12 @@ public class ShaderAsset extends GraphicAsset implements IShader
 		{
 			ShaderAsset s = (ShaderAsset)a;
 			
+			assert this.gltype == s.gltype;
+			
 			synchronized (this)
 			{
+				this.initiated = s.initiated;
+				this.boundRcon = s.boundRcon;
 				this.source = s.source;
 				this.id = s.id;
 				

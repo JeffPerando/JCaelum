@@ -2,6 +2,7 @@
 package com.elusivehawk.caelum.render.tex;
 
 import com.elusivehawk.caelum.CaelumException;
+import com.elusivehawk.caelum.IDisposable;
 import com.elusivehawk.caelum.assets.Asset;
 import com.elusivehawk.caelum.render.IBindable;
 import com.elusivehawk.caelum.render.IRenderer;
@@ -19,7 +20,7 @@ import com.elusivehawk.util.parse.json.JsonObject;
  * 
  * @author Elusivehawk
  */
-public final class Material implements IRenderer, IBindable, IJsonSerializer
+public final class Material implements IDisposable, IRenderer, IBindable, IJsonSerializer
 {
 	private ITexture tex = null, glowTex = null;
 	private RenderableTexture renTex = null;
@@ -105,23 +106,23 @@ public final class Material implements IRenderer, IBindable, IJsonSerializer
 	}
 	
 	@Override
-	public void delete(RenderContext rcon)
+	public void dispose(Object... args)
 	{
 		if (this.tex != null && !(this.tex instanceof Asset))
 		{
-			this.tex.delete(rcon);
+			this.tex.dispose(args);
 			
 		}
 		
 		if (this.renTex != null)
 		{
-			this.renTex.delete(rcon);
+			this.renTex.dispose(args);
 			
 		}
 		
 		if (this.glowTex != null && !(this.glowTex instanceof Asset))
 		{
-			this.glowTex.delete(rcon);
+			this.glowTex.dispose(args);
 			
 		}
 		

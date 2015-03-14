@@ -3,6 +3,7 @@ package com.elusivehawk.caelum.assets;
 
 import java.io.DataInputStream;
 import com.elusivehawk.caelum.CaelumEngine;
+import com.elusivehawk.caelum.IDisposable;
 import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.parse.ParseHelper;
@@ -14,12 +15,12 @@ import com.elusivehawk.util.parse.json.IJsonSerializer;
  * 
  * @author Elusivehawk
  */
-public abstract class Asset implements IJsonSerializer
+public abstract class Asset implements IJsonSerializer, IDisposable
 {
 	public final String filepath, ext;
 	public final EnumAssetType type;
 	
-	private boolean read = false;
+	private boolean read = false, disposed = false;
 	
 	protected Asset(String path)
 	{
@@ -66,6 +67,23 @@ public abstract class Asset implements IJsonSerializer
 	}
 	
 	@Override
+	public void dispose(Object... args)
+	{
+		if (this.disposed)
+		{
+			return;
+		}
+		
+		if (!this.isRead())
+		{
+			return;
+		}
+		
+		this.disposed = this.disposeImpl(args);
+		
+	}
+	
+	@Override
 	public String toJson(int tabs)
 	{
 		return this.toString();
@@ -96,5 +114,7 @@ public abstract class Asset implements IJsonSerializer
 	}
 	
 	protected abstract boolean readAsset(DataInputStream in) throws Throwable;
+	
+	protected abstract boolean disposeImpl(Object... args);
 	
 }

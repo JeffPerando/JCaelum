@@ -54,9 +54,9 @@ public class GameState extends AbstractGameComponent
 	}
 	
 	@Override
-	public void delete(RenderContext rcon)
+	public void dispose(Object... args)
 	{
-		this.renderers.forEach(((r) -> {r.delete(rcon);}));
+		this.renderers.forEach(((r) -> {r.dispose(args);}));
 		
 	}
 	

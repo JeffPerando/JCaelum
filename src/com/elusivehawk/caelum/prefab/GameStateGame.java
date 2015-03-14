@@ -66,11 +66,11 @@ public abstract class GameStateGame extends Game
 	}
 	
 	@Override
-	public void delete(RenderContext rcon)
+	public void dispose(Object... args)
 	{
 		if (this.state != null)
 		{
-			this.state.delete(rcon);
+			this.state.dispose(args);
 			
 		}
 		

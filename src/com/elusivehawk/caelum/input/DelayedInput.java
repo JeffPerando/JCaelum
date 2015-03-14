@@ -20,10 +20,22 @@ public abstract class DelayedInput extends Input
 		
 	}
 	
-	@SuppressWarnings("unqualified-field-access")
+	public DelayedInput(Display screen, IInputImpl implementation)
+	{
+		this(0.1, screen, implementation);
+		
+	}
+	
 	public DelayedInput(double delay, Display screen)
 	{
-		super(screen);
+		this(delay, screen, null);
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public DelayedInput(double delay, Display screen, IInputImpl implementation)
+	{
+		super(screen, implementation);
 		
 		updater = new DelayedUpdater(delay, this::updateInput);
 		

@@ -3,6 +3,7 @@ package com.elusivehawk.caelum;
 
 import java.io.Closeable;
 import com.elusivehawk.caelum.input.InputManager;
+import com.elusivehawk.caelum.lwjgl.LWJGLDisplayImpl;
 import com.elusivehawk.caelum.render.IRenderer;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.gl.GL1;
@@ -116,18 +117,11 @@ public class Display implements Closeable, IUpdatable
 		
 	}
 	
-	public void initDisplay(IGameEnvironment ge) throws Throwable
+	public void initDisplay() throws Throwable
 	{
-		IDisplayImpl imp = ge.createDisplay();
+		this.impl = new LWJGLDisplayImpl();
 		
-		if (imp == null)
-		{
-			return;
-		}
-		
-		imp.createDisplay(this.settings);
-		
-		this.impl = imp;
+		this.impl.createDisplay(this.settings);
 		
 		synchronized (this)
 		{
@@ -138,14 +132,12 @@ public class Display implements Closeable, IUpdatable
 			
 		}
 		
-		this.input.initiateInput(ge);
-		
 		if (!this.rcon.initContext())
 		{
 			return;
 		}
 		
-		imp.postInit();
+		this.impl.postInit();
 		
 	}
 	

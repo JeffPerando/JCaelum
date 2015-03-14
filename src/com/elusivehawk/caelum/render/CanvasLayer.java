@@ -49,14 +49,14 @@ public class CanvasLayer extends Renderable
 	}
 	
 	@Override
-	public void delete(RenderContext rcon)
+	public void dispose(Object... args)
 	{
-		this.vertex.delete(rcon);
-		this.vao.delete(rcon);
+		this.vertex.dispose(args);
+		this.vao.dispose(args);
 		
 		if (!this.mat.isNull())
 		{
-			this.mat.get().delete(rcon);
+			this.mat.get().dispose(args);
 			
 		}
 		

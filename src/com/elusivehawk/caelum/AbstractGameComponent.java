@@ -17,7 +17,7 @@ import com.elusivehawk.util.IUpdatable;
  * @see GameState
  * @see IUpdatable
  */
-public abstract class AbstractGameComponent implements IInputListener, IUpdatable, IRenderer
+public abstract class AbstractGameComponent implements IDisposable, IInputListener, IRenderer, IUpdatable
 {
 	protected final String name;
 	

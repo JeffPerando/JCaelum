@@ -5,7 +5,6 @@ import java.io.Closeable;
 import java.util.List;
 import com.elusivehawk.caelum.CaelumException;
 import com.elusivehawk.caelum.Display;
-import com.elusivehawk.caelum.IGameEnvironment;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.Logger;
 import com.google.common.collect.Lists;
@@ -96,28 +95,6 @@ public final class InputManager implements IUpdatable, Closeable
 			}
 			
 		}));
-		
-	}
-	
-	public void initiateInput(IGameEnvironment ge)
-	{
-		if (this.initiated)
-		{
-			return;
-		}
-		
-		if (this.input.isEmpty())
-		{
-			return;
-		}
-		
-		for (Input in : this.input)
-		{
-			in.initiate(ge);
-			
-		}
-		
-		this.initiated = true;
 		
 	}
 	

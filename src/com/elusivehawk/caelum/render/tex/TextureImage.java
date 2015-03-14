@@ -18,7 +18,8 @@ public class TextureImage implements ITexture
 	private final GLEnumTexture type;
 	private final ILegibleImage image;
 	private int tex = 0;
-	private boolean deleted = false;
+	private RenderContext boundRcon = null;
+	private boolean initiated = false, deleted = false;
 	
 	public TextureImage(ILegibleImage img)
 	{
@@ -36,19 +37,24 @@ public class TextureImage implements ITexture
 		
 	}
 	
+	
 	@Override
-	public void preRender(RenderContext rcon)
+	public void preRender(RenderContext rcon) throws RenderException
 	{
 		if (this.deleted)
 		{
-			throw new RenderException("Cannot pre-render a deleted texture image");
+			throw new RenderException("Cannot pre-render a deleted texture");
 		}
 		
-		if (this.tex == 0)
+		if (!this.initiated)
 		{
 			this.tex = RenderHelper.genTexture(this.type, this.image);
 			
 			rcon.registerDeletable(this);
+			
+			this.boundRcon = rcon;
+			
+			this.initiated = true;
 			
 		}
 		
@@ -57,13 +63,24 @@ public class TextureImage implements ITexture
 	@Override
 	public void delete(RenderContext rcon)
 	{
-		if (this.tex != 0)
+		GL1.glDeleteTextures(this.tex);
+		
+	}
+	
+	@Override
+	public void dispose(Object... args)
+	{
+		if (!this.initiated)
 		{
-			GL1.glDeleteTextures(this.tex);
-			
-			this.deleted = true;
-			
+			return;
 		}
+		
+		if (this.deleted)
+		{
+			return;
+		}
+		
+		this.boundRcon.scheduleDeletion(this);
 		
 	}
 	

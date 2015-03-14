@@ -21,7 +21,7 @@ public class MeshAsset extends Asset implements IMesh
 		super(filepath, EnumAssetType.MESH);
 		
 	}
-	
+
 	@Override
 	public MeshData getData()
 	{
@@ -40,6 +40,12 @@ public class MeshAsset extends Asset implements IMesh
 		
 		this.data = (MeshData)md;
 		
+		return true;
+	}
+	
+	@Override
+	protected boolean disposeImpl(Object... args)
+	{
 		return true;
 	}
 	

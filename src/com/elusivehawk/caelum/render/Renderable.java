@@ -1,13 +1,15 @@
 
 package com.elusivehawk.caelum.render;
 
+import com.elusivehawk.caelum.IDisposable;
+
 /**
  * 
  * 
  * 
  * @author Elusivehawk
  */
-public abstract class Renderable implements IRenderer
+public abstract class Renderable implements IDisposable, IRenderer
 {
 	private boolean initiated = false, preRendered = false;
 	private int recursiveRenders = 0;

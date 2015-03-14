@@ -51,36 +51,36 @@ public class RenderComponent extends Component
 	@Override
 	public void preRender(RenderContext rcon)
 	{
-		this.renderable.preRender(rcon);
-		
 		super.preRender(rcon);
+		
+		this.renderable.preRender(rcon);
 		
 	}
 	
 	@Override
 	public void render(RenderContext rcon)
 	{
-		this.renderable.render(rcon);
-		
 		super.render(rcon);
+		
+		this.renderable.render(rcon);
 		
 	}
 	
 	@Override
 	public void postRender(RenderContext rcon)
 	{
-		this.renderable.postRender(rcon);
-		
 		super.postRender(rcon);
+		
+		this.renderable.postRender(rcon);
 		
 	}
 	
 	@Override
-	public void delete(RenderContext rcon)
+	public void dispose(Object... args)
 	{
-		this.renderable.delete(rcon);
+		super.dispose(args);
 		
-		super.delete(rcon);
+		this.renderable.dispose(args);
 		
 	}
 	

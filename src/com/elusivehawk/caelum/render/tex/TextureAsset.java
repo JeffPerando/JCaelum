@@ -8,7 +8,6 @@ import com.elusivehawk.caelum.CaelumException;
 import com.elusivehawk.caelum.assets.Asset;
 import com.elusivehawk.caelum.assets.AssetManager;
 import com.elusivehawk.caelum.assets.EnumAssetType;
-import com.elusivehawk.caelum.render.GraphicAsset;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderHelper;
 import com.elusivehawk.caelum.render.gl.GL1;
@@ -21,7 +20,7 @@ import com.google.common.collect.Lists;
  * 
  * @author Elusivehawk
  */
-public class TextureAsset extends GraphicAsset implements ITexture
+public class TextureAsset extends Asset implements ITexture
 {
 	private ILegibleImage[] sources;
 	private int[] frames;
@@ -86,14 +85,16 @@ public class TextureAsset extends GraphicAsset implements ITexture
 	}
 	
 	@Override
-	public void delete(RenderContext rcon)
+	public boolean disposeImpl(Object... args)
 	{
-		if (this.frames != null)
+		if (this.frames == null)
 		{
-			GL1.glDeleteTextures(this.frames);
-			
+			return false;
 		}
 		
+		GL1.glDeleteTextures(this.frames);
+		
+		return true;
 	}
 	
 	@Override
@@ -146,6 +147,13 @@ public class TextureAsset extends GraphicAsset implements ITexture
 		}
 		
 		return true;
+	}
+	
+	@Override
+	public void delete(RenderContext rcon)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 	
 	@Override

@@ -68,7 +68,6 @@ public final class RenderContext implements Closeable, IUpdatable
 		
 		preRenderers.add(r);
 		postRenderers.add(r);
-		deletables.add(r);
 		
 	}
 	

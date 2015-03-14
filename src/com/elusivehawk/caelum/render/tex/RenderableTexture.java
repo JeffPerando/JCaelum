@@ -16,7 +16,8 @@ public abstract class RenderableTexture implements IRenderer, ITexture
 {
 	private final GLFramebuffer fbo;
 	
-	private boolean rendered = false;
+	private RenderContext boundRcon = null;
+	private boolean rendered = false, initiated = false;
 	
 	public RenderableTexture()
 	{
@@ -28,6 +29,17 @@ public abstract class RenderableTexture implements IRenderer, ITexture
 	public RenderableTexture(boolean depth)
 	{
 		fbo = new GLFramebuffer(depth);
+		
+	}
+	
+	@Override
+	public void dispose(Object... args)
+	{
+		if (this.initiated)
+		{
+			this.boundRcon.scheduleDeletion(this);
+			
+		}
 		
 	}
 	
@@ -44,6 +56,16 @@ public abstract class RenderableTexture implements IRenderer, ITexture
 		if (this.rendered)
 		{
 			return;
+		}
+		
+		if (!this.initiated)
+		{
+			rcon.scheduleDeletion(this);
+			
+			this.boundRcon = rcon;
+			
+			this.initiated = true;
+			
 		}
 		
 		if (this.fbo.bind(rcon))

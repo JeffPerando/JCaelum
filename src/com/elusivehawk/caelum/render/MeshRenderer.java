@@ -71,7 +71,7 @@ public class MeshRenderer extends ProgramRenderable implements QuaternionF.Liste
 	}
 	
 	@Override
-	public void delete(RenderContext rcon)
+	public void dispose(Object... args)
 	{
 		// TODO Auto-generated method stub
 		

@@ -48,12 +48,12 @@ public class SimpleRenderer extends Renderable
 	}
 	
 	@Override
-	public void delete(RenderContext rcon)
+	public void dispose(Object... args)
 	{
-		this.program.delete(rcon);
-		this.vao.delete(rcon);
-		this.vtxbuf.delete(rcon);
-		this.indbuf.delete(rcon);
+		this.program.dispose(args);
+		this.vao.dispose(args);
+		this.vtxbuf.dispose(args);
+		this.indbuf.dispose(args);
 		
 	}
 	

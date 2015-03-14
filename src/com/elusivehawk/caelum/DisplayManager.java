@@ -17,17 +17,7 @@ import com.elusivehawk.util.storage.SyncList;
  */
 public final class DisplayManager implements Closeable, IUpdatable
 {
-	private final IGameEnvironment env;
 	private final List<Display> displays = SyncList.newList();
-	
-	@SuppressWarnings("unqualified-field-access")
-	public DisplayManager(IGameEnvironment ge)
-	{
-		assert ge != null;
-		
-		env = ge;
-		
-	}
 	
 	@Override
 	public void update(double delta) throws Throwable
@@ -38,7 +28,7 @@ public final class DisplayManager implements Closeable, IUpdatable
 			{
 				Logger.verbose("Initiating display \"%s\"", display.getName());
 				
-				display.initDisplay(this.env);
+				display.initDisplay();
 				
 			}
 			
@@ -52,7 +42,7 @@ public final class DisplayManager implements Closeable, IUpdatable
 			
 		}
 		
-		if (this.displays.isEmpty())
+		if (this.displays.isEmpty() && !CaelumEngine.game().isGameHeadless())
 		{
 			ShutdownHelper.exit(0);
 			

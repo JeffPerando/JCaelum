@@ -1,14 +1,15 @@
 
 package com.elusivehawk.caelum.render;
 
+import com.elusivehawk.caelum.IDisposable;
+
 /**
  * 
  * 
  * 
  * @author Elusivehawk
  */
-@FunctionalInterface
-public interface IDeletable
+public interface IDeletable extends IDisposable
 {
 	void delete(RenderContext rcon);
 	

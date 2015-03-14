@@ -5,7 +5,6 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.List;
 import com.elusivehawk.caelum.Display;
-import com.elusivehawk.caelum.IGameEnvironment;
 import com.elusivehawk.util.Dirtable;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.storage.SyncList;
@@ -19,16 +18,25 @@ import com.elusivehawk.util.storage.SyncList;
 public abstract class Input extends Dirtable implements IUpdatable, Closeable
 {
 	private final Display display;
+	private final IInputImpl impl;
 	
 	private final List<IInputListener> listeners = SyncList.newList();
 	
 	private boolean initiated = false;
-	private IInputImpl impl = null;
 	
-	@SuppressWarnings("unqualified-field-access")
 	public Input(Display screen)
 	{
+		this(screen, null);
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public Input(Display screen, IInputImpl implementation)
+	{
+		assert screen != null;
+		
 		display = screen;
+		impl = implementation;
 		
 	}
 	
@@ -60,17 +68,6 @@ public abstract class Input extends Dirtable implements IUpdatable, Closeable
 		{
 			throw new InputException(e);
 		}
-		
-	}
-	
-	public void initiate(IGameEnvironment env)
-	{
-		assert !this.initiated;
-		assert env != null;
-		
-		this.impl = env.createInputImpl(this.getClass());
-		
-		this.initiated = true;
 		
 	}
 	
