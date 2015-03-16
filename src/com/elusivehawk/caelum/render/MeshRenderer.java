@@ -4,6 +4,9 @@ package com.elusivehawk.caelum.render;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import com.elusivehawk.caelum.CaelumException;
+import com.elusivehawk.caelum.prefab.Entity;
+import com.elusivehawk.caelum.prefab.IComponent;
+import com.elusivehawk.caelum.prefab.Position;
 import com.elusivehawk.caelum.render.gl.GL1;
 import com.elusivehawk.caelum.render.gl.GL2;
 import com.elusivehawk.caelum.render.gl.GLBuffer;
@@ -29,7 +32,7 @@ import com.elusivehawk.util.storage.DirtableStorage;
  * @see IMesh
  * @see ProgramRenderable
  */
-public class MeshRenderer extends ProgramRenderable implements QuaternionF.Listener, VectorF.Listener
+public class MeshRenderer extends ProgramRenderable implements IComponent, QuaternionF.Listener, VectorF.Listener
 {
 	private final IMesh mesh;
 	
@@ -88,6 +91,19 @@ public class MeshRenderer extends ProgramRenderable implements QuaternionF.Liste
 	public void onQuatChanged(QuaternionF q)
 	{
 		this.rotOff.add(q, this.rot);
+		
+	}
+	
+	@Override
+	public void initiate(Entity parent)
+	{
+		Position position = (Position)parent.getChild(((comp) -> {return comp instanceof Position;}));
+		
+		if (position != null)
+		{
+			position.addListener(this);
+			
+		}
 		
 	}
 	
