@@ -35,7 +35,7 @@ jar
 {
 	from configurations.compile.collect {it.isDirectory() ? it : zipTree(it)}
 	
-	version = '1.0.0.0-alpha-Archdev2'
+	version = 'alpha-1.0.0.0'
 	destinationDir = file('builds')
 	
 	exclude "BenchmarkTest.class"
