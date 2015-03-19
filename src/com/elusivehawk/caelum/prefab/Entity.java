@@ -2,6 +2,7 @@
 package com.elusivehawk.caelum.prefab;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Predicate;
 import com.elusivehawk.caelum.CaelumException;
 import com.elusivehawk.caelum.IDisposable;
@@ -21,26 +22,20 @@ import com.google.common.collect.Lists;
  */
 public class Entity implements IDisposable, IUpdatable, IRenderer 
 {
-	private final Object world;
+	private final UUID id = UUID.randomUUID();
 	
 	private final List<IComponent> children = Lists.newArrayList();
 	
 	private final List<IUpdatable> updateChildren = Lists.newArrayList();
 	private final List<IRenderer> renderChildren = Lists.newArrayList();
 	
-	private boolean initiated = false;
+	private World world = null;
+	private boolean initiated = false, dead = false;
 	
-	@SuppressWarnings("unqualified-field-access")
-	public Entity(Object worldObj)
-	{
-		world = worldObj;
-		
-	}
+	public Entity(){}
 	
-	public Entity(Object worldObj, IPopulator<Entity> pop)
+	public Entity(IPopulator<Entity> pop)
 	{
-		this(worldObj);
-		
 		pop.populate(this);
 		
 	}
@@ -69,6 +64,11 @@ public class Entity implements IDisposable, IUpdatable, IRenderer
 	@Override
 	public void update(double delta) throws Throwable
 	{
+		if (!this.initiated)
+		{
+			throw new CaelumException("Attempt made to update an uninitiated entity!");
+		}
+		
 		this.updateChildren.forEach(((upd) ->
 		{
 			try
@@ -92,12 +92,16 @@ public class Entity implements IDisposable, IUpdatable, IRenderer
 		
 	}
 	
-	public void initiate()
+	public void initiate(World worldObj)
 	{
+		assert worldObj != null;
+		
 		if (this.initiated)
 		{
 			throw new CaelumException("Cannot initiate an initiated Entity.");
 		}
+		
+		this.world = worldObj;
 		
 		this.children.forEach(((comp) ->
 		{
@@ -121,6 +125,12 @@ public class Entity implements IDisposable, IUpdatable, IRenderer
 		
 	}
 	
+	public void setIsDead()
+	{
+		this.dead = true;
+		
+	}
+	
 	public Entity addChild(IComponent comp)
 	{
 		assert comp != null;
@@ -135,9 +145,19 @@ public class Entity implements IDisposable, IUpdatable, IRenderer
 		return this;
 	}
 	
-	public Object getWorld()
+	public World getWorld()
 	{
 		return this.world;
+	}
+	
+	public UUID getID()
+	{
+		return this.id;
+	}
+	
+	public boolean isDead()
+	{
+		return this.dead;
 	}
 	
 	public IComponent getChild(Class<?> clazz)

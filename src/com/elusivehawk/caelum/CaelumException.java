@@ -11,11 +11,7 @@ public class CaelumException extends RuntimeException
 {
 	private static final long serialVersionUID = 2203750387405676174L;
 	
-	public CaelumException()
-	{
-		super();
-		
-	}
+	public CaelumException(){}
 	
 	public CaelumException(String err)
 	{
