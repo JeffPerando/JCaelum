@@ -22,7 +22,7 @@ import com.google.common.collect.Lists;
  */
 public class Entity implements IDisposable, IUpdatable, IRenderer 
 {
-	private final UUID id = UUID.randomUUID();
+	private final UUID id;
 	
 	private final List<IComponent> children = Lists.newArrayList();
 	
@@ -32,10 +32,33 @@ public class Entity implements IDisposable, IUpdatable, IRenderer
 	private World world = null;
 	private boolean initiated = false, dead = false;
 	
-	public Entity(){}
+	public Entity()
+	{
+		this(UUID.randomUUID());
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public Entity(UUID uuid)
+	{
+		assert uuid != null;
+		
+		id = uuid;
+		
+	}
 	
 	public Entity(IPopulator<Entity> pop)
 	{
+		this();
+		
+		pop.populate(this);
+		
+	}
+	
+	public Entity(UUID uuid, IPopulator<Entity> pop)
+	{
+		this(uuid);
+		
 		pop.populate(this);
 		
 	}
