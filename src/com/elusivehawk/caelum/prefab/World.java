@@ -4,6 +4,9 @@ package com.elusivehawk.caelum.prefab;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import com.elusivehawk.caelum.render.IRenderer;
+import com.elusivehawk.caelum.render.RenderContext;
+import com.elusivehawk.caelum.render.RenderException;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.storage.SyncList;
 import com.google.common.collect.Maps;
@@ -14,11 +17,44 @@ import com.google.common.collect.Maps;
  * 
  * @author Elusivehawk
  */
-public abstract class World implements IUpdatable
+public abstract class World implements IUpdatable, IRenderer
 {
 	private final Map<UUID, Entity> entities = Maps.newConcurrentMap();
 	
 	protected final List<Entity> entitiesToSpawn = SyncList.newList();
+	
+	@Override
+	public void postRender(RenderContext rcon) throws RenderException
+	{
+		this.entities.forEach(((id, entity) ->
+		{
+			entity.postRender(rcon);
+			
+		}));
+		
+	}
+
+	@Override
+	public void preRender(RenderContext rcon) throws RenderException
+	{
+		this.entities.forEach(((id, entity) ->
+		{
+			entity.preRender(rcon);
+			
+		}));
+		
+	}
+
+	@Override
+	public void render(RenderContext rcon) throws RenderException
+	{
+		this.entities.forEach(((id, entity) ->
+		{
+			entity.render(rcon);
+			
+		}));
+		
+	}
 	
 	@Override
 	public void update(double delta) throws WorldException
