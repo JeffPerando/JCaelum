@@ -7,7 +7,7 @@ package com.elusivehawk.caelum.render;
  * 
  * @author Elusivehawk
  */
-public class Mesh implements IMesh
+public class Mesh implements IMeshDataProvider
 {
 	private final MeshData data;
 	

@@ -25,16 +25,16 @@ import com.elusivehawk.util.storage.DirtableStorage;
 
 /**
  * 
- * Used to render static {@link IMesh mesh}es with non-static information (i.e. rotation)
+ * Used to render static {@link IMeshDataProvider mesh}es with non-static information (i.e. rotation)
  * 
  * @author Elusivehawk
  * 
- * @see IMesh
+ * @see IMeshDataProvider
  * @see ProgramRenderable
  */
 public class MeshRenderer extends ProgramRenderable implements IComponent, QuaternionF.Listener, VectorF.Listener
 {
-	private final IMesh mesh;
+	private final IMeshDataProvider mesh;
 	
 	private final VectorF
 			offset = new VectorF(),
@@ -56,14 +56,14 @@ public class MeshRenderer extends ProgramRenderable implements IComponent, Quate
 	
 	private int texFrame = 0, polyCount = 0;
 	
-	public MeshRenderer(IMesh m)
+	public MeshRenderer(IMeshDataProvider m)
 	{
 		this(new GLProgram(), m);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public MeshRenderer(GLProgram program, IMesh m)
+	public MeshRenderer(GLProgram program, IMeshDataProvider m)
 	{
 		super(program);
 		
@@ -255,7 +255,7 @@ public class MeshRenderer extends ProgramRenderable implements IComponent, Quate
 		return String.format("%s:%s-%s-%s", this.mesh, this.pos.toString(), this.scale.toString(), this.rot.toString());
 	}
 	
-	public IMesh getMesh()
+	public IMeshDataProvider getMesh()
 	{
 		return this.mesh;
 	}

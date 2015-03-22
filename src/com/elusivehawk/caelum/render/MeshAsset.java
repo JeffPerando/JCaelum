@@ -12,7 +12,7 @@ import com.elusivehawk.caelum.assets.EnumAssetType;
  * 
  * @author Elusivehawk
  */
-public class MeshAsset extends Asset implements IMesh
+public class MeshAsset extends Asset implements IMeshDataProvider
 {
 	private MeshData data = null;
 	
