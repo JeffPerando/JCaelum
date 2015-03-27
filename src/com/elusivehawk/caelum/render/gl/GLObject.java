@@ -2,6 +2,7 @@
 package com.elusivehawk.caelum.render.gl;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import com.elusivehawk.caelum.render.Deletables;
 import com.elusivehawk.caelum.render.IBindable;
 import com.elusivehawk.caelum.render.IDeletable;
 import com.elusivehawk.caelum.render.RenderContext;
@@ -16,10 +17,8 @@ public abstract class GLObject implements IBindable, IDeletable
 {
 	private final AtomicBoolean deleted = new AtomicBoolean(false), init = new AtomicBoolean(false);
 	
-	private RenderContext boundRcon = null;
-	
 	@Override
-	public void dispose(Object... args)
+	public void delete()
 	{
 		if (this.isDeleted())
 		{
@@ -31,32 +30,9 @@ public abstract class GLObject implements IBindable, IDeletable
 			return;
 		}
 		
-		this.boundRcon.scheduleDeletion(this);
+		assert !this.isBound();
 		
-	}
-	
-	@Override
-	public void delete(RenderContext rcon)
-	{
-		if (this.isDeleted())
-		{
-			return;
-		}
-		
-		if (!this.isInitiated())
-		{
-			return;
-		}
-		
-		assert rcon == this.boundRcon;
-		
-		if (this.isBound(rcon))
-		{
-			this.unbind(rcon);
-			
-		}
-		
-		this.deleteImpl(rcon);
+		this.deleteImpl();
 		
 		this.deleted.set(true);
 		
@@ -74,9 +50,7 @@ public abstract class GLObject implements IBindable, IDeletable
 		{
 			this.initiate(rcon);
 			
-			rcon.registerDeletable(this);
-			
-			this.boundRcon = rcon;
+			Deletables.instance().register(this);
 			
 			this.init.set(true);
 			
@@ -99,6 +73,6 @@ public abstract class GLObject implements IBindable, IDeletable
 	
 	protected abstract void initiate(RenderContext rcon);
 	
-	protected abstract void deleteImpl(RenderContext rcon);
+	protected abstract void deleteImpl();
 	
 }

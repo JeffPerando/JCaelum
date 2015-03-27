@@ -2,6 +2,7 @@
 package com.elusivehawk.caelum.render;
 
 import com.elusivehawk.caelum.IDisposable;
+import com.elusivehawk.caelum.render.tex.TextureBinder;
 
 /**
  * 
@@ -73,7 +74,7 @@ public abstract class Renderable implements IDisposable, IRenderer
 		
 		this.renderImpl(rcon);
 		
-		rcon.releaseTextures();
+		TextureBinder.instance().releaseTextures();
 		
 		this.recursiveRenders--;
 		

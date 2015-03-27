@@ -3,8 +3,8 @@ package com.elusivehawk.caelum.input;
 
 import java.util.List;
 import java.util.function.Consumer;
-import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.lwjgl.LWJGLMouseImpl;
+import com.elusivehawk.caelum.render.Display;
 import com.elusivehawk.caelum.render.tex.ILegibleImage;
 import com.elusivehawk.util.math.VectorF;
 import com.elusivehawk.util.storage.DirtableStorage;

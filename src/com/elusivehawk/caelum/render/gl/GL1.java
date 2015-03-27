@@ -10,7 +10,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
-import com.elusivehawk.caelum.Display;
+import com.elusivehawk.caelum.render.Display;
 import com.elusivehawk.caelum.render.RenderHelper;
 import com.elusivehawk.caelum.render.tex.Color;
 import com.elusivehawk.caelum.render.tex.ColorFilter;
@@ -63,7 +63,7 @@ public final class GL1
 	
 	public static void glBindTexture(GLEnumTexture target, ITexture texture)
 	{
-		glBindTexture(target.gl, texture == null ? 0 : texture.getTexId());
+		glBindTexture(target.gl, texture == null ? 0 : texture.getId());
 		
 	}
 	
@@ -75,7 +75,7 @@ public final class GL1
 	
 	public static void glBindTexture(int target, ITexture texture)
 	{
-		glBindTexture(target, texture == null ? 0 : texture.getTexId());
+		glBindTexture(target, texture == null ? 0 : texture.getId());
 		
 	}
 	

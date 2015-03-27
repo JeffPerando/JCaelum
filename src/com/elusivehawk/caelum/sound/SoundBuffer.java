@@ -4,6 +4,7 @@ package com.elusivehawk.caelum.sound;
 import java.nio.ByteBuffer;
 import org.lwjgl.openal.AL10;
 import com.elusivehawk.caelum.CaelumEngine;
+import com.elusivehawk.caelum.IDisposable;
 
 /**
  * 
@@ -11,23 +12,33 @@ import com.elusivehawk.caelum.CaelumEngine;
  * 
  * @author Elusivehawk
  */
-public class SoundBuffer implements ISoundBuffer
+public class SoundBuffer implements IDisposable
 {
-	private final SoundClient client;
-	private final ByteBuffer source;
-	private final int format, sampleRate;
+	protected final SoundClient client;
+	
+	protected ByteBuffer source = null;
+	protected int format = 0, sampleRate = 0;
 	
 	private boolean initiated = false;
 	private TaskLoadSound loadTask = null;
 	private int id = 0;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public SoundBuffer(SoundClient sClient, ByteBuffer data, int fmt, int samples)
+	public SoundBuffer(SoundClient sClient)
 	{
 		assert sClient != null;
-		assert data != null;
 		
 		client = sClient;
+		
+	}
+	
+	@SuppressWarnings("unqualified-field-access")
+	public SoundBuffer(SoundClient sClient, ByteBuffer data, int fmt, int samples)
+	{
+		this(sClient);
+		
+		assert data != null;
+		
 		source = data;
 		format = fmt;
 		sampleRate = samples;
@@ -35,7 +46,7 @@ public class SoundBuffer implements ISoundBuffer
 	}
 	
 	@Override
-	public void dispose(Object... args)
+	public void dispose()
 	{
 		if (this.initiated)
 		{
@@ -45,7 +56,6 @@ public class SoundBuffer implements ISoundBuffer
 		
 	}
 	
-	@Override
 	public int getId()
 	{
 		if (!this.initiated)
@@ -78,7 +88,6 @@ public class SoundBuffer implements ISoundBuffer
 		return this.id;
 	}
 	
-	@Override
 	public void destroy()
 	{
 		if (this.initiated)

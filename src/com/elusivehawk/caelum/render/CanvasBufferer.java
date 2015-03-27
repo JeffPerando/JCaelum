@@ -1,8 +1,8 @@
 
 package com.elusivehawk.caelum.render;
 
+import com.elusivehawk.caelum.CaelumEngine;
 import com.elusivehawk.caelum.IDisposable;
-import com.elusivehawk.caelum.render.gl.GLProgram;
 import com.elusivehawk.caelum.render.glsl.Shaders;
 import com.elusivehawk.caelum.render.tex.Material;
 import com.elusivehawk.util.IPopulator;
@@ -34,7 +34,7 @@ public class CanvasBufferer implements IRenderer, IDisposable
 	
 	public CanvasBufferer(Shaders shs)
 	{
-		this(shs, 1);
+		this(shs, CaelumEngine.defaultDisplay());
 		
 	}
 	
@@ -46,45 +46,49 @@ public class CanvasBufferer implements IRenderer, IDisposable
 		
 	}
 	
-	public CanvasBufferer(int layers)
+	public CanvasBufferer(int width, int height)
 	{
-		this(new Shaders(), layers);
+		this(new Shaders(), width, height);
 		
 	}
 	
-	public CanvasBufferer(int layers, IPopulator<CanvasBufferer> pop)
+	public CanvasBufferer(int width, int height, IPopulator<CanvasBufferer> pop)
 	{
-		this(layers);
+		this(width, height);
 		
 		pop.populate(this);
 		
 	}
 	
-	@SuppressWarnings("unqualified-field-access")
-	public CanvasBufferer(Shaders shs, int layers)
+	public CanvasBufferer(Shaders shs, Display display)
 	{
-		GLProgram p = new GLProgram(shs);
-		
-		canvas = new Canvas(p, layers);
-		bufone = new Canvas(p, layers);
-		buftwo = new Canvas(p, layers);
+		this(shs, display.getWidth(), display.getHeight());
 		
 	}
 	
-	public CanvasBufferer(Shaders shs, int layers, IPopulator<CanvasBufferer> pop)
+	@SuppressWarnings("unqualified-field-access")
+	public CanvasBufferer(Shaders shs, int width, int height)
 	{
-		this(shs, layers);
+		canvas = new Canvas(shs, width, height);
+		bufone = new Canvas(shs, width, height);
+		buftwo = new Canvas(shs, width, height);
+		
+	}
+	
+	public CanvasBufferer(Shaders shs, int width, int height, IPopulator<CanvasBufferer> pop)
+	{
+		this(shs, width, height);
 		
 		pop.populate(this);
 		
 	}
 	
 	@Override
-	public void dispose(Object... args)
+	public void dispose()
 	{
-		this.canvas.dispose(args);
-		this.bufone.dispose(args);
-		this.buftwo.dispose(args);
+		this.canvas.dispose();
+		this.bufone.dispose();
+		this.buftwo.dispose();
 		
 	}
 	

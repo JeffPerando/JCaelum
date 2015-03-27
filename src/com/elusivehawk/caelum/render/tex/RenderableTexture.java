@@ -3,7 +3,9 @@ package com.elusivehawk.caelum.render.tex;
 
 import com.elusivehawk.caelum.render.IRenderer;
 import com.elusivehawk.caelum.render.RenderContext;
+import com.elusivehawk.caelum.render.Deletables;
 import com.elusivehawk.caelum.render.RenderException;
+import com.elusivehawk.caelum.render.gl.GLEnumTexture;
 import com.elusivehawk.caelum.render.gl.GLFramebuffer;
 
 /**
@@ -16,7 +18,6 @@ public abstract class RenderableTexture implements IRenderer, ITexture
 {
 	private final GLFramebuffer fbo;
 	
-	private RenderContext boundRcon = null;
 	private boolean rendered = false, initiated = false;
 	
 	public RenderableTexture()
@@ -33,20 +34,13 @@ public abstract class RenderableTexture implements IRenderer, ITexture
 	}
 	
 	@Override
-	public void dispose(Object... args)
+	public void delete()
 	{
 		if (this.initiated)
 		{
-			this.boundRcon.scheduleDeletion(this);
+			this.fbo.delete();
 			
 		}
-		
-	}
-	
-	@Override
-	public void delete(RenderContext rcon)
-	{
-		this.fbo.delete(rcon);
 		
 	}
 	
@@ -60,9 +54,7 @@ public abstract class RenderableTexture implements IRenderer, ITexture
 		
 		if (!this.initiated)
 		{
-			rcon.scheduleDeletion(this);
-			
-			this.boundRcon = rcon;
+			Deletables.instance().register(this);
 			
 			this.initiated = true;
 			
@@ -92,7 +84,13 @@ public abstract class RenderableTexture implements IRenderer, ITexture
 	}
 	
 	@Override
-	public int getTexId()
+	public GLEnumTexture getType()
+	{
+		return GLEnumTexture.GL_TEXTURE_2D;
+	}
+	
+	@Override
+	public int getId()
 	{
 		return this.fbo.getTexture();
 	}

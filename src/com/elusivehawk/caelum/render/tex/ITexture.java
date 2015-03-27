@@ -10,16 +10,20 @@ import com.elusivehawk.caelum.render.gl.GLEnumTexture;
  * 
  * 
  * @author Elusivehawk
+ * 
+ * @see TextureBinder
  */
 public interface ITexture extends IPreRenderer, IDeletable
 {
-	default GLEnumTexture getType()
-	{
-		return GLEnumTexture.GL_TEXTURE_2D;
-	}
+	GLEnumTexture getType();
 	
-	int getTexId();
+	int getId();
 	
 	boolean isStatic();
+	
+	default int bindTex()
+	{
+		return TextureBinder.instance().bindTexture(this);
+	}
 	
 }

@@ -130,7 +130,7 @@ public class GLBuffer extends GLObject
 	}
 	
 	@Override
-	public boolean isBound(RenderContext rcon)
+	public boolean isBound()
 	{
 		return GL1.glGetInteger(this.t.bind) == this.id;
 	}
@@ -138,7 +138,7 @@ public class GLBuffer extends GLObject
 	@Override
 	public boolean bindImpl(RenderContext rcon)
 	{
-		if (this.isBound(rcon))
+		if (this.isBound())
 		{
 			return true;
 		}
@@ -156,14 +156,8 @@ public class GLBuffer extends GLObject
 	}
 	
 	@Override
-	protected void deleteImpl(RenderContext rcon)
+	protected void deleteImpl()
 	{
-		if (this.isBound(rcon))
-		{
-			this.unbind(rcon);
-			
-		}
-		
 		GL1.glDeleteBuffers(this);
 		
 	}

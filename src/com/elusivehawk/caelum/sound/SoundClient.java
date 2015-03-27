@@ -15,13 +15,13 @@ import com.google.common.collect.Lists;
  */
 public class SoundClient implements IDisposable
 {
-	private final List<ISoundBuffer> buffers = SyncList.newList(), bufDeleteBuf = Lists.newArrayList();
+	private final List<SoundBuffer> buffers = SyncList.newList(), bufDeleteBuf = Lists.newArrayList();
 	private final List<SoundSource> sources = SyncList.newList(), srcDeleteBuf = Lists.newArrayList();
 	
 	private ALContext context = null;
 	
 	@Override
-	public void dispose(Object... args)
+	public void dispose()
 	{
 		if (this.context == null)
 		{
@@ -64,7 +64,7 @@ public class SoundClient implements IDisposable
 		
 	}
 	
-	public void registerBuffer(ISoundBuffer buffer)
+	public void registerBuffer(SoundBuffer buffer)
 	{
 		assert buffer != null;
 		
@@ -80,7 +80,7 @@ public class SoundClient implements IDisposable
 		
 	}
 	
-	public void scheduleBufferForDeletion(ISoundBuffer buffer)
+	public void scheduleBufferForDeletion(SoundBuffer buffer)
 	{
 		assert buffer != null;
 		

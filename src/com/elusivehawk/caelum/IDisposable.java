@@ -9,6 +9,6 @@ package com.elusivehawk.caelum;
  */
 public interface IDisposable
 {
-	void dispose(Object... args);
+	void dispose();
 	
 }

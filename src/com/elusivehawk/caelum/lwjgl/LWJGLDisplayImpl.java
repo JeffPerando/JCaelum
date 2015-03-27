@@ -7,8 +7,8 @@ import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GLContext;
 import com.elusivehawk.caelum.CaelumException;
-import com.elusivehawk.caelum.DisplaySettings;
 import com.elusivehawk.caelum.IDisplayImpl;
+import com.elusivehawk.caelum.render.DisplaySettings;
 import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.storage.BufferHelper;
 

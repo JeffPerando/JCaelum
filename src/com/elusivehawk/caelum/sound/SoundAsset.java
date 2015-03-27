@@ -2,11 +2,7 @@
 package com.elusivehawk.caelum.sound;
 
 import java.io.DataInputStream;
-import java.nio.ByteBuffer;
-import org.lwjgl.openal.AL10;
-import com.elusivehawk.caelum.CaelumEngine;
-import com.elusivehawk.caelum.assets.Asset;
-import com.elusivehawk.caelum.assets.EnumAssetType;
+import com.elusivehawk.caelum.assets.IAsset;
 
 /**
  * 
@@ -14,24 +10,20 @@ import com.elusivehawk.caelum.assets.EnumAssetType;
  * 
  * @author Elusivehawk
  */
-public class SoundAsset extends Asset implements ISoundBuffer
+public class SoundAsset extends SoundBuffer implements IAsset
 {
-	private final SoundClient client;
+	private final String path;
 	
-	private boolean initiated = false;
-	private TaskLoadSound loadTask = null;
-	
-	private ByteBuffer source = null;
-	private int format = 0, sampleRate = 0, id = 0;
+	private boolean read = false;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public SoundAsset(SoundClient sClient, String path)
+	public SoundAsset(SoundClient sClient, String loc)
 	{
-		super(path, EnumAssetType.SOUND);
+		super(sClient);
 		
-		assert sClient != null;
+		assert loc != null;
 		
-		client = sClient;
+		path = loc;
 		
 	}
 	
@@ -43,67 +35,33 @@ public class SoundAsset extends Asset implements ISoundBuffer
 			return 0;
 		}
 		
-		if (!this.initiated)
-		{
-			if (this.loadTask == null)
-			{
-				this.loadTask = new TaskLoadSound(this.source, this.format, this.sampleRate);
-				
-				CaelumEngine.tasks().scheduleTask(this.loadTask);
-				
-			}
-			else if (this.loadTask.isFinished())
-			{
-				synchronized (this)
-				{
-					this.id = this.loadTask.getBufferId();
-					
-					this.initiated = true;
-					
-					this.loadTask = null;
-					
-				}
-				
-				this.client.registerBuffer(this);
-				
-			}
-			
-		}
-		
-		return this.id;
+		return super.getId();
 	}
 	
 	@Override
-	public void destroy()
+	public String getLocation()
 	{
-		if (this.initiated)
-		{
-			AL10.alDeleteBuffers(this.loadTask == null ? this.id : this.loadTask.getBufferId());
-			
-			this.id = 0;
-			
-		}
-		
+		return this.path;
 	}
 	
 	@Override
-	protected boolean readAsset(DataInputStream in) throws Throwable
+	public boolean isRead()
+	{
+		return this.read;
+	}
+	
+	@Override
+	public void read(DataInputStream in) throws Throwable
 	{
 		// TODO Auto-generated method stub
-		return false;
+		
 	}
 	
 	@Override
-	protected boolean disposeImpl(Object... args)
+	public void onDuplicateFound(IAsset asset)
 	{
-		if (!this.initiated)
-		{
-			return false;
-		}
+		// TODO Auto-generated method stub
 		
-		this.client.scheduleBufferForDeletion(this);
-		
-		return true;
 	}
 	
 }

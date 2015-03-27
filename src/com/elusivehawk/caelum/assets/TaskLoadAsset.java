@@ -14,13 +14,13 @@ import com.elusivehawk.util.task.Task;
 @Internal
 public class TaskLoadAsset extends Task
 {
-	protected final Asset asset;
+	protected final IAsset asset;
 	
-	protected Asset fin = null;
+	protected IAsset fin = null;
 	protected boolean duplicate = false;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public TaskLoadAsset(Asset a)
+	public TaskLoadAsset(IAsset a)
 	{
 		super(null);
 		
@@ -42,7 +42,7 @@ public class TaskLoadAsset extends Task
 		return false;
 	}
 	
-	public Asset getCompletedAsset()
+	public IAsset getCompletedIAsset()
 	{
 		return this.fin;
 	}

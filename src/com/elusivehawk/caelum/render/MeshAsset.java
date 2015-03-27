@@ -4,7 +4,7 @@ package com.elusivehawk.caelum.render;
 import java.io.DataInputStream;
 import com.elusivehawk.caelum.CaelumEngine;
 import com.elusivehawk.caelum.assets.Asset;
-import com.elusivehawk.caelum.assets.EnumAssetType;
+import com.elusivehawk.caelum.assets.IAsset;
 
 /**
  * 
@@ -18,10 +18,10 @@ public class MeshAsset extends Asset implements IMeshDataProvider
 	
 	public MeshAsset(String filepath)
 	{
-		super(filepath, EnumAssetType.MESH);
+		super(filepath);
 		
 	}
-
+	
 	@Override
 	public MeshData getData()
 	{
@@ -29,24 +29,25 @@ public class MeshAsset extends Asset implements IMeshDataProvider
 	}
 	
 	@Override
-	protected boolean readAsset(DataInputStream in) throws Throwable
+	public void read(DataInputStream in) throws Throwable
 	{
 		Object md = CaelumEngine.assets().readObjectForAsset(this, in);
 		
-		if (!(md instanceof MeshData))
-		{
-			return false;
-		}
-		
 		this.data = (MeshData)md;
 		
-		return true;
 	}
 	
 	@Override
-	protected boolean disposeImpl(Object... args)
+	public void dispose()
 	{
-		return true;
+		
+	}
+	
+	@Override
+	public void onDuplicateFound(IAsset asset)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

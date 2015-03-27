@@ -29,11 +29,10 @@ public class SimpleRenderer extends Renderable
 	
 	private final ITexture tex;
 	
+	private final GLProgram program = new GLProgram(RenderConst.SHADERS_3D);
 	private final GLVertexArray vao = new GLVertexArray();
 	private final GLBuffer vtxbuf = new GLBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER);
 	private final GLBuffer indbuf = new GLBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER);
-	
-	private GLProgram program = null;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public SimpleRenderer(FloatBuffer vtx, IntBuffer ind, GLEnumDrawType dtype)
@@ -43,17 +42,17 @@ public class SimpleRenderer extends Renderable
 		type = dtype;
 		indCount = ind.capacity();
 		
-		tex = new TextureAsset("/res/test.png");
+		tex = (ITexture)new TextureAsset("/res/test.png").readLater();
 		
 	}
 	
 	@Override
-	public void dispose(Object... args)
+	public void dispose()
 	{
-		this.program.dispose(args);
-		this.vao.dispose(args);
-		this.vtxbuf.dispose(args);
-		this.indbuf.dispose(args);
+		this.program.dispose();
+		this.vao.dispose();
+		this.vtxbuf.dispose();
+		this.indbuf.dispose();
 		
 	}
 	
@@ -90,8 +89,6 @@ public class SimpleRenderer extends Renderable
 	@Override
 	public boolean initiate(RenderContext rcon)
 	{
-		this.program = new GLProgram(rcon.getDefaultShaders());
-		
 		this.vtxbuf.init(rcon, this.vertex, GLEnumDataUsage.GL_STATIC_DRAW);
 		this.indbuf.init(rcon, this.indices, GLEnumDataUsage.GL_STATIC_DRAW);
 		

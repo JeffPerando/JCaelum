@@ -1,7 +1,7 @@
 
 package com.elusivehawk.caelum.input;
 
-import com.elusivehawk.caelum.Display;
+import com.elusivehawk.caelum.render.Display;
 import com.elusivehawk.util.DelayedUpdater;
 
 /**

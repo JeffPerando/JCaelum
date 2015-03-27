@@ -2,13 +2,13 @@
 package com.elusivehawk.caelum.meta;
 
 import com.elusivehawk.caelum.CaelumEngine;
-import com.elusivehawk.caelum.DisplaySettings;
 import com.elusivehawk.caelum.Game;
 import com.elusivehawk.caelum.input.Input;
 import com.elusivehawk.caelum.input.Key;
 import com.elusivehawk.caelum.input.Keyboard;
 import com.elusivehawk.caelum.input.Mouse;
 import com.elusivehawk.caelum.render.Canvas;
+import com.elusivehawk.caelum.render.DisplaySettings;
 import com.elusivehawk.caelum.render.Icon;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
@@ -29,7 +29,7 @@ public final class ExampleGame extends Game
 {
 	public static final int RANDOM_MATERIAL_CAP = 4;
 	
-	private Canvas canvas = new Canvas();
+	private Canvas canvas = null;
 	//private Gui gui = new Gui();
 	
 	/*private final FloatBuffer vtx = BufferHelper.makeFloatBuffer(new float[]{-1, -1, -1, 1, -1, -1, -1, 1, -1, -1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1, 1, 1, 1, 1});
@@ -45,7 +45,16 @@ public final class ExampleGame extends Game
 	
 	public static void main(String... args)
 	{
-		CaelumEngine.start(new ExampleGame(), args);
+		try
+		{
+			CaelumEngine.start(new ExampleGame(), args);
+			
+		}
+		catch (Throwable e)
+		{
+			Logger.err(e);
+			
+		}
 		
 	}
 	
@@ -82,9 +91,9 @@ public final class ExampleGame extends Game
 	}
 	
 	@Override
-	public void dispose(Object... args)
+	public void dispose()
 	{
-		this.canvas.dispose(args);
+		this.canvas.dispose();
 		
 	}
 	
@@ -158,6 +167,8 @@ public final class ExampleGame extends Game
 			Logger.info("Button #4 clicked!");
 			
 		})));*/
+		
+		this.canvas = new Canvas();
 		
 		ITexture testimg = new TextureAsset("/res/test.png");
 		

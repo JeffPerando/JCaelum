@@ -84,8 +84,6 @@ public abstract class ProgramRenderable extends Renderable
 			
 			this.doRender(rcon);
 			
-			rcon.releaseTextures();
-			
 		}
 		
 		this.program.unbind(rcon);

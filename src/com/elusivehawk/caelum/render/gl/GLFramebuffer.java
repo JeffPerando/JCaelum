@@ -1,7 +1,7 @@
 
 package com.elusivehawk.caelum.render.gl;
 
-import com.elusivehawk.caelum.Display;
+import com.elusivehawk.caelum.render.Display;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderHelper;
 
@@ -40,9 +40,9 @@ public class GLFramebuffer extends GLObject
 		GL1.glViewport(rcon.getDisplay());
 		
 	}
-
+	
 	@Override
-	public boolean isBound(RenderContext rcon)
+	public boolean isBound()
 	{
 		return this.id != 0 && GL1.glGetInteger(GLConst.GL_FRAMEBUFFER_BINDING) == this.id;
 	}
@@ -91,9 +91,9 @@ public class GLFramebuffer extends GLObject
 		GL2.glDrawBuffer(GLConst.GL_COLOR_ATTACHMENT0);
 		
 	}
-
+	
 	@Override
-	protected void deleteImpl(RenderContext rcon)
+	protected void deleteImpl()
 	{
 		GL3.glDeleteFramebuffer(this.id);
 		

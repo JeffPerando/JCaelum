@@ -3,7 +3,6 @@ package com.elusivehawk.caelum.render.tex;
 
 import com.elusivehawk.caelum.CaelumException;
 import com.elusivehawk.caelum.IDisposable;
-import com.elusivehawk.caelum.assets.Asset;
 import com.elusivehawk.caelum.render.IBindable;
 import com.elusivehawk.caelum.render.IRenderer;
 import com.elusivehawk.caelum.render.RenderContext;
@@ -106,23 +105,23 @@ public final class Material implements IDisposable, IRenderer, IBindable, IJsonS
 	}
 	
 	@Override
-	public void dispose(Object... args)
+	public void dispose()
 	{
-		if (this.tex != null && !(this.tex instanceof Asset))
+		if (this.tex != null)
 		{
-			this.tex.dispose(args);
+			this.tex.dispose();
 			
 		}
 		
 		if (this.renTex != null)
 		{
-			this.renTex.dispose(args);
+			this.renTex.dispose();
 			
 		}
 		
-		if (this.glowTex != null && !(this.glowTex instanceof Asset))
+		if (this.glowTex != null)
 		{
-			this.glowTex.dispose(args);
+			this.glowTex.dispose();
 			
 		}
 		
@@ -164,9 +163,9 @@ public final class Material implements IDisposable, IRenderer, IBindable, IJsonS
 			return false;
 		}
 		
-		int t = rcon.bindTexture(this.tex);
-		int r = rcon.bindTexture(this.renTex);
-		int g = rcon.bindTexture(this.glowTex);
+		int t = this.tex.bindTex();
+		int r = this.renTex.bindTex();
+		int g = this.glowTex.bindTex();
 		
 		if (!this.initiated)
 		{
@@ -213,7 +212,7 @@ public final class Material implements IDisposable, IRenderer, IBindable, IJsonS
 	}
 	
 	@Override
-	public boolean isBound(RenderContext rcon)
+	public boolean isBound()
 	{
 		return this.bound;
 	}

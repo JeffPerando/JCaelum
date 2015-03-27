@@ -10,6 +10,6 @@ package com.elusivehawk.caelum.assets;
 @FunctionalInterface
 public interface IAssetReceiver
 {
-	void onAssetLoaded(Asset a);
+	void onAssetLoaded(IAsset a);
 	
 }

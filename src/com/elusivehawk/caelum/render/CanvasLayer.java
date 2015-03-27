@@ -49,14 +49,14 @@ public class CanvasLayer extends Renderable
 	}
 	
 	@Override
-	public void dispose(Object... args)
+	public void dispose()
 	{
-		this.vertex.dispose(args);
-		this.vao.dispose(args);
+		this.vertex.dispose();
+		this.vao.dispose();
 		
 		if (!this.mat.isNull())
 		{
-			this.mat.get().dispose(args);
+			this.mat.get().dispose();
 			
 		}
 		

@@ -66,11 +66,11 @@ public abstract class GameStateGame extends Game
 	}
 	
 	@Override
-	public void dispose(Object... args)
+	public void dispose()
 	{
 		if (this.state != null)
 		{
-			this.state.dispose(args);
+			this.state.dispose();
 			
 		}
 		

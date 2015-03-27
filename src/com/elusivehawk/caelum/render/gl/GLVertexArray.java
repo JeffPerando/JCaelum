@@ -32,7 +32,7 @@ public class GLVertexArray extends GLObject
 	@Override
 	public void unbind(RenderContext rcon)
 	{
-		if (!this.isBound(rcon))
+		if (!this.isBound())
 		{
 			return;
 		}
@@ -54,7 +54,7 @@ public class GLVertexArray extends GLObject
 	}
 	
 	@Override
-	public boolean isBound(RenderContext rcon)
+	public boolean isBound()
 	{
 		return this.id != 0 && GL1.glGetInteger(GLConst.GL_VERTEX_ARRAY_BINDING) == this.id;
 	}
@@ -125,7 +125,7 @@ public class GLVertexArray extends GLObject
 	}
 	
 	@Override
-	protected void deleteImpl(RenderContext rcon)
+	protected void deleteImpl()
 	{
 		GL3.glDeleteVertexArray(this.id);
 		

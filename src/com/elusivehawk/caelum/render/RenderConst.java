@@ -1,9 +1,18 @@
 
 package com.elusivehawk.caelum.render;
 
+import com.elusivehawk.caelum.render.gl.GL1;
+import com.elusivehawk.caelum.render.gl.GLConst;
 import com.elusivehawk.caelum.render.glsl.GLSLEnumInType;
 import com.elusivehawk.caelum.render.glsl.GLSLEnumShaderType;
+import com.elusivehawk.caelum.render.glsl.ShaderAsset;
 import com.elusivehawk.caelum.render.glsl.ShaderParameter;
+import com.elusivehawk.caelum.render.glsl.Shaders;
+import com.elusivehawk.caelum.render.tex.Color;
+import com.elusivehawk.caelum.render.tex.ITexture;
+import com.elusivehawk.caelum.render.tex.PixelGrid;
+import com.elusivehawk.caelum.render.tex.Texture;
+import com.elusivehawk.util.math.MathHelper;
 
 /**
  * 
@@ -15,16 +24,65 @@ public final class RenderConst
 {
 	private RenderConst(){}
 	
-	public static final int SHADER_COUNT = GLSLEnumShaderType.values().length;
+	public static final GLSLEnumShaderType[] SHADER_TYPES = GLSLEnumShaderType.values();
+	public static final int SHADER_COUNT = SHADER_TYPES.length;
 	public static final int RECURSIVE_LIMIT = 8;
 	
-	public static final int VERTEX_I = 0;
-	public static final int TEXCOORD_I = 1;
-	public static final int NORMAL_I = 2;
-	public static final int SCALE_I = 3;
-	public static final int ROTATE_I = 4;
-	public static final int TRANS_I = 5;
-	public static final int MAT_I = 6;
+	public static final int VERTEX = 0;
+	public static final int TEXCOORD = 1;
+	public static final int NORMAL = 2;
+	public static final int SCALE = 3;
+	public static final int ROTATE = 4;
+	public static final int TRANS = 5;
+	public static final int MAT = 6;
+	
+	public static final String
+				GL_VERSION = GL1.glGetString(GLConst.GL_VERSION),
+				GL_VENDOR = GL1.glGetString(GLConst.GL_VENDOR),
+				GL_RENDERER = GL1.glGetString(GLConst.GL_RENDERER);
+	public static final int GL_MAX_TEX_COUNT = GL1.glGetInteger(GLConst.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS);
+	
+	public static final ITexture NO_TEX = new Texture(new PixelGrid(16, 16, ((grid) ->
+	{
+		for (int x = 0; x < grid.getWidth(); x++)
+		{
+			for (int y = 0; y < grid.getHeight(); y++)
+			{
+				grid.setPixel(x, y, MathHelper.isOdd(x) && MathHelper.isOdd(y) ? Color.PINK : Color.BLACK);
+				
+			}
+			
+		}
+		
+	})).scale(2));
+	
+	public static final Shaders SHADERS_3D = new Shaders(((shaders) ->
+	{
+		for (GLSLEnumShaderType type : SHADER_TYPES)
+		{
+			ShaderAsset sh = new ShaderAsset(String.format("/res/shaders/%s.glsl", type), type);
+			
+			sh.readLater();
+			
+			shaders.addShader(sh);
+			
+		}
+		
+	}));
+	
+	public static final Shaders SHADERS_2D = new Shaders(((shaders) ->
+	{
+		for (GLSLEnumShaderType type : SHADER_TYPES)
+		{
+			ShaderAsset sh = new ShaderAsset(String.format("/res/shaders/%s2d.glsl", type), type);
+			
+			sh.readLater();
+			
+			shaders.addShader(sh);
+			
+		}
+		
+	}));
 	
 	public static final ShaderParameter[] MATERIAL_PARAMS =
 		{

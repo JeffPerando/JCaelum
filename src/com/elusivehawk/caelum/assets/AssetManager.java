@@ -12,6 +12,7 @@ import com.elusivehawk.caelum.assets.readers.OBJAssetReader;
 import com.elusivehawk.caelum.assets.readers.PNGAssetReader;
 import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.Logger;
+import com.elusivehawk.util.parse.ParseHelper;
 import com.elusivehawk.util.storage.SyncList;
 import com.google.common.collect.Maps;
 
@@ -24,7 +25,7 @@ import com.google.common.collect.Maps;
 public final class AssetManager
 {
 	private final List<IAssetReceiver> receivers = SyncList.newList();
-	private final Map<EnumAssetType, List<Asset>> assets = Maps.newHashMap();
+	private final Map<String, IAsset> assets = Maps.newHashMap();
 	private final Map<String, IAssetReader> readers = Maps.newHashMap();
 	
 	private IAssetStreamer sProvider = this.getClass()::getResourceAsStream;
@@ -46,9 +47,9 @@ public final class AssetManager
 		
 	}
 	
-	public Object readObjectForAsset(Asset a, DataInputStream in)
+	public Object readObjectForAsset(IAsset a, DataInputStream in)
 	{
-		IAssetReader ar = this.getReader(a.ext);
+		IAssetReader ar = this.getReader(ParseHelper.getSuffix(a.getLocation(), "."));
 		
 		Object ret = null;
 		
@@ -95,78 +96,55 @@ public final class AssetManager
 		
 	}
 	
-	public Asset getExistingAsset(String filename, EnumAssetType type)
+	public IAsset getAsset(String path)
 	{
-		if (!this.assets.isEmpty())
-		{
-			List<Asset> assetList = this.assets.get(type);
-			
-			if (assetList == null)
-			{
-				return null;
-			}
-			
-			for (Asset a : assetList)
-			{
-				if (filename.endsWith(a.filepath))
-				{
-					return a;
-				}
-				
-			}
-			
-		}
-		
-		return null;
+		return this.assets.get(path);
 	}
 	
-	public void readAsset(Asset asset) throws Throwable
+	public void readAsset(IAsset asset) throws Throwable
 	{
-		Asset aDup = this.getExistingAsset(asset.filepath, asset.type);
+		IAsset aDup = this.getAsset(asset.getLocation());
 		
 		if (aDup != null)
 		{
-			asset.onExistingAssetFound(aDup);
+			if (aDup != asset)
+			{
+				asset.onDuplicateFound(aDup);
+				
+			}
 			
 			return;
 		}
 		
-		InputStream is = this.getIn(asset.filepath);
+		InputStream is = this.getIn(asset.getLocation());
 		
 		if (is == null)
 		{
-			Logger.log(EnumLogType.WARN, "Asset stream for \"%s\" cannot be null!", asset.filepath);
+			Logger.log(EnumLogType.WARN, "Asset stream for \"%s\" cannot be null!", asset.getLocation());
 			
 			return;
 		}
 		
 		DataInputStream in = new DataInputStream(is);
 		
-		if (asset.read(in))
+		try
 		{
-			List<Asset> assetList = this.assets.get(asset.type);
+			asset.read(in);
 			
-			if (assetList == null)
-			{
-				assetList = SyncList.newList();
-				
-				this.assets.put(asset.type, assetList);
-				
-			}
+		}
+		catch (Throwable e)
+		{
+			Logger.err("Error caught while reading asset %s", asset, e);
 			
-			if (!assetList.contains(asset))
-			{
-				assetList.add(asset);
-				
-				Iterator<IAssetReceiver> itr = this.receivers.iterator();
-				
-				while (itr.hasNext())
-				{
-					itr.next().onAssetLoaded(asset);
-					
-				}
-				
-			}
+		}
+		
+		this.assets.put(asset.getLocation(), asset);
+		
+		Iterator<IAssetReceiver> itr = this.receivers.iterator();
+		
+		while (itr.hasNext())
+		{
+			itr.next().onAssetLoaded(asset);
 			
 		}
 		

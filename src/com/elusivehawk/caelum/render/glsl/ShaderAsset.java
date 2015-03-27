@@ -3,7 +3,8 @@ package com.elusivehawk.caelum.render.glsl;
 
 import java.io.DataInputStream;
 import com.elusivehawk.caelum.assets.Asset;
-import com.elusivehawk.caelum.assets.EnumAssetType;
+import com.elusivehawk.caelum.assets.IAsset;
+import com.elusivehawk.caelum.render.Deletables;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
 import com.elusivehawk.caelum.render.RenderHelper;
@@ -22,22 +23,15 @@ public class ShaderAsset extends Asset implements IShader
 {
 	private final GLSLEnumShaderType gltype;
 	
-	private RenderContext boundRcon = null;
 	private boolean initiated = false;
 	
 	private String source;
 	private int id;
 	
+	@SuppressWarnings("unqualified-field-access")
 	public ShaderAsset(String filepath, GLSLEnumShaderType type)
 	{
-		this(filepath, type, false);
-		
-	}
-	
-	@SuppressWarnings("unqualified-field-access")
-	public ShaderAsset(String filepath, GLSLEnumShaderType type, boolean readNow)
-	{
-		super(filepath, EnumAssetType.SHADER, readNow);
+		super(filepath);
 		
 		gltype = type;
 		
@@ -70,8 +64,7 @@ public class ShaderAsset extends Asset implements IShader
 		{
 			this.id = glid;
 			
-			rcon.registerDeletable(this);
-			this.boundRcon = rcon;
+			Deletables.instance().register(this);
 			
 			synchronized (this)
 			{
@@ -108,21 +101,19 @@ public class ShaderAsset extends Asset implements IShader
 	}
 	
 	@Override
-	public void delete(RenderContext rcon)
+	public void delete()
 	{
 		if (!this.initiated)
 		{
 			return;
 		}
 		
-		assert rcon == this.boundRcon;
-		
 		GL2.glDeleteShader(this);
 		
 	}
 	
 	@Override
-	protected boolean readAsset(DataInputStream in) throws Throwable
+	public void read(DataInputStream in) throws Throwable
 	{
 		String src = IOHelper.readTextToOneLine(in);
 		
@@ -130,7 +121,7 @@ public class ShaderAsset extends Asset implements IShader
 		
 		if (src == null || src.equals(""))
 		{
-			return false;
+			throw new NullPointerException();
 		}
 		
 		synchronized (this)
@@ -144,27 +135,11 @@ public class ShaderAsset extends Asset implements IShader
 			throw new NullPointerException();
 		}
 		
-		return true;
 	}
 	
 	@Override
-	protected boolean disposeImpl(Object... args)
+	public void onDuplicateFound(IAsset a)
 	{
-		if (!this.initiated)
-		{
-			return false;
-		}
-		
-		this.boundRcon.scheduleDeletion(this);
-		
-		return true;
-	}
-	
-	@Override
-	public void onExistingAssetFound(Asset a)
-	{
-		super.onExistingAssetFound(a);
-		
 		if (a instanceof ShaderAsset)
 		{
 			ShaderAsset s = (ShaderAsset)a;
@@ -174,7 +149,6 @@ public class ShaderAsset extends Asset implements IShader
 			synchronized (this)
 			{
 				this.initiated = s.initiated;
-				this.boundRcon = s.boundRcon;
 				this.source = s.source;
 				this.id = s.id;
 				

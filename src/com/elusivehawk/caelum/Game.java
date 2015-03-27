@@ -1,6 +1,7 @@
 
 package com.elusivehawk.caelum;
 
+import com.elusivehawk.caelum.render.DisplaySettings;
 import com.elusivehawk.util.IPausable;
 
 /**

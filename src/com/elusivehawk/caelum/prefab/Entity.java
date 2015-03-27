@@ -109,9 +109,9 @@ public class Entity implements IDisposable, IUpdatable, IRenderer
 	}
 	
 	@Override
-	public void dispose(Object... args)
+	public void dispose()
 	{
-		this.children.forEach(((comp) -> {comp.dispose(args);}));
+		this.children.forEach(((comp) -> {comp.dispose();}));
 		
 	}
 	

@@ -2,6 +2,8 @@
 package com.elusivehawk.caelum;
 
 import java.io.Closeable;
+import com.elusivehawk.caelum.render.Display;
+import com.elusivehawk.caelum.render.DisplaySettings;
 
 /**
  * 

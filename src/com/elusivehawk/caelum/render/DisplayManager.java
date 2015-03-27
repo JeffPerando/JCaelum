@@ -1,9 +1,10 @@
 
-package com.elusivehawk.caelum;
+package com.elusivehawk.caelum.render;
 
 import java.io.Closeable;
 import java.util.List;
-import com.elusivehawk.caelum.render.IRenderer;
+import com.elusivehawk.caelum.CaelumEngine;
+import com.elusivehawk.util.DelayedUpdater;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.ShutdownHelper;
@@ -17,6 +18,11 @@ import com.elusivehawk.util.storage.SyncList;
  */
 public final class DisplayManager implements Closeable, IUpdatable
 {
+	private final DelayedUpdater cleaner = new DelayedUpdater(1.0, ((delta) ->
+	{
+		Deletables.instance().cleanup();
+		
+	}));
 	private final List<Display> displays = SyncList.newList();
 	
 	@Override
@@ -41,6 +47,8 @@ public final class DisplayManager implements Closeable, IUpdatable
 			}
 			
 		}
+		
+		this.cleaner.update(delta);
 		
 		if (this.displays.isEmpty() && !CaelumEngine.game().isGameHeadless())
 		{

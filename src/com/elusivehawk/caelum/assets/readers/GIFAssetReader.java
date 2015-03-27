@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
 import com.elusivehawk.caelum.CaelumException;
-import com.elusivehawk.caelum.assets.Asset;
+import com.elusivehawk.caelum.assets.IAsset;
 import com.elusivehawk.caelum.assets.IAssetReader;
 import com.elusivehawk.caelum.render.tex.Color;
 import com.elusivehawk.caelum.render.tex.ColorFilter;
@@ -47,7 +47,7 @@ public class GIFAssetReader implements IAssetReader
 			L_COLOR_TABLE_SIZE=	0b00000111;
 	
 	@Override
-	public Object readAsset(Asset asset, DataInputStream in) throws Throwable
+	public Object readAsset(IAsset asset, DataInputStream in) throws Throwable
 	{
 		byte[] sig = new byte[3];
 		

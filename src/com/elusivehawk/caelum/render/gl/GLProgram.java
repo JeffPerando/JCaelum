@@ -53,7 +53,7 @@ public final class GLProgram extends GLObject implements IDirty
 	}
 	
 	@Override
-	public boolean isBound(RenderContext rcon)
+	public boolean isBound()
 	{
 		return this.id != 0 && GL1.glGetInteger(GLConst.GL_CURRENT_PROGRAM) == this.id;
 	}
@@ -103,7 +103,7 @@ public final class GLProgram extends GLObject implements IDirty
 	}
 	
 	@Override
-	protected void deleteImpl(RenderContext rcon)
+	protected void deleteImpl()
 	{
 		GL2.glDeleteProgram(this);
 		

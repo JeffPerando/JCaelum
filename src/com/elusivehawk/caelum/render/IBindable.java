@@ -13,6 +13,6 @@ public interface IBindable
 	
 	void unbind(RenderContext rcon);
 	
-	boolean isBound(RenderContext rcon);
+	boolean isBound();
 	
 }

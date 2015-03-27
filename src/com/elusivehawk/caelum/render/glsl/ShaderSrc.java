@@ -1,6 +1,7 @@
 
 package com.elusivehawk.caelum.render.glsl;
 
+import com.elusivehawk.caelum.render.Deletables;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
 import com.elusivehawk.caelum.render.RenderHelper;
@@ -18,7 +19,6 @@ public class ShaderSrc implements IShader
 	private final String src;
 	
 	private int id = 0;
-	private RenderContext boundRcon = null;
 	private boolean compiled = false;
 	
 	public ShaderSrc(GLSLEnumShaderType stype, ShaderBuilder builder)
@@ -36,26 +36,19 @@ public class ShaderSrc implements IShader
 		src = source;
 		
 	}
-
+	
 	@Override
-	public void delete(RenderContext rcon)
-	{
-		GL2.glDeleteShader(this.id);
-		
-	}
-
-	@Override
-	public void dispose(Object... args)
+	public void delete()
 	{
 		if (!this.compiled)
 		{
 			return;
 		}
 		
-		this.boundRcon.scheduleDeletion(this);
+		GL2.glDeleteShader(this.id);
 		
 	}
-
+	
 	@Override
 	public void compile(RenderContext rcon) throws RenderException
 	{
@@ -66,9 +59,7 @@ public class ShaderSrc implements IShader
 		
 		int glid = RenderHelper.compileShader(this);
 		
-		rcon.registerDeletable(this);
-		
-		this.boundRcon = rcon;
+		Deletables.instance().register(this);
 		
 		synchronized (this)
 		{

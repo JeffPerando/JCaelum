@@ -1,6 +1,7 @@
 
 package com.elusivehawk.caelum;
 
+import com.elusivehawk.caelum.render.DisplayManager;
 import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.concurrent.ThreadTimed;
 

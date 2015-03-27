@@ -5,7 +5,7 @@ import java.io.DataInputStream;
 import java.nio.FloatBuffer;
 import java.util.List;
 import com.elusivehawk.caelum.CaelumException;
-import com.elusivehawk.caelum.assets.Asset;
+import com.elusivehawk.caelum.assets.IAsset;
 import com.elusivehawk.caelum.assets.IAssetReader;
 import com.elusivehawk.caelum.render.MeshData;
 import com.elusivehawk.caelum.render.ModelPoint;
@@ -24,7 +24,7 @@ import com.google.common.collect.Lists;
 public class OBJAssetReader implements IAssetReader
 {
 	@Override
-	public Object readAsset(Asset asset, DataInputStream in) throws Throwable
+	public Object readAsset(IAsset asset, DataInputStream in) throws Throwable
 	{
 		List<VectorF> positions = Lists.newArrayList(),
 				texCoords = Lists.newArrayList(),

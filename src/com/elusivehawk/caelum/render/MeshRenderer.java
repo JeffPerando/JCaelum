@@ -48,7 +48,6 @@ public class MeshRenderer extends ProgramRenderable implements IComponent, Quate
 	private final DirtableStorage<Material> mat = new DirtableStorage<Material>().setSync();
 	
 	private final GLVertexArray vao = new GLVertexArray();
-	private final GLBuffer meshbuf = new GLBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER);
 	private final GLBuffer animbuf = new GLBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER);
 	
 	private FloatBuffer buf = null;
@@ -74,7 +73,7 @@ public class MeshRenderer extends ProgramRenderable implements IComponent, Quate
 	}
 	
 	@Override
-	public void dispose(Object... args)
+	public void dispose()
 	{
 		// TODO Auto-generated method stub
 		
@@ -192,6 +191,12 @@ public class MeshRenderer extends ProgramRenderable implements IComponent, Quate
 			return false;
 		}
 		
+		if (!data.isLoaded())
+		{
+			data.load(rcon);
+			
+		}
+		
 		FloatBuffer vtx = data.vertex;
 		IntBuffer ind = data.indices;
 		
@@ -208,36 +213,16 @@ public class MeshRenderer extends ProgramRenderable implements IComponent, Quate
 			
 		}
 		
-		this.buf = BufferHelper.createFloatBuffer(vtx.capacity() / 3 * 16 * 4);
+		this.buf = BufferHelper.createFloatBuffer(vtx.capacity() / 3 * 16 * 3);
 		
-		this.meshbuf.init(rcon, vtx, GLEnumDataUsage.GL_STATIC_DRAW);
 		this.animbuf.init(rcon, this.buf, GLEnumDataUsage.GL_DYNAMIC_DRAW);
 		
-		int size = 12 + (data.useTex ? data.texSize * 4 : 0) + (data.useNorm ? 12 : 0);
+		this.animbuf.addAttrib(RenderConst.SCALE, 4, GLConst.GL_FLOAT, 48, 0);
+		this.animbuf.addAttrib(RenderConst.ROTATE, 4, GLConst.GL_FLOAT, 48, 16);
+		this.animbuf.addAttrib(RenderConst.TRANS, 4, GLConst.GL_FLOAT, 48, 32);
 		
-		this.meshbuf.addAttrib(0, 3, GLConst.GL_FLOAT, size, 0);
-		
-		int off = 12;
-		
-		if (data.useTex)
-		{
-			this.meshbuf.addAttrib(1, data.texSize, GLConst.GL_FLOAT, size, off);
-			off += (data.texSize * 4);
-			
-		}
-		
-		if (data.useNorm)
-		{
-			this.meshbuf.addAttrib(2, 3, GLConst.GL_FLOAT, size, off);
-			
-		}
-		
-		this.animbuf.addAttrib(3, 4, GLConst.GL_FLOAT, 64, 0);
-		this.animbuf.addAttrib(4, 4, GLConst.GL_FLOAT, 64, 16);
-		this.animbuf.addAttrib(5, 4, GLConst.GL_FLOAT, 64, 32);
-		this.animbuf.addAttrib(6, 4, GLConst.GL_FLOAT, 64, 48);
-		
-		this.vao.addVBO(this.meshbuf);
+		this.vao.addVBO(data.getVBO());
+		this.vao.addVBO(data.getIBO());
 		this.vao.addVBO(this.animbuf);
 		
 		if (ind != null)

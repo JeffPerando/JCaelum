@@ -1,120 +1,37 @@
 
 package com.elusivehawk.caelum.assets;
 
-import java.io.DataInputStream;
-import com.elusivehawk.caelum.CaelumEngine;
-import com.elusivehawk.caelum.IDisposable;
-import com.elusivehawk.util.Internal;
-import com.elusivehawk.util.Logger;
-import com.elusivehawk.util.parse.ParseHelper;
-import com.elusivehawk.util.parse.json.IJsonSerializer;
-
 /**
  * 
  * 
  * 
  * @author Elusivehawk
  */
-public abstract class Asset implements IJsonSerializer, IDisposable
+public abstract class Asset implements IAsset
 {
-	public final String filepath, ext;
-	public final EnumAssetType type;
+	private final String path;
 	
-	private boolean read = false, disposed = false;
-	
-	protected Asset(String path)
-	{
-		this(path, EnumAssetType.OTHER);
-		
-	}
-	
-	protected Asset(String path, EnumAssetType aType)
-	{
-		this(path, aType, false);
-		
-	}
+	protected boolean read = false;
 	
 	@SuppressWarnings("unqualified-field-access")
-	protected Asset(String path, EnumAssetType aType, boolean readNow)
+	public Asset(String loc)
 	{
-		assert path != null && !path.equals("");
-		assert aType != null;
+		assert loc != null && !loc.isEmpty();
 		
-		filepath = path;
-		type = aType;
-		ext = ParseHelper.getSuffix(path, ".");
-		
-		if (readNow)
-		{
-			try
-			{
-				CaelumEngine.assets().readAsset(this);
-				
-			}
-			catch (Throwable e)
-			{
-				Logger.err("Failed to read asset %s", e, this);
-				
-			}
-			
-		}
-		else
-		{
-			CaelumEngine.tasks().scheduleTask(new TaskLoadAsset(this));
-			
-		}
+		path = loc;
 		
 	}
 	
 	@Override
-	public void dispose(Object... args)
+	public String getLocation()
 	{
-		if (this.disposed)
-		{
-			return;
-		}
-		
-		if (!this.isRead())
-		{
-			return;
-		}
-		
-		this.disposed = this.disposeImpl(args);
-		
+		return this.path;
 	}
-	
+
 	@Override
-	public String toJson(int tabs)
-	{
-		return this.toString();
-	}
-	
-	@Override
-	public String toString()
-	{
-		return String.format("\"%s\"", this.filepath);
-	}
-	
-	public final boolean isRead()
+	public boolean isRead()
 	{
 		return this.read;
 	}
-	
-	@Internal
-	public void onExistingAssetFound(Asset a)
-	{
-		this.read = a.read;
-		
-	}
-	
-	@Internal
-	public final boolean read(DataInputStream in) throws Throwable
-	{
-		return this.read ? true : (this.read = this.readAsset(in));
-	}
-	
-	protected abstract boolean readAsset(DataInputStream in) throws Throwable;
-	
-	protected abstract boolean disposeImpl(Object... args);
 	
 }

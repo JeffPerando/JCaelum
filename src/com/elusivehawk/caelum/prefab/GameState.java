@@ -54,9 +54,9 @@ public class GameState extends AbstractGameComponent
 	}
 	
 	@Override
-	public void dispose(Object... args)
+	public void dispose()
 	{
-		this.renderers.forEach(((r) -> {r.dispose(args);}));
+		this.renderers.forEach(((r) -> {r.dispose();}));
 		
 	}
 	

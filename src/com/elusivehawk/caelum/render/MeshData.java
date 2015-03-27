@@ -4,6 +4,10 @@ package com.elusivehawk.caelum.render;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import com.elusivehawk.caelum.CaelumException;
+import com.elusivehawk.caelum.render.gl.GLBuffer;
+import com.elusivehawk.caelum.render.gl.GLConst;
+import com.elusivehawk.caelum.render.gl.GLEnumBufferTarget;
+import com.elusivehawk.caelum.render.gl.GLEnumDataUsage;
 import com.elusivehawk.util.MakeStruct;
 import com.elusivehawk.util.math.VectorF;
 import com.elusivehawk.util.parse.json.JsonArray;
@@ -25,6 +29,9 @@ public class MeshData
 	public final boolean isTriStrip, useTex, useNorm;
 	public final int texSize;
 	
+	private GLBuffer vbo = null, glind = null;
+	private boolean loaded = false;
+	
 	@SuppressWarnings("unqualified-field-access")
 	public MeshData(FloatBuffer vtx, IntBuffer ind, VectorF vec, boolean strip, boolean tex3d, boolean tex, boolean norm)
 	{
@@ -40,20 +47,65 @@ public class MeshData
 		
 	}
 	
+	public GLBuffer getVBO()
+	{
+		return this.vbo;
+	}
+	
+	public GLBuffer getIBO()
+	{
+		return this.glind;
+	}
+	
+	public boolean isLoaded()
+	{
+		return this.loaded;
+	}
+	
+	public void load(RenderContext rcon)
+	{
+		if (!this.loaded)
+		{
+			this.vbo = new GLBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, this.vertex, GLEnumDataUsage.GL_STATIC_DRAW, rcon, ((buf) ->
+			{
+				int stride = 12 + (this.useTex ? this.texSize * 4 : 0) + (this.useNorm ? 12 : 0);
+				
+				buf.addAttrib(RenderConst.VERTEX, 12, GLConst.GL_FLOAT, stride, 0);
+				
+				if (this.useTex)
+				{
+					buf.addAttrib(RenderConst.TEXCOORD, this.texSize * 4, GLConst.GL_FLOAT, stride, 0);
+					
+				}
+				
+				if (this.useNorm)
+				{
+					buf.addAttrib(RenderConst.NORMAL, 12, GLConst.GL_FLOAT, stride, 0);
+					
+				}
+				
+			}));
+			
+			this.glind = new GLBuffer(GLEnumBufferTarget.GL_ELEMENT_ARRAY_BUFFER, this.indices, GLEnumDataUsage.GL_STATIC_DRAW, rcon);
+			
+			this.loaded = true;
+			
+		}
+		
+	}
+	
 	public static MeshData fromJson(JsonObject json)
 	{
-		boolean strip = json.getValue("strip", Boolean.class, false);
-		boolean vtx3d = json.getValue("3dMesh", Boolean.class, true);
-		boolean tex3d = json.getValue("3dTex", Boolean.class, false);
+		boolean strip = json.getBool("strip");
+		boolean tex3d = json.getBool("3dTex");
 		
-		int vtxSize = vtx3d ? 3 : 2;
 		int texSize = tex3d ? 3 : 2;
 		
 		JsonArray vtxJson = json.getValue("vertices", JsonArray.class);
 		
-		if (vtxJson.length() % vtxSize != 0)
+		if (vtxJson.length() % 3 != 0)
 		{
-			throw new CaelumException("The length of JSON array \"vertices\" is not divisible by %s", vtxSize);
+			throw new CaelumException("The length of JSON array \"vertices\" is not divisible by 3");
 		}
 		
 		int length = vtxJson.length();
@@ -67,7 +119,7 @@ public class MeshData
 				throw new CaelumException("The length of JSON array \"texOffs\" is not divisible by %s", texSize);
 			}
 			
-			if (texJson.length() / texSize != vtxJson.length() / vtxSize)
+			if (texJson.length() / texSize != vtxJson.length() / 3)
 			{
 				throw new CaelumException("The length of JSON array \"texOffs\" contains a different number of indices than \"vertices\"");
 			}
@@ -97,18 +149,18 @@ public class MeshData
 		
 		for (int c = 0; c < vtxJson.length(); c += 3)
 		{
-			vtx.put(vtxJson.getValue(vtxI++, Number.class).floatValue());
-			vtx.put(vtxJson.getValue(vtxI++, Number.class).floatValue());
-			vtx.put(vtx3d ? vtxJson.getValue(vtxI++, Number.class).floatValue() : 0f);
+			vtx.put(vtxJson.getFloat(vtxI++));
+			vtx.put(vtxJson.getFloat(vtxI++));
+			vtx.put(vtxJson.getFloat(vtxI++));
 			
 			if (texJson != null)
 			{
-				vtx.put(texJson.getValue(texI++, Number.class).floatValue());
-				vtx.put(texJson.getValue(texI++, Number.class).floatValue());
+				vtx.put(texJson.getFloat(texI++));
+				vtx.put(texJson.getFloat(texI++));
 				
 				if (tex3d)
 				{
-					vtx.put(texJson.getValue(texI++, Number.class).floatValue());
+					vtx.put(texJson.getFloat(texI++));
 					
 				}
 				
@@ -116,9 +168,9 @@ public class MeshData
 			
 			if (normJson != null)
 			{
-				vtx.put(normJson.getValue(normI++, Number.class).floatValue());
-				vtx.put(normJson.getValue(normI++, Number.class).floatValue());
-				vtx.put(normJson.getValue(normI++, Number.class).floatValue());
+				vtx.put(normJson.getFloat(normI++));
+				vtx.put(normJson.getFloat(normI++));
+				vtx.put(normJson.getFloat(normI++));
 				
 			}
 			
@@ -150,7 +202,7 @@ public class MeshData
 			
 			for (int c = 0; c < indJson.length(); c++)
 			{
-				indices.put(indJson.getValue(c, Long.class, 0L).intValue());
+				indices.put(indJson.getInt(c));
 				
 			}
 			

@@ -3,11 +3,11 @@ package com.elusivehawk.caelum.lwjgl;
 
 import java.nio.DoubleBuffer;
 import org.lwjgl.glfw.GLFW;
-import com.elusivehawk.caelum.Display;
 import com.elusivehawk.caelum.input.IInputImpl;
 import com.elusivehawk.caelum.input.Input;
 import com.elusivehawk.caelum.input.InputConst;
 import com.elusivehawk.caelum.input.Mouse;
+import com.elusivehawk.caelum.render.Display;
 import com.elusivehawk.caelum.render.tex.ColorFormat;
 import com.elusivehawk.caelum.render.tex.ILegibleImage;
 import com.elusivehawk.util.storage.BufferHelper;

@@ -22,7 +22,7 @@ public class SoundSource implements IDisposable
 	private VectorF pos = new VectorF(), vel = new VectorF();
 	
 	@SuppressWarnings("unqualified-field-access")
-	public SoundSource(SoundClient sClient, ISoundBuffer buf)
+	public SoundSource(SoundClient sClient)
 	{
 		assert sClient != null;
 		
@@ -31,7 +31,7 @@ public class SoundSource implements IDisposable
 	}
 	
 	@Override
-	public void dispose(Object... args)
+	public void dispose()
 	{
 		this.client.scheduleSourceForDeletion(this);
 		
@@ -139,7 +139,7 @@ public class SoundSource implements IDisposable
 		return this.vel;
 	}
 	
-	public boolean play(ISoundBuffer buffer)
+	public boolean play(SoundBuffer buffer)
 	{
 		if (buffer == null)
 		{

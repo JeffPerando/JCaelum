@@ -2,7 +2,6 @@
 package com.elusivehawk.caelum.render;
 
 import org.lwjgl.glfw.GLFW;
-import com.elusivehawk.caelum.DisplayManager;
 import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.concurrent.ThreadTimed;
@@ -43,6 +42,11 @@ public final class ThreadGameRender extends ThreadTimed
 		}
 		
 		GLFW.glfwDefaultWindowHints();
+		
+		Logger.verbose("OpenGL version: %s", RenderConst.GL_VERSION);
+		Logger.verbose("OpenGL vendor: %s", RenderConst.GL_VENDOR);
+		Logger.verbose("OpenGL renderer: %s", RenderConst.GL_RENDERER);
+		Logger.verbose("OpenGL texture count: %s", RenderConst.GL_MAX_TEX_COUNT);
 		
 		return true;
 	}

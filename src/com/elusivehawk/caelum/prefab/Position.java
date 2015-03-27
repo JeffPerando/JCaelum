@@ -39,7 +39,7 @@ public class Position extends VectorF implements IComponent
 	}
 	
 	@Override
-	public void dispose(Object... args){}
+	public void dispose(){}
 	
 	@Override
 	public void initiate(Entity parent){}

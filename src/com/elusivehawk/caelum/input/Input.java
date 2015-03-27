@@ -4,7 +4,7 @@ package com.elusivehawk.caelum.input;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.List;
-import com.elusivehawk.caelum.Display;
+import com.elusivehawk.caelum.render.Display;
 import com.elusivehawk.util.Dirtable;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.storage.SyncList;

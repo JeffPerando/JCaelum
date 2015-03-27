@@ -5,7 +5,6 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import com.elusivehawk.util.parse.json.IJsonSerializer;
 import com.elusivehawk.util.parse.json.JsonObject;
-import com.elusivehawk.util.parse.json.JsonParseException;
 import com.elusivehawk.util.storage.Bitmask;
 import com.elusivehawk.util.storage.BufferHelper;
 
@@ -84,28 +83,21 @@ public class Color implements IJsonSerializer
 		
 		for (ColorFilter filter : cf.filters)
 		{
-			Object color = json.getValue(filter.toString());
+			Number color = json.getValue(filter.toString(), Number.class);
 			
 			if (color == null)
 			{
 				continue;
 			}
 			
-			if (!(color instanceof Number))
-			{
-				throw new JsonParseException("Invalid value for JSON key \"%s\": %s", filter.toString(), color);
-			}
-			
-			Number n = (Number)color;
-			
 			if (color instanceof Double)
 			{
-				setColor(filter, n.floatValue());
+				setColor(filter, color.floatValue());
 				
 			}
 			else if (color instanceof Long)
 			{
-				setColor(filter, n.intValue());
+				setColor(filter, color.intValue());
 				
 			}
 			

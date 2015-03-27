@@ -1,18 +1,18 @@
 
-package com.elusivehawk.caelum;
+package com.elusivehawk.caelum.render;
 
 import java.io.Closeable;
+import com.elusivehawk.caelum.CaelumException;
+import com.elusivehawk.caelum.IDisplayImpl;
 import com.elusivehawk.caelum.input.InputManager;
 import com.elusivehawk.caelum.lwjgl.LWJGLDisplayImpl;
-import com.elusivehawk.caelum.render.IRenderer;
-import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.gl.GL1;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.Logger;
 
 /**
  * 
- * Core class for the Caelum Engine's display system.
+ * 
  * 
  * @author Elusivehawk
  */
@@ -62,7 +62,6 @@ public class Display implements Closeable, IUpdatable
 		{
 			try
 			{
-				this.rcon.close();
 				this.input.close();
 				this.impl.close();
 				
@@ -132,10 +131,8 @@ public class Display implements Closeable, IUpdatable
 			
 		}
 		
-		if (!this.rcon.initContext())
-		{
-			return;
-		}
+		GL1.glViewport(this);
+		GL1.glClearColor(this.settings.bg);
 		
 		this.impl.postInit();
 		
