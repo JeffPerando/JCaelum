@@ -14,7 +14,9 @@ import com.elusivehawk.util.MakeStruct;
 @MakeStruct
 public class DisplaySettings
 {
-	public String title = "Caelum Engine Game (Now with multiple window support!)";
+	public String
+				title = "Caelum Engine Game (Now with more code!)",
+				monitor = "default";
 	public int width = 800, height = 600;
 	public boolean resize = false;
 	public boolean fullscreen = false;

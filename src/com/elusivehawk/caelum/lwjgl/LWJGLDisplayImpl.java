@@ -3,11 +3,13 @@ package com.elusivehawk.caelum.lwjgl;
 
 import java.io.IOException;
 import java.nio.IntBuffer;
+import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GLContext;
 import com.elusivehawk.caelum.CaelumException;
 import com.elusivehawk.caelum.DisplaySettings;
 import com.elusivehawk.caelum.IDisplayImpl;
+import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.storage.BufferHelper;
 
 /**
@@ -36,7 +38,36 @@ public class LWJGLDisplayImpl implements IDisplayImpl
 	@Override
 	public void createDisplay(DisplaySettings settings) throws Exception
 	{
-		this.id = GLFW.glfwCreateWindow(settings.width, settings.height, settings.title, settings.fullscreen ? GLFW.glfwGetPrimaryMonitor() : 0/*TODO Implement >1 monitor support*/, 0);
+		long monitor = 0;
+		
+		if (settings.monitor == null)
+		{
+			monitor = GLFW.glfwGetPrimaryMonitor();
+			
+		}
+		else
+		{
+			PointerBuffer monitors = GLFW.glfwGetMonitors();
+			
+			for (int c = 0; c < monitors.limit(); c++)
+			{
+				long m = monitors.get(c);
+				String name = GLFW.glfwGetMonitorName(m);
+				
+				Logger.debug("Found display %s", name);
+				
+				if (name.equalsIgnoreCase(settings.monitor))
+				{
+					monitor = m;
+					break;
+					
+				}
+				
+			}
+			
+		}
+		
+		this.id = GLFW.glfwCreateWindow(settings.width, settings.height, settings.title, settings.fullscreen ? monitor : 0/*TODO Implement >1 monitor support*/, 1/*Enables for resource sharing*/);
 		
 		if (this.id == 0)
 		{
