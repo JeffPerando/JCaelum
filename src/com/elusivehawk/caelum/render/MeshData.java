@@ -21,7 +21,7 @@ import com.elusivehawk.util.storage.BufferHelper;
  * @author Elusivehawk
  */
 @MakeStruct
-public class MeshData
+public class MeshData implements IDeletable
 {
 	public final FloatBuffer vertex;
 	public final IntBuffer indices;
@@ -44,6 +44,18 @@ public class MeshData
 		texSize = tex3d ? 3 : 2;
 		useTex = tex;
 		useNorm = norm;
+		
+	}
+	
+	@Override
+	public void delete()
+	{
+		if (this.loaded)
+		{
+			this.vbo.delete();
+			this.glind.delete();
+			
+		}
 		
 	}
 	
