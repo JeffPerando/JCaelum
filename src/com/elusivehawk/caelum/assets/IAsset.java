@@ -2,7 +2,9 @@
 package com.elusivehawk.caelum.assets;
 
 import java.io.DataInputStream;
+import com.elusivehawk.caelum.CaelumEngine;
 import com.elusivehawk.caelum.IDisposable;
+import com.elusivehawk.util.Logger;
 
 /**
  * 
@@ -18,6 +20,8 @@ public interface IAsset extends IDisposable
 	
 	void read(DataInputStream in) throws Throwable;
 	
+	void onRead();
+	
 	void onDuplicateFound(IAsset asset);
 	
 	default IAsset readNow()
@@ -27,19 +31,27 @@ public interface IAsset extends IDisposable
 	
 	default IAsset readLater()
 	{
-		return this.readAsset(true);
+		return this.readAsset(false);
 	}
 	
 	default IAsset readAsset(boolean now)
 	{
 		if (now)
 		{
-			//CaelumEngine.assets().readAsset(this);
+			try
+			{
+				CaelumEngine.assets().readAsset(this);
+			}
+			catch (Throwable e)
+			{
+				Logger.err(e);
+				
+			}
 			
 		}
 		else
 		{
-			//CaelumEngine.tasks().scheduleTask(new TaskLoadAsset(this));
+			CaelumEngine.tasks().scheduleTask(new TaskLoadAsset(this));
 			
 		}
 		

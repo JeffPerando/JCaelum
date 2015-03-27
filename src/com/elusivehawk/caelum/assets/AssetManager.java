@@ -137,8 +137,15 @@ public final class AssetManager
 			Logger.err("Error caught while reading asset %s", asset, e);
 			
 		}
+		finally
+		{
+			in.close();
+			
+		}
 		
 		this.assets.put(asset.getLocation(), asset);
+		
+		asset.onRead();
 		
 		Iterator<IAssetReceiver> itr = this.receivers.iterator();
 		
@@ -147,8 +154,6 @@ public final class AssetManager
 			itr.next().onAssetLoaded(asset);
 			
 		}
-		
-		in.close();
 		
 	}
 	

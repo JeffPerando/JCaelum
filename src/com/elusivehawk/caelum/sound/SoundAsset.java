@@ -58,6 +58,13 @@ public class SoundAsset extends SoundBuffer implements IAsset
 	}
 	
 	@Override
+	public void onRead()
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
 	public void onDuplicateFound(IAsset asset)
 	{
 		// TODO Auto-generated method stub

@@ -79,6 +79,9 @@ public class TextureAsset extends Texture implements IAsset
 	}
 	
 	@Override
+	public void onRead(){}
+	
+	@Override
 	public void onDuplicateFound(IAsset a)
 	{
 		assert a instanceof TextureAsset;
