@@ -33,8 +33,6 @@ public interface IGameEnvironment
 	
 	ImmutableList<String> getNatives();
 	
-	IDisplayImpl createDisplay() throws Throwable;
-	
 	IInputImpl createInputImpl(Class<? extends Input> type);
 	
 }

@@ -47,7 +47,7 @@ public class LWJGLMouseImpl implements IInputImpl
 		Display display = input.getDisplay();
 		Mouse mouse = (Mouse)input;
 		
-		long window = ((LWJGLDisplayImpl)display.getImpl()).getWindowId();
+		long window = display.getId();
 		
 		this.x.position(0);
 		this.y.position(0);

@@ -135,7 +135,7 @@ public class LWJGLKeyboardImpl implements IInputImpl
 	{
 		Keyboard kb = (Keyboard)input;
 		
-		long window = ((LWJGLDisplayImpl)input.getDisplay().getImpl()).getWindowId();
+		long window = input.getDisplay().getId();
 		
 		for (Tuple<Integer, Key> t : GLFW_ENUMS)
 		{
