@@ -1,6 +1,7 @@
 
 package com.elusivehawk.caelum.render.gl;
 
+import com.elusivehawk.caelum.render.RenderConst;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.glsl.GLSLEnumShaderType;
 import com.elusivehawk.caelum.render.glsl.IShader;
@@ -24,7 +25,7 @@ public final class GLProgram extends GLObject implements IDirty
 	
 	public GLProgram()
 	{
-		this(new Shaders());
+		this(RenderConst.SHADERS_3D);
 		
 	}
 	
