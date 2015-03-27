@@ -37,9 +37,7 @@ public abstract class Renderable implements IDisposable, IRenderer
 			
 		}
 		
-		this.preRenderImpl(rcon);
-		
-		this.preRendered = true;
+		this.preRendered = this.preRenderImpl(rcon);
 		
 	}
 	
@@ -87,7 +85,7 @@ public abstract class Renderable implements IDisposable, IRenderer
 	
 	protected abstract boolean initiate(RenderContext rcon);
 	
-	protected abstract void preRenderImpl(RenderContext rcon) throws RenderException;
+	protected abstract boolean preRenderImpl(RenderContext rcon) throws RenderException;
 	
 	protected abstract void renderImpl(RenderContext rcon) throws RenderException;
 	

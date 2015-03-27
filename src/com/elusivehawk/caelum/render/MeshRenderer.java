@@ -34,8 +34,6 @@ import com.elusivehawk.util.storage.DirtableStorage;
  */
 public class MeshRenderer extends ProgramRenderable implements IComponent, QuaternionF.Listener, VectorF.Listener
 {
-	private final IMeshDataProvider mesh;
-	
 	private final VectorF
 			offset = new VectorF(),
 			pos = new VectorF(),
@@ -46,6 +44,7 @@ public class MeshRenderer extends ProgramRenderable implements IComponent, Quate
 			rot = new QuaternionF();
 	
 	private final DirtableStorage<Material> mat = new DirtableStorage<Material>().setSync();
+	private final DirtableStorage<MeshData> mesh = new DirtableStorage<MeshData>().setSync();
 	
 	private final GLVertexArray vao = new GLVertexArray();
 	private final GLBuffer animbuf = new GLBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER);
@@ -55,20 +54,30 @@ public class MeshRenderer extends ProgramRenderable implements IComponent, Quate
 	
 	private int texFrame = 0, polyCount = 0;
 	
-	public MeshRenderer(IMeshDataProvider m)
+	public MeshRenderer()
+	{
+		this(new GLProgram());
+		
+	}
+	
+	public MeshRenderer(GLProgram p)
+	{
+		this(p, null);
+		
+	}
+	
+	public MeshRenderer(MeshData m)
 	{
 		this(new GLProgram(), m);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public MeshRenderer(GLProgram program, IMeshDataProvider m)
+	public MeshRenderer(GLProgram program, MeshData m)
 	{
 		super(program);
 		
-		assert m != null;
-		
-		mesh = m;
+		mesh.set(m);
 		
 	}
 	
@@ -145,8 +154,24 @@ public class MeshRenderer extends ProgramRenderable implements IComponent, Quate
 	}
 	
 	@Override
-	public void preRenderImpl(RenderContext rcon)
+	public boolean preRenderImpl(RenderContext rcon)
 	{
+		if (this.mesh.isNull())
+		{
+			return false;
+		}
+		
+		if (this.mesh.isDirty())
+		{
+			this.mesh.setIsDirty(false);
+			
+			if (!this.loadMesh(rcon))
+			{
+				return false;
+			}
+			
+		}
+		
 		if (!this.mat.isNull())
 		{
 			this.mat.get().preRender(rcon);
@@ -168,6 +193,7 @@ public class MeshRenderer extends ProgramRenderable implements IComponent, Quate
 			
 		}
 		
+		return true;
 	}
 	
 	@Override
@@ -184,7 +210,18 @@ public class MeshRenderer extends ProgramRenderable implements IComponent, Quate
 	@Override
 	protected boolean initiate(RenderContext rcon)
 	{
-		MeshData data = this.mesh.getData();
+		return this.loadMesh(rcon);
+	}
+	
+	@Override
+	public String toString()
+	{
+		return String.format("%s:%s-%s-%s", this.mesh, this.pos.toString(), this.scale.toString(), this.rot.toString());
+	}
+	
+	private boolean loadMesh(RenderContext rcon)
+	{
+		MeshData data = this.mesh.get();
 		
 		if (data == null)
 		{
@@ -225,24 +262,17 @@ public class MeshRenderer extends ProgramRenderable implements IComponent, Quate
 		this.vao.addVBO(data.getIBO());
 		this.vao.addVBO(this.animbuf);
 		
-		if (ind != null)
-		{
-			this.vao.addVBO(new GLBuffer(GLEnumBufferTarget.GL_ELEMENT_ARRAY_BUFFER, ind, GLEnumDataUsage.GL_STATIC_DRAW, rcon));
-			
-		}
-		
 		return true;
 	}
 	
-	@Override
-	public String toString()
+	public MeshData getMesh()
 	{
-		return String.format("%s:%s-%s-%s", this.mesh, this.pos.toString(), this.scale.toString(), this.rot.toString());
+		return this.mesh.get();
 	}
 	
-	public IMeshDataProvider getMesh()
+	public boolean setMesh(MeshData mesh)
 	{
-		return this.mesh;
+		return this.mesh.set(mesh);
 	}
 	
 	public int getCurrentTexFrame()

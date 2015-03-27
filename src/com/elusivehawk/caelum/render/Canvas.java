@@ -194,7 +194,7 @@ public class Canvas extends ProgramRenderable
 	}
 	
 	@Override
-	public void preRenderImpl(RenderContext rcon)
+	public boolean preRenderImpl(RenderContext rcon)
 	{
 		this.layers.forEach(((layer) ->
 		{
@@ -202,6 +202,7 @@ public class Canvas extends ProgramRenderable
 			
 		}));
 		
+		return true;
 	}
 	
 	@Override

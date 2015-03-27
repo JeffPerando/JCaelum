@@ -12,7 +12,7 @@ import com.elusivehawk.caelum.assets.IAsset;
  * 
  * @author Elusivehawk
  */
-public class MeshAsset extends Asset implements IMeshDataProvider
+public class MeshAsset extends Asset
 {
 	private MeshData data = null;
 	
@@ -20,12 +20,6 @@ public class MeshAsset extends Asset implements IMeshDataProvider
 	{
 		super(filepath);
 		
-	}
-	
-	@Override
-	public MeshData getData()
-	{
-		return this.data;
 	}
 	
 	@Override
@@ -46,8 +40,21 @@ public class MeshAsset extends Asset implements IMeshDataProvider
 	@Override
 	public void onDuplicateFound(IAsset asset)
 	{
-		// TODO Auto-generated method stub
+		if (asset instanceof MeshAsset)
+		{
+			synchronized (this)
+			{
+				this.data = ((MeshAsset)asset).data;
+				
+			}
+			
+		}
 		
+	}
+	
+	public MeshData getData()
+	{
+		return this.data;
 	}
 	
 }

@@ -57,7 +57,10 @@ public class SimpleRenderer extends Renderable
 	}
 	
 	@Override
-	protected void preRenderImpl(RenderContext rcon) throws RenderException{}
+	protected boolean preRenderImpl(RenderContext rcon) throws RenderException
+	{
+		return true;
+	}
 	
 	@Override
 	protected void renderImpl(RenderContext rcon) throws RenderException

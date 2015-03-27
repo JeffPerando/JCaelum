@@ -107,7 +107,7 @@ public class CanvasLayer extends Renderable
 	}
 	
 	@Override
-	public void preRenderImpl(RenderContext rcon)
+	public boolean preRenderImpl(RenderContext rcon)
 	{
 		if (!this.mat.isNull())
 		{
@@ -140,6 +140,7 @@ public class CanvasLayer extends Renderable
 			
 		}
 		
+		return true;
 	}
 	
 	@Override
