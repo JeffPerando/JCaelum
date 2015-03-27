@@ -58,7 +58,7 @@ public class Canvas extends ProgramRenderable
 	
 	public Canvas(int width, int height)
 	{
-		this(new GLProgram(), width, height);
+		this(new GLProgram(RenderConst.SHADERS_2D), width, height);
 		
 	}
 	
