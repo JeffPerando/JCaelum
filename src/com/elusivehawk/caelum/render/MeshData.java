@@ -100,6 +100,8 @@ public class MeshData implements IDeletable
 			
 			this.glind = new GLBuffer(GLEnumBufferTarget.GL_ELEMENT_ARRAY_BUFFER, this.indices, GLEnumDataUsage.GL_STATIC_DRAW, rcon);
 			
+			Deletables.instance().register(this);
+			
 			this.loaded = true;
 			
 		}
