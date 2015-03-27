@@ -9,6 +9,9 @@ import com.elusivehawk.caelum.assets.AssetManager;
 import com.elusivehawk.caelum.input.InputManager;
 import com.elusivehawk.caelum.input.Keyboard;
 import com.elusivehawk.caelum.input.Mouse;
+import com.elusivehawk.caelum.render.Display;
+import com.elusivehawk.caelum.render.DisplayManager;
+import com.elusivehawk.caelum.render.DisplaySettings;
 import com.elusivehawk.caelum.render.IRenderer;
 import com.elusivehawk.caelum.render.ThreadGameRender;
 import com.elusivehawk.util.CompInfo;
@@ -344,9 +347,7 @@ public final class CaelumEngine
 		
 		if (bytes.length == 0)
 		{
-			Logger.debug("Could not read bytes for %s", is);
-			
-			return;
+			throw new CaelumException("Could not read bytes from InputStream %s", is);
 		}
 		
 		String name = dest.getName();
