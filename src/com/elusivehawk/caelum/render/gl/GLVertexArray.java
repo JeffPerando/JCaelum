@@ -2,6 +2,7 @@
 package com.elusivehawk.caelum.render.gl;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.util.IPopulator;
 import com.google.common.collect.Lists;
@@ -16,6 +17,7 @@ public class GLVertexArray extends GLObject
 {
 	private final List<GLBuffer> buffers = Lists.newArrayList();
 	private final List<Integer> attribs = Lists.newArrayList();
+	private final AtomicBoolean reset = new AtomicBoolean(true);
 	
 	private int id = 0;
 	
@@ -76,6 +78,40 @@ public class GLVertexArray extends GLObject
 		
 		GL3.glBindVertexArray(this);
 		
+		if (this.reset.get())
+		{
+			this.attribs.clear();
+			
+			this.buffers.forEach(((vbo) ->
+			{
+				if (vbo.getTarget() == GLEnumBufferTarget.GL_ARRAY_BUFFER)
+				{
+					if (vbo.bind(rcon))
+					{
+						vbo.getAttribs().forEach(((attrib) ->
+						{
+							if (!this.attribs.contains(attrib.index))
+							{
+								GL2.glVertexAttribPointer(attrib);
+								
+								this.attribs.add(attrib.index);
+								
+							}
+							
+						}));
+						
+					}
+					
+					vbo.unbind(rcon);
+					
+				}
+				
+			}));
+			
+			this.reset.set(false);
+			
+		}
+		
 		GL2.glEnableVertexAttribArrays(this.attribs);
 		
 		this.buffers.forEach(((vbo) ->
@@ -96,32 +132,6 @@ public class GLVertexArray extends GLObject
 	{
 		this.id = GL3.glGenVertexArray();
 		
-		this.buffers.forEach(((vbo) ->
-		{
-			if (vbo.getTarget() == GLEnumBufferTarget.GL_ARRAY_BUFFER)
-			{
-				if (vbo.bind(rcon))
-				{
-					vbo.getAttribs().forEach(((attrib) ->
-					{
-						if (!this.attribs.contains(attrib.index))
-						{
-							GL2.glVertexAttribPointer(attrib);
-							
-							this.attribs.add(attrib.index);
-							
-						}
-						
-					}));
-					
-				}
-				
-				vbo.unbind(rcon);
-				
-			}
-			
-		}));
-		
 	}
 	
 	@Override
@@ -138,7 +148,19 @@ public class GLVertexArray extends GLObject
 	
 	public void addVBO(GLBuffer vbo)
 	{
-		this.buffers.add(vbo);
+		if (vbo != null)
+		{
+			this.buffers.add(vbo);
+			
+		}
+		
+	}
+	
+	public void clearVBOs()
+	{
+		this.buffers.clear();
+		
+		this.reset.set(true);
 		
 	}
 	
