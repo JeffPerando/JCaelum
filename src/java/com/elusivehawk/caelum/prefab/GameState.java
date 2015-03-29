@@ -85,9 +85,6 @@ public class GameState extends AbstractGameComponent
 	public void initiate() throws Throwable{}
 	
 	@Override
-	public void onShutdown(){}
-	
-	@Override
 	public String toString()
 	{
 		return String.format("%s.%s", this.master.toString(), this.name);

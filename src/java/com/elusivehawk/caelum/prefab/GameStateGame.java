@@ -77,24 +77,13 @@ public abstract class GameStateGame extends Game
 	}
 	
 	@Override
-	public void onShutdown()
-	{
-		if (this.state != null)
-		{
-			this.state.onShutdown();
-			
-		}
-		
-	}
-	
-	@Override
 	public void update(double delta) throws Throwable
 	{
 		if (this.nextState != null)
 		{
 			if (this.state != null)
 			{
-				this.state.onShutdown();
+				this.state.dispose();
 				
 			}
 			

@@ -76,7 +76,7 @@ public abstract class NetworkGame extends Game implements INetworkMaster
 	}
 	
 	@Override
-	public void onShutdown()
+	public void dispose()
 	{
 		if (this.host != null)
 		{

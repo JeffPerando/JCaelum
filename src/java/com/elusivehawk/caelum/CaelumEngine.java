@@ -263,27 +263,41 @@ public final class CaelumEngine
 		
 		if (this.game != null)
 		{
-			this.game.onShutdown();
+			this.game.dispose();
 			this.game = null;
 			
 		}
 		
-		for (EnumEngineFeature fe : EnumEngineFeature.values())
+		try
 		{
-			ThreadStoppable t = this.threads.get(fe);
+			Thread.sleep(2L);
 			
-			if (t != null)
+		}
+		catch (InterruptedException e)
+		{
+			Logger.err(e);
+			
+		}
+		finally
+		{
+			for (EnumEngineFeature fe : EnumEngineFeature.values())
 			{
-				t.stopThread();
+				ThreadStoppable t = this.threads.get(fe);
+				
+				if (t != null)
+				{
+					t.stopThread();
+					
+				}
 				
 			}
 			
+			this.tasks.stop();
+			this.threads.clear();
+			
+			this.displays = null;
+			
 		}
-		
-		this.tasks.stop();
-		this.threads.clear();
-		
-		this.displays = null;
 		
 	}
 	

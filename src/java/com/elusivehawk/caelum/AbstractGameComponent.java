@@ -36,6 +36,4 @@ public abstract class AbstractGameComponent implements IDisposable, IInputListen
 	
 	public abstract void initiate() throws Throwable;
 	
-	public abstract void onShutdown();
-	
 }

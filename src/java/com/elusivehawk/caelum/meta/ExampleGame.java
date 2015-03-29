@@ -196,9 +196,6 @@ public final class ExampleGame extends Game
 	}
 	
 	@Override
-	public void onShutdown(){}
-	
-	@Override
 	public void update(double delta) throws Throwable
 	{
 		//CaelumEngine.log(EnumLogType.INFO, "Test: %s", delta);
