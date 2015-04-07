@@ -368,9 +368,11 @@ public final class CaelumEngine
 		
 		if (!dest.exists())
 		{
+			Logger.debug("Cannot find \"%s\", attempting to create it", dest.getAbsolutePath());
+			
 			try
 			{
-				if (!dest.createNewFile())
+				if (!dest.mkdirs())
 				{
 					return;
 				}
@@ -408,20 +410,15 @@ public final class CaelumEngine
 		
 		Logger.warn("Checksum for \"%s\" did not match!", name);
 		
-		if (IOHelper.write(bytes, dest))
+		try
 		{
-			if (CompInfo.DEBUG)
-			{
-				Logger.verbose("Succesfully copied native: \"%s\"", dest.getName());
-				
-			}
+			IOHelper.write(bytes, dest);
 			
 		}
-		else
+		catch (Exception e)
 		{
-			Logger.warn("Could not copy native: \"%s\"", dest.getName());
+			Logger.log(EnumLogType.WARN, "Cannot copy native %s; Loading anyway", e, name);
 			
-			return;
 		}
 		
 		System.load(dest.getAbsolutePath());
