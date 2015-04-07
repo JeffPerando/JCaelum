@@ -1,14 +1,17 @@
 
 package com.elusivehawk.caelum.meta;
 
-import com.elusivehawk.caelum.render.Icon;
-import com.elusivehawk.caelum.render.IconGrid;
+import java.net.URL;
+import javax.swing.JFrame;
+import javax.swing.JTextField;
+import com.elusivehawk.caelum.CaelumEngine;
 import com.elusivehawk.util.Logger;
 
 /**
  * 
  * Test log:
  * <p>
+ * Trying to figure out where the natives are located.<br>
  * IconGrid testing.<br>
  * LWJGLDisplayImpl testing.<br>
  * Tokenizer testing again.<br>
@@ -41,17 +44,34 @@ public class BenchmarkTest
 	{
 		Logger.verbose("Beginning bench testing...");
 		
-		IconGrid grid = new IconGrid(64, 64);
-		
-		for (int x = 0; x < grid.getWidth(); x++)
+		try
 		{
-			for (int y = 0; y < grid.getHeight(); y++)
+			JFrame win = new JFrame();
+			
+			win.setName("Native Locator Helper Thingy");
+			win.setSize(400, 400);
+			win.setLayout(null);
+			
+			JTextField field = new JTextField();
+			
+			field.setBounds(50, 50, 200, 20);
+			
+			field.addActionListener(((event) ->
 			{
-				Icon icon = grid.getIcon(x, y);
+				String str = field.getText();
+				URL url = CaelumEngine.class.getResource(str);
+				Logger.info("%s (%s)", url == null ? "null" : url.toString(), str);
 				
-				Logger.info("Icon %sx%s: [%s, %s, %s, %s]", x + 1, y + 1, icon.getX(0), icon.getY(0), icon.getX(3), icon.getY(3));
-				
-			}
+			}));
+			
+			win.add(field);
+			
+			win.setVisible(true);
+			
+		}
+		catch (Throwable e)
+		{
+			Logger.err(e);
 			
 		}
 		
