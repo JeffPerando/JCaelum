@@ -19,6 +19,7 @@
 # Failure to comply will result in
 # your immediate transfer to Mordor!
 !/lib/lwjgl
+!/lib/java/lwjgl
 
 .cache
 .classpath
