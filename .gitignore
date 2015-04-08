@@ -12,13 +12,12 @@
 /bin/*
 /build/*
 /builds/*
-/lib/*
+/lib/*/*
 
-# THIS HAS TO BE LIKE THIS!
-# WITHOUT the slash at the end!
-# Failure to comply will result in
-# your immediate transfer to Mordor!
-!/lib/lwjgl
+# THIS HAS TO BE LIKE THIS! #
+# WITHOUT the slash at the end! #
+# Failure to comply will result in #
+# your immediate transfer to Mordor! #
 !/lib/java/lwjgl
 
 .cache
