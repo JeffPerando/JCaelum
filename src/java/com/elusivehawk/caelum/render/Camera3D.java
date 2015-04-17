@@ -38,7 +38,7 @@ public abstract class Camera3D extends Camera
 	{
 		if (this.updateProj)
 		{
-			this.proj.resetIdentity().projection(this.fov, rcon.getDisplay().getAspectRatio(), this.zFar, this.zNear);
+			this.proj.resetIdentity().projection(this.fov, rcon.getWindow().getAspectRatio(), this.zFar, this.zNear);
 			
 			synchronized (this)
 			{

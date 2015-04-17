@@ -19,7 +19,7 @@ import com.elusivehawk.util.storage.BufferHelper;
  * 
  * @author Elusivehawk
  */
-public class Display implements Closeable, IUpdatable
+public class Window implements Closeable, IUpdatable
 {
 	private final String name;
 	private final InputManager input;
@@ -29,7 +29,7 @@ public class Display implements Closeable, IUpdatable
 				w = BufferHelper.createIntBuffer(1),
 				h = BufferHelper.createIntBuffer(1);
 	
-	private DisplaySettings settings = null;
+	private WindowSettings settings = null;
 	private GLContext context = null;
 	
 	private long windowId = 0;
@@ -38,13 +38,13 @@ public class Display implements Closeable, IUpdatable
 	private boolean refresh = true, closed = false, close = false, initiated = false;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Display(String str, DisplaySettings ds, IRenderer r)
+	public Window(String str, WindowSettings ws, IRenderer r)
 	{
-		assert ds != null;
+		assert ws != null;
 		assert r != null;
 		
 		name = str;
-		settings = ds;
+		settings = ws;
 		rcon = new RenderContext(this, r);
 		
 		input = new InputManager(this);
@@ -96,7 +96,7 @@ public class Display implements Closeable, IUpdatable
 		
 		if (this.refresh)
 		{
-			this.updateDisplaySettings(this.settings);
+			this.updateSettings();
 			
 			this.refresh = false;
 			
@@ -119,7 +119,7 @@ public class Display implements Closeable, IUpdatable
 		
 	}
 	
-	public void initDisplay() throws Throwable
+	public void initWindow() throws Throwable
 	{
 		if (this.initiated)
 		{
@@ -194,35 +194,17 @@ public class Display implements Closeable, IUpdatable
 		
 	}
 	
-	public String getName()
-	{
-		return this.name;
-	}
+	public native String getName();
 	
-	public long getId()
-	{
-		return this.windowId;
-	}
+	public native long getId();
 	
-	public int getHeight()
-	{
-		return this.height;
-	}
+	public native int getHeight();
 	
-	public int getWidth()
-	{
-		return this.width;
-	}
+	public native int getWidth();
 	
-	public float getAspectRatio()
-	{
-		return this.aspectRatio;
-	}
+	public native float getAspectRatio();
 	
-	public boolean isClosed()
-	{
-		return this.closed;
-	}
+	public native boolean isClosed();
 	
 	public InputManager getInput()
 	{
@@ -234,7 +216,7 @@ public class Display implements Closeable, IUpdatable
 		return this.initiated;
 	}
 	
-	public synchronized void updateSettings(DisplaySettings ds)
+	public synchronized void updateSettings(WindowSettings ds)
 	{
 		assert ds != null;
 		
@@ -253,11 +235,11 @@ public class Display implements Closeable, IUpdatable
 		return y / (float)this.height;
 	}
 	
-	private void updateDisplaySettings(DisplaySettings settings)
+	private void updateSettings()
 	{
-		GLFW.glfwSetWindowTitle(this.windowId, settings.title);
-		GLFW.glfwSetWindowSize(this.windowId, settings.width, settings.height);
-		GLFW.glfwSwapInterval(settings.vsync ? 1 : 0);
+		GLFW.glfwSetWindowTitle(this.windowId, this.settings.title);
+		GLFW.glfwSetWindowSize(this.windowId, this.settings.width, this.settings.height);
+		GLFW.glfwSwapInterval(this.settings.vsync ? 1 : 0);
 		
 		/*
 		 * TODO:

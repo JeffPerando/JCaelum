@@ -10,7 +10,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
-import com.elusivehawk.caelum.render.Display;
+import com.elusivehawk.caelum.render.Window;
 import com.elusivehawk.caelum.render.RenderHelper;
 import com.elusivehawk.caelum.render.tex.Color;
 import com.elusivehawk.caelum.render.tex.ColorFilter;
@@ -680,9 +680,9 @@ public final class GL1
 		
 	}
 	
-	public static void glViewport(Display display) throws GLException
+	public static void glViewport(Window window) throws GLException
 	{
-		glViewport(0, 0, display.getWidth(), display.getHeight());
+		glViewport(0, 0, window.getWidth(), window.getHeight());
 		
 	}
 	

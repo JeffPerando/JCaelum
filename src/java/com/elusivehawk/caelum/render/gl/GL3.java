@@ -11,6 +11,7 @@ import org.lwjgl.opengl.GL32;
 import org.lwjgl.opengl.GL33;
 import org.lwjgl.opengl.GL40;
 import com.elusivehawk.caelum.render.RenderHelper;
+import com.elusivehawk.caelum.render.Window;
 import com.elusivehawk.util.storage.BufferHelper;
 
 /**
@@ -1059,6 +1060,11 @@ public final class GL3
 		
 		RenderHelper.checkForGLError();
 		
+	}
+	
+	public static void glRenderbufferStorage(int internalformat, Window window) throws GLException
+	{
+		glRenderbufferStorage(internalformat, window.getWidth(), window.getHeight());
 	}
 	
 	public static void glRenderbufferStorage(int internalformat, int width, int height) throws GLException

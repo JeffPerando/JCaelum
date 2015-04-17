@@ -90,7 +90,7 @@ public class Gui extends Dirtable implements IInputListener
 					{
 						case LIFTED:
 						{
-							this.active.onClicked(m.getDisplay(), c);
+							this.active.onClicked(m.getWindow(), c);
 							this.setIsDirty(true);
 							
 							synchronized (this)

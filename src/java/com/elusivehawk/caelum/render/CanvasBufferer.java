@@ -34,7 +34,7 @@ public class CanvasBufferer implements IRenderer, IDisposable
 	
 	public CanvasBufferer(Shaders shs)
 	{
-		this(shs, CaelumEngine.defaultDisplay());
+		this(shs, CaelumEngine.defaultWindow());
 		
 	}
 	
@@ -60,9 +60,9 @@ public class CanvasBufferer implements IRenderer, IDisposable
 		
 	}
 	
-	public CanvasBufferer(Shaders shs, Display display)
+	public CanvasBufferer(Shaders shs, Window window)
 	{
-		this(shs, display.getWidth(), display.getHeight());
+		this(shs, window.getWidth(), window.getHeight());
 		
 	}
 	

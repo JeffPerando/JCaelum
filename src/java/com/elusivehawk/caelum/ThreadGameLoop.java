@@ -1,7 +1,7 @@
 
 package com.elusivehawk.caelum;
 
-import com.elusivehawk.caelum.render.DisplayManager;
+import com.elusivehawk.caelum.render.WindowManager;
 import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.concurrent.ThreadTimed;
 
@@ -15,25 +15,25 @@ import com.elusivehawk.util.concurrent.ThreadTimed;
 public final class ThreadGameLoop extends ThreadTimed
 {
 	private final Game game;
-	private final DisplayManager displays;
+	private final WindowManager windows;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public ThreadGameLoop(Game g, DisplayManager dmgr)
+	public ThreadGameLoop(Game g, WindowManager wmgr)
 	{
 		super("GameLoop");
 		
 		assert g != null;
-		assert dmgr != null;
+		assert wmgr != null;
 		
 		game = g;
-		displays = dmgr;
+		windows = wmgr;
 		
 	}
 	
 	@Override
 	public void update(double delta) throws Throwable
 	{
-		this.displays.sendInputEvents(delta);
+		this.windows.sendInputEvents(delta);
 		
 		try
 		{

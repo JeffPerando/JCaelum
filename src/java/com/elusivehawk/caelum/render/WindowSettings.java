@@ -12,7 +12,7 @@ import com.elusivehawk.util.MakeStruct;
  * @author Elusivehawk
  */
 @MakeStruct
-public class DisplaySettings
+public class WindowSettings
 {
 	public String
 				title = "Caelum Engine Game (Now with more code!)",
@@ -23,16 +23,16 @@ public class DisplaySettings
 	public boolean vsync = true;
 	public Color bg = Color.WHITE;
 	
-	public DisplaySettings(){}
+	public WindowSettings(){}
 	
-	public DisplaySettings(IPopulator<DisplaySettings> pop)
+	public WindowSettings(IPopulator<WindowSettings> pop)
 	{
 		pop.populate(this);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public DisplaySettings(DisplaySettings settings)
+	public WindowSettings(WindowSettings settings)
 	{
 		title = settings.title;
 		width = settings.width;
@@ -47,7 +47,7 @@ public class DisplaySettings
 	@Override
 	public Object clone()
 	{
-		return new DisplaySettings(this);
+		return new WindowSettings(this);
 	}
 	
 }

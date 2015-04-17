@@ -12,37 +12,37 @@ import com.elusivehawk.util.storage.SyncList;
 
 /**
  * 
- * Handles display updating.
+ * Handles window updating.
  * 
  * @author Elusivehawk
  */
-public final class DisplayManager implements Closeable, IUpdatable
+public final class WindowManager implements Closeable, IUpdatable
 {
 	private final DelayedUpdater cleaner = new DelayedUpdater(1.0, ((delta) ->
 	{
 		Deletables.instance().cleanup();
 		
 	}));
-	private final List<Display> displays = SyncList.newList();
+	private final List<Window> windows = SyncList.newList();
 	
 	@Override
 	public void update(double delta) throws Throwable
 	{
-		for (Display display : this.displays)
+		for (Window window : this.windows)
 		{
-			if (!display.isInitiated())
+			if (!window.isInitiated())
 			{
-				Logger.verbose("Initiating display \"%s\"", display.getName());
+				Logger.verbose("Initiating window \"%s\"", window.getName());
 				
-				display.initDisplay();
+				window.initWindow();
 				
 			}
 			
-			display.update(delta);
+			window.update(delta);
 			
-			if (display.isClosed())
+			if (window.isClosed())
 			{
-				this.displays.remove(display);
+				this.windows.remove(window);
 				
 			}
 			
@@ -50,7 +50,7 @@ public final class DisplayManager implements Closeable, IUpdatable
 		
 		this.cleaner.update(delta);
 		
-		if (this.displays.isEmpty() && !CaelumEngine.game().isGameHeadless())
+		if (this.windows.isEmpty() && !CaelumEngine.game().isGameHeadless())
 		{
 			ShutdownHelper.exit(0);
 			
@@ -61,13 +61,13 @@ public final class DisplayManager implements Closeable, IUpdatable
 	@Override
 	public void close()
 	{
-		this.displays.forEach(((display) ->
+		this.windows.forEach(((window) ->
 		{
-			if (!display.isClosed())
+			if (!window.isClosed())
 			{
 				try
 				{
-					display.close();
+					window.close();
 					
 				}
 				catch (Throwable e)
@@ -80,30 +80,30 @@ public final class DisplayManager implements Closeable, IUpdatable
 			
 		}));
 		
-		this.displays.clear();
+		this.windows.clear();
 		
 	}
 	
 	public void updateInput(double delta)
 	{
-		this.displays.forEach(((display) -> {display.updateInput(delta);}));
+		this.windows.forEach(((window) -> {window.updateInput(delta);}));
 		
 	}
 	
 	public void sendInputEvents(double delta)
 	{
-		this.displays.forEach(((display) -> {display.sendInputEvents(delta);}));
+		this.windows.forEach(((window) -> {window.sendInputEvents(delta);}));
 		
 	}
 	
-	public Display createDisplay(String name, DisplaySettings settings, IRenderer renderer)
+	public Window createDisplay(String name, WindowSettings settings, IRenderer renderer)
 	{
 		if (name == null || name.equalsIgnoreCase(""))
 		{
 			return null;
 		}
 		
-		if (this.getDisplay(name) != null)
+		if (this.getWindow(name) != null)
 		{
 			return null;
 		}
@@ -113,20 +113,20 @@ public final class DisplayManager implements Closeable, IUpdatable
 			return null;
 		}
 		
-		Display ret = new Display(name, settings, renderer);
+		Window ret = new Window(name, settings, renderer);
 		
-		this.displays.add(ret);
+		this.windows.add(ret);
 		
 		return ret;
 	}
 	
-	public Display getDisplay(String name)
+	public Window getWindow(String name)
 	{
-		for (Display display : this.displays)
+		for (Window window : this.windows)
 		{
-			if (display.getName().equalsIgnoreCase(name))
+			if (window.getName().equalsIgnoreCase(name))
 			{
-				return display;
+				return window;
 			}
 			
 		}

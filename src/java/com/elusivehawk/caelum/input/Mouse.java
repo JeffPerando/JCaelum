@@ -6,7 +6,7 @@ import java.nio.DoubleBuffer;
 import java.util.List;
 import java.util.function.Consumer;
 import org.lwjgl.glfw.GLFW;
-import com.elusivehawk.caelum.render.Display;
+import com.elusivehawk.caelum.render.Window;
 import com.elusivehawk.caelum.render.tex.ColorFormat;
 import com.elusivehawk.caelum.render.tex.ILegibleImage;
 import com.elusivehawk.util.math.VectorF;
@@ -39,7 +39,7 @@ public class Mouse extends Input
 	private final DirtableStorage<Boolean> grab = new DirtableStorage<Boolean>().setSync();
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Mouse(Display screen)
+	public Mouse(Window screen)
 	{
 		super(screen);
 		
@@ -81,14 +81,14 @@ public class Mouse extends Input
 			
 		}
 		
-		long window = this.display.getId();
+		long window = this.window.getId();
 		
 		this.x.position(0);
 		this.y.position(0);
 		
 		GLFW.glfwGetCursorPos(window, this.x, this.y);
 		
-		this.setPosition((float)(this.x.get() / this.display.getWidth()), (float)(this.y.get() / this.display.getHeight()));
+		this.setPosition((float)(this.x.get() / this.window.getWidth()), (float)(this.y.get() / this.window.getHeight()));
 		
 		for (int c = 0; c < InputConst.MOUSE_BUTTONS; c++)
 		{

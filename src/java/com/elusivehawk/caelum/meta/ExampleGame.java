@@ -8,7 +8,7 @@ import com.elusivehawk.caelum.input.Key;
 import com.elusivehawk.caelum.input.Keyboard;
 import com.elusivehawk.caelum.input.Mouse;
 import com.elusivehawk.caelum.render.Canvas;
-import com.elusivehawk.caelum.render.DisplaySettings;
+import com.elusivehawk.caelum.render.WindowSettings;
 import com.elusivehawk.caelum.render.Icon;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
@@ -119,9 +119,9 @@ public final class ExampleGame extends Game
 	}
 	
 	@Override
-	public DisplaySettings getDisplaySettings()
+	public WindowSettings getWindowSettings()
 	{
-		return new DisplaySettings(((settings) ->
+		return new WindowSettings(((settings) ->
 		{
 			settings.title = "Example Game (Now with a GUI!)";
 			settings.width = 600;
@@ -147,22 +147,22 @@ public final class ExampleGame extends Game
 		
 		this.canvas.drawImage(0f, 0f, 1f, 1f);
 		
-		this.gui.addComponent(new Button(0.0f, 0.7f, 0.25f, 0.9f, new Icon(0.0f, 0.0f, 0.5f, 0.5f)).setLeftClick(((d, button) ->
+		this.gui.addComponent(new Button(0.0f, 0.7f, 0.25f, 0.9f, new Icon(0.0f, 0.0f, 0.5f, 0.5f)).setLeftClick(((w, button) ->
 		{
 			Logger.info("Button #1 clicked!");
 			
 		})));
-		this.gui.addComponent(new Button(0.25f, 0.7f, 0.5f, 0.9f, new Icon(0.5f, 0.0f, 1.0f, 0.5f)).setLeftClick(((d, button) ->
+		this.gui.addComponent(new Button(0.25f, 0.7f, 0.5f, 0.9f, new Icon(0.5f, 0.0f, 1.0f, 0.5f)).setLeftClick(((w, button) ->
 		{
 			Logger.info("Button #2 clicked!");
 			
 		})));
-		this.gui.addComponent(new Button(0.5f, 0.7f, 0.75f, 0.9f, new Icon(0.0f, 0.5f, 0.5f, 1.0f)).setLeftClick(((d, button) ->
+		this.gui.addComponent(new Button(0.5f, 0.7f, 0.75f, 0.9f, new Icon(0.0f, 0.5f, 0.5f, 1.0f)).setLeftClick(((w, button) ->
 		{
 			Logger.info("Button #3 clicked!");
 			
 		})));
-		this.gui.addComponent(new Button(0.75f, 0.7f, 1.0f, 0.9f, new Icon(0.5f, 0.5f, 1.0f, 1.0f)).setLeftClick(((d, button) ->
+		this.gui.addComponent(new Button(0.75f, 0.7f, 1.0f, 0.9f, new Icon(0.5f, 0.5f, 1.0f, 1.0f)).setLeftClick(((w, button) ->
 		{
 			Logger.info("Button #4 clicked!");
 			

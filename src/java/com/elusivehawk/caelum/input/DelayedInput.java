@@ -1,7 +1,7 @@
 
 package com.elusivehawk.caelum.input;
 
-import com.elusivehawk.caelum.render.Display;
+import com.elusivehawk.caelum.render.Window;
 import com.elusivehawk.util.DelayedUpdater;
 
 /**
@@ -14,14 +14,14 @@ public abstract class DelayedInput extends Input
 {
 	private final DelayedUpdater updater;
 	
-	public DelayedInput(Display screen)
+	public DelayedInput(Window screen)
 	{
 		this(0.1, screen);
 		
 	}
 	
 	@SuppressWarnings("unqualified-field-access")
-	public DelayedInput(double delay, Display screen)
+	public DelayedInput(double delay, Window screen)
 	{
 		super(screen);
 		

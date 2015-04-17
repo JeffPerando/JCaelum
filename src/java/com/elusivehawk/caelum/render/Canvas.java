@@ -30,7 +30,7 @@ public class Canvas extends ProgramRenderable
 	
 	public Canvas()
 	{
-		this(CaelumEngine.defaultDisplay());
+		this(CaelumEngine.defaultWindow());
 		
 	}
 	
@@ -42,15 +42,15 @@ public class Canvas extends ProgramRenderable
 		
 	}
 	
-	public Canvas(Display display)
+	public Canvas(Window window)
 	{
-		this(display.getWidth(), display.getHeight());
+		this(window.getWidth(), window.getHeight());
 		
 	}
 	
-	public Canvas(Display display, IPopulator<Canvas> pop)
+	public Canvas(Window window, IPopulator<Canvas> pop)
 	{
-		this(display);
+		this(window);
 		
 		pop.populate(this);
 		
@@ -72,7 +72,7 @@ public class Canvas extends ProgramRenderable
 	
 	public Canvas(Shaders shs)
 	{
-		this(shs, CaelumEngine.defaultDisplay());
+		this(shs, CaelumEngine.defaultWindow());
 		
 	}
 	
@@ -84,15 +84,15 @@ public class Canvas extends ProgramRenderable
 		
 	}
 	
-	public Canvas(Shaders shs, Display display)
+	public Canvas(Shaders shs, Window window)
 	{
-		this(shs, display.getWidth(), display.getHeight());
+		this(shs, window.getWidth(), window.getHeight());
 		
 	}
 	
-	public Canvas(Shaders shs, Display display, IPopulator<Canvas> pop)
+	public Canvas(Shaders shs, Window window, IPopulator<Canvas> pop)
 	{
-		this(shs, display);
+		this(shs, window);
 		
 		pop.populate(this);
 		
@@ -114,7 +114,7 @@ public class Canvas extends ProgramRenderable
 	
 	public Canvas(GLProgram program)
 	{
-		this(program, CaelumEngine.defaultDisplay());
+		this(program, CaelumEngine.defaultWindow());
 		
 	}
 	
@@ -126,15 +126,15 @@ public class Canvas extends ProgramRenderable
 		
 	}
 	
-	public Canvas(GLProgram program, Display display)
+	public Canvas(GLProgram program, Window window)
 	{
-		this(program, display.getWidth(), display.getHeight());
+		this(program, window.getWidth(), window.getHeight());
 		
 	}
 	
-	public Canvas(GLProgram program, Display display, IPopulator<Canvas> pop)
+	public Canvas(GLProgram program, Window window, IPopulator<Canvas> pop)
 	{
-		this(program, display);
+		this(program, window);
 		
 		pop.populate(this);
 		

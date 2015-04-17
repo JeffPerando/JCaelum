@@ -9,9 +9,9 @@ import com.elusivehawk.caelum.assets.AssetManager;
 import com.elusivehawk.caelum.input.InputManager;
 import com.elusivehawk.caelum.input.Keyboard;
 import com.elusivehawk.caelum.input.Mouse;
-import com.elusivehawk.caelum.render.Display;
-import com.elusivehawk.caelum.render.DisplayManager;
-import com.elusivehawk.caelum.render.DisplaySettings;
+import com.elusivehawk.caelum.render.Window;
+import com.elusivehawk.caelum.render.WindowManager;
+import com.elusivehawk.caelum.render.WindowSettings;
 import com.elusivehawk.caelum.render.IRenderer;
 import com.elusivehawk.caelum.render.ThreadGameRender;
 import com.elusivehawk.util.CompInfo;
@@ -49,8 +49,8 @@ public final class CaelumEngine
 	private File natives = null;
 	
 	private Game game = null;
-	private Display display = null;
-	private DisplayManager displays = null;
+	private Window window = null;
+	private WindowManager windows = null;
 	
 	private CaelumEngine(){}
 	
@@ -93,19 +93,19 @@ public final class CaelumEngine
 	
 	//XXX Hooks
 	
-	public static Display createDisplay(String name, DisplaySettings settings, IRenderer renderer)
+	public static Window createWindow(String name, WindowSettings settings, IRenderer renderer)
 	{
-		return instance().displays.createDisplay(name, settings, renderer);
+		return instance().windows.createDisplay(name, settings, renderer);
 	}
 	
-	public static Display defaultDisplay()
+	public static Window defaultWindow()
 	{
-		return instance().display;
+		return instance().window;
 	}
 	
-	public static Display getDisplay(String name)
+	public static Window getWindow(String name)
 	{
-		return instance().displays.getDisplay(name);
+		return instance().windows.getWindow(name);
 	}
 	
 	//End hooks
@@ -155,7 +155,7 @@ public final class CaelumEngine
 		
 		//XXX Load display system
 		
-		this.displays = new DisplayManager();
+		this.windows = new WindowManager();
 		
 		//XXX Start tasks
 		
@@ -173,20 +173,20 @@ public final class CaelumEngine
 		
 		if (!this.game.isGameHeadless())
 		{
-			DisplaySettings settings = this.game.getDisplaySettings();
+			WindowSettings settings = this.game.getWindowSettings();
 			
 			if (settings == null)
 			{
-				settings = new DisplaySettings();
+				settings = new WindowSettings();
 				
 			}
 			
-			this.display = createDisplay("default", settings, g);
+			this.window = createWindow("default", settings, g);
 			
-			InputManager input = this.display.getInput();
+			InputManager input = this.window.getInput();
 			
-			input.addInput(new Keyboard(this.display));
-			input.addInput(new Mouse(this.display));
+			input.addInput(new Keyboard(this.window));
+			input.addInput(new Mouse(this.window));
 			
 			input.addListener(Keyboard.class, g);
 			input.addListener(Mouse.class, g);
@@ -210,11 +210,11 @@ public final class CaelumEngine
 		
 		//XXX Create game threads
 		
-		this.threads.put(EnumEngineFeature.LOGIC, new ThreadGameLoop(this.game, this.displays));
+		this.threads.put(EnumEngineFeature.LOGIC, new ThreadGameLoop(this.game, this.windows));
 		
 		if (!this.game.isGameHeadless())
 		{
-			this.threads.put(EnumEngineFeature.RENDER, new ThreadGameRender(this.displays, this.game.getUpdateCount()));
+			this.threads.put(EnumEngineFeature.RENDER, new ThreadGameRender(this.windows, this.game.getUpdateCount()));
 			
 		}
 		
@@ -295,7 +295,7 @@ public final class CaelumEngine
 			this.tasks.stop();
 			this.threads.clear();
 			
-			this.displays = null;
+			this.windows = null;
 			
 		}
 		

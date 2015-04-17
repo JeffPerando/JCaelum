@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 import org.lwjgl.glfw.GLFW;
-import com.elusivehawk.caelum.render.Display;
+import com.elusivehawk.caelum.render.Window;
 import com.elusivehawk.util.storage.DirtableStorage;
 import com.elusivehawk.util.storage.SyncList;
 import com.elusivehawk.util.storage.Tuple;
@@ -135,7 +135,7 @@ public class Keyboard extends DelayedInput
 	private final double[] keyTime = new double[InputConst.KEY_COUNT];
 	private final DirtableStorage<String> paste = new DirtableStorage<String>().setSync();
 	
-	public Keyboard(Display screen)
+	public Keyboard(Window screen)
 	{
 		super(screen);
 		
@@ -163,7 +163,7 @@ public class Keyboard extends DelayedInput
 			
 		}
 		
-		long window = this.getDisplay().getId();
+		long window = this.getWindow().getId();
 		
 		for (Tuple<Integer, Key> t : GLFW_ENUMS)
 		{

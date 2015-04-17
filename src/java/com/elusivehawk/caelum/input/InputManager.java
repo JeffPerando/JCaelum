@@ -4,7 +4,7 @@ package com.elusivehawk.caelum.input;
 import java.io.Closeable;
 import java.util.List;
 import com.elusivehawk.caelum.CaelumException;
-import com.elusivehawk.caelum.render.Display;
+import com.elusivehawk.caelum.render.Window;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.Logger;
 import com.google.common.collect.Lists;
@@ -17,16 +17,16 @@ import com.google.common.collect.Lists;
  */
 public final class InputManager implements IUpdatable, Closeable
 {
-	private final Display display;
+	private final Window window;
 	
 	private final List<Input> input = Lists.newArrayList();
 	
 	private boolean initiated = false;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public InputManager(Display window)
+	public InputManager(Window win)
 	{
-		display = window;
+		window = win;
 		
 	}
 	
@@ -60,7 +60,7 @@ public final class InputManager implements IUpdatable, Closeable
 			throw new CaelumException("Input manager was not initiated!");
 		}
 		
-		if (!this.display.isInitiated())
+		if (!this.window.isInitiated())
 		{
 			return;
 		}
@@ -101,7 +101,7 @@ public final class InputManager implements IUpdatable, Closeable
 	public void addInput(Input input)
 	{
 		assert input != null;
-		assert input.getDisplay() == this.display;
+		assert input.getWindow() == this.window;
 		
 		for (Input in : this.input)
 		{

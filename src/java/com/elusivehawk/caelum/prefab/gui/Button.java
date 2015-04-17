@@ -4,7 +4,7 @@ package com.elusivehawk.caelum.prefab.gui;
 import com.elusivehawk.caelum.input.InputConst;
 import com.elusivehawk.caelum.prefab.Rectangle;
 import com.elusivehawk.caelum.render.Canvas;
-import com.elusivehawk.caelum.render.Display;
+import com.elusivehawk.caelum.render.Window;
 import com.elusivehawk.caelum.render.Icon;
 import com.elusivehawk.util.math.VectorF;
 
@@ -47,13 +47,13 @@ public class Button implements IGuiComponent
 	}
 	
 	@Override
-	public void onClicked(Display display, int button)
+	public void onClicked(Window window, int button)
 	{
 		IButtonListener lis = this.clickers[button];
 		
 		if (lis != null)
 		{
-			lis.onButtonClicked(display, this);
+			lis.onButtonClicked(window, this);
 			
 		}
 		

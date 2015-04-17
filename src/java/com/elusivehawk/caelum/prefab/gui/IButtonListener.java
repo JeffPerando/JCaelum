@@ -1,7 +1,7 @@
 
 package com.elusivehawk.caelum.prefab.gui;
 
-import com.elusivehawk.caelum.render.Display;
+import com.elusivehawk.caelum.render.Window;
 
 /**
  * 
@@ -12,6 +12,6 @@ import com.elusivehawk.caelum.render.Display;
 @FunctionalInterface
 public interface IButtonListener
 {
-	void onButtonClicked(Display display, Button button);
+	void onButtonClicked(Window window, Button button);
 	
 }

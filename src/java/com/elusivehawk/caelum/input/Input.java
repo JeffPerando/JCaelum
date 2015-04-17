@@ -3,7 +3,7 @@ package com.elusivehawk.caelum.input;
 
 import java.io.Closeable;
 import java.util.List;
-import com.elusivehawk.caelum.render.Display;
+import com.elusivehawk.caelum.render.Window;
 import com.elusivehawk.util.Dirtable;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.storage.SyncList;
@@ -16,18 +16,18 @@ import com.elusivehawk.util.storage.SyncList;
  */
 public abstract class Input extends Dirtable implements IUpdatable, Closeable
 {
-	protected final Display display;
+	protected final Window window;
 	
 	private final List<IInputListener> listeners = SyncList.newList();
 	
 	private boolean initiated = false;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Input(Display screen)
+	public Input(Window screen)
 	{
 		assert screen != null;
 		
-		display = screen;
+		window = screen;
 		
 	}
 	
@@ -69,9 +69,9 @@ public abstract class Input extends Dirtable implements IUpdatable, Closeable
 		
 	}
 	
-	public Display getDisplay()
+	public Window getWindow()
 	{
-		return this.display;
+		return this.window;
 	}
 	
 	public abstract void updateInput(double delta) throws Throwable;

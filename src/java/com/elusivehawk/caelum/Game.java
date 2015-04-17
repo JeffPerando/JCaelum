@@ -1,7 +1,7 @@
 
 package com.elusivehawk.caelum;
 
-import com.elusivehawk.caelum.render.DisplaySettings;
+import com.elusivehawk.caelum.render.WindowSettings;
 import com.elusivehawk.util.IPausable;
 
 /**
@@ -57,6 +57,6 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 	
 	//XXX Abstract methods
 	
-	public abstract DisplaySettings getDisplaySettings();
+	public abstract WindowSettings getWindowSettings();
 	
 }

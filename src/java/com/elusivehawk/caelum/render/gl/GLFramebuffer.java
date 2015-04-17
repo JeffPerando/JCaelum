@@ -1,7 +1,7 @@
 
 package com.elusivehawk.caelum.render.gl;
 
-import com.elusivehawk.caelum.render.Display;
+import com.elusivehawk.caelum.render.Window;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderHelper;
 
@@ -37,7 +37,7 @@ public class GLFramebuffer extends GLObject
 		
 		this.last = 0;
 		
-		GL1.glViewport(rcon.getDisplay());
+		GL1.glViewport(rcon.getWindow());
 		
 	}
 	
@@ -50,7 +50,7 @@ public class GLFramebuffer extends GLObject
 	@Override
 	public boolean bindImpl(RenderContext rcon)
 	{
-		Display display = rcon.getDisplay();
+		Window window = rcon.getWindow();
 		
 		this.last = GL1.glGetInteger(GLConst.GL_FRAMEBUFFER_BINDING);
 		
@@ -60,7 +60,7 @@ public class GLFramebuffer extends GLObject
 			
 		}
 		
-		GL1.glViewport(display);
+		GL1.glViewport(window);
 		
 		return true;
 	}
@@ -70,9 +70,9 @@ public class GLFramebuffer extends GLObject
 	{
 		this.id = GL3.glGenFramebuffer();
 		
-		Display display = rcon.getDisplay();
+		Window window = rcon.getWindow();
 		
-		this.tex = RenderHelper.genTexture(GLEnumTexture.GL_TEXTURE_2D, display.getWidth(), display.getHeight(), false);
+		this.tex = RenderHelper.genTexture(GLEnumTexture.GL_TEXTURE_2D, window, false);
 		
 		GL3.glBindFramebuffer(GLEnumFBType.GL_FRAMEBUFFER, this.id);
 		
@@ -81,7 +81,7 @@ public class GLFramebuffer extends GLObject
 			this.depth = GL3.glGenRenderbuffer();
 			
 			GL3.glBindRenderbuffer(this.depth);
-			GL3.glRenderbufferStorage(GLConst.GL_DEPTH_COMPONENT, display.getWidth(), display.getHeight());
+			GL3.glRenderbufferStorage(GLConst.GL_DEPTH_COMPONENT, window);
 			GL3.glFramebufferRenderbuffer(GLEnumFBType.GL_FRAMEBUFFER, GLEnumFBAttach.GL_DEPTH_ATTACHMENT, this.depth);
 			
 		}

@@ -18,7 +18,7 @@ public final class RenderContext implements IUpdatable
 {
 	public static final int CLEAR_BITS = GLConst.GL_COLOR_BUFFER_BIT | GLConst.GL_DEPTH_BUFFER_BIT | GLConst.GL_STENCIL_BUFFER_BIT;
 	
-	private final Display display;
+	private final Window window;
 	private final IRenderer renderer;
 	
 	private final DirtableStorage<Camera> cameraStorage = new DirtableStorage<Camera>();
@@ -33,12 +33,12 @@ public final class RenderContext implements IUpdatable
 	private int renders = 0;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public RenderContext(Display d, IRenderer r)
+	public RenderContext(Window w, IRenderer r)
 	{
-		assert d != null;
+		assert w != null;
 		assert r != null;
 		
-		display = d;
+		window = w;
 		renderer = r;
 		
 		preRenderers.add(r);
@@ -146,9 +146,9 @@ public final class RenderContext implements IUpdatable
 	
 	//XXX Getters
 	
-	public Display getDisplay()
+	public Window getWindow()
 	{
-		return this.display;
+		return this.window;
 	}
 	
 	public double getDelta()

@@ -46,9 +46,19 @@ public final class RenderHelper
 		return genTexture(type, img.getFormat() == ColorFormat.RGBA ? img.toBytes() : img.toBytes(ColorFormat.RGBA), img.getWidth(), img.getHeight(), mipmap);
 	}
 	
+	public static int genTexture(GLEnumTexture type, Window window)
+	{
+		return genTexture(type, window.getWidth(), window.getHeight());
+	}
+	
 	public static int genTexture(GLEnumTexture type, int width, int height)
 	{
 		return genTexture(type, null, width, height, true);
+	}
+	
+	public static int genTexture(GLEnumTexture type, Window window, boolean mipmap)
+	{
+		return genTexture(type, window.getWidth(), window.getHeight(), mipmap);
 	}
 	
 	public static int genTexture(GLEnumTexture type, int width, int height, boolean mipmap)

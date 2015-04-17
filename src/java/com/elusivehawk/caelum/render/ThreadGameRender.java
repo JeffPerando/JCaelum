@@ -15,18 +15,18 @@ import com.elusivehawk.util.concurrent.ThreadTimed;
 @Internal
 public final class ThreadGameRender extends ThreadTimed
 {
-	private final DisplayManager displays;
+	private final WindowManager windows;
 	private final int fps;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public ThreadGameRender(DisplayManager dmgr, int i)
+	public ThreadGameRender(WindowManager wmgr, int i)
 	{
 		super("Renderer");
 		
-		assert dmgr != null;
+		assert wmgr != null;
 		assert i > 0;
 		
-		displays = dmgr;
+		windows = wmgr;
 		fps = i;
 		
 	}
@@ -59,7 +59,7 @@ public final class ThreadGameRender extends ThreadTimed
 			return;
 		}
 		
-		this.displays.update(delta);
+		this.windows.update(delta);
 		
 	}
 	
@@ -72,7 +72,7 @@ public final class ThreadGameRender extends ThreadTimed
 	@Override
 	public void postUpdate(double delta) throws Throwable
 	{
-		this.displays.updateInput(delta);
+		this.windows.updateInput(delta);
 		
 	}
 	
@@ -85,7 +85,7 @@ public final class ThreadGameRender extends ThreadTimed
 	@Override
 	public void onThreadStopped(boolean failure)
 	{
-		this.displays.close();
+		this.windows.close();
 		
 		GLFW.glfwTerminate();
 		
