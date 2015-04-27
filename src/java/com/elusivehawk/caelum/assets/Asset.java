@@ -13,7 +13,7 @@ public abstract class Asset implements IAsset
 	
 	private IAssetReceiver callback = null;
 	
-	protected boolean read = false;
+	private boolean read = false;
 	
 	@SuppressWarnings("unqualified-field-access")
 	public Asset(String loc)
@@ -39,6 +39,8 @@ public abstract class Asset implements IAsset
 	@Override
 	public void onRead()
 	{
+		this.read = true;
+		
 		if (this.callback != null)
 		{
 			this.callback.onAssetLoaded(this);
