@@ -4,7 +4,6 @@ package com.elusivehawk.caelum.render;
 import com.elusivehawk.caelum.Experimental;
 import com.elusivehawk.util.math.MatrixF;
 import com.elusivehawk.util.math.QuaternionF;
-import com.elusivehawk.util.math.VectorF;
 
 /**
  * 
@@ -15,7 +14,6 @@ import com.elusivehawk.util.math.VectorF;
 @Experimental
 public abstract class Camera3D extends Camera
 {
-	protected final VectorF pos = (VectorF)new VectorF(3).setSync();
 	protected final QuaternionF rot = (QuaternionF)new QuaternionF().setSync();
 	
 	private float fov, zNear, zFar;
@@ -25,7 +23,7 @@ public abstract class Camera3D extends Camera
 	@SuppressWarnings("unqualified-field-access")
 	public Camera3D(float fieldOfView, float nearZ, float farZ)
 	{
-		super(4);
+		super(3, 4);
 		
 		fov = fieldOfView;
 		zNear = nearZ;
