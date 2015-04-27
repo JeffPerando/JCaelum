@@ -8,7 +8,6 @@ import com.elusivehawk.caelum.input.Key;
 import com.elusivehawk.caelum.input.Keyboard;
 import com.elusivehawk.caelum.input.Mouse;
 import com.elusivehawk.caelum.render.Canvas;
-import com.elusivehawk.caelum.render.WindowSettings;
 import com.elusivehawk.caelum.render.Icon;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderException;
@@ -16,6 +15,7 @@ import com.elusivehawk.caelum.render.tex.Color;
 import com.elusivehawk.caelum.render.tex.ITexture;
 import com.elusivehawk.caelum.render.tex.Material;
 import com.elusivehawk.caelum.render.tex.TextureAsset;
+import com.elusivehawk.caelum.window.WindowSettings;
 import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.Logger;
 

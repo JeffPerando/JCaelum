@@ -4,6 +4,7 @@ package com.elusivehawk.caelum.render;
 import java.util.List;
 import com.elusivehawk.caelum.render.gl.GL1;
 import com.elusivehawk.caelum.render.gl.GLConst;
+import com.elusivehawk.caelum.window.Window;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.storage.DirtableStorage;
 import com.google.common.collect.Lists;

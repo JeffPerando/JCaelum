@@ -1,5 +1,5 @@
 
-package com.elusivehawk.caelum.render;
+package com.elusivehawk.caelum.window;
 
 import com.elusivehawk.caelum.render.tex.Color;
 import com.elusivehawk.util.IPopulator;

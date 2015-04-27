@@ -4,9 +4,10 @@ package com.elusivehawk.caelum.input;
 import java.io.Closeable;
 import java.util.List;
 import com.elusivehawk.caelum.CaelumException;
-import com.elusivehawk.caelum.render.Window;
+import com.elusivehawk.caelum.window.Window;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.Logger;
+import com.elusivehawk.util.ReflectionHelper;
 import com.google.common.collect.Lists;
 
 /**
@@ -18,15 +19,21 @@ import com.google.common.collect.Lists;
 public final class InputManager implements IUpdatable, Closeable
 {
 	private final Window window;
+	private final IInputListener listener;
 	
+	private final List<Class<? extends Input>> inputClasses = Lists.newArrayList();
 	private final List<Input> input = Lists.newArrayList();
 	
 	private boolean initiated = false;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public InputManager(Window win)
+	public InputManager(Window win, IInputListener lis)
 	{
+		assert win != null;
+		assert lis != null;
+		
 		window = win;
+		listener = lis;
 		
 	}
 	
@@ -82,6 +89,27 @@ public final class InputManager implements IUpdatable, Closeable
 		
 	}
 	
+	public void initiate()
+	{
+		if (this.initiated)
+		{
+			throw new CaelumException("Already initiated!");
+		}
+		
+		if (!this.inputClasses.isEmpty())
+		{
+			this.inputClasses.forEach(((clazz) ->
+			{
+				this.input.add((Input)ReflectionHelper.newInstance(clazz, this.window, this.listener));
+				
+			}));
+			
+		}
+		
+		this.initiated = true;
+		
+	}
+	
 	public void sendInputEvents(double delta)
 	{
 		this.input.forEach(((input) ->
@@ -98,36 +126,21 @@ public final class InputManager implements IUpdatable, Closeable
 		
 	}
 	
-	public void addInput(Input input)
+	public void addInput(Class<? extends Input> input)
 	{
+		if (this.initiated)
+		{
+			throw new CaelumException("Cannot add input to initiated input manager!");
+		}
+		
 		assert input != null;
-		assert input.getWindow() == this.window;
 		
-		for (Input in : this.input)
+		if (this.inputClasses.contains(input))
 		{
-			if (in.getClass().isInstance(input))
-			{
-				throw new InputException("Duplicate input receptical of type %s", in.getClass());
-			}
-			
+			throw new CaelumException("Duplicate input class!");
 		}
 		
-		this.input.add(input);
-		
-	}
-	
-	public void addListener(Class<? extends Input> type, IInputListener lis)
-	{
-		assert type != null;
-		assert lis != null;
-		
-		Input in = this.getInput(type);
-		
-		if (in != null)
-		{
-			in.addListener(lis);
-			
-		}
+		this.inputClasses.add(input);
 		
 	}
 	

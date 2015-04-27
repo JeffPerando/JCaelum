@@ -5,6 +5,7 @@ import com.elusivehawk.caelum.CaelumEngine;
 import com.elusivehawk.caelum.IDisposable;
 import com.elusivehawk.caelum.render.glsl.Shaders;
 import com.elusivehawk.caelum.render.tex.Material;
+import com.elusivehawk.caelum.window.Window;
 import com.elusivehawk.util.IPopulator;
 
 /**

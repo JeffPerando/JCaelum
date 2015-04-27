@@ -9,11 +9,11 @@ import com.elusivehawk.caelum.assets.AssetManager;
 import com.elusivehawk.caelum.input.InputManager;
 import com.elusivehawk.caelum.input.Keyboard;
 import com.elusivehawk.caelum.input.Mouse;
-import com.elusivehawk.caelum.render.Window;
-import com.elusivehawk.caelum.render.WindowManager;
-import com.elusivehawk.caelum.render.WindowSettings;
-import com.elusivehawk.caelum.render.IRenderer;
 import com.elusivehawk.caelum.render.ThreadGameRender;
+import com.elusivehawk.caelum.window.IWindowListener;
+import com.elusivehawk.caelum.window.Window;
+import com.elusivehawk.caelum.window.WindowManager;
+import com.elusivehawk.caelum.window.WindowSettings;
 import com.elusivehawk.util.CompInfo;
 import com.elusivehawk.util.EnumLogType;
 import com.elusivehawk.util.HashGen;
@@ -93,9 +93,14 @@ public final class CaelumEngine
 	
 	//XXX Hooks
 	
-	public static Window createWindow(String name, WindowSettings settings, IRenderer renderer)
+	public static Window createWindow(String name, IWindowListener winlis)
 	{
-		return instance().windows.createDisplay(name, settings, renderer);
+		return instance().windows.createWindow(name, winlis);
+	}
+	
+	public static Window createWindow(String name, IWindowListener winlis, WindowSettings settings)
+	{
+		return instance().windows.createWindow(name, winlis, settings);
 	}
 	
 	public static Window defaultWindow()
@@ -181,15 +186,12 @@ public final class CaelumEngine
 				
 			}
 			
-			this.window = createWindow("default", settings, g);
+			this.window = createWindow("default", g);
 			
 			InputManager input = this.window.getInput();
 			
-			input.addInput(new Keyboard(this.window));
-			input.addInput(new Mouse(this.window));
-			
-			input.addListener(Keyboard.class, g);
-			input.addListener(Mouse.class, g);
+			input.addInput(Keyboard.class);
+			input.addInput(Mouse.class);
 			
 		}
 		

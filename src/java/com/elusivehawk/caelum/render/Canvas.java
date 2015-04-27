@@ -6,6 +6,7 @@ import com.elusivehawk.caelum.prefab.Rectangle;
 import com.elusivehawk.caelum.render.gl.GLProgram;
 import com.elusivehawk.caelum.render.glsl.Shaders;
 import com.elusivehawk.caelum.render.tex.Material;
+import com.elusivehawk.caelum.window.Window;
 import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.storage.Buffer;
 

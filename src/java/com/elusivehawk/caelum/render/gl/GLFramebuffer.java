@@ -1,9 +1,9 @@
 
 package com.elusivehawk.caelum.render.gl;
 
-import com.elusivehawk.caelum.render.Window;
 import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.RenderHelper;
+import com.elusivehawk.caelum.window.Window;
 
 /**
  * 

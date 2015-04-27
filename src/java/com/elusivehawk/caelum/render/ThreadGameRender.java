@@ -2,6 +2,7 @@
 package com.elusivehawk.caelum.render;
 
 import org.lwjgl.glfw.GLFW;
+import com.elusivehawk.caelum.window.WindowManager;
 import com.elusivehawk.util.Internal;
 import com.elusivehawk.util.Logger;
 import com.elusivehawk.util.concurrent.ThreadTimed;

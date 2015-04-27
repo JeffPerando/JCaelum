@@ -11,7 +11,7 @@ import org.lwjgl.opengl.GL32;
 import org.lwjgl.opengl.GL33;
 import org.lwjgl.opengl.GL40;
 import com.elusivehawk.caelum.render.RenderHelper;
-import com.elusivehawk.caelum.render.Window;
+import com.elusivehawk.caelum.window.Window;
 import com.elusivehawk.util.storage.BufferHelper;
 
 /**

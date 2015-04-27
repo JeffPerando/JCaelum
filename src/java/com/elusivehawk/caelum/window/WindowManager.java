@@ -1,9 +1,10 @@
 
-package com.elusivehawk.caelum.render;
+package com.elusivehawk.caelum.window;
 
 import java.io.Closeable;
 import java.util.List;
 import com.elusivehawk.caelum.CaelumEngine;
+import com.elusivehawk.caelum.render.Deletables;
 import com.elusivehawk.util.DelayedUpdater;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.Logger;
@@ -96,7 +97,12 @@ public final class WindowManager implements Closeable, IUpdatable
 		
 	}
 	
-	public Window createDisplay(String name, WindowSettings settings, IRenderer renderer)
+	public Window createWindow(String name, IWindowListener winlis)
+	{
+		return this.createWindow(name, winlis, null);
+	}
+	
+	public Window createWindow(String name, IWindowListener winlis, WindowSettings settings)
 	{
 		if (name == null || name.equalsIgnoreCase(""))
 		{
@@ -108,12 +114,13 @@ public final class WindowManager implements Closeable, IUpdatable
 			return null;
 		}
 		
-		if (settings == null)
-		{
-			return null;
-		}
+		Window ret = new Window(name, winlis);
 		
-		Window ret = new Window(name, settings, renderer);
+		if (settings != null)
+		{
+			ret.updateSettings(settings);
+			
+		}
 		
 		this.windows.add(ret);
 		

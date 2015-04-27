@@ -13,6 +13,7 @@ import com.elusivehawk.caelum.render.glsl.GLSLEnumSStatus;
 import com.elusivehawk.caelum.render.glsl.IShader;
 import com.elusivehawk.caelum.render.tex.ColorFormat;
 import com.elusivehawk.caelum.render.tex.ILegibleImage;
+import com.elusivehawk.caelum.window.Window;
 import com.elusivehawk.util.CompInfo;
 import com.elusivehawk.util.Logger;
 

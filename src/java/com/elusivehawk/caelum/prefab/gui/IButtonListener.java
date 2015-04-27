@@ -1,7 +1,7 @@
 
 package com.elusivehawk.caelum.prefab.gui;
 
-import com.elusivehawk.caelum.render.Window;
+import com.elusivehawk.caelum.window.Window;
 
 /**
  * 

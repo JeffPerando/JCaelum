@@ -1,5 +1,5 @@
 
-package com.elusivehawk.caelum.render;
+package com.elusivehawk.caelum.window;
 
 import java.io.Closeable;
 import java.nio.IntBuffer;
@@ -8,6 +8,7 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GLContext;
 import com.elusivehawk.caelum.CaelumException;
 import com.elusivehawk.caelum.input.InputManager;
+import com.elusivehawk.caelum.render.RenderContext;
 import com.elusivehawk.caelum.render.gl.GL1;
 import com.elusivehawk.util.IUpdatable;
 import com.elusivehawk.util.Logger;
@@ -22,8 +23,10 @@ import com.elusivehawk.util.storage.BufferHelper;
 public class Window implements Closeable, IUpdatable
 {
 	private final String name;
-	private final InputManager input;
+	private final IWindowListener listener;
+	
 	private final RenderContext rcon;
+	private final InputManager input;
 	
 	private final IntBuffer
 				w = BufferHelper.createIntBuffer(1),
@@ -38,16 +41,16 @@ public class Window implements Closeable, IUpdatable
 	private boolean refresh = true, closed = false, close = false, initiated = false;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Window(String str, WindowSettings ws, IRenderer r)
+	public Window(String str, IWindowListener l)
 	{
-		assert ws != null;
-		assert r != null;
+		assert str != null;
+		assert l != null;
 		
 		name = str;
-		settings = ws;
-		rcon = new RenderContext(this, r);
+		listener = l;
 		
-		input = new InputManager(this);
+		rcon = new RenderContext(this, l);
+		input = new InputManager(this, l);
 		
 	}
 	
@@ -68,6 +71,8 @@ public class Window implements Closeable, IUpdatable
 		
 		if (GLFW.glfwWindowShouldClose(this.windowId) != 0 || this.close)
 		{
+			this.listener.onWindowClosing(this);
+			
 			try
 			{
 				this.context.destroy();
@@ -88,6 +93,8 @@ public class Window implements Closeable, IUpdatable
 					this.closed = true;
 					
 				}
+				
+				this.listener.onWindowClosed(this);
 				
 			}
 			
@@ -238,6 +245,10 @@ public class Window implements Closeable, IUpdatable
 	private void updateSettings()
 	{
 		GLFW.glfwSetWindowTitle(this.windowId, this.settings.title);
+		
+		int oldw = this.width;
+		int oldh = this.height;
+		
 		GLFW.glfwSetWindowSize(this.windowId, this.settings.width, this.settings.height);
 		GLFW.glfwSwapInterval(this.settings.vsync ? 1 : 0);
 		
@@ -249,9 +260,15 @@ public class Window implements Closeable, IUpdatable
 		 * 
 		 */
 		
-		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, 0);
+		//GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, 0);
 		
 		this.updateInfo();
+		
+		if (this.width != oldw || this.height != oldh)
+		{
+			this.listener.onWindowResize(this, oldw, oldh);
+			
+		}
 		
 	}
 	

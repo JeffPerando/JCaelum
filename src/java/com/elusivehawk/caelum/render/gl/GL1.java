@@ -10,11 +10,11 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
-import com.elusivehawk.caelum.render.Window;
 import com.elusivehawk.caelum.render.RenderHelper;
 import com.elusivehawk.caelum.render.tex.Color;
 import com.elusivehawk.caelum.render.tex.ColorFilter;
 import com.elusivehawk.caelum.render.tex.ITexture;
+import com.elusivehawk.caelum.window.Window;
 import com.elusivehawk.util.storage.BufferHelper;
 
 /**

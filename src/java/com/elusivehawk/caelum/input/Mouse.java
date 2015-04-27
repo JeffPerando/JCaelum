@@ -6,9 +6,9 @@ import java.nio.DoubleBuffer;
 import java.util.List;
 import java.util.function.Consumer;
 import org.lwjgl.glfw.GLFW;
-import com.elusivehawk.caelum.render.Window;
 import com.elusivehawk.caelum.render.tex.ColorFormat;
 import com.elusivehawk.caelum.render.tex.ILegibleImage;
+import com.elusivehawk.caelum.window.Window;
 import com.elusivehawk.util.math.VectorF;
 import com.elusivehawk.util.storage.BufferHelper;
 import com.elusivehawk.util.storage.DirtableStorage;
@@ -39,9 +39,9 @@ public class Mouse extends Input
 	private final DirtableStorage<Boolean> grab = new DirtableStorage<Boolean>().setSync();
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Mouse(Window screen)
+	public Mouse(Window screen, IInputListener lis)
 	{
-		super(screen);
+		super(screen, lis);
 		
 		for (int c = 0; c < buttons.length; c++)
 		{

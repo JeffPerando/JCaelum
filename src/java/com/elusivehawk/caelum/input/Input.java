@@ -2,11 +2,9 @@
 package com.elusivehawk.caelum.input;
 
 import java.io.Closeable;
-import java.util.List;
-import com.elusivehawk.caelum.render.Window;
+import com.elusivehawk.caelum.window.Window;
 import com.elusivehawk.util.Dirtable;
 import com.elusivehawk.util.IUpdatable;
-import com.elusivehawk.util.storage.SyncList;
 
 /**
  * 
@@ -18,16 +16,18 @@ public abstract class Input extends Dirtable implements IUpdatable, Closeable
 {
 	protected final Window window;
 	
-	private final List<IInputListener> listeners = SyncList.newList();
+	private final IInputListener listener;
 	
 	private boolean initiated = false;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public Input(Window screen)
+	public Input(Window screen, IInputListener lis)
 	{
 		assert screen != null;
+		assert lis != null;
 		
 		window = screen;
+		listener = lis;
 		
 	}
 	
@@ -51,21 +51,9 @@ public abstract class Input extends Dirtable implements IUpdatable, Closeable
 		
 	}
 	
-	public void addListener(IInputListener lis)
-	{
-		assert lis != null;
-		
-		this.listeners.add(lis);
-		
-	}
-	
 	public void triggerHooks(double delta)
 	{
-		this.listeners.forEach(((lis) ->
-		{
-			lis.onInputReceived(this, delta);
-			
-		}));
+		this.listener.onInputReceived(this, delta);
 		
 	}
 	
