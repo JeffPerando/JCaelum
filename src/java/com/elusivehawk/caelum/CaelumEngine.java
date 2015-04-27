@@ -178,14 +178,6 @@ public final class CaelumEngine
 		
 		if (!this.game.isGameHeadless())
 		{
-			WindowSettings settings = this.game.getWindowSettings();
-			
-			if (settings == null)
-			{
-				settings = new WindowSettings();
-				
-			}
-			
 			this.window = createWindow("default", g);
 			
 			InputManager input = this.window.getInput();

@@ -181,6 +181,8 @@ public class Window implements Closeable, IUpdatable
 			
 		}
 		
+		this.listener.onWindowCreated(this);
+		
 		GLFW.glfwMakeContextCurrent(0);
 		
 	}

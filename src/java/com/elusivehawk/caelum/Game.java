@@ -1,6 +1,7 @@
 
 package com.elusivehawk.caelum;
 
+import com.elusivehawk.caelum.window.Window;
 import com.elusivehawk.caelum.window.WindowSettings;
 import com.elusivehawk.util.IPausable;
 
@@ -39,6 +40,19 @@ public abstract class Game extends AbstractGameComponent implements IPausable
 	public String toString()
 	{
 		return this.name;
+	}
+	
+	@Override
+	public void onWindowCreated(Window window)
+	{
+		WindowSettings settings = this.getWindowSettings();
+		
+		if (settings != null)
+		{
+			window.updateSettings(settings);
+			
+		}
+		
 	}
 	
 	//XXX Optional/technical methods

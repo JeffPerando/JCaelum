@@ -12,10 +12,12 @@ import com.elusivehawk.caelum.render.IRenderer;
  */
 public interface IWindowListener extends IRenderer, IInputListener
 {
-	void onWindowClosing(Window window);
+	default void onWindowCreated(Window window){}
 	
-	void onWindowClosed(Window window);
+	default void onWindowClosing(Window window){};
 	
-	void onWindowResize(Window window, int nwidth, int nheight);
+	default void onWindowClosed(Window window){};
+	
+	default void onWindowResize(Window window, int nwidth, int nheight){};
 	
 }
