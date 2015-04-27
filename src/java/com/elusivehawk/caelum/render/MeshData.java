@@ -8,8 +8,7 @@ import com.elusivehawk.caelum.render.gl.GLBuffer;
 import com.elusivehawk.caelum.render.gl.GLConst;
 import com.elusivehawk.caelum.render.gl.GLEnumBufferTarget;
 import com.elusivehawk.caelum.render.gl.GLEnumDataUsage;
-import com.elusivehawk.util.MakeStruct;
-import com.elusivehawk.util.math.VectorF;
+import com.elusivehawk.util.IPopulator;
 import com.elusivehawk.util.parse.json.JsonArray;
 import com.elusivehawk.util.parse.json.JsonObject;
 import com.elusivehawk.util.storage.BufferHelper;
@@ -20,30 +19,30 @@ import com.elusivehawk.util.storage.BufferHelper;
  * 
  * @author Elusivehawk
  */
-@MakeStruct
 public class MeshData implements IDeletable
 {
-	public final FloatBuffer vertex;
-	public final IntBuffer indices;
-	public final VectorF size;
-	public final boolean isTriStrip, useTex, useNorm;
-	public final int texSize;
+	private final FloatBuffer vertex;
+	private IntBuffer indices = null;
+	private boolean triStrip = false, useNorm = false;
+	private int texSize = 0;
 	
 	private GLBuffer vbo = null, glind = null;
-	private boolean loaded = false;
+	private boolean locked = false, loaded = false;
 	
 	@SuppressWarnings("unqualified-field-access")
-	public MeshData(FloatBuffer vtx, IntBuffer ind, VectorF vec, boolean strip, boolean tex3d, boolean tex, boolean norm)
+	public MeshData(FloatBuffer vtx)
 	{
 		assert vtx != null;
 		
 		vertex = vtx.asReadOnlyBuffer();
-		indices = ind == null ? null : ind.asReadOnlyBuffer();
-		size = (VectorF)vec.clone().setImmutable();
-		isTriStrip = strip;
-		texSize = tex3d ? 3 : 2;
-		useTex = tex;
-		useNorm = norm;
+		
+	}
+	
+	public MeshData(FloatBuffer vtx, IPopulator<MeshData> pop)
+	{
+		this(vtx);
+		
+		pop.populate(this);
 		
 	}
 	
@@ -59,6 +58,69 @@ public class MeshData implements IDeletable
 		
 	}
 	
+	public MeshData indices(IntBuffer ind)
+	{
+		if (this.locked)
+		{
+			throw new RenderException("Locked mesh!");
+		}
+		
+		assert ind != null;
+		
+		this.indices = ind.asReadOnlyBuffer();
+		
+		return this;
+	}
+	
+	public MeshData strip()
+	{
+		if (this.locked)
+		{
+			throw new RenderException("Locked mesh!");
+		}
+		
+		this.triStrip = true;
+		
+		return this;
+	}
+	
+	public MeshData useNormals()
+	{
+		if (this.locked)
+		{
+			throw new RenderException("Locked mesh!");
+		}
+		
+		this.useNorm = true;
+		
+		return this;
+	}
+	
+	public MeshData texCoordSize(int tsize)
+	{
+		if (this.locked)
+		{
+			throw new RenderException("Locked mesh!");
+		}
+		
+		assert tsize > 0;
+		
+		this.texSize = tsize;
+		
+		return this;
+	}
+	
+	public MeshData lock()
+	{
+		if (!this.locked)
+		{
+			this.locked = true;
+			
+		}
+		
+		return this;
+	}
+	
 	public GLBuffer getVBO()
 	{
 		return this.vbo;
@@ -69,6 +131,36 @@ public class MeshData implements IDeletable
 		return this.glind;
 	}
 	
+	public FloatBuffer vertex()
+	{
+		return this.vertex;
+	}
+	
+	public IntBuffer indices()
+	{
+		return this.indices;
+	}
+	
+	public int texSize()
+	{
+		return this.texSize;
+	}
+	
+	public boolean isStrip()
+	{
+		return this.triStrip;
+	}
+	
+	public boolean hasNormals()
+	{
+		return this.useNorm;
+	}
+	
+	public boolean isLocked()
+	{
+		return this.locked;
+	}
+	
 	public boolean isLoaded()
 	{
 		return this.loaded;
@@ -76,15 +168,20 @@ public class MeshData implements IDeletable
 	
 	public void load(RenderContext rcon)
 	{
+		if (!this.locked)
+		{
+			throw new RenderException("Not locked!");
+		}
+		
 		if (!this.loaded)
 		{
 			this.vbo = new GLBuffer(GLEnumBufferTarget.GL_ARRAY_BUFFER, this.vertex, GLEnumDataUsage.GL_STATIC_DRAW, rcon, ((buf) ->
 			{
-				int stride = 12 + (this.useTex ? this.texSize * 4 : 0) + (this.useNorm ? 12 : 0);
+				int stride = 12 + (this.texSize > 0 ? this.texSize * 4 : 0) + (this.useNorm ? 12 : 0);
 				
 				buf.addAttrib(RenderConst.VERTEX, 12, GLConst.GL_FLOAT, stride, 0);
 				
-				if (this.useTex)
+				if (this.texSize > 0)
 				{
 					buf.addAttrib(RenderConst.TEXCOORD, this.texSize * 4, GLConst.GL_FLOAT, stride, 0);
 					
@@ -111,9 +208,8 @@ public class MeshData implements IDeletable
 	public static MeshData fromJson(JsonObject json)
 	{
 		boolean strip = json.getBool("strip");
-		boolean tex3d = json.getBool("3dTex");
 		
-		int texSize = tex3d ? 3 : 2;
+		int texSize = json.getBool("3dTex") ? 3 : 2;
 		
 		JsonArray vtxJson = json.getValue("vertices", JsonArray.class);
 		
@@ -169,10 +265,7 @@ public class MeshData implements IDeletable
 			
 			if (texJson != null)
 			{
-				vtx.put(texJson.getFloat(texI++));
-				vtx.put(texJson.getFloat(texI++));
-				
-				if (tex3d)
+				for (int t = 0; t < texSize; t++)
 				{
 					vtx.put(texJson.getFloat(texI++));
 					
@@ -190,39 +283,33 @@ public class MeshData implements IDeletable
 			
 		}
 		
-		VectorF min = new VectorF(3);
-		VectorF max = new VectorF(3);
+		MeshData ret = new MeshData(vtx);
 		
-		for (int c = 0; c < vtx.capacity(); c += 3)
+		ret.texCoordSize(texSize);
+		
+		if (normJson != null)
 		{
-			for (int i = 0; i < 3; i++)
-			{
-				min.set(i, Math.min(min.get(c), vtx.get(c + i)));
-				max.set(i, Math.max(min.get(c), vtx.get(c + i)));
-				
-			}
+			ret.useNormals();
 			
 		}
-		
-		VectorF size = (VectorF)min.absolute().add(max);
-		
-		IntBuffer indices = null;
 		
 		JsonArray indJson = json.getValue("indices", JsonArray.class);
 		
 		if (indJson != null)
 		{
-			indices = BufferHelper.createIntBuffer(indJson.length());
-			
-			for (int c = 0; c < indJson.length(); c++)
-			{
-				indices.put(indJson.getInt(c));
-				
-			}
+			ret.indices(indJson.toIntBuffer());
 			
 		}
 		
-		return new MeshData(vtx, indices, size, strip, tex3d, texJson != null, normJson != null);
+		if (strip)
+		{
+			ret.strip();
+			
+		}
+		
+		ret.lock();
+		
+		return ret;
 	}
 	
 }

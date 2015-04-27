@@ -132,7 +132,25 @@ public class Tessellator
 			
 		}
 		
-		return new MeshData(this.fs_ret, this.in_ret, null, this.optimized, false, true, true);
+		MeshData ret = new MeshData(this.fs_ret);
+		
+		if (this.in_ret != null)
+		{
+			ret.indices(this.in_ret);
+			
+		}
+		
+		if (this.optimized)
+		{
+			ret.strip();
+			
+		}
+		
+		ret.texCoordSize(2);
+		
+		ret.lock();
+		
+		return ret;
 	}
 	
 	private boolean optimize()

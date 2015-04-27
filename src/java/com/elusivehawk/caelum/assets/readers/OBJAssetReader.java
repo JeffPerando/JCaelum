@@ -192,7 +192,29 @@ public class OBJAssetReader implements IAssetReader
 			
 		}
 		
-		return new MeshData(vtx, BufferHelper.makeIntBuffer(indices), null, false, false, !texCoords.isEmpty(), !normals.isEmpty());
+		MeshData ret = new MeshData(vtx);
+		
+		if (!indices.isEmpty())
+		{
+			ret.indices(BufferHelper.makeIntBuffer(indices));
+			
+		}
+		
+		if (!texCoords.isEmpty())
+		{
+			ret.texCoordSize(2);
+			
+		}
+		
+		if (!normals.isEmpty())
+		{
+			ret.useNormals();
+			
+		}
+		
+		ret.lock();
+		
+		return ret;
 	}
 	
 }

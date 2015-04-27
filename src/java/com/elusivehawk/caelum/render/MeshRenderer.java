@@ -25,7 +25,7 @@ import com.elusivehawk.util.storage.DirtableStorage;
 
 /**
  * 
- * Used to render static {@link IMeshDataProvider mesh}es with non-static information (i.e. rotation)
+ * Used to render static meshes with non-static information (i.e. rotation)
  * 
  * @author Elusivehawk
  * 
@@ -234,10 +234,10 @@ public class MeshRenderer extends ProgramRenderable implements IComponent, Quate
 			
 		}
 		
-		FloatBuffer vtx = data.vertex;
-		IntBuffer ind = data.indices;
+		FloatBuffer vtx = data.vertex();
+		IntBuffer ind = data.indices();
 		
-		if (data.isTriStrip)
+		if (data.isStrip())
 		{
 			this.draw = GLEnumDrawType.GL_TRIANGLE_STRIP;
 			this.polyCount = ind.capacity() - 2;
